@@ -20,13 +20,13 @@ package org.kie.workbench.common.stunner.core.definition.morph;
 //      - Bindable impl -> do not use a map, as single class a key is available
 public interface MorphDefinition {
 
-    boolean accepts( final String definitionId );
+    boolean accepts(final String definitionId);
 
     String getBase();
 
     String getDefault();
 
-    Iterable<String> getTargets( final String definitionId );
+    Iterable<String> getTargets(final String definitionId);
 
     MorphPolicy getPolicy();
 }

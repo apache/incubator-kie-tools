@@ -24,5 +24,5 @@ public interface CanvasElementListener extends CanvasListener<CanvasHandler, Ele
     /**
      * An element has been updated on the canvas.
      */
-    void update( final Element item );
+    void update(final Element item);
 }

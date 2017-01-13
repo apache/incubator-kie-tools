@@ -29,15 +29,15 @@ public class ConnectionRuleImpl implements ConnectionRule {
     private String id;
     private Set<PermittedConnection> permittedConnections;
 
-    public ConnectionRuleImpl( final @MapsTo( "name" ) String name,
-                               final @MapsTo( "id" ) String id,
-                               final @MapsTo( "permittedConnections" ) Set<PermittedConnection> permittedConnections ) {
-        this.name = PortablePreconditions.checkNotNull( "name",
-                                                        name );
-        this.id = PortablePreconditions.checkNotNull( "id",
-                                                      id );
-        this.permittedConnections = PortablePreconditions.checkNotNull( "permittedConnections",
-                                                                        permittedConnections );
+    public ConnectionRuleImpl(final @MapsTo("name") String name,
+                              final @MapsTo("id") String id,
+                              final @MapsTo("permittedConnections") Set<PermittedConnection> permittedConnections) {
+        this.name = PortablePreconditions.checkNotNull("name",
+                                                       name);
+        this.id = PortablePreconditions.checkNotNull("id",
+                                                     id);
+        this.permittedConnections = PortablePreconditions.checkNotNull("permittedConnections",
+                                                                       permittedConnections);
     }
 
     @Override

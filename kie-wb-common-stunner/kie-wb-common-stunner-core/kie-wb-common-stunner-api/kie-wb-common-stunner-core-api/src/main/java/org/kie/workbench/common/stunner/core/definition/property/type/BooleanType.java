@@ -29,15 +29,15 @@ public class BooleanType implements PropertyType {
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof BooleanType ) ) {
+        if (!(o instanceof BooleanType)) {
             return false;
         }
-        BooleanType that = ( BooleanType ) o;
-        if ( !name.equals( that.name ) ) {
+        BooleanType that = (BooleanType) o;
+        if (!name.equals(that.name)) {
             return false;
         }
         return true;

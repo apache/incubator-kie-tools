@@ -39,11 +39,11 @@ public class NodeFactoryImpl extends AbstractElementFactory<Object, Definition<O
     private final DefinitionUtils definitionUtils;
 
     protected NodeFactoryImpl() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public NodeFactoryImpl( final DefinitionUtils definitionUtils ) {
+    public NodeFactoryImpl(final DefinitionUtils definitionUtils) {
         this.definitionUtils = definitionUtils;
     }
 
@@ -53,24 +53,24 @@ public class NodeFactoryImpl extends AbstractElementFactory<Object, Definition<O
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public Node<Definition<Object>, Edge> build( final String uuid,
-                                                 final Object definition ) {
-        final NodeImpl node = new NodeImpl<>( uuid );
-        if ( null != definition ) {
-            final Bounds bounds = definitionUtils.buildBounds( definition,
-                                                               0d,
-                                                               0d );
-            View<Object> content = new ViewImpl<>( definition,
-                                                   bounds );
-            node.setContent( content );
-            node.getLabels().addAll( getLabels( definition ) );
+    @SuppressWarnings("unchecked")
+    public Node<Definition<Object>, Edge> build(final String uuid,
+                                                final Object definition) {
+        final NodeImpl node = new NodeImpl<>(uuid);
+        if (null != definition) {
+            final Bounds bounds = definitionUtils.buildBounds(definition,
+                                                              0d,
+                                                              0d);
+            View<Object> content = new ViewImpl<>(definition,
+                                                  bounds);
+            node.setContent(content);
+            node.getLabels().addAll(getLabels(definition));
         }
         return node;
     }
 
-    private Set<String> getLabels( final Object definition ) {
-        return getDefinitionManager().adapters().forDefinition().getLabels( definition );
+    private Set<String> getLabels(final Object definition) {
+        return getDefinitionManager().adapters().forDefinition().getLabels(definition);
     }
 
     private DefinitionManager getDefinitionManager() {

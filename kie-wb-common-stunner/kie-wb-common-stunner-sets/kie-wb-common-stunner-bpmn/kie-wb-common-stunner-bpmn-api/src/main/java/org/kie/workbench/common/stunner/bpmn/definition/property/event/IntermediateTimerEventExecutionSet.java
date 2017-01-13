@@ -42,40 +42,40 @@ public class IntermediateTimerEventExecutionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef( label = FIELDDEF_TIME_CYCLE, property = "value", position = 1 )
+    @FieldDef(label = FIELDDEF_TIME_CYCLE, property = "value", position = 1)
     @Valid
     private TimeCycle timeCycle;
 
     @Property
-    @FieldDef( label = FIELDDEF_TIME_CYCLE_LANGUAGE, property = "value", position = 2 )
+    @FieldDef(label = FIELDDEF_TIME_CYCLE_LANGUAGE, property = "value", position = 2)
     @ListBox
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
-            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.TimeCycleLanguageProvider" )
+            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.TimeCycleLanguageProvider")
     @Valid
     protected TimeCycleLanguage timeCycleLanguage;
 
     @Property
-    @FieldDef( label = FIELDDEF_TIME_DATE, property = "value", position = 3 )
+    @FieldDef(label = FIELDDEF_TIME_DATE, property = "value", position = 3)
     @Valid
     private TimeDate timeDate;
 
     @Property
-    @FieldDef( label = FIELDDEF_TIME_DURATION, property = "value", position = 4 )
+    @FieldDef(label = FIELDDEF_TIME_DURATION, property = "value", position = 4)
     @Valid
     private TimeDuration timeDuration;
 
     public IntermediateTimerEventExecutionSet() {
-        this( new TimeCycle(),
-              new TimeCycleLanguage(),
-              new TimeDate(),
-              new TimeDuration() );
+        this(new TimeCycle(),
+             new TimeCycleLanguage(),
+             new TimeDate(),
+             new TimeDuration());
     }
 
-    public IntermediateTimerEventExecutionSet( @MapsTo( "timeCycle" ) TimeCycle timeCycle,
-                                               @MapsTo( "timeCycleLanguage" ) TimeCycleLanguage timeCycleLanguage,
-                                               @MapsTo( "timeDate" ) TimeDate timeDate,
-                                               @MapsTo( "timeDuration" ) TimeDuration timeDuration ) {
+    public IntermediateTimerEventExecutionSet(final @MapsTo("timeCycle") TimeCycle timeCycle,
+                                              final @MapsTo("timeCycleLanguage") TimeCycleLanguage timeCycleLanguage,
+                                              final @MapsTo("timeDate") TimeDate timeDate,
+                                              final @MapsTo("timeDuration") TimeDuration timeDuration) {
         this.timeCycle = timeCycle;
         this.timeCycleLanguage = timeCycleLanguage;
         this.timeDate = timeDate;
@@ -90,7 +90,7 @@ public class IntermediateTimerEventExecutionSet implements BPMNPropertySet {
         return timeCycle;
     }
 
-    public void setTimeCycle( TimeCycle timeCycle ) {
+    public void setTimeCycle(final TimeCycle timeCycle) {
         this.timeCycle = timeCycle;
     }
 
@@ -98,7 +98,7 @@ public class IntermediateTimerEventExecutionSet implements BPMNPropertySet {
         return timeCycleLanguage;
     }
 
-    public void setTimeCycleLanguage( TimeCycleLanguage timeCycleLanguage ) {
+    public void setTimeCycleLanguage(final TimeCycleLanguage timeCycleLanguage) {
         this.timeCycleLanguage = timeCycleLanguage;
     }
 
@@ -106,7 +106,7 @@ public class IntermediateTimerEventExecutionSet implements BPMNPropertySet {
         return timeDate;
     }
 
-    public void setTimeDate( TimeDate timeDate ) {
+    public void setTimeDate(final TimeDate timeDate) {
         this.timeDate = timeDate;
     }
 
@@ -114,7 +114,7 @@ public class IntermediateTimerEventExecutionSet implements BPMNPropertySet {
         return timeDuration;
     }
 
-    public void setTimeDuration( TimeDuration timeDuration ) {
+    public void setTimeDuration(final TimeDuration timeDuration) {
         this.timeDuration = timeDuration;
     }
 }

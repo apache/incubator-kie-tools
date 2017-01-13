@@ -58,7 +58,7 @@ public class TimeDuration implements BPMNProperty {
     public TimeDuration() {
     }
 
-    public TimeDuration( final String value ) {
+    public TimeDuration(final String value) {
         this.value = value;
     }
 
@@ -90,7 +90,7 @@ public class TimeDuration implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

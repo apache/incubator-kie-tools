@@ -38,80 +38,80 @@ public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<Group> {
     private static final int ZINDEX = Integer.MAX_VALUE;
 
     @Override
-    public void show( final Glyph<Group> shapeGlyph,
-                      final double x,
-                      final double y,
-                      final Callback callback ) {
+    public void show(final Glyph<Group> shapeGlyph,
+                     final double x,
+                     final double y,
+                     final Callback callback) {
         final double proxyWidth = shapeGlyph.getWidth();
         final double proxyHeight = shapeGlyph.getHeight();
         final Group dragShape = shapeGlyph.getGroup();
-        dragShape.setX( proxyWidth / 2 );
-        dragShape.setY( proxyHeight / 2 );
-        final LienzoPanel dragProxyPanel = new LienzoPanel( ( ( int ) proxyWidth * 2 ),
-                                                            ( ( int ) proxyHeight * 2 ) );
-        dragProxyPanel.getElement().getStyle().setCursor( Style.Cursor.MOVE );
+        dragShape.setX(proxyWidth / 2);
+        dragShape.setY(proxyHeight / 2);
+        final LienzoPanel dragProxyPanel = new LienzoPanel(((int) proxyWidth * 2),
+                                                           ((int) proxyHeight * 2));
+        dragProxyPanel.getElement().getStyle().setCursor(Style.Cursor.MOVE);
         final Layer dragProxyLayer = new Layer();
-        dragProxyLayer.add( dragShape );
-        dragProxyPanel.add( dragProxyLayer );
+        dragProxyLayer.add(dragShape);
+        dragProxyPanel.add(dragProxyLayer);
         dragProxyLayer.batch();
-        setDragProxyPosition( dragProxyPanel,
-                              proxyWidth,
-                              proxyHeight,
-                              x,
-                              y );
-        attachDragProxyHandlers( dragProxyPanel,
-                                 callback );
-        RootPanel.get().add( dragProxyPanel );
+        setDragProxyPosition(dragProxyPanel,
+                             proxyWidth,
+                             proxyHeight,
+                             x,
+                             y);
+        attachDragProxyHandlers(dragProxyPanel,
+                                callback);
+        RootPanel.get().add(dragProxyPanel);
     }
 
-    private void setDragProxyPosition( final LienzoPanel dragProxyPanel,
-                                       final double proxyWidth,
-                                       final double proxyHeight,
-                                       final double x,
-                                       final double y ) {
+    private void setDragProxyPosition(final LienzoPanel dragProxyPanel,
+                                      final double proxyWidth,
+                                      final double proxyHeight,
+                                      final double x,
+                                      final double y) {
         Style style = dragProxyPanel.getElement().getStyle();
-        style.setPosition( Style.Position.ABSOLUTE );
-        style.setLeft( x - ( proxyWidth / 2 ),
-                       Style.Unit.PX );
-        style.setTop( y - ( proxyHeight / 2 ),
-                      Style.Unit.PX );
-        style.setZIndex( ZINDEX );
+        style.setPosition(Style.Position.ABSOLUTE);
+        style.setLeft(x - (proxyWidth / 2),
+                      Style.Unit.PX);
+        style.setTop(y - (proxyHeight / 2),
+                     Style.Unit.PX);
+        style.setZIndex(ZINDEX);
     }
 
-    private void attachDragProxyHandlers( final LienzoPanel floatingPanel,
-                                          final Callback callback ) {
+    private void attachDragProxyHandlers(final LienzoPanel floatingPanel,
+                                         final Callback callback) {
         final Style style = floatingPanel.getElement().getStyle();
-        final HandlerRegistration[] handlerRegs = new HandlerRegistration[ 2 ];
+        final HandlerRegistration[] handlerRegs = new HandlerRegistration[2];
         //MouseMoveEvents
-        handlerRegs[ 0 ] = RootPanel.get().addDomHandler( new MouseMoveHandler() {
+        handlerRegs[0] = RootPanel.get().addDomHandler(new MouseMoveHandler() {
 
-                                                              @Override
-                                                              public void onMouseMove( final MouseMoveEvent mouseMoveEvent ) {
-                                                                  style.setLeft( mouseMoveEvent.getX() - ( floatingPanel.getWidth() / 2 ),
-                                                                                 Style.Unit.PX );
-                                                                  style.setTop( mouseMoveEvent.getY() - ( floatingPanel.getHeight() / 2 ),
-                                                                                Style.Unit.PX );
-                                                                  final double x = mouseMoveEvent.getX();
-                                                                  final double y = mouseMoveEvent.getY();
-                                                                  callback.onMove( x,
-                                                                                   y );
-                                                              }
-                                                          },
-                                                          MouseMoveEvent.getType() );
+                                                           @Override
+                                                           public void onMouseMove(final MouseMoveEvent mouseMoveEvent) {
+                                                               style.setLeft(mouseMoveEvent.getX() - (floatingPanel.getWidth() / 2),
+                                                                             Style.Unit.PX);
+                                                               style.setTop(mouseMoveEvent.getY() - (floatingPanel.getHeight() / 2),
+                                                                            Style.Unit.PX);
+                                                               final double x = mouseMoveEvent.getX();
+                                                               final double y = mouseMoveEvent.getY();
+                                                               callback.onMove(x,
+                                                                               y);
+                                                           }
+                                                       },
+                                                       MouseMoveEvent.getType());
         //MouseUpEvent
-        handlerRegs[ 1 ] = RootPanel.get().addDomHandler( new MouseUpHandler() {
+        handlerRegs[1] = RootPanel.get().addDomHandler(new MouseUpHandler() {
 
-                                                              @Override
-                                                              public void onMouseUp( final MouseUpEvent mouseUpEvent ) {
-                                                                  handlerRegs[ 0 ].removeHandler();
-                                                                  handlerRegs[ 1 ].removeHandler();
-                                                                  RootPanel.get().remove( floatingPanel );
-                                                                  final double x = mouseUpEvent.getX();
-                                                                  final double y = mouseUpEvent.getY();
-                                                                  callback.onComplete( x,
-                                                                                       y );
-                                                              }
-                                                          },
-                                                          MouseUpEvent.getType() );
+                                                           @Override
+                                                           public void onMouseUp(final MouseUpEvent mouseUpEvent) {
+                                                               handlerRegs[0].removeHandler();
+                                                               handlerRegs[1].removeHandler();
+                                                               RootPanel.get().remove(floatingPanel);
+                                                               final double x = mouseUpEvent.getX();
+                                                               final double y = mouseUpEvent.getY();
+                                                               callback.onComplete(x,
+                                                                                   y);
+                                                           }
+                                                       },
+                                                       MouseUpEvent.getType());
     }
 }

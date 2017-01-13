@@ -24,13 +24,13 @@ public abstract class AbstractWrappedRuleManager<R extends Rule, M extends RuleM
     protected abstract M getWrapped();
 
     @Override
-    public boolean supports( final Rule rule ) {
-        return getWrapped().supports( rule );
+    public boolean supports(final Rule rule) {
+        return getWrapped().supports(rule);
     }
 
     @Override
-    public RuleManager addRule( final R rule ) {
-        return getWrapped().addRule( rule );
+    public RuleManager addRule(final R rule) {
+        return getWrapped().addRule(rule);
     }
 
     @Override

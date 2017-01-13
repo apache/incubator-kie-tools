@@ -40,8 +40,8 @@ public class ShapeManagerImpl implements ShapeManager {
     }
 
     @Inject
-    public ShapeManagerImpl( final SyncBeanManager beanManager,
-                             final DefinitionManager definitionManager ) {
+    public ShapeManagerImpl(final SyncBeanManager beanManager,
+                            final DefinitionManager definitionManager) {
         this.beanManager = beanManager;
         this.definitionManager = definitionManager;
     }
@@ -54,19 +54,19 @@ public class ShapeManagerImpl implements ShapeManager {
 
     private void initShapeSets() {
         shapeSets.clear();
-        Collection<SyncBeanDef<ShapeSet>> beanDefs = beanManager.lookupBeans( ShapeSet.class );
-        for ( SyncBeanDef<ShapeSet> beanDef : beanDefs ) {
+        Collection<SyncBeanDef<ShapeSet>> beanDefs = beanManager.lookupBeans(ShapeSet.class);
+        for (SyncBeanDef<ShapeSet> beanDef : beanDefs) {
             ShapeSet shapeSet = beanDef.getInstance();
-            shapeSets.add( shapeSet );
+            shapeSets.add(shapeSet);
         }
     }
 
     private void initThumbProviders() {
         thumbProviders.clear();
-        Collection<SyncBeanDef<ShapeSetThumbProvider>> beanDefs = beanManager.lookupBeans( ShapeSetThumbProvider.class );
-        for ( SyncBeanDef<ShapeSetThumbProvider> beanDef : beanDefs ) {
+        Collection<SyncBeanDef<ShapeSetThumbProvider>> beanDefs = beanManager.lookupBeans(ShapeSetThumbProvider.class);
+        for (SyncBeanDef<ShapeSetThumbProvider> beanDef : beanDefs) {
             ShapeSetThumbProvider shapeSet = beanDef.getInstance();
-            thumbProviders.add( shapeSet );
+            thumbProviders.add(shapeSet);
         }
     }
 
@@ -76,10 +76,10 @@ public class ShapeManagerImpl implements ShapeManager {
     }
 
     @Override
-    public ShapeSet<?> getShapeSet( final String id ) {
-        if ( null != id && !shapeSets.isEmpty() ) {
-            for ( final ShapeSet<?> shapeSet : shapeSets ) {
-                if ( id.equals( shapeSet.getId() ) ) {
+    public ShapeSet<?> getShapeSet(final String id) {
+        if (null != id && !shapeSets.isEmpty()) {
+            for (final ShapeSet<?> shapeSet : shapeSets) {
+                if (id.equals(shapeSet.getId())) {
                     return shapeSet;
                 }
             }
@@ -88,10 +88,10 @@ public class ShapeManagerImpl implements ShapeManager {
     }
 
     @Override
-    public ShapeSet<?> getDefaultShapeSet( final String defSetId ) {
-        if ( null != defSetId && !shapeSets.isEmpty() ) {
-            for ( final ShapeSet<?> shapeSet : shapeSets ) {
-                if ( defSetId.equals( shapeSet.getDefinitionSetId() ) ) {
+    public ShapeSet<?> getDefaultShapeSet(final String defSetId) {
+        if (null != defSetId && !shapeSets.isEmpty()) {
+            for (final ShapeSet<?> shapeSet : shapeSets) {
+                if (defSetId.equals(shapeSet.getDefinitionSetId())) {
                     return shapeSet;
                 }
             }
@@ -100,9 +100,9 @@ public class ShapeManagerImpl implements ShapeManager {
     }
 
     @Override
-    public SafeUri getThumbnail( final String definitionSetId ) {
-        for ( final ShapeSetThumbProvider thumbProvider : thumbProviders ) {
-            if ( thumbProvider.thumbFor( definitionSetId ) ) {
+    public SafeUri getThumbnail(final String definitionSetId) {
+        for (final ShapeSetThumbProvider thumbProvider : thumbProviders) {
+            if (thumbProvider.thumbFor(definitionSetId)) {
                 return thumbProvider.getThumbnailUri();
             }
         }

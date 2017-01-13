@@ -28,9 +28,9 @@ import java.lang.annotation.Target;
  * It's only allowed to use on Definition Sets
  */
 @Inherited
-@Target( ElementType.TYPE )
-@Retention( RetentionPolicy.RUNTIME )
-@Repeatable( AllowedOccurrences.class )
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Repeatable(AllowedOccurrences.class)
 public @interface Occurrences {
 
     String role() default "";

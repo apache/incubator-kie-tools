@@ -58,7 +58,7 @@ public class RuleFlowGroup implements BPMNProperty {
     public RuleFlowGroup() {
     }
 
-    public RuleFlowGroup( final String value ) {
+    public RuleFlowGroup(final String value) {
         this.value = value;
     }
 
@@ -90,7 +90,7 @@ public class RuleFlowGroup implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

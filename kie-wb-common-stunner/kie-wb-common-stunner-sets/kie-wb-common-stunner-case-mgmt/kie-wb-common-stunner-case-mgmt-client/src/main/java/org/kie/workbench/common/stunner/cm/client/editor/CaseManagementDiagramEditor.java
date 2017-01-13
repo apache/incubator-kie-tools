@@ -53,57 +53,57 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchEditor( identifier = CaseManagementDiagramEditor.EDITOR_ID, supportedTypes = { CaseManagementDiagramResourceType.class } )
+@WorkbenchEditor(identifier = CaseManagementDiagramEditor.EDITOR_ID, supportedTypes = {CaseManagementDiagramResourceType.class})
 public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<CaseManagementDiagramResourceType> {
 
     public static final String EDITOR_ID = "CaseManagementDiagramEditor";
 
     @Inject
-    public CaseManagementDiagramEditor( final View view,
-                                        final PlaceManager placeManager,
-                                        final ErrorPopupPresenter errorPopupPresenter,
-                                        final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
-                                        final SavePopUpPresenter savePopUpPresenter,
-                                        final CaseManagementDiagramResourceType resourceType,
-                                        final ClientProjectDiagramService projectDiagramServices,
-                                        final ClientProjectSessionManager clientSessionManager,
-                                        final AbstractClientSessionPresenter clientSessionPresenter,
-                                        final ScreenErrorView editorErrorView,
-                                        final BS3PaletteFactory paletteFactory,
-                                        final ClientSessionUtils sessionUtils,
-                                        final SessionCommandFactory sessionCommandFactory,
-                                        final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder ) {
-        super( view,
-               placeManager,
-               errorPopupPresenter,
-               changeTitleNotificationEvent,
-               savePopUpPresenter,
-               resourceType,
-               projectDiagramServices,
-               clientSessionManager,
-               clientSessionPresenter,
-               editorErrorView,
-               paletteFactory,
-               sessionUtils,
-               sessionCommandFactory,
-               menuItemsBuilder );
+    public CaseManagementDiagramEditor(final View view,
+                                       final PlaceManager placeManager,
+                                       final ErrorPopupPresenter errorPopupPresenter,
+                                       final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
+                                       final SavePopUpPresenter savePopUpPresenter,
+                                       final CaseManagementDiagramResourceType resourceType,
+                                       final ClientProjectDiagramService projectDiagramServices,
+                                       final ClientProjectSessionManager clientSessionManager,
+                                       final AbstractClientSessionPresenter clientSessionPresenter,
+                                       final ScreenErrorView editorErrorView,
+                                       final BS3PaletteFactory paletteFactory,
+                                       final ClientSessionUtils sessionUtils,
+                                       final SessionCommandFactory sessionCommandFactory,
+                                       final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder) {
+        super(view,
+              placeManager,
+              errorPopupPresenter,
+              changeTitleNotificationEvent,
+              savePopUpPresenter,
+              resourceType,
+              projectDiagramServices,
+              clientSessionManager,
+              clientSessionPresenter,
+              editorErrorView,
+              paletteFactory,
+              sessionUtils,
+              sessionCommandFactory,
+              menuItemsBuilder);
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        super.doStartUp( path,
-                         place );
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
+        super.doStartUp(path,
+                        place);
     }
 
     @Override
     protected int getCanvasWidth() {
-        return ( int ) CaseManagementGraphFactory.GRAPH_DEFAULT_WIDTH;
+        return (int) CaseManagementGraphFactory.GRAPH_DEFAULT_WIDTH;
     }
 
     @Override
     protected int getCanvasHeight() {
-        return ( int ) CaseManagementGraphFactory.GRAPH_DEFAULT_HEIGHT;
+        return (int) CaseManagementGraphFactory.GRAPH_DEFAULT_HEIGHT;
     }
 
     @OnOpen
@@ -148,6 +148,6 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
 
     @OnMayClose
     public boolean onMayClose() {
-        return super.mayClose( getCurrentDiagramHash() );
+        return super.mayClose(getCurrentDiagramHash());
     }
 }

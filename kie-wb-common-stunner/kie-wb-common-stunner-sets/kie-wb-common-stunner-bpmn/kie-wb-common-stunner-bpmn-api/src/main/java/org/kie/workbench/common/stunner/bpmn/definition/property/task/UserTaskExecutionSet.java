@@ -37,15 +37,15 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef( label = FIELDDEF_TASK_NAME, property = "value", position = 1 )
+    @FieldDef(label = FIELDDEF_TASK_NAME, property = "value", position = 1)
     @Valid
     protected TaskName taskName;
 
     public UserTaskExecutionSet() {
-        this( new TaskName( "Task" ) );
+        this(new TaskName("Task"));
     }
 
-    public UserTaskExecutionSet( @MapsTo( "taskName" ) TaskName taskName ) {
+    public UserTaskExecutionSet(final @MapsTo("taskName") TaskName taskName) {
         this.taskName = taskName;
     }
 
@@ -57,7 +57,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         return taskName;
     }
 
-    public void setTaskName( TaskName taskName ) {
+    public void setTaskName(final TaskName taskName) {
         this.taskName = taskName;
     }
 }

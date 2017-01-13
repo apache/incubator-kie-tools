@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class CompositeCommandTest {
 
     @Mock
@@ -41,92 +41,92 @@ public class CompositeCommandTest {
 
     @Before
     public void setup() throws Exception {
-        this.tested = spy( new CompositeCommandStub() );
+        this.tested = spy(new CompositeCommandStub());
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testInitialize() {
-        assertFalse( tested.isInitialized() );
-        tested.initialize( commandExecutionContext );
-        assertTrue( tested.isInitialized() );
+        assertFalse(tested.isInitialized());
+        tested.initialize(commandExecutionContext);
+        assertTrue(tested.isInitialized());
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testAllow() {
-        CommandResult<RuleViolation> result = tested.allow( commandExecutionContext );
-        assertNotNull( result );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        verify( tested,
-                times( 1 ) ).addCommand( any( CommandStub.class ) );
+        CommandResult<RuleViolation> result = tested.allow(commandExecutionContext);
+        assertNotNull(result);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        verify(tested,
+               times(1)).addCommand(any(CommandStub.class));
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecute() {
-        CommandResult<RuleViolation> result = tested.execute( commandExecutionContext );
-        assertNotNull( result );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        verify( tested,
-                times( 1 ) ).addCommand( any( CommandStub.class ) );
+        CommandResult<RuleViolation> result = tested.execute(commandExecutionContext);
+        assertNotNull(result);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        verify(tested,
+               times(1)).addCommand(any(CommandStub.class));
     }
 
     private static class CompositeCommandStub extends AbstractCompositeCommand<GraphCommandExecutionContext, RuleViolation> {
 
         @Override
-        protected CompositeCommandStub initialize( GraphCommandExecutionContext context ) {
-            super.initialize( context );
-            addCommand( new CommandStub() );
+        protected CompositeCommandStub initialize(GraphCommandExecutionContext context) {
+            super.initialize(context);
+            addCommand(new CommandStub());
             return this;
         }
 
         @Override
-        protected CommandResult<RuleViolation> doAllow( GraphCommandExecutionContext context,
-                                                        Command<GraphCommandExecutionContext, RuleViolation> command ) {
+        protected CommandResult<RuleViolation> doAllow(GraphCommandExecutionContext context,
+                                                       Command<GraphCommandExecutionContext, RuleViolation> command) {
             return GraphCommandResultBuilder.SUCCESS;
         }
 
         @Override
-        protected CommandResult<RuleViolation> doExecute( GraphCommandExecutionContext context,
-                                                          Command<GraphCommandExecutionContext, RuleViolation> command ) {
+        protected CommandResult<RuleViolation> doExecute(GraphCommandExecutionContext context,
+                                                         Command<GraphCommandExecutionContext, RuleViolation> command) {
             return GraphCommandResultBuilder.SUCCESS;
         }
 
         @Override
-        protected CommandResult<RuleViolation> doUndo( GraphCommandExecutionContext context,
-                                                       Command<GraphCommandExecutionContext, RuleViolation> command ) {
+        protected CommandResult<RuleViolation> doUndo(GraphCommandExecutionContext context,
+                                                      Command<GraphCommandExecutionContext, RuleViolation> command) {
             return GraphCommandResultBuilder.SUCCESS;
         }
 
         @Override
-        public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-            return super.undo( context,
-                               true );
+        public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+            return super.undo(context,
+                              true);
         }
     }
 
     private static class CommandStub extends AbstractGraphCommand {
 
         @Override
-        protected CommandResult<RuleViolation> check( GraphCommandExecutionContext context ) {
+        protected CommandResult<RuleViolation> check(GraphCommandExecutionContext context) {
             return GraphCommandResultBuilder.SUCCESS;
         }
 
         @Override
-        public CommandResult<RuleViolation> allow( GraphCommandExecutionContext context ) {
+        public CommandResult<RuleViolation> allow(GraphCommandExecutionContext context) {
             return GraphCommandResultBuilder.SUCCESS;
         }
 
         @Override
-        public CommandResult<RuleViolation> execute( GraphCommandExecutionContext context ) {
+        public CommandResult<RuleViolation> execute(GraphCommandExecutionContext context) {
             return GraphCommandResultBuilder.SUCCESS;
         }
 
         @Override
-        public CommandResult<RuleViolation> undo( GraphCommandExecutionContext context ) {
+        public CommandResult<RuleViolation> undo(GraphCommandExecutionContext context) {
             return GraphCommandResultBuilder.SUCCESS;
         }
     }

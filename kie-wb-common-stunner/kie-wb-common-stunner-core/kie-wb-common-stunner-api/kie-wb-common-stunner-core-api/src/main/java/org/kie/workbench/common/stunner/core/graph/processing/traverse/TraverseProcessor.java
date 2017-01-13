@@ -21,6 +21,6 @@ package org.kie.workbench.common.stunner.core.graph.processing.traverse;
  */
 public interface TraverseProcessor<G, K> {
 
-    void traverse( final G graph,
-                   final K callback );
+    void traverse(final G graph,
+                  final K callback);
 }

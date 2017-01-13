@@ -24,19 +24,19 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public interface ConnectionAcceptorControl<H extends CanvasHandler> extends CanvasControl<H> {
 
-    boolean allowSource( final Node source,
+    boolean allowSource(final Node source,
+                        final Edge<View<?>, Node> connector,
+                        final int magnet);
+
+    boolean allowTarget(final Node source,
+                        final Edge<View<?>, Node> connector,
+                        final int magnet);
+
+    boolean acceptSource(final Node source,
                          final Edge<View<?>, Node> connector,
-                         final int magnet );
+                         final int magnet);
 
-    boolean allowTarget( final Node source,
+    boolean acceptTarget(final Node source,
                          final Edge<View<?>, Node> connector,
-                         final int magnet );
-
-    boolean acceptSource( final Node source,
-                          final Edge<View<?>, Node> connector,
-                          final int magnet );
-
-    boolean acceptTarget( final Node source,
-                          final Edge<View<?>, Node> connector,
-                          final int magnet );
+                         final int magnet);
 }

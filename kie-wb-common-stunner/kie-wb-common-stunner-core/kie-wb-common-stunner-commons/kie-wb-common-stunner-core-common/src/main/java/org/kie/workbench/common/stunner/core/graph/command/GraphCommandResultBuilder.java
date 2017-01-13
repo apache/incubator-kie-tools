@@ -28,30 +28,30 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 @NonPortable
 public class GraphCommandResultBuilder extends CommandResultBuilder<RuleViolation> {
 
-    public static final CommandResult<RuleViolation> SUCCESS = new CommandResultImpl<>( CommandResult.Type.INFO,
-                                                                                        RESULT_SUCCESS,
-                                                                                        new LinkedList<>()
+    public static final CommandResult<RuleViolation> SUCCESS = new CommandResultImpl<>(CommandResult.Type.INFO,
+                                                                                       RESULT_SUCCESS,
+                                                                                       new LinkedList<>()
     );
 
-    public static final CommandResult<RuleViolation> FAILED = new CommandResultImpl<>( CommandResult.Type.ERROR,
-                                                                                       RESULT_FAILED,
-                                                                                       new LinkedList<>()
+    public static final CommandResult<RuleViolation> FAILED = new CommandResultImpl<>(CommandResult.Type.ERROR,
+                                                                                      RESULT_FAILED,
+                                                                                      new LinkedList<>()
     );
 
     public GraphCommandResultBuilder() {
     }
 
-    public GraphCommandResultBuilder( final Collection<RuleViolation> violations ) {
-        super( violations );
+    public GraphCommandResultBuilder(final Collection<RuleViolation> violations) {
+        super(violations);
     }
 
     @Override
-    public boolean isError( final RuleViolation violation ) {
-        return RuleViolation.Type.ERROR.equals( violation.getViolationType() );
+    public boolean isError(final RuleViolation violation) {
+        return RuleViolation.Type.ERROR.equals(violation.getViolationType());
     }
 
     @Override
-    public String getMessage( final RuleViolation violation ) {
+    public String getMessage(final RuleViolation violation) {
         return violation.getMessage();
     }
 }

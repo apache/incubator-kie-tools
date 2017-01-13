@@ -58,7 +58,7 @@ public class BorderSize {
     public BorderSize() {
     }
 
-    public BorderSize( final Double value ) {
+    public BorderSize(final Double value) {
         this.value = value;
     }
 
@@ -90,7 +90,7 @@ public class BorderSize {
         return value;
     }
 
-    public void setValue( Double value ) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 }

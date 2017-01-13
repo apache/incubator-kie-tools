@@ -33,23 +33,23 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class GraphConnectionRuleManagerImplTest extends AbstractGraphRuleManagerTest {
 
     private static final String EDGE_ID = "edgeId1";
     private static final String OUT_CANDIDATE_ID = "ocId1";
     private static final String OUT_CANDIDATE_ROLE1 = "ocId1Role1";
     private static final String OUT_CANDIDATE_ROLE2 = "ocId1Role2";
-    private static final Set<String> OUT_CANDIDATE_LABELS = new HashSet<String>( 2 ) {{
-        add( OUT_CANDIDATE_ROLE1 );
-        add( OUT_CANDIDATE_ROLE2 );
+    private static final Set<String> OUT_CANDIDATE_LABELS = new HashSet<String>(2) {{
+        add(OUT_CANDIDATE_ROLE1);
+        add(OUT_CANDIDATE_ROLE2);
     }};
     private static final String IN_CANDIDATE_ID = "icId1";
     private static final String IN_CANDIDATE_ROLE1 = "icId1Role1";
     private static final String IN_CANDIDATE_ROLE2 = "icId1Role2";
-    private static final Set<String> IN_CANDIDATE_LABELS = new HashSet<String>( 2 ) {{
-        add( IN_CANDIDATE_ROLE1 );
-        add( IN_CANDIDATE_ROLE2 );
+    private static final Set<String> IN_CANDIDATE_LABELS = new HashSet<String>(2) {{
+        add(IN_CANDIDATE_ROLE1);
+        add(IN_CANDIDATE_ROLE2);
     }};
 
     @Mock
@@ -63,45 +63,45 @@ public class GraphConnectionRuleManagerImplTest extends AbstractGraphRuleManager
     @Before
     public void setup() {
         super.setup();
-        this.edge = mockEdge( EDGE_ID,
-                              new HashSet<>( 0 ) );
-        this.inCandidate = mockNode( IN_CANDIDATE_ID,
-                                     IN_CANDIDATE_LABELS );
-        this.outCandidate = mockNode( OUT_CANDIDATE_ID,
-                                      OUT_CANDIDATE_LABELS );
-        this.tested = new GraphConnectionRuleManagerImpl( definitionManager,
-                                                          modelConnectionRuleManager );
+        this.edge = mockEdge(EDGE_ID,
+                             new HashSet<>(0));
+        this.inCandidate = mockNode(IN_CANDIDATE_ID,
+                                    IN_CANDIDATE_LABELS);
+        this.outCandidate = mockNode(OUT_CANDIDATE_ID,
+                                     OUT_CANDIDATE_LABELS);
+        this.tested = new GraphConnectionRuleManagerImpl(definitionManager,
+                                                         modelConnectionRuleManager);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testEvaluateAccept() {
         RuleViolations violations = mockNoViolations();
-        when( modelConnectionRuleManager
-                      .evaluate( eq( EDGE_ID ),
-                                 eq( OUT_CANDIDATE_LABELS ),
-                                 eq( IN_CANDIDATE_LABELS ) ) )
-                .thenReturn( violations );
-        final RuleViolations result = tested.evaluate( edge,
-                                                       outCandidate,
-                                                       inCandidate );
-        assertNotNull( result );
-        assertFalse( result.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        when(modelConnectionRuleManager
+                     .evaluate(eq(EDGE_ID),
+                               eq(OUT_CANDIDATE_LABELS),
+                               eq(IN_CANDIDATE_LABELS)))
+                .thenReturn(violations);
+        final RuleViolations result = tested.evaluate(edge,
+                                                      outCandidate,
+                                                      inCandidate);
+        assertNotNull(result);
+        assertFalse(result.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testEvaluateDeny() {
         RuleViolations violations = mockWithViolations();
-        when( modelConnectionRuleManager
-                      .evaluate( eq( EDGE_ID ),
-                                 eq( OUT_CANDIDATE_LABELS ),
-                                 eq( IN_CANDIDATE_LABELS ) ) )
-                .thenReturn( violations );
-        final RuleViolations result = tested.evaluate( edge,
-                                                       outCandidate,
-                                                       inCandidate );
-        assertNotNull( result );
-        assertTrue( result.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        when(modelConnectionRuleManager
+                     .evaluate(eq(EDGE_ID),
+                               eq(OUT_CANDIDATE_LABELS),
+                               eq(IN_CANDIDATE_LABELS)))
+                .thenReturn(violations);
+        final RuleViolations result = tested.evaluate(edge,
+                                                      outCandidate,
+                                                      inCandidate);
+        assertNotNull(result);
+        assertTrue(result.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 }

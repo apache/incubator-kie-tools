@@ -31,7 +31,7 @@ public interface DefinitionSetService {
      * @param defSetId The DefinitionSet's-
      * @return <code>true</code> in case this services are supported for the given <code>defSetId</code>, <code>false</code> otherwise.
      */
-    boolean accepts( final String defSetId );
+    boolean accepts(final String defSetId);
 
     /**
      * Provides the resource type implementation for the DefinitionSet accepted by this service.

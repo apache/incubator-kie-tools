@@ -23,11 +23,11 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
  */
 public interface MutableShape<W, V extends ShapeView> extends Shape<V> {
 
-    void applyProperties( final W element,
-                          final MutationContext mutationContext );
+    void applyProperties(final W element,
+                         final MutationContext mutationContext);
 
-    void applyProperty( final W element,
-                        final String propertyId,
-                        final Object value,
-                        final MutationContext mutationContext );
+    void applyProperty(final W element,
+                       final String propertyId,
+                       final Object value,
+                       final MutationContext mutationContext);
 }

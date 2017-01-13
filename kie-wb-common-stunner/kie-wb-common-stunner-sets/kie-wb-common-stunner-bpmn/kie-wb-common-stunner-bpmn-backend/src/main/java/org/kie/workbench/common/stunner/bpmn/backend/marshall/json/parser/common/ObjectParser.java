@@ -23,14 +23,14 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.Parser
 
 public class ObjectParser extends CompositeParser<ObjectParser> {
 
-    public ObjectParser( String name ) {
-        super( name );
+    public ObjectParser(final String name) {
+        super(name);
     }
 
-    public ObjectParser( String name,
-                         Queue<Parser> _parsers ) {
-        super( name,
-               _parsers );
+    public ObjectParser(final String name,
+                        final Queue<Parser> _parsers) {
+        super(name,
+              _parsers);
     }
 
     @Override

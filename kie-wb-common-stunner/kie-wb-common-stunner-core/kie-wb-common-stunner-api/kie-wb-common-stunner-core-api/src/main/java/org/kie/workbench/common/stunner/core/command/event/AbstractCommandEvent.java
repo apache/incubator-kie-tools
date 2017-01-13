@@ -24,8 +24,8 @@ public abstract class AbstractCommandEvent<C, V> {
     private final Command<C, V> command;
     private final CommandResult<V> result;
 
-    public AbstractCommandEvent( final Command<C, V> command,
-                                 final CommandResult<V> result ) {
+    public AbstractCommandEvent(final Command<C, V> command,
+                                final CommandResult<V> result) {
         this.command = command;
         this.result = result;
     }
@@ -39,6 +39,6 @@ public abstract class AbstractCommandEvent<C, V> {
     }
 
     public boolean hasError() {
-        return result != null && result.getType() != null && CommandResult.Type.ERROR.equals( result.getType() );
+        return result != null && result.getType() != null && CommandResult.Type.ERROR.equals(result.getType());
     }
 }

@@ -21,7 +21,7 @@ import com.google.gwt.i18n.client.Messages;
 
 public interface StunnerFormsClientFieldsConstants extends Messages {
 
-    StunnerFormsClientFieldsConstants INSTANCE = GWT.create( StunnerFormsClientFieldsConstants.class );
+    StunnerFormsClientFieldsConstants INSTANCE = GWT.create(StunnerFormsClientFieldsConstants.class);
 
     String Add();
 

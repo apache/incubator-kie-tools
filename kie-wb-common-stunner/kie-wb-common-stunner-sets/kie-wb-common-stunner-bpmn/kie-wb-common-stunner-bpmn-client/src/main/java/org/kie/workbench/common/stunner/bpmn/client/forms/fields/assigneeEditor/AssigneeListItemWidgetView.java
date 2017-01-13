@@ -27,19 +27,19 @@ public interface AssigneeListItemWidgetView extends HasModel<AssigneeRow> {
 
     void init();
 
-    void setParentWidget( AssigneeEditorWidgetView.Presenter parentWidget );
+    void setParentWidget(final AssigneeEditorWidgetView.Presenter parentWidget);
 
     void notifyModelChanged();
 
-    void setNames( ListBoxValues nameListBoxValues );
+    void setNames(final ListBoxValues nameListBoxValues);
 
-    boolean isDuplicateName( String name );
+    boolean isDuplicateName(final String name);
 
     String getName();
 
-    void setName( String name );
+    void setName(final String name);
 
     String getCustomName();
 
-    void setCustomName( String customName );
+    void setCustomName(final String customName);
 }

@@ -40,7 +40,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
 
     private static final String UUID = "testUUID";
@@ -58,87 +58,87 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() throws Exception {
-        super.init( 500,
-                    500 );
-        content = mockView( X,
-                            Y,
-                            W,
-                            H );
-        when( candidate.getContent() ).thenReturn( content );
-        when( graphIndex.getNode( eq( UUID ) ) ).thenReturn( candidate );
-        this.tested = new UpdateElementPositionCommand( UUID,
-                                                        TX,
-                                                        TY );
+        super.init(500,
+                   500);
+        content = mockView(X,
+                           Y,
+                           W,
+                           H);
+        when(candidate.getContent()).thenReturn(content);
+        when(graphIndex.getNode(eq(UUID))).thenReturn(candidate);
+        this.tested = new UpdateElementPositionCommand(UUID,
+                                                       TX,
+                                                       TY);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testAllow() {
-        CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        verify( containmentRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
-        verify( cardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Graph.class ),
-                                       any( Node.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( connectionRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( Node.class ) );
-        verify( edgeCardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( List.class ),
-                                       any( EdgeCardinalityRule.Type.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( dockingRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
+        CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        verify(containmentRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
+        verify(cardinalityRuleManager,
+               times(0)).evaluate(any(Graph.class),
+                                  any(Node.class),
+                                  any(RuleManager.Operation.class));
+        verify(connectionRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(Node.class));
+        verify(edgeCardinalityRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(List.class),
+                                  any(EdgeCardinalityRule.Type.class),
+                                  any(RuleManager.Operation.class));
+        verify(dockingRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
     }
 
-    @Test( expected = BadCommandArgumentsException.class )
+    @Test(expected = BadCommandArgumentsException.class)
     public void testAllowNodeNotFound() {
-        when( graphIndex.getNode( eq( UUID ) ) ).thenReturn( null );
-        tested.allow( graphCommandExecutionContext );
+        when(graphIndex.getNode(eq(UUID))).thenReturn(null);
+        tested.allow(graphCommandExecutionContext);
     }
 
     @Test
     public void testExecute() {
-        CommandResult<RuleViolation> result = tested.execute( graphCommandExecutionContext );
-        ArgumentCaptor<Bounds> bounds = ArgumentCaptor.forClass( Bounds.class );
-        verify( content,
-                times( 1 ) ).setBounds( bounds.capture() );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
+        CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
+        ArgumentCaptor<Bounds> bounds = ArgumentCaptor.forClass(Bounds.class);
+        verify(content,
+               times(1)).setBounds(bounds.capture());
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
         Bounds b = bounds.getValue();
-        assertEquals( UUID,
-                      tested.getUuid() );
-        assertEquals( X,
-                      tested.getOldX() );
-        assertEquals( Y,
-                      tested.getOldY() );
-        assertEquals( TY,
-                      b.getUpperLeft().getY() );
-        assertEquals( Double.valueOf( TX + W ),
-                      b.getLowerRight().getX() );
-        assertEquals( Double.valueOf( TY + H ),
-                      b.getLowerRight().getY() );
+        assertEquals(UUID,
+                     tested.getUuid());
+        assertEquals(X,
+                     tested.getOldX());
+        assertEquals(Y,
+                     tested.getOldY());
+        assertEquals(TY,
+                     b.getUpperLeft().getY());
+        assertEquals(Double.valueOf(TX + W),
+                     b.getLowerRight().getX());
+        assertEquals(Double.valueOf(TY + H),
+                     b.getLowerRight().getY());
     }
 
-    @Test( expected = BadCommandArgumentsException.class )
+    @Test(expected = BadCommandArgumentsException.class)
     public void testExecuteNodeNotFound() {
-        when( graphIndex.getNode( eq( UUID ) ) ).thenReturn( null );
-        tested.execute( graphCommandExecutionContext );
+        when(graphIndex.getNode(eq(UUID))).thenReturn(null);
+        tested.execute(graphCommandExecutionContext);
     }
 
-    @Test( expected = BoundsExceededException.class )
+    @Test(expected = BoundsExceededException.class)
     public void testExecuteBadBounds() {
-        this.tested = new UpdateElementPositionCommand( UUID,
-                                                        600d,
-                                                        600d );
-        tested.execute( graphCommandExecutionContext );
+        this.tested = new UpdateElementPositionCommand(UUID,
+                                                       600d,
+                                                       600d);
+        tested.execute(graphCommandExecutionContext);
     }
 }

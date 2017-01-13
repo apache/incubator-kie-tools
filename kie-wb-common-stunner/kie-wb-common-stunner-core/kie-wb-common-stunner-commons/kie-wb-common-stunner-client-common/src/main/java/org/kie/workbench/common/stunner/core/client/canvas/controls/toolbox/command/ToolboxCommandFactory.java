@@ -31,8 +31,8 @@ public abstract class ToolboxCommandFactory {
     private final ManagedInstance<NewConnectorCommand> newConnectorCommands;
 
     @Inject
-    public ToolboxCommandFactory( final ManagedInstance<NewNodeCommand> newNodeCommands,
-                                  final ManagedInstance<NewConnectorCommand> newConnectorCommands ) {
+    public ToolboxCommandFactory(final ManagedInstance<NewNodeCommand> newNodeCommands,
+                                 final ManagedInstance<NewConnectorCommand> newConnectorCommands) {
         this.newNodeCommands = newNodeCommands;
         this.newConnectorCommands = newConnectorCommands;
     }

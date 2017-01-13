@@ -25,63 +25,63 @@ public abstract class PropertyAdapterWrapper<T, V, A extends PropertyAdapter<T, 
     protected final A adapter;
 
     protected PropertyAdapterWrapper() {
-        this( null );
+        this(null);
     }
 
-    public PropertyAdapterWrapper( final A adapter ) {
+    public PropertyAdapterWrapper(final A adapter) {
         this.adapter = adapter;
     }
 
     @Override
-    public String getId( final T pojo ) {
-        return adapter.getId( pojo );
+    public String getId(final T pojo) {
+        return adapter.getId(pojo);
     }
 
     @Override
-    public PropertyType getType( final T pojo ) {
-        return adapter.getType( pojo );
+    public PropertyType getType(final T pojo) {
+        return adapter.getType(pojo);
     }
 
     @Override
-    public String getCaption( final T pojo ) {
-        return adapter.getCaption( pojo );
+    public String getCaption(final T pojo) {
+        return adapter.getCaption(pojo);
     }
 
     @Override
-    public String getDescription( final T pojo ) {
-        return adapter.getDescription( pojo );
+    public String getDescription(final T pojo) {
+        return adapter.getDescription(pojo);
     }
 
     @Override
-    public boolean isReadOnly( final T pojo ) {
-        return adapter.isReadOnly( pojo );
+    public boolean isReadOnly(final T pojo) {
+        return adapter.isReadOnly(pojo);
     }
 
     @Override
-    public boolean isOptional( final T pojo ) {
-        return adapter.isOptional( pojo );
+    public boolean isOptional(final T pojo) {
+        return adapter.isOptional(pojo);
     }
 
     @Override
-    public V getValue( final T pojo ) {
-        return adapter.getValue( pojo );
+    public V getValue(final T pojo) {
+        return adapter.getValue(pojo);
     }
 
     @Override
-    public V getDefaultValue( final T pojo ) {
-        return adapter.getDefaultValue( pojo );
+    public V getDefaultValue(final T pojo) {
+        return adapter.getDefaultValue(pojo);
     }
 
     @Override
-    public Map<V, String> getAllowedValues( final T pojo ) {
-        return adapter.getAllowedValues( pojo );
+    public Map<V, String> getAllowedValues(final T pojo) {
+        return adapter.getAllowedValues(pojo);
     }
 
     @Override
-    public void setValue( final T pojo,
-                          final V value ) {
-        adapter.setValue( pojo,
-                          value );
+    public void setValue(final T pojo,
+                         final V value) {
+        adapter.setValue(pojo,
+                         value);
     }
 
     @Override
@@ -90,7 +90,7 @@ public abstract class PropertyAdapterWrapper<T, V, A extends PropertyAdapter<T, 
     }
 
     @Override
-    public boolean accepts( final Class<?> type ) {
-        return adapter.accepts( type );
+    public boolean accepts(final Class<?> type) {
+        return adapter.accepts(type);
     }
 }

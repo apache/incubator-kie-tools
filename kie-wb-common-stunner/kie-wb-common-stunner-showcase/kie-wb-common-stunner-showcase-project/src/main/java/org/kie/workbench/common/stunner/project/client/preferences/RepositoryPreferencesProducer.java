@@ -23,7 +23,7 @@ import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
 @ApplicationScoped
 public class RepositoryPreferencesProducer {
 
-    private final RepositoryPreferences repositoryPreferences = new RepositoryPreferences( true );
+    private final RepositoryPreferences repositoryPreferences = new RepositoryPreferences(true);
 
     @Produces
     public RepositoryPreferences getRepositoryPreferences() {

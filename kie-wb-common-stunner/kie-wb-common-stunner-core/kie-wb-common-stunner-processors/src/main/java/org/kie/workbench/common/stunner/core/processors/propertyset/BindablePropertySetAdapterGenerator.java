@@ -33,32 +33,32 @@ public class BindablePropertySetAdapterGenerator extends AbstractBindableAdapter
         return "BindablePropertySetAdapter.ftl";
     }
 
-    public StringBuffer generate( final String packageName,
-                                  final String className,
-                                  final ProcessingPropertySetAnnotations processingPropertySetAnnotations,
-                                  final Messager messager ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final String className,
+                                 final ProcessingPropertySetAnnotations processingPropertySetAnnotations,
+                                 final Messager messager) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "packageName",
-                  packageName );
-        root.put( "className",
-                  className );
-        root.put( "parentAdapterClassName",
-                  BindablePropertySetAdapterProxy.class.getName() );
-        root.put( "adapterFactoryClassName",
-                  BindableAdapterFactory.class.getName() );
-        root.put( "generatedByClassName",
-                  BindablePropertySetAdapterGenerator.class.getName() );
-        addFields( "nameFieldNames",
-                   root,
-                   processingPropertySetAnnotations.getNameFieldNames() );
-        addSetFields( "propertiesFieldNames",
-                      root,
-                      processingPropertySetAnnotations.getPropertiesFieldNames() );
+        root.put("packageName",
+                 packageName);
+        root.put("className",
+                 className);
+        root.put("parentAdapterClassName",
+                 BindablePropertySetAdapterProxy.class.getName());
+        root.put("adapterFactoryClassName",
+                 BindableAdapterFactory.class.getName());
+        root.put("generatedByClassName",
+                 BindablePropertySetAdapterGenerator.class.getName());
+        addFields("nameFieldNames",
+                  root,
+                  processingPropertySetAnnotations.getNameFieldNames());
+        addSetFields("propertiesFieldNames",
+                     root,
+                     processingPropertySetAnnotations.getPropertiesFieldNames());
 
         //Generate code
-        return writeTemplate( packageName,
-                              className,
-                              root,
-                              messager );
+        return writeTemplate(packageName,
+                             className,
+                             root,
+                             messager);
     }
 }

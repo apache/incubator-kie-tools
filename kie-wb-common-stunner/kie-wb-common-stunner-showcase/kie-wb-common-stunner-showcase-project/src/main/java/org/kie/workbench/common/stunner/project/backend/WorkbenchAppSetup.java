@@ -39,7 +39,7 @@ import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.io.IOService;
 
 @ApplicationScoped
-@Startup( StartupType.BOOTSTRAP )
+@Startup(StartupType.BOOTSTRAP)
 public class WorkbenchAppSetup extends BaseAppSetup {
 
     public static final String GIT_REPO_NAME = "org.kie.workbench.common.stunner.project.demo.name";
@@ -56,18 +56,18 @@ public class WorkbenchAppSetup extends BaseAppSetup {
     }
 
     @Inject
-    public WorkbenchAppSetup( @Named( "ioStrategy" ) final IOService ioService,
-                              final RepositoryService repositoryService,
-                              final OrganizationalUnitService organizationalUnitService,
-                              final KieProjectService projectService,
-                              final ConfigurationService configurationService,
-                              final ConfigurationFactory configurationFactory ) {
-        super( ioService,
-               repositoryService,
-               organizationalUnitService,
-               projectService,
-               configurationService,
-               configurationFactory );
+    public WorkbenchAppSetup(@Named("ioStrategy") final IOService ioService,
+                             final RepositoryService repositoryService,
+                             final OrganizationalUnitService organizationalUnitService,
+                             final KieProjectService projectService,
+                             final ConfigurationService configurationService,
+                             final ConfigurationFactory configurationFactory) {
+        super(ioService,
+              repositoryService,
+              organizationalUnitService,
+              projectService,
+              configurationService,
+              configurationFactory);
     }
 
     @PostConstruct
@@ -77,92 +77,92 @@ public class WorkbenchAppSetup extends BaseAppSetup {
         String repoUrl = getGitUrl();
         String[] credentials = getGitCredentials();
 
-        if ( null != repoName && null != repoUrl && null != credentials ) {
+        if (null != repoName && null != repoUrl && null != credentials) {
 
             try {
-                Repository jbpmRepo = repositoryService.getRepository( repoName );
-                if ( jbpmRepo == null ) {
+                Repository jbpmRepo = repositoryService.getRepository(repoName);
+                if (jbpmRepo == null) {
 
                     final RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
-                    configurations.setOrigin( repoUrl );
-                    configurations.setUserName( credentials[ 0 ] );
-                    configurations.setPassword( credentials[ 1 ] );
+                    configurations.setOrigin(repoUrl);
+                    configurations.setUserName(credentials[0]);
+                    configurations.setPassword(credentials[1]);
 
-                    jbpmRepo = repositoryService.createRepository( "git",
-                                                                   repoName,
-                                                                   configurations );
+                    jbpmRepo = repositoryService.createRepository("git",
+                                                                  repoName,
+                                                                  configurations);
                 }
 
                 // TODO in case groups are not defined
                 Collection<OrganizationalUnit> groups = organizationalUnitService.getOrganizationalUnits();
-                if ( groups == null || groups.isEmpty() ) {
+                if (groups == null || groups.isEmpty()) {
                     final List<Repository> repositories = new ArrayList<Repository>();
-                    repositories.add( jbpmRepo );
+                    repositories.add(jbpmRepo);
 //                repositories.add( guvnorRepo );
 
-                    organizationalUnitService.createOrganizationalUnit( "demo",
-                                                                        "demo@jbpm.org",
-                                                                        null,
-                                                                        repositories );
+                    organizationalUnitService.createOrganizationalUnit("demo",
+                                                                       "demo@jbpm.org",
+                                                                       null,
+                                                                       repositories);
                 }
 
                 //Define mandatory properties
-                setupConfigurationGroup( ConfigType.GLOBAL,
-                                         GLOBAL_SETTINGS,
-                                         getGlobalConfiguration() );
-            } catch ( Exception e ) {
-                throw new RuntimeException( "Error during stunner's repository initialization.",
-                                            e );
+                setupConfigurationGroup(ConfigType.GLOBAL,
+                                        GLOBAL_SETTINGS,
+                                        getGlobalConfiguration());
+            } catch (Exception e) {
+                throw new RuntimeException("Error during stunner's repository initialization.",
+                                           e);
             }
         }
     }
 
     private ConfigGroup getGlobalConfiguration() {
         //Global Configurations used by many of Drools Workbench editors
-        final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.GLOBAL,
-                                                                       GLOBAL_SETTINGS,
-                                                                       "" );
-        group.addConfigItem( configurationFactory.newConfigItem( "drools.dateformat",
-                                                                 "dd-MMM-yyyy" ) );
-        group.addConfigItem( configurationFactory.newConfigItem( "drools.datetimeformat",
-                                                                 "dd-MMM-yyyy hh:mm:ss" ) );
-        group.addConfigItem( configurationFactory.newConfigItem( "drools.defaultlanguage",
-                                                                 "en" ) );
-        group.addConfigItem( configurationFactory.newConfigItem( "drools.defaultcountry",
-                                                                 "US" ) );
-        group.addConfigItem( configurationFactory.newConfigItem( "build.enable-incremental",
-                                                                 "true" ) );
-        group.addConfigItem( configurationFactory.newConfigItem( "rule-modeller-onlyShowDSLStatements",
-                                                                 "false" ) );
+        final ConfigGroup group = configurationFactory.newConfigGroup(ConfigType.GLOBAL,
+                                                                      GLOBAL_SETTINGS,
+                                                                      "");
+        group.addConfigItem(configurationFactory.newConfigItem("drools.dateformat",
+                                                               "dd-MMM-yyyy"));
+        group.addConfigItem(configurationFactory.newConfigItem("drools.datetimeformat",
+                                                               "dd-MMM-yyyy hh:mm:ss"));
+        group.addConfigItem(configurationFactory.newConfigItem("drools.defaultlanguage",
+                                                               "en"));
+        group.addConfigItem(configurationFactory.newConfigItem("drools.defaultcountry",
+                                                               "US"));
+        group.addConfigItem(configurationFactory.newConfigItem("build.enable-incremental",
+                                                               "true"));
+        group.addConfigItem(configurationFactory.newConfigItem("rule-modeller-onlyShowDSLStatements",
+                                                               "false"));
         return group;
     }
 
     private String getRepoName() {
-        String name = System.getProperty( GIT_REPO_NAME );
-        if ( isEmpty( name ) ) {
+        String name = System.getProperty(GIT_REPO_NAME);
+        if (isEmpty(name)) {
             return NAME;
         }
         return name;
     }
 
     private String getGitUrl() {
-        String url = System.getProperty( GIT_URL );
-        if ( isEmpty( url ) ) {
+        String url = System.getProperty(GIT_URL);
+        if (isEmpty(url)) {
             return URL;
         }
         return url;
     }
 
     private String[] getGitCredentials() {
-        String user = System.getProperty( GIT_USERNAME );
-        String pass = System.getProperty( GIT_PASS );
-        if ( isEmpty( user ) || isEmpty( pass ) ) {
-            return new String[]{ USER, PASS };
+        String user = System.getProperty(GIT_USERNAME);
+        String pass = System.getProperty(GIT_PASS);
+        if (isEmpty(user) || isEmpty(pass)) {
+            return new String[]{USER, PASS};
         }
-        return new String[]{ user, pass };
+        return new String[]{user, pass};
     }
 
-    private boolean isEmpty( String s ) {
+    private boolean isEmpty(String s) {
         return null == s || s.trim().length() == 0;
     }
 }

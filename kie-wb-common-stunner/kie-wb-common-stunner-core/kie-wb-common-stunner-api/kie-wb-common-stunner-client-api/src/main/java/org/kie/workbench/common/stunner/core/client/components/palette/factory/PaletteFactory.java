@@ -25,11 +25,11 @@ public interface PaletteFactory<I extends HasPaletteItems, P extends Palette<I>>
     /**
      * Builds a new palette for the given shape set identifier.
      */
-    P newPalette( final String shapeSetId );
+    P newPalette(final String shapeSetId);
 
     /**
      * Builds a new palette for the given shape set identifier.
      */
-    P newPalette( final String shapeSetId,
-                  PaletteGrid grid );
+    P newPalette(final String shapeSetId,
+                 PaletteGrid grid);
 }

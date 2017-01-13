@@ -39,21 +39,21 @@ public class DataIOSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Task Data";
 
     @Property
-    @FieldDef( label = FIELDDEF_ASSIGNMENTS, property = "value" )
+    @FieldDef(label = FIELDDEF_ASSIGNMENTS, property = "value")
     @AssignmentsEditor
     @Valid
     private AssignmentsInfo assignmentsinfo;
 
     public DataIOSet() {
-        this( new AssignmentsInfo() );
+        this(new AssignmentsInfo());
     }
 
-    public DataIOSet( @MapsTo( "assignmentsinfo" ) AssignmentsInfo assignmentsinfo ) {
+    public DataIOSet(final @MapsTo("assignmentsinfo") AssignmentsInfo assignmentsinfo) {
         this.assignmentsinfo = assignmentsinfo;
     }
 
-    public DataIOSet( String assignmentsinfo ) {
-        this.assignmentsinfo = new AssignmentsInfo( assignmentsinfo );
+    public DataIOSet(final String assignmentsinfo) {
+        this.assignmentsinfo = new AssignmentsInfo(assignmentsinfo);
     }
 
     public String getPropertySetName() {
@@ -64,7 +64,7 @@ public class DataIOSet implements BPMNPropertySet {
         return assignmentsinfo;
     }
 
-    public void setAssignmentsinfo( AssignmentsInfo assignmentsinfo ) {
+    public void setAssignmentsinfo(final AssignmentsInfo assignmentsinfo) {
         this.assignmentsinfo = assignmentsinfo;
     }
 }

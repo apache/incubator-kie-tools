@@ -28,67 +28,67 @@ public final class StartNoneEventShapeDef
         implements CircleShapeDef<StartNoneEvent> {
 
     @Override
-    public double getRadius( final StartNoneEvent element ) {
+    public double getRadius(final StartNoneEvent element) {
         return element.getDimensionsSet().getRadius().getValue();
     }
 
     @Override
-    public String getBackgroundColor( final StartNoneEvent element ) {
+    public String getBackgroundColor(final StartNoneEvent element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final StartNoneEvent element ) {
+    public double getBackgroundAlpha(final StartNoneEvent element) {
         return 1;
     }
 
     @Override
-    public String getBorderColor( final StartNoneEvent element ) {
+    public String getBorderColor(final StartNoneEvent element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final StartNoneEvent element ) {
+    public double getBorderSize(final StartNoneEvent element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final StartNoneEvent element ) {
+    public double getBorderAlpha(final StartNoneEvent element) {
         return 1;
     }
 
     @Override
-    public String getFontFamily( final StartNoneEvent element ) {
+    public String getFontFamily(final StartNoneEvent element) {
         return element.getFontSet().getFontFamily().getValue();
     }
 
     @Override
-    public String getFontColor( final StartNoneEvent element ) {
+    public String getFontColor(final StartNoneEvent element) {
         return element.getFontSet().getFontColor().getValue();
     }
 
     @Override
-    public double getFontSize( final StartNoneEvent element ) {
+    public double getFontSize(final StartNoneEvent element) {
         return element.getFontSet().getFontSize().getValue();
     }
 
     @Override
-    public String getNamePropertyValue( final StartNoneEvent element ) {
+    public String getNamePropertyValue(final StartNoneEvent element) {
         return element.getGeneral().getName().getValue();
     }
 
     @Override
-    public double getFontBorderSize( final StartNoneEvent element ) {
+    public double getFontBorderSize(final StartNoneEvent element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final StartNoneEvent element ) {
+    public HasTitle.Position getFontPosition(final StartNoneEvent element) {
         return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public double getFontRotation( final StartNoneEvent element ) {
+    public double getFontRotation(final StartNoneEvent element) {
         return 0;
     }
 
@@ -96,12 +96,12 @@ public final class StartNoneEventShapeDef
             new PictureGlyphDef<StartNoneEvent, BPMNPictures>() {
 
                 @Override
-                public String getGlyphDescription( StartNoneEvent element ) {
+                public String getGlyphDescription(final StartNoneEvent element) {
                     return element.getDescription();
                 }
 
                 @Override
-                public BPMNPictures getSource( final Class<?> type ) {
+                public BPMNPictures getSource(final Class<?> type) {
                     return BPMNPictures.EVENT_START;
                 }
             };

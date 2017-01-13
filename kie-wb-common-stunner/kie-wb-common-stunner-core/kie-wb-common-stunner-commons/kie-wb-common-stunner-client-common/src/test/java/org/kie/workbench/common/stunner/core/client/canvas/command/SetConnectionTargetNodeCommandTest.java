@@ -26,7 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class SetConnectionTargetNodeCommandTest extends AbstractCanvasCommandTest {
 
     @Mock
@@ -37,36 +37,36 @@ public class SetConnectionTargetNodeCommandTest extends AbstractCanvasCommandTes
     private SetConnectionTargetNodeCommand tested;
 
     @Before
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.setup();
-        when( edge.getUUID() ).thenReturn( "e1" );
-        when( node.getUUID() ).thenReturn( "n1" );
-        this.tested = new SetConnectionTargetNodeCommand( node,
-                                                          edge,
-                                                          1 );
+        when(edge.getUUID()).thenReturn("e1");
+        when(node.getUUID()).thenReturn("n1");
+        this.tested = new SetConnectionTargetNodeCommand(node,
+                                                         edge,
+                                                         1);
     }
 
     @Test
     public void testGetGraphCommand() {
         final org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand graphCommand =
-                ( org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand ) tested.newGraphCommand( canvasHandler );
-        assertNotNull( graphCommand );
-        assertEquals( edge,
-                      graphCommand.getEdge() );
-        assertEquals( node,
-                      graphCommand.getTargetNode() );
-        assertEquals( 1,
-                      graphCommand.getMagnetIndex(),
-                      0 );
+                (org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand) tested.newGraphCommand(canvasHandler);
+        assertNotNull(graphCommand);
+        assertEquals(edge,
+                     graphCommand.getEdge());
+        assertEquals(node,
+                     graphCommand.getTargetNode());
+        assertEquals(1,
+                     graphCommand.getMagnetIndex(),
+                     0);
     }
 
     @Test
     public void testGetCanvasCommand() {
         final SetCanvasConnectionCommand canvasCommand =
-                ( SetCanvasConnectionCommand ) tested.newCanvasCommand( canvasHandler );
-        assertNotNull( canvasCommand );
-        assertEquals( edge,
-                      canvasCommand.getEdge() );
+                (SetCanvasConnectionCommand) tested.newCanvasCommand(canvasHandler);
+        assertNotNull(canvasCommand);
+        assertEquals(edge,
+                     canvasCommand.getEdge());
     }
 }

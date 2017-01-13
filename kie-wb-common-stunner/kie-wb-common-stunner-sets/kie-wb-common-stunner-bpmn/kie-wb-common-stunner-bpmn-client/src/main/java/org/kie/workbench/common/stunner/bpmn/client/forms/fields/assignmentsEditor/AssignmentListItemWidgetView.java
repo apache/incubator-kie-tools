@@ -33,37 +33,37 @@ public interface AssignmentListItemWidgetView extends HasModel<AssignmentRow> {
 
     void init();
 
-    void setParentWidget( ActivityDataIOEditorWidget parentWidget );
+    void setParentWidget(final ActivityDataIOEditorWidget parentWidget);
 
-    void setDataTypes( ListBoxValues dataTypeListBoxValues );
+    void setDataTypes(final ListBoxValues dataTypeListBoxValues);
 
-    void setProcessVariables( ListBoxValues processVarListBoxValues );
+    void setProcessVariables(final ListBoxValues processVarListBoxValues);
 
-    void setShowConstants( boolean showConstants );
+    void setShowConstants(final boolean showConstants);
 
-    void setDisallowedNames( Set<String> disallowedNames,
-                             String disallowedNameErrorMessage );
+    void setDisallowedNames(final Set<String> disallowedNames,
+                            final String disallowedNameErrorMessage);
 
-    void setAllowDuplicateNames( boolean allowDuplicateNames,
-                                 String duplicateNameErrorMessage );
+    void setAllowDuplicateNames(final boolean allowDuplicateNames,
+                                final String duplicateNameErrorMessage);
 
-    boolean isDuplicateName( String name );
+    boolean isDuplicateName(final String name);
 
     VariableType getVariableType();
 
     String getDataType();
 
-    void setDataType( String dataType );
+    void setDataType(final String dataType);
 
     String getProcessVar();
 
-    void setProcessVar( String processVar );
+    void setProcessVar(final String processVar);
 
     String getCustomDataType();
 
-    void setCustomDataType( String customDataType );
+    void setCustomDataType(final String customDataType);
 
     String getConstant();
 
-    void setConstant( String constant );
+    void setConstant(final String constant);
 }

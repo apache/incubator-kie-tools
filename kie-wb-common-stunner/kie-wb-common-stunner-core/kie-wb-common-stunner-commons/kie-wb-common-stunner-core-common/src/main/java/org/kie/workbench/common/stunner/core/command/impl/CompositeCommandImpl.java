@@ -34,32 +34,32 @@ public class CompositeCommandImpl<T, V> extends AbstractCompositeCommand<T, V> {
 
     private final boolean reverse;
 
-    public CompositeCommandImpl( final @MapsTo( "reverse" ) boolean reverse ) {
+    public CompositeCommandImpl(final @MapsTo("reverse") boolean reverse) {
         this.reverse = reverse;
     }
 
     @Override
-    protected CommandResult<V> doAllow( final T context,
-                                        final Command<T, V> command ) {
-        return command.allow( context );
+    protected CommandResult<V> doAllow(final T context,
+                                       final Command<T, V> command) {
+        return command.allow(context);
     }
 
     @Override
-    protected CommandResult<V> doExecute( final T context,
-                                          final Command<T, V> command ) {
-        return command.execute( context );
+    protected CommandResult<V> doExecute(final T context,
+                                         final Command<T, V> command) {
+        return command.execute(context);
     }
 
     @Override
-    protected CommandResult<V> doUndo( final T context,
-                                       final Command<T, V> command ) {
-        return command.undo( context );
+    protected CommandResult<V> doUndo(final T context,
+                                      final Command<T, V> command) {
+        return command.undo(context);
     }
 
     @Override
-    public CommandResult<V> undo( final T context ) {
-        return undo( context,
-                     reverse );
+    public CommandResult<V> undo(final T context) {
+        return undo(context,
+                    reverse);
     }
 
     @NonPortable
@@ -84,13 +84,13 @@ public class CompositeCommandImpl<T, V> extends AbstractCompositeCommand<T, V> {
             return this;
         }
 
-        public CompositeCommandBuilder<T, V> addCommand( final Command<T, V> command ) {
-            commands.add( command );
+        public CompositeCommandBuilder<T, V> addCommand(final Command<T, V> command) {
+            commands.add(command);
             return this;
         }
 
-        public CompositeCommandBuilder<T, V> addCommands( final List<Command<T, V>> _commands ) {
-            commands.addAll( _commands );
+        public CompositeCommandBuilder<T, V> addCommands(final List<Command<T, V>> _commands) {
+            commands.addAll(_commands);
             return this;
         }
 
@@ -99,8 +99,8 @@ public class CompositeCommandImpl<T, V> extends AbstractCompositeCommand<T, V> {
         }
 
         public CompositeCommand<T, V> build() {
-            final CompositeCommandImpl<T, V> compositeCommand = new CompositeCommandImpl<T, V>( reverse );
-            commands.stream().forEach( compositeCommand::addCommand );
+            final CompositeCommandImpl<T, V> compositeCommand = new CompositeCommandImpl<T, V>(reverse);
+            commands.stream().forEach(compositeCommand::addCommand);
             return compositeCommand;
         }
     }

@@ -23,30 +23,30 @@ public abstract class AbstractLookupRequestBuilder<T> {
     protected int page = 0;
     protected int pageSize = 10;
 
-    @SuppressWarnings( "unchecked" )
-    public T page( final int page ) {
+    @SuppressWarnings("unchecked")
+    public T page(final int page) {
         this.page = page;
-        return ( T ) this;
+        return (T) this;
     }
 
-    @SuppressWarnings( "unchecked" )
-    public T pageSize( final int pageSize ) {
+    @SuppressWarnings("unchecked")
+    public T pageSize(final int pageSize) {
         this.pageSize = pageSize;
-        return ( T ) this;
+        return (T) this;
     }
 
-    protected String fromSet( final Set<String> set ) {
-        if ( null != set && !set.isEmpty() ) {
-            final StringBuilder builder = new StringBuilder( "[" );
+    protected String fromSet(final Set<String> set) {
+        if (null != set && !set.isEmpty()) {
+            final StringBuilder builder = new StringBuilder("[");
             int x = 0;
-            for ( final String s : set ) {
-                builder.append( s );
-                if ( x < ( set.size() - 1 ) ) {
-                    builder.append( "," );
+            for (final String s : set) {
+                builder.append(s);
+                if (x < (set.size() - 1)) {
+                    builder.append(",");
                 }
                 x++;
             }
-            return builder.append( "]" ).toString();
+            return builder.append("]").toString();
         }
         return null;
     }

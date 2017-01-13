@@ -27,5 +27,5 @@ public interface IDiagramProfileFactory {
     /**
      * @return a set of created profiles.
      */
-    public Set<IDiagramProfile> getProfiles( HttpServletRequest request );
+    public Set<IDiagramProfile> getProfiles(HttpServletRequest request);
 }

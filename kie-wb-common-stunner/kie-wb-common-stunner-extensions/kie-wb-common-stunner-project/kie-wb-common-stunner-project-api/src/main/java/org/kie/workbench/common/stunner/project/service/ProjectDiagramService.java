@@ -29,9 +29,9 @@ public interface ProjectDiagramService extends BaseDiagramService<ProjectMetadat
                                                SupportsUpdate<ProjectDiagram>,
                                                SupportsDelete {
 
-    Path create( final Path path,
-                 final String name,
-                 final String defSetId,
-                 final String projName,
-                 final String projPkg );
+    Path create(final Path path,
+                final String name,
+                final String defSetId,
+                final String projName,
+                final String projPkg);
 }

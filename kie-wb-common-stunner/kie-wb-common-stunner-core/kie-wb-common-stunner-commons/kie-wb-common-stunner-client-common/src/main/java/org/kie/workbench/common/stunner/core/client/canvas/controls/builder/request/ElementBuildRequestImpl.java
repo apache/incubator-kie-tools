@@ -28,11 +28,11 @@ public final class ElementBuildRequestImpl extends AbstractBuildRequest
         return definition;
     }
 
-    public ElementBuildRequestImpl( final double x,
-                                    final double y,
-                                    final Object definition ) {
-        super( x,
-               y );
+    public ElementBuildRequestImpl(final double x,
+                                   final double y,
+                                   final Object definition) {
+        super(x,
+              y);
         this.definition = definition;
     }
 }

@@ -33,41 +33,41 @@ public class GlyphDragProxyImpl implements GlyphDragProxy<AbstractCanvas> {
     PrimitiveDragProxy primitiveDragProxyFactory;
 
     @Inject
-    public GlyphDragProxyImpl( final PrimitiveDragProxy primitiveDragProxyFactory ) {
+    public GlyphDragProxyImpl(final PrimitiveDragProxy primitiveDragProxyFactory) {
         this.primitiveDragProxyFactory = primitiveDragProxyFactory;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public DragProxy<AbstractCanvas, Glyph, DragProxyCallback> proxyFor( final AbstractCanvas context ) {
-        final LienzoLayer layer = ( LienzoLayer ) context.getLayer();
-        this.primitiveDragProxyFactory.proxyFor( layer.getLienzoLayer() );
+    @SuppressWarnings("unchecked")
+    public DragProxy<AbstractCanvas, Glyph, DragProxyCallback> proxyFor(final AbstractCanvas context) {
+        final LienzoLayer layer = (LienzoLayer) context.getLayer();
+        this.primitiveDragProxyFactory.proxyFor(layer.getLienzoLayer());
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public DragProxy<AbstractCanvas, Glyph, DragProxyCallback> show( final Glyph item,
-                                                                     final int x,
-                                                                     final int y,
-                                                                     final DragProxyCallback callback ) {
-        primitiveDragProxyFactory.show( item.getGroup(),
-                                        x,
-                                        y,
-                                        callback );
+    @SuppressWarnings("unchecked")
+    public DragProxy<AbstractCanvas, Glyph, DragProxyCallback> show(final Glyph item,
+                                                                    final int x,
+                                                                    final int y,
+                                                                    final DragProxyCallback callback) {
+        primitiveDragProxyFactory.show(item.getGroup(),
+                                       x,
+                                       y,
+                                       callback);
         return this;
     }
 
     @Override
     public void clear() {
-        if ( null != this.primitiveDragProxyFactory ) {
+        if (null != this.primitiveDragProxyFactory) {
             this.primitiveDragProxyFactory.clear();
         }
     }
 
     @Override
     public void destroy() {
-        if ( null != this.primitiveDragProxyFactory ) {
+        if (null != this.primitiveDragProxyFactory) {
             this.primitiveDragProxyFactory.destroy();
         }
         this.primitiveDragProxyFactory = null;

@@ -32,11 +32,11 @@ public class AssignmentsEditorFieldProvider extends BasicTypeFieldProvider<Assig
 
     @Override
     protected void doRegisterFields() {
-        registerPropertyType( String.class );
+        registerPropertyType(String.class);
     }
 
     @Override
-    public AssignmentsEditorFieldDefinition createFieldByType( FieldTypeInfo typeInfo ) {
+    public AssignmentsEditorFieldDefinition createFieldByType(final FieldTypeInfo typeInfo) {
         return getDefaultField();
     }
 

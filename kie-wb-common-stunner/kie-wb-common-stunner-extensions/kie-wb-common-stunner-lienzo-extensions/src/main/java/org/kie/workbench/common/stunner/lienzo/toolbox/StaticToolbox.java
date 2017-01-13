@@ -27,48 +27,48 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.grid.GridToolbox;
 
 public class StaticToolbox extends AbstractToolbox {
 
-    private StaticToolbox( final Layer layer,
-                           final WiresShape shape,
-                           final Shape<?> attachTo,
-                           final Direction anchor,
-                           final Direction towards,
-                           final int rows,
-                           final int cols,
-                           final int padding,
-                           final int iconSize,
-                           final List<ToolboxButton> buttons ) {
-        super( layer,
-               shape,
-               attachTo,
-               anchor,
-               towards,
-               rows,
-               cols,
-               padding,
-               iconSize,
-               buttons );
+    private StaticToolbox(final Layer layer,
+                          final WiresShape shape,
+                          final Shape<?> attachTo,
+                          final Direction anchor,
+                          final Direction towards,
+                          final int rows,
+                          final int cols,
+                          final int padding,
+                          final int iconSize,
+                          final List<ToolboxButton> buttons) {
+        super(layer,
+              shape,
+              attachTo,
+              anchor,
+              towards,
+              rows,
+              cols,
+              padding,
+              iconSize,
+              buttons);
     }
 
     public static class StaticToolboxBuilder extends AbstractBuilder {
 
-        public StaticToolboxBuilder( final Layer layer,
-                                     final WiresShape shape ) {
-            super( layer,
-                   shape );
+        public StaticToolboxBuilder(final Layer layer,
+                                    final WiresShape shape) {
+            super(layer,
+                  shape);
         }
 
         @Override
         public GridToolbox register() {
-            return new StaticToolbox( this.layer,
-                                      this.shape,
-                                      this.attachTo,
-                                      this.anchor,
-                                      this.towards,
-                                      this.rows,
-                                      this.cols,
-                                      this.padding,
-                                      this.iconSize,
-                                      this.buttons );
+            return new StaticToolbox(this.layer,
+                                     this.shape,
+                                     this.attachTo,
+                                     this.anchor,
+                                     this.towards,
+                                     this.rows,
+                                     this.cols,
+                                     this.padding,
+                                     this.iconSize,
+                                     this.buttons);
         }
     }
 }

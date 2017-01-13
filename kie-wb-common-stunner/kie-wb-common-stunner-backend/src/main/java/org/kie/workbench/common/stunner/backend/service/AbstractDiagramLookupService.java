@@ -41,58 +41,58 @@ public abstract class AbstractDiagramLookupService<M extends Metadata, D extends
         implements DiagramLookupManager,
                    DiagramLookupService {
 
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractDiagramLookupService.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractDiagramLookupService.class.getName());
 
     private final BaseDiagramService<M, D> diagramService;
 
-    public AbstractDiagramLookupService( final IOService ioService,
-                                         final BaseDiagramService<M, D> diagramService ) {
-        super( ioService );
+    public AbstractDiagramLookupService(final IOService ioService,
+                                        final BaseDiagramService<M, D> diagramService) {
+        super(ioService);
         this.diagramService = diagramService;
     }
 
     @Override
-    protected boolean acceptsPath( final Path path ) {
-        return diagramService.accepts( path );
+    protected boolean acceptsPath(final Path path) {
+        return diagramService.accepts(path);
     }
 
     @Override
-    protected D getItemByPath( final Path path ) {
-        return diagramService.getDiagramByPath( path );
+    protected D getItemByPath(final Path path) {
+        return diagramService.getDiagramByPath(path);
     }
 
     @Override
-    protected List<D> getItems( final DiagramLookupRequest request ) {
-        org.uberfire.java.nio.file.Path root = parseCriteriaPath( request );
-        return getItemsByPath( root );
+    protected List<D> getItems(final DiagramLookupRequest request) {
+        org.uberfire.java.nio.file.Path root = parseCriteriaPath(request);
+        return getItemsByPath(root);
     }
 
     @Override
-    protected boolean matches( final String criteria,
-                               final Diagram item ) {
+    protected boolean matches(final String criteria,
+                              final Diagram item) {
         return true;
     }
 
     @Override
-    protected DiagramRepresentation buildResult( final Diagram item ) {
-        return new DiagramRepresentationImpl.DiagramRepresentationBuilder( item ).build();
+    protected DiagramRepresentation buildResult(final Diagram item) {
+        return new DiagramRepresentationImpl.DiagramRepresentationBuilder(item).build();
     }
 
-    protected org.uberfire.java.nio.file.Path parseCriteriaPath( final DiagramLookupRequest request ) {
+    protected org.uberfire.java.nio.file.Path parseCriteriaPath(final DiagramLookupRequest request) {
         String criteria = request.getCriteria();
-        if ( StringUtils.isEmpty( criteria ) ) {
-            LOG.error( "Empty criteria not supported." );
-            throw new UnsupportedOperationException( "Empty criteria not supported." );
+        if (StringUtils.isEmpty(criteria)) {
+            LOG.error("Empty criteria not supported.");
+            throw new UnsupportedOperationException("Empty criteria not supported.");
         } else {
-            Map<String, String> criteriaMap = AbstractCriteriaLookupManager.parseCriteria( criteria );
-            String pathRaw = criteriaMap.get( "path" );
-            if ( !StringUtils.isEmpty( pathRaw ) ) {
+            Map<String, String> criteriaMap = AbstractCriteriaLookupManager.parseCriteria(criteria);
+            String pathRaw = criteriaMap.get("path");
+            if (!StringUtils.isEmpty(pathRaw)) {
                 // TODO: Still not need, here should parse the path criteria value and create and return an instance
                 // of org.uberfire.java.nio.file.Path for it.
                 return null;
             } else {
-                LOG.error( "No path criteria found.." );
-                throw new UnsupportedOperationException( "No path criteria found." );
+                LOG.error("No path criteria found..");
+                throw new UnsupportedOperationException("No path criteria found.");
             }
         }
     }

@@ -44,75 +44,75 @@ public class DefinitionsPaletteBuilderImpl
     private final ClientFactoryService clientFactoryServices;
 
     protected DefinitionsPaletteBuilderImpl() {
-        this( null,
-              null );
+        this(null,
+             null);
     }
 
     @Inject
-    public DefinitionsPaletteBuilderImpl( final DefinitionUtils definitionUtils,
-                                          final ClientFactoryService clientFactoryServices ) {
+    public DefinitionsPaletteBuilderImpl(final DefinitionUtils definitionUtils,
+                                         final ClientFactoryService clientFactoryServices) {
         this.definitionUtils = definitionUtils;
         this.clientFactoryServices = clientFactoryServices;
     }
 
     @Override
-    public void build( final Iterable<String> definitions,
-                       final Callback<DefinitionsPalette, ClientRuntimeError> callback ) {
-        if ( null != definitions ) {
+    public void build(final Iterable<String> definitions,
+                      final Callback<DefinitionsPalette, ClientRuntimeError> callback) {
+        if (null != definitions) {
             final List<DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder> builders = new LinkedList<DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder>();
-            for ( final String definitionId : definitions ) {
-                if ( !isDefinitionExcluded( definitionId ) ) {
-                    clientFactoryServices.newDefinition( definitionId,
-                                                         new ServiceCallback<Object>() {
-                                                             @Override
-                                                             public void onSuccess( final Object definition ) {
-                                                                 final String id = toValidId( definitionId );
-                                                                 final String title = getDefinitionManager().adapters().forDefinition().getTitle( definition );
-                                                                 final String description = getDefinitionManager().adapters().forDefinition().getDescription( definition );
-                                                                 final DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder itemBuilder = new DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder( id )
-                                                                         .definitionId( definitionId )
-                                                                         .title( title )
-                                                                         .description( description )
-                                                                         .tooltip( description );
-                                                                 builders.add( itemBuilder );
-                                                             }
+            for (final String definitionId : definitions) {
+                if (!isDefinitionExcluded(definitionId)) {
+                    clientFactoryServices.newDefinition(definitionId,
+                                                        new ServiceCallback<Object>() {
+                                                            @Override
+                                                            public void onSuccess(final Object definition) {
+                                                                final String id = toValidId(definitionId);
+                                                                final String title = getDefinitionManager().adapters().forDefinition().getTitle(definition);
+                                                                final String description = getDefinitionManager().adapters().forDefinition().getDescription(definition);
+                                                                final DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder itemBuilder = new DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder(id)
+                                                                        .definitionId(definitionId)
+                                                                        .title(title)
+                                                                        .description(description)
+                                                                        .tooltip(description);
+                                                                builders.add(itemBuilder);
+                                                            }
 
-                                                             @Override
-                                                             public void onError( final ClientRuntimeError error ) {
-                                                                 callback.onError( error );
-                                                             }
-                                                         } );
+                                                            @Override
+                                                            public void onError(final ClientRuntimeError error) {
+                                                                callback.onError(error);
+                                                            }
+                                                        });
                 }
             }
-            if ( !builders.isEmpty() ) {
+            if (!builders.isEmpty()) {
                 final List<DefinitionPaletteItem> paletteItems = new LinkedList<DefinitionPaletteItem>();
-                for ( final DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder builder : builders ) {
-                    paletteItems.add( builder.build() );
+                for (final DefinitionPaletteItemImpl.DefinitionPaletteItemBuilder builder : builders) {
+                    paletteItems.add(builder.build());
                 }
-                final DefinitionsPaletteImpl definitionsPalette = new DefinitionsPaletteImpl( paletteItems );
-                callback.onSuccess( definitionsPalette );
+                final DefinitionsPaletteImpl definitionsPalette = new DefinitionsPaletteImpl(paletteItems);
+                callback.onSuccess(definitionsPalette);
             } else {
-                callback.onError( new ClientRuntimeError( "No categories found." ) );
+                callback.onError(new ClientRuntimeError("No categories found."));
             }
         } else {
-            callback.onError( new ClientRuntimeError( "Missing definitions argument." ) );
+            callback.onError(new ClientRuntimeError("Missing definitions argument."));
         }
     }
 
     @Override
-    public void buildFromDefinitionSet( final String defintionSetId,
-                                        final Callback<DefinitionsPalette, ClientRuntimeError> callback ) {
-        final Object defSet = getDefinitionManager().definitionSets().getDefinitionSetById( defintionSetId );
-        final Set<String> definitions = getDefinitionManager().adapters().forDefinitionSet().getDefinitions( defSet );
-        build( definitions,
-               callback );
+    public void buildFromDefinitionSet(final String defintionSetId,
+                                       final Callback<DefinitionsPalette, ClientRuntimeError> callback) {
+        final Object defSet = getDefinitionManager().definitionSets().getDefinitionSetById(defintionSetId);
+        final Set<String> definitions = getDefinitionManager().adapters().forDefinitionSet().getDefinitions(defSet);
+        build(definitions,
+              callback);
     }
 
     @Override
-    public void buildFromPaletteItems( final List<DefinitionPaletteItem> definitionPaletteItems,
-                                       final Callback<DefinitionsPalette, ClientRuntimeError> callback ) {
-        final DefinitionsPalette result = new DefinitionsPaletteImpl( definitionPaletteItems );
-        callback.onSuccess( result );
+    public void buildFromPaletteItems(final List<DefinitionPaletteItem> definitionPaletteItems,
+                                      final Callback<DefinitionsPalette, ClientRuntimeError> callback) {
+        final DefinitionsPalette result = new DefinitionsPaletteImpl(definitionPaletteItems);
+        callback.onSuccess(result);
     }
 
     protected DefinitionManager getDefinitionManager() {

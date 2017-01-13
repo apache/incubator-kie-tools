@@ -26,9 +26,9 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 @NonPortable
 public final class CommandUndoExecutedEvent extends AbstractGraphCommandEvent {
 
-    public CommandUndoExecutedEvent( final Command<GraphCommandExecutionContext, RuleViolation> command,
-                                     final CommandResult<RuleViolation> result ) {
-        super( command,
-               result );
+    public CommandUndoExecutedEvent(final Command<GraphCommandExecutionContext, RuleViolation> command,
+                                    final CommandResult<RuleViolation> result) {
+        super(command,
+              result);
     }
 }

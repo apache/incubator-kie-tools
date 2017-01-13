@@ -21,7 +21,7 @@ import com.ait.lienzo.shared.core.types.Direction;
 
 public interface On {
 
-    Towards on( Direction anchor );
+    Towards on(final Direction anchor);
 
-    On attachTo( Shape<?> shape );
+    On attachTo(final Shape<?> shape);
 }

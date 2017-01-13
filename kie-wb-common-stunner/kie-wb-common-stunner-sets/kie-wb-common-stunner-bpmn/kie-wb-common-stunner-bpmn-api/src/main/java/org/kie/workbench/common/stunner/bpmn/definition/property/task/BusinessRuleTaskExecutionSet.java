@@ -39,19 +39,19 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef( label = FIELDDEF_RULEFLOW_GROUP, property = "value" )
+    @FieldDef(label = FIELDDEF_RULEFLOW_GROUP, property = "value")
     @ListBox
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
-            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.RuleFlowGroupFormProvider" )
+            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.RuleFlowGroupFormProvider")
     @Valid
     protected RuleFlowGroup ruleFlowGroup;
 
     public BusinessRuleTaskExecutionSet() {
-        this( new RuleFlowGroup( "" ) );
+        this(new RuleFlowGroup(""));
     }
 
-    public BusinessRuleTaskExecutionSet( @MapsTo( "ruleFlowGroup" ) RuleFlowGroup ruleFlowGroup ) {
+    public BusinessRuleTaskExecutionSet(final @MapsTo("ruleFlowGroup") RuleFlowGroup ruleFlowGroup) {
         this.ruleFlowGroup = ruleFlowGroup;
     }
 
@@ -63,7 +63,7 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
         return ruleFlowGroup;
     }
 
-    public void setRuleFlowGroup( RuleFlowGroup ruleFlowGroup ) {
+    public void setRuleFlowGroup(final RuleFlowGroup ruleFlowGroup) {
         this.ruleFlowGroup = ruleFlowGroup;
     }
 }

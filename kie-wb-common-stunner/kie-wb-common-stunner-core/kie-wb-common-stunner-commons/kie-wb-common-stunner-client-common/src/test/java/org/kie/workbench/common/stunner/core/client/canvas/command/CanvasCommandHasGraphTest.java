@@ -31,7 +31,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class CanvasCommandHasGraphTest extends AbstractCanvasCommandTest {
 
     @Mock
@@ -53,82 +53,82 @@ public class CanvasCommandHasGraphTest extends AbstractCanvasCommandTest {
     @Before
     public void setup() throws Exception {
         super.setup();
-        when( canvasHandler.getClientFactoryServices() ).thenReturn( clientFactoryService );
-        when( successGraphCommandResult.getType() ).thenReturn( CommandResult.Type.INFO );
-        when( successGraphCommandResult.getViolations() ).thenReturn( null );
-        when( successGraphCommandResult.getMessage() ).thenReturn( "OK" );
-        when( failedGraphCommandResult.getType() ).thenReturn( CommandResult.Type.ERROR );
-        when( failedGraphCommandResult.getMessage() ).thenReturn( "FAILED" );
+        when(canvasHandler.getClientFactoryServices()).thenReturn(clientFactoryService);
+        when(successGraphCommandResult.getType()).thenReturn(CommandResult.Type.INFO);
+        when(successGraphCommandResult.getViolations()).thenReturn(null);
+        when(successGraphCommandResult.getMessage()).thenReturn("OK");
+        when(failedGraphCommandResult.getType()).thenReturn(CommandResult.Type.ERROR);
+        when(failedGraphCommandResult.getMessage()).thenReturn("FAILED");
         this.tested = new HasGraphCommandStub();
     }
 
     @Test
     public void testAllowSuccess() {
-        when( graphCommand.allow( any( GraphCommandExecutionContext.class ) ) ).thenReturn( successGraphCommandResult );
-        tested.allow( canvasHandler );
-        verify( graphCommand,
-                times( 1 ) ).allow( any( GraphCommandExecutionContext.class ) );
-        verify( canvasCommand,
-                times( 1 ) ).allow( eq( canvasHandler ) );
-        verify( graphCommand,
-                times( 0 ) ).execute( any( GraphCommandExecutionContext.class ) );
-        verify( canvasCommand,
-                times( 0 ) ).execute( eq( canvasHandler ) );
+        when(graphCommand.allow(any(GraphCommandExecutionContext.class))).thenReturn(successGraphCommandResult);
+        tested.allow(canvasHandler);
+        verify(graphCommand,
+               times(1)).allow(any(GraphCommandExecutionContext.class));
+        verify(canvasCommand,
+               times(1)).allow(eq(canvasHandler));
+        verify(graphCommand,
+               times(0)).execute(any(GraphCommandExecutionContext.class));
+        verify(canvasCommand,
+               times(0)).execute(eq(canvasHandler));
     }
 
     @Test
     public void testAllowFailed() {
-        when( graphCommand.allow( any( GraphCommandExecutionContext.class ) ) ).thenReturn( failedGraphCommandResult );
-        tested.allow( canvasHandler );
-        verify( graphCommand,
-                times( 1 ) ).allow( any( GraphCommandExecutionContext.class ) );
-        verify( canvasCommand,
-                times( 0 ) ).allow( eq( canvasHandler ) );
-        verify( graphCommand,
-                times( 0 ) ).execute( any( GraphCommandExecutionContext.class ) );
-        verify( canvasCommand,
-                times( 0 ) ).execute( eq( canvasHandler ) );
+        when(graphCommand.allow(any(GraphCommandExecutionContext.class))).thenReturn(failedGraphCommandResult);
+        tested.allow(canvasHandler);
+        verify(graphCommand,
+               times(1)).allow(any(GraphCommandExecutionContext.class));
+        verify(canvasCommand,
+               times(0)).allow(eq(canvasHandler));
+        verify(graphCommand,
+               times(0)).execute(any(GraphCommandExecutionContext.class));
+        verify(canvasCommand,
+               times(0)).execute(eq(canvasHandler));
     }
 
     @Test
     public void testExecuteSuccess() {
-        when( graphCommand.allow( any( GraphCommandExecutionContext.class ) ) ).thenReturn( successGraphCommandResult );
-        when( graphCommand.execute( any( GraphCommandExecutionContext.class ) ) ).thenReturn( successGraphCommandResult );
-        tested.execute( canvasHandler );
-        verify( graphCommand,
-                times( 1 ) ).execute( any( GraphCommandExecutionContext.class ) );
-        verify( canvasCommand,
-                times( 1 ) ).execute( eq( canvasHandler ) );
-        verify( graphCommand,
-                times( 0 ) ).allow( any( GraphCommandExecutionContext.class ) );
-        verify( canvasCommand,
-                times( 0 ) ).allow( eq( canvasHandler ) );
+        when(graphCommand.allow(any(GraphCommandExecutionContext.class))).thenReturn(successGraphCommandResult);
+        when(graphCommand.execute(any(GraphCommandExecutionContext.class))).thenReturn(successGraphCommandResult);
+        tested.execute(canvasHandler);
+        verify(graphCommand,
+               times(1)).execute(any(GraphCommandExecutionContext.class));
+        verify(canvasCommand,
+               times(1)).execute(eq(canvasHandler));
+        verify(graphCommand,
+               times(0)).allow(any(GraphCommandExecutionContext.class));
+        verify(canvasCommand,
+               times(0)).allow(eq(canvasHandler));
     }
 
     @Test
     public void testExecuteFailed() {
-        when( graphCommand.allow( any( GraphCommandExecutionContext.class ) ) ).thenReturn( failedGraphCommandResult );
-        when( graphCommand.execute( any( GraphCommandExecutionContext.class ) ) ).thenReturn( failedGraphCommandResult );
-        tested.execute( canvasHandler );
-        verify( graphCommand,
-                times( 1 ) ).execute( any( GraphCommandExecutionContext.class ) );
-        verify( canvasCommand,
-                times( 0 ) ).execute( eq( canvasHandler ) );
-        verify( graphCommand,
-                times( 0 ) ).allow( any( GraphCommandExecutionContext.class ) );
-        verify( canvasCommand,
-                times( 0 ) ).allow( eq( canvasHandler ) );
+        when(graphCommand.allow(any(GraphCommandExecutionContext.class))).thenReturn(failedGraphCommandResult);
+        when(graphCommand.execute(any(GraphCommandExecutionContext.class))).thenReturn(failedGraphCommandResult);
+        tested.execute(canvasHandler);
+        verify(graphCommand,
+               times(1)).execute(any(GraphCommandExecutionContext.class));
+        verify(canvasCommand,
+               times(0)).execute(eq(canvasHandler));
+        verify(graphCommand,
+               times(0)).allow(any(GraphCommandExecutionContext.class));
+        verify(canvasCommand,
+               times(0)).allow(eq(canvasHandler));
     }
 
     private class HasGraphCommandStub extends AbstractCanvasGraphCommand {
 
         @Override
-        protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( AbstractCanvasHandler context ) {
+        protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(AbstractCanvasHandler context) {
             return graphCommand;
         }
 
         @Override
-        protected AbstractCanvasCommand newCanvasCommand( AbstractCanvasHandler context ) {
+        protected AbstractCanvasCommand newCanvasCommand(AbstractCanvasHandler context) {
             return canvasCommand;
         }
     }

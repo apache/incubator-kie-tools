@@ -49,7 +49,7 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
         implements BS3PaletteWidget,
                    IsWidget {
 
-    private static Logger LOGGER = Logger.getLogger( BS3PaletteWidgetImpl.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(BS3PaletteWidgetImpl.class.getName());
     private static final int MOUSE_OVER_TIMER_DURATION = 300;
 
     public static final String BG_COLOR = "#D3D3D3";
@@ -73,16 +73,16 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
     private boolean dragging;
 
     @Inject
-    public BS3PaletteWidgetImpl( final ShapeManager shapeManager,
-                                 final ClientFactoryService clientFactoryServices,
-                                 final BS3PaletteWidgetView view,
-                                 final BS3PaletteCategories paletteCategories,
-                                 final BS3PaletteCategory paletteCategory,
-                                 final FloatingView<IsWidget> floatingView,
-                                 final ShapeGlyphDragHandler<Group> shapeGlyphDragHandler ) {
-        super( shapeManager,
-               clientFactoryServices,
-               view );
+    public BS3PaletteWidgetImpl(final ShapeManager shapeManager,
+                                final ClientFactoryService clientFactoryServices,
+                                final BS3PaletteWidgetView view,
+                                final BS3PaletteCategories paletteCategories,
+                                final BS3PaletteCategory paletteCategory,
+                                final FloatingView<IsWidget> floatingView,
+                                final ShapeGlyphDragHandler<Group> shapeGlyphDragHandler) {
+        super(shapeManager,
+              clientFactoryServices,
+              view);
         this.paletteCategories = paletteCategories;
         this.paletteCategory = paletteCategory;
         this.floatingView = floatingView;
@@ -95,25 +95,25 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
         view.shapeGlyphDragHandler = shapeGlyphDragHandler;
         paletteCategories.bs3PaletteWidget = this;
         paletteCategory.bs3PaletteWidget = this;
-        paletteCategories.setPadding( getPadding() );
-        paletteCategories.setIconWidth( CATEGORIES_ICON_WIDTH );
-        paletteCategories.setIconHeight( CATEGORIES_ICON_HEIGHT );
-        paletteCategory.setWidth( CATEGORY_VIEW_WIDTH );
-        paletteCategory.setHeight( CATEGORY_VIEW_HEIGHT );
-        floatingView.setTimeOut( FLOATING_VIEW_TIMEOUT );
-        floatingView.add( paletteCategory.getView() );
-        view.setBackgroundColor( BG_COLOR );
-        paletteCategories.setBackgroundColor( BG_COLOR );
-        paletteCategory.setBackgroundColor( HOVER_BG_COLOR );
-        view.showEmptyView( true );
+        paletteCategories.setPadding(getPadding());
+        paletteCategories.setIconWidth(CATEGORIES_ICON_WIDTH);
+        paletteCategories.setIconHeight(CATEGORIES_ICON_HEIGHT);
+        paletteCategory.setWidth(CATEGORY_VIEW_WIDTH);
+        paletteCategory.setHeight(CATEGORY_VIEW_HEIGHT);
+        floatingView.setTimeOut(FLOATING_VIEW_TIMEOUT);
+        floatingView.add(paletteCategory.getView());
+        view.setBackgroundColor(BG_COLOR);
+        paletteCategories.setBackgroundColor(BG_COLOR);
+        paletteCategory.setBackgroundColor(HOVER_BG_COLOR);
+        view.showEmptyView(true);
     }
 
     @Override
-    public BS3PaletteWidget setViewFactory( final BS3PaletteViewFactory viewFactory ) {
+    public BS3PaletteWidget setViewFactory(final BS3PaletteViewFactory viewFactory) {
         this.viewFactory = viewFactory;
         return this;
     }
@@ -135,7 +135,7 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
     @Override
     protected ShapeFactory getShapeFactory() {
         final DefinitionSetPalette palette = paletteDefinition;
-        return shapeManager.getDefaultShapeSet( palette.getDefinitionSetId() ).getShapeFactory();
+        return shapeManager.getDefaultShapeSet(palette.getDefinitionSetId()).getShapeFactory();
     }
 
     @Override
@@ -150,37 +150,37 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     protected AbstractPalette<DefinitionSetPalette> bind() {
         final DefinitionSetPalette palette = paletteDefinition;
-        if ( null != palette ) {
-            paletteCategories.bind( palette );
+        if (null != palette) {
+            paletteCategories.bind(palette);
             final int[] mainPaletteSize = getMainPaletteSize();
-            view.show( paletteCategories.getView(),
-                       mainPaletteSize[ 0 ],
-                       mainPaletteSize[ 1 ] );
-            paletteCategories.onItemMouseDown( ( id1,
-                                                 mouseX,
-                                                 mouseY,
-                                                 itemX1,
-                                                 itemY1 ) -> {
+            view.show(paletteCategories.getView(),
+                      mainPaletteSize[0],
+                      mainPaletteSize[1]);
+            paletteCategories.onItemMouseDown((id1,
+                                               mouseX,
+                                               mouseY,
+                                               itemX1,
+                                               itemY1) -> {
                 hideFloatingPalette();
                 clearItemMouseOverTimer();
-                final String catDefId = getDefinitionIdForCategory( id1 );
-                if ( null != catDefId ) {
-                    BS3PaletteWidgetImpl.this.onPaletteItemMouseDown( catDefId,
-                                                                      mouseX,
-                                                                      mouseY );
+                final String catDefId = getDefinitionIdForCategory(id1);
+                if (null != catDefId) {
+                    BS3PaletteWidgetImpl.this.onPaletteItemMouseDown(catDefId,
+                                                                     mouseX,
+                                                                     mouseY);
                     return true;
                 }
                 return false;
-            } );
-            paletteCategories.onItemHover( ( id,
-                                             x,
-                                             y,
-                                             itemX,
-                                             itemY ) -> {
-                if ( !dragging ) {
+            });
+            paletteCategories.onItemHover((id,
+                                           x,
+                                           y,
+                                           itemX,
+                                           itemY) -> {
+                if (!dragging) {
                     final String theId = id;
                     final double theX = x;
                     final double theY = y;
@@ -191,58 +191,58 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
                         public void run() {
                             // 1.- Ensure floating view is not still visible ( call hide )
                             // 2.- While over this category navigation item, do never hide the floating view ( due to its timeout ).
-                            floatingView.hide().setTimeOut( -1 );
+                            floatingView.hide().setTimeOut(-1);
                             // Show the floating view that containes the palette widget for the category.
-                            BS3PaletteWidgetImpl.this.showFloatingPalette( theId,
-                                                                           theX,
-                                                                           theY,
-                                                                           theitemX,
-                                                                           theitemY );
+                            BS3PaletteWidgetImpl.this.showFloatingPalette(theId,
+                                                                          theX,
+                                                                          theY,
+                                                                          theitemX,
+                                                                          theitemY);
                         }
                     };
-                    BS3PaletteWidgetImpl.this.itemMouseDverTimer.schedule( MOUSE_OVER_TIMER_DURATION );
+                    BS3PaletteWidgetImpl.this.itemMouseDverTimer.schedule(MOUSE_OVER_TIMER_DURATION);
                 }
                 return true;
-            } );
-            paletteCategories.onItemOut( id -> {
+            });
+            paletteCategories.onItemOut(id -> {
                 clearItemMouseOverTimer();
-                if ( !dragging ) {
+                if (!dragging) {
                     // Set the floating visibility timeout once not hover the concrete navigation item.
-                    floatingView.setTimeOut( FLOATING_VIEW_TIMEOUT );
+                    floatingView.setTimeOut(FLOATING_VIEW_TIMEOUT);
                 }
                 return true;
-            } );
+            });
         }
         return this;
     }
 
-    @SuppressWarnings( "unchecked" )
-    private boolean showFloatingPalette( final String id,
-                                         final double x,
-                                         final double y,
-                                         final double itemX,
-                                         final double itemY ) {
+    @SuppressWarnings("unchecked")
+    private boolean showFloatingPalette(final String id,
+                                        final double x,
+                                        final double y,
+                                        final double itemX,
+                                        final double itemY) {
         paletteCategory.clear();
-        final DefinitionPaletteCategory item = getMainPaletteItem( id );
-        if ( hasPaletteItems( item ) ) {
-            paletteCategory.bind( item );
+        final DefinitionPaletteCategory item = getMainPaletteItem(id);
+        if (hasPaletteItems(item)) {
+            paletteCategory.bind(item);
             final int[] mainPaletteSize = getMainPaletteSize();
-            final double pX = mainPaletteSize[ 0 ];
+            final double pX = mainPaletteSize[0];
             floatingView
-                    .setOffsetX( getViewAbsoluteLeft() )
-                    .setOffsetY( getViewAbsoluteTop() )
-                    .setX( pX )
-                    .setY( 0 );
-            paletteCategory.onItemMouseDown( ( id1,
-                                               mouseX,
-                                               mouseY,
-                                               itemX1,
-                                               itemY1 ) -> {
-                BS3PaletteWidgetImpl.this.onPaletteItemMouseDown( id1,
-                                                                  mouseX,
-                                                                  mouseY );
+                    .setOffsetX(getViewAbsoluteLeft())
+                    .setOffsetY(getViewAbsoluteTop())
+                    .setX(pX)
+                    .setY(0);
+            paletteCategory.onItemMouseDown((id1,
+                                             mouseX,
+                                             mouseY,
+                                             itemX1,
+                                             itemY1) -> {
+                BS3PaletteWidgetImpl.this.onPaletteItemMouseDown(id1,
+                                                                 mouseX,
+                                                                 mouseY);
                 return false;
-            } );
+            });
             floatingView.show();
             return false;
         }
@@ -250,37 +250,37 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
     }
 
     @Override
-    public void onDragProxyComplete( final String definitionId ) {
-        super.onDragProxyComplete( definitionId );
+    public void onDragProxyComplete(final String definitionId) {
+        super.onDragProxyComplete(definitionId);
         dragProxyComplete();
     }
 
     @Override
-    public void onDragProxyComplete( final String definitionId,
-                                     final double x,
-                                     final double y ) {
-        super.onDragProxyComplete( definitionId,
-                                   x,
-                                   y );
+    public void onDragProxyComplete(final String definitionId,
+                                    final double x,
+                                    final double y) {
+        super.onDragProxyComplete(definitionId,
+                                  x,
+                                  y);
         dragProxyComplete();
     }
 
-    private String getDefinitionIdForCategory( final String id ) {
-        final DefinitionPaletteCategory categoryItem = getMainPaletteItem( id );
+    private String getDefinitionIdForCategory(final String id) {
+        final DefinitionPaletteCategory categoryItem = getMainPaletteItem(id);
         return null != categoryItem ? categoryItem.getDefinitionId() : null;
     }
 
-    private void onPaletteItemMouseDown( final String id,
-                                         final double x,
-                                         final double y ) {
-        showDragProxy( id,
-                       x,
-                       y );
+    private void onPaletteItemMouseDown(final String id,
+                                        final double x,
+                                        final double y) {
+        showDragProxy(id,
+                      x,
+                      y);
     }
 
-    private void onPaletteItemClick( final String id ) {
+    private void onPaletteItemClick(final String id) {
         // Add the element into canvas, no target coordinates specified, let the builder control determine those.
-        BS3PaletteWidgetImpl.this.onDragProxyComplete( id );
+        BS3PaletteWidgetImpl.this.onDragProxyComplete(id);
         floatingView.hide();
     }
 
@@ -290,14 +290,14 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
         floatingView.hide();
     }
 
-    private void showDragProxy( final String id,
-                                final double x,
-                                final double y ) {
+    private void showDragProxy(final String id,
+                               final double x,
+                               final double y) {
         // Show the drag proxy for the element at x, y.
         dragging = true;
-        view.showDragProxy( id,
-                            x,
-                            y );
+        view.showDragProxy(id,
+                           x,
+                           y);
         floatingView.hide();
     }
 
@@ -308,37 +308,37 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
     private int[] getMainPaletteSize() {
         double width = 0;
         double height = 0;
-        if ( null != paletteDefinition ) {
+        if (null != paletteDefinition) {
             final List<? extends GlyphPaletteItem> items = getMainPaletteItems();
             final int itemsSize = null != items ? items.size() : 0;
-            final double[] mainPaletteSize = ClientPaletteUtils.computeSizeForVerticalLayout( itemsSize,
-                                                                                              ( int ) getIconSize(),
-                                                                                              getPadding(),
-                                                                                              0 );
+            final double[] mainPaletteSize = ClientPaletteUtils.computeSizeForVerticalLayout(itemsSize,
+                                                                                             (int) getIconSize(),
+                                                                                             getPadding(),
+                                                                                             0);
             // TODO: The current impl is not considering padding, as bootstrap navitems with padding are not well aligned.
-            width = mainPaletteSize[ 0 ] - getPadding();
-            height = mainPaletteSize[ 1 ] - ( getPadding() * ( itemsSize + 1 ) );
+            width = mainPaletteSize[0] - getPadding();
+            height = mainPaletteSize[1] - (getPadding() * (itemsSize + 1));
         }
-        return new int[]{ ( int ) width, ( int ) height };
+        return new int[]{(int) width, (int) height};
     }
 
     private List<DefinitionPaletteCategory> getMainPaletteItems() {
         return paletteCategories.getDefinition().getItems();
     }
 
-    private boolean hasPaletteItems( final DefinitionPaletteCategory item ) {
+    private boolean hasPaletteItems(final DefinitionPaletteCategory item) {
         return null != item.getItems() && !item.getItems().isEmpty();
     }
 
-    private DefinitionPaletteCategory getMainPaletteItem( final int index ) {
-        return getMainPaletteItems().get( index );
+    private DefinitionPaletteCategory getMainPaletteItem(final int index) {
+        return getMainPaletteItems().get(index);
     }
 
-    private DefinitionPaletteCategory getMainPaletteItem( final String id ) {
+    private DefinitionPaletteCategory getMainPaletteItem(final String id) {
         final List<DefinitionPaletteCategory> categories = getMainPaletteItems();
-        if ( null != categories && !categories.isEmpty() ) {
-            for ( final DefinitionPaletteCategory category : categories ) {
-                if ( category.getId().equals( id ) ) {
+        if (null != categories && !categories.isEmpty()) {
+            for (final DefinitionPaletteCategory category : categories) {
+                if (category.getId().equals(id)) {
                     return category;
                 }
             }
@@ -354,30 +354,30 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
         return view.getAbsoluteLeft();
     }
 
-    void onCanvasFocusedEvent( final @Observes CanvasFocusedEvent canvasFocusedEvent ) {
-        checkNotNull( "canvasFocusedEvent",
-                      canvasFocusedEvent );
+    void onCanvasFocusedEvent(final @Observes CanvasFocusedEvent canvasFocusedEvent) {
+        checkNotNull("canvasFocusedEvent",
+                     canvasFocusedEvent);
         hideFloatingPalette();
     }
 
-    void onCanvasElementSelectedEvent( final @Observes CanvasElementSelectedEvent canvasElementSelectedEvent ) {
-        checkNotNull( "canvasElementSelectedEvent",
-                      canvasElementSelectedEvent );
+    void onCanvasElementSelectedEvent(final @Observes CanvasElementSelectedEvent canvasElementSelectedEvent) {
+        checkNotNull("canvasElementSelectedEvent",
+                     canvasElementSelectedEvent);
         hideFloatingPalette();
     }
 
-    IsWidget getCategoryView( final String id ) {
-        return viewFactory.getCategoryView( paletteDefinition.getDefinitionSetId(),
-                                            id,
-                                            CATEGORIES_ICON_WIDTH,
-                                            CATEGORIES_ICON_HEIGHT );
+    IsWidget getCategoryView(final String id) {
+        return viewFactory.getCategoryView(paletteDefinition.getDefinitionSetId(),
+                                           id,
+                                           CATEGORIES_ICON_WIDTH,
+                                           CATEGORIES_ICON_HEIGHT);
     }
 
-    IsWidget getDefinitionView( final String id ) {
-        return viewFactory.getDefinitionView( paletteDefinition.getDefinitionSetId(),
-                                              id,
-                                              ( int ) getIconSize(),
-                                              ( int ) getIconSize() );
+    IsWidget getDefinitionView(final String id) {
+        return viewFactory.getDefinitionView(paletteDefinition.getDefinitionSetId(),
+                                             id,
+                                             (int) getIconSize(),
+                                             (int) getIconSize());
     }
 
     @Override
@@ -390,8 +390,8 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
     }
 
     @Override
-    protected String getPaletteItemId( final int index ) {
-        final DefinitionPaletteCategory item = getMainPaletteItem( index );
+    protected String getPaletteItemId(final int index) {
+        final DefinitionPaletteCategory item = getMainPaletteItem(index);
         return null != item ? item.getId() : null;
     }
 
@@ -405,8 +405,8 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
     }
 
     private void clearItemMouseOverTimer() {
-        if ( null != this.itemMouseDverTimer ) {
-            if ( this.itemMouseDverTimer.isRunning() ) {
+        if (null != this.itemMouseDverTimer) {
+            if (this.itemMouseDverTimer.isRunning()) {
                 this.itemMouseDverTimer.cancel();
             }
             this.itemMouseDverTimer = null;

@@ -25,6 +25,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public interface ChildrenTraverseCallback<N extends Node<View, Edge>, E extends Edge<Child, Node>> extends ContentTraverseCallback<Child, N, E> {
 
-    boolean startNodeTraversal( final Iterator<N> parents,
-                                final N node );
+    boolean startNodeTraversal(final Iterator<N> parents,
+                               final N node);
 }

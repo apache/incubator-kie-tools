@@ -34,40 +34,40 @@ public class BindableDefinitionSetRuleAdapterGenerator extends AbstractBindableA
         return "BindableDefinitionSetRuleAdapter.ftl";
     }
 
-    public StringBuffer generate( final String packageName,
-                                  final String className,
-                                  final String defSetClassName,
-                                  final List<ProcessingRule> rules,
-                                  final Messager messager ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final String className,
+                                 final String defSetClassName,
+                                 final List<ProcessingRule> rules,
+                                 final Messager messager) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "packageName",
-                  packageName );
-        root.put( "className",
-                  className );
-        root.put( "parentAdapterClassName",
-                  AbstractDefinitionSetRuleAdapter.class.getName() );
-        root.put( "generatedByClassName",
-                  BindableDefinitionSetRuleAdapterGenerator.class.getName() );
-        root.put( "defSetClassName",
-                  defSetClassName );
-        root.put( "rules",
-                  rules );
-        root.put( "rulesSize",
-                  rules.size() );
-        root.put( "ruleNames",
-                  getRuleNames( rules ) );
+        root.put("packageName",
+                 packageName);
+        root.put("className",
+                 className);
+        root.put("parentAdapterClassName",
+                 AbstractDefinitionSetRuleAdapter.class.getName());
+        root.put("generatedByClassName",
+                 BindableDefinitionSetRuleAdapterGenerator.class.getName());
+        root.put("defSetClassName",
+                 defSetClassName);
+        root.put("rules",
+                 rules);
+        root.put("rulesSize",
+                 rules.size());
+        root.put("ruleNames",
+                 getRuleNames(rules));
 
         // Generate code
-        return writeTemplate( packageName,
-                              className,
-                              root,
-                              messager );
+        return writeTemplate(packageName,
+                             className,
+                             root,
+                             messager);
     }
 
-    private List<String> getRuleNames( final List<ProcessingRule> rules ) {
+    private List<String> getRuleNames(final List<ProcessingRule> rules) {
         List<String> result = new ArrayList<>();
-        for ( ProcessingRule entity : rules ) {
-            result.add( entity.getName() );
+        for (ProcessingRule entity : rules) {
+            result.add(entity.getName());
         }
         return result;
     }

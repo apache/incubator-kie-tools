@@ -20,9 +20,9 @@ public interface PaletteDefinitionBuilder<T, P, E> {
 
     interface Callback<P, E> {
 
-        void onSuccess( final P paletteDefinition );
+        void onSuccess(final P paletteDefinition);
 
-        void onError( final E error );
+        void onError(final E error);
     }
 
     /**
@@ -30,19 +30,19 @@ public interface PaletteDefinitionBuilder<T, P, E> {
      * @param definitionId The Definition identifier to exclude.
      * @return The builder instance.
      */
-    PaletteDefinitionBuilder<T, P, E> excludeDefinition( final String definitionId );
+    PaletteDefinitionBuilder<T, P, E> excludeDefinition(final String definitionId);
 
     /**
      * Exclude the given category identifier from appearing on the palette.
      * @param categoryId The category identifier to exclude.
      * @return The builder instance.
      */
-    PaletteDefinitionBuilder<T, P, E> excludeCategory( final String categoryId );
+    PaletteDefinitionBuilder<T, P, E> excludeCategory(final String categoryId);
 
     /**
      * Build the palette from source. Results present on the callback argument, as palette definition could be
      * build on server side.
      */
-    void build( final T source,
-                final Callback<P, E> callback );
+    void build(final T source,
+               final Callback<P, E> callback);
 }

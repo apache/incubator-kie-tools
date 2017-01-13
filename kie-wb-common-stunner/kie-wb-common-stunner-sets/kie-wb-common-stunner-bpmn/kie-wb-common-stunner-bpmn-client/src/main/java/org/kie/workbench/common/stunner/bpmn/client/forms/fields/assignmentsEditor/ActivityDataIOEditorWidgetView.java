@@ -27,7 +27,7 @@ public interface ActivityDataIOEditorWidgetView {
         void handleAddClick();
     }
 
-    void init( Presenter presenter );
+    void init(final Presenter presenter);
 
     void showOnlySingleEntryAllowed();
 
@@ -49,11 +49,11 @@ public interface ActivityDataIOEditorWidgetView {
 
     void setNoneDisplayStyle();
 
-    void setAssignmentRows( List<AssignmentRow> rows );
+    void setAssignmentRows(final List<AssignmentRow> rows);
 
     List<AssignmentRow> getAssignmentRows();
 
-    AssignmentListItemWidgetView getAssignmentWidget( int index );
+    AssignmentListItemWidgetView getAssignmentWidget(final int index);
 
-    void setVisible( boolean visible );
+    void setVisible(final boolean visible);
 }

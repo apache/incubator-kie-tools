@@ -42,50 +42,50 @@ public class BS3PaletteFactoryImpl extends AbstractPaletteWidgetFactory<Definiti
     private final List<BS3PaletteViewFactory> viewFactories = new LinkedList<>();
 
     @Inject
-    public BS3PaletteFactoryImpl( final ShapeManager shapeManager,
-                                  final SyncBeanManager beanManager,
-                                  final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
-                                  final BS3PaletteWidget palette,
-                                  final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent ) {
-        super( shapeManager,
-               beanManager,
-               defaultPaletteDefinitionFactoryInstance,
-               palette,
-               buildCanvasShapeEvent );
+    public BS3PaletteFactoryImpl(final ShapeManager shapeManager,
+                                 final SyncBeanManager beanManager,
+                                 final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
+                                 final BS3PaletteWidget palette,
+                                 final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent) {
+        super(shapeManager,
+              beanManager,
+              defaultPaletteDefinitionFactoryInstance,
+              palette,
+              buildCanvasShapeEvent);
     }
 
     @PostConstruct
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void init() {
         super.init();
-        Collection<SyncBeanDef<BS3PaletteViewFactory>> beanDefSets = beanManager.lookupBeans( BS3PaletteViewFactory.class );
-        for ( SyncBeanDef<BS3PaletteViewFactory> defSet : beanDefSets ) {
+        Collection<SyncBeanDef<BS3PaletteViewFactory>> beanDefSets = beanManager.lookupBeans(BS3PaletteViewFactory.class);
+        for (SyncBeanDef<BS3PaletteViewFactory> defSet : beanDefSets) {
             BS3PaletteViewFactory factory = defSet.getInstance();
-            viewFactories.add( factory );
+            viewFactories.add(factory);
         }
     }
 
     @Override
-    protected void applyGrid( final PaletteGrid grid ) {
+    protected void applyGrid(final PaletteGrid grid) {
         // TODO: Currently grid is hardcoded on the widget itself, refactor pending.
     }
 
     @Override
-    protected void beforeBindPalette( final DefinitionSetPalette paletteDefinition,
-                                      final String shapeSetId ) {
-        super.beforeBindPalette( paletteDefinition,
-                                 shapeSetId );
+    protected void beforeBindPalette(final DefinitionSetPalette paletteDefinition,
+                                     final String shapeSetId) {
+        super.beforeBindPalette(paletteDefinition,
+                                shapeSetId);
         final String defSetId = paletteDefinition.getDefinitionSetId();
-        BS3PaletteViewFactory viewFactory = getViewFactory( defSetId );
-        if ( null == viewFactory ) {
-            viewFactory = new BS3PaletteGlyphViewFactory( shapeManager );
+        BS3PaletteViewFactory viewFactory = getViewFactory(defSetId);
+        if (null == viewFactory) {
+            viewFactory = new BS3PaletteGlyphViewFactory(shapeManager);
         }
-        palette.setViewFactory( viewFactory );
+        palette.setViewFactory(viewFactory);
     }
 
-    private BS3PaletteViewFactory getViewFactory( final String defSetId ) {
-        for ( final BS3PaletteViewFactory factory : viewFactories ) {
-            if ( factory.accepts( defSetId ) ) {
+    private BS3PaletteViewFactory getViewFactory(final String defSetId) {
+        for (final BS3PaletteViewFactory factory : viewFactories) {
+            if (factory.accepts(defSetId)) {
                 return factory;
             }
         }

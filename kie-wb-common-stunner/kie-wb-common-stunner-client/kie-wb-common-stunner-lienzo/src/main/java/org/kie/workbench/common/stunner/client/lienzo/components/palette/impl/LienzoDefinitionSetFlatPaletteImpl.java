@@ -49,18 +49,18 @@ public class LienzoDefinitionSetFlatPaletteImpl
     private final List<GlyphPaletteItem> items = new LinkedList<>();
 
     protected LienzoDefinitionSetFlatPaletteImpl() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public LienzoDefinitionSetFlatPaletteImpl( final ShapeManager shapeManager,
-                                               final LienzoPaletteViewImpl view,
-                                               final DefinitionGlyphTooltip definitionGlyphTooltip ) {
-        super( shapeManager,
-               definitionGlyphTooltip,
-               view );
+    public LienzoDefinitionSetFlatPaletteImpl(final ShapeManager shapeManager,
+                                              final LienzoPaletteViewImpl view,
+                                              final DefinitionGlyphTooltip definitionGlyphTooltip) {
+        super(shapeManager,
+              definitionGlyphTooltip,
+              view);
     }
 
     @PostConstruct
@@ -71,17 +71,17 @@ public class LienzoDefinitionSetFlatPaletteImpl
     @Override
     protected void doBind() {
         items.clear();
-        final DefinitionSetPalette definitionSetPalette = ( DefinitionSetPalette ) paletteDefinition;
+        final DefinitionSetPalette definitionSetPalette = (DefinitionSetPalette) paletteDefinition;
         final List<DefinitionPaletteCategory> categories = definitionSetPalette.getItems();
-        if ( null != categories && !categories.isEmpty() ) {
+        if (null != categories && !categories.isEmpty()) {
             final PaletteGrid grid = getGrid();
-            for ( final DefinitionPaletteCategory category : categories ) {
+            for (final DefinitionPaletteCategory category : categories) {
                 final List<DefinitionPaletteItem> categoryItems = category.getItems();
-                if ( null != categoryItems && !categoryItems.isEmpty() ) {
-                    for ( final GlyphPaletteItem item : categoryItems ) {
-                        addGlyphItemIntoView( item,
-                                              grid );
-                        items.add( item );
+                if (null != categoryItems && !categoryItems.isEmpty()) {
+                    for (final GlyphPaletteItem item : categoryItems) {
+                        addGlyphItemIntoView(item,
+                                             grid);
+                        items.add(item);
                     }
                     // TODO: addSeparatorIntoView( grid ); - Too much height as using static grid size.
                 }
@@ -92,9 +92,9 @@ public class LienzoDefinitionSetFlatPaletteImpl
     @Override
     protected ShapeFactory getShapeFactory() {
         final ShapeFactory f = super.getShapeFactory();
-        if ( null == f ) {
-            final DefinitionSetPalette definitionSetPalette = ( DefinitionSetPalette ) paletteDefinition;
-            return shapeManager.getDefaultShapeSet( definitionSetPalette.getDefinitionSetId() ).getShapeFactory();
+        if (null == f) {
+            final DefinitionSetPalette definitionSetPalette = (DefinitionSetPalette) paletteDefinition;
+            return shapeManager.getDefaultShapeSet(definitionSetPalette.getDefinitionSetId()).getShapeFactory();
         }
         return f;
     }
@@ -104,22 +104,22 @@ public class LienzoDefinitionSetFlatPaletteImpl
         return items;
     }
 
-    protected void addTextIntoView( final String text,
-                                    final PaletteGrid grid ) {
-        final LienzoTextPaletteElementView separatorPaletteTextView = new LienzoTextPaletteElementViewImpl( text,
-                                                                                                            "Verdana",
-                                                                                                            10 );
-        addElementIntoView( separatorPaletteTextView );
+    protected void addTextIntoView(final String text,
+                                   final PaletteGrid grid) {
+        final LienzoTextPaletteElementView separatorPaletteTextView = new LienzoTextPaletteElementViewImpl(text,
+                                                                                                           "Verdana",
+                                                                                                           10);
+        addElementIntoView(separatorPaletteTextView);
     }
 
-    protected void addSeparatorIntoView( final PaletteGrid grid ) {
-        final LienzoSeparatorPaletteElementView separatorPaletteElementView = new LienzoSeparatorPaletteElementViewImpl( grid.getIconSize(),
-                                                                                                                         grid.getIconSize() );
-        addElementIntoView( separatorPaletteElementView );
+    protected void addSeparatorIntoView(final PaletteGrid grid) {
+        final LienzoSeparatorPaletteElementView separatorPaletteElementView = new LienzoSeparatorPaletteElementViewImpl(grid.getIconSize(),
+                                                                                                                        grid.getIconSize());
+        addElementIntoView(separatorPaletteElementView);
     }
 
-    protected void addElementIntoView( final LienzoPaletteElementView paletteElementView ) {
-        itemViews.add( paletteElementView );
-        view.add( paletteElementView );
+    protected void addElementIntoView(final LienzoPaletteElementView paletteElementView) {
+        itemViews.add(paletteElementView);
+        view.add(paletteElementView);
     }
 }

@@ -29,27 +29,27 @@ public final class CanvasDockNodeCommand extends AbstractCanvasCommand {
     private final Node parent;
     private final Node candidate;
 
-    public CanvasDockNodeCommand( final Node parent,
-                                  final Node candidate ) {
+    public CanvasDockNodeCommand(final Node parent,
+                                 final Node candidate) {
         this.parent = parent;
         this.candidate = candidate;
     }
 
     @Override
-    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
-        context.dock( parent,
-                      candidate );
-        context.applyElementMutation( parent,
-                                      MutationContext.STATIC );
-        context.applyElementMutation( candidate,
-                                      MutationContext.STATIC );
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+        context.dock(parent,
+                     candidate);
+        context.applyElementMutation(parent,
+                                     MutationContext.STATIC);
+        context.applyElementMutation(candidate,
+                                     MutationContext.STATIC);
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        return new CanvasUndockNodeCommand( parent,
-                                            candidate ).execute( context );
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+        return new CanvasUndockNodeCommand(parent,
+                                           candidate).execute(context);
     }
 
     public Node getParent() {

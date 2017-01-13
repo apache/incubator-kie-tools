@@ -42,7 +42,7 @@ public class GraphFactoryImpl extends AbstractElementFactory<String, DefinitionS
     }
 
     @Inject
-    public GraphFactoryImpl( final DefinitionManager definitionManager ) {
+    public GraphFactoryImpl(final DefinitionManager definitionManager) {
         this.definitionManager = definitionManager;
     }
 
@@ -52,18 +52,18 @@ public class GraphFactoryImpl extends AbstractElementFactory<String, DefinitionS
     }
 
     @Override
-    @SuppressWarnings( "unchecked   " )
-    public Graph<DefinitionSet, Node> build( final String uuid,
-                                             final String definitionSetId ) {
-        final GraphImpl graph = new GraphImpl<>( uuid,
-                                                 new GraphNodeStoreImpl() );
-        final DefinitionSet content = new DefinitionSetImpl( definitionSetId );
-        graph.setContent( content );
-        content.setBounds( new BoundsImpl( new BoundImpl( 0d,
-                                                          0d ),
-                                           new BoundImpl( DEFAULT_WIDTH,
-                                                          DEFAULT_HEIGHT )
-        ) );
+    @SuppressWarnings("unchecked   ")
+    public Graph<DefinitionSet, Node> build(final String uuid,
+                                            final String definitionSetId) {
+        final GraphImpl graph = new GraphImpl<>(uuid,
+                                                new GraphNodeStoreImpl());
+        final DefinitionSet content = new DefinitionSetImpl(definitionSetId);
+        graph.setContent(content);
+        content.setBounds(new BoundsImpl(new BoundImpl(0d,
+                                                       0d),
+                                         new BoundImpl(DEFAULT_WIDTH,
+                                                       DEFAULT_HEIGHT)
+        ));
         return graph;
     }
 }

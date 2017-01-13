@@ -59,7 +59,7 @@ public class DefaultRoute implements BPMNProperty {
     public DefaultRoute() {
     }
 
-    public DefaultRoute( final String value ) {
+    public DefaultRoute(final String value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class DefaultRoute implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

@@ -36,18 +36,18 @@ public class GlyphDefinitions {
 
         private final Map<Class<?>, String> MAPPINGS = new LinkedHashMap<>();
 
-        @SuppressWarnings( "unchecked" )
-        public <W> GlyphShapeDefMap<W> addMapping( final Class<?> type,
-                                                   final String id ) {
-            MAPPINGS.put( type,
-                          id );
-            return ( GlyphShapeDefMap<W> ) this;
+        @SuppressWarnings("unchecked")
+        public <W> GlyphShapeDefMap<W> addMapping(final Class<?> type,
+                                                  final String id) {
+            MAPPINGS.put(type,
+                         id);
+            return (GlyphShapeDefMap<W>) this;
         }
 
         @Override
-        public String getGlyphDefinitionId( final Class<?> clazz ) {
-            final String id = MAPPINGS.get( clazz );
-            return null != id ? id : super.getGlyphDefinitionId( clazz );
+        public String getGlyphDefinitionId(final Class<?> clazz) {
+            final String id = MAPPINGS.get(clazz);
+            return null != id ? id : super.getGlyphDefinitionId(clazz);
         }
     }
 }

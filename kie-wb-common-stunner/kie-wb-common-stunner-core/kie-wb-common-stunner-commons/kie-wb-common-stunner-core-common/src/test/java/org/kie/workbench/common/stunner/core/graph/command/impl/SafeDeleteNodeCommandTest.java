@@ -39,7 +39,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class SafeDeleteNodeCommandTest extends AbstractGraphCommandTest {
 
     private static final String UUID = "nodeUUID";
@@ -57,134 +57,134 @@ public class SafeDeleteNodeCommandTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() throws Exception {
-        super.init( 500,
-                    500 );
-        node = mockNode( UUID );
-        node1 = mockNode( UUID1 );
-        edge = mockEdge( EDGE_UUID );
-        graphNodes.add( node );
-        graphNodes.add( node1 );
-        when( graphIndex.getNode( eq( UUID ) ) ).thenReturn( node );
-        when( graphIndex.getNode( eq( UUID ) ) ).thenReturn( node );
-        when( graphIndex.getEdge( eq( EDGE_UUID ) ) ).thenReturn( edge );
-        when( node.getOutEdges() ).thenReturn( nodeOutEdges );
-        when( node.getInEdges() ).thenReturn( nodeInEdges );
-        when( node1.getOutEdges() ).thenReturn( nodeOutEdges1 );
-        when( node1.getInEdges() ).thenReturn( nodeInEdges1 );
-        this.tested = new SafeDeleteNodeCommand( UUID );
+        super.init(500,
+                   500);
+        node = mockNode(UUID);
+        node1 = mockNode(UUID1);
+        edge = mockEdge(EDGE_UUID);
+        graphNodes.add(node);
+        graphNodes.add(node1);
+        when(graphIndex.getNode(eq(UUID))).thenReturn(node);
+        when(graphIndex.getNode(eq(UUID))).thenReturn(node);
+        when(graphIndex.getEdge(eq(EDGE_UUID))).thenReturn(edge);
+        when(node.getOutEdges()).thenReturn(nodeOutEdges);
+        when(node.getInEdges()).thenReturn(nodeInEdges);
+        when(node1.getOutEdges()).thenReturn(nodeOutEdges1);
+        when(node1.getInEdges()).thenReturn(nodeInEdges1);
+        this.tested = new SafeDeleteNodeCommand(UUID);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testSingleNode() {
-        CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
+        CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         List<Command<GraphCommandExecutionContext, RuleViolation>> commands = tested.getCommands();
-        assertNotNull( commands );
-        assertTrue( 1 == commands.size() );
-        Command command1 = commands.get( 0 );
-        assertTrue( command1 instanceof DeregisterNodeCommand );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        verify( cardinalityRuleManager,
-                times( 2 ) ).evaluate( eq( graph ),
-                                       eq( node ),
-                                       eq( RuleManager.Operation.DELETE ) );
-        verify( edgeCardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( List.class ),
-                                       any( EdgeCardinalityRule.Type.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( containmentRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
-        verify( connectionRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( Node.class ) );
-        verify( dockingRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
+        assertNotNull(commands);
+        assertTrue(1 == commands.size());
+        Command command1 = commands.get(0);
+        assertTrue(command1 instanceof DeregisterNodeCommand);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        verify(cardinalityRuleManager,
+               times(2)).evaluate(eq(graph),
+                                  eq(node),
+                                  eq(RuleManager.Operation.DELETE));
+        verify(edgeCardinalityRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(List.class),
+                                  any(EdgeCardinalityRule.Type.class),
+                                  any(RuleManager.Operation.class));
+        verify(containmentRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
+        verify(connectionRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(Node.class));
+        verify(dockingRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testMultipleNodes() {
         initializeTheChildNode();
-        CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
+        CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         List<Command<GraphCommandExecutionContext, RuleViolation>> commands = tested.getCommands();
-        assertNotNull( commands );
-        assertTrue( 2 == commands.size() );
-        assertTrue( contains( commands,
-                              DeregisterNodeCommand.class ) );
-        assertTrue( contains( commands,
-                              SafeDeleteNodeCommand.class ) );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        verify( cardinalityRuleManager,
-                times( 3 ) ).evaluate( eq( graph ),
-                                       eq( node ),
-                                       eq( RuleManager.Operation.DELETE ) );
-        verify( edgeCardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( List.class ),
-                                       any( EdgeCardinalityRule.Type.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( connectionRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( Node.class ) );
-        verify( containmentRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
-        verify( dockingRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
+        assertNotNull(commands);
+        assertTrue(2 == commands.size());
+        assertTrue(contains(commands,
+                            DeregisterNodeCommand.class));
+        assertTrue(contains(commands,
+                            SafeDeleteNodeCommand.class));
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        verify(cardinalityRuleManager,
+               times(3)).evaluate(eq(graph),
+                                  eq(node),
+                                  eq(RuleManager.Operation.DELETE));
+        verify(edgeCardinalityRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(List.class),
+                                  any(EdgeCardinalityRule.Type.class),
+                                  any(RuleManager.Operation.class));
+        verify(connectionRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(Node.class));
+        verify(containmentRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
+        verify(dockingRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testAllowNoRules() {
-        when( graphCommandExecutionContext.getRulesManager() ).thenReturn( null );
-        CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        verify( cardinalityRuleManager,
-                times( 0 ) ).evaluate( eq( graph ),
-                                       eq( node ),
-                                       eq( RuleManager.Operation.DELETE ) );
-        verify( edgeCardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( List.class ),
-                                       any( EdgeCardinalityRule.Type.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( containmentRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
-        verify( connectionRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( Node.class ) );
-        verify( dockingRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
+        when(graphCommandExecutionContext.getRulesManager()).thenReturn(null);
+        CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        verify(cardinalityRuleManager,
+               times(0)).evaluate(eq(graph),
+                                  eq(node),
+                                  eq(RuleManager.Operation.DELETE));
+        verify(edgeCardinalityRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(List.class),
+                                  any(EdgeCardinalityRule.Type.class),
+                                  any(RuleManager.Operation.class));
+        verify(containmentRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
+        verify(connectionRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(Node.class));
+        verify(dockingRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     private void initializeTheChildNode() {
-        Child edgeContent = mock( Child.class );
-        when( edge.getContent() ).thenReturn( edgeContent );
-        when( edge.getSourceNode() ).thenReturn( node );
-        when( edge.getTargetNode() ).thenReturn( node1 );
-        nodeOutEdges.add( edge );
-        nodeInEdges1.add( edge );
+        Child edgeContent = mock(Child.class);
+        when(edge.getContent()).thenReturn(edgeContent);
+        when(edge.getSourceNode()).thenReturn(node);
+        when(edge.getTargetNode()).thenReturn(node1);
+        nodeOutEdges.add(edge);
+        nodeInEdges1.add(edge);
     }
 
-    @SuppressWarnings( "unchecked" )
-    private boolean contains( List commands,
-                              Class<?> clazz ) {
-        return commands.stream().filter( command -> command.getClass().isAssignableFrom( clazz ) ).findFirst().isPresent();
+    @SuppressWarnings("unchecked")
+    private boolean contains(List commands,
+                             Class<?> clazz) {
+        return commands.stream().filter(command -> command.getClass().isAssignableFrom(clazz)).findFirst().isPresent();
     }
 }

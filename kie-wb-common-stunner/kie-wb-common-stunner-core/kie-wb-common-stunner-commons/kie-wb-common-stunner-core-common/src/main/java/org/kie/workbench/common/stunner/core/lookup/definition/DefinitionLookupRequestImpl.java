@@ -29,13 +29,13 @@ public final class DefinitionLookupRequestImpl extends AbstractLookupRequest imp
 
     private final String definitionSetId;
 
-    public DefinitionLookupRequestImpl( final @MapsTo( "criteria" ) String criteria,
-                                        final @MapsTo( "page" ) int page,
-                                        final @MapsTo( "pageSize" ) int pageSize,
-                                        final @MapsTo( "definitionSetId" ) String definitionSetId ) {
-        super( criteria,
-               page,
-               pageSize );
+    public DefinitionLookupRequestImpl(final @MapsTo("criteria") String criteria,
+                                       final @MapsTo("page") int page,
+                                       final @MapsTo("pageSize") int pageSize,
+                                       final @MapsTo("definitionSetId") String definitionSetId) {
+        super(criteria,
+              page,
+              pageSize);
         this.definitionSetId = definitionSetId;
     }
 
@@ -55,31 +55,31 @@ public final class DefinitionLookupRequestImpl extends AbstractLookupRequest imp
         private String defSetId;
         private final StringBuilder criteria = new StringBuilder();
 
-        public Builder definitionSetId( final String defSetId ) {
+        public Builder definitionSetId(final String defSetId) {
             this.defSetId = defSetId;
             return this;
         }
 
-        public Builder id( final String id ) {
-            criteria.append( "id=" ).append( id ).append( ";" );
+        public Builder id(final String id) {
+            criteria.append("id=").append(id).append(";");
             return this;
         }
 
-        public Builder type( final Type type ) {
-            criteria.append( "type=" ).append( type.name().toLowerCase() ).append( ";" );
+        public Builder type(final Type type) {
+            criteria.append("type=").append(type.name().toLowerCase()).append(";");
             return this;
         }
 
-        public Builder labels( final Set<String> labels ) {
-            criteria.append( "labels=" ).append( fromSet( labels ) ).append( ";" );
+        public Builder labels(final Set<String> labels) {
+            criteria.append("labels=").append(fromSet(labels)).append(";");
             return this;
         }
 
         public DefinitionLookupRequest build() {
-            return new DefinitionLookupRequestImpl( criteria.toString(),
-                                                    page,
-                                                    pageSize,
-                                                    defSetId );
+            return new DefinitionLookupRequestImpl(criteria.toString(),
+                                                   page,
+                                                   pageSize,
+                                                   defSetId);
         }
     }
 }

@@ -32,61 +32,61 @@ public abstract class CommandResultBuilder<V> {
     private String message = RESULT_SUCCESS;
     private final Collection<V> violations = new LinkedList<>();
 
-    public abstract boolean isError( final V violation );
+    public abstract boolean isError(final V violation);
 
-    public abstract String getMessage( final V violation );
+    public abstract String getMessage(final V violation);
 
     public CommandResultBuilder() {
     }
 
-    public CommandResultBuilder( final Collection<V> violations ) {
-        this.violations.addAll( violations );
+    public CommandResultBuilder(final Collection<V> violations) {
+        this.violations.addAll(violations);
     }
 
-    public CommandResultBuilder<V> addViolation( final V violation ) {
-        this.violations.add( violation );
+    public CommandResultBuilder<V> addViolation(final V violation) {
+        this.violations.add(violation);
         return this;
     }
 
-    public CommandResultBuilder<V> addViolations( final Collection<V> violations ) {
-        this.violations.addAll( violations );
+    public CommandResultBuilder<V> addViolations(final Collection<V> violations) {
+        this.violations.addAll(violations);
         return this;
     }
 
-    public void setType( final CommandResult.Type type ) {
+    public void setType(final CommandResult.Type type) {
         this.type = type;
     }
 
-    public void setMessage( final String message ) {
+    public void setMessage(final String message) {
         this.message = message;
     }
 
     public CommandResult<V> build() {
-        if ( null != violations && !violations.isEmpty() ) {
+        if (null != violations && !violations.isEmpty()) {
             StringBuilder messages = new StringBuilder();
             String message = null;
             int c = 0;
-            for ( final V violation : violations ) {
-                if ( isError( violation ) ) {
-                    message = getMessage( violation );
-                    messages.append( " {" ).append( message ).append( " } " );
+            for (final V violation : violations) {
+                if (isError(violation)) {
+                    message = getMessage(violation);
+                    messages.append(" {").append(message).append(" } ");
                     c++;
                 }
             }
-            if ( c > 1 ) {
+            if (c > 1) {
                 message = "Found " + c + " violations - " + messages.toString();
             }
-            if ( c > 0 ) {
+            if (c > 0) {
                 this.message = message;
                 this.type = CommandResult.Type.ERROR;
             }
         }
         // Default values.
         this.type = this.type == null ? CommandResult.Type.INFO : this.type;
-        this.message = ( this.message == null || this.message.trim().length() == 0 )
+        this.message = (this.message == null || this.message.trim().length() == 0)
                 ? RESULT_SUCCESS : this.message;
-        return new CommandResultImpl<>( this.type,
-                                        this.message,
-                                        this.violations );
+        return new CommandResultImpl<>(this.type,
+                                       this.message,
+                                       this.violations);
     }
 }

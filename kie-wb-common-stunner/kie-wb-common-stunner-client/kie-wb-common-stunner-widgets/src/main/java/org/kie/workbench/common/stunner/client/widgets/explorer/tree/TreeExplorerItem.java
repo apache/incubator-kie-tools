@@ -35,15 +35,15 @@ import org.uberfire.client.mvp.UberView;
 @Dependent
 public class TreeExplorerItem implements IsWidget {
 
-    private static Logger LOGGER = Logger.getLogger( TreeExplorerItem.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(TreeExplorerItem.class.getName());
 
     public interface View extends UberView<TreeExplorerItem> {
 
-        View setUUID( String uuid );
+        View setUUID(String uuid);
 
-        View setName( String name );
+        View setName(String name);
 
-        View setGlyph( Glyph<Group> glyph );
+        View setGlyph(Glyph<Group> glyph);
     }
 
     ShapeManager shapeManager;
@@ -52,10 +52,10 @@ public class TreeExplorerItem implements IsWidget {
     View view;
 
     @Inject
-    public TreeExplorerItem( final ShapeManager shapeManager,
-                             final GraphUtils graphUtils,
-                             final DefinitionUtils definitionUtils,
-                             final View view ) {
+    public TreeExplorerItem(final ShapeManager shapeManager,
+                            final GraphUtils graphUtils,
+                            final DefinitionUtils definitionUtils,
+                            final View view) {
         this.shapeManager = shapeManager;
         this.graphUtils = graphUtils;
         this.definitionUtils = definitionUtils;
@@ -64,7 +64,7 @@ public class TreeExplorerItem implements IsWidget {
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
@@ -72,21 +72,21 @@ public class TreeExplorerItem implements IsWidget {
         return view.asWidget();
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void show( final String shapeSetId,
-                      final Element<org.kie.workbench.common.stunner.core.graph.content.view.View> element ) {
+    @SuppressWarnings("unchecked")
+    public void show(final String shapeSetId,
+                     final Element<org.kie.workbench.common.stunner.core.graph.content.view.View> element) {
         final Object definition = element.getContent().getDefinition();
-        final String defId = definitionUtils.getDefinitionManager().adapters().forDefinition().getId( definition );
-        final ShapeFactory factory = shapeManager.getShapeSet( shapeSetId ).getShapeFactory();
-        view.setUUID( element.getUUID() )
-                .setName( getItemText( element ) )
-                .setGlyph( factory.glyph( defId,
-                                          25,
-                                          25 ) );
+        final String defId = definitionUtils.getDefinitionManager().adapters().forDefinition().getId(definition);
+        final ShapeFactory factory = shapeManager.getShapeSet(shapeSetId).getShapeFactory();
+        view.setUUID(element.getUUID())
+                .setName(getItemText(element))
+                .setGlyph(factory.glyph(defId,
+                                        25,
+                                        25));
     }
 
-    private String getItemText( final Element<org.kie.workbench.common.stunner.core.graph.content.view.View> item ) {
-        final String name = definitionUtils.getName( item.getContent().getDefinition() );
-        return ( name != null ? name : "- No name -" );
+    private String getItemText(final Element<org.kie.workbench.common.stunner.core.graph.content.view.View> item) {
+        final String name = definitionUtils.getName(item.getContent().getDefinition());
+        return (name != null ? name : "- No name -");
     }
 }

@@ -59,7 +59,7 @@ public class ProcessVariables implements BPMNProperty {
     public ProcessVariables() {
     }
 
-    public ProcessVariables( final String value ) {
+    public ProcessVariables(final String value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class ProcessVariables implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

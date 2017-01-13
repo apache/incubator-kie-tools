@@ -44,47 +44,47 @@ public class LienzoCanvasPaletteControl extends AbstractCanvasPaletteControl {
     Event<CanvasElementSelectedEvent> elementSelectedEvent;
 
     @Inject
-    public LienzoCanvasPaletteControl( final LienzoDefinitionSetPaletteFactory paletteFactory,
-                                       final @Element ElementBuilderControl<AbstractCanvasHandler> elementBuilderControl,
-                                       final ClientFactoryService factoryServices,
-                                       final ShapeManager shapeManager,
-                                       final Event<CanvasElementSelectedEvent> elementSelectedEvent ) {
-        super( paletteFactory,
-               elementBuilderControl,
-               factoryServices,
-               shapeManager );
+    public LienzoCanvasPaletteControl(final LienzoDefinitionSetPaletteFactory paletteFactory,
+                                      final @Element ElementBuilderControl<AbstractCanvasHandler> elementBuilderControl,
+                                      final ClientFactoryService factoryServices,
+                                      final ShapeManager shapeManager,
+                                      final Event<CanvasElementSelectedEvent> elementSelectedEvent) {
+        super(paletteFactory,
+              elementBuilderControl,
+              factoryServices,
+              shapeManager);
         this.elementSelectedEvent = elementSelectedEvent;
     }
 
     private LienzoDefinitionSetPalette getLienzoPalette() {
-        return null != this.palette ? ( LienzoDefinitionSetPalette ) this.palette : null;
+        return null != this.palette ? (LienzoDefinitionSetPalette) this.palette : null;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     protected void attachPaletteView() {
-        getLienzoPalette().setExpandable( false );
-        getLienzoPalette().setLayout( LienzoPalette.Layout.VERTICAL );
-        final LienzoLayer lienzoLayer = ( LienzoLayer ) canvasHandler.getCanvas().getLayer();
-        getPaletteView().attach( lienzoLayer.getLienzoLayer() );
+        getLienzoPalette().setExpandable(false);
+        getLienzoPalette().setLayout(LienzoPalette.Layout.VERTICAL);
+        final LienzoLayer lienzoLayer = (LienzoLayer) canvasHandler.getCanvas().getLayer();
+        getPaletteView().attach(lienzoLayer.getLienzoLayer());
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     protected PaletteView getPaletteView() {
         return null != getLienzoPalette() ? getLienzoPalette().getView() : null;
     }
 
     @Override
     protected PaletteGrid getGrid() {
-        return new PaletteGridImpl( ICON_SIZE,
-                                    PADDING );
+        return new PaletteGridImpl(ICON_SIZE,
+                                   PADDING);
     }
 
     @Override
-    protected void onItemBuilt( final String uuid ) {
-        super.onItemBuilt( uuid );
-        elementSelectedEvent.fire( new CanvasElementSelectedEvent( canvasHandler,
-                                                                   uuid ) );
+    protected void onItemBuilt(final String uuid) {
+        super.onItemBuilt(uuid);
+        elementSelectedEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
+                                                                 uuid));
     }
 }

@@ -31,17 +31,17 @@ public class LocalResource {
     private String _path;
     private String _name;
 
-    public LocalResource( String name,
-                          String path,
-                          ServletContext context ) {
+    public LocalResource(String name,
+                         String path,
+                         ServletContext context) {
         this._name = name;
         StringBuilder localPath = new StringBuilder();
-        localPath.append( ConfigurationProvider.getInstance().getDesignerContext() ).append( "js" ).append( "/" ).append( "Plugins" ).append( "/" ).append( path );
-        this._path = context.getRealPath( localPath.toString() );
+        localPath.append(ConfigurationProvider.getInstance().getDesignerContext()).append("js").append("/").append("Plugins").append("/").append(path);
+        this._path = context.getRealPath(localPath.toString());
     }
 
-    public LocalResource( String name,
-                          String path ) {
+    public LocalResource(String name,
+                         String path) {
         this._name = name;
         this._path = path;
     }
@@ -52,9 +52,9 @@ public class LocalResource {
 
     public InputStream getContents() {
         try {
-            return new FileInputStream( _path );
-        } catch ( FileNotFoundException e ) {
-            throw new IllegalArgumentException( e );
+            return new FileInputStream(_path);
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 }

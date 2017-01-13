@@ -36,67 +36,67 @@ public final class EndTerminateEventShapeDef
                    HasChildShapeDefs<EndTerminateEvent> {
 
     @Override
-    public double getRadius( final EndTerminateEvent element ) {
+    public double getRadius(final EndTerminateEvent element) {
         return element.getDimensionsSet().getRadius().getValue();
     }
 
     @Override
-    public String getBackgroundColor( final EndTerminateEvent element ) {
+    public String getBackgroundColor(final EndTerminateEvent element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final EndTerminateEvent element ) {
+    public double getBackgroundAlpha(final EndTerminateEvent element) {
         return 1;
     }
 
     @Override
-    public String getBorderColor( final EndTerminateEvent element ) {
+    public String getBorderColor(final EndTerminateEvent element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final EndTerminateEvent element ) {
+    public double getBorderSize(final EndTerminateEvent element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final EndTerminateEvent element ) {
+    public double getBorderAlpha(final EndTerminateEvent element) {
         return 1;
     }
 
     @Override
-    public String getFontFamily( final EndTerminateEvent element ) {
+    public String getFontFamily(final EndTerminateEvent element) {
         return element.getFontSet().getFontFamily().getValue();
     }
 
     @Override
-    public String getFontColor( final EndTerminateEvent element ) {
+    public String getFontColor(final EndTerminateEvent element) {
         return element.getFontSet().getFontColor().getValue();
     }
 
     @Override
-    public double getFontSize( final EndTerminateEvent element ) {
+    public double getFontSize(final EndTerminateEvent element) {
         return element.getFontSet().getFontSize().getValue();
     }
 
     @Override
-    public String getNamePropertyValue( final EndTerminateEvent element ) {
+    public String getNamePropertyValue(final EndTerminateEvent element) {
         return element.getGeneral().getName().getValue();
     }
 
     @Override
-    public double getFontBorderSize( final EndTerminateEvent element ) {
+    public double getFontBorderSize(final EndTerminateEvent element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final EndTerminateEvent element ) {
+    public HasTitle.Position getFontPosition(final EndTerminateEvent element) {
         return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public double getFontRotation( final EndTerminateEvent element ) {
+    public double getFontRotation(final EndTerminateEvent element) {
         return 0;
     }
 
@@ -109,8 +109,8 @@ public final class EndTerminateEventShapeDef
     @Override
     public Map<ShapeDef<EndTerminateEvent>, HasChildren.Layout> getChildShapeDefs() {
         return new HashMap<ShapeDef<EndTerminateEvent>, HasChildren.Layout>() {{
-            put( new InnerCircleShapeDef( EndTerminateEventShapeDef.this ),
-                 HasChildren.Layout.CENTER );
+            put(new InnerCircleShapeDef(EndTerminateEventShapeDef.this),
+                HasChildren.Layout.CENTER);
         }};
     }
 
@@ -120,32 +120,32 @@ public final class EndTerminateEventShapeDef
 
         private static final String BG_COLOR = "#000000";
 
-        public InnerCircleShapeDef( final BasicShapeWithTitleDef<EndTerminateEvent> parent ) {
-            super( parent );
+        public InnerCircleShapeDef(final BasicShapeWithTitleDef<EndTerminateEvent> parent) {
+            super(parent);
         }
 
         @Override
-        public double getRadius( final EndTerminateEvent element ) {
-            return EndTerminateEventShapeDef.this.getRadius( element ) * 0.6;
+        public double getRadius(final EndTerminateEvent element) {
+            return EndTerminateEventShapeDef.this.getRadius(element) * 0.6;
         }
 
         @Override
-        public String getBackgroundColor( EndTerminateEvent element ) {
+        public String getBackgroundColor(final EndTerminateEvent element) {
             return BG_COLOR;
         }
 
         @Override
-        public double getBorderSize( final EndTerminateEvent element ) {
+        public double getBorderSize(final EndTerminateEvent element) {
             return 1;
         }
 
         @Override
-        public HasTitle.Position getFontPosition( final EndTerminateEvent element ) {
+        public HasTitle.Position getFontPosition(final EndTerminateEvent element) {
             return HasTitle.Position.CENTER;
         }
 
         @Override
-        public double getFontRotation( final EndTerminateEvent element ) {
+        public double getFontRotation(final EndTerminateEvent element) {
             return 0;
         }
     }

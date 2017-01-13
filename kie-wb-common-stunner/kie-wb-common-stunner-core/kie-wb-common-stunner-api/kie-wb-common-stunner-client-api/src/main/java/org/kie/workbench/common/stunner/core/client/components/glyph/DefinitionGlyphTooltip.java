@@ -18,20 +18,20 @@ package org.kie.workbench.common.stunner.core.client.components.glyph;
 
 public interface DefinitionGlyphTooltip<G> extends GlyphTooltip<G> {
 
-    DefinitionGlyphTooltip<G> setPrefix( final String prefix );
+    DefinitionGlyphTooltip<G> setPrefix(final String prefix);
 
-    DefinitionGlyphTooltip<G> setSuffix( final String suffix );
+    DefinitionGlyphTooltip<G> setSuffix(final String suffix);
 
-    DefinitionGlyphTooltip<G> showTooltip( final String definitionId,
-                                           final double x,
-                                           final double y,
-                                           final GlyphTooltip.Direction direction );
+    DefinitionGlyphTooltip<G> showTooltip(final String definitionId,
+                                          final double x,
+                                          final double y,
+                                          final GlyphTooltip.Direction direction);
 
-    DefinitionGlyphTooltip<G> showGlyph( final String defSetId,
-                                         final String definitionId,
-                                         final double x,
-                                         final double y,
-                                         final double width,
-                                         final double height,
-                                         final GlyphTooltip.Direction direction );
+    DefinitionGlyphTooltip<G> showGlyph(final String defSetId,
+                                        final String definitionId,
+                                        final double x,
+                                        final double y,
+                                        final double width,
+                                        final double height,
+                                        final GlyphTooltip.Direction direction);
 }

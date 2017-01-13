@@ -24,5 +24,5 @@ package org.kie.workbench.common.stunner.bpmn.backend.legacy.repository;
  */
 public interface Filter<T> {
 
-    public boolean accept( T object );
+    public boolean accept(T object);
 }

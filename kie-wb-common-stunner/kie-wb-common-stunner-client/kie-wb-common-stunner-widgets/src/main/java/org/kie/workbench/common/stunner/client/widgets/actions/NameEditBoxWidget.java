@@ -38,7 +38,7 @@ public class NameEditBoxWidget extends AbstractNameEditBox<Element> {
 
     public interface View extends UberView<NameEditBoxWidget> {
 
-        View show( final String name );
+        View show(final String name);
 
         View hide();
     }
@@ -52,11 +52,11 @@ public class NameEditBoxWidget extends AbstractNameEditBox<Element> {
     private String nameValue;
 
     @Inject
-    public NameEditBoxWidget( final DefinitionUtils definitionUtils,
-                              final CanvasCommandFactory canvasCommandFactory,
-                              final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
-                              final GraphUtils graphUtils,
-                              final View view ) {
+    public NameEditBoxWidget(final DefinitionUtils definitionUtils,
+                             final CanvasCommandFactory canvasCommandFactory,
+                             final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
+                             final GraphUtils graphUtils,
+                             final View view) {
         this.definitionUtils = definitionUtils;
         this.canvasCommandFactory = canvasCommandFactory;
         this.canvasCommandManager = canvasCommandManager;
@@ -68,14 +68,14 @@ public class NameEditBoxWidget extends AbstractNameEditBox<Element> {
 
     @PostConstruct
     public void setup() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
-    public void show( final Element element ) {
+    public void show(final Element element) {
         this.element = element;
-        final String name = definitionUtils.getName( this.element.getContent().getDefinition() );
-        view.show( name );
+        final String name = definitionUtils.getName(this.element.getContent().getDefinition());
+        view.show(name);
     }
 
     @Override
@@ -89,37 +89,37 @@ public class NameEditBoxWidget extends AbstractNameEditBox<Element> {
         return view.asWidget();
     }
 
-    void onChangeName( final String name ) {
+    void onChangeName(final String name) {
         this.nameValue = name;
     }
 
     // TODO: Check command result.
     void onSave() {
-        if ( null != this.nameValue ) {
+        if (null != this.nameValue) {
             final Object def = element.getContent().getDefinition();
-            final String nameId = definitionUtils.getNameIdentifier( def );
-            if ( null != nameId ) {
-                UpdateElementPropertyCommand command = canvasCommandFactory.updatePropertyValue( element,
-                                                                                                 nameId,
-                                                                                                 this.nameValue );
-                canvasCommandManager.execute( canvasHandler,
-                                              command );
+            final String nameId = definitionUtils.getNameIdentifier(def);
+            if (null != nameId) {
+                UpdateElementPropertyCommand command = canvasCommandFactory.updatePropertyValue(element,
+                                                                                                nameId,
+                                                                                                this.nameValue);
+                canvasCommandManager.execute(canvasHandler,
+                                             command);
             }
         }
         view.hide();
         fireCloseCallback();
     }
 
-    void onKeyPress( final int keyCode,
-                     final String value ) {
-        processKey( keyCode,
-                    value );
+    void onKeyPress(final int keyCode,
+                    final String value) {
+        processKey(keyCode,
+                   value);
     }
 
-    void onKeyDown( final int keyCode,
-                    final String value ) {
-        processKey( keyCode,
-                    value );
+    void onKeyDown(final int keyCode,
+                   final String value) {
+        processKey(keyCode,
+                   value);
     }
 
     void onClose() {
@@ -127,17 +127,17 @@ public class NameEditBoxWidget extends AbstractNameEditBox<Element> {
         fireCloseCallback();
     }
 
-    private void processKey( final int keyCode,
-                             final String value ) {
+    private void processKey(final int keyCode,
+                            final String value) {
         this.nameValue = value;
         // Enter key produces save.
-        if ( 13 == keyCode ) {
+        if (13 == keyCode) {
             onSave();
         }
     }
 
     private void fireCloseCallback() {
-        if ( null != closeCallback ) {
+        if (null != closeCallback) {
             closeCallback.execute();
         }
     }

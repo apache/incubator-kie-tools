@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractObjectBuilder<W, T extends Element<View<W>>> implements GraphObjectBuilder<W, T> {
 
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractObjectBuilder.class );
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractObjectBuilder.class);
 
     protected String nodeId;
     protected Map<String, String> properties;
@@ -55,72 +55,72 @@ public abstract class AbstractObjectBuilder<W, T extends Element<View<W>>> imple
     }
 
     @Override
-    public GraphObjectBuilder<W, T> nodeId( String nodeId ) {
+    public GraphObjectBuilder<W, T> nodeId(final String nodeId) {
         this.nodeId = nodeId;
         return this;
     }
 
     @Override
-    public GraphObjectBuilder<W, T> property( String key,
-                                              String value ) {
-        properties.put( key,
-                        value );
+    public GraphObjectBuilder<W, T> property(final String key,
+                                             final String value) {
+        properties.put(key,
+                       value);
         return this;
     }
 
     @Override
-    public GraphObjectBuilder<W, T> out( String nodeId ) {
-        outgoingResourceIds.add( nodeId );
+    public GraphObjectBuilder<W, T> out(final String nodeId) {
+        outgoingResourceIds.add(nodeId);
         return this;
     }
 
     @Override
-    public GraphObjectBuilder<W, T> stencil( String stencilId ) {
+    public GraphObjectBuilder<W, T> stencil(final String stencilId) {
         return this;
     }
 
     @Override
-    public GraphObjectBuilder<W, T> boundUL( Double x,
-                                             Double y ) {
-        this.boundUL = new Double[]{ x, y };
+    public GraphObjectBuilder<W, T> boundUL(final Double x,
+                                            final Double y) {
+        this.boundUL = new Double[]{x, y};
         return this;
     }
 
     @Override
-    public GraphObjectBuilder<W, T> boundLR( Double x,
-                                             Double y ) {
-        this.boundLR = new Double[]{ x, y };
+    public GraphObjectBuilder<W, T> boundLR(final Double x,
+                                            final Double y) {
+        this.boundLR = new Double[]{x, y};
         return this;
     }
 
     @Override
-    public GraphObjectBuilder<W, T> docker( Double x,
-                                            Double y ) {
-        this.dockers.add( new Double[]{ x, y } );
+    public GraphObjectBuilder<W, T> docker(final Double x,
+                                           final Double y) {
+        this.dockers.add(new Double[]{x, y});
         return this;
     }
 
-    protected abstract T doBuild( BuilderContext context );
+    protected abstract T doBuild(final BuilderContext context);
 
     @Override
-    public T build( BuilderContext context ) {
-        if ( null == this.result ) {
-            this.result = doBuild( context );
+    public T build(final BuilderContext context) {
+        if (null == this.result) {
+            this.result = doBuild(context);
         }
         return this.result;
     }
 
-    protected boolean hasErrors( CommandResult<RuleViolation> results ) {
-        return CommandResult.Type.ERROR.equals( results.getType() );
+    protected boolean hasErrors(final CommandResult<RuleViolation> results) {
+        return CommandResult.Type.ERROR.equals(results.getType());
     }
 
-    protected GraphObjectBuilder<?, ?> getBuilder( BuilderContext context,
-                                                   String nodeId ) {
+    protected GraphObjectBuilder<?, ?> getBuilder(final BuilderContext context,
+                                                  final String nodeId) {
         Collection<GraphObjectBuilder<?, ?>> builders = context.getBuilders();
-        if ( builders != null && !builders.isEmpty() ) {
-            for ( GraphObjectBuilder<?, ?> builder : builders ) {
-                AbstractObjectBuilder<?, ?> abstractBuilder = ( AbstractObjectBuilder<?, ?> ) builder;
-                if ( abstractBuilder.nodeId.equals( nodeId ) ) {
+        if (builders != null && !builders.isEmpty()) {
+            for (GraphObjectBuilder<?, ?> builder : builders) {
+                AbstractObjectBuilder<?, ?> abstractBuilder = (AbstractObjectBuilder<?, ?>) builder;
+                if (abstractBuilder.nodeId.equals(nodeId)) {
                     return builder;
                 }
             }
@@ -128,40 +128,40 @@ public abstract class AbstractObjectBuilder<W, T extends Element<View<W>>> imple
         return null;
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected void setProperties( BuilderContext context,
-                                  BPMNDefinition definition ) {
+    @SuppressWarnings("unchecked")
+    protected void setProperties(final BuilderContext context,
+                                 final BPMNDefinition definition) {
         assert definition != null;
         Bpmn2OryxPropertyManager propertyManager = context.getOryxManager().getPropertyManager();
         OryxIdMappings idMappings = context.getOryxManager().getMappingsManager();
-        Set<?> defProperties = context.getDefinitionManager().adapters().forDefinition().getProperties( definition );
-        for ( Map.Entry<String, String> entry : properties.entrySet() ) {
+        Set<?> defProperties = context.getDefinitionManager().adapters().forDefinition().getProperties(definition);
+        for (Map.Entry<String, String> entry : properties.entrySet()) {
             final String oryxId = entry.getKey();
-            if ( !idMappings.isSkipProperty( definition.getClass(),
-                                             oryxId ) ) {
+            if (!idMappings.isSkipProperty(definition.getClass(),
+                                           oryxId)) {
                 final String pValue = entry.getValue();
-                final String pId = idMappings.getPropertyId( definition,
-                                                             oryxId );
+                final String pId = idMappings.getPropertyId(definition,
+                                                            oryxId);
                 boolean found = false;
-                if ( null != pId ) {
-                    final Object property = context.getGraphUtils().getProperty( defProperties,
-                                                                                 pId );
-                    if ( null != property ) {
+                if (null != pId) {
+                    final Object property = context.getGraphUtils().getProperty(defProperties,
+                                                                                pId);
+                    if (null != property) {
                         try {
-                            PropertyType propertyType = context.getDefinitionManager().adapters().forProperty().getType( property );
-                            Object value = propertyManager.parse( property,
-                                                                  propertyType,
-                                                                  pValue );
-                            context.getDefinitionManager().adapters().forProperty().setValue( property,
-                                                                                              value );
+                            PropertyType propertyType = context.getDefinitionManager().adapters().forProperty().getType(property);
+                            Object value = propertyManager.parse(property,
+                                                                 propertyType,
+                                                                 pValue);
+                            context.getDefinitionManager().adapters().forProperty().setValue(property,
+                                                                                             value);
                             found = true;
-                        } catch ( Exception e ) {
-                            LOG.error( "Cannot parse value [" + pValue + "] for property [" + pId + "]",
-                                       e );
+                        } catch (Exception e) {
+                            LOG.error("Cannot parse value [" + pValue + "] for property [" + pId + "]",
+                                      e);
                         }
                     }
                 }
-                if ( !found && null != pId ) {
+                if (!found && null != pId) {
                     //LOG.warn( "Property [" + pId + "] not found for definition [" + definition.getClass().getName() + "]" );
 
                 }
@@ -172,21 +172,21 @@ public abstract class AbstractObjectBuilder<W, T extends Element<View<W>>> imple
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append( " [NodeId=" ).append( nodeId ).append( "] " );
-        builder.append( " [properties=" ).append( properties ).append( "] " );
-        builder.append( " [outgoingResourceIds=" ).append( outgoingResourceIds ).append( "] " );
+        builder.append(" [NodeId=").append(nodeId).append("] ");
+        builder.append(" [properties=").append(properties).append("] ");
+        builder.append(" [outgoingResourceIds=").append(outgoingResourceIds).append("] ");
         // Bounds.
-        builder.append( " [boundUL=" ).append( null != boundUL ? ( "{" + boundUL[ 0 ] + ", " + boundUL[ 1 ] + "}" ) : "null" ).append( "] " );
-        builder.append( " [boundLR=" ).append( null != boundLR ? ( "{" + boundLR[ 0 ] + ", " + boundLR[ 1 ] + "}" ) : "null" ).append( "] " );
+        builder.append(" [boundUL=").append(null != boundUL ? ("{" + boundUL[0] + ", " + boundUL[1] + "}") : "null").append("] ");
+        builder.append(" [boundLR=").append(null != boundLR ? ("{" + boundLR[0] + ", " + boundLR[1] + "}") : "null").append("] ");
         // Dockers.
-        if ( !dockers.isEmpty() ) {
-            builder.append( " [dockers=" );
-            for ( Double[] docker : dockers ) {
-                builder.append( " {" ).append( docker[ 0 ] ).append( ", " ).append( docker[ 1 ] ).append( "}" );
+        if (!dockers.isEmpty()) {
+            builder.append(" [dockers=");
+            for (Double[] docker : dockers) {
+                builder.append(" {").append(docker[0]).append(", ").append(docker[1]).append("}");
             }
-            builder.append( "] " );
+            builder.append("] ");
         } else {
-            builder.append( " [dockers=null] " );
+            builder.append(" [dockers=null] ");
         }
         return builder.toString();
     }

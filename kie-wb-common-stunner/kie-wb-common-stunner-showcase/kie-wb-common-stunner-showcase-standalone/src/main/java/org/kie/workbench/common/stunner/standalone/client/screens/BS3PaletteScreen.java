@@ -52,10 +52,10 @@ import org.uberfire.workbench.model.menu.Menus;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-@WorkbenchScreen( identifier = BS3PaletteScreen.SCREEN_ID )
+@WorkbenchScreen(identifier = BS3PaletteScreen.SCREEN_ID)
 public class BS3PaletteScreen {
 
-    private static Logger LOGGER = Logger.getLogger( BS3PaletteScreen.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(BS3PaletteScreen.class.getName());
 
     public static final String SCREEN_ID = "BS3PaletteScreen";
     public static final String EMPTY_VIEW_BG_COLOR = "#FFFFFF";
@@ -85,15 +85,15 @@ public class BS3PaletteScreen {
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
+    public void onStartup(final PlaceRequest placeRequest) {
         this.placeRequest = placeRequest;
         this.sessionScreenView.showEmptySession();
-        this.sessionScreenView.setPaddingTop( PADDING_TOP );
+        this.sessionScreenView.setPaddingTop(PADDING_TOP);
     }
 
     @OnOpen
     public void onOpen() {
-        open( session );
+        open(session);
     }
 
     @OnClose
@@ -101,35 +101,35 @@ public class BS3PaletteScreen {
         close();
     }
 
-    private void open( final ClientSession session ) {
+    private void open(final ClientSession session) {
         this.session = session;
-        log( Level.INFO,
-             "Opening palette screen..." );
-        if ( null != getDiagram() && !isAlreadyOpen( getDiagram() ) ) {
+        log(Level.INFO,
+            "Opening palette screen...");
+        if (null != getDiagram() && !isAlreadyOpen(getDiagram())) {
             final Diagram diagram = getDiagram();
             final String ssid = diagram.getMetadata().getShapeSetId();
             this.paletteWidget = paletteFactory
-                    .forCanvasHandler( session.getCanvasHandler() )
-                    .newPalette( ssid );
-            log( Level.INFO,
-                 "Palette built for shape set [" + ssid + "]" );
-            sessionScreenView.showScreenView( paletteWidget.getView() );
-            sessionScreenView.setScreenViewBgColor( BS3PaletteWidgetImpl.BG_COLOR );
+                    .forCanvasHandler(session.getCanvasHandler())
+                    .newPalette(ssid);
+            log(Level.INFO,
+                "Palette built for shape set [" + ssid + "]");
+            sessionScreenView.showScreenView(paletteWidget.getView());
+            sessionScreenView.setScreenViewBgColor(BS3PaletteWidgetImpl.BG_COLOR);
         } else {
-            log( Level.INFO,
-                 "Palette not built as no session present or it is already open." );
+            log(Level.INFO,
+                "Palette not built as no session present or it is already open.");
         }
     }
 
     private void close() {
-        log( Level.INFO,
-             "Closing palette screen..." );
-        if ( null != paletteWidget ) {
+        log(Level.INFO,
+            "Closing palette screen...");
+        if (null != paletteWidget) {
             paletteWidget.unbind();
-            log( Level.INFO,
-                 "Palette unbind." );
+            log(Level.INFO,
+                "Palette unbind.");
         }
-        this.sessionScreenView.setScreenViewBgColor( EMPTY_VIEW_BG_COLOR );
+        this.sessionScreenView.setScreenViewBgColor(EMPTY_VIEW_BG_COLOR);
         this.session = null;
     }
 
@@ -153,26 +153,26 @@ public class BS3PaletteScreen {
         return "bs3PaletteScreenContext";
     }
 
-    void onCanvasSessionOpened( @Observes SessionOpenedEvent sessionOpenedEvent ) {
-        checkNotNull( "sessionOpenedEvent",
-                      sessionOpenedEvent );
-        doOpenSession( sessionOpenedEvent.getSession() );
+    void onCanvasSessionOpened(final @Observes SessionOpenedEvent sessionOpenedEvent) {
+        checkNotNull("sessionOpenedEvent",
+                     sessionOpenedEvent);
+        doOpenSession(sessionOpenedEvent.getSession());
     }
 
-    void onCanvasSessionDisposed( @Observes SessionDisposedEvent sessionDisposedEvent ) {
-        checkNotNull( "sessionDisposedEvent",
-                      sessionDisposedEvent );
-        log( Level.INFO,
-             "Disposing session..." );
+    void onCanvasSessionDisposed(final @Observes SessionDisposedEvent sessionDisposedEvent) {
+        checkNotNull("sessionDisposedEvent",
+                     sessionDisposedEvent);
+        log(Level.INFO,
+            "Disposing session...");
         doDisposeSession();
     }
 
-    void onSessionDiagramOpenedEvent( @Observes SessionDiagramOpenedEvent sessionDiagramOpenedEvent ) {
-        checkNotNull( "sessionDiagramOpenedEvent",
-                      sessionDiagramOpenedEvent );
-        if ( null != getCanvas() && getCanvas().equals( sessionDiagramOpenedEvent.getSession().getCanvas() ) ) {
+    void onSessionDiagramOpenedEvent(final @Observes SessionDiagramOpenedEvent sessionDiagramOpenedEvent) {
+        checkNotNull("sessionDiagramOpenedEvent",
+                     sessionDiagramOpenedEvent);
+        if (null != getCanvas() && getCanvas().equals(sessionDiagramOpenedEvent.getSession().getCanvas())) {
             // Force to reload current session, for example, when a new diagram is just created.
-            open( session );
+            open(session);
         }
     }
 
@@ -188,28 +188,28 @@ public class BS3PaletteScreen {
         return null != getCanvasHandler() ? getCanvasHandler().getDiagram() : null;
     }
 
-    private boolean isAlreadyOpen( final Diagram diagram ) {
+    private boolean isAlreadyOpen(final Diagram diagram) {
         return null != paletteWidget
                 && null != paletteWidget.getDefinition()
                 && null != paletteWidget.getDefinition().getDefinitionSetId()
-                && paletteWidget.getDefinition().getDefinitionSetId().equals( diagram.getMetadata().getDefinitionSetId() );
+                && paletteWidget.getDefinition().getDefinitionSetId().equals(diagram.getMetadata().getDefinitionSetId());
     }
 
-    private void doOpenSession( final ClientSession session ) {
-        log( Level.INFO,
-             "Trying to open session [" + ( null != session ? session.toString() : "null" ) + "]..." );
-        open( session );
+    private void doOpenSession(final ClientSession session) {
+        log(Level.INFO,
+            "Trying to open session [" + (null != session ? session.toString() : "null") + "]...");
+        open(session);
     }
 
     private void doDisposeSession() {
         close();
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

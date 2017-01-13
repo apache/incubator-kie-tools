@@ -23,16 +23,16 @@ public interface ClientSessionCommand<S extends ClientSession> {
 
     interface Callback<T> {
 
-        void onSuccess( final T result );
+        void onSuccess(final T result);
 
-        void onError( final ClientRuntimeError error );
+        void onError(final ClientRuntimeError error);
     }
 
-    ClientSessionCommand<S> bind( final S session );
+    ClientSessionCommand<S> bind(final S session);
 
-    ClientSessionCommand<S> listen( final Command statusCallback );
+    ClientSessionCommand<S> listen(final Command statusCallback);
 
-    <T> void execute( final Callback<T> callback );
+    <T> void execute(final Callback<T> callback);
 
     boolean isEnabled();
 

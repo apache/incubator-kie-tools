@@ -39,7 +39,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchScreen( identifier = FormsPropertiesScreen.SCREEN_ID )
+@WorkbenchScreen(identifier = FormsPropertiesScreen.SCREEN_ID)
 public class FormsPropertiesScreen {
 
     public static final String SCREEN_ID = "FormsPropertiesScreen";
@@ -64,7 +64,7 @@ public class FormsPropertiesScreen {
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
+    public void onStartup(final PlaceRequest placeRequest) {
         this.placeRequest = placeRequest;
     }
 
@@ -81,8 +81,8 @@ public class FormsPropertiesScreen {
         return null;
     }
 
-    private void showError( final String message ) {
-        errorPopupPresenter.showMessage( message );
+    private void showError(final String message) {
+        errorPopupPresenter.showMessage(message);
     }
 
     @WorkbenchPartTitle
@@ -100,14 +100,14 @@ public class FormsPropertiesScreen {
         return "stunnerPropertiesScreenContext";
     }
 
-    void onFormPropertiesOpened( @Observes FormPropertiesOpened propertiesOpened ) {
+    void onFormPropertiesOpened(final @Observes FormPropertiesOpened propertiesOpened) {
         // TODO
     }
 
-    private void updateTitle( final String title ) {
+    private void updateTitle(final String title) {
         // Change screen title.
         FormsPropertiesScreen.this.title = title;
-        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
-                                                                       this.title ) );
+        changeTitleNotificationEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
+                                                                     this.title));
     }
 }

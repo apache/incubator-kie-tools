@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.view.Pale
 public interface LienzoPaletteView<V extends LienzoPaletteView, I extends LienzoPaletteElementView>
         extends PaletteView<V, Layer, I> {
 
-    void setPresenter( AbstractLienzoPalette palette );
+    void setPresenter(AbstractLienzoPalette palette);
 
     void draw();
 }

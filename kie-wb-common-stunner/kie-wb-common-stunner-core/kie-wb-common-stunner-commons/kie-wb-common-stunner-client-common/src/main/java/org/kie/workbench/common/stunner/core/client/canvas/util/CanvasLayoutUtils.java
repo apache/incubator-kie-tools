@@ -54,7 +54,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 @Dependent
 public class CanvasLayoutUtils {
 
-    private static Logger LOGGER = Logger.getLogger( CanvasLayoutUtils.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(CanvasLayoutUtils.class.getName());
 
     private static final int PADDING = 50;
     private static final float MARGIN = 0.2f;
@@ -66,10 +66,10 @@ public class CanvasLayoutUtils {
         private final double maxX;
         private final double maxY;
 
-        public LayoutBoundExceededException( final double x,
-                                             final double y,
-                                             final double maxX,
-                                             final double maxY ) {
+        public LayoutBoundExceededException(final double x,
+                                            final double y,
+                                            final double maxX,
+                                            final double maxY) {
             this.x = x;
             this.y = y;
             this.maxX = maxX;
@@ -77,244 +77,244 @@ public class CanvasLayoutUtils {
         }
     }
 
-    public static boolean isCanvasRoot( final Diagram diagram,
-                                        final Element parent ) {
-        return null != parent && isCanvasRoot( diagram,
-                                               parent.getUUID() );
+    public static boolean isCanvasRoot(final Diagram diagram,
+                                       final Element parent) {
+        return null != parent && isCanvasRoot(diagram,
+                                              parent.getUUID());
     }
 
-    public static boolean isCanvasRoot( final Diagram diagram,
-                                        final String pUUID ) {
+    public static boolean isCanvasRoot(final Diagram diagram,
+                                       final String pUUID) {
         final String canvasRoot = diagram.getMetadata().getCanvasRootUUID();
-        return ( null != canvasRoot && null != pUUID && canvasRoot.equals( pUUID ) );
+        return (null != canvasRoot && null != pUUID && canvasRoot.equals(pUUID));
     }
 
-    @SuppressWarnings( "unchecked" )
-    public double[] getNext( final CanvasHandler canvasHandler,
-                             final double width,
-                             final double height ) {
-        checkNotNull( "canvasHandler",
-                      canvasHandler );
-        final Bounds bounds = getGraphBounds( canvasHandler );
+    @SuppressWarnings("unchecked")
+    public double[] getNext(final CanvasHandler canvasHandler,
+                            final double width,
+                            final double height) {
+        checkNotNull("canvasHandler",
+                     canvasHandler);
+        final Bounds bounds = getGraphBounds(canvasHandler);
         final Bounds.Bound ul = bounds.getUpperLeft();
         final String ruuid = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
-        if ( null != ruuid ) {
-            Node root = canvasHandler.getDiagram().getGraph().getNode( ruuid );
-            return getNext( canvasHandler,
-                            root,
-                            width,
-                            height,
-                            ul.getX(),
-                            ul.getY() );
+        if (null != ruuid) {
+            Node root = canvasHandler.getDiagram().getGraph().getNode(ruuid);
+            return getNext(canvasHandler,
+                           root,
+                           width,
+                           height,
+                           ul.getX(),
+                           ul.getY());
         }
         final Iterable<Node> nodes = canvasHandler.getDiagram().getGraph().nodes();
-        if ( null != nodes ) {
+        if (null != nodes) {
             final Bounds.Bound lr = bounds.getLowerRight();
             final List<Node<View<?>, Edge>> nodeList = new LinkedList<>();
-            nodes.forEach( nodeList::add );
-            return getNext( canvasHandler,
-                            nodeList,
-                            width,
-                            height,
-                            ul.getX(),
-                            ul.getY(),
-                            lr.getX() - PADDING,
-                            lr.getY() - PADDING );
+            nodes.forEach(nodeList::add);
+            return getNext(canvasHandler,
+                           nodeList,
+                           width,
+                           height,
+                           ul.getX(),
+                           ul.getY(),
+                           lr.getX() - PADDING,
+                           lr.getY() - PADDING);
         }
-        return new double[]{ ul.getX(), ul.getY() };
+        return new double[]{ul.getX(), ul.getY()};
     }
 
-    @SuppressWarnings( "unchecked" )
-    public double[] getNext( final CanvasHandler canvasHandler,
-                             final double w,
-                             final double h,
-                             final double minX,
-                             final double minY ) {
-        checkNotNull( "canvasHandler",
-                      canvasHandler );
+    @SuppressWarnings("unchecked")
+    public double[] getNext(final CanvasHandler canvasHandler,
+                            final double w,
+                            final double h,
+                            final double minX,
+                            final double minY) {
+        checkNotNull("canvasHandler",
+                     canvasHandler);
         final String ruuid = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
-        if ( null != ruuid ) {
-            Node root = canvasHandler.getDiagram().getGraph().getNode( ruuid );
-            return getNext( canvasHandler,
-                            root,
-                            w,
-                            h,
-                            minX,
-                            minY );
+        if (null != ruuid) {
+            Node root = canvasHandler.getDiagram().getGraph().getNode(ruuid);
+            return getNext(canvasHandler,
+                           root,
+                           w,
+                           h,
+                           minX,
+                           minY);
         }
-        final Bounds bounds = getGraphBounds( canvasHandler );
+        final Bounds bounds = getGraphBounds(canvasHandler);
         final Bounds.Bound lr = bounds.getLowerRight();
         final Iterable<Node> nodes = canvasHandler.getDiagram().getGraph().nodes();
-        if ( null != nodes ) {
+        if (null != nodes) {
             final List<Node<View<?>, Edge>> nodeList = new LinkedList<>();
-            nodes.forEach( nodeList::add );
-            return getNext( canvasHandler,
-                            nodeList,
-                            w,
-                            h,
-                            minX,
-                            minY,
-                            lr.getX() - PADDING,
-                            lr.getY() - PADDING );
+            nodes.forEach(nodeList::add);
+            return getNext(canvasHandler,
+                           nodeList,
+                           w,
+                           h,
+                           minX,
+                           minY,
+                           lr.getX() - PADDING,
+                           lr.getY() - PADDING);
         }
-        return new double[]{ minX, minY };
+        return new double[]{minX, minY};
     }
 
-    @SuppressWarnings( "unchecked" )
-    public double[] getNext( final CanvasHandler canvasHandler,
-                             final Node<View<?>, Edge> root ) {
-        final double[] rootBounds = getBoundCoordinates( root.getContent() );
-        final double[] size = GraphUtils.getSize( root.getContent() );
+    @SuppressWarnings("unchecked")
+    public double[] getNext(final CanvasHandler canvasHandler,
+                            final Node<View<?>, Edge> root) {
+        final double[] rootBounds = getBoundCoordinates(root.getContent());
+        final double[] size = GraphUtils.getSize(root.getContent());
 
-        return getNext( canvasHandler,
-                        root,
-                        size[ 0 ],
-                        size[ 1 ],
-                        rootBounds[ 0 ],
-                        rootBounds[ 1 ] );
+        return getNext(canvasHandler,
+                       root,
+                       size[0],
+                       size[1],
+                       rootBounds[0],
+                       rootBounds[1]);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public double[] getNext( final CanvasHandler canvasHandler,
-                             final Node<View<?>, Edge> root,
-                             final double w,
-                             final double h,
-                             final double minX,
-                             final double minY ) {
-        checkNotNull( "canvasHandler",
-                      canvasHandler );
-        checkNotNull( "root",
-                      root );
+    @SuppressWarnings("unchecked")
+    public double[] getNext(final CanvasHandler canvasHandler,
+                            final Node<View<?>, Edge> root,
+                            final double w,
+                            final double h,
+                            final double minX,
+                            final double minY) {
+        checkNotNull("canvasHandler",
+                     canvasHandler);
+        checkNotNull("root",
+                     root);
         final List<Edge> outEdges = root.getOutEdges();
-        if ( null != outEdges ) {
+        if (null != outEdges) {
             final List<Node<View<?>, Edge>> nodes = new LinkedList<>();
-            outEdges.stream().forEach( edge -> {
-                if ( edge instanceof Child
-                        && edge.getTargetNode().getContent() instanceof View ) {
-                    nodes.add( edge.getTargetNode() );
+            outEdges.stream().forEach(edge -> {
+                if (edge instanceof Child
+                        && edge.getTargetNode().getContent() instanceof View) {
+                    nodes.add(edge.getTargetNode());
                 }
-            } );
-            if ( !nodes.isEmpty() ) {
-                final double[] rootBounds = getBoundCoordinates( root.getContent() );
-                final double[] n = getNext( canvasHandler,
-                                            nodes,
-                                            w,
-                                            h,
-                                            minX,
-                                            minY,
-                                            rootBounds[ 0 ] - PADDING,
-                                            rootBounds[ 1 ] - PADDING );
-                return new double[]{ n[ 0 ] + PADDING, n[ 1 ] };
+            });
+            if (!nodes.isEmpty()) {
+                final double[] rootBounds = getBoundCoordinates(root.getContent());
+                final double[] n = getNext(canvasHandler,
+                                           nodes,
+                                           w,
+                                           h,
+                                           minX,
+                                           minY,
+                                           rootBounds[0] - PADDING,
+                                           rootBounds[1] - PADDING);
+                return new double[]{n[0] + PADDING, n[1]};
             }
         }
-        final Bounds bounds = getGraphBounds( canvasHandler );
+        final Bounds bounds = getGraphBounds(canvasHandler);
         final Bounds.Bound lr = bounds.getLowerRight();
-        return check( minX,
-                      minY,
-                      w,
-                      h,
-                      minX,
-                      minY,
-                      lr.getX() - PADDING,
-                      lr.getY() - PADDING );
+        return check(minX,
+                     minY,
+                     w,
+                     h,
+                     minX,
+                     minY,
+                     lr.getX() - PADDING,
+                     lr.getY() - PADDING);
     }
 
-    private double[] getNext( final CanvasHandler canvasHandler,
-                              final List<Node<View<?>, Edge>> nodes,
-                              final double width,
-                              final double height,
-                              final double minX,
-                              final double minY,
-                              final double maxX,
-                              final double maxY ) {
-        checkNotNull( "canvasHandler",
-                      canvasHandler );
-        checkNotNull( "nodes",
-                      nodes );
-        final double[] result = new double[]{ minX, minY };
-        nodes.stream().forEach( node -> {
-            final double[] coordinates = getAbsolute( node );
-            result[ 0 ] = coordinates[ 0 ] >= result[ 0 ] ? coordinates[ 0 ] : result[ 0 ];
-            result[ 1 ] = coordinates[ 1 ] >= result[ 1 ] ? coordinates[ 1 ] : result[ 1 ];
-            final double[] r = check( coordinates[ 0 ],
-                                      coordinates[ 1 ],
-                                      width,
-                                      height,
-                                      minX,
-                                      minY,
-                                      maxX,
-                                      maxY );
-            if ( ( coordinates[ 0 ] + width ) >= maxX ) {
-                result[ 0 ] = r[ 0 ];
-                result[ 1 ] = r[ 1 ];
+    private double[] getNext(final CanvasHandler canvasHandler,
+                             final List<Node<View<?>, Edge>> nodes,
+                             final double width,
+                             final double height,
+                             final double minX,
+                             final double minY,
+                             final double maxX,
+                             final double maxY) {
+        checkNotNull("canvasHandler",
+                     canvasHandler);
+        checkNotNull("nodes",
+                     nodes);
+        final double[] result = new double[]{minX, minY};
+        nodes.stream().forEach(node -> {
+            final double[] coordinates = getAbsolute(node);
+            result[0] = coordinates[0] >= result[0] ? coordinates[0] : result[0];
+            result[1] = coordinates[1] >= result[1] ? coordinates[1] : result[1];
+            final double[] r = check(coordinates[0],
+                                     coordinates[1],
+                                     width,
+                                     height,
+                                     minX,
+                                     minY,
+                                     maxX,
+                                     maxY);
+            if ((coordinates[0] + width) >= maxX) {
+                result[0] = r[0];
+                result[1] = r[1];
             }
-            if ( ( result[ 1 ] + height ) > maxX ) {
-                throw new LayoutBoundExceededException( result[ 0 ],
-                                                        result[ 1 ],
-                                                        maxX,
-                                                        maxY );
+            if ((result[1] + height) > maxX) {
+                throw new LayoutBoundExceededException(result[0],
+                                                       result[1],
+                                                       maxX,
+                                                       maxY);
             }
-        } );
+        });
         return result;
     }
 
-    private double[] check( final double x,
-                            final double y,
-                            final double w,
-                            final double h,
-                            final double lx,
-                            final double ly,
-                            final double ux,
-                            final double uy ) {
-        final double[] result = new double[]{ x, y };
-        if ( ( x + w ) >= ux ) {
-            result[ 0 ] = lx;
-            result[ 1 ] += y + PADDING;
+    private double[] check(final double x,
+                           final double y,
+                           final double w,
+                           final double h,
+                           final double lx,
+                           final double ly,
+                           final double ux,
+                           final double uy) {
+        final double[] result = new double[]{x, y};
+        if ((x + w) >= ux) {
+            result[0] = lx;
+            result[1] += y + PADDING;
         }
-        if ( ( y + h ) > uy ) {
-            throw new LayoutBoundExceededException( result[ 0 ],
-                                                    result[ 1 ],
-                                                    ux,
-                                                    uy );
+        if ((y + h) > uy) {
+            throw new LayoutBoundExceededException(result[0],
+                                                   result[1],
+                                                   ux,
+                                                   uy);
         }
-        return new double[]{ result[ 0 ] + PADDING, result[ 1 ] };
+        return new double[]{result[0] + PADDING, result[1]};
     }
 
-    @SuppressWarnings( "unchecked" )
-    private double[] getAbsolute( final Node<View<?>, Edge> root ) {
-        final double[] pos = getBoundCoordinates( root.getContent() );
-        return getAbsolute( root,
-                            pos[ 0 ],
-                            pos[ 1 ] );
+    @SuppressWarnings("unchecked")
+    private double[] getAbsolute(final Node<View<?>, Edge> root) {
+        final double[] pos = getBoundCoordinates(root.getContent());
+        return getAbsolute(root,
+                           pos[0],
+                           pos[1]);
     }
 
-    @SuppressWarnings( "unchecked" )
-    private double[] getAbsolute( final Node<View<?>, Edge> root,
-                                  final double x,
-                                  final double y ) {
-        Element parent = GraphUtils.getParent( root );
-        if ( null != parent
+    @SuppressWarnings("unchecked")
+    private double[] getAbsolute(final Node<View<?>, Edge> root,
+                                 final double x,
+                                 final double y) {
+        Element parent = GraphUtils.getParent(root);
+        if (null != parent
                 && parent instanceof Node
-                && parent.getContent() instanceof View ) {
-            final double[] pos = getBoundCoordinates( ( View ) parent.getContent() );
-            return getAbsolute( ( Node<View<?>, Edge> ) parent,
-                                x + pos[ 0 ],
-                                y + pos[ 1 ] );
+                && parent.getContent() instanceof View) {
+            final double[] pos = getBoundCoordinates((View) parent.getContent());
+            return getAbsolute((Node<View<?>, Edge>) parent,
+                               x + pos[0],
+                               y + pos[1]);
         }
-        return new double[]{ x, y };
+        return new double[]{x, y};
     }
 
-    private double[] getBoundCoordinates( final View view ) {
+    private double[] getBoundCoordinates(final View view) {
         final Bounds bounds = view.getBounds();
         final Bounds.Bound ulBound = bounds.getUpperLeft();
         final Bounds.Bound lrBound = bounds.getLowerRight();
         final double lrX = lrBound.getX();
         final double lrY = ulBound.getY();
-        return new double[]{ lrX, lrY };
+        return new double[]{lrX, lrY};
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Bounds getGraphBounds( final CanvasHandler canvasHandler ) {
+    @SuppressWarnings("unchecked")
+    private Bounds getGraphBounds(final CanvasHandler canvasHandler) {
         final Graph<DefinitionSet, ?> graph = canvasHandler.getDiagram().getGraph();
         return graph.getContent().getBounds();
     }

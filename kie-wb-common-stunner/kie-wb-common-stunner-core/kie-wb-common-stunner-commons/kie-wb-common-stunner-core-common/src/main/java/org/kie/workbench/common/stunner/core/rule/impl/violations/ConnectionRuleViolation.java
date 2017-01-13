@@ -29,8 +29,8 @@ public class ConnectionRuleViolation extends AbstractRuleViolation {
     private String role;
     private Set<Pair<String, String>> allowedConnections;
 
-    public ConnectionRuleViolation( final @MapsTo( "role" ) String role,
-                                    final @MapsTo( "allowedConnections" ) Set<Pair<String, String>> allowedConnections ) {
+    public ConnectionRuleViolation(final @MapsTo("role") String role,
+                                   final @MapsTo("allowedConnections") Set<Pair<String, String>> allowedConnections) {
         this.role = role;
         this.allowedConnections = allowedConnections;
     }

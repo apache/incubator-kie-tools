@@ -31,29 +31,29 @@ public class BindableShapeSetGenerator extends AbstractBindableAdapterGenerator 
         return "BindableShapeSet.ftl";
     }
 
-    public StringBuffer generate( final String packageName,
-                                  final String className,
-                                  final String defSetClassName,
-                                  final String shapeFactoryClassName,
-                                  final Messager messager ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final String className,
+                                 final String defSetClassName,
+                                 final String shapeFactoryClassName,
+                                 final Messager messager) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "packageName",
-                  packageName );
-        root.put( "className",
-                  className );
-        root.put( "generatedByClassName",
-                  BindableShapeSetGenerator.class.getName() );
-        root.put( "parentClassName",
-                  AbstractBindableShapeSet.class.getName() );
-        root.put( "defSetClass",
-                  defSetClassName );
-        root.put( "shapeFactoryClassName",
-                  shapeFactoryClassName );
+        root.put("packageName",
+                 packageName);
+        root.put("className",
+                 className);
+        root.put("generatedByClassName",
+                 BindableShapeSetGenerator.class.getName());
+        root.put("parentClassName",
+                 AbstractBindableShapeSet.class.getName());
+        root.put("defSetClass",
+                 defSetClassName);
+        root.put("shapeFactoryClassName",
+                 shapeFactoryClassName);
 
         //Generate code
-        return writeTemplate( packageName,
-                              className,
-                              root,
-                              messager );
+        return writeTemplate(packageName,
+                             className,
+                             root,
+                             messager);
     }
 }

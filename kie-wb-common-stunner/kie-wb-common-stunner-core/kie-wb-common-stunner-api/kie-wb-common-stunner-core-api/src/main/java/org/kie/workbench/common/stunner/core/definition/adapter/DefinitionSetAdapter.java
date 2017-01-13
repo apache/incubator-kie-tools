@@ -28,25 +28,25 @@ public interface DefinitionSetAdapter<T> extends PriorityAdapter {
     /**
      * Returns the definition set's identifier for a given pojo.
      */
-    String getId( final T pojo );
+    String getId(final T pojo);
 
     /**
      * Returns the definition set's domain for a given pojo.
      */
-    String getDomain( final T pojo );
+    String getDomain(final T pojo);
 
     /**
      * Returns the definition set's description for a given pojo.
      */
-    String getDescription( final T pojo );
+    String getDescription(final T pojo);
 
     /**
      * Returns the definition set's definitions for a given pojo.
      */
-    Set<String> getDefinitions( final T pojo );
+    Set<String> getDefinitions(final T pojo);
 
     /**
      * Returns the definition set's graph class for a given pojo.
      */
-    Class<? extends ElementFactory> getGraphFactoryType( final T pojo );
+    Class<? extends ElementFactory> getGraphFactoryType(final T pojo);
 }

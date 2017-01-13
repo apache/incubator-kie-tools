@@ -33,21 +33,21 @@ public final class LienzoGlyphPaletteItemViewImpl
     private final Group view = new Group();
     private Text text;
 
-    public LienzoGlyphPaletteItemViewImpl( final GlyphPaletteItem item,
-                                           final LienzoPaletteView paletteView,
-                                           final Glyph<Group> glyph ) {
-        super( item,
-               paletteView );
+    public LienzoGlyphPaletteItemViewImpl(final GlyphPaletteItem item,
+                                          final LienzoPaletteView paletteView,
+                                          final Glyph<Group> glyph) {
+        super(item,
+              paletteView);
         this.glyph = glyph;
         init();
     }
 
     public void expand() {
-        view.add( this.text );
+        view.add(this.text);
     }
 
     public void collapse() {
-        view.remove( this.text );
+        view.remove(this.text);
     }
 
     @Override
@@ -59,15 +59,15 @@ public final class LienzoGlyphPaletteItemViewImpl
         final String title = item.getTitle();
         final double glyphWidth = glyph.getWidth();
         final double glyphHeight = glyph.getHeight();
-        final double fontSize = ClientPaletteUtils.computeFontSize( glyphWidth,
-                                                                    glyphHeight,
-                                                                    title.length() );
-        text = new Text( title )
-                .setX( glyphWidth + 10 )
-                .setY( glyphWidth / 2 )
-                .setFontFamily( FONT_FAMILY )
-                .setFontSize( fontSize )
-                .setStrokeWidth( 1 );
-        view.add( glyph.getGroup() );
+        final double fontSize = ClientPaletteUtils.computeFontSize(glyphWidth,
+                                                                   glyphHeight,
+                                                                   title.length());
+        text = new Text(title)
+                .setX(glyphWidth + 10)
+                .setY(glyphWidth / 2)
+                .setFontFamily(FONT_FAMILY)
+                .setFontSize(fontSize)
+                .setStrokeWidth(1);
+        view.add(glyph.getGroup());
     }
 }

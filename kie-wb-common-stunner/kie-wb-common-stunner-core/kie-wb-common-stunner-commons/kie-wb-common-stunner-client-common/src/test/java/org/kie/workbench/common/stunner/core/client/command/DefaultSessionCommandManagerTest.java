@@ -39,7 +39,7 @@ import static org.mockito.Mockito.*;
  * This test creates an stub for AbstractSessionCommandManager in order to
  * test its abstract behaviors.
  */
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DefaultSessionCommandManagerTest {
 
     private class SessionCommandManagerStub
@@ -68,7 +68,7 @@ public class DefaultSessionCommandManagerTest {
 
         @Override
         protected CommandResult<CanvasViolation> getResult() {
-            throw new CommandException( command );
+            throw new CommandException(command);
         }
     }
 
@@ -89,25 +89,25 @@ public class DefaultSessionCommandManagerTest {
         protected abstract CommandResult<CanvasViolation> getResult();
 
         @Override
-        public CommandResult<CanvasViolation> allow( AbstractCanvasHandler context,
-                                                     Command<AbstractCanvasHandler, CanvasViolation> command ) {
+        public CommandResult<CanvasViolation> allow(AbstractCanvasHandler context,
+                                                    Command<AbstractCanvasHandler, CanvasViolation> command) {
             return getResult();
         }
 
         @Override
-        public CommandResult<CanvasViolation> execute( AbstractCanvasHandler context,
-                                                       Command<AbstractCanvasHandler, CanvasViolation> command ) {
+        public CommandResult<CanvasViolation> execute(AbstractCanvasHandler context,
+                                                      Command<AbstractCanvasHandler, CanvasViolation> command) {
             return getResult();
         }
 
         @Override
-        public CommandResult<CanvasViolation> undo( AbstractCanvasHandler context,
-                                                    Command<AbstractCanvasHandler, CanvasViolation> command ) {
+        public CommandResult<CanvasViolation> undo(AbstractCanvasHandler context,
+                                                   Command<AbstractCanvasHandler, CanvasViolation> command) {
             return getResult();
         }
 
         @Override
-        public void setCommandListener( CommandListener<AbstractCanvasHandler, CanvasViolation> listener ) {
+        public void setCommandListener(CommandListener<AbstractCanvasHandler, CanvasViolation> listener) {
             this.listener = listener;
         }
     }
@@ -129,115 +129,115 @@ public class DefaultSessionCommandManagerTest {
 
     @Before
     public void setup() throws Exception {
-        when( clientSessionManager.getCurrentSession() ).thenReturn( clientFullSession );
-        when( clientFullSession.getCommandRegistry() ).thenReturn( commandRegistry );
+        when(clientSessionManager.getCurrentSession()).thenReturn(clientFullSession);
+        when(clientFullSession.getCommandRegistry()).thenReturn(commandRegistry);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecuteSuccess() {
         SuccessCanvasCommandManager commandManager =
                 new SuccessCanvasCommandManager();
-        when( clientFullSession.getCommandManager() ).thenReturn( commandManager );
+        when(clientFullSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new SessionCommandManagerStub();
-        CommandResult<CanvasViolation> result = tested.execute( canvasHandler,
-                                                                mock( Command.class ) );
-        assertNotNull( result );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        assertEquals( commandListener,
-                      commandManager.listener );
-        verify( clientSessionManager,
-                times( 0 ) ).handleClientError( any( ClientRuntimeError.class ) );
-        verify( clientSessionManager,
-                times( 0 ) ).handleCommandError( any( CommandException.class ) );
+        CommandResult<CanvasViolation> result = tested.execute(canvasHandler,
+                                                               mock(Command.class));
+        assertNotNull(result);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        assertEquals(commandListener,
+                     commandManager.listener);
+        verify(clientSessionManager,
+               times(0)).handleClientError(any(ClientRuntimeError.class));
+        verify(clientSessionManager,
+               times(0)).handleCommandError(any(CommandException.class));
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecuteCommandException() {
         CommandExceptionCanvasCommandManager commandManager =
                 new CommandExceptionCanvasCommandManager();
-        when( clientFullSession.getCommandManager() ).thenReturn( commandManager );
+        when(clientFullSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new SessionCommandManagerStub();
-        CommandResult<CanvasViolation> result = tested.execute( canvasHandler,
-                                                                mock( Command.class ) );
-        assertEquals( commandListener,
-                      commandManager.listener );
-        verify( clientSessionManager,
-                times( 0 ) ).handleClientError( any( ClientRuntimeError.class ) );
-        verify( clientSessionManager,
-                times( 1 ) ).handleCommandError( any( CommandException.class ) );
+        CommandResult<CanvasViolation> result = tested.execute(canvasHandler,
+                                                               mock(Command.class));
+        assertEquals(commandListener,
+                     commandManager.listener);
+        verify(clientSessionManager,
+               times(0)).handleClientError(any(ClientRuntimeError.class));
+        verify(clientSessionManager,
+               times(1)).handleCommandError(any(CommandException.class));
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecuteClientError() {
         RuntimeExceptionCanvasCommandManager commandManager =
                 new RuntimeExceptionCanvasCommandManager();
-        when( clientFullSession.getCommandManager() ).thenReturn( commandManager );
+        when(clientFullSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new SessionCommandManagerStub();
-        tested.execute( canvasHandler,
-                        mock( Command.class ) );
-        assertEquals( commandListener,
-                      commandManager.listener );
-        verify( clientSessionManager,
-                times( 1 ) ).handleClientError( any( ClientRuntimeError.class ) );
-        verify( clientSessionManager,
-                times( 0 ) ).handleCommandError( any( CommandException.class ) );
+        tested.execute(canvasHandler,
+                       mock(Command.class));
+        assertEquals(commandListener,
+                     commandManager.listener);
+        verify(clientSessionManager,
+               times(1)).handleClientError(any(ClientRuntimeError.class));
+        verify(clientSessionManager,
+               times(0)).handleCommandError(any(CommandException.class));
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testUndoSuccess() {
         SuccessCanvasCommandManager commandManager =
                 new SuccessCanvasCommandManager();
-        when( clientFullSession.getCommandManager() ).thenReturn( commandManager );
+        when(clientFullSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new SessionCommandManagerStub();
-        CommandResult<CanvasViolation> result = tested.undo( canvasHandler,
-                                                             mock( Command.class ) );
-        assertNotNull( result );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        assertEquals( commandListener,
-                      commandManager.listener );
-        verify( clientSessionManager,
-                times( 0 ) ).handleClientError( any( ClientRuntimeError.class ) );
-        verify( clientSessionManager,
-                times( 0 ) ).handleCommandError( any( CommandException.class ) );
+        CommandResult<CanvasViolation> result = tested.undo(canvasHandler,
+                                                            mock(Command.class));
+        assertNotNull(result);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        assertEquals(commandListener,
+                     commandManager.listener);
+        verify(clientSessionManager,
+               times(0)).handleClientError(any(ClientRuntimeError.class));
+        verify(clientSessionManager,
+               times(0)).handleCommandError(any(CommandException.class));
     }
 
-    @Test( expected = CommandException.class )
-    @SuppressWarnings( "unchecked" )
+    @Test(expected = CommandException.class)
+    @SuppressWarnings("unchecked")
     public void testUndoCommandException() {
         CommandExceptionCanvasCommandManager commandManager =
                 new CommandExceptionCanvasCommandManager();
-        when( clientFullSession.getCommandManager() ).thenReturn( commandManager );
+        when(clientFullSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new SessionCommandManagerStub();
-        tested.undo( canvasHandler,
-                     mock( Command.class ) );
-        assertEquals( commandListener,
-                      commandManager.listener );
-        verify( clientSessionManager,
-                times( 0 ) ).handleClientError( any( ClientRuntimeError.class ) );
-        verify( clientSessionManager,
-                times( 1 ) ).handleCommandError( any( CommandException.class ) );
+        tested.undo(canvasHandler,
+                    mock(Command.class));
+        assertEquals(commandListener,
+                     commandManager.listener);
+        verify(clientSessionManager,
+               times(0)).handleClientError(any(ClientRuntimeError.class));
+        verify(clientSessionManager,
+               times(1)).handleCommandError(any(CommandException.class));
     }
 
-    @Test( expected = RuntimeException.class )
-    @SuppressWarnings( "unchecked" )
+    @Test(expected = RuntimeException.class)
+    @SuppressWarnings("unchecked")
     public void testUndoClientError() {
         RuntimeExceptionCanvasCommandManager commandManager =
                 new RuntimeExceptionCanvasCommandManager();
-        when( clientFullSession.getCommandManager() ).thenReturn( commandManager );
+        when(clientFullSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new SessionCommandManagerStub();
-        tested.undo( canvasHandler,
-                     mock( Command.class ) );
-        assertEquals( commandListener,
-                      commandManager.listener );
-        verify( clientSessionManager,
-                times( 1 ) ).handleClientError( any( ClientRuntimeError.class ) );
-        verify( clientSessionManager,
-                times( 0 ) ).handleCommandError( any( CommandException.class ) );
+        tested.undo(canvasHandler,
+                    mock(Command.class));
+        assertEquals(commandListener,
+                     commandManager.listener);
+        verify(clientSessionManager,
+               times(1)).handleClientError(any(ClientRuntimeError.class));
+        verify(clientSessionManager,
+               times(0)).handleCommandError(any(CommandException.class));
     }
 }

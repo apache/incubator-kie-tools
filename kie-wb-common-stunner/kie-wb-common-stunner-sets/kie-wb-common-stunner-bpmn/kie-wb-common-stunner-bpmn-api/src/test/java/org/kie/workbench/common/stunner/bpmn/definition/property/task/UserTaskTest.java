@@ -43,66 +43,66 @@ public class UserTaskTest {
 
     @Test
     public void testTaskNameValid() {
-        TaskName taskName = new TaskName( TASK_NAME_VALID );
-        Set<ConstraintViolation<TaskName>> violations = this.validator.validate( taskName );
-        assertTrue( violations.isEmpty() );
+        TaskName taskName = new TaskName(TASK_NAME_VALID);
+        Set<ConstraintViolation<TaskName>> violations = this.validator.validate(taskName);
+        assertTrue(violations.isEmpty());
     }
 
     @Test
     public void testTaskNameInvalid1() {
-        TaskName taskName = new TaskName( TASK_NAME_INVALID );
-        Set<ConstraintViolation<TaskName>> violations = this.validator.validate( taskName );
-        assertEquals( 1,
-                      violations.size() );
+        TaskName taskName = new TaskName(TASK_NAME_INVALID);
+        Set<ConstraintViolation<TaskName>> violations = this.validator.validate(taskName);
+        assertEquals(1,
+                     violations.size());
     }
 
     @Test
     public void testTaskNameInvalidEmpty() {
-        TaskName taskName = new TaskName( "" );
-        Set<ConstraintViolation<TaskName>> violations = this.validator.validate( taskName );
-        assertEquals( 2,
-                      violations.size() );
+        TaskName taskName = new TaskName("");
+        Set<ConstraintViolation<TaskName>> violations = this.validator.validate(taskName);
+        assertEquals(2,
+                     violations.size());
     }
 
     @Test
     public void testTaskNameInvalidNull() {
-        TaskName taskName = new TaskName( null );
-        Set<ConstraintViolation<TaskName>> violations = this.validator.validate( taskName );
-        assertEquals( 2,
-                      violations.size() );
+        TaskName taskName = new TaskName(null);
+        Set<ConstraintViolation<TaskName>> violations = this.validator.validate(taskName);
+        assertEquals(2,
+                     violations.size());
     }
 
     @Test
     public void testUserTaskExecutionSetTaskNameValid() {
         UserTaskExecutionSet userTaskExecutionSet = new UserTaskExecutionSet();
-        userTaskExecutionSet.setTaskName( new TaskName( TASK_NAME_VALID ) );
-        Set<ConstraintViolation<UserTaskExecutionSet>> violations = this.validator.validate( userTaskExecutionSet );
-        assertTrue( violations.isEmpty() );
+        userTaskExecutionSet.setTaskName(new TaskName(TASK_NAME_VALID));
+        Set<ConstraintViolation<UserTaskExecutionSet>> violations = this.validator.validate(userTaskExecutionSet);
+        assertTrue(violations.isEmpty());
     }
 
     @Test
     public void testUserTaskExecutionSetTaskNameInvalid() {
         UserTaskExecutionSet userTaskExecutionSet = new UserTaskExecutionSet();
-        userTaskExecutionSet.setTaskName( new TaskName( TASK_NAME_INVALID ) );
-        Set<ConstraintViolation<UserTaskExecutionSet>> violations = this.validator.validate( userTaskExecutionSet );
-        assertEquals( 1,
-                      violations.size() );
+        userTaskExecutionSet.setTaskName(new TaskName(TASK_NAME_INVALID));
+        Set<ConstraintViolation<UserTaskExecutionSet>> violations = this.validator.validate(userTaskExecutionSet);
+        assertEquals(1,
+                     violations.size());
     }
 
     @Test
     public void testUserTaskTaskNameValid() {
         UserTask userTask = new UserTask.UserTaskBuilder().build();
-        userTask.getExecutionSet().setTaskName( new TaskName( TASK_NAME_VALID ) );
-        Set<ConstraintViolation<UserTask>> violations = this.validator.validate( userTask );
-        assertTrue( violations.isEmpty() );
+        userTask.getExecutionSet().setTaskName(new TaskName(TASK_NAME_VALID));
+        Set<ConstraintViolation<UserTask>> violations = this.validator.validate(userTask);
+        assertTrue(violations.isEmpty());
     }
 
     @Test
     public void testUserTaskTaskNameInvalid() {
         UserTask userTask = new UserTask.UserTaskBuilder().build();
-        userTask.getExecutionSet().setTaskName( new TaskName( TASK_NAME_INVALID ) );
-        Set<ConstraintViolation<UserTask>> violations = this.validator.validate( userTask );
-        assertEquals( 1,
-                      violations.size() );
+        userTask.getExecutionSet().setTaskName(new TaskName(TASK_NAME_INVALID));
+        Set<ConstraintViolation<UserTask>> violations = this.validator.validate(userTask);
+        assertEquals(1,
+                     violations.size());
     }
 }

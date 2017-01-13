@@ -44,82 +44,82 @@ public class DefinitionLookupManagerImpl
     }
 
     @Inject
-    public DefinitionLookupManagerImpl( final DefinitionManager definitionManager,
-                                        final FactoryManager factoryManager,
-                                        final RegistryFactory registryFactory ) {
+    public DefinitionLookupManagerImpl(final DefinitionManager definitionManager,
+                                       final FactoryManager factoryManager,
+                                       final RegistryFactory registryFactory) {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
         this.registry = registryFactory.newDefinitionRegistry();
     }
 
     @Override
-    protected List<String> getItems( final DefinitionLookupRequest request ) {
+    protected List<String> getItems(final DefinitionLookupRequest request) {
         final String defSetId = request.getDefinitionSetId();
-        final Object defSet = definitionManager.definitionSets().getDefinitionSetById( defSetId );
-        if ( null != defSet ) {
-            final Set<String> defs = definitionManager.adapters().forDefinitionSet().getDefinitions( defSet );
-            return new LinkedList<>( defs );
+        final Object defSet = definitionManager.definitionSets().getDefinitionSetById(defSetId);
+        if (null != defSet) {
+            final Set<String> defs = definitionManager.adapters().forDefinitionSet().getDefinitions(defSet);
+            return new LinkedList<>(defs);
         }
         return null;
     }
 
     @Override
-    protected DefinitionRepresentation buildResult( final String defId ) {
-        final Object def = getDomainObject( defId );
-        return buildRepresentation( defId,
-                                    def );
+    protected DefinitionRepresentation buildResult(final String defId) {
+        final Object def = getDomainObject(defId);
+        return buildRepresentation(defId,
+                                   def);
     }
 
     @Override
-    protected boolean matches( final String key,
-                               final String value,
-                               final String defId ) {
-        final Object def = getDomainObject( defId );
-        final DefinitionAdapter<Object> definitionAdapter = definitionManager.adapters().registry().getDefinitionAdapter( def.getClass() );
-        switch ( key ) {
+    protected boolean matches(final String key,
+                              final String value,
+                              final String defId) {
+        final Object def = getDomainObject(defId);
+        final DefinitionAdapter<Object> definitionAdapter = definitionManager.adapters().registry().getDefinitionAdapter(def.getClass());
+        switch (key) {
             case "id":
-                return defId.equals( value );
+                return defId.equals(value);
             case "type":
-                boolean isNode = isNode( def,
-                                         definitionAdapter );
-                return "node".equals( value ) && isNode;
+                boolean isNode = isNode(def,
+                                        definitionAdapter);
+                return "node".equals(value) && isNode;
             case "labels":
-                final Set<String> labelSet = toSet( value );
-                if ( null != labelSet ) {
-                    Set<String> defLabels = definitionAdapter.getLabels( def );
-                    return isIntersect( labelSet,
-                                        defLabels );
+                final Set<String> labelSet = toSet(value);
+                if (null != labelSet) {
+                    Set<String> defLabels = definitionAdapter.getLabels(def);
+                    return isIntersect(labelSet,
+                                       defLabels);
                 }
                 return true;
         }
-        throw new UnsupportedOperationException( "Cannot filter definitions by key [" + key + "]" );
+        throw new UnsupportedOperationException("Cannot filter definitions by key [" + key + "]");
     }
 
-    private Object getDomainObject( final String id ) {
-        Object definition = registry.getDefinitionById( id );
-        if ( null == definition ) {
-            definition = factoryManager.newDefinition( id );
-            registry.register( definition );
+    private Object getDomainObject(final String id) {
+        Object definition = registry.getDefinitionById(id);
+        if (null == definition) {
+            definition = factoryManager.newDefinition(id);
+            registry.register(definition);
         }
         return definition;
     }
 
-    @SuppressWarnings( "unchecked" )
-    private DefinitionRepresentation buildRepresentation( final String id,
-                                                          final Object def ) {
-        final DefinitionAdapter<Object> definitionAdapter = definitionManager.adapters().registry().getDefinitionAdapter( def.getClass() );
-        final Set<String> labels = definitionAdapter.getLabels( def );
-        boolean isNode = isNode( def,
-                                 definitionAdapter );
-        return new DefinitionRepresentationImpl( id,
-                                                 isNode,
-                                                 labels );
+    @SuppressWarnings("unchecked")
+    private DefinitionRepresentation buildRepresentation(final String id,
+                                                         final Object def) {
+        final DefinitionAdapter<Object> definitionAdapter = definitionManager.adapters().registry().getDefinitionAdapter(def.getClass());
+        final Set<String> labels = definitionAdapter.getLabels(def);
+        boolean isNode = isNode(def,
+                                definitionAdapter);
+        return new DefinitionRepresentationImpl(id,
+                                                isNode,
+                                                labels);
     }
 
-    private boolean isNode( final Object def,
-                            final DefinitionAdapter<Object> definitionAdapter ) {
-        final Class<? extends ElementFactory> elemFactoryType = definitionAdapter.getGraphFactoryType( def );
-        return DefinitionUtils.isNodeFactory( elemFactoryType,
-                                              factoryManager.registry() );
+    private boolean isNode(final Object def,
+                           final DefinitionAdapter<Object> definitionAdapter) {
+        final Class<? extends ElementFactory> elemFactoryType = definitionAdapter.getGraphFactoryType(def);
+        return DefinitionUtils.isNodeFactory(elemFactoryType,
+                                             factoryManager.registry());
     }
 }

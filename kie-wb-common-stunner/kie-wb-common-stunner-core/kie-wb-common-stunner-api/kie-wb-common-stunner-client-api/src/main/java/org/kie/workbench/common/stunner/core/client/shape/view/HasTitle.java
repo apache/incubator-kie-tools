@@ -26,21 +26,21 @@ public interface HasTitle<T> {
         BOTTOM
     }
 
-    T setTitle( final String title );
+    T setTitle(final String title);
 
-    T setTitlePosition( final Position position );
+    T setTitlePosition(final Position position);
 
-    T setTitleRotation( final double degrees );
+    T setTitleRotation(final double degrees);
 
-    T setTitleStrokeColor( final String color );
+    T setTitleStrokeColor(final String color);
 
-    T setTitleFontFamily( final String fontFamily );
+    T setTitleFontFamily(final String fontFamily);
 
-    T setTitleFontSize( final double fontSize );
+    T setTitleFontSize(final double fontSize);
 
-    T setTitleStrokeWidth( final double strokeWidth );
+    T setTitleStrokeWidth(final double strokeWidth);
 
-    T setTitleAlpha( final double alpha );
+    T setTitleAlpha(final double alpha);
 
     T moveTitleToTop();
 

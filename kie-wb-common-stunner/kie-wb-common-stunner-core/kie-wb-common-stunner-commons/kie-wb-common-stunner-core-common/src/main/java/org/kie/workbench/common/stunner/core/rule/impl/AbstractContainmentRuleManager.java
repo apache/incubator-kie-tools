@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.rule.Rule;
 public abstract class AbstractContainmentRuleManager extends AbstractRuleManager<ContainmentRule> implements ContainmentRuleManager {
 
     @Override
-    public boolean supports( final Rule rule ) {
+    public boolean supports(final Rule rule) {
         return rule instanceof ContainmentRule;
     }
 }

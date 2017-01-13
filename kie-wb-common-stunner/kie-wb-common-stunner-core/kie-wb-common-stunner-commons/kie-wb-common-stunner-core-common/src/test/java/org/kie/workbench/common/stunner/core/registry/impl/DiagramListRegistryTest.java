@@ -26,7 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DiagramListRegistryTest {
 
     private static final String DIAGRAM_1_UUID = "UUID1";
@@ -43,46 +43,46 @@ public class DiagramListRegistryTest {
     @Before
     public void setup() {
         registry = new DiagramListRegistry();
-        when( diagram1.getName() ).thenReturn( DIAGRAM_1_UUID );
-        when( diagram2.getName() ).thenReturn( DIAGRAM_2_UUID );
+        when(diagram1.getName()).thenReturn(DIAGRAM_1_UUID);
+        when(diagram2.getName()).thenReturn(DIAGRAM_2_UUID);
     }
 
     @Test
     public void testGetDiagramByUUID() {
-        registry.register( diagram1 );
-        registry.register( diagram2 );
-        assertEquals( diagram1,
-                      registry.getDiagramByUUID( DIAGRAM_1_UUID ) );
-        assertEquals( diagram2,
-                      registry.getDiagramByUUID( DIAGRAM_2_UUID ) );
-        assertEquals( null,
-                      registry.getDiagramByUUID( DUMMY_STRING ) );
+        registry.register(diagram1);
+        registry.register(diagram2);
+        assertEquals(diagram1,
+                     registry.getDiagramByUUID(DIAGRAM_1_UUID));
+        assertEquals(diagram2,
+                     registry.getDiagramByUUID(DIAGRAM_2_UUID));
+        assertEquals(null,
+                     registry.getDiagramByUUID(DUMMY_STRING));
     }
 
     @Test
     public void testUpdate() {
-        registry.register( diagram1 );
-        registry.register( diagram2 );
-        registry.update( diagram1 );
-        registry.update( diagram2 );
+        registry.register(diagram1);
+        registry.register(diagram2);
+        registry.update(diagram1);
+        registry.update(diagram2);
     }
 
-    @Test( expected = RuntimeException.class )
+    @Test(expected = RuntimeException.class)
     public void testInvalidUpdate() {
-        registry.register( diagram1 );
-        registry.update( diagram2 );
+        registry.register(diagram1);
+        registry.update(diagram2);
     }
 
     @Test
     public void testEmpty() {
         boolean empty = registry.isEmpty();
-        assertTrue( empty );
+        assertTrue(empty);
     }
 
     @Test
     public void testNotEmpty() {
-        registry.register( diagram1 );
+        registry.register(diagram1);
         boolean empty = registry.isEmpty();
-        assertFalse( empty );
+        assertFalse(empty);
     }
 }

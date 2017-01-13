@@ -32,28 +32,28 @@ public class MorphDefinitionProviderGenerator extends AbstractBindableAdapterGen
         return "MorphDefinitionProvider.ftl";
     }
 
-    public StringBuffer generate( final String packageName,
-                                  final String className,
-                                  final Collection<String> morphDeinitions,
-                                  final Messager messager ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final String className,
+                                 final Collection<String> morphDeinitions,
+                                 final Messager messager) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "packageName",
-                  packageName );
-        root.put( "className",
-                  className );
-        root.put( "parentClassName",
-                  MorphDefinitionProvider.class.getName() );
-        root.put( "generatedByClassName",
-                  MorphDefinitionProviderGenerator.class.getName() );
-        root.put( "morphDefinitionClassNameSize",
-                  morphDeinitions.size() );
-        root.put( "morphDefinitionClassNames",
-                  morphDeinitions );
+        root.put("packageName",
+                 packageName);
+        root.put("className",
+                 className);
+        root.put("parentClassName",
+                 MorphDefinitionProvider.class.getName());
+        root.put("generatedByClassName",
+                 MorphDefinitionProviderGenerator.class.getName());
+        root.put("morphDefinitionClassNameSize",
+                 morphDeinitions.size());
+        root.put("morphDefinitionClassNames",
+                 morphDeinitions);
 
         //Generate code
-        return writeTemplate( packageName,
-                              className,
-                              root,
-                              messager );
+        return writeTemplate(packageName,
+                             className,
+                             root,
+                             messager);
     }
 }

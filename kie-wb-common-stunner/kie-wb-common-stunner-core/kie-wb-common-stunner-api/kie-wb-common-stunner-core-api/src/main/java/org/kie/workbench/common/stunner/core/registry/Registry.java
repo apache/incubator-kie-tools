@@ -22,7 +22,7 @@ package org.kie.workbench.common.stunner.core.registry;
  */
 public interface Registry<T> {
 
-    boolean contains( final T item );
+    boolean contains(final T item);
 
     boolean isEmpty();
 }

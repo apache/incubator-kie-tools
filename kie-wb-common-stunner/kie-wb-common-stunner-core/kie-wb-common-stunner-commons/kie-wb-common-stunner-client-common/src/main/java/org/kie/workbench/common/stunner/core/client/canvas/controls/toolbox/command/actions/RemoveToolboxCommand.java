@@ -36,16 +36,16 @@ public class RemoveToolboxCommand<I> extends AbstractActionToolboxCommand<I> {
     private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
 
     protected RemoveToolboxCommand() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public RemoveToolboxCommand( final DefinitionGlyphTooltip<?> glyphTooltip,
-                                 final CanvasCommandFactory commandFactory,
-                                 final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager ) {
-        super( glyphTooltip );
+    public RemoveToolboxCommand(final DefinitionGlyphTooltip<?> glyphTooltip,
+                                final CanvasCommandFactory commandFactory,
+                                final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager) {
+        super(glyphTooltip);
         this.commandFactory = commandFactory;
         this.canvasCommandManager = canvasCommandManager;
     }
@@ -57,14 +57,14 @@ public class RemoveToolboxCommand<I> extends AbstractActionToolboxCommand<I> {
     }
 
     @Override
-    public void click( final Context<AbstractCanvasHandler> context,
-                       final Element element ) {
-        super.click( context,
-                     element );
+    public void click(final Context<AbstractCanvasHandler> context,
+                      final Element element) {
+        super.click(context,
+                    element);
         // TODO: Remove use of hardcoded confirm box here & I18n.
-        if ( Window.confirm( "Are you sure?" ) ) {
-            canvasCommandManager.execute( context.getCanvasHandler(),
-                                          commandFactory.deleteNode( ( Node ) element ) );
+        if (Window.confirm("Are you sure?")) {
+            canvasCommandManager.execute(context.getCanvasHandler(),
+                                         commandFactory.deleteNode((Node) element));
         }
     }
 

@@ -26,7 +26,7 @@ public interface ViewConnector<W> extends View<W> {
 
     Integer getTargetMagnetIndex();
 
-    void setSourceMagnetIndex( final Integer index );
+    void setSourceMagnetIndex(final Integer index);
 
-    void setTargetMagnetIndex( final Integer index );
+    void setTargetMagnetIndex(final Integer index);
 }

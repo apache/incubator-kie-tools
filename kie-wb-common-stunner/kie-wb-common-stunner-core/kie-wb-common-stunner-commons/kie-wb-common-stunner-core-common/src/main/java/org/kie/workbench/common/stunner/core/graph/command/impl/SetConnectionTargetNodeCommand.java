@@ -50,134 +50,134 @@ public final class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
     private transient Node<? extends View<?>, Edge> sourceNode;
     private transient Node<? extends View<?>, Edge> targetNode;
 
-    @SuppressWarnings( "unchecked" )
-    public SetConnectionTargetNodeCommand( final @MapsTo( "targetNodeUUID" ) String targetNodeUUID,
-                                           final @MapsTo( "edgeUUID" ) String edgeUUID,
-                                           final @MapsTo( "magnetIndex" ) Integer magnetIndex ) {
-        this.edgeUUID = PortablePreconditions.checkNotNull( "edgeUUID",
-                                                            edgeUUID );
+    @SuppressWarnings("unchecked")
+    public SetConnectionTargetNodeCommand(final @MapsTo("targetNodeUUID") String targetNodeUUID,
+                                          final @MapsTo("edgeUUID") String edgeUUID,
+                                          final @MapsTo("magnetIndex") Integer magnetIndex) {
+        this.edgeUUID = PortablePreconditions.checkNotNull("edgeUUID",
+                                                           edgeUUID);
         this.targetNodeUUID = targetNodeUUID;
         this.magnetIndex = magnetIndex;
         this.lastTargetNodeUUID = null;
         this.lastMagnetIndex = null;
     }
 
-    @SuppressWarnings( "unchecked" )
-    public SetConnectionTargetNodeCommand( final Node<? extends View<?>, Edge> targetNode,
-                                           final Edge<? extends View, Node> edge,
-                                           final Integer magnetIndex ) {
-        this( null != targetNode ? targetNode.getUUID() : null,
-              edge.getUUID(),
-              magnetIndex );
-        this.edge = PortablePreconditions.checkNotNull( "edge",
-                                                        edge );
+    @SuppressWarnings("unchecked")
+    public SetConnectionTargetNodeCommand(final Node<? extends View<?>, Edge> targetNode,
+                                          final Edge<? extends View, Node> edge,
+                                          final Integer magnetIndex) {
+        this(null != targetNode ? targetNode.getUUID() : null,
+             edge.getUUID(),
+             magnetIndex);
+        this.edge = PortablePreconditions.checkNotNull("edge",
+                                                       edge);
         this.sourceNode = edge.getSourceNode();
         this.targetNode = targetNode;
     }
 
-    @SuppressWarnings( "unchecked" )
-    public SetConnectionTargetNodeCommand( final Node<? extends View<?>, Edge> targetNode,
-                                           final Edge<? extends View, Node> edge ) {
-        this( targetNode,
-              edge,
-              null );
+    @SuppressWarnings("unchecked")
+    public SetConnectionTargetNodeCommand(final Node<? extends View<?>, Edge> targetNode,
+                                          final Edge<? extends View, Node> edge) {
+        this(targetNode,
+             edge,
+             null);
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        final CommandResult<RuleViolation> results = allow( context );
-        if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            final Node<?, Edge> targetNode = getTargetNode( context );
-            final Edge<? extends View, Node> edge = getEdge( context );
+    @SuppressWarnings("unchecked")
+    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
+        final CommandResult<RuleViolation> results = allow(context);
+        if (!results.getType().equals(CommandResult.Type.ERROR)) {
+            final Node<?, Edge> targetNode = getTargetNode(context);
+            final Edge<? extends View, Node> edge = getEdge(context);
             final Node<? extends View<?>, Edge> lastTargetNode = edge.getTargetNode();
-            if ( null != lastTargetNode ) {
+            if (null != lastTargetNode) {
                 lastTargetNodeUUID = lastTargetNode.getUUID();
-                lastTargetNode.getInEdges().remove( edge );
+                lastTargetNode.getInEdges().remove(edge);
             }
-            if ( null != targetNode ) {
-                targetNode.getInEdges().add( edge );
+            if (null != targetNode) {
+                targetNode.getInEdges().add(edge);
             }
-            edge.setTargetNode( targetNode );
-            if ( null != magnetIndex ) {
-                ViewConnector connectionContent = ( ViewConnector ) edge.getContent();
+            edge.setTargetNode(targetNode);
+            if (null != magnetIndex) {
+                ViewConnector connectionContent = (ViewConnector) edge.getContent();
                 lastMagnetIndex = connectionContent.getTargetMagnetIndex();
-                connectionContent.setTargetMagnetIndex( magnetIndex );
+                connectionContent.setTargetMagnetIndex(magnetIndex);
             }
         }
         return results;
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
-        final Node<? extends View<?>, Edge> targetNode = getTargetNode( context );
-        final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) getEdge( context );
+    @SuppressWarnings("unchecked")
+    protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
+        final Node<? extends View<?>, Edge> targetNode = getTargetNode(context);
+        final Edge<View<?>, Node> edge = (Edge<View<?>, Node>) getEdge(context);
         final GraphCommandResultBuilder resultBuilder = new GraphCommandResultBuilder();
         final Collection<RuleViolation> connectionRuleViolations =
-                ( Collection<RuleViolation> ) context.getRulesManager()
-                        .connection().evaluate( edge,
-                                                sourceNode,
-                                                targetNode ).violations();
-        resultBuilder.addViolations( connectionRuleViolations );
+                (Collection<RuleViolation>) context.getRulesManager()
+                        .connection().evaluate(edge,
+                                               sourceNode,
+                                               targetNode).violations();
+        resultBuilder.addViolations(connectionRuleViolations);
         final Node<? extends View<?>, Edge> currentTarget = edge.getTargetNode();
-        if ( null != currentTarget ) {
+        if (null != currentTarget) {
             final Collection<RuleViolation> cardinalityRuleViolations =
-                    ( Collection<RuleViolation> ) context.getRulesManager()
+                    (Collection<RuleViolation>) context.getRulesManager()
                             .edgeCardinality()
-                            .evaluate( edge,
-                                       currentTarget,
-                                       currentTarget.getInEdges(),
-                                       EdgeCardinalityRule.Type.INCOMING,
-                                       RuleManager.Operation.DELETE )
+                            .evaluate(edge,
+                                      currentTarget,
+                                      currentTarget.getInEdges(),
+                                      EdgeCardinalityRule.Type.INCOMING,
+                                      RuleManager.Operation.DELETE)
                             .violations();
-            resultBuilder.addViolations( cardinalityRuleViolations );
+            resultBuilder.addViolations(cardinalityRuleViolations);
         }
-        if ( null != targetNode ) {
+        if (null != targetNode) {
             final Collection<RuleViolation> cardinalityRuleViolations =
-                    ( Collection<RuleViolation> ) context.getRulesManager()
+                    (Collection<RuleViolation>) context.getRulesManager()
                             .edgeCardinality()
-                            .evaluate( edge,
-                                       targetNode,
-                                       targetNode.getInEdges(),
-                                       EdgeCardinalityRule.Type.INCOMING,
-                                       RuleManager.Operation.ADD )
+                            .evaluate(edge,
+                                      targetNode,
+                                      targetNode.getInEdges(),
+                                      EdgeCardinalityRule.Type.INCOMING,
+                                      RuleManager.Operation.ADD)
                             .violations();
-            resultBuilder.addViolations( cardinalityRuleViolations );
+            resultBuilder.addViolations(cardinalityRuleViolations);
         }
         return resultBuilder.build();
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final SetConnectionTargetNodeCommand undoCommand = new SetConnectionTargetNodeCommand( ( Node<? extends View<?>, Edge> ) getNode( context,
-                                                                                                                                          lastTargetNodeUUID ),
-                                                                                               getEdge( context ),
-                                                                                               lastMagnetIndex );
-        return undoCommand.execute( context );
+    @SuppressWarnings("unchecked")
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        final SetConnectionTargetNodeCommand undoCommand = new SetConnectionTargetNodeCommand((Node<? extends View<?>, Edge>) getNode(context,
+                                                                                                                                      lastTargetNodeUUID),
+                                                                                              getEdge(context),
+                                                                                              lastMagnetIndex);
+        return undoCommand.execute(context);
     }
 
-    private Edge<? extends View, Node> getEdge( final GraphCommandExecutionContext context ) {
-        if ( null == this.edge ) {
-            this.edge = getViewEdge( context,
-                                     edgeUUID );
+    private Edge<? extends View, Node> getEdge(final GraphCommandExecutionContext context) {
+        if (null == this.edge) {
+            this.edge = getViewEdge(context,
+                                    edgeUUID);
         }
         return this.edge;
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Node<? extends View<?>, Edge> getSourceNode( final GraphCommandExecutionContext context ) {
-        if ( null == sourceNode ) {
-            sourceNode = ( Node<? extends View<?>, Edge> ) getEdge( context ).getSourceNode();
+    @SuppressWarnings("unchecked")
+    private Node<? extends View<?>, Edge> getSourceNode(final GraphCommandExecutionContext context) {
+        if (null == sourceNode) {
+            sourceNode = (Node<? extends View<?>, Edge>) getEdge(context).getSourceNode();
         }
         return sourceNode;
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Node<? extends View<?>, Edge> getTargetNode( final GraphCommandExecutionContext context ) {
-        if ( null == targetNode ) {
-            targetNode = ( Node<? extends View<?>, Edge> ) getNode( context,
-                                                                    targetNodeUUID );
+    @SuppressWarnings("unchecked")
+    private Node<? extends View<?>, Edge> getTargetNode(final GraphCommandExecutionContext context) {
+        if (null == targetNode) {
+            targetNode = (Node<? extends View<?>, Edge>) getNode(context,
+                                                                 targetNodeUUID);
         }
         return targetNode;
     }
@@ -201,7 +201,7 @@ public final class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
     @Override
     public String toString() {
         return "SetConnectionTargetNodeCommand [edge=" + edgeUUID
-                + ", candidate=" + ( null != targetNodeUUID ? targetNodeUUID : "null" )
+                + ", candidate=" + (null != targetNodeUUID ? targetNodeUUID : "null")
                 + ", magnet=" + magnetIndex + "]";
     }
 }

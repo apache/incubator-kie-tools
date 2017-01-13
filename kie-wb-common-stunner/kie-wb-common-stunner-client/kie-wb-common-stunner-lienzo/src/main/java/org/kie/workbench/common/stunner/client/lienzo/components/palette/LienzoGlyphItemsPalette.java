@@ -28,19 +28,19 @@ public interface LienzoGlyphItemsPalette<I extends HasPaletteItems<? extends Gly
 
     interface GlyphTooltipCallback {
 
-        boolean onShowTooltip( final DefinitionGlyphTooltip<?> glyphTooltip,
-                               final GlyphPaletteItem item,
-                               final double mouseX,
-                               final double mouseY,
-                               final double itemX,
-                               final double itemY );
+        boolean onShowTooltip(final DefinitionGlyphTooltip<?> glyphTooltip,
+                              final GlyphPaletteItem item,
+                              final double mouseX,
+                              final double mouseY,
+                              final double itemX,
+                              final double itemY);
     }
 
-    LienzoGlyphItemsPalette<I, V> setShapeSetId( final String shapeSetId );
+    LienzoGlyphItemsPalette<I, V> setShapeSetId(final String shapeSetId);
 
     List<GlyphPaletteItem> getItems();
 
-    GlyphPaletteItem getItem( final int pos );
+    GlyphPaletteItem getItem(final int pos);
 
-    LienzoGlyphItemsPalette<I, V> onShowGlyTooltip( final GlyphTooltipCallback callback );
+    LienzoGlyphItemsPalette<I, V> onShowGlyTooltip(final GlyphTooltipCallback callback);
 }

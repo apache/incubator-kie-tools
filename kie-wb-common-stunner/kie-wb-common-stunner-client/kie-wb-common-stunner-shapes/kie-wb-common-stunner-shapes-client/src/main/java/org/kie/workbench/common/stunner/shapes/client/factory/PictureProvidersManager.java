@@ -32,33 +32,33 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 @ApplicationScoped
 public class PictureProvidersManager {
 
-    private static Logger LOGGER = Logger.getLogger( PictureProvidersManager.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(PictureProvidersManager.class.getName());
 
     private final ManagedInstance<PictureProvider> pictureProviderManagedInstances;
     private final List<PictureProvider> providers = new LinkedList<>();
 
     @Inject
-    public PictureProvidersManager( final ManagedInstance<PictureProvider> pictureProviderManagedInstances ) {
+    public PictureProvidersManager(final ManagedInstance<PictureProvider> pictureProviderManagedInstances) {
         this.pictureProviderManagedInstances = pictureProviderManagedInstances;
     }
 
     @PostConstruct
     public void init() {
-        pictureProviderManagedInstances.forEach( providers::add );
+        pictureProviderManagedInstances.forEach(providers::add);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public SafeUri getUri( final Object source ) {
-        checkNotNull( "source",
-                      source );
+    @SuppressWarnings("unchecked")
+    public SafeUri getUri(final Object source) {
+        checkNotNull("source",
+                     source);
         final Class<?> type = source.getClass();
         PictureProvider provider = providers.stream()
-                .filter( pictureProvider -> pictureProvider.getSourceType().equals( type ) ).findFirst().orElse( null );
-        if ( null != provider ) {
-            return provider.getThumbnailUri( source );
+                .filter(pictureProvider -> pictureProvider.getSourceType().equals(type)).findFirst().orElse(null);
+        if (null != provider) {
+            return provider.getThumbnailUri(source);
         } else {
-            LOGGER.log( Level.SEVERE,
-                        "Picture provider not found for [" + source + "]" );
+            LOGGER.log(Level.SEVERE,
+                       "Picture provider not found for [" + source + "]");
             return null;
         }
     }

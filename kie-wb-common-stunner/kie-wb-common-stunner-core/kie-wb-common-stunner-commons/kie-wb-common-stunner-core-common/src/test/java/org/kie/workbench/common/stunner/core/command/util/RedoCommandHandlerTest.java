@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class RedoCommandHandlerTest {
 
     @Mock
@@ -47,63 +47,63 @@ public class RedoCommandHandlerTest {
     @Mock
     Command command2;
 
-    private final List<Command> commands1 = new ArrayList<>( 1 );
-    private final List<Command> commands2 = new ArrayList<>( 1 );
+    private final List<Command> commands1 = new ArrayList<>(1);
+    private final List<Command> commands2 = new ArrayList<>(1);
     private final CommandRegistry commandRegistry1 = new CommandRegistryImpl();
 
     private RedoCommandHandler tested;
 
     @Before
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        commands1.add( command1 );
-        commands2.add( command2 );
-        when( registryFactory.newCommandRegistry() ).thenReturn( commandRegistry );
+        commands1.add(command1);
+        commands2.add(command2);
+        when(registryFactory.newCommandRegistry()).thenReturn(commandRegistry);
         ;
-        this.tested = new RedoCommandHandler( registryFactory );
+        this.tested = new RedoCommandHandler(registryFactory);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void tesUndoCommandExecuted() {
-        tested.onUndoCommandExecuted( command1 );
-        verify( commandRegistry,
-                times( 1 ) ).register( eq( command1 ) );
-        assertTrue( tested.isEnabled() );
+        tested.onUndoCommandExecuted(command1);
+        verify(commandRegistry,
+               times(1)).register(eq(command1));
+        assertTrue(tested.isEnabled());
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void tesExecute1() {
         createRealRegistry();
-        tested.onCommandExecuted( command1 );
-        assertFalse( tested.isEnabled() );
+        tested.onCommandExecuted(command1);
+        assertFalse(tested.isEnabled());
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void tesExecuteJustRecentRedoCommand() {
         createRealRegistry();
-        tested.onUndoCommandExecuted( command1 );
-        tested.onCommandExecuted( command1 );
-        assertFalse( tested.isEnabled() );
+        tested.onUndoCommandExecuted(command1);
+        tested.onCommandExecuted(command1);
+        assertFalse(tested.isEnabled());
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void tesExecuteRemoveRedoCommands() {
         createRealRegistry();
-        Command command3 = mock( Command.class );
-        tested.onUndoCommandExecuted( command1 );
-        tested.onUndoCommandExecuted( command2 );
-        tested.onCommandExecuted( command3 );
-        assertFalse( tested.isEnabled() );
+        Command command3 = mock(Command.class);
+        tested.onUndoCommandExecuted(command1);
+        tested.onUndoCommandExecuted(command2);
+        tested.onCommandExecuted(command3);
+        assertFalse(tested.isEnabled());
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     private void createRealRegistry() {
-        when( registryFactory.newCommandRegistry() ).thenReturn( commandRegistry1 );
+        when(registryFactory.newCommandRegistry()).thenReturn(commandRegistry1);
         ;
-        this.tested = new RedoCommandHandler( registryFactory );
+        this.tested = new RedoCommandHandler(registryFactory);
     }
 }

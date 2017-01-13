@@ -23,9 +23,9 @@ public abstract class GestureHandler extends AbstractViewHandler<GestureEvent> {
         return ViewEventType.GESTURE;
     }
 
-    public abstract void start( final GestureEvent event );
+    public abstract void start(final GestureEvent event);
 
-    public abstract void change( final GestureEvent event );
+    public abstract void change(final GestureEvent event);
 
-    public abstract void end( final GestureEvent event );
+    public abstract void end(final GestureEvent event);
 }

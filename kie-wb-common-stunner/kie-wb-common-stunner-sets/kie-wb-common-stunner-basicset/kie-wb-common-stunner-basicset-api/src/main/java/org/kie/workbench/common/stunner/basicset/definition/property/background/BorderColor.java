@@ -58,7 +58,7 @@ public class BorderColor {
     public BorderColor() {
     }
 
-    public BorderColor( final String value ) {
+    public BorderColor(final String value) {
         this.value = value;
     }
 
@@ -90,7 +90,7 @@ public class BorderColor {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

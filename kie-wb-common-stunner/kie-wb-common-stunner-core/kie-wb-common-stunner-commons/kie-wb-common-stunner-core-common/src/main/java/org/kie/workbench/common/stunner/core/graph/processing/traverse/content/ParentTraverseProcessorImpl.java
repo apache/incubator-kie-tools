@@ -30,8 +30,8 @@ public final class ParentTraverseProcessorImpl extends AbstractContentTraversePr
         implements ParentTraverseProcessor {
 
     @Inject
-    public ParentTraverseProcessorImpl( final TreeWalkTraverseProcessor treeWalkTraverseProcessor ) {
-        super( treeWalkTraverseProcessor );
+    public ParentTraverseProcessorImpl(final TreeWalkTraverseProcessor treeWalkTraverseProcessor) {
+        super(treeWalkTraverseProcessor);
     }
 
     @Override
@@ -40,7 +40,7 @@ public final class ParentTraverseProcessorImpl extends AbstractContentTraversePr
     }
 
     @Override
-    protected boolean accepts( final Edge edge ) {
+    protected boolean accepts(final Edge edge) {
         return edge.getContent() instanceof Parent;
     }
 }

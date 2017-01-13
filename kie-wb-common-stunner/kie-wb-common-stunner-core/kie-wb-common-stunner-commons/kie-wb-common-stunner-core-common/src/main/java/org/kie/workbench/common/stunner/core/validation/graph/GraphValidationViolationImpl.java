@@ -26,9 +26,9 @@ public final class GraphValidationViolationImpl
 
     private final RuleViolation ruleViolation;
 
-    protected GraphValidationViolationImpl( final Element<?> entity,
-                                            final RuleViolation ruleViolation ) {
-        super( entity );
+    protected GraphValidationViolationImpl(final Element<?> entity,
+                                           final RuleViolation ruleViolation) {
+        super(entity);
         this.ruleViolation = ruleViolation;
     }
 

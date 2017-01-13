@@ -67,9 +67,9 @@ public class CanvasNameEditionControlImpl
     private final Command floatingHideCallback = CanvasNameEditionControlImpl.this::hide;
 
     @Inject
-    public CanvasNameEditionControlImpl( final FloatingView<IsWidget> floatingView,
-                                         final NameEditBox<AbstractCanvasHandler, Element> nameEditBox,
-                                         final Event<CanvasElementSelectedEvent> elementSelectedEvent ) {
+    public CanvasNameEditionControlImpl(final FloatingView<IsWidget> floatingView,
+                                        final NameEditBox<AbstractCanvasHandler, Element> nameEditBox,
+                                        final Event<CanvasElementSelectedEvent> elementSelectedEvent) {
         this.floatingView = floatingView;
         this.nameEditBox = nameEditBox;
         this.elementSelectedEvent = elementSelectedEvent;
@@ -77,66 +77,66 @@ public class CanvasNameEditionControlImpl
     }
 
     @Override
-    public void enable( final AbstractCanvasHandler canvasHandler ) {
-        super.enable( canvasHandler );
-        nameEditBox.initialize( canvasHandler,
-                                () -> {
-                                    CanvasNameEditionControlImpl.this.hide();
-                                    elementSelectedEvent.fire( new CanvasElementSelectedEvent( canvasHandler,
-                                                                                               CanvasNameEditionControlImpl.this.uuid ) );
-                                } );
+    public void enable(final AbstractCanvasHandler canvasHandler) {
+        super.enable(canvasHandler);
+        nameEditBox.initialize(canvasHandler,
+                               () -> {
+                                   CanvasNameEditionControlImpl.this.hide();
+                                   elementSelectedEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
+                                                                                            CanvasNameEditionControlImpl.this.uuid));
+                               });
         floatingView
                 .hide()
-                .setHideCallback( floatingHideCallback )
-                .setTimeOut( FLOATING_VIEW_TIMEOUT )
-                .add( nameEditBox.asWidget() );
+                .setHideCallback(floatingHideCallback)
+                .setTimeOut(FLOATING_VIEW_TIMEOUT)
+                .add(nameEditBox.asWidget());
     }
 
     @Override
-    public void register( final Element element ) {
-        final Shape<?> shape = getShape( element.getUUID() );
-        if ( null != shape ) {
+    public void register(final Element element) {
+        final Shape<?> shape = getShape(element.getUUID());
+        if (null != shape) {
             final ShapeView shapeView = shape.getShapeView();
-            if ( shapeView instanceof HasEventHandlers ) {
-                final HasEventHandlers hasEventHandlers = ( HasEventHandlers ) shapeView;
-                if ( hasEventHandlers.supports( ViewEventType.MOUSE_DBL_CLICK ) ) {
+            if (shapeView instanceof HasEventHandlers) {
+                final HasEventHandlers hasEventHandlers = (HasEventHandlers) shapeView;
+                if (hasEventHandlers.supports(ViewEventType.MOUSE_DBL_CLICK)) {
                     // Double click event.
                     final MouseDoubleClickHandler doubleClickHandler = new MouseDoubleClickHandler() {
                         @Override
-                        public void handle( final MouseDoubleClickEvent event ) {
-                            CanvasNameEditionControlImpl.this.show( element,
-                                                                    event.getClientX(),
-                                                                    event.getClientY() );
+                        public void handle(final MouseDoubleClickEvent event) {
+                            CanvasNameEditionControlImpl.this.show(element,
+                                                                   event.getClientX(),
+                                                                   event.getClientY());
                         }
                     };
-                    hasEventHandlers.addHandler( ViewEventType.MOUSE_DBL_CLICK,
-                                                 doubleClickHandler );
-                    registerHandler( shape.getUUID(),
-                                     doubleClickHandler );
+                    hasEventHandlers.addHandler(ViewEventType.MOUSE_DBL_CLICK,
+                                                doubleClickHandler);
+                    registerHandler(shape.getUUID(),
+                                    doubleClickHandler);
                     // TODO: Not firing - Text over event.
                     final TextOverHandler overHandler = new TextOverHandler() {
                         @Override
-                        public void handle( TextOverEvent event ) {
-                            canvasHandler.getCanvas().getView().setCursor( AbstractCanvas.Cursors.TEXT );
+                        public void handle(TextOverEvent event) {
+                            canvasHandler.getCanvas().getView().setCursor(AbstractCanvas.Cursors.TEXT);
                         }
                     };
-                    if ( hasEventHandlers.supports( ViewEventType.TEXT_OVER ) &&
-                            hasEventHandlers.supports( ViewEventType.TEXT_OUT ) ) {
-                        hasEventHandlers.addHandler( ViewEventType.TEXT_OVER,
-                                                     overHandler );
-                        registerHandler( shape.getUUID(),
-                                         overHandler );
+                    if (hasEventHandlers.supports(ViewEventType.TEXT_OVER) &&
+                            hasEventHandlers.supports(ViewEventType.TEXT_OUT)) {
+                        hasEventHandlers.addHandler(ViewEventType.TEXT_OVER,
+                                                    overHandler);
+                        registerHandler(shape.getUUID(),
+                                        overHandler);
                         // TODO: Not firing - Text out event.
                         final TextOutHandler outHandler = new TextOutHandler() {
                             @Override
-                            public void handle( TextOutEvent event ) {
-                                canvasHandler.getCanvas().getView().setCursor( AbstractCanvas.Cursors.AUTO );
+                            public void handle(TextOutEvent event) {
+                                canvasHandler.getCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
                             }
                         };
-                        hasEventHandlers.addHandler( ViewEventType.TEXT_OUT,
-                                                     outHandler );
-                        registerHandler( shape.getUUID(),
-                                         outHandler );
+                        hasEventHandlers.addHandler(ViewEventType.TEXT_OUT,
+                                                    outHandler);
+                        registerHandler(shape.getUUID(),
+                                        outHandler);
                     }
                 }
             }
@@ -144,29 +144,29 @@ public class CanvasNameEditionControlImpl
     }
 
     @Override
-    public CanvasNameEditionControl<AbstractCanvasHandler, Element> show( final Element item,
-                                                                          final double x,
-                                                                          final double y ) {
+    public CanvasNameEditionControl<AbstractCanvasHandler, Element> show(final Element item,
+                                                                         final double x,
+                                                                         final double y) {
         this.uuid = item.getUUID();
         enableShapeEdit();
-        nameEditBox.show( item );
+        nameEditBox.show(item);
         double[] size;
         try {
-            size = GraphUtils.getSize( ( View ) item.getContent() );
-        } catch ( final ClassCastException e ) {
+            size = GraphUtils.getSize((View) item.getContent());
+        } catch (final ClassCastException e) {
             size = null;
         }
-        final double rx = null != size ? size[ 0 ] / 2 : 0d;
+        final double rx = null != size ? size[0] / 2 : 0d;
         floatingView
-                .setX( x - rx )
-                .setY( y )
+                .setX(x - rx)
+                .setY(y)
                 .show();
         return this;
     }
 
     @Override
     public CanvasNameEditionControl<AbstractCanvasHandler, Element> hide() {
-        if ( isVisible() ) {
+        if (isVisible()) {
             disableShapeEdit();
             this.uuid = null;
             nameEditBox.hide();
@@ -187,28 +187,28 @@ public class CanvasNameEditionControlImpl
     }
 
     private boolean enableShapeEdit() {
-        return setShapeEditMode( true );
+        return setShapeEditMode(true);
     }
 
     private boolean disableShapeEdit() {
-        return setShapeEditMode( false );
+        return setShapeEditMode(false);
     }
 
-    private boolean setShapeEditMode( final boolean editMode ) {
-        final Shape<?> shape = getShape( this.uuid );
-        if ( null != shape ) {
-            final HasTitle hasTitle = ( HasTitle ) shape.getShapeView();
+    private boolean setShapeEditMode(final boolean editMode) {
+        final Shape<?> shape = getShape(this.uuid);
+        if (null != shape) {
+            final HasTitle hasTitle = (HasTitle) shape.getShapeView();
             final double alpha = editMode ? SHAPE_EDIT_ALPH : 1d;
-            shape.getShapeView().setFillAlpha( alpha );
-            hasTitle.setTitleAlpha( alpha );
+            shape.getShapeView().setFillAlpha(alpha);
+            hasTitle.setTitleAlpha(alpha);
             getCanvas().draw();
             return true;
         }
         return false;
     }
 
-    private Shape<?> getShape( final String uuid ) {
-        return null != uuid ? getCanvas().getShape( uuid ) : null;
+    private Shape<?> getShape(final String uuid) {
+        return null != uuid ? getCanvas().getShape(uuid) : null;
     }
 
     private boolean isVisible() {
@@ -219,18 +219,18 @@ public class CanvasNameEditionControlImpl
         return canvasHandler.getCanvas();
     }
 
-    void onKeyDownEvent( final @Observes KeyDownEvent keyDownEvent ) {
-        checkNotNull( "keyDownEvent",
-                      keyDownEvent );
+    void onKeyDownEvent(final @Observes KeyDownEvent keyDownEvent) {
+        checkNotNull("keyDownEvent",
+                     keyDownEvent);
         final KeyboardEvent.Key key = keyDownEvent.getKey();
-        if ( null != key && KeyboardEvent.Key.ESC.equals( key ) ) {
+        if (null != key && KeyboardEvent.Key.ESC.equals(key)) {
             hide();
         }
     }
 
-    void onCanvasFocusedEvent( final @Observes CanvasFocusedEvent canvasFocusedEvent ) {
-        checkNotNull( "canvasFocusedEvent",
-                      canvasFocusedEvent );
+    void onCanvasFocusedEvent(final @Observes CanvasFocusedEvent canvasFocusedEvent) {
+        checkNotNull("canvasFocusedEvent",
+                     canvasFocusedEvent);
         hide();
     }
 }

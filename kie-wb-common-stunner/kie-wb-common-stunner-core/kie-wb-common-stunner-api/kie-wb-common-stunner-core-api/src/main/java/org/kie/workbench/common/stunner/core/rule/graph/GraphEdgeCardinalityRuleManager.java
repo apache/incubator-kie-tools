@@ -40,9 +40,9 @@ public interface GraphEdgeCardinalityRuleManager
      * @param operation Can be adding a new connector, removing an existing one, or NONE, eg: just to validate rules
      * against current structure.
      */
-    RuleViolations evaluate( final Edge<? extends View<?>, Node> edge,
-                             final Node<? extends View<?>, Edge> candidate,
-                             final List<? extends Edge> count,
-                             final EdgeCardinalityRule.Type ruleType,
-                             final Operation operation );
+    RuleViolations evaluate(final Edge<? extends View<?>, Node> edge,
+                            final Node<? extends View<?>, Edge> candidate,
+                            final List<? extends Edge> count,
+                            final EdgeCardinalityRule.Type ruleType,
+                            final Operation operation);
 }

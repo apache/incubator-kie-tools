@@ -20,5 +20,5 @@ public interface HasBounds {
 
     Bounds getBounds();
 
-    void setBounds( final Bounds bounds );
+    void setBounds(final Bounds bounds);
 }

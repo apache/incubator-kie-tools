@@ -43,7 +43,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class AssigneeListItemWidgetViewImplTest {
 
     private static final String ASSIGNEE_NAME = "assigneeName";
@@ -64,7 +64,7 @@ public class AssigneeListItemWidgetViewImplTest {
     @GwtMock
     private KeyDownEvent keyDownEvent;
 
-    private Event<NotificationEvent> notification = mock( EventSourceMock.class );
+    private Event<NotificationEvent> notification = mock(EventSourceMock.class);
 
     @Captor
     private ArgumentCaptor<KeyDownHandler> keyDownHandlerCaptor;
@@ -76,11 +76,11 @@ public class AssigneeListItemWidgetViewImplTest {
 
     @Before
     public void setUp() throws Exception {
-        GwtMockito.initMocks( this );
-        customName = mock( TextBox.class );
-        name = mock( ValueListBox.class );
-        nameComboBox = mock( ComboBox.class );
-        view = mock( AssigneeListItemWidgetViewImpl.class );
+        GwtMockito.initMocks(this);
+        customName = mock(TextBox.class);
+        name = mock(ValueListBox.class);
+        nameComboBox = mock(ComboBox.class);
+        view = mock(AssigneeListItemWidgetViewImpl.class);
         view.assigneeRow = assigneeRow;
         view.name = name;
         view.deleteButton = deleteButton;
@@ -88,115 +88,115 @@ public class AssigneeListItemWidgetViewImplTest {
         view.name = name;
         view.nameComboBox = nameComboBox;
         view.notification = notification;
-        doCallRealMethod().when( view ).init();
-        doCallRealMethod().when( view ).getCustomName();
-        doCallRealMethod().when( view ).setCustomName( anyString() );
-        doCallRealMethod().when( view ).getModel();
-        doCallRealMethod().when( view ).setModel( any( AssigneeRow.class ) );
-        doCallRealMethod().when( view ).getModelValue( any( ValueListBox.class ) );
-        doCallRealMethod().when( view ).setTextBoxModelValue( any( TextBox.class ),
-                                                              anyString() );
-        doCallRealMethod().when( view ).setListBoxModelValue( any( ValueListBox.class ),
-                                                              anyString() );
-        doCallRealMethod().when( view ).getName();
-        doCallRealMethod().when( view ).setName( anyString() );
-        doCallRealMethod().when( view ).setParentWidget( any( AssigneeEditorWidgetView.Presenter.class ) );
-        doCallRealMethod().when( view ).isDuplicateName( anyString() );
-        doCallRealMethod().when( view ).handleDeleteButton( any( ClickEvent.class ) );
+        doCallRealMethod().when(view).init();
+        doCallRealMethod().when(view).getCustomName();
+        doCallRealMethod().when(view).setCustomName(anyString());
+        doCallRealMethod().when(view).getModel();
+        doCallRealMethod().when(view).setModel(any(AssigneeRow.class));
+        doCallRealMethod().when(view).getModelValue(any(ValueListBox.class));
+        doCallRealMethod().when(view).setTextBoxModelValue(any(TextBox.class),
+                                                           anyString());
+        doCallRealMethod().when(view).setListBoxModelValue(any(ValueListBox.class),
+                                                           anyString());
+        doCallRealMethod().when(view).getName();
+        doCallRealMethod().when(view).setName(anyString());
+        doCallRealMethod().when(view).setParentWidget(any(AssigneeEditorWidgetView.Presenter.class));
+        doCallRealMethod().when(view).isDuplicateName(anyString());
+        doCallRealMethod().when(view).handleDeleteButton(any(ClickEvent.class));
         AssigneeRow row = new AssigneeRow();
-        doReturn( row ).when( assigneeRow ).getModel();
+        doReturn(row).when(assigneeRow).getModel();
     }
 
     @Test
     public void testSetAssigneeCustomName() {
         AssigneeRow row = new AssigneeRow();
-        row.setName( ASSIGNEE_NAME );
-        row.setCustomName( CUSTOM_NAME );
-        row.setName( null );
-        doReturn( row ).when( assigneeRow ).getModel();
-        view.setModel( row );
-        verify( assigneeRow,
-                times( 1 ) ).setModel( row );
-        verify( deleteButton,
-                times( 1 ) ).setIcon( IconType.TRASH );
-        verify( customName,
-                times( 1 ) ).setValue( CUSTOM_NAME );
-        verify( name,
-                times( 1 ) ).setValue( CUSTOM_NAME );
+        row.setName(ASSIGNEE_NAME);
+        row.setCustomName(CUSTOM_NAME);
+        row.setName(null);
+        doReturn(row).when(assigneeRow).getModel();
+        view.setModel(row);
+        verify(assigneeRow,
+               times(1)).setModel(row);
+        verify(deleteButton,
+               times(1)).setIcon(IconType.TRASH);
+        verify(customName,
+               times(1)).setValue(CUSTOM_NAME);
+        verify(name,
+               times(1)).setValue(CUSTOM_NAME);
     }
 
     @Test
     public void testSetAssigneeName() {
         AssigneeRow row = new AssigneeRow();
-        row.setName( ASSIGNEE_NAME );
-        row.setCustomName( null );
-        row.setName( ASSIGNEE_NAME );
-        doReturn( row ).when( assigneeRow ).getModel();
-        view.setModel( row );
-        verify( assigneeRow,
-                times( 1 ) ).setModel( row );
-        verify( deleteButton,
-                times( 1 ) ).setIcon( IconType.TRASH );
-        verify( customName,
-                never() ).setValue( ASSIGNEE_NAME );
-        verify( name,
-                times( 1 ) ).setValue( ASSIGNEE_NAME );
+        row.setName(ASSIGNEE_NAME);
+        row.setCustomName(null);
+        row.setName(ASSIGNEE_NAME);
+        doReturn(row).when(assigneeRow).getModel();
+        view.setModel(row);
+        verify(assigneeRow,
+               times(1)).setModel(row);
+        verify(deleteButton,
+               times(1)).setIcon(IconType.TRASH);
+        verify(customName,
+               never()).setValue(ASSIGNEE_NAME);
+        verify(name,
+               times(1)).setValue(ASSIGNEE_NAME);
     }
 
     @Test
     public void testSetTextBoxModelValueCustomName() {
-        assertNull( view.getModel().getCustomName() );
-        view.setTextBoxModelValue( customName,
-                                   "abc" );
-        assertEquals( "abc",
-                      view.getModel().getCustomName() );
-        assertEquals( "abc",
-                      view.getModelValue( name ) );
+        assertNull(view.getModel().getCustomName());
+        view.setTextBoxModelValue(customName,
+                                  "abc");
+        assertEquals("abc",
+                     view.getModel().getCustomName());
+        assertEquals("abc",
+                     view.getModelValue(name));
     }
 
     @Test
     public void testSetListBoxModelValueName() {
-        assertNull( view.getModel().getName() );
-        view.setListBoxModelValue( name,
-                                   "abc" );
-        assertEquals( "abc",
-                      view.getModel().getName() );
-        assertNull( view.getModel().getCustomName() );
-        assertEquals( "abc",
-                      view.getModelValue( name ) );
+        assertNull(view.getModel().getName());
+        view.setListBoxModelValue(name,
+                                  "abc");
+        assertEquals("abc",
+                     view.getModel().getName());
+        assertNull(view.getModel().getCustomName());
+        assertEquals("abc",
+                     view.getModelValue(name));
     }
 
     @Test
     public void testNameHandlerSpace() {
         view.init();
-        verify( customName,
-                times( 1 ) ).addKeyDownHandler( keyDownHandlerCaptor.capture() );
+        verify(customName,
+               times(1)).addKeyDownHandler(keyDownHandlerCaptor.capture());
         KeyDownHandler handler = keyDownHandlerCaptor.getValue();
-        doReturn( Integer.valueOf( ' ' ) ).when( keyDownEvent ).getNativeKeyCode();
-        handler.onKeyDown( keyDownEvent );
-        verify( keyDownEvent,
-                times( 1 ) ).preventDefault();
+        doReturn(Integer.valueOf(' ')).when(keyDownEvent).getNativeKeyCode();
+        handler.onKeyDown(keyDownEvent);
+        verify(keyDownEvent,
+               times(1)).preventDefault();
     }
 
     @Test
     public void testNameHandlerAlphabetical() {
         view.init();
-        verify( customName,
-                times( 1 ) ).addKeyDownHandler( keyDownHandlerCaptor.capture() );
+        verify(customName,
+               times(1)).addKeyDownHandler(keyDownHandlerCaptor.capture());
         KeyDownHandler handler = keyDownHandlerCaptor.getValue();
-        doReturn( Integer.valueOf( 'a' ) ).when( keyDownEvent ).getNativeKeyCode();
-        handler.onKeyDown( keyDownEvent );
-        verify( keyDownEvent,
-                never() ).preventDefault();
+        doReturn(Integer.valueOf('a')).when(keyDownEvent).getNativeKeyCode();
+        handler.onKeyDown(keyDownEvent);
+        verify(keyDownEvent,
+               never()).preventDefault();
     }
 
     @Test
     public void testHandleDeleteButton() {
-        AssigneeEditorWidgetView.Presenter widget = mock( AssigneeEditorWidgetView.Presenter.class );
-        AssigneeRow model = mock( AssigneeRow.class );
-        when( view.getModel() ).thenReturn( model );
-        view.setParentWidget( widget );
-        view.handleDeleteButton( null );
-        verify( widget ).removeAssignee( model );
+        AssigneeEditorWidgetView.Presenter widget = mock(AssigneeEditorWidgetView.Presenter.class);
+        AssigneeRow model = mock(AssigneeRow.class);
+        when(view.getModel()).thenReturn(model);
+        view.setParentWidget(widget);
+        view.handleDeleteButton(null);
+        verify(widget).removeAssignee(model);
     }
 }

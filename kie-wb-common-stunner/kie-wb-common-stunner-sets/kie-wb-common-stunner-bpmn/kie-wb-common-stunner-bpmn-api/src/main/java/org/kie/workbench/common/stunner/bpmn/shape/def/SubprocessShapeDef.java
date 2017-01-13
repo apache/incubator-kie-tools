@@ -38,85 +38,85 @@ public final class SubprocessShapeDef
         HasChildShapeDefs<ReusableSubprocess> {
 
     @Override
-    public String getBackgroundColor( final ReusableSubprocess element ) {
+    public String getBackgroundColor(final ReusableSubprocess element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final ReusableSubprocess element ) {
+    public double getBackgroundAlpha(final ReusableSubprocess element) {
         return 1;
     }
 
     @Override
-    public String getBorderColor( final ReusableSubprocess element ) {
+    public String getBorderColor(final ReusableSubprocess element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final ReusableSubprocess element ) {
+    public double getBorderSize(final ReusableSubprocess element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final ReusableSubprocess element ) {
+    public double getBorderAlpha(final ReusableSubprocess element) {
         return 1;
     }
 
     @Override
-    public String getFontFamily( final ReusableSubprocess element ) {
+    public String getFontFamily(final ReusableSubprocess element) {
         return element.getFontSet().getFontFamily().getValue();
     }
 
     @Override
-    public String getFontColor( final ReusableSubprocess element ) {
+    public String getFontColor(final ReusableSubprocess element) {
         return element.getFontSet().getFontColor().getValue();
     }
 
     @Override
-    public double getFontSize( final ReusableSubprocess element ) {
+    public double getFontSize(final ReusableSubprocess element) {
         return element.getFontSet().getFontSize().getValue();
     }
 
     @Override
-    public String getNamePropertyValue( final ReusableSubprocess element ) {
+    public String getNamePropertyValue(final ReusableSubprocess element) {
         return element.getGeneral().getName().getValue();
     }
 
     @Override
-    public double getFontBorderSize( final ReusableSubprocess element ) {
+    public double getFontBorderSize(final ReusableSubprocess element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final ReusableSubprocess element ) {
+    public HasTitle.Position getFontPosition(final ReusableSubprocess element) {
         return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public double getFontRotation( final ReusableSubprocess element ) {
+    public double getFontRotation(final ReusableSubprocess element) {
         return 0;
     }
 
     @Override
     public Map<ShapeDef<ReusableSubprocess>, HasChildren.Layout> getChildShapeDefs() {
         return new HashMap<ShapeDef<ReusableSubprocess>, HasChildren.Layout>() {{
-            put( new ProcessIconProxy(),
-                 HasChildren.Layout.TOP );
+            put(new ProcessIconProxy(),
+                HasChildren.Layout.TOP);
         }};
     }
 
     @Override
-    public double getWidth( final ReusableSubprocess element ) {
+    public double getWidth(final ReusableSubprocess element) {
         return element.getDimensionsSet().getWidth().getValue();
     }
 
     @Override
-    public double getHeight( final ReusableSubprocess element ) {
+    public double getHeight(final ReusableSubprocess element) {
         return element.getDimensionsSet().getHeight().getValue();
     }
 
     @Override
-    public double getCornerRadius( final ReusableSubprocess element ) {
+    public double getCornerRadius(final ReusableSubprocess element) {
         return 0;
     }
 
@@ -124,12 +124,12 @@ public final class SubprocessShapeDef
             new PictureGlyphDef<ReusableSubprocess, BPMNPictures>() {
 
                 @Override
-                public String getGlyphDescription( ReusableSubprocess element ) {
+                public String getGlyphDescription(final ReusableSubprocess element) {
                     return element.getDescription();
                 }
 
                 @Override
-                public BPMNPictures getSource( final Class<?> type ) {
+                public BPMNPictures getSource(final Class<?> type) {
                     return BPMNPictures.SUB_PROCESS;
                 }
             };
@@ -146,42 +146,42 @@ public final class SubprocessShapeDef
         private static final String BLACK = "#000000";
 
         @Override
-        public double getWidth( final ReusableSubprocess element ) {
+        public double getWidth(final ReusableSubprocess element) {
             return element.getDimensionsSet().getWidth().getValue() / 2;
         }
 
         @Override
-        public double getHeight( final ReusableSubprocess element ) {
+        public double getHeight(final ReusableSubprocess element) {
             return element.getDimensionsSet().getHeight().getValue() / 2;
         }
 
         @Override
-        public String getBackgroundColor( final ReusableSubprocess element ) {
+        public String getBackgroundColor(final ReusableSubprocess element) {
             return BLACK;
         }
 
         @Override
-        public double getBackgroundAlpha( final ReusableSubprocess element ) {
+        public double getBackgroundAlpha(final ReusableSubprocess element) {
             return 1;
         }
 
         @Override
-        public String getBorderColor( final ReusableSubprocess element ) {
+        public String getBorderColor(final ReusableSubprocess element) {
             return BLACK;
         }
 
         @Override
-        public double getBorderSize( final ReusableSubprocess element ) {
+        public double getBorderSize(final ReusableSubprocess element) {
             return 0;
         }
 
         @Override
-        public double getBorderAlpha( final ReusableSubprocess element ) {
+        public double getBorderAlpha(final ReusableSubprocess element) {
             return 1;
         }
 
         @Override
-        public Icons getIcon( final ReusableSubprocess definition ) {
+        public Icons getIcon(final ReusableSubprocess definition) {
             return Icons.PLUS;
         }
     }

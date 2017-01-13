@@ -54,32 +54,32 @@ public class AssignmentData {
     public AssignmentData() {
     }
 
-    public AssignmentData( String sInputVariables,
-                           String sOutputVariables,
-                           String sProcessVariables,
-                           String sAssignments,
-                           String sDataTypes,
-                           String sDisallowedPropertyNames ) {
+    public AssignmentData(final String sInputVariables,
+                          final String sOutputVariables,
+                          final String sProcessVariables,
+                          final String sAssignments,
+                          final String sDataTypes,
+                          final String sDisallowedPropertyNames) {
         // setDataTypes before variables because these determine whether variable datatypes are custom or not
-        setDataTypes( sDataTypes );
-        setProcessVariables( sProcessVariables );
-        setInputVariables( sInputVariables );
-        setOutputVariables( sOutputVariables );
-        setAssignments( sAssignments );
-        setDisallowedPropertyNames( sDisallowedPropertyNames );
+        setDataTypes(sDataTypes);
+        setProcessVariables(sProcessVariables);
+        setInputVariables(sInputVariables);
+        setOutputVariables(sOutputVariables);
+        setAssignments(sAssignments);
+        setDisallowedPropertyNames(sDisallowedPropertyNames);
     }
 
-    public AssignmentData( String sInputVariables,
-                           String sOutputVariables,
-                           String sProcessVariables,
-                           String sAssignments,
-                           String sDisallowedPropertyNames ) {
-        this( sInputVariables,
-              sOutputVariables,
-              sProcessVariables,
-              sAssignments,
-              null,
-              sDisallowedPropertyNames );
+    public AssignmentData(final String sInputVariables,
+                          final String sOutputVariables,
+                          final String sProcessVariables,
+                          final String sAssignments,
+                          final String sDisallowedPropertyNames) {
+        this(sInputVariables,
+             sOutputVariables,
+             sProcessVariables,
+             sAssignments,
+             null,
+             sDisallowedPropertyNames);
     }
 
     /**
@@ -87,66 +87,66 @@ public class AssignmentData {
      * @param inputAssignmentRows
      * @param outputAssignmentRows
      */
-    public AssignmentData( List<AssignmentRow> inputAssignmentRows,
-                           List<AssignmentRow> outputAssignmentRows,
-                           List<String> dataTypes,
-                           List<String> dataTypeDisplayNames ) {
-        setDataTypes( dataTypes,
-                      dataTypeDisplayNames );
-        if ( inputAssignmentRows != null ) {
-            for ( AssignmentRow row : inputAssignmentRows ) {
-                convertAssignmentRow( row );
+    public AssignmentData(final List<AssignmentRow> inputAssignmentRows,
+                          final List<AssignmentRow> outputAssignmentRows,
+                          final List<String> dataTypes,
+                          final List<String> dataTypeDisplayNames) {
+        setDataTypes(dataTypes,
+                     dataTypeDisplayNames);
+        if (inputAssignmentRows != null) {
+            for (AssignmentRow row : inputAssignmentRows) {
+                convertAssignmentRow(row);
             }
         }
-        if ( outputAssignmentRows != null ) {
-            for ( AssignmentRow row : outputAssignmentRows ) {
-                convertAssignmentRow( row );
+        if (outputAssignmentRows != null) {
+            for (AssignmentRow row : outputAssignmentRows) {
+                convertAssignmentRow(row);
             }
         }
     }
 
-    protected void convertAssignmentRow( AssignmentRow assignmentRow ) {
-        if ( assignmentRow.getName() == null || assignmentRow.getName().isEmpty() ) {
+    protected void convertAssignmentRow(final AssignmentRow assignmentRow) {
+        if (assignmentRow.getName() == null || assignmentRow.getName().isEmpty()) {
             return;
         }
-        if ( findVariable( assignmentRow.getName(),
-                           assignmentRow.getVariableType() ) == null ) {
-            Variable var = new Variable( assignmentRow.getName(),
-                                         assignmentRow.getVariableType(),
-                                         getDataTypeFromDisplayName( assignmentRow.getDataType() ),
-                                         assignmentRow.getCustomDataType() );
-            addVariable( var );
+        if (findVariable(assignmentRow.getName(),
+                         assignmentRow.getVariableType()) == null) {
+            Variable var = new Variable(assignmentRow.getName(),
+                                        assignmentRow.getVariableType(),
+                                        getDataTypeFromDisplayName(assignmentRow.getDataType()),
+                                        assignmentRow.getCustomDataType());
+            addVariable(var);
         }
         String processVarName;
         // If there's a constant, use it rather than processVar
         String constant = assignmentRow.getConstant();
-        if ( constant != null && !constant.isEmpty() ) {
+        if (constant != null && !constant.isEmpty()) {
             processVarName = null;
         } else {
             processVarName = assignmentRow.getProcessVar();
-            if ( processVarName != null && !processVarName.isEmpty() ) {
+            if (processVarName != null && !processVarName.isEmpty()) {
                 HashSet<String> processVarsNames = new HashSet<String>();
-                for ( Variable var : processVariables ) {
-                    processVarsNames.add( var.getName() );
+                for (Variable var : processVariables) {
+                    processVarsNames.add(var.getName());
                 }
-                if ( !processVarsNames.contains( processVarName ) ) {
-                    Variable processVar = new Variable( processVarName,
-                                                        Variable.VariableType.PROCESS,
-                                                        assignmentRow.getDataType(),
-                                                        assignmentRow.getCustomDataType() );
-                    processVariables.add( processVar );
+                if (!processVarsNames.contains(processVarName)) {
+                    Variable processVar = new Variable(processVarName,
+                                                       Variable.VariableType.PROCESS,
+                                                       assignmentRow.getDataType(),
+                                                       assignmentRow.getCustomDataType());
+                    processVariables.add(processVar);
                 }
             }
         }
-        if ( ( constant == null || constant.isEmpty() ) && ( processVarName == null || processVarName.isEmpty() ) ) {
+        if ((constant == null || constant.isEmpty()) && (processVarName == null || processVarName.isEmpty())) {
             return;
         }
-        Assignment assignment = new Assignment( this,
-                                                assignmentRow.getName(),
-                                                assignmentRow.getVariableType(),
-                                                processVarName,
-                                                constant );
-        assignments.add( assignment );
+        Assignment assignment = new Assignment(this,
+                                               assignmentRow.getName(),
+                                               assignmentRow.getVariableType(),
+                                               processVarName,
+                                               constant);
+        assignments.add(assignment);
     }
 
     public List<Variable> getInputVariables() {
@@ -154,20 +154,20 @@ public class AssignmentData {
     }
 
     public String getInputVariablesString() {
-        return getStringForList( inputVariables );
+        return getStringForList(inputVariables);
     }
 
-    public void setInputVariables( String sInputVariables ) {
+    public void setInputVariables(final String sInputVariables) {
         inputVariables.clear();
-        if ( sInputVariables != null && !sInputVariables.isEmpty() ) {
-            String[] inputs = sInputVariables.split( "," );
-            for ( String input : inputs ) {
-                if ( !input.isEmpty() ) {
-                    Variable var = Variable.deserialize( input,
-                                                         Variable.VariableType.INPUT,
-                                                         dataTypes );
-                    if ( var != null && var.getName() != null && !var.getName().isEmpty() ) {
-                        inputVariables.add( var );
+        if (sInputVariables != null && !sInputVariables.isEmpty()) {
+            String[] inputs = sInputVariables.split(",");
+            for (String input : inputs) {
+                if (!input.isEmpty()) {
+                    Variable var = Variable.deserialize(input,
+                                                        Variable.VariableType.INPUT,
+                                                        dataTypes);
+                    if (var != null && var.getName() != null && !var.getName().isEmpty()) {
+                        inputVariables.add(var);
                     }
                 }
             }
@@ -179,20 +179,20 @@ public class AssignmentData {
     }
 
     public String getOutputVariablesString() {
-        return getStringForList( outputVariables );
+        return getStringForList(outputVariables);
     }
 
-    public void setOutputVariables( String sOutputVariables ) {
+    public void setOutputVariables(final String sOutputVariables) {
         outputVariables.clear();
-        if ( sOutputVariables != null && !sOutputVariables.isEmpty() ) {
-            String[] outputs = sOutputVariables.split( "," );
-            for ( String output : outputs ) {
-                if ( !output.isEmpty() ) {
-                    Variable var = Variable.deserialize( output,
-                                                         Variable.VariableType.OUTPUT,
-                                                         dataTypes );
-                    if ( var != null && var.getName() != null && !var.getName().isEmpty() ) {
-                        outputVariables.add( var );
+        if (sOutputVariables != null && !sOutputVariables.isEmpty()) {
+            String[] outputs = sOutputVariables.split(",");
+            for (String output : outputs) {
+                if (!output.isEmpty()) {
+                    Variable var = Variable.deserialize(output,
+                                                        Variable.VariableType.OUTPUT,
+                                                        dataTypes);
+                    if (var != null && var.getName() != null && !var.getName().isEmpty()) {
+                        outputVariables.add(var);
                     }
                 }
             }
@@ -204,23 +204,23 @@ public class AssignmentData {
     }
 
     public String getProcessVariablesString() {
-        return getStringForList( processVariables );
+        return getStringForList(processVariables);
     }
 
-    public void setProcessVariables( String sProcessVariables ) {
+    public void setProcessVariables(final String sProcessVariables) {
         processVariables.clear();
-        if ( sProcessVariables != null && !sProcessVariables.isEmpty() ) {
+        if (sProcessVariables != null && !sProcessVariables.isEmpty()) {
             HashSet<String> procVarNames = new HashSet<String>();
-            String[] processVars = sProcessVariables.split( "," );
-            for ( String processVar : processVars ) {
-                if ( !processVar.isEmpty() ) {
-                    Variable var = Variable.deserialize( processVar,
-                                                         Variable.VariableType.PROCESS,
-                                                         dataTypes );
-                    if ( var != null && var.getName() != null && !var.getName().isEmpty() ) {
-                        if ( !procVarNames.contains( var.getName() ) ) {
-                            procVarNames.add( var.getName() );
-                            processVariables.add( var );
+            String[] processVars = sProcessVariables.split(",");
+            for (String processVar : processVars) {
+                if (!processVar.isEmpty()) {
+                    Variable var = Variable.deserialize(processVar,
+                                                        Variable.VariableType.PROCESS,
+                                                        dataTypes);
+                    if (var != null && var.getName() != null && !var.getName().isEmpty()) {
+                        if (!procVarNames.contains(var.getName())) {
+                            procVarNames.add(var.getName());
+                            processVariables.add(var);
                         }
                     }
                 }
@@ -233,19 +233,19 @@ public class AssignmentData {
     }
 
     public String getAssignmentsString() {
-        return getStringForList( assignments );
+        return getStringForList(assignments);
     }
 
-    public void setAssignments( String sAssignments ) {
+    public void setAssignments(final String sAssignments) {
         assignments.clear();
-        if ( sAssignments != null && !sAssignments.isEmpty() ) {
-            String[] as = sAssignments.split( "," );
-            for ( String a : as ) {
-                if ( !a.isEmpty() ) {
-                    Assignment ass = Assignment.deserialize( this,
-                                                             a );
-                    if ( ass != null && ass.getName() != null && !ass.getName().isEmpty() ) {
-                        assignments.add( ass );
+        if (sAssignments != null && !sAssignments.isEmpty()) {
+            String[] as = sAssignments.split(",");
+            for (String a : as) {
+                if (!a.isEmpty()) {
+                    Assignment ass = Assignment.deserialize(this,
+                                                            a);
+                    if (ass != null && ass.getName() != null && !ass.getName().isEmpty()) {
+                        assignments.add(ass);
                     }
                 }
             }
@@ -256,53 +256,53 @@ public class AssignmentData {
         return dataTypes;
     }
 
-    protected void setDataTypes( String dataTypes ) {
+    protected void setDataTypes(final String dataTypes) {
         this.dataTypes.clear();
         this.dataTypeDisplayNames.clear();
         mapDisplayNameToDataType.clear();
         mapDataTypeToDisplayName.clear();
         mapSimpleDataTypeToDisplayName.clear();
-        if ( dataTypes != null && !dataTypes.isEmpty() ) {
-            String[] dts = dataTypes.split( "," );
-            for ( String dt : dts ) {
+        if (dataTypes != null && !dataTypes.isEmpty()) {
+            String[] dts = dataTypes.split(",");
+            for (String dt : dts) {
                 dt = dt.trim();
-                if ( !dt.isEmpty() && !dt.startsWith( "*" ) ) {
+                if (!dt.isEmpty() && !dt.startsWith("*")) {
                     String dtName = "";
                     String dtDisplayName = "";
                     String dtSimpleType = "";
-                    if ( dt.contains( ":" ) ) {
-                        dtDisplayName = dt.substring( 0,
-                                                      dt.indexOf( ':' ) ).trim();
-                        dtName = dt.substring( dt.indexOf( ':' ) + 1 ).trim();
+                    if (dt.contains(":")) {
+                        dtDisplayName = dt.substring(0,
+                                                     dt.indexOf(':')).trim();
+                        dtName = dt.substring(dt.indexOf(':') + 1).trim();
                     } else {
                         dtDisplayName = dt.trim();
                         dtName = dt.trim();
                     }
-                    if ( dtDisplayName.indexOf( ' ' ) > 0 ) {
-                        dtSimpleType = dtDisplayName.substring( 0,
-                                                                dtDisplayName.indexOf( ' ' ) );
+                    if (dtDisplayName.indexOf(' ') > 0) {
+                        dtSimpleType = dtDisplayName.substring(0,
+                                                               dtDisplayName.indexOf(' '));
                     } else {
                         dtSimpleType = dtDisplayName;
                     }
-                    if ( !dtName.isEmpty() ) {
-                        this.dataTypeDisplayNames.add( dtDisplayName );
-                        this.dataTypes.add( dtName );
-                        mapDisplayNameToDataType.put( dtDisplayName,
-                                                      dtName );
-                        mapDataTypeToDisplayName.put( dtName,
-                                                      dtDisplayName );
+                    if (!dtName.isEmpty()) {
+                        this.dataTypeDisplayNames.add(dtDisplayName);
+                        this.dataTypes.add(dtName);
+                        mapDisplayNameToDataType.put(dtDisplayName,
+                                                     dtName);
+                        mapDataTypeToDisplayName.put(dtName,
+                                                     dtDisplayName);
                     }
-                    if ( !dtSimpleType.isEmpty() ) {
-                        mapSimpleDataTypeToDisplayName.put( dtSimpleType,
-                                                            dtDisplayName );
+                    if (!dtSimpleType.isEmpty()) {
+                        mapSimpleDataTypeToDisplayName.put(dtSimpleType,
+                                                           dtDisplayName);
                     }
                 }
             }
         }
     }
 
-    protected void setDataTypes( List<String> dataTypes,
-                                 List<String> dataTypeDisplayNames ) {
+    protected void setDataTypes(final List<String> dataTypes,
+                                final List<String> dataTypeDisplayNames) {
         this.dataTypes.clear();
         this.dataTypeDisplayNames.clear();
         mapDisplayNameToDataType.clear();
@@ -310,17 +310,17 @@ public class AssignmentData {
         mapSimpleDataTypeToDisplayName.clear();
         this.dataTypes = dataTypes;
         this.dataTypeDisplayNames = dataTypeDisplayNames;
-        for ( int i = 0; i < dataTypeDisplayNames.size(); i++ ) {
-            if ( i < dataTypes.size() ) {
-                mapDisplayNameToDataType.put( dataTypeDisplayNames.get( i ),
-                                              dataTypes.get( i ) );
-                mapDataTypeToDisplayName.put( dataTypes.get( i ),
-                                              dataTypeDisplayNames.get( i ) );
+        for (int i = 0; i < dataTypeDisplayNames.size(); i++) {
+            if (i < dataTypes.size()) {
+                mapDisplayNameToDataType.put(dataTypeDisplayNames.get(i),
+                                             dataTypes.get(i));
+                mapDataTypeToDisplayName.put(dataTypes.get(i),
+                                             dataTypeDisplayNames.get(i));
             } else {
-                mapDisplayNameToDataType.put( dataTypeDisplayNames.get( i ),
-                                              dataTypeDisplayNames.get( i ) );
-                mapDataTypeToDisplayName.put( dataTypeDisplayNames.get( i ),
-                                              dataTypeDisplayNames.get( i ) );
+                mapDisplayNameToDataType.put(dataTypeDisplayNames.get(i),
+                                             dataTypeDisplayNames.get(i));
+                mapDataTypeToDisplayName.put(dataTypeDisplayNames.get(i),
+                                             dataTypeDisplayNames.get(i));
             }
         }
     }
@@ -329,45 +329,45 @@ public class AssignmentData {
         return disallowedPropertyNames;
     }
 
-    protected void setDisallowedPropertyNames( String disallowedPropertyNames ) {
+    protected void setDisallowedPropertyNames(final String disallowedPropertyNames) {
         this.disallowedPropertyNames.clear();
-        if ( disallowedPropertyNames != null && !disallowedPropertyNames.isEmpty() ) {
-            String[] hps = disallowedPropertyNames.split( "," );
-            for ( String hp : hps ) {
+        if (disallowedPropertyNames != null && !disallowedPropertyNames.isEmpty()) {
+            String[] hps = disallowedPropertyNames.split(",");
+            for (String hp : hps) {
                 hp = hp.trim();
-                if ( !hp.isEmpty() ) {
-                    this.disallowedPropertyNames.add( hp );
+                if (!hp.isEmpty()) {
+                    this.disallowedPropertyNames.add(hp);
                 }
             }
         }
     }
 
-    public Variable findProcessVariable( String processVarName ) {
-        if ( processVarName == null || processVarName.isEmpty() ) {
+    public Variable findProcessVariable(final String processVarName) {
+        if (processVarName == null || processVarName.isEmpty()) {
             return null;
         }
-        for ( Variable var : processVariables ) {
-            if ( processVarName.equals( var.getName() ) ) {
+        for (Variable var : processVariables) {
+            if (processVarName.equals(var.getName())) {
                 return var;
             }
         }
         return null;
     }
 
-    public Variable findVariable( String variableName,
-                                  Variable.VariableType variableType ) {
-        if ( variableName == null || variableName.isEmpty() ) {
+    public Variable findVariable(final String variableName,
+                                 final Variable.VariableType variableType) {
+        if (variableName == null || variableName.isEmpty()) {
             return null;
         }
-        if ( variableType == Variable.VariableType.INPUT ) {
-            for ( Variable var : inputVariables ) {
-                if ( variableName.equals( var.getName() ) ) {
+        if (variableType == Variable.VariableType.INPUT) {
+            for (Variable var : inputVariables) {
+                if (variableName.equals(var.getName())) {
                     return var;
                 }
             }
-        } else if ( variableType == Variable.VariableType.OUTPUT ) {
-            for ( Variable var : outputVariables ) {
-                if ( variableName.equals( var.getName() ) ) {
+        } else if (variableType == Variable.VariableType.OUTPUT) {
+            for (Variable var : outputVariables) {
+                if (variableName.equals(var.getName())) {
                     return var;
                 }
             }
@@ -375,20 +375,20 @@ public class AssignmentData {
         return null;
     }
 
-    public void addVariable( Variable variable ) {
-        if ( variable.getName() == null || variable.getName().isEmpty() ) {
+    public void addVariable(final Variable variable) {
+        if (variable.getName() == null || variable.getName().isEmpty()) {
             return;
         }
-        if ( findVariable( variable.getName(),
-                           variable.getVariableType() ) != null ) {
+        if (findVariable(variable.getName(),
+                         variable.getVariableType()) != null) {
             return;
         }
-        if ( variable.getVariableType() == Variable.VariableType.INPUT ) {
-            inputVariables.add( variable );
-        } else if ( variable.getVariableType() == Variable.VariableType.OUTPUT ) {
-            outputVariables.add( variable );
-        } else if ( variable.getVariableType() == Variable.VariableType.PROCESS ) {
-            processVariables.add( variable );
+        if (variable.getVariableType() == Variable.VariableType.INPUT) {
+            inputVariables.add(variable);
+        } else if (variable.getVariableType() == Variable.VariableType.OUTPUT) {
+            outputVariables.add(variable);
+        } else if (variable.getVariableType() == Variable.VariableType.PROCESS) {
+            processVariables.add(variable);
         }
     }
 
@@ -396,52 +396,52 @@ public class AssignmentData {
         return dataTypeDisplayNames;
     }
 
-    public String getDataTypeFromDisplayName( String dataTypeDisplayName ) {
-        if ( mapDisplayNameToDataType.get( dataTypeDisplayName ) != null ) {
-            return mapDisplayNameToDataType.get( dataTypeDisplayName );
+    public String getDataTypeFromDisplayName(final String dataTypeDisplayName) {
+        if (mapDisplayNameToDataType.get(dataTypeDisplayName) != null) {
+            return mapDisplayNameToDataType.get(dataTypeDisplayName);
         } else {
             return dataTypeDisplayName;
         }
     }
 
-    public String getDisplayNameFromDataType( String dataType ) {
-        if ( mapDataTypeToDisplayName.get( dataType ) != null ) {
-            return mapDataTypeToDisplayName.get( dataType );
+    public String getDisplayNameFromDataType(final String dataType) {
+        if (mapDataTypeToDisplayName.get(dataType) != null) {
+            return mapDataTypeToDisplayName.get(dataType);
         } else {
             return dataType;
         }
     }
 
-    public String getDataTypeDisplayNameForUserString( String userValue ) {
-        if ( mapDataTypeToDisplayName.containsKey( userValue ) ) {
-            return mapDataTypeToDisplayName.get( userValue );
-        } else if ( mapSimpleDataTypeToDisplayName.containsKey( userValue ) ) {
-            return mapSimpleDataTypeToDisplayName.get( userValue );
+    public String getDataTypeDisplayNameForUserString(final String userValue) {
+        if (mapDataTypeToDisplayName.containsKey(userValue)) {
+            return mapDataTypeToDisplayName.get(userValue);
+        } else if (mapSimpleDataTypeToDisplayName.containsKey(userValue)) {
+            return mapSimpleDataTypeToDisplayName.get(userValue);
         }
         return null;
     }
 
     public String getDataTypesString() {
         StringBuilder sb = new StringBuilder();
-        for ( int i = 0; i < dataTypes.size(); i++ ) {
-            String dataTypeDisplayName = dataTypes.get( i );
-            String dataType = dataTypes.get( i );
-            sb.append( dataTypeDisplayName ).append( ':' ).append( dataType ).append( ',' );
+        for (int i = 0; i < dataTypes.size(); i++) {
+            String dataTypeDisplayName = dataTypes.get(i);
+            String dataType = dataTypes.get(i);
+            sb.append(dataTypeDisplayName).append(':').append(dataType).append(',');
         }
-        if ( sb.length() > 0 ) {
-            sb.setLength( sb.length() - 1 );
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
         }
         return sb.toString();
     }
 
     public String getDisallowedPropertyNamesString() {
-        return getStringForList( disallowedPropertyNames );
+        return getStringForList(disallowedPropertyNames);
     }
 
     public List<String> getProcessVariableNames() {
         List<String> processVarNames = new ArrayList<String>();
-        for ( Variable processVar : processVariables ) {
-            processVarNames.add( processVar.getName() );
+        for (Variable processVar : processVariables) {
+            processVarNames.add(processVar.getName());
         }
         return processVarNames;
     }
@@ -450,83 +450,83 @@ public class AssignmentData {
      * Gets a list of AssignmentRows based on the current Assignments
      * @return
      */
-    public List<AssignmentRow> getAssignmentRows( Variable.VariableType varType ) {
+    public List<AssignmentRow> getAssignmentRows(final Variable.VariableType varType) {
         List<AssignmentRow> rows = new ArrayList<AssignmentRow>();
         List<Variable> handledVariables = new ArrayList<Variable>();
         // Create an AssignmentRow for each Assignment
-        for ( Assignment assignment : assignments ) {
-            if ( assignment.getVariableType() == varType ) {
-                String dataType = getDisplayNameFromDataType( assignment.getDataType() );
-                AssignmentRow row = new AssignmentRow( assignment.getName(),
-                                                       assignment.getVariableType(),
-                                                       dataType,
-                                                       assignment.getCustomDataType(),
-                                                       assignment.getProcessVarName(),
-                                                       assignment.getConstant() );
-                rows.add( row );
-                handledVariables.add( assignment.getVariable() );
+        for (Assignment assignment : assignments) {
+            if (assignment.getVariableType() == varType) {
+                String dataType = getDisplayNameFromDataType(assignment.getDataType());
+                AssignmentRow row = new AssignmentRow(assignment.getName(),
+                                                      assignment.getVariableType(),
+                                                      dataType,
+                                                      assignment.getCustomDataType(),
+                                                      assignment.getProcessVarName(),
+                                                      assignment.getConstant());
+                rows.add(row);
+                handledVariables.add(assignment.getVariable());
             }
         }
         List<Variable> vars = null;
-        if ( varType == Variable.VariableType.INPUT ) {
+        if (varType == Variable.VariableType.INPUT) {
             vars = inputVariables;
         } else {
             vars = outputVariables;
         }
         // Create an AssignmentRow for each Variable that doesn't have an Assignment
-        for ( Variable var : vars ) {
-            if ( !handledVariables.contains( var ) ) {
-                AssignmentRow row = new AssignmentRow( var.getName(),
-                                                       var.getVariableType(),
-                                                       var.getDataType(),
-                                                       var.getCustomDataType(),
-                                                       null,
-                                                       null );
-                rows.add( row );
+        for (Variable var : vars) {
+            if (!handledVariables.contains(var)) {
+                AssignmentRow row = new AssignmentRow(var.getName(),
+                                                      var.getVariableType(),
+                                                      var.getDataType(),
+                                                      var.getCustomDataType(),
+                                                      null,
+                                                      null);
+                rows.add(row);
             }
         }
         return rows;
     }
 
-    public void setVariableCountsString( String variableCountsString ) {
+    public void setVariableCountsString(final String variableCountsString) {
         this.variableCountsString = variableCountsString;
     }
 
-    public void setVariableCountsString( boolean hasInputVars,
-                                         boolean isSingleInputVar,
-                                         boolean hasOutputVars,
-                                         boolean isSingleOutputVar ) {
+    public void setVariableCountsString(final boolean hasInputVars,
+                                        final boolean isSingleInputVar,
+                                        final boolean hasOutputVars,
+                                        final boolean isSingleOutputVar) {
         StringBuilder sb = new StringBuilder();
-        if ( hasInputVars ) {
-            List<AssignmentRow> inputAssignments = getAssignmentRows( Variable.VariableType.INPUT );
-            inputAssignments = removeDisallowedInputAssignmentRows( inputAssignments );
-            if ( inputAssignments == null || inputAssignments.isEmpty() ) {
-                if ( isSingleInputVar ) {
-                    sb.append( StunnerFormsClientFieldsConstants.INSTANCE.No_Data_Input() );
+        if (hasInputVars) {
+            List<AssignmentRow> inputAssignments = getAssignmentRows(Variable.VariableType.INPUT);
+            inputAssignments = removeDisallowedInputAssignmentRows(inputAssignments);
+            if (inputAssignments == null || inputAssignments.isEmpty()) {
+                if (isSingleInputVar) {
+                    sb.append(StunnerFormsClientFieldsConstants.INSTANCE.No_Data_Input());
                 } else {
-                    sb.append( "0 " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Inputs() );
+                    sb.append("0 " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Inputs());
                 }
-            } else if ( inputAssignments.size() == 1 ) {
-                sb.append( "1 " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Input() );
-            } else if ( inputAssignments.size() > 1 ) {
-                sb.append( inputAssignments.size() + " " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Inputs() );
+            } else if (inputAssignments.size() == 1) {
+                sb.append("1 " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Input());
+            } else if (inputAssignments.size() > 1) {
+                sb.append(inputAssignments.size() + " " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Inputs());
             }
         }
-        if ( hasOutputVars ) {
-            if ( sb.length() > 0 ) {
-                sb.append( ", " );
+        if (hasOutputVars) {
+            if (sb.length() > 0) {
+                sb.append(", ");
             }
-            List<AssignmentRow> outputAssignments = getAssignmentRows( Variable.VariableType.OUTPUT );
-            if ( outputAssignments == null || outputAssignments.isEmpty() ) {
-                if ( isSingleOutputVar ) {
-                    sb.append( StunnerFormsClientFieldsConstants.INSTANCE.No_Data_Output() );
+            List<AssignmentRow> outputAssignments = getAssignmentRows(Variable.VariableType.OUTPUT);
+            if (outputAssignments == null || outputAssignments.isEmpty()) {
+                if (isSingleOutputVar) {
+                    sb.append(StunnerFormsClientFieldsConstants.INSTANCE.No_Data_Output());
                 } else {
-                    sb.append( "0 " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Outputs() );
+                    sb.append("0 " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Outputs());
                 }
-            } else if ( outputAssignments.size() == 1 ) {
-                sb.append( "1 " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Output() );
-            } else if ( outputAssignments.size() > 1 ) {
-                sb.append( outputAssignments.size() + " " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Outputs() );
+            } else if (outputAssignments.size() == 1) {
+                sb.append("1 " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Output());
+            } else if (outputAssignments.size() > 1) {
+                sb.append(outputAssignments.size() + " " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Outputs());
             }
         }
         variableCountsString = sb.toString();
@@ -536,37 +536,37 @@ public class AssignmentData {
         return variableCountsString;
     }
 
-    public String getVariableCountsString( boolean hasInputVars,
-                                           boolean isSingleInputVar,
-                                           boolean hasOutputVars,
-                                           boolean isSingleOutputVar ) {
-        setVariableCountsString( hasInputVars,
-                                 isSingleInputVar,
-                                 hasOutputVars,
-                                 isSingleOutputVar );
+    public String getVariableCountsString(final boolean hasInputVars,
+                                          final boolean isSingleInputVar,
+                                          final boolean hasOutputVars,
+                                          final boolean isSingleOutputVar) {
+        setVariableCountsString(hasInputVars,
+                                isSingleInputVar,
+                                hasOutputVars,
+                                isSingleOutputVar);
         return getVariableCountsString();
     }
 
-    List<AssignmentRow> removeDisallowedInputAssignmentRows( List<AssignmentRow> inputAssignments ) {
-        if ( inputAssignments == null ) {
+    List<AssignmentRow> removeDisallowedInputAssignmentRows(List<AssignmentRow> inputAssignments) {
+        if (inputAssignments == null) {
             return null;
         }
         List<AssignmentRow> allowedRows = new ArrayList<AssignmentRow>();
-        for ( AssignmentRow inputAssignment : inputAssignments ) {
+        for (AssignmentRow inputAssignment : inputAssignments) {
             String name = inputAssignment.getName();
-            if ( name != null && !name.isEmpty() ) {
-                if ( !isDisallowedPropertyName( name ) ) {
-                    allowedRows.add( inputAssignment );
+            if (name != null && !name.isEmpty()) {
+                if (!isDisallowedPropertyName(name)) {
+                    allowedRows.add(inputAssignment);
                 }
             }
         }
         return allowedRows;
     }
 
-    private boolean isDisallowedPropertyName( String name ) {
-        if ( disallowedPropertyNames != null ) {
-            for ( String disallowedPropertyName : disallowedPropertyNames ) {
-                if ( disallowedPropertyName.equalsIgnoreCase( name ) ) {
+    private boolean isDisallowedPropertyName(final String name) {
+        if (disallowedPropertyNames != null) {
+            for (String disallowedPropertyName : disallowedPropertyNames) {
+                if (disallowedPropertyName.equalsIgnoreCase(name)) {
                     return true;
                 }
             }
@@ -577,68 +577,68 @@ public class AssignmentData {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append( "\"inputVariables\":\"" ).append( getInputVariablesString() ).append( "\"" ).append( ",\n" );
-        sb.append( "\"outputVariables\":\"" ).append( getOutputVariablesString() ).append( "\"" ).append( ",\n" );
-        sb.append( "\"processVariables\":\"" ).append( getProcessVariablesString() ).append( "\"" ).append( ",\n" );
-        sb.append( "\"assignments\":\"" ).append( getAssignmentsString() ).append( "\"" ).append( ",\n" );
-        sb.append( "\"dataTypes\":\"" ).append( getDataTypesString() ).append( "\"" ).append( ",\n" );
-        sb.append( "\"disallowedPropertyNames\":\"" ).append( getDisallowedPropertyNamesString() ).append( "\"" );
+        sb.append("\"inputVariables\":\"").append(getInputVariablesString()).append("\"").append(",\n");
+        sb.append("\"outputVariables\":\"").append(getOutputVariablesString()).append("\"").append(",\n");
+        sb.append("\"processVariables\":\"").append(getProcessVariablesString()).append("\"").append(",\n");
+        sb.append("\"assignments\":\"").append(getAssignmentsString()).append("\"").append(",\n");
+        sb.append("\"dataTypes\":\"").append(getDataTypesString()).append("\"").append(",\n");
+        sb.append("\"disallowedPropertyNames\":\"").append(getDisallowedPropertyNamesString()).append("\"");
         return sb.toString();
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof AssignmentData ) ) {
+        if (!(o instanceof AssignmentData)) {
             return false;
         }
-        AssignmentData that = ( AssignmentData ) o;
-        if ( getInputVariables() != null ? !getInputVariables().equals( that.getInputVariables() ) : that.getInputVariables() != null ) {
+        AssignmentData that = (AssignmentData) o;
+        if (getInputVariables() != null ? !getInputVariables().equals(that.getInputVariables()) : that.getInputVariables() != null) {
             return false;
         }
-        if ( getOutputVariables() != null ? !getOutputVariables().equals( that.getOutputVariables() ) : that.getOutputVariables() != null ) {
+        if (getOutputVariables() != null ? !getOutputVariables().equals(that.getOutputVariables()) : that.getOutputVariables() != null) {
             return false;
         }
-        if ( getProcessVariables() != null ? !getProcessVariables().equals( that.getProcessVariables() ) : that.getProcessVariables() != null ) {
+        if (getProcessVariables() != null ? !getProcessVariables().equals(that.getProcessVariables()) : that.getProcessVariables() != null) {
             return false;
         }
-        if ( getAssignments() != null ? !getAssignments().equals( that.getAssignments() ) : that.getAssignments() != null ) {
+        if (getAssignments() != null ? !getAssignments().equals(that.getAssignments()) : that.getAssignments() != null) {
             return false;
         }
-        if ( getVariableCountsString() != null ? !getVariableCountsString().equals( that.getVariableCountsString() ) : that.getVariableCountsString() != null ) {
+        if (getVariableCountsString() != null ? !getVariableCountsString().equals(that.getVariableCountsString()) : that.getVariableCountsString() != null) {
             return false;
         }
-        if ( getDataTypes() != null ? !getDataTypes().equals( that.getDataTypes() ) : that.getDataTypes() != null ) {
+        if (getDataTypes() != null ? !getDataTypes().equals(that.getDataTypes()) : that.getDataTypes() != null) {
             return false;
         }
-        if ( getDataTypeDisplayNames() != null ? !getDataTypeDisplayNames().equals( that.getDataTypeDisplayNames() ) : that.getDataTypeDisplayNames() != null ) {
+        if (getDataTypeDisplayNames() != null ? !getDataTypeDisplayNames().equals(that.getDataTypeDisplayNames()) : that.getDataTypeDisplayNames() != null) {
             return false;
         }
-        return getDisallowedPropertyNames() != null ? getDisallowedPropertyNames().equals( that.getDisallowedPropertyNames() ) : that.getDisallowedPropertyNames() == null;
+        return getDisallowedPropertyNames() != null ? getDisallowedPropertyNames().equals(that.getDisallowedPropertyNames()) : that.getDisallowedPropertyNames() == null;
     }
 
     @Override
     public int hashCode() {
         int result = getInputVariables() != null ? getInputVariables().hashCode() : 0;
-        result = 31 * result + ( getOutputVariables() != null ? getOutputVariables().hashCode() : 0 );
-        result = 31 * result + ( getProcessVariables() != null ? getProcessVariables().hashCode() : 0 );
-        result = 31 * result + ( getAssignments() != null ? getAssignments().hashCode() : 0 );
-        result = 31 * result + ( getVariableCountsString() != null ? getVariableCountsString().hashCode() : 0 );
-        result = 31 * result + ( getDataTypes() != null ? getDataTypes().hashCode() : 0 );
-        result = 31 * result + ( getDataTypeDisplayNames() != null ? getDataTypeDisplayNames().hashCode() : 0 );
-        result = 31 * result + ( getDisallowedPropertyNames() != null ? getDisallowedPropertyNames().hashCode() : 0 );
+        result = 31 * result + (getOutputVariables() != null ? getOutputVariables().hashCode() : 0);
+        result = 31 * result + (getProcessVariables() != null ? getProcessVariables().hashCode() : 0);
+        result = 31 * result + (getAssignments() != null ? getAssignments().hashCode() : 0);
+        result = 31 * result + (getVariableCountsString() != null ? getVariableCountsString().hashCode() : 0);
+        result = 31 * result + (getDataTypes() != null ? getDataTypes().hashCode() : 0);
+        result = 31 * result + (getDataTypeDisplayNames() != null ? getDataTypeDisplayNames().hashCode() : 0);
+        result = 31 * result + (getDisallowedPropertyNames() != null ? getDisallowedPropertyNames().hashCode() : 0);
         return result;
     }
 
-    private String getStringForList( List<? extends Object> objects ) {
+    private String getStringForList(final List<? extends Object> objects) {
         StringBuilder sb = new StringBuilder();
-        for ( Object o : objects ) {
-            sb.append( o.toString() ).append( ',' );
+        for (Object o : objects) {
+            sb.append(o.toString()).append(',');
         }
-        if ( sb.length() > 0 ) {
-            sb.setLength( sb.length() - 1 );
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
         }
         return sb.toString();
     }

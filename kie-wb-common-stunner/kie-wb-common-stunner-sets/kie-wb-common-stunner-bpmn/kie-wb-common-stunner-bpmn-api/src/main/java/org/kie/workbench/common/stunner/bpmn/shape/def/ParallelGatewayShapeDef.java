@@ -38,75 +38,75 @@ public final class ParallelGatewayShapeDef
         HasChildShapeDefs<ParallelGateway> {
 
     @Override
-    public double getRadius( final ParallelGateway element ) {
+    public double getRadius(final ParallelGateway element) {
         return element.getDimensionsSet().getRadius().getValue();
     }
 
     @Override
-    public String getBackgroundColor( final ParallelGateway element ) {
+    public String getBackgroundColor(final ParallelGateway element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final ParallelGateway element ) {
+    public double getBackgroundAlpha(final ParallelGateway element) {
         return 1;
     }
 
     @Override
-    public String getBorderColor( final ParallelGateway element ) {
+    public String getBorderColor(final ParallelGateway element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final ParallelGateway element ) {
+    public double getBorderSize(final ParallelGateway element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final ParallelGateway element ) {
+    public double getBorderAlpha(final ParallelGateway element) {
         return 1;
     }
 
     @Override
-    public String getFontFamily( final ParallelGateway element ) {
+    public String getFontFamily(final ParallelGateway element) {
         return element.getFontSet().getFontFamily().getValue();
     }
 
     @Override
-    public String getFontColor( final ParallelGateway element ) {
+    public String getFontColor(final ParallelGateway element) {
         return element.getFontSet().getFontColor().getValue();
     }
 
     @Override
-    public double getFontSize( final ParallelGateway element ) {
+    public double getFontSize(final ParallelGateway element) {
         return element.getFontSet().getFontSize().getValue();
     }
 
     @Override
-    public String getNamePropertyValue( final ParallelGateway element ) {
+    public String getNamePropertyValue(final ParallelGateway element) {
         return element.getGeneral().getName().getValue();
     }
 
     @Override
-    public double getFontBorderSize( final ParallelGateway element ) {
+    public double getFontBorderSize(final ParallelGateway element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final ParallelGateway element ) {
+    public HasTitle.Position getFontPosition(final ParallelGateway element) {
         return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public double getFontRotation( final ParallelGateway element ) {
+    public double getFontRotation(final ParallelGateway element) {
         return 0;
     }
 
     @Override
     public Map<ShapeDef<ParallelGateway>, HasChildren.Layout> getChildShapeDefs() {
         return new LinkedHashMap<ShapeDef<ParallelGateway>, HasChildren.Layout>() {{
-            put( new IconProxy(),
-                 HasChildren.Layout.CENTER );
+            put(new IconProxy(),
+                HasChildren.Layout.CENTER);
         }};
     }
 
@@ -114,12 +114,12 @@ public final class ParallelGatewayShapeDef
             new PictureGlyphDef<ParallelGateway, BPMNPictures>() {
 
                 @Override
-                public String getGlyphDescription( ParallelGateway element ) {
+                public String getGlyphDescription(final ParallelGateway element) {
                     return element.getDescription();
                 }
 
                 @Override
-                public BPMNPictures getSource( final Class<?> type ) {
+                public BPMNPictures getSource(final Class<?> type) {
                     return BPMNPictures.PARALLEL_EVENT;
                 }
             };
@@ -134,42 +134,42 @@ public final class ParallelGatewayShapeDef
             implements DynamicIconShapeDef<ParallelGateway> {
 
         @Override
-        public Icons getIcon( final ParallelGateway definition ) {
+        public Icons getIcon(final ParallelGateway definition) {
             return Icons.PLUS;
         }
 
         @Override
-        public double getWidth( final ParallelGateway element ) {
+        public double getWidth(final ParallelGateway element) {
             return element.getDimensionsSet().getRadius().getValue() / 2;
         }
 
         @Override
-        public double getHeight( final ParallelGateway element ) {
+        public double getHeight(final ParallelGateway element) {
             return element.getDimensionsSet().getRadius().getValue() / 2;
         }
 
         @Override
-        public String getBackgroundColor( final ParallelGateway element ) {
+        public String getBackgroundColor(final ParallelGateway element) {
             return ParallelGateway.ParallelGatewayBuilder.ICON_COLOR;
         }
 
         @Override
-        public double getBackgroundAlpha( final ParallelGateway element ) {
+        public double getBackgroundAlpha(final ParallelGateway element) {
             return 1;
         }
 
         @Override
-        public String getBorderColor( final ParallelGateway element ) {
+        public String getBorderColor(final ParallelGateway element) {
             return ParallelGateway.ParallelGatewayBuilder.ICON_COLOR;
         }
 
         @Override
-        public double getBorderSize( final ParallelGateway element ) {
+        public double getBorderSize(final ParallelGateway element) {
             return 2;
         }
 
         @Override
-        public double getBorderAlpha( final ParallelGateway element ) {
+        public double getBorderAlpha(final ParallelGateway element) {
             return 1;
         }
     }

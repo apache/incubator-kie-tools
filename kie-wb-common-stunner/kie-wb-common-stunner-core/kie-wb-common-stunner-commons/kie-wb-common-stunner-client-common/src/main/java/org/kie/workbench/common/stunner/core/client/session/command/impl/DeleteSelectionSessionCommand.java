@@ -48,92 +48,92 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 @Dependent
 public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<AbstractClientFullSession> {
 
-    private static Logger LOGGER = Logger.getLogger( DeleteSelectionSessionCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(DeleteSelectionSessionCommand.class.getName());
 
     private final ClientSessionManager<?, ?, ?> clientSessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final CanvasCommandFactory canvasCommandFactory;
 
     protected DeleteSelectionSessionCommand() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public DeleteSelectionSessionCommand( final ClientSessionManager<?, ?, ?> clientSessionManager,
-                                          final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                          final CanvasCommandFactory canvasCommandFactory ) {
-        super( false );
+    public DeleteSelectionSessionCommand(final ClientSessionManager<?, ?, ?> clientSessionManager,
+                                         final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                         final CanvasCommandFactory canvasCommandFactory) {
+        super(false);
         this.clientSessionManager = clientSessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactory = canvasCommandFactory;
     }
 
     @Override
-    public <T> void execute( final Callback<T> callback ) {
-        checkNotNull( "callback",
-                      callback );
-        if ( null != getSession().getSelectionControl() ) {
+    public <T> void execute(final Callback<T> callback) {
+        checkNotNull("callback",
+                     callback);
+        if (null != getSession().getSelectionControl()) {
             final AbstractCanvasHandler canvasHandler = getSession().getCanvasHandler();
             final SelectionControl<AbstractCanvasHandler, Element> selectionControl = getSession().getSelectionControl();
             final Collection<String> selectedItems = selectionControl.getSelectedItems();
-            if ( selectedItems != null && !selectedItems.isEmpty() ) {
-                selectedItems.stream().forEach( selectedItemUUID -> {
-                    Element element = canvasHandler.getGraphIndex().getNode( selectedItemUUID );
-                    if ( element == null ) {
-                        element = canvasHandler.getGraphIndex().getEdge( selectedItemUUID );
-                        if ( element != null ) {
-                            log( Level.FINE,
-                                 "Deleting edge with id " + element.getUUID() );
-                            sessionCommandManager.execute( canvasHandler,
-                                                           canvasCommandFactory.deleteConnector( ( Edge ) element ) );
+            if (selectedItems != null && !selectedItems.isEmpty()) {
+                selectedItems.stream().forEach(selectedItemUUID -> {
+                    Element element = canvasHandler.getGraphIndex().getNode(selectedItemUUID);
+                    if (element == null) {
+                        element = canvasHandler.getGraphIndex().getEdge(selectedItemUUID);
+                        if (element != null) {
+                            log(Level.FINE,
+                                "Deleting edge with id " + element.getUUID());
+                            sessionCommandManager.execute(canvasHandler,
+                                                          canvasCommandFactory.deleteConnector((Edge) element));
                         }
                     } else {
-                        log( Level.FINE,
-                             "Deleting node with id " + element.getUUID() );
-                        sessionCommandManager.execute( canvasHandler,
-                                                       canvasCommandFactory.deleteNode( ( Node ) element ) );
+                        log(Level.FINE,
+                            "Deleting node with id " + element.getUUID());
+                        sessionCommandManager.execute(canvasHandler,
+                                                      canvasCommandFactory.deleteNode((Node) element));
                     }
-                } );
+                });
             } else {
-                log( Level.FINE,
-                     "Cannot delete element, no element selected on canvas." );
+                log(Level.FINE,
+                    "Cannot delete element, no element selected on canvas.");
             }
             // Run the callback.
-            callback.onSuccess( null );
+            callback.onSuccess(null);
         }
     }
 
-    void onKeyDownEvent( final @Observes KeyDownEvent keyDownEvent ) {
-        checkNotNull( "keyDownEvent",
-                      keyDownEvent );
+    void onKeyDownEvent(final @Observes KeyDownEvent keyDownEvent) {
+        checkNotNull("keyDownEvent",
+                     keyDownEvent);
         final KeyboardEvent.Key key = keyDownEvent.getKey();
-        final boolean isDeleteKey = null != key && KeyboardEvent.Key.DELETE.equals( key );
+        final boolean isDeleteKey = null != key && KeyboardEvent.Key.DELETE.equals(key);
         final boolean isSameSession = null != getSession()
-                && getSession().equals( clientSessionManager.getCurrentSession() );
-        if ( isDeleteKey && isSameSession ) {
-            DeleteSelectionSessionCommand.this.execute( new Callback<Object>() {
+                && getSession().equals(clientSessionManager.getCurrentSession());
+        if (isDeleteKey && isSameSession) {
+            DeleteSelectionSessionCommand.this.execute(new Callback<Object>() {
                 @Override
-                public void onSuccess( final Object result ) {
+                public void onSuccess(final Object result) {
                     // Nothing to do.
                 }
 
                 @Override
-                public void onError( final ClientRuntimeError error ) {
-                    LOGGER.log( Level.SEVERE,
-                                "Error while trying to delete selected items. Message=[" + error.toString() + "]",
-                                error.getThrowable() );
+                public void onError(final ClientRuntimeError error) {
+                    LOGGER.log(Level.SEVERE,
+                               "Error while trying to delete selected items. Message=[" + error.toString() + "]",
+                               error.getThrowable());
                 }
-            } );
+            });
         }
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

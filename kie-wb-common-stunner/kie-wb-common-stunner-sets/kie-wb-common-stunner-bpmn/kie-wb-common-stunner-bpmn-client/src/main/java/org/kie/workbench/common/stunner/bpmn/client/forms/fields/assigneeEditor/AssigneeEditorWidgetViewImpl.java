@@ -54,7 +54,7 @@ import org.uberfire.ext.security.management.impl.SearchRequestImpl;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
-@Templated( "AssigneeEditorWidget.html#widget" )
+@Templated("AssigneeEditorWidget.html#widget")
 public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeEditorWidgetView,
                                                                        HasValue<String> {
 
@@ -86,7 +86,7 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
      */
     @Inject
     @DataField
-    @Table( root = "tbody" )
+    @Table(root = "tbody")
     protected ListWidget<AssigneeRow, AssigneeListItemWidgetViewImpl> assigneeRows;
 
     @Inject
@@ -98,43 +98,43 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
     }
 
     @Override
-    public void setValue( String value ) {
-        setValue( value,
-                  false );
+    public void setValue(final String value) {
+        setValue(value,
+                 false);
     }
 
     @Override
-    public void setValue( String value,
-                          boolean fireEvents ) {
+    public void setValue(final String value,
+                         final boolean fireEvents) {
         String oldValue = sAssignees;
         sAssignees = value;
-        if ( names == null ) {
+        if (names == null) {
             getNames();
         }
         initView();
-        if ( fireEvents ) {
-            ValueChangeEvent.fireIfNotEqual( this,
-                                             oldValue,
-                                             sAssignees );
+        if (fireEvents) {
+            ValueChangeEvent.fireIfNotEqual(this,
+                                            oldValue,
+                                            sAssignees);
         }
     }
 
     @Override
     public void doSave() {
-        String newValue = presenter.serializeAssignees( getAssigneeRows() );
-        setValue( newValue,
-                  true );
+        String newValue = presenter.serializeAssignees(getAssigneeRows());
+        setValue(newValue,
+                 true);
     }
 
     protected void initView() {
-        List<AssigneeRow> arrAssigneeRows = presenter.deserializeAssignees( sAssignees );
-        setAssigneeRows( arrAssigneeRows );
+        List<AssigneeRow> arrAssigneeRows = presenter.deserializeAssignees(sAssignees);
+        setAssigneeRows(arrAssigneeRows);
     }
 
     @Override
-    public HandlerRegistration addValueChangeHandler( ValueChangeHandler<String> handler ) {
-        return addHandler( handler,
-                           ValueChangeEvent.getType() );
+    public HandlerRegistration addValueChangeHandler(final ValueChangeHandler<String> handler) {
+        return addHandler(handler,
+                          ValueChangeEvent.getType());
     }
 
     /**
@@ -142,15 +142,15 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
      * @param name
      * @return
      */
-    public boolean isDuplicateName( String name ) {
-        return presenter.isDuplicateName( name );
+    public boolean isDuplicateName(final String name) {
+        return presenter.isDuplicateName(name);
     }
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init(final Presenter presenter) {
         this.presenter = presenter;
-        addButton.setIcon( IconType.PLUS );
-        nameth.setInnerText( "Name" );
+        addButton.setIcon(IconType.PLUS);
+        nameth.setInnerText("Name");
     }
 
     @Override
@@ -160,21 +160,21 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
 
     @Override
     public void setTableDisplayStyle() {
-        table.getStyle().setDisplay( Style.Display.TABLE );
+        table.getStyle().setDisplay(Style.Display.TABLE);
     }
 
     @Override
     public void setNoneDisplayStyle() {
-        table.getStyle().setDisplay( Style.Display.NONE );
+        table.getStyle().setDisplay(Style.Display.NONE);
     }
 
     @Override
-    public void setAssigneeRows( List<AssigneeRow> rows ) {
-        assigneeRows.setValue( rows );
-        for ( int i = 0; i < getAssigneeRowsCount(); i++ ) {
-            AssigneeListItemWidgetView widget = getAssigneeWidget( i );
-            widget.setNames( nameListBoxValues );
-            widget.setParentWidget( presenter );
+    public void setAssigneeRows(final List<AssigneeRow> rows) {
+        assigneeRows.setValue(rows);
+        for (int i = 0; i < getAssigneeRowsCount(); i++) {
+            AssigneeListItemWidgetView widget = getAssigneeWidget(i);
+            widget.setNames(nameListBoxValues);
+            widget.setParentWidget(presenter);
         }
     }
 
@@ -184,19 +184,19 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
     }
 
     @Override
-    public AssigneeListItemWidgetView getAssigneeWidget( int index ) {
-        return assigneeRows.getComponent( index );
+    public AssigneeListItemWidgetView getAssigneeWidget(final int index) {
+        return assigneeRows.getComponent(index);
     }
 
-    public void setAssigneesNames( ListBoxValues nameListBoxValues ) {
+    public void setAssigneesNames(final ListBoxValues nameListBoxValues) {
         this.nameListBoxValues = nameListBoxValues;
-        for ( int i = 0; i < getAssigneeRowsCount(); i++ ) {
-            getAssigneeWidget( i ).setNames( nameListBoxValues );
+        for (int i = 0; i < getAssigneeRowsCount(); i++) {
+            getAssigneeWidget(i).setNames(nameListBoxValues);
         }
     }
 
-    @EventHandler( "addButton" )
-    public void handleAddButton( ClickEvent e ) {
+    @EventHandler("addButton")
+    public void handleAddButton(final ClickEvent e) {
         presenter.addAssignee();
     }
 
@@ -204,53 +204,53 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
         RemoteCallback<AbstractEntityManager.SearchResponse<?>> searchResponseRemoteCallback =
                 new RemoteCallback<AbstractEntityManager.SearchResponse<?>>() {
                     @Override
-                    public void callback( final AbstractEntityManager.SearchResponse<?> response ) {
+                    public void callback(final AbstractEntityManager.SearchResponse<?> response) {
                         names = new ArrayList<String>();
-                        if ( response != null ) {
+                        if (response != null) {
                             List<?> items = response.getResults();
-                            if ( items != null ) {
-                                for ( Object item : items ) {
-                                    addItemToNames( item );
+                            if (items != null) {
+                                for (Object item : items) {
+                                    addItemToNames(item);
                                 }
                             }
                         }
-                        Collections.sort( names );
-                        presenter.setNames( names );
+                        Collections.sort(names);
+                        presenter.setNames(names);
                     }
                 };
 
         ErrorCallback<Message> searchErrorCallback =
                 new ErrorCallback<Message>() {
                     @Override
-                    public boolean error( final Message message,
-                                          final Throwable throwable ) {
+                    public boolean error(final Message message,
+                                         final Throwable throwable) {
                         names = new ArrayList<String>();
-                        presenter.setNames( names );
+                        presenter.setNames(names);
                         return false;
                     }
                 };
 
         // Call backend service.
-        if ( presenter.getType() == AssigneeType.USER ) {
-            userSystemManager.users( searchResponseRemoteCallback,
-                                     searchErrorCallback ).
-                    search( new SearchRequestImpl( "",
-                                                   1,
-                                                   MAX_SEARCH_RESULTS ) );
+        if (presenter.getType() == AssigneeType.USER) {
+            userSystemManager.users(searchResponseRemoteCallback,
+                                    searchErrorCallback).
+                    search(new SearchRequestImpl("",
+                                                 1,
+                                                 MAX_SEARCH_RESULTS));
         } else {
-            userSystemManager.groups( searchResponseRemoteCallback,
-                                      searchErrorCallback ).
-                    search( new SearchRequestImpl( "",
-                                                   1,
-                                                   MAX_SEARCH_RESULTS ) );
+            userSystemManager.groups(searchResponseRemoteCallback,
+                                     searchErrorCallback).
+                    search(new SearchRequestImpl("",
+                                                 1,
+                                                 MAX_SEARCH_RESULTS));
         }
     }
 
-    protected <T> void addItemToNames( T item ) {
-        if ( item instanceof User ) {
-            names.add( ( ( User ) item ).getIdentifier() );
-        } else if ( item instanceof Group ) {
-            names.add( ( ( Group ) item ).getName() );
+    protected <T> void addItemToNames(final T item) {
+        if (item instanceof User) {
+            names.add(((User) item).getIdentifier());
+        } else if (item instanceof Group) {
+            names.add(((Group) item).getName());
         }
     }
 }

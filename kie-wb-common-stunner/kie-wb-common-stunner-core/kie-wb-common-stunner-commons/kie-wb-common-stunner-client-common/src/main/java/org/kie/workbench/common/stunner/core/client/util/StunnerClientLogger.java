@@ -37,115 +37,115 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 public class StunnerClientLogger {
 
-    private static Logger LOGGER = Logger.getLogger( StunnerClientLogger.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(StunnerClientLogger.class.getName());
 
-    public static String getErrorMessage( final ClientRuntimeError error ) {
+    public static String getErrorMessage(final ClientRuntimeError error) {
         final String message = error.getMessage();
         final Throwable t1 = error.getThrowable();
         final Throwable t2 = t1 != null ? t1.getCause() : null;
-        if ( null != t2 ) {
+        if (null != t2) {
             return t2.getMessage();
-        } else if ( null != t1 ) {
+        } else if (null != t1) {
             return t1.getMessage();
         }
         return null != message ? message : " -- No message -- ";
     }
 
-    public static void logSessionInfo( final AbstractClientSession session ) {
-        log( "************ Session Info ****************" );
-        if ( null != session ) {
-            log( "Session = " + session.toString() );
-            log( "Canvas = " + session.getCanvas().toString() );
-            if ( null != session.getCanvasHandler() ) {
+    public static void logSessionInfo(final AbstractClientSession session) {
+        log("************ Session Info ****************");
+        if (null != session) {
+            log("Session = " + session.toString());
+            log("Canvas = " + session.getCanvas().toString());
+            if (null != session.getCanvasHandler()) {
                 final CanvasHandler canvasHandler = session.getCanvasHandler();
-                log( "CanvasHandler = " + canvasHandler.toString() );
+                log("CanvasHandler = " + canvasHandler.toString());
                 final Diagram diagram = canvasHandler.getDiagram();
-                if ( null != diagram ) {
-                    log( "Diagram name = " + diagram.getName() );
-                    log( "Graph uuid = " + ( null != diagram.getGraph() ? diagram.getGraph().getUUID() : "null" ) );
+                if (null != diagram) {
+                    log("Diagram name = " + diagram.getName());
+                    log("Graph uuid = " + (null != diagram.getGraph() ? diagram.getGraph().getUUID() : "null"));
                     final Metadata metadata = diagram.getMetadata();
-                    if ( null != metadata ) {
-                        log( "Metadata defSetId = " + metadata.getDefinitionSetId() );
-                        log( "Metadata shapeSetId = " + metadata.getShapeSetId() );
-                        log( "Metadata canvas root = " + metadata.getCanvasRootUUID() );
-                        log( "Metadata title = " + metadata.getTitle() );
+                    if (null != metadata) {
+                        log("Metadata defSetId = " + metadata.getDefinitionSetId());
+                        log("Metadata shapeSetId = " + metadata.getShapeSetId());
+                        log("Metadata canvas root = " + metadata.getCanvasRootUUID());
+                        log("Metadata title = " + metadata.getTitle());
                     } else {
-                        log( "Metadata = null" );
+                        log("Metadata = null");
                     }
                 } else {
-                    log( "Diagram = null" );
+                    log("Diagram = null");
                 }
             } else {
-                log( "CanvasHandler = null" );
+                log("CanvasHandler = null");
             }
-            if ( session instanceof AbstractClientFullSession ) {
-                logFullSessionInfo( ( AbstractClientFullSession ) session );
+            if (session instanceof AbstractClientFullSession) {
+                logFullSessionInfo((AbstractClientFullSession) session);
             }
         } else {
-            log( "Session is null" );
+            log("Session is null");
         }
-        log( "******************************************" );
+        log("******************************************");
     }
 
-    private static void logFullSessionInfo( final AbstractClientFullSession session ) {
+    private static void logFullSessionInfo(final AbstractClientFullSession session) {
         final ElementBuilderControl<AbstractCanvasHandler> builderControl = session.getBuilderControl();
         final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager =
                 session.getCommandManager();
-        log( "Builder control = " + ( null != builderControl ? builderControl.toString() : "null" ) );
-        log( "Canvas command mgr = " + ( null != canvasCommandManager ? canvasCommandManager.toString() : "null" ) );
+        log("Builder control = " + (null != builderControl ? builderControl.toString() : "null"));
+        log("Canvas command mgr = " + (null != canvasCommandManager ? canvasCommandManager.toString() : "null"));
     }
 
-    @SuppressWarnings( "unchecked" )
-    public static void logCommandHistory( final ClientFullSession session ) {
-        if ( null != session ) {
+    @SuppressWarnings("unchecked")
+    public static void logCommandHistory(final ClientFullSession session) {
+        if (null != session) {
             final List<Command<AbstractCanvasHandler, CanvasViolation>> history =
                     session.getCommandRegistry().getCommandHistory();
-            logCommandHistory( history );
+            logCommandHistory(history);
         }
     }
 
-    private static void logCommandHistory( final List<Command<AbstractCanvasHandler, CanvasViolation>> history ) {
-        log( "**** COMMAND HISTORY START *********" );
-        if ( null == history ) {
-            log( "History is null" );
+    private static void logCommandHistory(final List<Command<AbstractCanvasHandler, CanvasViolation>> history) {
+        log("**** COMMAND HISTORY START *********");
+        if (null == history) {
+            log("History is null");
         } else {
-            final int[] x = { 0 };
-            history.stream().forEach( command -> {
-                logCommand( x[ 0 ],
-                            command );
-                x[ 0 ]++;
-            } );
-            log( " ( FOUND " + x[ 0 ] + " ENTRIES )" );
+            final int[] x = {0};
+            history.stream().forEach(command -> {
+                logCommand(x[0],
+                           command);
+                x[0]++;
+            });
+            log(" ( FOUND " + x[0] + " ENTRIES )");
         }
-        log( "**** COMMAND HISTORY END *********" );
+        log("**** COMMAND HISTORY END *********");
     }
 
-    private static void logCommand( final int count,
-                                    final Command<AbstractCanvasHandler, CanvasViolation> command ) {
-        if ( null == command ) {
-            log( "Command is null" );
+    private static void logCommand(final int count,
+                                   final Command<AbstractCanvasHandler, CanvasViolation> command) {
+        if (null == command) {
+            log("Command is null");
         } else {
-            log( "Command [" + count + "] => " + command.toString() );
+            log("Command [" + count + "] => " + command.toString());
         }
     }
 
     public static void switchLogLevel() {
-        final Level level = Logger.getLogger( "org.kie.workbench.common.stunner" ).getLevel();
-        final int idx = getLevelIndex( level );
-        final Level newLevel = ( idx > -1 && ( ( idx + 1 ) < LOG_LEVELS.length ) ) ? LOG_LEVELS[ idx + 1 ] : LOG_LEVELS[ 0 ];
-        GWT.log( "*** Switching to log level: " + newLevel.toString() );
-        Logger.getLogger( "org.kie.workbench.common.stunner" ).setLevel( newLevel );
+        final Level level = Logger.getLogger("org.kie.workbench.common.stunner").getLevel();
+        final int idx = getLevelIndex(level);
+        final Level newLevel = (idx > -1 && ((idx + 1) < LOG_LEVELS.length)) ? LOG_LEVELS[idx + 1] : LOG_LEVELS[0];
+        GWT.log("*** Switching to log level: " + newLevel.toString());
+        Logger.getLogger("org.kie.workbench.common.stunner").setLevel(newLevel);
     }
 
     private static final Level[] LOG_LEVELS = new Level[]{
             Level.FINE, Level.INFO, Level.WARNING, Level.SEVERE
     };
 
-    private static int getLevelIndex( final Level level ) {
+    private static int getLevelIndex(final Level level) {
         int idx = -1;
-        if ( null != level ) {
-            for ( final Level l : LOG_LEVELS ) {
-                if ( level.equals( l ) ) {
+        if (null != level) {
+            for (final Level l : LOG_LEVELS) {
+                if (level.equals(l)) {
                     return idx + 1;
                 }
                 idx++;
@@ -154,18 +154,18 @@ public class StunnerClientLogger {
         return idx;
     }
 
-    private static void log( final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( Level.INFO,
-                        message );
+    private static void log(final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(Level.INFO,
+                       message);
         }
     }
 
-    private static void log( final Level level,
-                             final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private static void log(final Level level,
+                            final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

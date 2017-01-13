@@ -38,67 +38,67 @@ public final class PolygonWithIconShapeDefImpl
         HasChildShapeDefs<PolygonWithIcon> {
 
     @Override
-    public double getRadius( final PolygonWithIcon element ) {
+    public double getRadius(final PolygonWithIcon element) {
         return element.getRadius().getValue();
     }
 
     @Override
-    public String getNamePropertyValue( final PolygonWithIcon element ) {
+    public String getNamePropertyValue(final PolygonWithIcon element) {
         return element.getName().getValue();
     }
 
     @Override
-    public String getBackgroundColor( final PolygonWithIcon element ) {
+    public String getBackgroundColor(final PolygonWithIcon element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final PolygonWithIcon element ) {
+    public double getBackgroundAlpha(final PolygonWithIcon element) {
         return 1;
     }
 
     @Override
-    public String getBorderColor( final PolygonWithIcon element ) {
+    public String getBorderColor(final PolygonWithIcon element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final PolygonWithIcon element ) {
+    public double getBorderSize(final PolygonWithIcon element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final PolygonWithIcon element ) {
+    public double getBorderAlpha(final PolygonWithIcon element) {
         return 1;
     }
 
     @Override
-    public String getFontFamily( final PolygonWithIcon element ) {
+    public String getFontFamily(final PolygonWithIcon element) {
         return element.getFontSet().getFontFamily().getValue();
     }
 
     @Override
-    public String getFontColor( final PolygonWithIcon element ) {
+    public String getFontColor(final PolygonWithIcon element) {
         return element.getFontSet().getFontColor().getValue();
     }
 
     @Override
-    public double getFontSize( final PolygonWithIcon element ) {
+    public double getFontSize(final PolygonWithIcon element) {
         return element.getFontSet().getFontSize().getValue();
     }
 
     @Override
-    public double getFontBorderSize( final PolygonWithIcon element ) {
+    public double getFontBorderSize(final PolygonWithIcon element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final PolygonWithIcon element ) {
+    public HasTitle.Position getFontPosition(final PolygonWithIcon element) {
         return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public double getFontRotation( final PolygonWithIcon element ) {
+    public double getFontRotation(final PolygonWithIcon element) {
         return 0;
     }
 
@@ -110,8 +110,8 @@ public final class PolygonWithIconShapeDefImpl
     @Override
     public Map<ShapeDef<PolygonWithIcon>, HasChildren.Layout> getChildShapeDefs() {
         return new LinkedHashMap<ShapeDef<PolygonWithIcon>, HasChildren.Layout>() {{
-            put( new IconProxy(),
-                 HasChildren.Layout.CENTER );
+            put(new IconProxy(),
+                HasChildren.Layout.CENTER);
         }};
     }
 
@@ -122,42 +122,42 @@ public final class PolygonWithIconShapeDefImpl
         private static final String COLOR = "#000000";
 
         @Override
-        public Icons getIcon( final PolygonWithIcon definition ) {
+        public Icons getIcon(final PolygonWithIcon definition) {
             return definition.getIconType().getValue();
         }
 
         @Override
-        public double getWidth( final PolygonWithIcon element ) {
+        public double getWidth(final PolygonWithIcon element) {
             return element.getRadius().getValue() / 2;
         }
 
         @Override
-        public double getHeight( final PolygonWithIcon element ) {
+        public double getHeight(final PolygonWithIcon element) {
             return element.getRadius().getValue() / 2;
         }
 
         @Override
-        public String getBackgroundColor( final PolygonWithIcon element ) {
+        public String getBackgroundColor(final PolygonWithIcon element) {
             return COLOR;
         }
 
         @Override
-        public double getBackgroundAlpha( final PolygonWithIcon element ) {
+        public double getBackgroundAlpha(final PolygonWithIcon element) {
             return 1;
         }
 
         @Override
-        public String getBorderColor( final PolygonWithIcon element ) {
+        public String getBorderColor(final PolygonWithIcon element) {
             return COLOR;
         }
 
         @Override
-        public double getBorderSize( final PolygonWithIcon element ) {
+        public double getBorderSize(final PolygonWithIcon element) {
             return 5;
         }
 
         @Override
-        public double getBorderAlpha( final PolygonWithIcon element ) {
+        public double getBorderAlpha(final PolygonWithIcon element) {
             return 1;
         }
     }

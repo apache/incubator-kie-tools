@@ -31,8 +31,8 @@ public abstract class AbstractShapeView<T> extends WiresShape
     private String uuid;
     private int zindex;
 
-    public AbstractShapeView( final MultiPath path ) {
-        super( path );
+    public AbstractShapeView(final MultiPath path) {
+        super(path);
     }
 
     protected abstract void doDestroy();
@@ -42,11 +42,11 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setUUID( final String uuid ) {
+    @SuppressWarnings("unchecked")
+    public T setUUID(final String uuid) {
         this.uuid = uuid;
-        this.getGroup().setUserData( UUID_PREFIX + uuid );
-        return ( T ) this;
+        this.getGroup().setUserData(UUID_PREFIX + uuid);
+        return (T) this;
     }
 
     @Override
@@ -55,10 +55,10 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setZIndex( final int zindez ) {
+    @SuppressWarnings("unchecked")
+    public T setZIndex(final int zindez) {
         this.zindex = zindez;
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
@@ -77,22 +77,22 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setShapeX( final double x ) {
-        getContainer().getAttributes().setX( x );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setShapeX(final double x) {
+        getContainer().getAttributes().setX(x);
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setShapeY( final double y ) {
-        getContainer().getAttributes().setY( y );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setShapeY(final double y) {
+        getContainer().getAttributes().setY(y);
+        return (T) this;
     }
 
     @Override
     public Point2D getShapeAbsoluteLocation() {
-        return WiresUtils.getAbsolute( getContainer() );
+        return WiresUtils.getAbsolute(getContainer());
     }
 
     @Override
@@ -101,10 +101,10 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setFillColor( final String color ) {
-        getShape().setFillColor( color );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setFillColor(final String color) {
+        getShape().setFillColor(color);
+        return (T) this;
     }
 
     @Override
@@ -113,10 +113,10 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setFillAlpha( final double alpha ) {
-        getShape().setFillAlpha( alpha );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setFillAlpha(final double alpha) {
+        getShape().setFillAlpha(alpha);
+        return (T) this;
     }
 
     @Override
@@ -125,10 +125,10 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setStrokeColor( final String color ) {
-        getShape().setStrokeColor( color );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setStrokeColor(final String color) {
+        getShape().setStrokeColor(color);
+        return (T) this;
     }
 
     @Override
@@ -137,10 +137,10 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setStrokeAlpha( final double alpha ) {
-        getShape().setStrokeAlpha( alpha );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setStrokeAlpha(final double alpha) {
+        getShape().setStrokeAlpha(alpha);
+        return (T) this;
     }
 
     @Override
@@ -149,52 +149,52 @@ public abstract class AbstractShapeView<T> extends WiresShape
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setStrokeWidth( final double width ) {
-        getShape().setStrokeWidth( width );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setStrokeWidth(final double width) {
+        getShape().setStrokeWidth(width);
+        return (T) this;
     }
 
     // TODO: Move this into lienzo WiresShape/WiresConnector?
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setDragBounds( final double x1,
-                            final double y1,
-                            final double x2,
-                            final double y2 ) {
-        getGroup().setDragBounds( new DragBounds( x1,
-                                                  y1,
-                                                  x2,
-                                                  y2 ) );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setDragBounds(final double x1,
+                           final double y1,
+                           final double x2,
+                           final double y2) {
+        getGroup().setDragBounds(new DragBounds(x1,
+                                                y1,
+                                                x2,
+                                                y2));
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T moveToTop() {
         getContainer().moveToTop();
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T moveToBottom() {
         getContainer().moveToBottom();
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T moveUp() {
         getContainer().moveUp();
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T moveDown() {
         getContainer().moveDown();
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override

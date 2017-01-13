@@ -32,12 +32,12 @@ public final class DiagramRepresentationImpl implements DiagramRepresentation {
     private final Path path;
     private final String thumbImageData;
 
-    DiagramRepresentationImpl( final @MapsTo( "name" ) String name,
-                               final @MapsTo( "title" ) String title,
-                               final @MapsTo( "defSetId" ) String defSetId,
-                               final @MapsTo( "shapeSetId" ) String shapeSetId,
-                               final @MapsTo( "path" ) Path path,
-                               final @MapsTo( "thumbImageData" ) String thumbImageData ) {
+    DiagramRepresentationImpl(final @MapsTo("name") String name,
+                              final @MapsTo("title") String title,
+                              final @MapsTo("defSetId") String defSetId,
+                              final @MapsTo("shapeSetId") String shapeSetId,
+                              final @MapsTo("path") Path path,
+                              final @MapsTo("thumbImageData") String thumbImageData) {
         this.name = name;
         this.title = title;
         this.defSetId = defSetId;
@@ -83,36 +83,36 @@ public final class DiagramRepresentationImpl implements DiagramRepresentation {
         private final DiagramRepresentation representation;
         private String shapeSetId;
 
-        public DiagramRepresentationBuilder( final Diagram diagram ) {
+        public DiagramRepresentationBuilder(final Diagram diagram) {
             this.diagram = diagram;
             this.representation = null;
         }
 
-        public DiagramRepresentationBuilder( final DiagramRepresentation representation ) {
+        public DiagramRepresentationBuilder(final DiagramRepresentation representation) {
             this.representation = representation;
             this.diagram = null;
         }
 
-        public DiagramRepresentationBuilder setShapeSetId( final String shapeSetId ) {
+        public DiagramRepresentationBuilder setShapeSetId(final String shapeSetId) {
             this.shapeSetId = shapeSetId;
             return this;
         }
 
         public DiagramRepresentation build() {
-            if ( null != diagram ) {
-                return new DiagramRepresentationImpl( diagram.getName(),
-                                                      diagram.getMetadata().getTitle(),
-                                                      diagram.getMetadata().getDefinitionSetId(),
-                                                      null != shapeSetId ? shapeSetId : diagram.getMetadata().getShapeSetId(),
-                                                      diagram.getMetadata().getPath(),
-                                                      diagram.getMetadata().getThumbData() );
+            if (null != diagram) {
+                return new DiagramRepresentationImpl(diagram.getName(),
+                                                     diagram.getMetadata().getTitle(),
+                                                     diagram.getMetadata().getDefinitionSetId(),
+                                                     null != shapeSetId ? shapeSetId : diagram.getMetadata().getShapeSetId(),
+                                                     diagram.getMetadata().getPath(),
+                                                     diagram.getMetadata().getThumbData());
             }
-            return new DiagramRepresentationImpl( representation.getName(),
-                                                  representation.getTitle(),
-                                                  representation.getDefinitionSetId(),
-                                                  null != shapeSetId ? shapeSetId : representation.getShapeSetId(),
-                                                  representation.getPath(),
-                                                  representation.getThumbImageData() );
+            return new DiagramRepresentationImpl(representation.getName(),
+                                                 representation.getTitle(),
+                                                 representation.getDefinitionSetId(),
+                                                 null != shapeSetId ? shapeSetId : representation.getShapeSetId(),
+                                                 representation.getPath(),
+                                                 representation.getThumbImageData());
         }
     }
 }

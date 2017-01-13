@@ -54,30 +54,30 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
     public void handleAddClick() {
-        if ( isSingleVar && view.getAssignmentRows().size() > 0 ) {
+        if (isSingleVar && view.getAssignmentRows().size() > 0) {
             view.showOnlySingleEntryAllowed();
         } else {
             addAssignment();
         }
     }
 
-    public void setIsSingleVar( boolean isSingleVar ) {
+    public void setIsSingleVar(final boolean isSingleVar) {
         this.isSingleVar = isSingleVar;
-        if ( variableType.equals( VariableType.INPUT ) ) {
+        if (variableType.equals(VariableType.INPUT)) {
             view.setProcessVarAsSource();
-            if ( isSingleVar ) {
+            if (isSingleVar) {
                 view.setTableTitleInputSingle();
             } else {
                 view.setTableTitleInputMultiple();
             }
         } else {
             view.setProcessVarAsTarget();
-            if ( isSingleVar ) {
+            if (isSingleVar) {
                 view.setTableTitleOutputSingle();
             } else {
                 view.setTableTitleOutputMultiple();
@@ -85,83 +85,83 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
         }
     }
 
-    public void setVariableType( VariableType variableType ) {
+    public void setVariableType(final VariableType variableType) {
         this.variableType = variableType;
     }
 
-    public void setAllowDuplicateNames( boolean allowDuplicateNames,
-                                        String duplicateNameErrorMessage ) {
+    public void setAllowDuplicateNames(final boolean allowDuplicateNames,
+                                       final String duplicateNameErrorMessage) {
         this.allowDuplicateNames = allowDuplicateNames;
         this.duplicateNameErrorMessage = duplicateNameErrorMessage;
     }
 
     private boolean getShowConstants() {
-        return ( this.variableType == VariableType.INPUT ) ? true : false;
+        return (this.variableType == VariableType.INPUT) ? true : false;
     }
 
     private void addAssignment() {
         List<AssignmentRow> as = view.getAssignmentRows();
-        if ( as.isEmpty() ) {
+        if (as.isEmpty()) {
             view.setTableDisplayStyle();
         }
         AssignmentRow newAssignment = new AssignmentRow();
-        newAssignment.setVariableType( variableType );
-        as.add( newAssignment );
-        AssignmentListItemWidgetView widget = view.getAssignmentWidget( view.getAssignmentsCount() - 1 );
-        widget.setDataTypes( dataTypeListBoxValues );
-        widget.setProcessVariables( processVarListBoxValues );
-        widget.setShowConstants( getShowConstants() );
-        widget.setDisallowedNames( disallowedNames,
-                                   disallowedNameErrorMessage );
-        widget.setAllowDuplicateNames( allowDuplicateNames,
-                                       duplicateNameErrorMessage );
-        widget.setParentWidget( this );
+        newAssignment.setVariableType(variableType);
+        as.add(newAssignment);
+        AssignmentListItemWidgetView widget = view.getAssignmentWidget(view.getAssignmentsCount() - 1);
+        widget.setDataTypes(dataTypeListBoxValues);
+        widget.setProcessVariables(processVarListBoxValues);
+        widget.setShowConstants(getShowConstants());
+        widget.setDisallowedNames(disallowedNames,
+                                  disallowedNameErrorMessage);
+        widget.setAllowDuplicateNames(allowDuplicateNames,
+                                      duplicateNameErrorMessage);
+        widget.setParentWidget(this);
     }
 
-    public void removeAssignment( AssignmentRow assignmentRow ) {
-        view.getAssignmentRows().remove( assignmentRow );
-        if ( view.getAssignmentRows().isEmpty() ) {
+    public void removeAssignment(final AssignmentRow assignmentRow) {
+        view.getAssignmentRows().remove(assignmentRow);
+        if (view.getAssignmentRows().isEmpty()) {
             view.setNoneDisplayStyle();
         }
     }
 
-    public void setData( List<AssignmentRow> assignmentRows ) {
+    public void setData(final List<AssignmentRow> assignmentRows) {
         // Hide the properties which shouldn't be shown
         hiddenPropertyRows.clear();
-        if ( disallowedNames != null && !disallowedNames.isEmpty() ) {
-            for ( int i = assignmentRows.size() - 1; i >= 0; i-- ) {
-                AssignmentRow row = assignmentRows.get( i );
-                if ( row.getName() != null && !row.getName().isEmpty() ) {
-                    if ( disallowedNames.contains( row.getName().toLowerCase() ) ) {
-                        assignmentRows.remove( i );
-                        hiddenPropertyRows.add( 0,
-                                                row );
+        if (disallowedNames != null && !disallowedNames.isEmpty()) {
+            for (int i = assignmentRows.size() - 1; i >= 0; i--) {
+                AssignmentRow row = assignmentRows.get(i);
+                if (row.getName() != null && !row.getName().isEmpty()) {
+                    if (disallowedNames.contains(row.getName().toLowerCase())) {
+                        assignmentRows.remove(i);
+                        hiddenPropertyRows.add(0,
+                                               row);
                     }
                 }
             }
         }
-        if ( assignmentRows.isEmpty() ) {
+        if (assignmentRows.isEmpty()) {
             view.setNoneDisplayStyle();
         } else {
             view.setTableDisplayStyle();
         }
-        view.setAssignmentRows( assignmentRows );
-        for ( int i = 0; i < assignmentRows.size(); i++ ) {
-            view.getAssignmentWidget( i ).setParentWidget( this );
-            view.getAssignmentWidget( i ).setDisallowedNames( disallowedNames,
-                                                              disallowedNameErrorMessage );
-            view.getAssignmentWidget( i ).setAllowDuplicateNames( allowDuplicateNames,
-                                                                  duplicateNameErrorMessage );
+        view.setAssignmentRows(assignmentRows);
+        for (int i = 0; i < assignmentRows.size(); i++) {
+            view.getAssignmentWidget(i).setParentWidget(this);
+            view.getAssignmentWidget(i).setDisallowedNames(disallowedNames,
+                                                           disallowedNameErrorMessage);
+            view.getAssignmentWidget(i).setAllowDuplicateNames(allowDuplicateNames,
+                                                               duplicateNameErrorMessage);
         }
     }
 
     public List<AssignmentRow> getData() {
         List<AssignmentRow> rows = new ArrayList<AssignmentRow>();
-        if ( !view.getAssignmentRows().isEmpty() ) {
-            rows.addAll( view.getAssignmentRows() );
+        if (!view.getAssignmentRows().isEmpty()) {
+            rows.addAll(view.getAssignmentRows());
         }
-        if ( !hiddenPropertyRows.isEmpty() ) {
-            rows.addAll( hiddenPropertyRows );
+        if (!hiddenPropertyRows.isEmpty()) {
+            rows.addAll(hiddenPropertyRows);
         }
         return rows;
     }
@@ -170,29 +170,29 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
         return variableType;
     }
 
-    public void setDataTypes( ListBoxValues dataTypeListBoxValues ) {
+    public void setDataTypes(final ListBoxValues dataTypeListBoxValues) {
         this.dataTypeListBoxValues = dataTypeListBoxValues;
-        for ( int i = 0; i < view.getAssignmentsCount(); i++ ) {
-            view.getAssignmentWidget( i ).setDataTypes( dataTypeListBoxValues );
+        for (int i = 0; i < view.getAssignmentsCount(); i++) {
+            view.getAssignmentWidget(i).setDataTypes(dataTypeListBoxValues);
         }
     }
 
-    public void setProcessVariables( ListBoxValues processVarListBoxValues ) {
+    public void setProcessVariables(final ListBoxValues processVarListBoxValues) {
         this.processVarListBoxValues = processVarListBoxValues;
-        for ( int i = 0; i < view.getAssignmentsCount(); i++ ) {
-            AssignmentListItemWidgetView widget = view.getAssignmentWidget( i );
-            widget.setProcessVariables( processVarListBoxValues );
-            widget.setShowConstants( getShowConstants() );
+        for (int i = 0; i < view.getAssignmentsCount(); i++) {
+            AssignmentListItemWidgetView widget = view.getAssignmentWidget(i);
+            widget.setProcessVariables(processVarListBoxValues);
+            widget.setShowConstants(getShowConstants());
         }
     }
 
-    public void setDisallowedNames( Set<String> disallowedNames,
-                                    String disallowedNameErrorMessage ) {
+    public void setDisallowedNames(final Set<String> disallowedNames,
+                                   final String disallowedNameErrorMessage) {
         this.disallowedNames = disallowedNames;
         this.disallowedNameErrorMessage = disallowedNameErrorMessage;
-        for ( int i = 0; i < view.getAssignmentsCount(); i++ ) {
-            view.getAssignmentWidget( i ).setDisallowedNames( disallowedNames,
-                                                              disallowedNameErrorMessage );
+        for (int i = 0; i < view.getAssignmentsCount(); i++) {
+            view.getAssignmentWidget(i).setDisallowedNames(disallowedNames,
+                                                           disallowedNameErrorMessage);
         }
     }
 
@@ -201,17 +201,17 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
      * @param name
      * @return
      */
-    public boolean isDuplicateName( String name ) {
-        if ( name == null || name.trim().isEmpty() ) {
+    public boolean isDuplicateName(final String name) {
+        if (name == null || name.trim().isEmpty()) {
             return false;
         }
         List<AssignmentRow> as = view.getAssignmentRows();
-        if ( as != null && !as.isEmpty() ) {
+        if (as != null && !as.isEmpty()) {
             int nameCount = 0;
-            for ( AssignmentRow row : as ) {
-                if ( name.trim().compareTo( row.getName() ) == 0 ) {
+            for (AssignmentRow row : as) {
+                if (name.trim().compareTo(row.getName()) == 0) {
                     nameCount++;
-                    if ( nameCount > 1 ) {
+                    if (nameCount > 1) {
                         return true;
                     }
                 }
@@ -220,11 +220,11 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
         return false;
     }
 
-    public void setIsVisible( boolean visible ) {
-        view.setVisible( visible );
+    public void setIsVisible(final boolean visible) {
+        view.setVisible(visible);
     }
 
     public Widget getWidget() {
-        return ( Widget ) view;
+        return (Widget) view;
     }
 }

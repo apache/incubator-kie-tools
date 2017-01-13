@@ -34,18 +34,18 @@ public class LienzoGlyphsHoverPaletteImpl
         implements LienzoGlyphsHoverPalette {
 
     protected LienzoGlyphsHoverPaletteImpl() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public LienzoGlyphsHoverPaletteImpl( final ShapeManager shapeManager,
-                                         final LienzoHoverPaletteView view,
-                                         final DefinitionGlyphTooltip definitionGlyphTooltip ) {
-        super( shapeManager,
-               definitionGlyphTooltip,
-               view );
+    public LienzoGlyphsHoverPaletteImpl(final ShapeManager shapeManager,
+                                        final LienzoHoverPaletteView view,
+                                        final DefinitionGlyphTooltip definitionGlyphTooltip) {
+        super(shapeManager,
+              definitionGlyphTooltip,
+              view);
     }
 
     @PostConstruct

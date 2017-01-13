@@ -25,6 +25,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
  */
 public interface GraphShape<W, C extends View<W>, E extends Element<C>, V extends ShapeView> extends MutableShape<E, V> {
 
-    void applyPosition( final E element,
-                        final MutationContext mutationContext );
+    void applyPosition(final E element,
+                       final MutationContext mutationContext);
 }

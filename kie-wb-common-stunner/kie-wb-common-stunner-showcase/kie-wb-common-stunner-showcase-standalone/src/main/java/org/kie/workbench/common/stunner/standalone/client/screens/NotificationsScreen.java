@@ -37,7 +37,7 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchScreen( identifier = NotificationsScreen.SCREEN_ID )
+@WorkbenchScreen(identifier = NotificationsScreen.SCREEN_ID)
 public class NotificationsScreen {
 
     public static final String SCREEN_ID = "NotificationsScreen";
@@ -58,14 +58,14 @@ public class NotificationsScreen {
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
+    public void onStartup(final PlaceRequest placeRequest) {
         this.menu = makeMenuBar();
     }
 
     private Menus makeMenuBar() {
         return MenuFactory
-                .newTopLevelMenu( "Clear" )
-                .respondsWith( getClearCommand() )
+                .newTopLevelMenu("Clear")
+                .respondsWith(getClearCommand())
                 .endMenu()
                 .build();
     }
@@ -92,8 +92,8 @@ public class NotificationsScreen {
         return menu;
     }
 
-    private void showError( final String message ) {
-        errorPopupPresenter.showMessage( message );
+    private void showError(final String message) {
+        errorPopupPresenter.showMessage(message);
     }
 
     // TODO: I18n.

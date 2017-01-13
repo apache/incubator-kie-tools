@@ -39,9 +39,9 @@ public class CanvasValidationControlImpl
     Event<CanvasValidationFailEvent> validationFailEvent;
 
     @Inject
-    public CanvasValidationControlImpl( final CanvasValidator canvasValidator,
-                                        final Event<CanvasValidationSuccessEvent> validationSuccessEvent,
-                                        final Event<CanvasValidationFailEvent> validationFailEvent ) {
+    public CanvasValidationControlImpl(final CanvasValidator canvasValidator,
+                                       final Event<CanvasValidationSuccessEvent> validationSuccessEvent,
+                                       final Event<CanvasValidationFailEvent> validationFailEvent) {
         this.canvasValidator = canvasValidator;
         this.validationSuccessEvent = validationSuccessEvent;
         this.validationFailEvent = validationFailEvent;
@@ -56,35 +56,35 @@ public class CanvasValidationControlImpl
 
     @Override
     public void validate() {
-        this.validate( null );
+        this.validate(null);
     }
 
     @Override
-    public void validate( final CanvasValidatorCallback validatorCallback ) {
-        if ( null != canvasHandler ) {
+    public void validate(final CanvasValidatorCallback validatorCallback) {
+        if (null != canvasHandler) {
             final GraphRulesManager rulesManager = canvasHandler.getGraphRulesManager();
             canvasValidator
-                    .withRulesManager( rulesManager )
-                    .validate( canvasHandler,
-                               new CanvasValidatorCallback() {
+                    .withRulesManager(rulesManager)
+                    .validate(canvasHandler,
+                              new CanvasValidatorCallback() {
 
-                                   @Override
-                                   public void onSuccess() {
-                                       if ( null != validatorCallback ) {
-                                           validatorCallback.onSuccess();
-                                       }
-                                       validationSuccessEvent.fire( new CanvasValidationSuccessEvent( canvasHandler ) );
-                                   }
+                                  @Override
+                                  public void onSuccess() {
+                                      if (null != validatorCallback) {
+                                          validatorCallback.onSuccess();
+                                      }
+                                      validationSuccessEvent.fire(new CanvasValidationSuccessEvent(canvasHandler));
+                                  }
 
-                                   @Override
-                                   public void onFail( final Iterable<CanvasValidationViolation> violations ) {
-                                       if ( null != validatorCallback ) {
-                                           validatorCallback.onFail( violations );
-                                       }
-                                       validationFailEvent.fire( new CanvasValidationFailEvent( canvasHandler,
-                                                                                                violations ) );
-                                   }
-                               } );
+                                  @Override
+                                  public void onFail(final Iterable<CanvasValidationViolation> violations) {
+                                      if (null != validatorCallback) {
+                                          validatorCallback.onFail(violations);
+                                      }
+                                      validationFailEvent.fire(new CanvasValidationFailEvent(canvasHandler,
+                                                                                             violations));
+                                  }
+                              });
         }
     }
 }

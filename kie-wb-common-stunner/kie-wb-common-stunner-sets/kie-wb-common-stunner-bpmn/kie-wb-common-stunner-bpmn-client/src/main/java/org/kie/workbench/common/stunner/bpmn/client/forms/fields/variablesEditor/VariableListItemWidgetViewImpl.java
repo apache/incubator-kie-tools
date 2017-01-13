@@ -55,7 +55,7 @@ import org.uberfire.workbench.events.NotificationEvent;
  * they use a combination of ListBox and TextBox to implement a drop-down combo
  * to hold the values.
  */
-@Templated( "VariablesEditorWidget.html#variableRow" )
+@Templated("VariablesEditorWidget.html#variableRow")
 public class VariableListItemWidgetViewImpl implements VariableListItemWidgetView,
                                                        ComboBoxView.ModelPresenter {
 
@@ -82,21 +82,21 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     private String currentValue;
 
     @DataField
-    protected ValueListBox<String> dataType = new ValueListBox<String>( new Renderer<String>() {
-        public String render( String object ) {
+    protected ValueListBox<String> dataType = new ValueListBox<String>(new Renderer<String>() {
+        public String render(final String object) {
             String s = "";
-            if ( object != null ) {
+            if (object != null) {
                 s = object.toString();
             }
             return s;
         }
 
-        public void render( String object,
-                            Appendable appendable ) throws IOException {
-            String s = render( object );
-            appendable.append( s );
+        public void render(final String object,
+                           final Appendable appendable) throws IOException {
+            String s = render(object);
+            appendable.append(s);
         }
-    } );
+    });
 
     @Inject
     @DataField
@@ -117,26 +117,26 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
      */
     private VariablesEditorWidgetView.Presenter parentWidget;
 
-    public void setParentWidget( VariablesEditorWidgetView.Presenter parentWidget ) {
+    public void setParentWidget(final VariablesEditorWidgetView.Presenter parentWidget) {
         this.parentWidget = parentWidget;
     }
 
     @Override
-    public void setTextBoxModelValue( final TextBox textBox,
-                                      String value ) {
-        setCustomDataType( value );
+    public void setTextBoxModelValue(final TextBox textBox,
+                                     final String value) {
+        setCustomDataType(value);
     }
 
     @Override
-    public void setListBoxModelValue( final ValueListBox<String> listBox,
-                                      String value ) {
-        setDataTypeDisplayName( value );
+    public void setListBoxModelValue(final ValueListBox<String> listBox,
+                                     final String value) {
+        setDataTypeDisplayName(value);
     }
 
     @Override
-    public String getModelValue( final ValueListBox<String> listBox ) {
+    public String getModelValue(final ValueListBox<String> listBox) {
         String value = getCustomDataType();
-        if ( value == null || value.isEmpty() ) {
+        if (value == null || value.isEmpty()) {
             value = getDataTypeDisplayName();
         }
         return value;
@@ -145,42 +145,42 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     @PostConstruct
     public void init() {
         // Configure dataType and customDataType controls
-        dataTypeComboBox.init( this,
-                               true,
-                               dataType,
-                               customDataType,
-                               false,
-                               true,
-                               CUSTOM_PROMPT,
-                               ENTER_TYPE_PROMPT );
-        name.setRegExp( "^[a-zA-Z0-9\\-\\.\\_]*$",
-                        "Removed invalid characters from name",
-                        "Invalid character in name" );
-        customDataType.addKeyDownHandler( new KeyDownHandler() {
+        dataTypeComboBox.init(this,
+                              true,
+                              dataType,
+                              customDataType,
+                              false,
+                              true,
+                              CUSTOM_PROMPT,
+                              ENTER_TYPE_PROMPT);
+        name.setRegExp("^[a-zA-Z0-9\\-\\.\\_]*$",
+                       "Removed invalid characters from name",
+                       "Invalid character in name");
+        customDataType.addKeyDownHandler(new KeyDownHandler() {
             @Override
-            public void onKeyDown( KeyDownEvent event ) {
+            public void onKeyDown(final KeyDownEvent event) {
                 int iChar = event.getNativeKeyCode();
-                if ( iChar == ' ' ) {
+                if (iChar == ' ') {
                     event.preventDefault();
                 }
             }
-        } );
-        name.addBlurHandler( new BlurHandler() {
+        });
+        name.addBlurHandler(new BlurHandler() {
             @Override
-            public void onBlur( BlurEvent event ) {
-                if ( !allowDuplicateNames ) {
+            public void onBlur(final BlurEvent event) {
+                if (!allowDuplicateNames) {
                     String value = name.getText();
-                    if ( isDuplicateName( value ) ) {
-                        notification.fire( new NotificationEvent( duplicateNameErrorMessage,
-                                                                  NotificationEvent.NotificationType.ERROR ) );
-                        name.setValue( "" );
-                        ValueChangeEvent.fire( name,
-                                               "" );
+                    if (isDuplicateName(value)) {
+                        notification.fire(new NotificationEvent(duplicateNameErrorMessage,
+                                                                NotificationEvent.NotificationType.ERROR));
+                        name.setValue("");
+                        ValueChangeEvent.fire(name,
+                                              "");
                     }
                 }
                 notifyModelChanged();
             }
-        } );
+        });
     }
 
     @Override
@@ -189,8 +189,8 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     }
 
     @Override
-    public void setModel( VariableRow model ) {
-        variableRow.setModel( model );
+    public void setModel(final VariableRow model) {
+        variableRow.setModel(model);
         initVariableControls();
         currentValue = getModel().toString();
     }
@@ -206,8 +206,8 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     }
 
     @Override
-    public void setDataTypeDisplayName( String dataTypeDisplayName ) {
-        getModel().setDataTypeDisplayName( dataTypeDisplayName );
+    public void setDataTypeDisplayName(final String dataTypeDisplayName) {
+        getModel().setDataTypeDisplayName(dataTypeDisplayName);
     }
 
     @Override
@@ -216,30 +216,30 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     }
 
     @Override
-    public void setCustomDataType( String customDataType ) {
-        getModel().setCustomDataType( customDataType );
+    public void setCustomDataType(final String customDataType) {
+        getModel().setCustomDataType(customDataType);
     }
 
     @Override
-    public void setDataTypes( ListBoxValues dataTypeListBoxValues ) {
-        dataTypeComboBox.setCurrentTextValue( "" );
-        dataTypeComboBox.setListBoxValues( dataTypeListBoxValues );
-        dataTypeComboBox.setShowCustomValues( true );
+    public void setDataTypes(final ListBoxValues dataTypeListBoxValues) {
+        dataTypeComboBox.setCurrentTextValue("");
+        dataTypeComboBox.setListBoxValues(dataTypeListBoxValues);
+        dataTypeComboBox.setShowCustomValues(true);
         String cdt = getCustomDataType();
-        if ( cdt != null && !cdt.isEmpty() ) {
-            dataTypeComboBox.addCustomValueToListBoxValues( cdt,
-                                                            "" );
+        if (cdt != null && !cdt.isEmpty()) {
+            dataTypeComboBox.addCustomValueToListBoxValues(cdt,
+                                                           "");
         }
     }
 
     @Override
-    public boolean isDuplicateName( String name ) {
-        return parentWidget.isDuplicateName( name );
+    public boolean isDuplicateName(final String name) {
+        return parentWidget.isDuplicateName(name);
     }
 
-    @EventHandler( "deleteButton" )
-    public void handleDeleteButton( ClickEvent e ) {
-        parentWidget.removeVariable( getModel() );
+    @EventHandler("deleteButton")
+    public void handleDeleteButton(final ClickEvent e) {
+        parentWidget.removeVariable(getModel());
     }
 
     /**
@@ -247,13 +247,13 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
      * corresponding {@link VariableRow}.
      */
     private void initVariableControls() {
-        deleteButton.setIcon( IconType.TRASH );
+        deleteButton.setIcon(IconType.TRASH);
         String cdt = getCustomDataType();
-        if ( cdt != null && !cdt.isEmpty() ) {
-            customDataType.setValue( cdt );
-            dataType.setValue( cdt );
-        } else if ( getDataTypeDisplayName() != null ) {
-            dataType.setValue( getDataTypeDisplayName() );
+        if (cdt != null && !cdt.isEmpty()) {
+            customDataType.setValue(cdt);
+            dataType.setValue(cdt);
+        } else if (getDataTypeDisplayName() != null) {
+            dataType.setValue(getDataTypeDisplayName());
         }
     }
 
@@ -261,11 +261,11 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     public void notifyModelChanged() {
         String oldValue = currentValue;
         currentValue = getModel().toString();
-        if ( oldValue == null ) {
-            if ( currentValue != null && currentValue.length() > 0 ) {
+        if (oldValue == null) {
+            if (currentValue != null && currentValue.length() > 0) {
                 parentWidget.notifyModelChanged();
             }
-        } else if ( !oldValue.equals( currentValue ) ) {
+        } else if (!oldValue.equals(currentValue)) {
             parentWidget.notifyModelChanged();
         }
     }

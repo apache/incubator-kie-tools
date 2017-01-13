@@ -23,9 +23,9 @@ public final class CanvasElementSelectedEvent extends AbstractCanvasHandlerEvent
 
     private final String elementUUID;
 
-    public CanvasElementSelectedEvent( final CanvasHandler canvasHandler,
-                                       final String elementUUID ) {
-        super( canvasHandler );
+    public CanvasElementSelectedEvent(final CanvasHandler canvasHandler,
+                                      final String elementUUID) {
+        super(canvasHandler);
         this.elementUUID = elementUUID;
     }
 

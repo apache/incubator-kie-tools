@@ -25,7 +25,7 @@ public final class SessionDiagramOpenedEvent implements UberFireEvent {
 
     private final ClientSession session;
 
-    public SessionDiagramOpenedEvent( final ClientSession session ) {
+    public SessionDiagramOpenedEvent(final ClientSession session) {
         this.session = session;
     }
 

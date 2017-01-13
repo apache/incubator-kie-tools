@@ -28,8 +28,8 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientR
 public class VisitGraphToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientReadOnlySession, VisitGraphSessionCommand> {
 
     @Inject
-    public VisitGraphToolbarCommand( final SessionCommandFactory sessionCommandFactory ) {
-        super( sessionCommandFactory.newVisitGraphCommand() );
+    public VisitGraphToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
+        super(sessionCommandFactory.newVisitGraphCommand());
     }
 
     @Override

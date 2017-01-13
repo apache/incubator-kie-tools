@@ -40,7 +40,7 @@ import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 @ApplicationScoped
 public class ClientSessionManagerImpl extends AbstractClientSessionManager {
 
-    private static Logger LOGGER = Logger.getLogger( ClientSessionManagerImpl.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(ClientSessionManagerImpl.class.getName());
 
     private final PlatformManager platformManager;
     private final Event<SessionOpenedEvent> sessionOpenedEvent;
@@ -50,21 +50,21 @@ public class ClientSessionManagerImpl extends AbstractClientSessionManager {
     private final Event<OnSessionErrorEvent> sessionErrorEvent;
 
     protected ClientSessionManagerImpl() {
-        this( null,
-              null,
-              null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public ClientSessionManagerImpl( final PlatformManager platformManager,
-                                     final Event<SessionOpenedEvent> sessionOpenedEvent,
-                                     final Event<SessionDisposedEvent> sessionDisposedEvent,
-                                     final Event<SessionPausedEvent> sessionPausedEvent,
-                                     final Event<SessionResumedEvent> sessionResumedEvent,
-                                     final Event<OnSessionErrorEvent> sessionErrorEvent ) {
+    public ClientSessionManagerImpl(final PlatformManager platformManager,
+                                    final Event<SessionOpenedEvent> sessionOpenedEvent,
+                                    final Event<SessionDisposedEvent> sessionDisposedEvent,
+                                    final Event<SessionPausedEvent> sessionPausedEvent,
+                                    final Event<SessionResumedEvent> sessionResumedEvent,
+                                    final Event<OnSessionErrorEvent> sessionErrorEvent) {
         this.platformManager = platformManager;
         this.sessionOpenedEvent = sessionOpenedEvent;
         this.sessionPausedEvent = sessionPausedEvent;
@@ -74,69 +74,69 @@ public class ClientSessionManagerImpl extends AbstractClientSessionManager {
     }
 
     protected void postOpen() {
-        this.sessionOpenedEvent.fire( new SessionOpenedEvent( current ) );
+        this.sessionOpenedEvent.fire(new SessionOpenedEvent(current));
     }
 
     protected void postPause() {
-        this.sessionPausedEvent.fire( new SessionPausedEvent( current ) );
+        this.sessionPausedEvent.fire(new SessionPausedEvent(current));
     }
 
     protected void postResume() {
-        this.sessionResumedEvent.fire( new SessionResumedEvent( current ) );
+        this.sessionResumedEvent.fire(new SessionResumedEvent(current));
     }
 
     protected void postDispose() {
-        this.sessionDisposedEvent.fire( new SessionDisposedEvent( current ) );
+        this.sessionDisposedEvent.fire(new SessionDisposedEvent(current));
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public ClientReadOnlySession<AbstractCanvas, AbstractCanvasHandler> newReadOnlySession() {
         final ClientPlatform platform = getPlatform();
         ClientReadOnlySession<AbstractCanvas, AbstractCanvasHandler> session = null;
-        if ( platform instanceof AbstractClientSessionProducer ) {
-            final AbstractClientSessionProducer sessionProducer = ( AbstractClientSessionProducer ) platform;
+        if (platform instanceof AbstractClientSessionProducer) {
+            final AbstractClientSessionProducer sessionProducer = (AbstractClientSessionProducer) platform;
             session = sessionProducer.newReadOnlySession();
         }
         return session;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public ClientFullSession<AbstractCanvas, AbstractCanvasHandler> newFullSession() {
         final ClientPlatform platform = getPlatform();
         ClientFullSession<AbstractCanvas, AbstractCanvasHandler> session = null;
-        if ( platform instanceof AbstractClientSessionProducer ) {
-            final AbstractClientSessionProducer sessionProducer = ( AbstractClientSessionProducer ) platform;
+        if (platform instanceof AbstractClientSessionProducer) {
+            final AbstractClientSessionProducer sessionProducer = (AbstractClientSessionProducer) platform;
             session = sessionProducer.newFullSession();
         }
         return session;
     }
 
     @Override
-    public void handleCommandError( final CommandException ce ) {
-        super.handleCommandError( ce );
-        sessionErrorEvent.fire( new OnSessionErrorEvent( current,
-                                                         new ClientRuntimeError( "Error while executing command.",
-                                                                                 ce ) ) );
+    public void handleCommandError(final CommandException ce) {
+        super.handleCommandError(ce);
+        sessionErrorEvent.fire(new OnSessionErrorEvent(current,
+                                                       new ClientRuntimeError("Error while executing command.",
+                                                                              ce)));
     }
 
     @Override
-    public void handleClientError( final ClientRuntimeError error ) {
-        super.handleClientError( error );
-        sessionErrorEvent.fire( new OnSessionErrorEvent( current,
-                                                         error ) );
+    public void handleClientError(final ClientRuntimeError error) {
+        super.handleClientError(error);
+        sessionErrorEvent.fire(new OnSessionErrorEvent(current,
+                                                       error));
     }
 
     protected ClientPlatform getPlatform() {
         return platformManager.getCurrentPlatform();
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

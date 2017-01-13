@@ -29,14 +29,14 @@ import org.kie.workbench.common.stunner.core.client.BindableShapeSetThumbProvide
 public class BasicSetThumbnailProvider extends BindableShapeSetThumbProvider {
 
     @Inject
-    public BasicSetThumbnailProvider( final DefinitionManager definitionManager ) {
-        super( definitionManager );
+    public BasicSetThumbnailProvider(final DefinitionManager definitionManager) {
+        super(definitionManager);
     }
 
     @Override
-    protected boolean thumbFor( final Class<?> clazz ) {
-        return isSameClass( clazz,
-                            BasicSet.class );
+    protected boolean thumbFor(final Class<?> clazz) {
+        return isSameClass(clazz,
+                           BasicSet.class);
     }
 
     @Override

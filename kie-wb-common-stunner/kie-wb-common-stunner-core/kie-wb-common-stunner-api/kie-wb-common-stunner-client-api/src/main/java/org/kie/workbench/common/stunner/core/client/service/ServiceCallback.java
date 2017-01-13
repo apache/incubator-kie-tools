@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.core.client.service;
 
 public interface ServiceCallback<T> {
 
-    void onSuccess( final T item );
+    void onSuccess(final T item);
 
-    void onError( final ClientRuntimeError error );
+    void onError(final ClientRuntimeError error);
 }

@@ -22,17 +22,17 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 
 public class CommandUtils {
 
-    public static boolean isError( final CommandResult<?> result ) {
-        return isCommandResultError( result );
+    public static boolean isError(final CommandResult<?> result) {
+        return isCommandResultError(result);
     }
 
-    public static <V> List<V> toList( final Iterable<V> iterable ) {
+    public static <V> List<V> toList(final Iterable<V> iterable) {
         final List<V> result = new LinkedList<>();
-        iterable.iterator().forEachRemaining( result::add );
+        iterable.iterator().forEachRemaining(result::add);
         return result;
     }
 
-    private static boolean isCommandResultError( final CommandResult<?> result ) {
-        return result != null && CommandResult.Type.ERROR.equals( result.getType() );
+    private static boolean isCommandResultError(final CommandResult<?> result) {
+        return result != null && CommandResult.Type.ERROR.equals(result.getType());
     }
 }

@@ -23,9 +23,9 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 @Portable
 public final class DiagramImpl extends AbstractDiagram<Graph, Metadata> {
 
-    public DiagramImpl( final @MapsTo( "name" ) String name,
-                        final @MapsTo( "metadata" ) Metadata metadata ) {
-        super( name,
-               metadata );
+    public DiagramImpl(final @MapsTo("name") String name,
+                       final @MapsTo("metadata") Metadata metadata) {
+        super(name,
+              metadata);
     }
 }

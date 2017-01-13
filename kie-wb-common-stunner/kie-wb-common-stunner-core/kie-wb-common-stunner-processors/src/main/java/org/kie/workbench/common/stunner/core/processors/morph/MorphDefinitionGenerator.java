@@ -32,34 +32,34 @@ public class MorphDefinitionGenerator extends AbstractBindableAdapterGenerator {
         return "MorphDefinition.ftl";
     }
 
-    public StringBuffer generate( final String packageName,
-                                  final String className,
-                                  final String baseMorphType,
-                                  final Collection<String> targetTypes,
-                                  final String defaultMorphType,
-                                  final Messager messager ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final String className,
+                                 final String baseMorphType,
+                                 final Collection<String> targetTypes,
+                                 final String defaultMorphType,
+                                 final Messager messager) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "packageName",
-                  packageName );
-        root.put( "className",
-                  className );
-        root.put( "parentClassName",
-                  BindableMorphDefinition.class.getName() );
-        root.put( "generatedByClassName",
-                  MorphDefinitionGenerator.class.getName() );
-        root.put( "morphBaseClassName",
-                  baseMorphType );
-        root.put( "targetClassNames",
-                  targetTypes );
-        root.put( "targetClassNamesSize",
-                  targetTypes.size() );
-        root.put( "defaultTypeClassName",
-                  defaultMorphType );
+        root.put("packageName",
+                 packageName);
+        root.put("className",
+                 className);
+        root.put("parentClassName",
+                 BindableMorphDefinition.class.getName());
+        root.put("generatedByClassName",
+                 MorphDefinitionGenerator.class.getName());
+        root.put("morphBaseClassName",
+                 baseMorphType);
+        root.put("targetClassNames",
+                 targetTypes);
+        root.put("targetClassNamesSize",
+                 targetTypes.size());
+        root.put("defaultTypeClassName",
+                 defaultMorphType);
 
         //Generate code
-        return writeTemplate( packageName,
-                              className,
-                              root,
-                              messager );
+        return writeTemplate(packageName,
+                             className,
+                             root,
+                             messager);
     }
 }

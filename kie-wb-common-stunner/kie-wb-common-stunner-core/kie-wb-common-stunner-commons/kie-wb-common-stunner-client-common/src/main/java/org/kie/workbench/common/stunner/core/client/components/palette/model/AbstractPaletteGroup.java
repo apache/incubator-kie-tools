@@ -25,16 +25,16 @@ public abstract class AbstractPaletteGroup<I extends PaletteItem>
     protected final String definitionId;
     protected final List<I> items;
 
-    public AbstractPaletteGroup( final String itemId,
-                                 final String title,
-                                 final String description,
-                                 final String tooltip,
-                                 final String definitionId,
-                                 final List<I> items ) {
-        super( itemId,
-               title,
-               description,
-               tooltip );
+    public AbstractPaletteGroup(final String itemId,
+                                final String title,
+                                final String description,
+                                final String tooltip,
+                                final String definitionId,
+                                final List<I> items) {
+        super(itemId,
+              title,
+              description,
+              tooltip);
         this.definitionId = definitionId;
         this.items = items;
     }

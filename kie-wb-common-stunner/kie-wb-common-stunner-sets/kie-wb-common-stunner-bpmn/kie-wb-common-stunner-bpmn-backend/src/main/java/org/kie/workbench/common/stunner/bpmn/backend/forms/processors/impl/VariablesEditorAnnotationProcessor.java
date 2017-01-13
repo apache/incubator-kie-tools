@@ -31,16 +31,16 @@ import org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders.Variab
 public class VariablesEditorAnnotationProcessor extends AbstractFieldAnnotationProcessor<VariablesEditorFieldDefinition, VariablesEditorFieldProvider> {
 
     @Inject
-    public VariablesEditorAnnotationProcessor( VariablesEditorFieldProvider fieldProvider ) {
-        super( fieldProvider );
+    public VariablesEditorAnnotationProcessor(final VariablesEditorFieldProvider fieldProvider) {
+        super(fieldProvider);
     }
 
     @Override
-    protected void initField( VariablesEditorFieldDefinition field,
-                              Annotation annotation,
-                              FieldSetting fieldSetting,
-                              TransformerContext context ) {
-        field.setDefaultValue( ( String ) annotation.getParameters().get( "defaultValue" ) );
+    protected void initField(final VariablesEditorFieldDefinition field,
+                             final Annotation annotation,
+                             final FieldSetting fieldSetting,
+                             final TransformerContext context) {
+        field.setDefaultValue((String) annotation.getParameters().get("defaultValue"));
     }
 
     @Override

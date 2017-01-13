@@ -37,7 +37,7 @@ import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
 
-@Shape( factory = BasicShapesFactory.class, def = SequenceFlowConnectorDef.class )
+@Shape(factory = BasicShapesFactory.class, def = SequenceFlowConnectorDef.class)
 public abstract class BaseConnector implements BPMNDefinition {
 
     @Category
@@ -47,7 +47,7 @@ public abstract class BaseConnector implements BPMNDefinition {
     public static final transient String description = "A Connecting Object";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0 )
+    @FieldDef(label = FIELDDEF_GENERAL_SETTINGS, position = 0)
     @Valid
     protected BPMNGeneralSet general;
 
@@ -70,16 +70,16 @@ public abstract class BaseConnector implements BPMNDefinition {
 
     @Labels
     protected final Set<String> labels = new HashSet<String>() {{
-        add( "all" );
-        add( "ConnectingObjectsMorph" );
+        add("all");
+        add("ConnectingObjectsMorph");
     }};
 
     protected BaseConnector() {
     }
 
-    public BaseConnector( @MapsTo( "general" ) BPMNGeneralSet general,
-                          @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                          @MapsTo( "fontSet" ) FontSet fontSet
+    public BaseConnector(final @MapsTo("general") BPMNGeneralSet general,
+                         final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                         final @MapsTo("fontSet") FontSet fontSet
     ) {
         this.general = general;
         this.backgroundSet = backgroundSet;
@@ -102,7 +102,7 @@ public abstract class BaseConnector implements BPMNDefinition {
         return general;
     }
 
-    public void setGeneral( BPMNGeneralSet general ) {
+    public void setGeneral(final BPMNGeneralSet general) {
         this.general = general;
     }
 
@@ -110,7 +110,7 @@ public abstract class BaseConnector implements BPMNDefinition {
         return backgroundSet;
     }
 
-    public void setBackgroundSet( BackgroundSet backgroundSet ) {
+    public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
@@ -118,7 +118,7 @@ public abstract class BaseConnector implements BPMNDefinition {
         return fontSet;
     }
 
-    public void setFontSet( FontSet fontSet ) {
+    public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
     }
 }

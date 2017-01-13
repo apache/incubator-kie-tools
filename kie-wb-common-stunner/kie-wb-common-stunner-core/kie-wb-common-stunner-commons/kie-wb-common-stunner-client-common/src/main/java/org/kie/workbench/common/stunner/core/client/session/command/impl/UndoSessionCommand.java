@@ -38,47 +38,47 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<AbstractCli
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     protected UndoSessionCommand() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public UndoSessionCommand( final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager ) {
-        super( false );
+    public UndoSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager) {
+        super(false);
         this.sessionCommandManager = sessionCommandManager;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public <T> void execute( final Callback<T> callback ) {
-        checkNotNull( "callback",
-                      callback );
+    @SuppressWarnings("unchecked")
+    public <T> void execute(final Callback<T> callback) {
+        checkNotNull("callback",
+                     callback);
         final SessionCommandManager<AbstractCanvasHandler> scm = getSessionCommandManager();
-        if ( null != scm ) {
-            final CommandResult<CanvasViolation> result = getSessionCommandManager().undo( getSession().getCanvasHandler() );
+        if (null != scm) {
+            final CommandResult<CanvasViolation> result = getSessionCommandManager().undo(getSession().getCanvasHandler());
             checkState();
-            callback.onSuccess( ( T ) result );
+            callback.onSuccess((T) result);
         }
     }
 
-    void onCommandExecuted( final @Observes CanvasCommandExecutedEvent commandExecutedEvent ) {
-        checkNotNull( "commandExecutedEvent",
-                      commandExecutedEvent );
+    void onCommandExecuted(final @Observes CanvasCommandExecutedEvent commandExecutedEvent) {
+        checkNotNull("commandExecutedEvent",
+                     commandExecutedEvent);
         checkState();
     }
 
-    void onCommandUndoExecuted( final @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent ) {
-        checkNotNull( "commandUndoExecutedEvent",
-                      commandUndoExecutedEvent );
+    void onCommandUndoExecuted(final @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent) {
+        checkNotNull("commandUndoExecutedEvent",
+                     commandUndoExecutedEvent);
         checkState();
     }
 
     private void checkState() {
-        if ( null != getSession() ) {
+        if (null != getSession()) {
             final SessionCommandManager<AbstractCanvasHandler> cm = getSessionCommandManager();
             final boolean isHistoryEmpty = cm == null || cm.getRegistry().getCommandHistory().isEmpty();
-            setEnabled( !isHistoryEmpty );
+            setEnabled(!isHistoryEmpty);
         } else {
-            setEnabled( false );
+            setEnabled(false);
         }
         fire();
     }

@@ -38,13 +38,13 @@ public class ProjectDiagramEditorView
     private AbstractProjectDiagramEditor presenter;
 
     @Override
-    public void init( final AbstractProjectDiagramEditor presenter ) {
+    public void init(final AbstractProjectDiagramEditor presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setWidget( final IsWidget widget ) {
+    public void setWidget(final IsWidget widget) {
         editorPanel.clear();
-        editorPanel.add( widget );
+        editorPanel.add(widget);
     }
 }

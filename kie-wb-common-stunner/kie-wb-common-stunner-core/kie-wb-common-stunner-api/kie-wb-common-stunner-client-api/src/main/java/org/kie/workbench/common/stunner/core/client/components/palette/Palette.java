@@ -27,47 +27,47 @@ public interface Palette<I extends HasPaletteItems> {
 
     interface ItemHoverCallback {
 
-        boolean onItemHover( final String id,
-                             final double mouseX,
-                             final double mouseY,
-                             final double itemX,
-                             final double itemY );
+        boolean onItemHover(final String id,
+                            final double mouseX,
+                            final double mouseY,
+                            final double itemX,
+                            final double itemY);
     }
 
     interface ItemOutCallback {
 
-        boolean onItemOut( final String id );
+        boolean onItemOut(final String id);
     }
 
     interface ItemMouseDownCallback {
 
-        boolean onItemMouseDown( final String id,
-                                 final double mouseX,
-                                 final double mouseY,
-                                 final double itemX,
-                                 final double itemY );
+        boolean onItemMouseDown(final String id,
+                                final double mouseX,
+                                final double mouseY,
+                                final double itemX,
+                                final double itemY);
     }
 
     interface ItemClickCallback {
 
-        boolean onItemClick( final String id,
-                             final double mouseX,
-                             final double mouseY,
-                             final double itemX,
-                             final double itemY );
+        boolean onItemClick(final String id,
+                            final double mouseX,
+                            final double mouseY,
+                            final double itemX,
+                            final double itemY);
     }
 
-    Palette<I> onItemHover( final ItemHoverCallback callback );
+    Palette<I> onItemHover(final ItemHoverCallback callback);
 
-    Palette<I> onItemOut( final ItemOutCallback callback );
+    Palette<I> onItemOut(final ItemOutCallback callback);
 
-    Palette<I> onItemMouseDown( final ItemMouseDownCallback callback );
+    Palette<I> onItemMouseDown(final ItemMouseDownCallback callback);
 
-    Palette<I> onItemClick( final ItemClickCallback callback );
+    Palette<I> onItemClick(final ItemClickCallback callback);
 
-    Palette<I> onClose( final CloseCallback callback );
+    Palette<I> onClose(final CloseCallback callback);
 
-    Palette<I> bind( final I paletteDefinition );
+    Palette<I> bind(final I paletteDefinition);
 
     I getDefinition();
 

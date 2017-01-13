@@ -29,25 +29,25 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 public class ValidateSessionCommand extends AbstractClientSessionCommand<AbstractClientFullSession> {
 
     public ValidateSessionCommand() {
-        super( true );
+        super(true);
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public <T> void execute( final Callback<T> callback ) {
-        checkNotNull( "callback",
-                      callback );
-        getSession().getValidationControl().validate( new CanvasValidatorCallback() {
+    @SuppressWarnings("unchecked")
+    public <T> void execute(final Callback<T> callback) {
+        checkNotNull("callback",
+                     callback);
+        getSession().getValidationControl().validate(new CanvasValidatorCallback() {
 
             @Override
             public void onSuccess() {
-                callback.onSuccess( null );
+                callback.onSuccess(null);
             }
 
             @Override
-            public void onFail( final Iterable<CanvasValidationViolation> violations ) {
-                callback.onSuccess( ( T ) violations );
+            public void onFail(final Iterable<CanvasValidationViolation> violations) {
+                callback.onSuccess((T) violations);
             }
-        } );
+        });
     }
 }

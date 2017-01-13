@@ -26,9 +26,9 @@ public class ParsingContext implements ContextualParser.Context {
     private final GraphUtils graphUtils;
     private final OryxManager oryxManager;
 
-    public ParsingContext( DefinitionManager definitionManager,
-                           GraphUtils graphUtils,
-                           OryxManager oryxManager ) {
+    public ParsingContext(final DefinitionManager definitionManager,
+                          final GraphUtils graphUtils,
+                          final OryxManager oryxManager) {
         this.definitionManager = definitionManager;
         this.graphUtils = graphUtils;
         this.oryxManager = oryxManager;

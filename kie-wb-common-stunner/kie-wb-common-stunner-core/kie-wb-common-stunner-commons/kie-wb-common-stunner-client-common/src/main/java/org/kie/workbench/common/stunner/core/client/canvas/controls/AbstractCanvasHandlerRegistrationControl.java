@@ -33,14 +33,14 @@ public abstract class AbstractCanvasHandlerRegistrationControl extends AbstractC
 
     private final Map<String, ViewHandler<?>> handlers = new HashMap<>();
 
-    public void update( final Element element ) {
+    public void update(final Element element) {
         // Do nothing by default.
     }
 
-    protected void registerHandler( final String uuid,
-                                    final ViewHandler<?> handler ) {
-        handlers.put( uuid,
-                      handler );
+    protected void registerHandler(final String uuid,
+                                   final ViewHandler<?> handler) {
+        handlers.put(uuid,
+                     handler);
     }
 
     @Override
@@ -49,35 +49,35 @@ public abstract class AbstractCanvasHandlerRegistrationControl extends AbstractC
     }
 
     public void deregisterAll() {
-        new HashSet<>( handlers.keySet() )
+        new HashSet<>(handlers.keySet())
                 .stream()
-                .forEach( this::deregister );
+                .forEach(this::deregister);
         handlers.clear();
     }
 
     @Override
-    public void deregister( final Element element ) {
-        deregister( element.getUUID() );
+    public void deregister(final Element element) {
+        deregister(element.getUUID());
     }
 
-    protected void deregister( final String uuid ) {
-        final Shape shape = canvasHandler.getCanvas().getShape( uuid );
-        final ViewHandler<?> handler = handlers.get( uuid );
-        doDeregisterHandler( shape,
-                             handler );
+    protected void deregister(final String uuid) {
+        final Shape shape = canvasHandler.getCanvas().getShape(uuid);
+        final ViewHandler<?> handler = handlers.get(uuid);
+        doDeregisterHandler(shape,
+                            handler);
     }
 
-    private void doDeregisterHandler( final Shape shape,
-                                      final ViewHandler<?> handler ) {
-        if ( null != shape && null != handler ) {
-            final HasEventHandlers hasEventHandlers = ( HasEventHandlers ) shape.getShapeView();
-            hasEventHandlers.removeHandler( handler );
-            handlers.remove( shape.getUUID() );
+    private void doDeregisterHandler(final Shape shape,
+                                     final ViewHandler<?> handler) {
+        if (null != shape && null != handler) {
+            final HasEventHandlers hasEventHandlers = (HasEventHandlers) shape.getShapeView();
+            hasEventHandlers.removeHandler(handler);
+            handlers.remove(shape.getUUID());
         }
     }
 
-    protected boolean checkEventContext( final AbstractCanvasHandlerEvent canvasHandlerEvent ) {
+    protected boolean checkEventContext(final AbstractCanvasHandlerEvent canvasHandlerEvent) {
         final CanvasHandler _canvasHandler = canvasHandlerEvent.getCanvasHandler();
-        return canvasHandler != null && canvasHandler.equals( _canvasHandler );
+        return canvasHandler != null && canvasHandler.equals(_canvasHandler);
     }
 }

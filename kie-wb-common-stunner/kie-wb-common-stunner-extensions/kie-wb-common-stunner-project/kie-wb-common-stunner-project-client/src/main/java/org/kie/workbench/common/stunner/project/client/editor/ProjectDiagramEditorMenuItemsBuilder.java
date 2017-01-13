@@ -41,50 +41,50 @@ public class ProjectDiagramEditorMenuItemsBuilder {
     private final MenuDevCommandsBuilder menuDevCommandsBuilder;
 
     protected ProjectDiagramEditorMenuItemsBuilder() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public ProjectDiagramEditorMenuItemsBuilder( final MenuDevCommandsBuilder menuDevCommandsBuilder ) {
+    public ProjectDiagramEditorMenuItemsBuilder(final MenuDevCommandsBuilder menuDevCommandsBuilder) {
         this.menuDevCommandsBuilder = menuDevCommandsBuilder;
     }
 
-    public MenuItem newClearSelectionItem( final Command command ) {
-        return buildItem( buildClearSelectionItem( command ) );
+    public MenuItem newClearSelectionItem(final Command command) {
+        return buildItem(buildClearSelectionItem(command));
     }
 
-    private IsWidget buildClearSelectionItem( final Command command ) {
+    private IsWidget buildClearSelectionItem(final Command command) {
         return new Button() {{
-            setSize( ButtonSize.SMALL );
-            setIcon( IconType.BAN );
-            setTitle( "Clear selection" );
-            addClickHandler( clickEvent -> command.execute() );
+            setSize(ButtonSize.SMALL);
+            setIcon(IconType.BAN);
+            setTitle("Clear selection");
+            addClickHandler(clickEvent -> command.execute());
         }};
     }
 
-    public MenuItem newVisitGraphItem( final Command command ) {
-        return buildItem( buildVisitGraphItem( command ) );
+    public MenuItem newVisitGraphItem(final Command command) {
+        return buildItem(buildVisitGraphItem(command));
     }
 
-    private IsWidget buildVisitGraphItem( final Command command ) {
+    private IsWidget buildVisitGraphItem(final Command command) {
         return new Button() {{
-            setSize( ButtonSize.SMALL );
-            setIcon( IconType.AUTOMOBILE );
-            setTitle( "Visit graph" );
-            addClickHandler( clickEvent -> command.execute() );
+            setSize(ButtonSize.SMALL);
+            setIcon(IconType.AUTOMOBILE);
+            setTitle("Visit graph");
+            addClickHandler(clickEvent -> command.execute());
         }};
     }
 
-    public MenuItem newSwitchGridItem( final Command command ) {
-        return buildItem( buildSwitchGridItem( command ) );
+    public MenuItem newSwitchGridItem(final Command command) {
+        return buildItem(buildSwitchGridItem(command));
     }
 
-    private IsWidget buildSwitchGridItem( final Command command ) {
+    private IsWidget buildSwitchGridItem(final Command command) {
         return new Button() {{
-            setSize( ButtonSize.SMALL );
-            setIcon( IconType.TH );
-            setTitle( "Switch grid" );
-            addClickHandler( clickEvent -> command.execute() );
+            setSize(ButtonSize.SMALL);
+            setIcon(IconType.TH);
+            setTitle("Switch grid");
+            addClickHandler(clickEvent -> command.execute());
         }};
     }
 
@@ -93,84 +93,84 @@ public class ProjectDiagramEditorMenuItemsBuilder {
      * Added alert message - the operation cannot be reverted.
      * See <a>org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand</a>
      */
-    public MenuItem newClearItem( final Command command ) {
-        return buildItem( buildClearItem( command ) );
+    public MenuItem newClearItem(final Command command) {
+        return buildItem(buildClearItem(command));
     }
 
-    private IsWidget buildClearItem( final Command command ) {
+    private IsWidget buildClearItem(final Command command) {
         return new Button() {{
-            setSize( ButtonSize.SMALL );
-            setIcon( IconType.ERASER );
-            setTitle( "Clear" );
-            addClickHandler( clickEvent ->
-                                     ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm( command,
-                                                                                                   getConfirmMessage() + " This operation cannot be reverted." ) );
+            setSize(ButtonSize.SMALL);
+            setIcon(IconType.ERASER);
+            setTitle("Clear");
+            addClickHandler(clickEvent ->
+                                    ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm(command,
+                                                                                                 getConfirmMessage() + " This operation cannot be reverted."));
         }};
     }
 
-    public MenuItem newDeleteSelectionItem( final Command command ) {
-        return buildItem( buildDeleteSelectionItem( command ) );
+    public MenuItem newDeleteSelectionItem(final Command command) {
+        return buildItem(buildDeleteSelectionItem(command));
     }
 
-    private IsWidget buildDeleteSelectionItem( final Command command ) {
+    private IsWidget buildDeleteSelectionItem(final Command command) {
         return new Button() {{
-            setSize( ButtonSize.SMALL );
-            setIcon( IconType.TRASH_O );
-            setTitle( "Delete selected" );
-            addClickHandler( clickEvent -> ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm( command ) );
+            setSize(ButtonSize.SMALL);
+            setIcon(IconType.TRASH_O);
+            setTitle("Delete selected");
+            addClickHandler(clickEvent -> ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm(command));
         }};
     }
 
-    public MenuItem newUndoItem( final Command command ) {
-        return buildItem( buildUndoItem( command ) );
+    public MenuItem newUndoItem(final Command command) {
+        return buildItem(buildUndoItem(command));
     }
 
-    private IsWidget buildUndoItem( final Command command ) {
+    private IsWidget buildUndoItem(final Command command) {
         return new Button() {{
-            setSize( ButtonSize.SMALL );
-            setIcon( IconType.UNDO );
-            setTitle( "Undo" );
-            addClickHandler( clickEvent -> command.execute() );
+            setSize(ButtonSize.SMALL);
+            setIcon(IconType.UNDO);
+            setTitle("Undo");
+            addClickHandler(clickEvent -> command.execute());
         }};
     }
 
-    public MenuItem newRedoItem( final Command command ) {
-        return buildItem( buildRedoItem( command ) );
+    public MenuItem newRedoItem(final Command command) {
+        return buildItem(buildRedoItem(command));
     }
 
-    private IsWidget buildRedoItem( final Command command ) {
+    private IsWidget buildRedoItem(final Command command) {
         return new Button() {{
-            setSize( ButtonSize.SMALL );
-            setIcon( IconType.UNDO );
-            setIconRotate( IconRotate.ROTATE_180 );
-            setTitle( "Redo" );
-            addClickHandler( clickEvent -> command.execute() );
+            setSize(ButtonSize.SMALL);
+            setIcon(IconType.UNDO);
+            setIconRotate(IconRotate.ROTATE_180);
+            setTitle("Redo");
+            addClickHandler(clickEvent -> command.execute());
         }};
     }
 
-    public MenuItem newRefreshItem( final Command command ) {
-        return buildItem( buildRefreshItem( command ) );
+    public MenuItem newRefreshItem(final Command command) {
+        return buildItem(buildRefreshItem(command));
     }
 
-    private IsWidget buildRefreshItem( final Command command ) {
+    private IsWidget buildRefreshItem(final Command command) {
         return new Button() {{
-            setSize( ButtonSize.SMALL );
-            setIcon( IconType.REFRESH );
-            setTitle( "Refresh" );
-            addClickHandler( clickEvent -> ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm( command ) );
+            setSize(ButtonSize.SMALL);
+            setIcon(IconType.REFRESH);
+            setTitle("Refresh");
+            addClickHandler(clickEvent -> ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm(command));
         }};
     }
 
-    public MenuItem newValidateItem( final Command command ) {
-        return buildItem( buildValidateItem( command ) );
+    public MenuItem newValidateItem(final Command command) {
+        return buildItem(buildValidateItem(command));
     }
 
-    private IsWidget buildValidateItem( final Command command ) {
+    private IsWidget buildValidateItem(final Command command) {
         return new Button() {{
-            setSize( ButtonSize.SMALL );
-            setIcon( IconType.CHECK );
-            setTitle( "Validate" );
-            addClickHandler( clickEvent -> command.execute() );
+            setSize(ButtonSize.SMALL);
+            setIcon(IconType.CHECK);
+            setTitle("Validate");
+            addClickHandler(clickEvent -> command.execute());
         }};
     }
 
@@ -182,59 +182,58 @@ public class ProjectDiagramEditorMenuItemsBuilder {
         return menuDevCommandsBuilder.build();
     }
 
-    private IsWidget buildDevItems( final Command switchLogLevelCommand,
-                                    final Command logGraphCommand,
-                                    final Command logCommandHistoryCommand,
-                                    final Command logSessionCommand ) {
-        final AnchorListItem switchLogLevelItem = new AnchorListItem( "Switch log level" ) {{
-            setIcon( IconType.REFRESH );
-            addClickHandler( event -> switchLogLevelCommand.execute() );
+    private IsWidget buildDevItems(final Command switchLogLevelCommand,
+                                   final Command logGraphCommand,
+                                   final Command logCommandHistoryCommand,
+                                   final Command logSessionCommand) {
+        final AnchorListItem switchLogLevelItem = new AnchorListItem("Switch log level") {{
+            setIcon(IconType.REFRESH);
+            addClickHandler(event -> switchLogLevelCommand.execute());
         }};
-        final AnchorListItem logSessionItem = new AnchorListItem( "Log session" ) {{
-            setIcon( IconType.PRINT );
-            addClickHandler( event -> logSessionCommand.execute() );
+        final AnchorListItem logSessionItem = new AnchorListItem("Log session") {{
+            setIcon(IconType.PRINT);
+            addClickHandler(event -> logSessionCommand.execute());
         }};
-        final AnchorListItem logGraphItem = new AnchorListItem( "Log Graph" ) {{
-            setIcon( IconType.PRINT );
-            addClickHandler( event -> logGraphCommand.execute() );
+        final AnchorListItem logGraphItem = new AnchorListItem("Log Graph") {{
+            setIcon(IconType.PRINT);
+            addClickHandler(event -> logGraphCommand.execute());
         }};
-        final AnchorListItem logCommandHistoryItem = new AnchorListItem( "Log Command History" ) {{
-            setIcon( IconType.PRINT );
-            addClickHandler( event -> logCommandHistoryCommand.execute() );
+        final AnchorListItem logCommandHistoryItem = new AnchorListItem("Log Command History") {{
+            setIcon(IconType.PRINT);
+            addClickHandler(event -> logCommandHistoryCommand.execute());
         }};
         return new ButtonGroup() {{
-            add( new Button() {{
-                setToggleCaret( false );
-                setDataToggle( Toggle.DROPDOWN );
-                setIcon( IconType.COG );
-                setSize( ButtonSize.SMALL );
-                setTitle( "Development" );
-            }} );
-            add( new DropDownMenu() {{
-                addStyleName( "pull-right" );
-                add( switchLogLevelItem );
-                add( logSessionItem );
-                add( logGraphItem );
-                add( logCommandHistoryItem );
-            }} );
+            add(new Button() {{
+                setToggleCaret(false);
+                setDataToggle(Toggle.DROPDOWN);
+                setIcon(IconType.COG);
+                setSize(ButtonSize.SMALL);
+                setTitle("Development");
+            }});
+            add(new DropDownMenu() {{
+                addStyleName("pull-right");
+                add(switchLogLevelItem);
+                add(logSessionItem);
+                add(logGraphItem);
+                add(logCommandHistoryItem);
+            }});
         }};
     }
 
-    private void executeWithConfirm( final Command command ) {
-        this.executeWithConfirm( command,
-                                 getConfirmMessage() );
+    private void executeWithConfirm(final Command command) {
+        this.executeWithConfirm(command,
+                                getConfirmMessage());
     }
 
-    private void executeWithConfirm( final Command command,
-                                     final String message ) {
+    private void executeWithConfirm(final Command command,
+                                    final String message) {
         final Command yesCommand = command::execute;
-        final Command noCommand = () -> {
-        };
-        final YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup( getConfirmTitle(),
-                                                                             message,
-                                                                             yesCommand,
-                                                                             noCommand,
-                                                                             noCommand );
+        final Command noCommand = () -> {/*Do nothing*/};
+        final YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup(getConfirmTitle(),
+                                                                            message,
+                                                                            yesCommand,
+                                                                            noCommand,
+                                                                            noCommand);
         popup.show();
     }
 
@@ -246,10 +245,10 @@ public class ProjectDiagramEditorMenuItemsBuilder {
         return "Are you sure?";
     }
 
-    private MenuItem buildItem( final IsWidget widget ) {
+    private MenuItem buildItem(final IsWidget widget) {
         return new MenuFactory.CustomMenuBuilder() {
             @Override
-            public void push( MenuFactory.CustomMenuBuilder element ) {
+            public void push(MenuFactory.CustomMenuBuilder element) {
             }
 
             @Override

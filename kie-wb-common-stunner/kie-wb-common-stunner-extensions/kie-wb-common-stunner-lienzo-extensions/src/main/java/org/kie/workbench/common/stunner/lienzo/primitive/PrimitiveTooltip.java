@@ -56,61 +56,61 @@ public class PrimitiveTooltip extends PrimitivePopup {
     }
 
     public PrimitiveTooltip() {
-        setzIndex( 100 );
+        setzIndex(100);
     }
 
-    public void setHideTimeout( final int hideTimeout ) {
+    public void setHideTimeout(final int hideTimeout) {
         this.hideTimeout = hideTimeout;
     }
 
-    public PrimitiveTooltip show( final IPrimitive<?> _glyph,
-                                  final String text,
-                                  final double width,
-                                  final double height,
-                                  final double x,
-                                  final double y,
-                                  final Direction direction ) {
+    public PrimitiveTooltip show(final IPrimitive<?> _glyph,
+                                 final String text,
+                                 final double width,
+                                 final double height,
+                                 final double x,
+                                 final double y,
+                                 final Direction direction) {
         clearTimers();
-        final IPrimitive<?> glyph = null != _glyph ? ( IPrimitive<?> ) _glyph.copy() : null;
-        final Text descText = new Text( text )
-                .setFontSize( TEXT_SIZE )
-                .setFontStyle( "" )
-                .setFontFamily( TEXT_FAMILY )
-                .setStrokeWidth( TEXT_WIDTH )
-                .setStrokeColor( TEXT_COLOR )
-                .setStrokeAlpha( 1 );
+        final IPrimitive<?> glyph = null != _glyph ? (IPrimitive<?>) _glyph.copy() : null;
+        final Text descText = new Text(text)
+                .setFontSize(TEXT_SIZE)
+                .setFontStyle("")
+                .setFontFamily(TEXT_FAMILY)
+                .setStrokeWidth(TEXT_WIDTH)
+                .setStrokeColor(TEXT_COLOR)
+                .setStrokeAlpha(1);
         final BoundingBox descTextBB = descText.getBoundingBox();
         final double descTextBbW = descTextBB.getWidth();
         final double descTextBbH = descTextBB.getHeight();
-        final double dw = ( descTextBbW > width ? ( descTextBbW + PADDING ) : ( width + PADDING ) );
+        final double dw = (descTextBbW > width ? (descTextBbW + PADDING) : (width + PADDING));
         final double dh = height + descTextBbH + PADDING;
-        final IPrimitive<?> decorator = buildDecorator( dw,
-                                                        dh,
-                                                        direction );
-        final double w = dw + ( isWest( direction ) ? TRIANGLE_SIZE * 2 : 0 );
-        final double h = dh + ( isNorth( direction ) ? TRIANGLE_SIZE * 2 : 0 );
+        final IPrimitive<?> decorator = buildDecorator(dw,
+                                                       dh,
+                                                       direction);
+        final double w = dw + (isWest(direction) ? TRIANGLE_SIZE * 2 : 0);
+        final double h = dh + (isNorth(direction) ? TRIANGLE_SIZE * 2 : 0);
         ;
         final Group g = new Group();
-        g.add( decorator );
-        if ( null != glyph ) {
-            g.add( glyph );
+        g.add(decorator);
+        if (null != glyph) {
+            g.add(glyph);
         }
-        g.add( descText );
-        super.show( g,
-                    w,
-                    h,
-                    x,
-                    y );
-        double _x = ( w / 2 ) + ( isWest( direction ) ? PADDING / 2 : 0 );
-        double _y = PADDING / 2 + ( isNorth( direction ) ? TRIANGLE_SIZE : 0 );
-        if ( null != glyph ) {
-            glyph.setX( _x - ( width / 2 ) );
-            glyph.setY( _y );
+        g.add(descText);
+        super.show(g,
+                   w,
+                   h,
+                   x,
+                   y);
+        double _x = (w / 2) + (isWest(direction) ? PADDING / 2 : 0);
+        double _y = PADDING / 2 + (isNorth(direction) ? TRIANGLE_SIZE : 0);
+        if (null != glyph) {
+            glyph.setX(_x - (width / 2));
+            glyph.setY(_y);
             _x += width;
             _y += height;
         }
-        descText.setX( _x - ( descTextBbW / 2 ) );
-        descText.setY( _y + descTextBbH );
+        descText.setX(_x - (descTextBbW / 2));
+        descText.setY(_y + descTextBbH);
         // Ensure text is on top.
         descText.moveToTop();
         canvasLayer.draw();
@@ -130,61 +130,61 @@ public class PrimitiveTooltip extends PrimitivePopup {
         return super.remove();
     }
 
-    private IPrimitive<?> buildDecorator( final double width,
-                                          final double height,
-                                          final Direction direction ) {
-        final boolean isWest = isWest( direction );
-        final boolean isNorth = isNorth( direction );
+    private IPrimitive<?> buildDecorator(final double width,
+                                         final double height,
+                                         final Direction direction) {
+        final boolean isWest = isWest(direction);
+        final boolean isNorth = isNorth(direction);
         final double h2 = height / 2;
         final double w2 = width / 2;
         final double s2 = TRIANGLE_SIZE / 2;
-        final Point2D a = isWest ? new Point2D( 0,
-                                                h2 ) : new Point2D( 10,
-                                                                    0 );
-        final Point2D b = isWest ? new Point2D( TRIANGLE_SIZE,
-                                                h2 + s2 ) : new Point2D( 10 + s2,
-                                                                         TRIANGLE_SIZE );
-        final Point2D c = isWest ? new Point2D( TRIANGLE_SIZE,
-                                                h2 - s2 ) : new Point2D( 10 - s2,
-                                                                         TRIANGLE_SIZE );
-        final Triangle triangle = new Triangle( a,
-                                                b,
-                                                c )
-                .setFillColor( BG_COLOR )
-                .setFillAlpha( ALPHA )
-                .setStrokeWidth( 0 );
+        final Point2D a = isWest ? new Point2D(0,
+                                               h2) : new Point2D(10,
+                                                                 0);
+        final Point2D b = isWest ? new Point2D(TRIANGLE_SIZE,
+                                               h2 + s2) : new Point2D(10 + s2,
+                                                                      TRIANGLE_SIZE);
+        final Point2D c = isWest ? new Point2D(TRIANGLE_SIZE,
+                                               h2 - s2) : new Point2D(10 - s2,
+                                                                      TRIANGLE_SIZE);
+        final Triangle triangle = new Triangle(a,
+                                               b,
+                                               c)
+                .setFillColor(BG_COLOR)
+                .setFillAlpha(ALPHA)
+                .setStrokeWidth(0);
         final Rectangle rectangle =
                 new Rectangle(
-                        width + ( isWest ? TRIANGLE_SIZE : 0 ),
-                        height + ( isNorth ? TRIANGLE_SIZE : 0 ) )
-                        .setX( isWest ? TRIANGLE_SIZE : 0 )
-                        .setY( isWest ? 0 : TRIANGLE_SIZE )
-                        .setCornerRadius( 10 )
-                        .setFillColor( BG_COLOR )
-                        .setFillAlpha( ALPHA )
-                        .setStrokeAlpha( 0 )
-                        .setCornerRadius( 5 );
+                        width + (isWest ? TRIANGLE_SIZE : 0),
+                        height + (isNorth ? TRIANGLE_SIZE : 0))
+                        .setX(isWest ? TRIANGLE_SIZE : 0)
+                        .setY(isWest ? 0 : TRIANGLE_SIZE)
+                        .setCornerRadius(10)
+                        .setFillColor(BG_COLOR)
+                        .setFillAlpha(ALPHA)
+                        .setStrokeAlpha(0)
+                        .setCornerRadius(5);
         final Group decorator = new Group();
-        decorator.add( rectangle );
-        decorator.add( triangle );
+        decorator.add(rectangle);
+        decorator.add(triangle);
         return decorator;
     }
 
-    private boolean isWest( final Direction direction ) {
-        return Direction.WEST.equals( direction );
+    private boolean isWest(final Direction direction) {
+        return Direction.WEST.equals(direction);
     }
 
-    private boolean isNorth( final Direction direction ) {
-        return Direction.NORTH.equals( direction );
+    private boolean isNorth(final Direction direction) {
+        return Direction.NORTH.equals(direction);
     }
 
     private void startTimers() {
-        this.hideTimer.schedule( hideTimeout );
+        this.hideTimer.schedule(hideTimeout);
     }
 
     private void clearTimers() {
-        if ( null != this.hideTimer ) {
-            if ( this.hideTimer.isRunning() ) {
+        if (null != this.hideTimer) {
+            if (this.hideTimer.isRunning()) {
                 this.hideTimer.cancel();
             }
         }

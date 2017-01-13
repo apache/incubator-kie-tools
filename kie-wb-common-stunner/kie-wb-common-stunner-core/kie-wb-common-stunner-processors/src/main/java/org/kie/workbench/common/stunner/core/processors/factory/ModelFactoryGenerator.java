@@ -31,27 +31,27 @@ public class ModelFactoryGenerator extends AbstractBindableAdapterGenerator {
         return "ModelFactory.ftl";
     }
 
-    public StringBuffer generate( final String packageName,
-                                  final String className,
-                                  final Map<String, String> buildersMap,
-                                  final Messager messager ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final String className,
+                                 final Map<String, String> buildersMap,
+                                 final Messager messager) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "packageName",
-                  packageName );
-        root.put( "className",
-                  className );
-        root.put( "parentClassName",
-                  AbstractTypeDefinitionFactory.class.getName() );
-        root.put( "generatedByClassName",
-                  ModelFactoryGenerator.class.getName() );
-        addFields( "builders",
-                   root,
-                   buildersMap );
+        root.put("packageName",
+                 packageName);
+        root.put("className",
+                 className);
+        root.put("parentClassName",
+                 AbstractTypeDefinitionFactory.class.getName());
+        root.put("generatedByClassName",
+                 ModelFactoryGenerator.class.getName());
+        addFields("builders",
+                  root,
+                  buildersMap);
 
         //Generate code
-        return writeTemplate( packageName,
-                              className,
-                              root,
-                              messager );
+        return writeTemplate(packageName,
+                             className,
+                             root,
+                             messager);
     }
 }

@@ -22,21 +22,21 @@ public final class MouseClickEvent extends AbstractMouseEvent {
     private boolean isButtonMiddle;
     private boolean isButtonRight;
 
-    public MouseClickEvent( final double mouseX,
-                            final double mouseY,
-                            final double clientX,
-                            final double clientY ) {
-        super( mouseX,
-               mouseY,
-               clientX,
-               clientY );
+    public MouseClickEvent(final double mouseX,
+                           final double mouseY,
+                           final double clientX,
+                           final double clientY) {
+        super(mouseX,
+              mouseY,
+              clientX,
+              clientY);
     }
 
     public boolean isButtonLeft() {
         return isButtonLeft;
     }
 
-    public void setButtonLeft( final boolean buttonLeft ) {
+    public void setButtonLeft(final boolean buttonLeft) {
         isButtonLeft = buttonLeft;
     }
 
@@ -44,7 +44,7 @@ public final class MouseClickEvent extends AbstractMouseEvent {
         return isButtonMiddle;
     }
 
-    public void setButtonMiddle( final boolean buttonMiddle ) {
+    public void setButtonMiddle(final boolean buttonMiddle) {
         isButtonMiddle = buttonMiddle;
     }
 
@@ -52,7 +52,7 @@ public final class MouseClickEvent extends AbstractMouseEvent {
         return isButtonRight;
     }
 
-    public void setButtonRight( final boolean buttonRight ) {
+    public void setButtonRight(final boolean buttonRight) {
         isButtonRight = buttonRight;
     }
 }

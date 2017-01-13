@@ -23,8 +23,8 @@ import org.kie.workbench.common.stunner.core.registry.impl.AbstractRegistryFacto
 
 public abstract class AbstractBackendRegistryFactory extends AbstractRegistryFactory implements BackendRegistryFactory {
 
-    public AbstractBackendRegistryFactory( final AdapterManager adapterManager ) {
-        super( adapterManager );
+    public AbstractBackendRegistryFactory(final AdapterManager adapterManager) {
+        super(adapterManager);
     }
 
     @Override

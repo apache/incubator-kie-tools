@@ -50,7 +50,7 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
         implements ProjectDiagramService {
 
     private static final Logger LOG =
-            LoggerFactory.getLogger( ProjectDiagramServiceImpl.class.getName() );
+            LoggerFactory.getLogger(ProjectDiagramServiceImpl.class.getName());
 
     private final User identity;
     private final SessionInfo sessionInfo;
@@ -60,29 +60,29 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     private final ProjectDiagramServiceController controller;
 
     protected ProjectDiagramServiceImpl() {
-        this( null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public ProjectDiagramServiceImpl( DefinitionManager definitionManager,
-                                      FactoryManager factoryManager,
-                                      Instance<DefinitionSetService> definitionSetServiceInstances,
-                                      BackendRegistryFactory registryFactory,
-                                      @Named( "ioStrategy" ) IOService ioService,
-                                      User identity,
-                                      SessionInfo sessionInfo,
-                                      Event<ResourceOpenedEvent> resourceOpenedEvent,
-                                      KieProjectService projectService,
-                                      CommentedOptionFactory commentedOptionFactory ) {
+    public ProjectDiagramServiceImpl(final DefinitionManager definitionManager,
+                                     final FactoryManager factoryManager,
+                                     final Instance<DefinitionSetService> definitionSetServiceInstances,
+                                     final BackendRegistryFactory registryFactory,
+                                     final @Named("ioStrategy") IOService ioService,
+                                     final User identity,
+                                     final SessionInfo sessionInfo,
+                                     final Event<ResourceOpenedEvent> resourceOpenedEvent,
+                                     final KieProjectService projectService,
+                                     final CommentedOptionFactory commentedOptionFactory) {
         this.ioService = ioService;
         this.identity = identity;
         this.sessionInfo = sessionInfo;
@@ -90,11 +90,11 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
         this.projectService = projectService;
         this.commentedOptionFactory = commentedOptionFactory;
         this.controller =
-                new ProjectDiagramServiceController( definitionManager,
-                                                     factoryManager,
-                                                     definitionSetServiceInstances,
-                                                     ioService,
-                                                     registryFactory );
+                new ProjectDiagramServiceController(definitionManager,
+                                                    factoryManager,
+                                                    definitionSetServiceInstances,
+                                                    ioService,
+                                                    registryFactory);
     }
 
     @PostConstruct
@@ -104,78 +104,76 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     }
 
     @Override
-    public ProjectDiagram getDiagramByPath( Path path ) {
-        return controller.getDiagramByPath( path );
+    public ProjectDiagram getDiagramByPath(final Path path) {
+        return controller.getDiagramByPath(path);
     }
 
     @Override
-    public boolean accepts( Path path ) {
-        return controller.accepts( path );
+    public boolean accepts(final Path path) {
+        return controller.accepts(path);
     }
 
-    public Path create( Path path,
-                        String name,
-                        String defSetId,
-                        String projName,
-                        String projPkg ) {
-        return controller.create( path,
-                                  name,
-                                  defSetId,
-                                  projName,
-                                  projPkg );
-    }
-
-    @Override
-    public Path create( Path path,
-                        String name,
-                        String defSetId ) {
-        return controller.create( path,
-                                  name,
-                                  defSetId );
+    public Path create(final Path path,
+                       final String name,
+                       final String defSetId,
+                       final String projName,
+                       final String projPkg) {
+        return controller.create(path,
+                                 name,
+                                 defSetId,
+                                 projName,
+                                 projPkg);
     }
 
     @Override
-    protected ProjectDiagram constructContent( Path path,
-                                               Overview overview ) {
-        ProjectDiagram diagram = getDiagramByPath( path );
-        if ( null != diagram ) {
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
+    public Path create(final Path path,
+                       final String name,
+                       final String defSetId) {
+        return controller.create(path,
+                                 name,
+                                 defSetId);
+    }
+
+    @Override
+    protected ProjectDiagram constructContent(final Path path,
+                                              final Overview overview) {
+        ProjectDiagram diagram = getDiagramByPath(path);
+        if (null != diagram) {
+            resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                             sessionInfo));
             return diagram;
         }
-        LOG.error( "Failed to construct diagram content for path [" + path + "]." );
+        LOG.error("Failed to construct diagram content for path [" + path + "].");
         return null;
     }
 
     @Override
-    public Path save( Path path,
-                      ProjectDiagram content,
-                      Metadata metadata,
-                      String comment ) {
-        LOG.warn( "Saving diagram with UUID [" + content.getName() + "] into path [" + path + "]." );
-        return controller
-                .save(
-                        path,
-                        content,
-                        metadataService.setUpAttributes( path,
-                                                         metadata ),
-                        commentedOptionFactory.makeCommentedOption( comment ) );
+    public Path save(final Path path,
+                     final ProjectDiagram content,
+                     final Metadata metadata,
+                     final String comment) {
+        LOG.warn("Saving diagram with UUID [" + content.getName() + "] into path [" + path + "].");
+        return controller.save(path,
+                               content,
+                               metadataService.setUpAttributes(path,
+                                                               metadata),
+                               commentedOptionFactory.makeCommentedOption(comment));
     }
 
     @Override
-    public ProjectMetadata saveOrUpdate( ProjectDiagram diagram ) {
-        return controller.saveOrUpdate( diagram );
+    public ProjectMetadata saveOrUpdate(final ProjectDiagram diagram) {
+        return controller.saveOrUpdate(diagram);
     }
 
     @Override
-    public boolean delete( ProjectDiagram diagram ) {
-        return controller.delete( diagram );
+    public boolean delete(final ProjectDiagram diagram) {
+        return controller.delete(diagram);
     }
 
     @Override
-    public void delete( Path path,
-                        String comment ) {
-        controller.delete( path,
-                           comment );
+    public void delete(final Path path,
+                       final String comment) {
+        controller.delete(path,
+                          comment);
     }
 }

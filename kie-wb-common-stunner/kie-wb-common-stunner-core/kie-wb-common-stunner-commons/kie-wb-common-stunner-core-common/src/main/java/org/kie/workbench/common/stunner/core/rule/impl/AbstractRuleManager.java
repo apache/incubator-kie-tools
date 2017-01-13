@@ -27,9 +27,9 @@ public abstract class AbstractRuleManager<R extends Rule> implements RuleManager
     protected final Set<R> rules = new LinkedHashSet<R>();
 
     @Override
-    public RuleManager addRule( final R rule ) {
-        if ( supports( rule ) ) {
-            rules.add( rule );
+    public RuleManager addRule(final R rule) {
+        if (supports(rule)) {
+            rules.add(rule);
         }
         return this;
     }

@@ -29,7 +29,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class FactoryRegistryImplTest {
 
     private static final String NOT_VALID_ID = "Not valid ID";
@@ -48,90 +48,90 @@ public class FactoryRegistryImplTest {
 
     @Before
     public void setup() {
-        factory = new FactoryRegistryImpl( adapter );
+        factory = new FactoryRegistryImpl(adapter);
         Class clazz = EdgeFactoryImpl.class;
-        when( elementFactory.getFactoryType() ).thenReturn( clazz );
-        when( definitionFactory.accepts( DefinitionFactory.class.getName() ) ).thenReturn( true );
+        when(elementFactory.getFactoryType()).thenReturn(clazz);
+        when(definitionFactory.accepts(DefinitionFactory.class.getName())).thenReturn(true);
     }
 
     @Test
     public void testGetDefinitionFactory() {
-        assertNull( factory.getDefinitionFactory( DefinitionFactory.class.getName() ) );
-        factory.register( definitionFactory );
-        assertNull( factory.getDefinitionFactory( NOT_VALID_ID ) );
-        assertEquals( definitionFactory,
-                      factory.getDefinitionFactory( DefinitionFactory.class.getName() ) );
-        assertEquals( definitionFactory,
-                      factory.getDefinitionFactory( DefinitionFactory.class ) );
+        assertNull(factory.getDefinitionFactory(DefinitionFactory.class.getName()));
+        factory.register(definitionFactory);
+        assertNull(factory.getDefinitionFactory(NOT_VALID_ID));
+        assertEquals(definitionFactory,
+                     factory.getDefinitionFactory(DefinitionFactory.class.getName()));
+        assertEquals(definitionFactory,
+                     factory.getDefinitionFactory(DefinitionFactory.class));
     }
 
     @Test
     public void testGetGraphFactory() {
-        assertNull( factory.getElementFactory( elementFactory.getFactoryType() ) );
-        factory.register( elementFactory );
-        assertEquals( elementFactory,
-                      factory.getElementFactory( elementFactory.getFactoryType() ) );
+        assertNull(factory.getElementFactory(elementFactory.getFactoryType()));
+        factory.register(elementFactory);
+        assertEquals(elementFactory,
+                     factory.getElementFactory(elementFactory.getFactoryType()));
     }
 
     @Test
     public void testGetItems() {
-        factory.register( elementFactory );
-        factory.register( definitionFactory );
-        assertArrayEquals( new Object[]{ definitionFactory, elementFactory },
-                           factory.getAllFactories().toArray() );
+        factory.register(elementFactory);
+        factory.register(definitionFactory);
+        assertArrayEquals(new Object[]{definitionFactory, elementFactory},
+                          factory.getAllFactories().toArray());
     }
 
     @Test
     public void testContains() {
-        assertFalse( factory.contains( elementFactory ) );
-        assertFalse( factory.contains( definitionFactory ) );
-        assertFalse( factory.contains( null ) );
-        factory.register( elementFactory );
-        factory.register( definitionFactory );
-        assertTrue( factory.contains( elementFactory ) );
-        assertTrue( factory.contains( definitionFactory ) );
-        assertFalse( factory.contains( missingFactory ) );
-        assertFalse( factory.contains( null ) );
+        assertFalse(factory.contains(elementFactory));
+        assertFalse(factory.contains(definitionFactory));
+        assertFalse(factory.contains(null));
+        factory.register(elementFactory);
+        factory.register(definitionFactory);
+        assertTrue(factory.contains(elementFactory));
+        assertTrue(factory.contains(definitionFactory));
+        assertFalse(factory.contains(missingFactory));
+        assertFalse(factory.contains(null));
     }
 
     @Test
     public void testClear() {
-        factory.register( elementFactory );
-        factory.register( definitionFactory );
-        factory.register( missingFactory );
+        factory.register(elementFactory);
+        factory.register(definitionFactory);
+        factory.register(missingFactory);
         factory.clear();
-        assertArrayEquals( new Object[ 0 ],
-                           factory.getAllFactories().toArray() );
+        assertArrayEquals(new Object[0],
+                          factory.getAllFactories().toArray());
     }
 
     @Test
     public void testEmpty() {
         boolean empty = factory.isEmpty();
-        assertTrue( empty );
+        assertTrue(empty);
     }
 
     @Test
     public void testNotEmpty() {
-        factory.register( definitionFactory );
+        factory.register(definitionFactory);
         boolean empty = factory.isEmpty();
-        assertFalse( empty );
+        assertFalse(empty);
     }
 
     @Test
     public void testRemove() {
-        factory.register( elementFactory );
-        factory.register( definitionFactory );
-        assertFalse( factory.remove( missingFactory ) );
-        assertTrue( factory.contains( elementFactory ) );
-        assertTrue( factory.contains( definitionFactory ) );
-        assertTrue( factory.remove( elementFactory ) );
-        assertFalse( factory.contains( elementFactory ) );
-        assertTrue( factory.contains( definitionFactory ) );
-        assertFalse( factory.remove( null ) );
-        assertTrue( factory.contains( definitionFactory ) );
-        assertTrue( factory.remove( definitionFactory ) );
-        assertFalse( factory.contains( definitionFactory ) );
-        assertArrayEquals( new Object[ 0 ],
-                           factory.getAllFactories().toArray() );
+        factory.register(elementFactory);
+        factory.register(definitionFactory);
+        assertFalse(factory.remove(missingFactory));
+        assertTrue(factory.contains(elementFactory));
+        assertTrue(factory.contains(definitionFactory));
+        assertTrue(factory.remove(elementFactory));
+        assertFalse(factory.contains(elementFactory));
+        assertTrue(factory.contains(definitionFactory));
+        assertFalse(factory.remove(null));
+        assertTrue(factory.contains(definitionFactory));
+        assertTrue(factory.remove(definitionFactory));
+        assertFalse(factory.contains(definitionFactory));
+        assertArrayEquals(new Object[0],
+                          factory.getAllFactories().toArray());
     }
 }

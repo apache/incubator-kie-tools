@@ -23,11 +23,11 @@ public abstract class TouchHandler extends AbstractViewHandler<TouchEvent> {
         return ViewEventType.TOUCH;
     }
 
-    public abstract void start( final TouchEvent event );
+    public abstract void start(final TouchEvent event);
 
-    public abstract void move( final TouchEvent event );
+    public abstract void move(final TouchEvent event);
 
-    public abstract void end( final TouchEvent event );
+    public abstract void end(final TouchEvent event);
 
-    public abstract void cancel( final TouchEvent event );
+    public abstract void cancel(final TouchEvent event);
 }

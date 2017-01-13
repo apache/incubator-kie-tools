@@ -28,26 +28,26 @@ public class GraphImpl<C> extends ElementImpl<C> implements Graph<C, Node> {
 
     private final GraphNodeStore<Node> nodeStore;
 
-    public GraphImpl( final @MapsTo( "uuid" ) String uuid,
-                      final @MapsTo( "nodeStore" ) GraphNodeStore<Node> nodeStore ) {
-        super( uuid );
-        this.nodeStore = PortablePreconditions.checkNotNull( "nodeStore",
-                                                             nodeStore );
+    public GraphImpl(final @MapsTo("uuid") String uuid,
+                     final @MapsTo("nodeStore") GraphNodeStore<Node> nodeStore) {
+        super(uuid);
+        this.nodeStore = PortablePreconditions.checkNotNull("nodeStore",
+                                                            nodeStore);
     }
 
     @Override
-    public Node addNode( final Node node ) {
-        return nodeStore.add( node );
+    public Node addNode(final Node node) {
+        return nodeStore.add(node);
     }
 
     @Override
-    public Node removeNode( final String uuid ) {
-        return nodeStore.remove( uuid );
+    public Node removeNode(final String uuid) {
+        return nodeStore.remove(uuid);
     }
 
     @Override
-    public Node getNode( final String uuid ) {
-        return nodeStore.get( uuid );
+    public Node getNode(final String uuid) {
+        return nodeStore.get(uuid);
     }
 
     @Override

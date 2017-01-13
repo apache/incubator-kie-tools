@@ -41,7 +41,7 @@ import org.uberfire.mvp.Command;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class FormPropertiesWidgetTest {
 
     private static final String DIAGRAM_NAME = "diagram1";
@@ -77,34 +77,34 @@ public class FormPropertiesWidgetTest {
     private FormPropertiesWidget tested;
 
     @Before
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        when( session.getSelectionControl() ).thenReturn( selectionControl );
-        when( session.getCanvasHandler() ).thenReturn( canvasHandler );
-        when( canvasHandler.getDiagram() ).thenReturn( diagram );
-        when( canvasHandler.getGraphIndex() ).thenReturn( graphIndex );
-        when( graphIndex.get( eq( ROOT_UUID ) ) ).thenReturn( node );
-        when( diagram.getMetadata() ).thenReturn( metadata );
-        when( diagram.getName() ).thenReturn( DIAGRAM_NAME );
-        when( node.getUUID() ).thenReturn( ROOT_UUID );
-        when( node.getContent() ).thenReturn( nodeContent );
-        when( nodeContent.getDefinition() ).thenReturn( nodeDefObject );
-        this.tested = new FormPropertiesWidget( definitionUtils,
-                                                commandFactory,
-                                                formRenderer,
-                                                propertiesOpenedEvent );
+        when(session.getSelectionControl()).thenReturn(selectionControl);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
+        when(graphIndex.get(eq(ROOT_UUID))).thenReturn(node);
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(diagram.getName()).thenReturn(DIAGRAM_NAME);
+        when(node.getUUID()).thenReturn(ROOT_UUID);
+        when(node.getContent()).thenReturn(nodeContent);
+        when(nodeContent.getDefinition()).thenReturn(nodeDefObject);
+        this.tested = new FormPropertiesWidget(definitionUtils,
+                                               commandFactory,
+                                               formRenderer,
+                                               propertiesOpenedEvent);
     }
 
     @Test
     public void testShowEmpty() {
-        when( canvasHandler.getDiagram() ).thenReturn( null );
-        final Command callback = mock( Command.class );
+        when(canvasHandler.getDiagram()).thenReturn(null);
+        final Command callback = mock(Command.class);
         tested
-                .bind( session )
-                .show( callback );
+                .bind(session)
+                .show(callback);
         // verify( formRenderer, times( 1 ) ).unBind(); - fix on class first.
-        verify( formRenderer,
-                times( 0 ) ).bind( anyObject() );
+        verify(formRenderer,
+               times(0)).bind(anyObject());
     }
 
     /**
@@ -114,30 +114,30 @@ public class FormPropertiesWidgetTest {
      * that the logic to obtain selected items from the session is correct and at least, the code gets to the point where
      * it tries to introspect the model object ( selected ).
      */
-    @Test( expected = java.lang.RuntimeException.class )
+    @Test(expected = java.lang.RuntimeException.class)
     public void testShowSelectedItem() {
-        final Collection<String> selectedItems = new ArrayList<String>( 3 ) {{
-            add( ROOT_UUID );
-            add( "item2" );
-            add( "item3" );
+        final Collection<String> selectedItems = new ArrayList<String>(3) {{
+            add(ROOT_UUID);
+            add("item2");
+            add("item3");
         }};
-        when( selectionControl.getSelectedItems() ).thenReturn( selectedItems );
-        final Command callback = mock( Command.class );
+        when(selectionControl.getSelectedItems()).thenReturn(selectedItems);
+        final Command callback = mock(Command.class);
         tested
-                .bind( session )
-                .show( callback );
+                .bind(session)
+                .show(callback);
     }
 
     /**
      * Same as above.
      */
-    @Test( expected = java.lang.RuntimeException.class )
+    @Test(expected = java.lang.RuntimeException.class)
     public void testShowCanvasRoot() {
-        when( selectionControl.getSelectedItems() ).thenReturn( null );
-        when( metadata.getCanvasRootUUID() ).thenReturn( ROOT_UUID );
-        final Command callback = mock( Command.class );
+        when(selectionControl.getSelectedItems()).thenReturn(null);
+        when(metadata.getCanvasRootUUID()).thenReturn(ROOT_UUID);
+        final Command callback = mock(Command.class);
         tested
-                .bind( session )
-                .show( callback );
+                .bind(session)
+                .show(callback);
     }
 }

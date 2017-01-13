@@ -27,11 +27,11 @@ import org.kie.workbench.common.stunner.core.registry.BackendRegistryFactory;
 public class BackendRegistryFactoryImpl extends AbstractBackendRegistryFactory implements BackendRegistryFactory {
 
     protected BackendRegistryFactoryImpl() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public BackendRegistryFactoryImpl( final AdapterManager adapterManager ) {
-        super( adapterManager );
+    public BackendRegistryFactoryImpl(final AdapterManager adapterManager) {
+        super(adapterManager);
     }
 }

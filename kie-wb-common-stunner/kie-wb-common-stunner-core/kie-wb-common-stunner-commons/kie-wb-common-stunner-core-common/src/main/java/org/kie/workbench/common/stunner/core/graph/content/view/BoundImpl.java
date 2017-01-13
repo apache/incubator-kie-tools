@@ -26,8 +26,8 @@ public final class BoundImpl implements Bounds.Bound {
     private Double x;
     private Double y;
 
-    public BoundImpl( final @MapsTo( "x" ) Double x,
-                      final @MapsTo( "y" ) Double y ) {
+    public BoundImpl(final @MapsTo("x") Double x,
+                     final @MapsTo("y") Double y) {
         this.x = x;
         this.y = y;
     }
@@ -42,11 +42,11 @@ public final class BoundImpl implements Bounds.Bound {
         return y;
     }
 
-    public void setX( final Double x ) {
+    public void setX(final Double x) {
         this.x = x;
     }
 
-    public void setY( final Double y ) {
+    public void setY(final Double y) {
         this.y = y;
     }
 

@@ -23,7 +23,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ClearCommandTest extends AbstractCanvasCommandTest {
 
     private ClearCommand tested;
@@ -36,15 +36,15 @@ public class ClearCommandTest extends AbstractCanvasCommandTest {
 
     @Test
     public void testGetGraphCommand() {
-        final ClearGraphCommand graphCommand = ( ClearGraphCommand ) tested.newGraphCommand( canvasHandler );
-        assertNotNull( graphCommand );
-        assertEquals( CANVAS_ROOT_UUID,
-                      graphCommand.getRootUUID() );
+        final ClearGraphCommand graphCommand = (ClearGraphCommand) tested.newGraphCommand(canvasHandler);
+        assertNotNull(graphCommand);
+        assertEquals(CANVAS_ROOT_UUID,
+                     graphCommand.getRootUUID());
     }
 
     @Test
     public void testGetCanvasCommand() {
-        final ClearCanvasCommand canvasCommand = ( ClearCanvasCommand ) tested.newCanvasCommand( canvasHandler );
-        assertNotNull( canvasCommand );
+        final ClearCanvasCommand canvasCommand = (ClearCanvasCommand) tested.newCanvasCommand(canvasHandler);
+        assertNotNull(canvasCommand);
     }
 }

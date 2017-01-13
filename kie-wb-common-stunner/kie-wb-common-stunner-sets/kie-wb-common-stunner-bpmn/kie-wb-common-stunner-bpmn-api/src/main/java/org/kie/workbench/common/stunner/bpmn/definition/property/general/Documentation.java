@@ -60,7 +60,7 @@ public class Documentation implements BPMNProperty {
     public Documentation() {
     }
 
-    public Documentation( final String value ) {
+    public Documentation(final String value) {
         this.value = value;
     }
 
@@ -92,7 +92,7 @@ public class Documentation implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

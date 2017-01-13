@@ -33,7 +33,7 @@ public interface Element<C> {
 
     C getContent();
 
-    void setContent( final C content );
+    void setContent(final C content);
 
     Node<C, Edge> asNode();
 

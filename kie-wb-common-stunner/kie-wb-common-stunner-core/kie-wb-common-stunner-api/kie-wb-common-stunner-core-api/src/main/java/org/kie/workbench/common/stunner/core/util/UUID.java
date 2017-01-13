@@ -31,9 +31,9 @@ public class UUID {
      * "VcydxgltxrVZSTV"
      * @param len the desired number of characters
      */
-    public static String uuid( final int len ) {
-        return uuid( len,
-                     CHARS.length );
+    public static String uuid(final int len) {
+        return uuid(len,
+                    CHARS.length);
     }
 
     /**
@@ -47,17 +47,17 @@ public class UUID {
      * @param radix the number of allowable values for each character (must be <=
      * 62)
      */
-    public static String uuid( final int len,
-                               final int radix ) {
-        if ( radix > CHARS.length ) {
+    public static String uuid(final int len,
+                              final int radix) {
+        if (radix > CHARS.length) {
             throw new IllegalArgumentException();
         }
-        char[] uuid = new char[ len ];
+        char[] uuid = new char[len];
         // Compact form
-        for ( int i = 0; i < len; i++ ) {
-            uuid[ i ] = CHARS[ ( int ) ( Math.random() * radix ) ];
+        for (int i = 0; i < len; i++) {
+            uuid[i] = CHARS[(int) (Math.random() * radix)];
         }
-        return new String( uuid );
+        return new String(uuid);
     }
 
     /**
@@ -65,19 +65,19 @@ public class UUID {
      * "92329D39-6F5C-4520-ABFC-AAB64544E172"
      */
     public static String uuid() {
-        char[] uuid = new char[ 36 ];
+        char[] uuid = new char[36];
         int r;
         // rfc4122 requires these characters
-        uuid[ 8 ] = uuid[ 13 ] = uuid[ 18 ] = uuid[ 23 ] = '-';
-        uuid[ 14 ] = '4';
+        uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+        uuid[14] = '4';
         // Fill in random data.  At i==19 set the high bits of clock sequence as
         // per rfc4122, sec. 4.1.5
-        for ( int i = 0; i < 36; i++ ) {
-            if ( uuid[ i ] == 0 ) {
-                r = ( int ) ( Math.random() * 16 );
-                uuid[ i ] = CHARS[ ( i == 19 ) ? ( r & 0x3 ) | 0x8 : r & 0xf ];
+        for (int i = 0; i < 36; i++) {
+            if (uuid[i] == 0) {
+                r = (int) (Math.random() * 16);
+                uuid[i] = CHARS[(i == 19) ? (r & 0x3) | 0x8 : r & 0xf];
             }
         }
-        return new String( uuid );
+        return new String(uuid);
     }
 }

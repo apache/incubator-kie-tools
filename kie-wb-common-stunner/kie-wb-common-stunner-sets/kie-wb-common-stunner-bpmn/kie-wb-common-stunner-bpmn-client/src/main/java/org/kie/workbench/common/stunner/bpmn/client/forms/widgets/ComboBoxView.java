@@ -30,13 +30,13 @@ public interface ComboBoxView {
      */
     interface ModelPresenter {
 
-        void setTextBoxModelValue( final TextBox textBox,
-                                   String value );
+        void setTextBoxModelValue(final TextBox textBox,
+                                  final String value);
 
-        void setListBoxModelValue( final ValueListBox<String> listBox,
-                                   String value );
+        void setListBoxModelValue(final ValueListBox<String> listBox,
+                                  final String value);
 
-        String getModelValue( final ValueListBox<String> listBox );
+        String getModelValue(final ValueListBox<String> listBox);
 
         void notifyModelChanged();
     }
@@ -46,62 +46,62 @@ public interface ComboBoxView {
      */
     interface ComboBoxPresenter {
 
-        void init( final ComboBoxView.ModelPresenter modelPresenter,
-                   final boolean notifyModelChanges,
-                   final ValueListBox<String> listBox,
-                   final TextBox textBox,
-                   final boolean quoteStringValues,
-                   final boolean addCustomValues,
-                   final String customPrompt,
-                   final String placeholder );
+        void init(final ComboBoxView.ModelPresenter modelPresenter,
+                  final boolean notifyModelChanges,
+                  final ValueListBox<String> listBox,
+                  final TextBox textBox,
+                  final boolean quoteStringValues,
+                  final boolean addCustomValues,
+                  final String customPrompt,
+                  final String placeholder);
 
-        void setListBoxValues( final ListBoxValues listBoxValues );
+        void setListBoxValues(final ListBoxValues listBoxValues);
 
-        void setShowCustomValues( final boolean showCustomValues );
+        void setShowCustomValues(final boolean showCustomValues);
 
-        void setAddCustomValues( final boolean addCustomValues );
+        void setAddCustomValues(final boolean addCustomValues);
 
-        void setCurrentTextValue( String currentTextValue );
+        void setCurrentTextValue(final String currentTextValue);
 
         ListBoxValues getListBoxValues();
 
-        void updateListBoxValues( String listBoxValue );
+        void updateListBoxValues(final String listBoxValue);
 
-        String addCustomValueToListBoxValues( String newValue,
-                                              String oldValue );
+        String addCustomValueToListBoxValues(final String newValue,
+                                             final String oldValue);
 
         String getValue();
 
-        void listBoxValueChanged( String newValue );
+        void listBoxValueChanged(final String newValue);
 
-        void textBoxValueChanged( String newValue );
+        void textBoxValueChanged(final String newValue);
     }
 
-    void init( final ComboBoxView.ComboBoxPresenter presenter,
-               final ComboBoxView.ModelPresenter modelPresenter,
-               final ValueListBox<String> listBox,
-               final TextBox textBox,
-               final String placeholder );
+    void init(final ComboBoxView.ComboBoxPresenter presenter,
+              final ComboBoxView.ModelPresenter modelPresenter,
+              final ValueListBox<String> listBox,
+              final TextBox textBox,
+              final String placeholder);
 
     String getModelValue();
 
-    void setTextBoxModelValue( String value );
+    void setTextBoxModelValue(final String value);
 
-    void setListBoxModelValue( String value );
+    void setListBoxModelValue(final String value);
 
-    void setAcceptableValues( List<String> acceptableValues );
+    void setAcceptableValues(final List<String> acceptableValues);
 
-    void setTextBoxVisible( boolean visible );
+    void setTextBoxVisible(final boolean visible);
 
-    void setListBoxVisible( boolean visible );
+    void setListBoxVisible(final boolean visible);
 
-    void setTextBoxFocus( boolean focus );
+    void setTextBoxFocus(final boolean focus);
 
     String getListBoxValue();
 
-    void setListBoxValue( String value );
+    void setListBoxValue(final String value);
 
-    void setTextBoxValue( String value );
+    void setTextBoxValue(final String value);
 
     String getValue();
 

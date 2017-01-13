@@ -38,7 +38,7 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_TASK_DATA;
 
-@MorphBase( defaultType = EndNoneEvent.class
+@MorphBase(defaultType = EndNoneEvent.class
         /* TODO: Disabled morphing from end to start events for M1
         targets = { BaseStartEvent.class } */
 )
@@ -49,12 +49,12 @@ public abstract class BaseEndEvent implements BPMNDefinition,
     public static final transient String category = Categories.EVENTS;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 1 )
+    @FieldDef(label = FIELDDEF_GENERAL_SETTINGS, position = 1)
     @Valid
     protected BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_TASK_DATA, position = 2 )
+    @FieldDef(label = FIELDDEF_TASK_DATA, position = 2)
     @Valid
     protected DataIOSet dataIOSet;
 
@@ -76,14 +76,14 @@ public abstract class BaseEndEvent implements BPMNDefinition,
 
     @Labels
     protected final Set<String> labels = new HashSet<String>() {{
-        add( "all" );
-        add( "sequence_end" );
-        add( "to_task_event" );
-        add( "from_task_event" );
-        add( "fromtoall" );
-        add( "choreography_sequence_end" );
-        add( "Endevents_all" );
-        add( "EndEventsMorph" );
+        add("all");
+        add("sequence_end");
+        add("to_task_event");
+        add("from_task_event");
+        add("fromtoall");
+        add("choreography_sequence_end");
+        add("Endevents_all");
+        add("EndEventsMorph");
     }};
 
     static abstract class BaseEndEventBuilder<T extends BaseEndEvent> implements Builder<T> {
@@ -97,12 +97,12 @@ public abstract class BaseEndEvent implements BPMNDefinition,
     public BaseEndEvent() {
     }
 
-    public BaseEndEvent( @MapsTo( "general" ) BPMNGeneralSet general,
-                         @MapsTo( "dataIOSet" ) DataIOSet dataIOSet,
-                         @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                         @MapsTo( "fontSet" ) FontSet fontSet,
-                         @MapsTo( "throwEventAttributes" ) ThrowEventAttributes throwEventAttributes,
-                         @MapsTo( "dimensionsSet" ) CircleDimensionSet dimensionsSet ) {
+    public BaseEndEvent(final @MapsTo("general") BPMNGeneralSet general,
+                        final @MapsTo("dataIOSet") DataIOSet dataIOSet,
+                        final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                        final @MapsTo("fontSet") FontSet fontSet,
+                        final @MapsTo("throwEventAttributes") ThrowEventAttributes throwEventAttributes,
+                        final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
         this.general = general;
         this.dataIOSet = dataIOSet;
         this.backgroundSet = backgroundSet;
@@ -159,23 +159,23 @@ public abstract class BaseEndEvent implements BPMNDefinition,
         return throwEventAttributes;
     }
 
-    public void setGeneral( BPMNGeneralSet general ) {
+    public void setGeneral(final BPMNGeneralSet general) {
         this.general = general;
     }
 
-    public void setDataIOSet( DataIOSet dataIOSet ) {
+    public void setDataIOSet(final DataIOSet dataIOSet) {
         this.dataIOSet = dataIOSet;
     }
 
-    public void setBackgroundSet( BackgroundSet backgroundSet ) {
+    public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
-    public void setThrowEventAttributes( ThrowEventAttributes throwEventAttributes ) {
+    public void setThrowEventAttributes(final ThrowEventAttributes throwEventAttributes) {
         this.throwEventAttributes = throwEventAttributes;
     }
 
-    public void setFontSet( FontSet fontSet ) {
+    public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
     }
 
@@ -183,7 +183,7 @@ public abstract class BaseEndEvent implements BPMNDefinition,
         return dimensionsSet;
     }
 
-    public void setDimensionsSet( CircleDimensionSet dimensionsSet ) {
+    public void setDimensionsSet(final CircleDimensionSet dimensionsSet) {
         this.dimensionsSet = dimensionsSet;
     }
 }

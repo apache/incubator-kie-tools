@@ -30,7 +30,7 @@ public class ClientRegistryFactoryImpl extends AbstractRegistryFactory implement
     }
 
     @Inject
-    public ClientRegistryFactoryImpl( final AdapterManager adapterManager ) {
-        super( adapterManager );
+    public ClientRegistryFactoryImpl(final AdapterManager adapterManager) {
+        super(adapterManager);
     }
 }

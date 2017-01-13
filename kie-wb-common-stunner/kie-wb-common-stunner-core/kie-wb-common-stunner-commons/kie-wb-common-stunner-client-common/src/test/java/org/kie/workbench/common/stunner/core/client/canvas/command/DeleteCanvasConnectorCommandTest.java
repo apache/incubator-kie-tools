@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DeleteCanvasConnectorCommandTest extends AbstractCanvasCommandTest {
 
     private static final String EDGE_ID = "e1";
@@ -47,24 +47,24 @@ public class DeleteCanvasConnectorCommandTest extends AbstractCanvasCommandTest 
     @Before
     public void setup() throws Exception {
         super.setup();
-        when( candidate.getUUID() ).thenReturn( EDGE_ID );
-        when( source.getUUID() ).thenReturn( SOURCE_ID );
-        when( candidate.getSourceNode() ).thenReturn( source );
-        when( candidate.getTargetNode() ).thenReturn( target );
-        this.tested = new DeleteCanvasConnectorCommand( candidate );
+        when(candidate.getUUID()).thenReturn(EDGE_ID);
+        when(source.getUUID()).thenReturn(SOURCE_ID);
+        when(candidate.getSourceNode()).thenReturn(source);
+        when(candidate.getTargetNode()).thenReturn(target);
+        this.tested = new DeleteCanvasConnectorCommand(candidate);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecute() {
-        final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR,
-                         result.getType() );
-        verify( canvasHandler,
-                times( 1 ) ).deregister( eq( candidate ) );
-        verify( canvasHandler,
-                times( 1 ) ).fireCanvasElementUpdated( eq( source ) );
-        verify( canvasHandler,
-                times( 1 ) ).fireCanvasElementUpdated( eq( target ) );
+        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertNotEquals(CommandResult.Type.ERROR,
+                        result.getType());
+        verify(canvasHandler,
+               times(1)).deregister(eq(candidate));
+        verify(canvasHandler,
+               times(1)).fireCanvasElementUpdated(eq(source));
+        verify(canvasHandler,
+               times(1)).fireCanvasElementUpdated(eq(target));
     }
 }

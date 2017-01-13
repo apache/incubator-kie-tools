@@ -41,7 +41,7 @@ import static org.mockito.Mockito.*;
  * manager is just update the session's registry if the command executions are successful, but just
  * using a single composite commands once the current request (user interaction) ends.
  */
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class RequestCommandManagerTest {
 
     @Mock
@@ -71,134 +71,134 @@ public class RequestCommandManagerTest {
     @Before
     public void setup() throws Exception {
         this.commandManager = new CanvasCommandManagerImpl();
-        when( canvasHandler.getCanvas() ).thenReturn( canvas );
-        when( clientSessionManager.getCurrentSession() ).thenReturn( clientFullSession );
-        when( clientFullSession.getCommandRegistry() ).thenReturn( commandRegistry );
-        when( clientFullSession.getCommandManager() ).thenReturn( commandManager );
-        this.tested = new RequestCommandManager( clientSessionManager );
+        when(canvasHandler.getCanvas()).thenReturn(canvas);
+        when(clientSessionManager.getCurrentSession()).thenReturn(clientFullSession);
+        when(clientFullSession.getCommandRegistry()).thenReturn(commandRegistry);
+        when(clientFullSession.getCommandManager()).thenReturn(commandManager);
+        this.tested = new RequestCommandManager(clientSessionManager);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testSingleExecuteSuccess() {
-        when( command.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
-        tested.onCanvasMouseDownEvent( mouseDownEvent );
-        tested.execute( canvasHandler,
-                        command );
-        tested.onCanvasMouseUpEvent( mouseUpEvent );
-        ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
-        verify( commandRegistry,
-                times( 1 ) ).register( commandArgumentCaptor.capture() );
-        verify( commandRegistry,
-                times( 0 ) ).peek();
-        verify( commandRegistry,
-                times( 0 ) ).pop();
-        assertCompositeCommand( commandArgumentCaptor.getValue(),
-                                1 );
+        when(command.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+        tested.onCanvasMouseDownEvent(mouseDownEvent);
+        tested.execute(canvasHandler,
+                       command);
+        tested.onCanvasMouseUpEvent(mouseUpEvent);
+        ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
+        verify(commandRegistry,
+               times(1)).register(commandArgumentCaptor.capture());
+        verify(commandRegistry,
+               times(0)).peek();
+        verify(commandRegistry,
+               times(0)).pop();
+        assertCompositeCommand(commandArgumentCaptor.getValue(),
+                               1);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testMultipleExecuteSuccess() {
-        when( command.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
-        when( command1.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
-        when( command2.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
-        tested.onCanvasMouseDownEvent( mouseDownEvent );
-        tested.execute( canvasHandler,
-                        command );
-        tested.execute( canvasHandler,
-                        command1 );
-        tested.execute( canvasHandler,
-                        command2 );
-        tested.onCanvasMouseUpEvent( mouseUpEvent );
-        ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
-        verify( commandRegistry,
-                times( 1 ) ).register( commandArgumentCaptor.capture() );
-        verify( commandRegistry,
-                times( 0 ) ).peek();
-        verify( commandRegistry,
-                times( 0 ) ).pop();
-        assertCompositeCommand( commandArgumentCaptor.getValue(),
-                                3 );
+        when(command.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+        when(command1.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+        when(command2.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+        tested.onCanvasMouseDownEvent(mouseDownEvent);
+        tested.execute(canvasHandler,
+                       command);
+        tested.execute(canvasHandler,
+                       command1);
+        tested.execute(canvasHandler,
+                       command2);
+        tested.onCanvasMouseUpEvent(mouseUpEvent);
+        ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
+        verify(commandRegistry,
+               times(1)).register(commandArgumentCaptor.capture());
+        verify(commandRegistry,
+               times(0)).peek();
+        verify(commandRegistry,
+               times(0)).pop();
+        assertCompositeCommand(commandArgumentCaptor.getValue(),
+                               3);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testSingleExecuteFailed() {
-        when( command.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.FAILED );
-        tested.onCanvasMouseDownEvent( mouseDownEvent );
-        tested.execute( canvasHandler,
-                        command );
-        tested.onCanvasMouseUpEvent( mouseUpEvent );
-        verify( commandRegistry,
-                times( 0 ) ).register( command );
-        verify( commandRegistry,
-                times( 0 ) ).peek();
-        verify( commandRegistry,
-                times( 0 ) ).pop();
+        when(command.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.FAILED);
+        tested.onCanvasMouseDownEvent(mouseDownEvent);
+        tested.execute(canvasHandler,
+                       command);
+        tested.onCanvasMouseUpEvent(mouseUpEvent);
+        verify(commandRegistry,
+               times(0)).register(command);
+        verify(commandRegistry,
+               times(0)).peek();
+        verify(commandRegistry,
+               times(0)).pop();
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testSingleUndoSuccess() {
-        when( command.undo( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
-        tested.onCanvasMouseDownEvent( mouseDownEvent );
-        tested.undo( canvasHandler,
-                     command );
-        tested.onCanvasMouseUpEvent( mouseUpEvent );
-        verify( commandRegistry,
-                times( 1 ) ).pop();
-        verify( commandRegistry,
-                times( 0 ) ).register( command );
-        verify( commandRegistry,
-                times( 0 ) ).peek();
+        when(command.undo(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+        tested.onCanvasMouseDownEvent(mouseDownEvent);
+        tested.undo(canvasHandler,
+                    command);
+        tested.onCanvasMouseUpEvent(mouseUpEvent);
+        verify(commandRegistry,
+               times(1)).pop();
+        verify(commandRegistry,
+               times(0)).register(command);
+        verify(commandRegistry,
+               times(0)).peek();
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testSingleUndoFailed() {
-        when( command.undo( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.FAILED );
-        tested.onCanvasMouseDownEvent( mouseDownEvent );
-        tested.undo( canvasHandler,
-                     command );
-        tested.onCanvasMouseUpEvent( mouseUpEvent );
-        verify( commandRegistry,
-                times( 0 ) ).pop();
-        verify( commandRegistry,
-                times( 0 ) ).register( command );
-        verify( commandRegistry,
-                times( 0 ) ).peek();
+        when(command.undo(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.FAILED);
+        tested.onCanvasMouseDownEvent(mouseDownEvent);
+        tested.undo(canvasHandler,
+                    command);
+        tested.onCanvasMouseUpEvent(mouseUpEvent);
+        verify(commandRegistry,
+               times(0)).pop();
+        verify(commandRegistry,
+               times(0)).register(command);
+        verify(commandRegistry,
+               times(0)).peek();
     }
 
-    @Test( expected = IllegalStateException.class )
-    @SuppressWarnings( "unchecked" )
+    @Test(expected = IllegalStateException.class)
+    @SuppressWarnings("unchecked")
     public void testNoRequestStarted() {
-        when( command.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
-        tested.execute( canvasHandler,
-                        command );
-        tested.onCanvasMouseUpEvent( mouseUpEvent );
+        when(command.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+        tested.execute(canvasHandler,
+                       command);
+        tested.onCanvasMouseUpEvent(mouseUpEvent);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testNoRequestComleted() {
-        when( command.execute( eq( canvasHandler ) ) ).thenReturn( CanvasCommandResultBuilder.SUCCESS );
-        tested.onCanvasMouseDownEvent( mouseDownEvent );
-        tested.execute( canvasHandler,
-                        command );
-        verify( commandRegistry,
-                times( 0 ) ).register( any( Command.class ) );
-        verify( commandRegistry,
-                times( 0 ) ).peek();
-        verify( commandRegistry,
-                times( 0 ) ).pop();
+        when(command.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+        tested.onCanvasMouseDownEvent(mouseDownEvent);
+        tested.execute(canvasHandler,
+                       command);
+        verify(commandRegistry,
+               times(0)).register(any(Command.class));
+        verify(commandRegistry,
+               times(0)).peek();
+        verify(commandRegistry,
+               times(0)).pop();
     }
 
-    private void assertCompositeCommand( Command captured,
-                                         int size ) {
-        assertNotNull( captured );
-        assertTrue( captured instanceof CompositeCommand );
-        assertEquals( size,
-                      ( ( CompositeCommand ) captured ).size() );
+    private void assertCompositeCommand(Command captured,
+                                        int size) {
+        assertNotNull(captured);
+        assertTrue(captured instanceof CompositeCommand);
+        assertEquals(size,
+                     ((CompositeCommand) captured).size());
     }
 }

@@ -32,28 +32,28 @@ public class RectangleView extends BasicShapeView<RectangleView>
 
     private final double corner_radius;
 
-    public RectangleView( final double width,
-                          final double height,
-                          final double corner ) {
-        super( corner == 0 ? BasicShapesSupportedEvents.ALL_DESKTOP_EVENT_TYPES :
-                       BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
-               create( new MultiPath(),
-                       width,
-                       height,
-                       corner ) );
-        super.setResizable( corner == 0 );
+    public RectangleView(final double width,
+                         final double height,
+                         final double corner) {
+        super(corner == 0 ? BasicShapesSupportedEvents.ALL_DESKTOP_EVENT_TYPES :
+                      BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+              create(new MultiPath(),
+                     width,
+                     height,
+                     corner));
+        super.setResizable(corner == 0);
         this.corner_radius = corner;
     }
 
     @Override
-    public RectangleView setSize( final double width,
-                                  final double height ) {
-        create( getPath().clear(),
-                width,
-                height,
-                corner_radius );
-        updateFillGradient( width,
-                            height );
+    public RectangleView setSize(final double width,
+                                 final double height) {
+        create(getPath().clear(),
+               width,
+               height,
+               corner_radius);
+        updateFillGradient(width,
+                           height);
         refresh();
         return this;
     }
@@ -65,13 +65,13 @@ public class RectangleView extends BasicShapeView<RectangleView>
      * @param h The rectangle height
      * @param r The rectangle corner radius
      */
-    private static MultiPath create( final MultiPath path,
-                                     final double w,
-                                     final double h,
-                                     final double r ) {
-        return LienzoPaths.rectangle( path,
-                                      w,
-                                      h,
-                                      r );
+    private static MultiPath create(final MultiPath path,
+                                    final double w,
+                                    final double h,
+                                    final double r) {
+        return LienzoPaths.rectangle(path,
+                                     w,
+                                     h,
+                                     r);
     }
 }

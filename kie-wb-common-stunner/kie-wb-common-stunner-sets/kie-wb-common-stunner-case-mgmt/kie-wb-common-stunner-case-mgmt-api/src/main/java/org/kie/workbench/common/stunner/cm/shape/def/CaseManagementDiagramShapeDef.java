@@ -26,77 +26,77 @@ public final class CaseManagementDiagramShapeDef
         implements RectangleShapeDef<CaseManagementDiagram> {
 
     @Override
-    public String getNamePropertyValue( final CaseManagementDiagram element ) {
+    public String getNamePropertyValue(final CaseManagementDiagram element) {
         return element.getDiagramSet().getName().getValue();
     }
 
     @Override
-    public String getBackgroundColor( final CaseManagementDiagram element ) {
+    public String getBackgroundColor(final CaseManagementDiagram element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final CaseManagementDiagram element ) {
+    public double getBackgroundAlpha(final CaseManagementDiagram element) {
         return 0.8;
     }
 
     @Override
-    public String getBorderColor( final CaseManagementDiagram element ) {
+    public String getBorderColor(final CaseManagementDiagram element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final CaseManagementDiagram element ) {
+    public double getBorderSize(final CaseManagementDiagram element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final CaseManagementDiagram element ) {
+    public double getBorderAlpha(final CaseManagementDiagram element) {
         return 1;
     }
 
     @Override
-    public String getFontFamily( final CaseManagementDiagram element ) {
+    public String getFontFamily(final CaseManagementDiagram element) {
         return element.getFontSet().getFontFamily().getValue();
     }
 
     @Override
-    public String getFontColor( final CaseManagementDiagram element ) {
+    public String getFontColor(final CaseManagementDiagram element) {
         return element.getFontSet().getFontColor().getValue();
     }
 
     @Override
-    public double getFontSize( final CaseManagementDiagram element ) {
+    public double getFontSize(final CaseManagementDiagram element) {
         return element.getFontSet().getFontSize().getValue();
     }
 
     @Override
-    public double getFontBorderSize( final CaseManagementDiagram element ) {
+    public double getFontBorderSize(final CaseManagementDiagram element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final CaseManagementDiagram element ) {
+    public HasTitle.Position getFontPosition(final CaseManagementDiagram element) {
         return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public double getFontRotation( final CaseManagementDiagram element ) {
+    public double getFontRotation(final CaseManagementDiagram element) {
         return 0;
     }
 
     @Override
-    public double getWidth( final CaseManagementDiagram element ) {
+    public double getWidth(final CaseManagementDiagram element) {
         return element.getDimensionsSet().getWidth().getValue();
     }
 
     @Override
-    public double getHeight( final CaseManagementDiagram element ) {
+    public double getHeight(final CaseManagementDiagram element) {
         return element.getDimensionsSet().getHeight().getValue();
     }
 
     @Override
-    public double getCornerRadius( final CaseManagementDiagram element ) {
+    public double getCornerRadius(final CaseManagementDiagram element) {
         return 0;
     }
 }

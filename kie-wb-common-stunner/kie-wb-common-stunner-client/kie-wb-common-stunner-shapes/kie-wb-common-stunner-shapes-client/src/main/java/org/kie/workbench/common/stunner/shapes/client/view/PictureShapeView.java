@@ -29,27 +29,27 @@ public class PictureShapeView<T extends PictureShapeView>
 
     private Picture picture;
 
-    public PictureShapeView( final String uri,
-                             final double width,
-                             final double height ) {
-        super( BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
-               new MultiPath()
-                       .rect( 0,
-                              0,
-                              width,
-                              height )
-                       .setStrokeAlpha( 0 )
-                       .setFillAlpha( 0 ) );
-        new Picture( uri,
-                     picture1 -> {
-                         this.picture = picture1;
-                         scalePicture( picture1,
-                                       width,
-                                       height );
-                         addChild( picture1 );
-                         refresh();
-                     } );
-        super.setResizable( false );
+    public PictureShapeView(final String uri,
+                            final double width,
+                            final double height) {
+        super(BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+              new MultiPath()
+                      .rect(0,
+                            0,
+                            width,
+                            height)
+                      .setStrokeAlpha(0)
+                      .setFillAlpha(0));
+        new Picture(uri,
+                    picture1 -> {
+                        this.picture = picture1;
+                        scalePicture(picture1,
+                                     width,
+                                     height);
+                        addChild(picture1);
+                        refresh();
+                    });
+        super.setResizable(false);
     }
 
     @Override

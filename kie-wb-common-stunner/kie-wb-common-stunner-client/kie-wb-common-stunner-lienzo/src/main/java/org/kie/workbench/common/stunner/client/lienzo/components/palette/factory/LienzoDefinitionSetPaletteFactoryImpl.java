@@ -35,33 +35,33 @@ public class LienzoDefinitionSetPaletteFactoryImpl
         implements LienzoDefinitionSetPaletteFactory {
 
     @Inject
-    public LienzoDefinitionSetPaletteFactoryImpl( final ShapeManager shapeManager,
-                                                  final SyncBeanManager beanManager,
-                                                  final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
-                                                  final LienzoDefinitionSetPalette palette ) {
-        super( shapeManager,
-               beanManager,
-               defaultPaletteDefinitionFactoryInstance,
-               palette );
+    public LienzoDefinitionSetPaletteFactoryImpl(final ShapeManager shapeManager,
+                                                 final SyncBeanManager beanManager,
+                                                 final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
+                                                 final LienzoDefinitionSetPalette palette) {
+        super(shapeManager,
+              beanManager,
+              defaultPaletteDefinitionFactoryInstance,
+              palette);
     }
 
     @PostConstruct
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void init() {
         super.init();
     }
 
     @Override
-    protected void beforeBindPalette( final DefinitionSetPalette paletteDefinition,
-                                      final String shapeSetId ) {
-        super.beforeBindPalette( paletteDefinition,
-                                 shapeSetId );
-        palette.setShapeSetId( shapeSetId );
+    protected void beforeBindPalette(final DefinitionSetPalette paletteDefinition,
+                                     final String shapeSetId) {
+        super.beforeBindPalette(paletteDefinition,
+                                shapeSetId);
+        palette.setShapeSetId(shapeSetId);
     }
 
     @Override
-    protected void applyGrid( final PaletteGrid grid ) {
-        palette.setIconSize( grid.getIconSize() );
-        palette.setPadding( grid.getPadding() );
+    protected void applyGrid(final PaletteGrid grid) {
+        palette.setIconSize(grid.getIconSize());
+        palette.setPadding(grid.getPadding());
     }
 }

@@ -36,14 +36,14 @@ public class GraphContainmentRuleManagerImpl extends AbstractGraphRuleManager<Co
     private final ModelContainmentRuleManager modelContainmentRuleManager;
 
     protected GraphContainmentRuleManagerImpl() {
-        this( null,
-              null );
+        this(null,
+             null);
     }
 
     @Inject
-    public GraphContainmentRuleManagerImpl( final DefinitionManager definitionManager,
-                                            final ModelContainmentRuleManager modelContainmentRuleManager ) {
-        super( definitionManager );
+    public GraphContainmentRuleManagerImpl(final DefinitionManager definitionManager,
+                                           final ModelContainmentRuleManager modelContainmentRuleManager) {
+        super(definitionManager);
         this.modelContainmentRuleManager = modelContainmentRuleManager;
     }
 
@@ -58,10 +58,10 @@ public class GraphContainmentRuleManagerImpl extends AbstractGraphRuleManager<Co
     }
 
     @Override
-    public RuleViolations evaluate( final Element<?> target,
-                                    final Element<? extends Definition<?>> candidate ) {
-        final String targetId = getElementDefinitionId( target );
-        return modelContainmentRuleManager.evaluate( targetId,
-                                                     getLabels( candidate ) );
+    public RuleViolations evaluate(final Element<?> target,
+                                   final Element<? extends Definition<?>> candidate) {
+        final String targetId = getElementDefinitionId(target);
+        return modelContainmentRuleManager.evaluate(targetId,
+                                                    getLabels(candidate));
     }
 }

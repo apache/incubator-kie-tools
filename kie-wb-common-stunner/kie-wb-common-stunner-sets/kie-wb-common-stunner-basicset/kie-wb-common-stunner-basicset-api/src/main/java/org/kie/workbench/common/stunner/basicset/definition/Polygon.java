@@ -49,8 +49,8 @@ import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConsta
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = Polygon.PolygonBuilder.class )
-@Shape( factory = BasicShapesFactory.class, def = PolygonShapeDefImpl.class )
+@Definition(graphFactory = NodeFactory.class, builder = Polygon.PolygonBuilder.class)
+@Shape(factory = BasicShapesFactory.class, def = PolygonShapeDefImpl.class)
 public class Polygon {
 
     @Category
@@ -63,29 +63,29 @@ public class Polygon {
     public static final transient String description = "A polygon";
 
     @Property
-    @FieldDef( label = FIELDDEF_NAME, property = "value" )
+    @FieldDef(label = FIELDDEF_NAME, property = "value")
     @Valid
     private Name name;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_BACKGROUND_AND_BORDERS, position = 0 )
+    @FieldDef(label = FIELDDEF_BACKGROUND_AND_BORDERS, position = 0)
     @Valid
     private BackgroundAndBorderSet backgroundSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_FONT, position = 1 )
+    @FieldDef(label = FIELDDEF_FONT, position = 1)
     @Valid
     private FontSet fontSet;
 
     @Property
-    @FieldDef( label = FIELDDEF_RADIUS, property = "value" )
+    @FieldDef(label = FIELDDEF_RADIUS, property = "value")
     @Valid
     private Radius radius;
 
     @Labels
     private final Set<String> labels = new HashSet<String>() {{
-        add( "all" );
-        add( "polygon" );
+        add("all");
+        add("polygon");
     }};
 
     @NonPortable
@@ -98,22 +98,22 @@ public class Polygon {
 
         @Override
         public Polygon build() {
-            return new Polygon( new Name( "Polygon" ),
-                                new BackgroundAndBorderSet( COLOR,
-                                                            BORDER_COLOR,
-                                                            BORDER_SIZE ),
-                                new FontSet(),
-                                new Radius( RADIUS ) );
+            return new Polygon(new Name("Polygon"),
+                               new BackgroundAndBorderSet(COLOR,
+                                                          BORDER_COLOR,
+                                                          BORDER_SIZE),
+                               new FontSet(),
+                               new Radius(RADIUS));
         }
     }
 
     public Polygon() {
     }
 
-    public Polygon( @MapsTo( "name" ) Name name,
-                    @MapsTo( "backgroundSet" ) BackgroundAndBorderSet backgroundSet,
-                    @MapsTo( "fontSet" ) FontSet fontSet,
-                    @MapsTo( "radius" ) Radius radius ) {
+    public Polygon(final @MapsTo("name") Name name,
+                   final @MapsTo("backgroundSet") BackgroundAndBorderSet backgroundSet,
+                   final @MapsTo("fontSet") FontSet fontSet,
+                   final @MapsTo("radius") Radius radius) {
         this.name = name;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
@@ -140,7 +140,7 @@ public class Polygon {
         return name;
     }
 
-    public void setName( Name name ) {
+    public void setName(final Name name) {
         this.name = name;
     }
 
@@ -148,7 +148,7 @@ public class Polygon {
         return backgroundSet;
     }
 
-    public void setBackgroundSet( BackgroundAndBorderSet backgroundSet ) {
+    public void setBackgroundSet(final BackgroundAndBorderSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
@@ -156,7 +156,7 @@ public class Polygon {
         return fontSet;
     }
 
-    public void setFontSet( FontSet fontSet ) {
+    public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
     }
 
@@ -164,7 +164,7 @@ public class Polygon {
         return radius;
     }
 
-    public void setRadius( Radius radius ) {
+    public void setRadius(final Radius radius) {
         this.radius = radius;
     }
 }

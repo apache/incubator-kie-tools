@@ -39,40 +39,40 @@ import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 public class GeneratorUtils extends org.uberfire.annotations.processors.GeneratorUtils {
 
-    private static final String[] NO_PARAMS = new String[ 0 ];
-    private static final String[] ANY_PARAMS = new String[ 0 ];
+    private static final String[] NO_PARAMS = new String[0];
+    private static final String[] ANY_PARAMS = new String[0];
 
-    public static String getTypedMethodName( final TypeElement classElement,
+    public static String getTypedMethodName(final TypeElement classElement,
+                                            final String annName,
+                                            final String returnTypeName,
+                                            final ProcessingEnvironment processingEnvironment) {
+        final Elements elementUtils = processingEnvironment.getElementUtils();
+        return getMethodName(classElement,
+                             processingEnvironment,
+                             elementUtils.getTypeElement(returnTypeName).asType(),
+                             annName);
+    }
+
+    public static String getStringMethodName(final TypeElement classElement,
                                              final String annName,
-                                             final String returnTypeName,
-                                             final ProcessingEnvironment processingEnvironment ) {
+                                             final ProcessingEnvironment processingEnvironment) {
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        return getMethodName( classElement,
-                              processingEnvironment,
-                              elementUtils.getTypeElement( returnTypeName ).asType(),
-                              annName );
+        return getMethodName(classElement,
+                             processingEnvironment,
+                             elementUtils.getTypeElement(String.class.getName()).asType(),
+                             annName);
     }
 
-    public static String getStringMethodName( final TypeElement classElement,
-                                              final String annName,
-                                              final ProcessingEnvironment processingEnvironment ) {
-        final Elements elementUtils = processingEnvironment.getElementUtils();
-        return getMethodName( classElement,
-                              processingEnvironment,
-                              elementUtils.getTypeElement( String.class.getName() ).asType(),
-                              annName );
-    }
-
-    private static String getMethodName( final TypeElement classElement,
-                                         final ProcessingEnvironment processingEnvironment,
-                                         final TypeMirror mirror,
-                                         final String annotationName ) {
-        ExecutableElement match = getUniqueAnnotatedMethod( classElement,
-                                                            processingEnvironment,
-                                                            annotationName,
-                                                            mirror,
-                                                            NO_PARAMS );
-        if ( match == null ) {
+    private static String getMethodName(final TypeElement classElement,
+                                        final ProcessingEnvironment processingEnvironment,
+                                        final TypeMirror mirror,
+                                        final String annotationName) {
+        ExecutableElement match = getUniqueAnnotatedMethod(classElement,
+                                                           processingEnvironment,
+                                                           annotationName,
+                                                           mirror,
+                                                           NO_PARAMS);
+        if (match == null) {
             return null;
         }
         return match.getSimpleName().toString();
@@ -83,119 +83,119 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
     annotClassNamee=IsProperty
     returnClassName=MyPropery
      */
-    public static ExecutableElement getExecutableElementMethodName( final TypeElement classElement,
+    public static ExecutableElement getExecutableElementMethodName(final TypeElement classElement,
+                                                                   final String returnClassName,
+                                                                   final String annotClassName,
+                                                                   final ProcessingEnvironment processingEnvironment) throws GenerationException {
+        return getExecutableElementMethodName(classElement,
+                                              processingEnvironment,
+                                              returnClassName,
+                                              annotClassName);
+    }
+
+    private static ExecutableElement getExecutableElementMethodName(final TypeElement originalClassElement,
+                                                                    final ProcessingEnvironment processingEnvironment,
                                                                     final String returnClassName,
-                                                                    final String annotClassName,
-                                                                    final ProcessingEnvironment processingEnvironment ) throws GenerationException {
-        return getExecutableElementMethodName( classElement,
-                                               processingEnvironment,
-                                               returnClassName,
-                                               annotClassName );
-    }
-
-    private static ExecutableElement getExecutableElementMethodName( final TypeElement originalClassElement,
-                                                                     final ProcessingEnvironment processingEnvironment,
-                                                                     final String returnClassName,
-                                                                     final String annotationName ) throws GenerationException {
+                                                                    final String annotationName) throws GenerationException {
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        return getUniqueAnnotatedMethod( originalClassElement,
-                                         processingEnvironment,
-                                         annotationName,
-                                         // elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType(),
-                                         elementUtils.getTypeElement( returnClassName ).asType(),
-                                         NO_PARAMS );
+        return getUniqueAnnotatedMethod(originalClassElement,
+                                        processingEnvironment,
+                                        annotationName,
+                                        // elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType(),
+                                        elementUtils.getTypeElement(returnClassName).asType(),
+                                        NO_PARAMS);
     }
 
-    private static ExecutableElement getUniqueAnnotatedMethod( final TypeElement originalClassElement,
-                                                               final ProcessingEnvironment processingEnvironment,
-                                                               final String annotationName,
-                                                               final TypeMirror requiredReturnType,
-                                                               final String[] requiredParameterTypes ) {
-        List<ExecutableElement> matches = getAnnotatedMethods( originalClassElement,
-                                                               processingEnvironment,
-                                                               annotationName,
-                                                               requiredReturnType,
-                                                               requiredParameterTypes );
-        if ( matches.size() == 1 ) {
-            return matches.get( 0 );
-        } else if ( matches.size() > 1 ) {
-            for ( ExecutableElement match : matches ) {
+    private static ExecutableElement getUniqueAnnotatedMethod(final TypeElement originalClassElement,
+                                                              final ProcessingEnvironment processingEnvironment,
+                                                              final String annotationName,
+                                                              final TypeMirror requiredReturnType,
+                                                              final String[] requiredParameterTypes) {
+        List<ExecutableElement> matches = getAnnotatedMethods(originalClassElement,
+                                                              processingEnvironment,
+                                                              annotationName,
+                                                              requiredReturnType,
+                                                              requiredParameterTypes);
+        if (matches.size() == 1) {
+            return matches.get(0);
+        } else if (matches.size() > 1) {
+            for (ExecutableElement match : matches) {
                 processingEnvironment.getMessager().printMessage(
                         Diagnostic.Kind.ERROR,
-                        "Found multiple methods annotated with @" + fqcnToSimpleName( annotationName ) + ". There should only be one.",
-                        match );
+                        "Found multiple methods annotated with @" + fqcnToSimpleName(annotationName) + ". There should only be one.",
+                        match);
             }
         }
         return null;
     }
 
-    public static List<ExecutableElement> getAnnotatedMethods( final TypeElement originalClassElement,
-                                                               final ProcessingEnvironment processingEnvironment,
-                                                               final String annotationName,
-                                                               final TypeMirror requiredReturnType,
-                                                               final String[] requiredParameterTypes ) {
+    public static List<ExecutableElement> getAnnotatedMethods(final TypeElement originalClassElement,
+                                                              final ProcessingEnvironment processingEnvironment,
+                                                              final String annotationName,
+                                                              final TypeMirror requiredReturnType,
+                                                              final String[] requiredParameterTypes) {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
         TypeElement classElement = originalClassElement;
-        while ( true ) {
-            final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
+        while (true) {
+            final List<ExecutableElement> methods = ElementFilter.methodsIn(classElement.getEnclosedElements());
             List<ExecutableElement> matches = new ArrayList<ExecutableElement>();
-            for ( ExecutableElement e : methods ) {
+            for (ExecutableElement e : methods) {
                 final TypeMirror actualReturnType = e.getReturnType();
-                if ( getAnnotation( elementUtils,
-                                    e,
-                                    annotationName ) == null ) {
+                if (getAnnotation(elementUtils,
+                                  e,
+                                  annotationName) == null) {
                     continue;
                 }
                 List<String> problems = new ArrayList<String>();
-                if ( !typeUtils.isAssignable( actualReturnType,
-                                              requiredReturnType ) ) {
-                    problems.add( "return " + requiredReturnType );
+                if (!typeUtils.isAssignable(actualReturnType,
+                                            requiredReturnType)) {
+                    problems.add("return " + requiredReturnType);
                 }
-                if ( !doParametersMatch( typeUtils,
-                                         elementUtils,
-                                         e,
-                                         requiredParameterTypes ) ) {
-                    if ( requiredParameterTypes.length == 0 ) {
-                        problems.add( "take no parameters" );
+                if (!doParametersMatch(typeUtils,
+                                       elementUtils,
+                                       e,
+                                       requiredParameterTypes)) {
+                    if (requiredParameterTypes.length == 0) {
+                        problems.add("take no parameters");
                     } else {
                         StringBuilder sb = new StringBuilder();
-                        sb.append( "take " )
-                                .append( requiredParameterTypes.length )
-                                .append( " parameters of type (" );
+                        sb.append("take ")
+                                .append(requiredParameterTypes.length)
+                                .append(" parameters of type (");
                         boolean first = true;
-                        for ( String p : requiredParameterTypes ) {
-                            if ( !first ) {
-                                sb.append( ", " );
+                        for (String p : requiredParameterTypes) {
+                            if (!first) {
+                                sb.append(", ");
                             }
-                            sb.append( p );
+                            sb.append(p);
                             first = false;
                         }
-                        sb.append( ")" );
-                        problems.add( sb.toString() );
+                        sb.append(")");
+                        problems.add(sb.toString());
                     }
                 }
-                if ( e.getModifiers().contains( Modifier.STATIC ) ) {
-                    problems.add( "be non-static" );
+                if (e.getModifiers().contains(Modifier.STATIC)) {
+                    problems.add("be non-static");
                 }
-                if ( e.getModifiers().contains( Modifier.PRIVATE ) ) {
-                    problems.add( "be non-private" );
+                if (e.getModifiers().contains(Modifier.PRIVATE)) {
+                    problems.add("be non-private");
                 }
-                if ( problems.isEmpty() ) {
-                    matches.add( e );
+                if (problems.isEmpty()) {
+                    matches.add(e);
                 } else {
-                    processingEnvironment.getMessager().printMessage( Diagnostic.Kind.ERROR,
-                                                                      formatProblemsList( annotationName,
-                                                                                          problems ),
-                                                                      e );
+                    processingEnvironment.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                                                     formatProblemsList(annotationName,
+                                                                                        problems),
+                                                                     e);
                 }
             }
-            if ( !matches.isEmpty() ) {
+            if (!matches.isEmpty()) {
                 return matches;
             }
             TypeMirror superclass = classElement.getSuperclass();
-            if ( superclass instanceof DeclaredType ) {
-                classElement = ( TypeElement ) ( ( DeclaredType ) superclass ).asElement();
+            if (superclass instanceof DeclaredType) {
+                classElement = (TypeElement) ((DeclaredType) superclass).asElement();
             } else {
                 break;
             }
@@ -203,41 +203,41 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
         return Collections.emptyList();
     }
 
-    public static AnnotationMirror getAnnotation( final Elements elementUtils,
-                                                  final Element annotationTarget,
-                                                  final String annotationName ) {
-        Iterator i$ = elementUtils.getAllAnnotationMirrors( annotationTarget ).iterator();
+    public static AnnotationMirror getAnnotation(final Elements elementUtils,
+                                                 final Element annotationTarget,
+                                                 final String annotationName) {
+        Iterator i$ = elementUtils.getAllAnnotationMirrors(annotationTarget).iterator();
         AnnotationMirror annotation;
         do {
-            if ( !i$.hasNext() ) {
+            if (!i$.hasNext()) {
                 return null;
             }
-            annotation = ( AnnotationMirror ) i$.next();
-        } while ( !annotationName.contentEquals( getQualifiedName( annotation ) ) );
+            annotation = (AnnotationMirror) i$.next();
+        } while (!annotationName.contentEquals(getQualifiedName(annotation)));
         return annotation;
     }
 
-    private static boolean doParametersMatch( final Types typeUtils,
-                                              final Elements elementUtils,
-                                              final ExecutableElement e,
-                                              final String[] requiredParameterTypes ) {
-        if ( requiredParameterTypes == ANY_PARAMS ) {
+    private static boolean doParametersMatch(final Types typeUtils,
+                                             final Elements elementUtils,
+                                             final ExecutableElement e,
+                                             final String[] requiredParameterTypes) {
+        if (requiredParameterTypes == ANY_PARAMS) {
             return true;
-        } else if ( e.getParameters().size() != requiredParameterTypes.length ) {
+        } else if (e.getParameters().size() != requiredParameterTypes.length) {
             return false;
         } else {
             ArrayList requiredTypes = new ArrayList();
             String[] i = requiredParameterTypes;
             int actualType = requiredParameterTypes.length;
-            for ( int requiredType = 0; requiredType < actualType; ++requiredType ) {
-                String parameterType = i[ requiredType ];
-                requiredTypes.add( elementUtils.getTypeElement( parameterType ).asType() );
+            for (int requiredType = 0; requiredType < actualType; ++requiredType) {
+                String parameterType = i[requiredType];
+                requiredTypes.add(elementUtils.getTypeElement(parameterType).asType());
             }
-            for ( int var9 = 0; var9 < requiredTypes.size(); ++var9 ) {
-                TypeMirror var10 = ( ( VariableElement ) e.getParameters().get( var9 ) ).asType();
-                TypeMirror var11 = ( TypeMirror ) requiredTypes.get( var9 );
-                if ( !typeUtils.isAssignable( var10,
-                                              var11 ) ) {
+            for (int var9 = 0; var9 < requiredTypes.size(); ++var9) {
+                TypeMirror var10 = ((VariableElement) e.getParameters().get(var9)).asType();
+                TypeMirror var11 = (TypeMirror) requiredTypes.get(var9);
+                if (!typeUtils.isAssignable(var10,
+                                            var11)) {
                     return false;
                 }
             }
@@ -245,35 +245,35 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
         }
     }
 
-    public static String getTypeMirrorDeclaredName( final TypeMirror typeMirror ) {
+    public static String getTypeMirrorDeclaredName(final TypeMirror typeMirror) {
         TypeKind returnKind = typeMirror.getKind();
-        if ( returnKind == TypeKind.DECLARED ) {
-            DeclaredType declaredReturnType = ( DeclaredType ) typeMirror;
+        if (returnKind == TypeKind.DECLARED) {
+            DeclaredType declaredReturnType = (DeclaredType) typeMirror;
             return declaredReturnType.toString();
         }
         return null;
     }
 
-    private static String fqcnToSimpleName( final String fqcn ) {
-        int lastIndexOfDot = fqcn.lastIndexOf( 46 );
-        return lastIndexOfDot != -1 ? fqcn.substring( lastIndexOfDot + 1 ) : fqcn;
+    private static String fqcnToSimpleName(final String fqcn) {
+        int lastIndexOfDot = fqcn.lastIndexOf(46);
+        return lastIndexOfDot != -1 ? fqcn.substring(lastIndexOfDot + 1) : fqcn;
     }
 
-    static String formatProblemsList( final String annotationFqcn,
-                                      final List<String> problems ) {
+    static String formatProblemsList(final String annotationFqcn,
+                                     final List<String> problems) {
         StringBuilder msg = new StringBuilder();
-        msg.append( "Methods annotated with @" ).append( fqcnToSimpleName( annotationFqcn ) ).append( " must " );
-        for ( int i = 0; i < problems.size(); ++i ) {
-            if ( problems.size() > 2 && i > 0 ) {
-                msg.append( ", " );
+        msg.append("Methods annotated with @").append(fqcnToSimpleName(annotationFqcn)).append(" must ");
+        for (int i = 0; i < problems.size(); ++i) {
+            if (problems.size() > 2 && i > 0) {
+                msg.append(", ");
             }
-            if ( problems.size() == 2 && i == 1 ) {
-                msg.append( " and " );
+            if (problems.size() == 2 && i == 1) {
+                msg.append(" and ");
             }
-            if ( problems.size() > 2 && i == problems.size() - 1 ) {
-                msg.append( "and " );
+            if (problems.size() > 2 && i == problems.size() - 1) {
+                msg.append("and ");
             }
-            msg.append( problems.get( i ) );
+            msg.append(problems.get(i));
         }
         return msg.toString();
     }

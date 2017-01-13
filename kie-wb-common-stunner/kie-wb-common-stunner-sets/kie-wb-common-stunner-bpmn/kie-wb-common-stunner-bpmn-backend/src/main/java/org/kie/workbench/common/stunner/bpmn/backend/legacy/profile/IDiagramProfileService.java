@@ -30,18 +30,18 @@ public interface IDiagramProfileService {
      * @param name the name of the profile
      * @return the profile with the name in the context of that request
      */
-    public IDiagramProfile findProfile( HttpServletRequest request,
-                                        String name );
+    public IDiagramProfile findProfile(HttpServletRequest request,
+                                       String name);
 
     /**
      * @param request the context
      * @return the profiles for the given context.
      */
-    public Collection<IDiagramProfile> getProfiles( HttpServletRequest request );
+    public Collection<IDiagramProfile> getProfiles(HttpServletRequest request);
 
     /**
      * Initialize the service with a particular context
      * @param servletContext
      */
-    public void init( ServletContext servletContext );
+    public void init(ServletContext servletContext);
 }

@@ -32,55 +32,55 @@ public class DefaultDefinitionAdapter implements DefinitionAdapter<DefinitionImp
     }
 
     @Override
-    public String getId( final DefinitionImpl pojo ) {
+    public String getId(final DefinitionImpl pojo) {
         return pojo.getId();
     }
 
     @Override
-    public String getCategory( final DefinitionImpl pojo ) {
+    public String getCategory(final DefinitionImpl pojo) {
         return pojo.getCategory();
     }
 
     @Override
-    public String getTitle( final DefinitionImpl pojo ) {
+    public String getTitle(final DefinitionImpl pojo) {
         return pojo.getTitle();
     }
 
     @Override
-    public String getDescription( final DefinitionImpl pojo ) {
+    public String getDescription(final DefinitionImpl pojo) {
         return pojo.getDescription();
     }
 
     @Override
-    public Set<String> getLabels( final DefinitionImpl pojo ) {
+    public Set<String> getLabels(final DefinitionImpl pojo) {
         return pojo.getLabels();
     }
 
     @Override
-    public Set<?> getPropertySets( final DefinitionImpl pojo ) {
+    public Set<?> getPropertySets(final DefinitionImpl pojo) {
         return pojo.getPropertySets();
     }
 
     @Override
-    public Set<?> getProperties( final DefinitionImpl pojo ) {
+    public Set<?> getProperties(final DefinitionImpl pojo) {
         return pojo.getProperties();
     }
 
     @Override
-    public Object getMetaProperty( final PropertyMetaTypes metaType,
-                                   final DefinitionImpl pojo ) {
+    public Object getMetaProperty(final PropertyMetaTypes metaType,
+                                  final DefinitionImpl pojo) {
         return null;
     }
 
     @Override
-    public Class<? extends ElementFactory> getGraphFactoryType( final DefinitionImpl pojo ) {
+    public Class<? extends ElementFactory> getGraphFactoryType(final DefinitionImpl pojo) {
         // TODO
         return null;
     }
 
     @Override
-    public boolean accepts( final Class<?> pojo ) {
-        return pojo.getName().equals( DefinitionImpl.class.getName() );
+    public boolean accepts(final Class<?> pojo) {
+        return pojo.getName().equals(DefinitionImpl.class.getName());
     }
 
     @Override

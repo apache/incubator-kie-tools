@@ -39,19 +39,19 @@ public class ReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef( label = FIELDDEF_CALLED_ELEMENT, property = "value" )
+    @FieldDef(label = FIELDDEF_CALLED_ELEMENT, property = "value")
     @ListBox
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
-            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.CalledElementFormProvider" )
+            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.CalledElementFormProvider")
     @Valid
     protected CalledElement calledElement;
 
     public ReusableSubprocessTaskExecutionSet() {
-        this( new CalledElement() );
+        this(new CalledElement());
     }
 
-    public ReusableSubprocessTaskExecutionSet( @MapsTo( "calledElement" ) CalledElement calledElement ) {
+    public ReusableSubprocessTaskExecutionSet(final @MapsTo("calledElement") CalledElement calledElement) {
         this.calledElement = calledElement;
     }
 
@@ -63,7 +63,7 @@ public class ReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
         return calledElement;
     }
 
-    public void setCalledElement( CalledElement calledElement ) {
+    public void setCalledElement(final CalledElement calledElement) {
         this.calledElement = calledElement;
     }
 }

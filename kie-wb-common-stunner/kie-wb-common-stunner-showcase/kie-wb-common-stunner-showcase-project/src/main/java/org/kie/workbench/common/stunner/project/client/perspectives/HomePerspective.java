@@ -42,7 +42,7 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
 @ApplicationScoped
-@WorkbenchPerspective( identifier = PerspectiveIds.HOME, isDefault = true )
+@WorkbenchPerspective(identifier = PerspectiveIds.HOME, isDefault = true)
 public class HomePerspective {
 
     @Inject
@@ -85,34 +85,34 @@ public class HomePerspective {
 
     private void buildPerspective() {
 
-        this.perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        this.perspective.setName( "Administration" );
+        this.perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        this.perspective.setName("Administration");
 
-        final PanelDefinition west = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        west.setWidth( 400 );
-        west.setMinWidth( 350 );
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "org.kie.guvnor.explorer" ) ) );
+        final PanelDefinition west = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        west.setWidth(400);
+        west.setMinWidth(350);
+        west.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("org.kie.guvnor.explorer")));
 
-        this.perspective.getRoot().insertChild( CompassPosition.WEST,
-                                                west );
+        this.perspective.getRoot().insertChild(CompassPosition.WEST,
+                                               west);
     }
 
     private void buildDocks() {
-        stunnerWorkbenchEditorDocks.setup( PerspectiveIds.HOME );
+        stunnerWorkbenchEditorDocks.setup(PerspectiveIds.HOME);
     }
 
     private void buildMenuBar() {
         this.menus = MenuFactory
-                .newTopLevelMenu( "Projects" )
-                .respondsWith( () -> placeManager.goTo( "org.kie.guvnor.explorer" ) )
+                .newTopLevelMenu("Projects")
+                .respondsWith(() -> placeManager.goTo("org.kie.guvnor.explorer"))
                 .endMenu()
 
-                .newTopLevelMenu( "New" )
-                .withItems( newResourcesMenu.getMenuItems() )
+                .newTopLevelMenu("New")
+                .withItems(newResourcesMenu.getMenuItems())
                 .endMenu()
 
-                .newTopLevelMenu( "Tools" )
-                .withItems( projectMenu.getMenuItems() )
+                .newTopLevelMenu("Tools")
+                .withItems(projectMenu.getMenuItems())
                 .endMenu()
 
                 .build();

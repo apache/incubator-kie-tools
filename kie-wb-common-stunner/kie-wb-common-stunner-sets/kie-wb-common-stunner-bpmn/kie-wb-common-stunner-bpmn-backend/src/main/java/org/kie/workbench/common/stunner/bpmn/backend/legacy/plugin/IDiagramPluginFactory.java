@@ -28,5 +28,5 @@ public interface IDiagramPluginFactory {
      * @param request the current servlet request.
      * @return a set of created plugins.
      */
-    public Set<IDiagramPlugin> getPlugins( HttpServletRequest request );
+    public Set<IDiagramPlugin> getPlugins(HttpServletRequest request);
 }

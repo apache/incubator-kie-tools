@@ -30,18 +30,18 @@ import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiag
 public class BPMNDiagramNewResourceHandler extends AbstractProjectDiagramNewResourceHandler<BPMNDiagramResourceType> {
 
     protected BPMNDiagramNewResourceHandler() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public BPMNDiagramNewResourceHandler( final DefinitionManager definitionManager,
-                                          final ClientProjectDiagramService projectDiagramServices,
-                                          final BPMNDiagramResourceType projectDiagramResourceType ) {
-        super( definitionManager,
-               projectDiagramServices,
-               projectDiagramResourceType );
+    public BPMNDiagramNewResourceHandler(final DefinitionManager definitionManager,
+                                         final ClientProjectDiagramService projectDiagramServices,
+                                         final BPMNDiagramResourceType projectDiagramResourceType) {
+        super(definitionManager,
+              projectDiagramServices,
+              projectDiagramResourceType);
     }
 
     @Override
@@ -65,6 +65,6 @@ public class BPMNDiagramNewResourceHandler extends AbstractProjectDiagramNewReso
     }
 
     private BPMNDiagramResourceType getBPMNDiagramResourceType() {
-        return ( BPMNDiagramResourceType ) super.getResourceType();
+        return (BPMNDiagramResourceType) super.getResourceType();
     }
 }

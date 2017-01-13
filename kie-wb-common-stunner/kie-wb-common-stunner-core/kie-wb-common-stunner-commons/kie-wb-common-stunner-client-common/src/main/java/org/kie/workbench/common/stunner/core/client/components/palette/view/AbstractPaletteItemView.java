@@ -23,7 +23,7 @@ public abstract class AbstractPaletteItemView<I extends PaletteItem, V>
 
     protected final I item;
 
-    public AbstractPaletteItemView( final I item ) {
+    public AbstractPaletteItemView(final I item) {
         this.item = item;
     }
 
@@ -33,15 +33,15 @@ public abstract class AbstractPaletteItemView<I extends PaletteItem, V>
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof AbstractPaletteItemView ) ) {
+        if (!(o instanceof AbstractPaletteItemView)) {
             return false;
         }
-        AbstractPaletteItemView that = ( AbstractPaletteItemView ) o;
-        return item != null && item.getId().equals( that.item.getId() );
+        AbstractPaletteItemView that = (AbstractPaletteItemView) o;
+        return item != null && item.getId().equals(that.item.getId());
     }
 
     @Override

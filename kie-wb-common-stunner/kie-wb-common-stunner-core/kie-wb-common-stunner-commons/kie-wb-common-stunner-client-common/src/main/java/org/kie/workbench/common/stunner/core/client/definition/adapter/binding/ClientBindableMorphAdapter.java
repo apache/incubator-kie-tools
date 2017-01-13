@@ -35,37 +35,37 @@ public class ClientBindableMorphAdapter<S> extends BindableMorphAdapter<S> {
     SyncBeanManager beanManager;
 
     @Inject
-    public ClientBindableMorphAdapter( final SyncBeanManager beanManager,
-                                       final FactoryManager factoryManager,
-                                       final DefinitionUtils definitionUtils ) {
-        super( definitionUtils,
-               factoryManager );
+    public ClientBindableMorphAdapter(final SyncBeanManager beanManager,
+                                      final FactoryManager factoryManager,
+                                      final DefinitionUtils definitionUtils) {
+        super(definitionUtils,
+              factoryManager);
         this.beanManager = beanManager;
     }
 
     @PostConstruct
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void init() {
         // Morph definitions.
-        Collection<SyncBeanDef<MorphDefinitionProvider>> beanMorphAdapters = beanManager.lookupBeans( MorphDefinitionProvider.class );
-        for ( SyncBeanDef<MorphDefinitionProvider> morphAdapter : beanMorphAdapters ) {
+        Collection<SyncBeanDef<MorphDefinitionProvider>> beanMorphAdapters = beanManager.lookupBeans(MorphDefinitionProvider.class);
+        for (SyncBeanDef<MorphDefinitionProvider> morphAdapter : beanMorphAdapters) {
             MorphDefinitionProvider provider = morphAdapter.getInstance();
-            morphDefinitions.addAll( provider.getMorphDefinitions() );
+            morphDefinitions.addAll(provider.getMorphDefinitions());
         }
     }
 
     @Override
-    protected <T> T doMerge( final S source,
-                             final T result ) {
-        return ClientBindingUtils.merge( source,
-                                         result );
+    protected <T> T doMerge(final S source,
+                            final T result) {
+        return ClientBindingUtils.merge(source,
+                                        result);
     }
 
     @Override
-    public boolean accepts( final Class<?> type ) {
+    public boolean accepts(final Class<?> type) {
         try {
-            DataBinder.forType( type );
-        } catch ( Exception e ) {
+            DataBinder.forType(type);
+        } catch (Exception e) {
             return false;
         }
         return true;

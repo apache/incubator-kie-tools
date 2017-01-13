@@ -18,9 +18,9 @@ package org.kie.workbench.common.stunner.shapes.def;
 
 public interface RectangleShapeDef<W> extends BasicShapeWithTitleDef<W> {
 
-    double getWidth( final W element );
+    double getWidth(final W element);
 
-    double getHeight( final W element );
+    double getHeight(final W element);
 
-    double getCornerRadius( final W element );
+    double getCornerRadius(final W element);
 }

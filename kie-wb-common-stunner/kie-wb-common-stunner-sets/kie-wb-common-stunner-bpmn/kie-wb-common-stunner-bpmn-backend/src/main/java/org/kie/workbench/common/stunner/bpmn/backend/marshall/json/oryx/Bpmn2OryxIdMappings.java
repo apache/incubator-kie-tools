@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 public class Bpmn2OryxIdMappings extends BaseOryxIdMappings {
 
     @Inject
-    public Bpmn2OryxIdMappings( final DefinitionManager definitionManager ) {
-        super( definitionManager );
+    public Bpmn2OryxIdMappings(final DefinitionManager definitionManager) {
+        super(definitionManager);
     }
 }

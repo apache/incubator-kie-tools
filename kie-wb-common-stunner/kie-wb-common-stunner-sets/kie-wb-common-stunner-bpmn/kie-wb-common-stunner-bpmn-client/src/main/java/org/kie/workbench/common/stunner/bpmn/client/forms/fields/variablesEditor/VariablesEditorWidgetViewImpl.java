@@ -54,7 +54,7 @@ import org.kie.workbench.common.stunner.bpmn.service.DataTypesService;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
-@Templated( "VariablesEditorWidget.html#widget" )
+@Templated("VariablesEditorWidget.html#widget")
 public class VariablesEditorWidgetViewImpl extends Composite implements VariablesEditorWidgetView,
                                                                         HasValue<String> {
 
@@ -85,7 +85,7 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
      */
     @Inject
     @DataField
-    @Table( root = "tbody" )
+    @Table(root = "tbody")
     protected ListWidget<VariableRow, VariableListItemWidgetViewImpl> variableRows;
 
     @Inject
@@ -97,134 +97,134 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
     }
 
     @Override
-    public void setValue( String value ) {
-        setValue( value,
-                  false );
+    public void setValue(final String value) {
+        setValue(value,
+                 false);
     }
 
     @Override
-    public void setValue( String value,
-                          boolean fireEvents ) {
-        if ( dataTypes == null ) {
-            getDataTypes( value,
-                          fireEvents );
+    public void setValue(final String value,
+                         final boolean fireEvents) {
+        if (dataTypes == null) {
+            getDataTypes(value,
+                         fireEvents);
         } else {
-            doSetValue( value,
-                        fireEvents,
-                        false );
+            doSetValue(value,
+                       fireEvents,
+                       false);
         }
     }
 
-    protected void doSetValue( String value,
-                               boolean fireEvents,
-                               boolean initializeView ) {
+    protected void doSetValue(final String value,
+                              final boolean fireEvents,
+                              final boolean initializeView) {
         String oldValue = sVariables;
         sVariables = value;
-        if ( initializeView ) {
+        if (initializeView) {
             initView();
         }
-        if ( fireEvents ) {
-            ValueChangeEvent.fireIfNotEqual( this,
-                                             oldValue,
-                                             sVariables );
+        if (fireEvents) {
+            ValueChangeEvent.fireIfNotEqual(this,
+                                            oldValue,
+                                            sVariables);
         }
     }
 
-    protected void setDataTypes( final List<String> dataTypes,
-                                 final List<String> dataTypeDisplayNames ) {
+    protected void setDataTypes(final List<String> dataTypes,
+                                final List<String> dataTypeDisplayNames) {
         this.dataTypes = dataTypes;
         this.dataTypeDisplayNames = dataTypeDisplayNames;
-        presenter.setDataTypes( dataTypes,
-                                dataTypeDisplayNames );
+        presenter.setDataTypes(dataTypes,
+                               dataTypeDisplayNames);
     }
 
-    protected void getDataTypes( final String value,
-                                 final boolean fireEvents ) {
-        final List<String> simpleDataTypes = new ArrayList<String>( Arrays.asList( "Boolean",
-                                                                                   "Float",
-                                                                                   "Integer",
-                                                                                   "Object",
-                                                                                   "String" ) );
-        final List<String> simpleDataTypeDisplayNames = new ArrayList<String>( Arrays.asList( "Boolean",
-                                                                                              "Float",
-                                                                                              "Integer",
-                                                                                              "Object",
-                                                                                              "String" ) );
+    protected void getDataTypes(final String value,
+                                final boolean fireEvents) {
+        final List<String> simpleDataTypes = new ArrayList<String>(Arrays.asList("Boolean",
+                                                                                 "Float",
+                                                                                 "Integer",
+                                                                                 "Object",
+                                                                                 "String"));
+        final List<String> simpleDataTypeDisplayNames = new ArrayList<String>(Arrays.asList("Boolean",
+                                                                                            "Float",
+                                                                                            "Integer",
+                                                                                            "Object",
+                                                                                            "String"));
         MessageBuilder.createCall(
                 new RemoteCallback<List<String>>() {
-                    public void callback( List<String> serverDataTypes ) {
-                        List<List<String>> mergedDataTypes = mergeDataTypes( simpleDataTypes,
-                                                                             simpleDataTypeDisplayNames,
-                                                                             serverDataTypes );
-                        setDataTypes( mergedDataTypes.get( 0 ),
-                                      mergedDataTypes.get( 1 ) );
-                        doSetValue( value,
-                                    fireEvents,
-                                    true );
+                    public void callback(final List<String> serverDataTypes) {
+                        List<List<String>> mergedDataTypes = mergeDataTypes(simpleDataTypes,
+                                                                            simpleDataTypeDisplayNames,
+                                                                            serverDataTypes);
+                        setDataTypes(mergedDataTypes.get(0),
+                                     mergedDataTypes.get(1));
+                        doSetValue(value,
+                                   fireEvents,
+                                   true);
                     }
 
                     ;
                 },
                 new BusErrorCallback() {
-                    public boolean error( Message message,
-                                          Throwable t ) {
-                        notification.fire( new NotificationEvent( StunnerFormsClientFieldsConstants.INSTANCE.Error_retrieving_datatypes(),
-                                                                  NotificationEvent.NotificationType.ERROR ) );
-                        setDataTypes( simpleDataTypes,
-                                      simpleDataTypeDisplayNames );
-                        doSetValue( value,
-                                    fireEvents,
-                                    true );
+                    public boolean error(final Message message,
+                                         final Throwable t) {
+                        notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.INSTANCE.Error_retrieving_datatypes(),
+                                                                NotificationEvent.NotificationType.ERROR));
+                        setDataTypes(simpleDataTypes,
+                                     simpleDataTypeDisplayNames);
+                        doSetValue(value,
+                                   fireEvents,
+                                   true);
                         return false;
                     }
                 },
-                DataTypesService.class ).getDataTypeNames();
+                DataTypesService.class).getDataTypeNames();
     }
 
-    private List<List<String>> mergeDataTypes( List<String> simpleDataTypes,
-                                               List<String> simpleDataTypeDisplayNames,
-                                               List<String> serverDataTypes ) {
-        List<List<String>> results = new ArrayList<List<String>>( 2 );
+    private List<List<String>> mergeDataTypes(final List<String> simpleDataTypes,
+                                              final List<String> simpleDataTypeDisplayNames,
+                                              final List<String> serverDataTypes) {
+        List<List<String>> results = new ArrayList<List<String>>(2);
         List<String> allDataTypes = new ArrayList<String>();
         List<String> allDataTypeDisplayNames = new ArrayList<String>();
-        allDataTypes.addAll( simpleDataTypes );
-        allDataTypeDisplayNames.addAll( simpleDataTypeDisplayNames );
+        allDataTypes.addAll(simpleDataTypes);
+        allDataTypeDisplayNames.addAll(simpleDataTypeDisplayNames);
 
         // Create sorted map with DataTypeDisplayNames as the keys
         Map<String, String> mapServerDataTypeDisplayNames = new TreeMap<String, String>();
-        for ( String serverDataType : serverDataTypes ) {
-            mapServerDataTypeDisplayNames.put( StringUtils.createDataTypeDisplayName( serverDataType ),
-                                               serverDataType );
+        for (String serverDataType : serverDataTypes) {
+            mapServerDataTypeDisplayNames.put(StringUtils.createDataTypeDisplayName(serverDataType),
+                                              serverDataType);
         }
 
         // Add DataTypes in order sorted by DataTypeDisplayNames
-        for ( Map.Entry<String, String> entry : mapServerDataTypeDisplayNames.entrySet() ) {
-            allDataTypes.add( entry.getValue() );
-            allDataTypeDisplayNames.add( entry.getKey() );
+        for (Map.Entry<String, String> entry : mapServerDataTypeDisplayNames.entrySet()) {
+            allDataTypes.add(entry.getValue());
+            allDataTypeDisplayNames.add(entry.getKey());
         }
 
-        results.add( allDataTypes );
-        results.add( allDataTypeDisplayNames );
+        results.add(allDataTypes);
+        results.add(allDataTypeDisplayNames);
 
         return results;
     }
 
     @Override
     public void doSave() {
-        String newValue = presenter.serializeVariables( getVariableRows() );
-        setValue( newValue,
-                  true );
+        String newValue = presenter.serializeVariables(getVariableRows());
+        setValue(newValue,
+                 true);
     }
 
     protected void initView() {
-        List<VariableRow> arrVariableRows = presenter.deserializeVariables( sVariables );
-        setVariableRows( arrVariableRows );
+        List<VariableRow> arrVariableRows = presenter.deserializeVariables(sVariables);
+        setVariableRows(arrVariableRows);
     }
 
     @Override
-    public HandlerRegistration addValueChangeHandler( ValueChangeHandler<String> handler ) {
-        return addHandler( handler,
-                           ValueChangeEvent.getType() );
+    public HandlerRegistration addValueChangeHandler(final ValueChangeHandler<String> handler) {
+        return addHandler(handler,
+                          ValueChangeEvent.getType());
     }
 
     /**
@@ -232,16 +232,16 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
      * @param name
      * @return
      */
-    public boolean isDuplicateName( String name ) {
-        return presenter.isDuplicateName( name );
+    public boolean isDuplicateName(final String name) {
+        return presenter.isDuplicateName(name);
     }
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init(final Presenter presenter) {
         this.presenter = presenter;
-        addVarButton.setIcon( IconType.PLUS );
-        nameth.setInnerText( "Name" );
-        datatypeth.setInnerText( "Data Type" );
+        addVarButton.setIcon(IconType.PLUS);
+        nameth.setInnerText("Name");
+        datatypeth.setInnerText("Data Type");
     }
 
     @Override
@@ -251,21 +251,21 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
 
     @Override
     public void setTableDisplayStyle() {
-        table.getStyle().setDisplay( Style.Display.TABLE );
+        table.getStyle().setDisplay(Style.Display.TABLE);
     }
 
     @Override
     public void setNoneDisplayStyle() {
-        table.getStyle().setDisplay( Style.Display.NONE );
+        table.getStyle().setDisplay(Style.Display.NONE);
     }
 
     @Override
-    public void setVariableRows( List<VariableRow> rows ) {
-        variableRows.setValue( rows );
-        for ( int i = 0; i < getVariableRowsCount(); i++ ) {
-            VariableListItemWidgetView widget = getVariableWidget( i );
-            widget.setDataTypes( dataTypeListBoxValues );
-            widget.setParentWidget( presenter );
+    public void setVariableRows(final List<VariableRow> rows) {
+        variableRows.setValue(rows);
+        for (int i = 0; i < getVariableRowsCount(); i++) {
+            VariableListItemWidgetView widget = getVariableWidget(i);
+            widget.setDataTypes(dataTypeListBoxValues);
+            widget.setParentWidget(presenter);
         }
     }
 
@@ -275,25 +275,25 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
     }
 
     @Override
-    public VariableListItemWidgetView getVariableWidget( int index ) {
-        return variableRows.getComponent( index );
+    public VariableListItemWidgetView getVariableWidget(final int index) {
+        return variableRows.getComponent(index);
     }
 
-    public void setVariablesDataTypes( ListBoxValues dataTypeListBoxValues ) {
+    public void setVariablesDataTypes(final ListBoxValues dataTypeListBoxValues) {
         this.dataTypeListBoxValues = dataTypeListBoxValues;
-        for ( int i = 0; i < getVariableRowsCount(); i++ ) {
-            getVariableWidget( i ).setDataTypes( dataTypeListBoxValues );
+        for (int i = 0; i < getVariableRowsCount(); i++) {
+            getVariableWidget(i).setDataTypes(dataTypeListBoxValues);
         }
     }
 
-    @EventHandler( "addVarButton" )
-    public void handleAddVarButton( ClickEvent e ) {
+    @EventHandler("addVarButton")
+    public void handleAddVarButton(final ClickEvent e) {
         presenter.addVariable();
     }
 
-    public void removeVariable( VariableRow variableRow ) {
-        presenter.removeVariable( variableRow );
-        if ( getVariableRows().isEmpty() ) {
+    public void removeVariable(final VariableRow variableRow) {
+        presenter.removeVariable(variableRow);
+        if (getVariableRows().isEmpty()) {
             setNoneDisplayStyle();
         }
     }

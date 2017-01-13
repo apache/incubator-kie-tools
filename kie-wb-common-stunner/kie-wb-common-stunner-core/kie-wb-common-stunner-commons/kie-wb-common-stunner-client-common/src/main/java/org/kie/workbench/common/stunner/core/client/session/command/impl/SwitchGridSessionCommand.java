@@ -30,37 +30,37 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Abstr
     private CanvasGrid grid;
 
     public SwitchGridSessionCommand() {
-        super( true );
+        super(true);
     }
 
     @Override
-    public SwitchGridSessionCommand bind( final AbstractClientReadOnlySession session ) {
-        super.bind( session );
+    public SwitchGridSessionCommand bind(final AbstractClientReadOnlySession session) {
+        super.bind(session);
         hideGrid();
         return this;
     }
 
     @Override
-    public <T> void execute( final Callback<T> callback ) {
-        checkNotNull( "callback",
-                      callback );
-        if ( isGridVisible() ) {
+    public <T> void execute(final Callback<T> callback) {
+        checkNotNull("callback",
+                     callback);
+        if (isGridVisible()) {
             hideGrid();
         } else {
             showGrid();
         }
         // Run the callback.
-        callback.onSuccess( null );
+        callback.onSuccess(null);
     }
 
     private void showGrid() {
         this.grid = DefaultCanvasGrid.INSTANCE;
-        getSession().getCanvas().setGrid( this.grid );
+        getSession().getCanvas().setGrid(this.grid);
     }
 
     private void hideGrid() {
         this.grid = null;
-        getSession().getCanvas().setGrid( this.grid );
+        getSession().getCanvas().setGrid(this.grid);
     }
 
     private boolean isGridVisible() {

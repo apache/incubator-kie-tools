@@ -40,12 +40,12 @@ public class AssignmentRow {
         this.id = lastId++;
     }
 
-    public AssignmentRow( String name,
-                          Variable.VariableType variableType,
-                          String dataType,
-                          String customDataType,
-                          String processVar,
-                          String constant ) {
+    public AssignmentRow(final String name,
+                         final Variable.VariableType variableType,
+                         final String dataType,
+                         final String customDataType,
+                         final String processVar,
+                         final String constant) {
         this.id = lastId++;
         this.name = name;
         this.variableType = variableType;
@@ -59,7 +59,7 @@ public class AssignmentRow {
         return id;
     }
 
-    public void setId( long id ) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -67,7 +67,7 @@ public class AssignmentRow {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -75,7 +75,7 @@ public class AssignmentRow {
         return variableType;
     }
 
-    public void setVariableType( Variable.VariableType variableType ) {
+    public void setVariableType(final Variable.VariableType variableType) {
         this.variableType = variableType;
     }
 
@@ -83,7 +83,7 @@ public class AssignmentRow {
         return dataType;
     }
 
-    public void setDataType( String dataType ) {
+    public void setDataType(final String dataType) {
         this.dataType = dataType;
     }
 
@@ -91,7 +91,7 @@ public class AssignmentRow {
         return customDataType;
     }
 
-    public void setCustomDataType( String customDataType ) {
+    public void setCustomDataType(final String customDataType) {
         this.customDataType = customDataType;
     }
 
@@ -99,7 +99,7 @@ public class AssignmentRow {
         return processVar;
     }
 
-    public void setProcessVar( String processVar ) {
+    public void setProcessVar(final String processVar) {
         this.processVar = processVar;
     }
 
@@ -107,18 +107,18 @@ public class AssignmentRow {
         return constant;
     }
 
-    public void setConstant( String constant ) {
+    public void setConstant(final String constant) {
         this.constant = constant;
     }
 
     public boolean isComplete() {
-        if ( name == null || name.isEmpty() ) {
+        if (name == null || name.isEmpty()) {
             return false;
-        } else if ( ( dataType == null || dataType.isEmpty() )
-                && ( customDataType == null || customDataType.isEmpty() ) ) {
+        } else if ((dataType == null || dataType.isEmpty())
+                && (customDataType == null || customDataType.isEmpty())) {
             return false;
-        } else if ( ( processVar == null || processVar.isEmpty() )
-                && ( constant == null || constant.isEmpty() ) ) {
+        } else if ((processVar == null || processVar.isEmpty())
+                && (constant == null || constant.isEmpty())) {
             return false;
         } else {
             return true;
@@ -126,23 +126,23 @@ public class AssignmentRow {
     }
 
     @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj ) {
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
         }
-        if ( obj == null ) {
+        if (obj == null) {
             return false;
         }
-        if ( getClass() != obj.getClass() ) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        AssignmentRow other = ( AssignmentRow ) obj;
-        return ( id == other.id );
+        AssignmentRow other = (AssignmentRow) obj;
+        return (id == other.id);
     }
 
     @Override
     public int hashCode() {
-        return ~~( int ) ( id ^ ( id >>> 32 ) );
+        return ~~(int) (id ^ (id >>> 32));
     }
 
     @Override

@@ -32,83 +32,83 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 
 public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand<T, V> {
 
-    private static Logger LOGGER = Logger.getLogger( AbstractCompositeCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(AbstractCompositeCommand.class.getName());
 
     protected final List<Command<T, V>> commands = new LinkedList<>();
     private boolean initialized = false;
 
-    public AbstractCompositeCommand<T, V> addCommand( final Command<T, V> command ) {
-        commands.add( command );
+    public AbstractCompositeCommand<T, V> addCommand(final Command<T, V> command) {
+        commands.add(command);
         return this;
     }
 
-    protected abstract CommandResult<V> doAllow( final T context,
-                                                 final Command<T, V> command );
+    protected abstract CommandResult<V> doAllow(final T context,
+                                                final Command<T, V> command);
 
-    protected abstract CommandResult<V> doExecute( final T context,
-                                                   final Command<T, V> command );
+    protected abstract CommandResult<V> doExecute(final T context,
+                                                  final Command<T, V> command);
 
-    protected abstract CommandResult<V> doUndo( final T context,
-                                                final Command<T, V> command );
+    protected abstract CommandResult<V> doUndo(final T context,
+                                               final Command<T, V> command);
 
     @Override
-    public CommandResult<V> allow( final T context ) {
-        ensureInitialized( context );
+    public CommandResult<V> allow(final T context) {
+        ensureInitialized(context);
         final List<CommandResult<V>> results = new LinkedList<>();
-        for ( final Command<T, V> command : commands ) {
-            final CommandResult<V> result = doAllow( context,
-                                                     command );
-            results.add( result );
-            if ( CommandUtils.isError( result ) ) {
+        for (final Command<T, V> command : commands) {
+            final CommandResult<V> result = doAllow(context,
+                                                    command);
+            results.add(result);
+            if (CommandUtils.isError(result)) {
                 break;
             }
         }
-        return buildResult( results );
+        return buildResult(results);
     }
 
     @Override
-    public CommandResult<V> execute( final T context ) {
-        final CommandResult<V> allowResult = this.allow( context );
-        if ( !CommandUtils.isError( allowResult ) ) {
+    public CommandResult<V> execute(final T context) {
+        final CommandResult<V> allowResult = this.allow(context);
+        if (!CommandUtils.isError(allowResult)) {
             final Stack<Command<T, V>> executedCommands = new Stack<>();
             final List<CommandResult<V>> results = new LinkedList<>();
-            for ( final Command<T, V> command : commands ) {
-                LOGGER.log( Level.FINE,
-                            "Checking execution for command [" + command + "]" );
-                final CommandResult<V> violations = doExecute( context,
-                                                               command );
-                LOGGER.log( Level.FINE,
-                            "Execution of command [" + command + "] finished - Violations [" + violations + "]" );
-                results.add( violations );
-                if ( CommandResult.Type.ERROR.equals( violations.getType() ) ) {
-                    undoMultipleExecutedCommands( context,
-                                                  executedCommands );
+            for (final Command<T, V> command : commands) {
+                LOGGER.log(Level.FINE,
+                           "Checking execution for command [" + command + "]");
+                final CommandResult<V> violations = doExecute(context,
+                                                              command);
+                LOGGER.log(Level.FINE,
+                           "Execution of command [" + command + "] finished - Violations [" + violations + "]");
+                results.add(violations);
+                if (CommandResult.Type.ERROR.equals(violations.getType())) {
+                    undoMultipleExecutedCommands(context,
+                                                 executedCommands);
                     break;
                 }
             }
-            return buildResult( results );
+            return buildResult(results);
         }
         return allowResult;
     }
 
-    protected CommandResult<V> undo( final T context,
-                                     final boolean reverse ) {
+    protected CommandResult<V> undo(final T context,
+                                    final boolean reverse) {
         final List<CommandResult<V>> results = new LinkedList<>();
         final List<Command<T, V>> collected = reverse ?
-                commands.stream().collect( reverse() ) : commands.stream().collect( forward() );
-        collected.forEach( command -> {
-            LOGGER.log( Level.FINE,
-                        "Undoing command [" + command + "]" );
-            final CommandResult<V> violations = doUndo( context,
-                                                        command );
-            LOGGER.log( Level.FINE,
-                        "Undo of command [" + command + "] finished - Violations [" + violations + "]" );
-            results.add( violations );
-        } );
-        return buildResult( results );
+                commands.stream().collect(reverse()) : commands.stream().collect(forward());
+        collected.forEach(command -> {
+            LOGGER.log(Level.FINE,
+                       "Undoing command [" + command + "]");
+            final CommandResult<V> violations = doUndo(context,
+                                                       command);
+            LOGGER.log(Level.FINE,
+                       "Undo of command [" + command + "] finished - Violations [" + violations + "]");
+            results.add(violations);
+        });
+        return buildResult(results);
     }
 
-    protected AbstractCompositeCommand<T, V> initialize( final T context ) {
+    protected AbstractCompositeCommand<T, V> initialize(final T context) {
         // Nothing to do by default. Implementation can add commands here.
         this.initialized = true;
         return this;
@@ -127,42 +127,42 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
         return initialized;
     }
 
-    protected void ensureInitialized( final T context ) {
-        if ( !isInitialized() ) {
-            initialize( context );
+    protected void ensureInitialized(final T context) {
+        if (!isInitialized()) {
+            initialize(context);
         }
     }
 
-    private CommandResult<V> buildResult( final List<CommandResult<V>> results ) {
-        final CommandResult.Type[] type = { CommandResult.Type.INFO };
+    private CommandResult<V> buildResult(final List<CommandResult<V>> results) {
+        final CommandResult.Type[] type = {CommandResult.Type.INFO};
         String message = "Found [" + results.size() + "] results.";
         final List<V> violations = new LinkedList<>();
-        results.stream().forEach( rr -> {
-            if ( hasMoreSeverity( rr.getType(),
-                                  type[ 0 ] ) ) {
-                type[ 0 ] = rr.getType();
+        results.stream().forEach(rr -> {
+            if (hasMoreSeverity(rr.getType(),
+                                type[0])) {
+                type[0] = rr.getType();
             }
             final Iterable<V> rrIter = rr.getViolations();
-            if ( null != rrIter ) {
-                rrIter.forEach( violations::add );
+            if (null != rrIter) {
+                rrIter.forEach(violations::add);
             }
-        } );
-        return new CommandResultImpl<>( type[ 0 ],
-                                        message,
-                                        violations );
+        });
+        return new CommandResultImpl<>(type[0],
+                                       message,
+                                       violations);
     }
 
-    private boolean hasMoreSeverity( final CommandResult.Type type,
-                                     final CommandResult.Type reference ) {
+    private boolean hasMoreSeverity(final CommandResult.Type type,
+                                    final CommandResult.Type reference) {
         return type.getSeverity() > reference.getSeverity();
     }
 
-    private CommandResult<V> undoMultipleExecutedCommands( final T context,
-                                                           final List<Command<T, V>> commandStack ) {
+    private CommandResult<V> undoMultipleExecutedCommands(final T context,
+                                                          final List<Command<T, V>> commandStack) {
         final List<CommandResult<V>> results = new LinkedList<>();
-        commandStack.stream().forEach( command -> results.add( doUndo( context,
-                                                                       command ) ) );
-        return buildResult( results );
+        commandStack.stream().forEach(command -> results.add(doUndo(context,
+                                                                    command)));
+        return buildResult(results);
     }
 
     private static <T> Collector<T, ?, List<T>> forward() {
@@ -170,18 +170,18 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
     }
 
     private static <T> Collector<T, ?, List<T>> reverse() {
-        return Collectors.collectingAndThen( Collectors.toList(),
-                                             l -> {
-                                                 Collections.reverse( l );
-                                                 return l;
-                                             } );
+        return Collectors.collectingAndThen(Collectors.toList(),
+                                            l -> {
+                                                Collections.reverse(l);
+                                                return l;
+                                            });
     }
 
     @Override
     public String toString() {
         String s = "[" + getClass().getName() + "]";
-        for ( int x = 0; x < commands.size(); x++ ) {
-            s += " {(" + x + ") [" + commands.get( x ) + "]} ";
+        for (int x = 0; x < commands.size(); x++) {
+            s += " {(" + x + ") [" + commands.get(x) + "]} ";
         }
         return s;
     }

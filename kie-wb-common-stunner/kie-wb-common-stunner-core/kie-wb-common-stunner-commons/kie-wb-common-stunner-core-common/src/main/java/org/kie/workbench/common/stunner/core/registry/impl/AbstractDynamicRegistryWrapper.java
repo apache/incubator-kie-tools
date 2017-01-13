@@ -22,17 +22,17 @@ public abstract class AbstractDynamicRegistryWrapper<T, R extends DynamicRegistr
         extends AbstractRegistryWrapper<T, R>
         implements DynamicRegistry<T> {
 
-    protected AbstractDynamicRegistryWrapper( final R wrapped ) {
-        super( wrapped );
+    protected AbstractDynamicRegistryWrapper(final R wrapped) {
+        super(wrapped);
     }
 
     @Override
-    public void register( final T item ) {
-        getWrapped().register( item );
+    public void register(final T item) {
+        getWrapped().register(item);
     }
 
     @Override
-    public boolean remove( final T item ) {
-        return getWrapped().remove( item );
+    public boolean remove(final T item) {
+        return getWrapped().remove(item);
     }
 }

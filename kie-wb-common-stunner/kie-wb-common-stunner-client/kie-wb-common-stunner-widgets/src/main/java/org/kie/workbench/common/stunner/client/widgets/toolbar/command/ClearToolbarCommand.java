@@ -32,9 +32,9 @@ public class ClearToolbarCommand extends AbstractToolbarSessionCommand<AbstractC
     private CanvasCommandFactory canvasCommandFactory;
 
     @Inject
-    public ClearToolbarCommand( final SessionCommandFactory sessionCommandFactory,
-                                final CanvasCommandFactory canvasCommandFactory ) {
-        super( sessionCommandFactory.newClearCommand() );
+    public ClearToolbarCommand(final SessionCommandFactory sessionCommandFactory,
+                               final CanvasCommandFactory canvasCommandFactory) {
+        super(sessionCommandFactory.newClearCommand());
         this.canvasCommandFactory = canvasCommandFactory;
     }
 

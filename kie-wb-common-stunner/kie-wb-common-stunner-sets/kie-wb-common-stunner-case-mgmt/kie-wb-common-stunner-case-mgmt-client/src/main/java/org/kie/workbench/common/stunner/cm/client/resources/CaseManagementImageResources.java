@@ -21,8 +21,8 @@ import com.google.gwt.resources.client.ImageResource;
 
 public interface CaseManagementImageResources extends ClientBundleWithLookup {
 
-    CaseManagementImageResources INSTANCE = GWT.create( CaseManagementImageResources.class );
+    CaseManagementImageResources INSTANCE = GWT.create(CaseManagementImageResources.class);
 
-    @Source( "images/cmicon.png" )
+    @Source("images/cmicon.png")
     ImageResource cmicon();
 }

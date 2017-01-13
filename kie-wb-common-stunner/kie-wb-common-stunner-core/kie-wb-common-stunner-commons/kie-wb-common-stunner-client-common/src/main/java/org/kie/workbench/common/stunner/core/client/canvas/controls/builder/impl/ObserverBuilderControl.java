@@ -49,76 +49,76 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 public class ObserverBuilderControl extends AbstractElementBuilderControl
         implements ElementBuilderControl<AbstractCanvasHandler> {
 
-    private static Logger LOGGER = Logger.getLogger( ObserverBuilderControl.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(ObserverBuilderControl.class.getName());
 
     private final Event<CanvasElementSelectedEvent> elementSelectedEvent;
 
     protected ObserverBuilderControl() {
-        this( null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public ObserverBuilderControl( final ClientDefinitionManager clientDefinitionManager,
-                                   final ClientFactoryService clientFactoryServices,
-                                   final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
-                                   final GraphUtils graphUtils,
-                                   final ModelContainmentRuleManager modelContainmentRuleManager,
-                                   final ModelCardinalityRuleManager modelCardinalityRuleManager,
-                                   final CanvasCommandFactory canvasCommandFactory,
-                                   final GraphBoundsIndexer graphBoundsIndexer,
-                                   final CanvasLayoutUtils canvasLayoutUtils,
-                                   final Event<CanvasElementSelectedEvent> elementSelectedEvent ) {
-        super( clientDefinitionManager,
-               clientFactoryServices,
-               canvasCommandManager,
-               graphUtils,
-               modelContainmentRuleManager,
-               modelCardinalityRuleManager,
-               canvasCommandFactory,
-               graphBoundsIndexer,
-               canvasLayoutUtils );
+    public ObserverBuilderControl(final ClientDefinitionManager clientDefinitionManager,
+                                  final ClientFactoryService clientFactoryServices,
+                                  final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
+                                  final GraphUtils graphUtils,
+                                  final ModelContainmentRuleManager modelContainmentRuleManager,
+                                  final ModelCardinalityRuleManager modelCardinalityRuleManager,
+                                  final CanvasCommandFactory canvasCommandFactory,
+                                  final GraphBoundsIndexer graphBoundsIndexer,
+                                  final CanvasLayoutUtils canvasLayoutUtils,
+                                  final Event<CanvasElementSelectedEvent> elementSelectedEvent) {
+        super(clientDefinitionManager,
+              clientFactoryServices,
+              canvasCommandManager,
+              graphUtils,
+              modelContainmentRuleManager,
+              modelCardinalityRuleManager,
+              canvasCommandFactory,
+              graphBoundsIndexer,
+              canvasLayoutUtils);
         this.elementSelectedEvent = elementSelectedEvent;
     }
 
-    @SuppressWarnings( "unchecked" )
-    void onBuildCanvasShape( final @Observes BuildCanvasShapeEvent buildCanvasShapeEvent ) {
-        checkNotNull( "buildCanvasShapeEvent",
-                      buildCanvasShapeEvent );
-        if ( null != canvasHandler ) {
+    @SuppressWarnings("unchecked")
+    void onBuildCanvasShape(final @Observes BuildCanvasShapeEvent buildCanvasShapeEvent) {
+        checkNotNull("buildCanvasShapeEvent",
+                     buildCanvasShapeEvent);
+        if (null != canvasHandler) {
             final CanvasHandler context = buildCanvasShapeEvent.getCanvasHandler();
-            if ( null != context && context.equals( canvasHandler ) ) {
+            if (null != context && context.equals(canvasHandler)) {
                 final Object definition = buildCanvasShapeEvent.getDefinition();
                 final double x = buildCanvasShapeEvent.getX();
                 final double y = buildCanvasShapeEvent.getY();
                 final double _x = x >= 0 ? x - canvasHandler.getCanvas().getAbsoluteX() : -1;
                 final double _y = y >= 0 ? y - canvasHandler.getCanvas().getAbsoluteY() : -1;
-                final ElementBuildRequest<AbstractCanvasHandler> request = new ElementBuildRequestImpl( _x,
-                                                                                                        _y,
-                                                                                                        definition );
-                ObserverBuilderControl.this.build( request,
-                                                   new BuildCallback() {
-                                                       @Override
-                                                       public void onSuccess( final String uuid ) {
-                                                           canvasHandler.getCanvas().draw();
-                                                           elementSelectedEvent.fire( new CanvasElementSelectedEvent( canvasHandler,
-                                                                                                                      uuid ) );
-                                                       }
+                final ElementBuildRequest<AbstractCanvasHandler> request = new ElementBuildRequestImpl(_x,
+                                                                                                       _y,
+                                                                                                       definition);
+                ObserverBuilderControl.this.build(request,
+                                                  new BuildCallback() {
+                                                      @Override
+                                                      public void onSuccess(final String uuid) {
+                                                          canvasHandler.getCanvas().draw();
+                                                          elementSelectedEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
+                                                                                                                   uuid));
+                                                      }
 
-                                                       @Override
-                                                       public void onError( final ClientRuntimeError error ) {
-                                                           LOGGER.log( Level.SEVERE,
-                                                                       error.toString() );
-                                                       }
-                                                   } );
+                                                      @Override
+                                                      public void onError(final ClientRuntimeError error) {
+                                                          LOGGER.log(Level.SEVERE,
+                                                                     error.toString());
+                                                      }
+                                                  });
             }
         }
     }

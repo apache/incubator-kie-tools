@@ -63,7 +63,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
         },
         builder = BPMNDefinitionSet.BPMNDefinitionSetBuilder.class
 )
-@CanContain( roles = { "diagram" } )
+@CanContain(roles = {"diagram"})
 @Occurrences(
         role = "Startevents_all",
         min = 0

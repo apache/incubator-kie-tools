@@ -19,7 +19,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface ProjectScreenView {
 
-    ProjectScreenView setWidget( IsWidget widget );
+    ProjectScreenView setWidget(final IsWidget widget);
 
     ProjectScreenView showLoading();
 

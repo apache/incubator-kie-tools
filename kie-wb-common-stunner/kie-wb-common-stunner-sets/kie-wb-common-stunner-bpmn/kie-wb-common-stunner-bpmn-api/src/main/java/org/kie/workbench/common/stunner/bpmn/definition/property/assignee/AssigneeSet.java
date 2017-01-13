@@ -41,32 +41,32 @@ public class AssigneeSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Assigned to";
 
     @Property
-    @FieldDef( label = FIELDDEF_ACTORS, property = "value" )
-    @AssigneeEditor( type = AssigneeType.USER )
+    @FieldDef(label = FIELDDEF_ACTORS, property = "value")
+    @AssigneeEditor(type = AssigneeType.USER)
     @Valid
     private Actors actors;
 
     @Property
-    @FieldDef( label = FIELDDEF_GROUPS, property = "value" )
-    @AssigneeEditor( type = AssigneeType.GROUP )
+    @FieldDef(label = FIELDDEF_GROUPS, property = "value")
+    @AssigneeEditor(type = AssigneeType.GROUP)
     @Valid
     private Groupid groupid;
 
     public AssigneeSet() {
-        this( new Actors(),
-              new Groupid() );
+        this(new Actors(),
+             new Groupid());
     }
 
-    public AssigneeSet( @MapsTo( "actors" ) Actors actors,
-                        @MapsTo( "groupid" ) Groupid groupid ) {
+    public AssigneeSet(final @MapsTo("actors") Actors actors,
+                       final @MapsTo("groupid") Groupid groupid) {
         this.actors = actors;
         this.groupid = groupid;
     }
 
-    public AssigneeSet( String actors,
-                        String groupid ) {
-        this.actors = new Actors( actors );
-        this.groupid = new Groupid( groupid );
+    public AssigneeSet(final String actors,
+                       final String groupid) {
+        this.actors = new Actors(actors);
+        this.groupid = new Groupid(groupid);
     }
 
     public String getPropertySetName() {
@@ -81,11 +81,11 @@ public class AssigneeSet implements BPMNPropertySet {
         return groupid;
     }
 
-    public void setActors( Actors actors ) {
+    public void setActors(final Actors actors) {
         this.actors = actors;
     }
 
-    public void setGroupid( Groupid groupid ) {
+    public void setGroupid(final Groupid groupid) {
         this.groupid = groupid;
     }
 }

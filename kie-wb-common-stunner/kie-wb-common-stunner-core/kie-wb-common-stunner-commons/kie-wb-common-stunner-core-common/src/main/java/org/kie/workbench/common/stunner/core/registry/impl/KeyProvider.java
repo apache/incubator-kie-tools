@@ -18,5 +18,5 @@ package org.kie.workbench.common.stunner.core.registry.impl;
 
 public interface KeyProvider<T> {
 
-    String getKey( final T item );
+    String getKey(final T item);
 }

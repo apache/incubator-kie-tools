@@ -25,7 +25,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ClearCanvasCommandTest extends AbstractCanvasCommandTest {
 
     private ClearCanvasCommand tested;
@@ -38,15 +38,15 @@ public class ClearCanvasCommandTest extends AbstractCanvasCommandTest {
 
     @Test
     public void testExecute() {
-        final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR,
-                         result.getType() );
-        verify( canvasHandler,
-                times( 1 ) ).clearCanvas();
+        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertNotEquals(CommandResult.Type.ERROR,
+                        result.getType());
+        verify(canvasHandler,
+               times(1)).clearCanvas();
     }
 
-    @Test( expected = UnsupportedOperationException.class )
+    @Test(expected = UnsupportedOperationException.class)
     public void testUndo() {
-        tested.undo( canvasHandler );
+        tested.undo(canvasHandler);
     }
 }

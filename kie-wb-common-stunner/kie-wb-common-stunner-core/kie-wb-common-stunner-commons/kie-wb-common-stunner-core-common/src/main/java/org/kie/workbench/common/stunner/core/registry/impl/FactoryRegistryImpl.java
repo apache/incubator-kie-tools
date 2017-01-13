@@ -40,14 +40,14 @@ class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T
     private final List<DiagramFactory<?, ?>> diagramFactories
             = new LinkedList<>();
 
-    FactoryRegistryImpl( final AdapterManager adapterManager ) {
+    FactoryRegistryImpl(final AdapterManager adapterManager) {
         this.adapterManager = adapterManager;
     }
 
     @Override
-    public DefinitionFactory<?> getDefinitionFactory( final String id ) {
-        for ( final DefinitionFactory<?> factory : definitionFactories ) {
-            if ( factory.accepts( id ) ) {
+    public DefinitionFactory<?> getDefinitionFactory(final String id) {
+        for (final DefinitionFactory<?> factory : definitionFactories) {
+            if (factory.accepts(id)) {
                 return factory;
             }
         }
@@ -55,54 +55,54 @@ class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T
     }
 
     @Override
-    public ElementFactory<?, ?, ?> getElementFactory( final Class<? extends ElementFactory> type ) {
-        return graphFactories.get( type );
+    public ElementFactory<?, ?, ?> getElementFactory(final Class<? extends ElementFactory> type) {
+        return graphFactories.get(type);
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public DiagramFactory<?, ?> getDiagramFactory( final String defSetId,
-                                                   final Class<? extends Metadata> metadataType ) {
+    @SuppressWarnings("unchecked")
+    public DiagramFactory<?, ?> getDiagramFactory(final String defSetId,
+                                                  final Class<? extends Metadata> metadataType) {
         return diagramFactories.stream()
-                .filter( factory -> !factory.isDefault()
-                        && factory.accepts( defSetId )
-                        && metadataType.equals( factory.getMetadataType() ) )
+                .filter(factory -> !factory.isDefault()
+                        && factory.accepts(defSetId)
+                        && metadataType.equals(factory.getMetadataType()))
                 .findFirst()
-                .orElse( getDefaultDiagramFactory( defSetId,
-                                                   metadataType ) );
+                .orElse(getDefaultDiagramFactory(defSetId,
+                                                 metadataType));
     }
 
-    private DiagramFactory<?, ?> getDefaultDiagramFactory( final String defSetId,
-                                                           final Class<? extends Metadata> metadataType ) {
+    private DiagramFactory<?, ?> getDefaultDiagramFactory(final String defSetId,
+                                                          final Class<? extends Metadata> metadataType) {
         return diagramFactories.stream()
-                .filter( factory -> factory.isDefault()
-                        && factory.accepts( defSetId )
-                        && metadataType.equals( factory.getMetadataType() ) )
+                .filter(factory -> factory.isDefault()
+                        && factory.accepts(defSetId)
+                        && metadataType.equals(factory.getMetadataType()))
                 .findFirst()
-                .orElse( null );
+                .orElse(null);
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public void register( final T item ) {
-        if ( item instanceof DefinitionFactory ) {
-            definitionFactories.add( ( DefinitionFactory<?> ) item );
-        } else if ( item instanceof ElementFactory ) {
-            graphFactories.put( ( ( ElementFactory ) item ).getFactoryType(),
-                                ( ElementFactory<?, ?, ?> ) item );
-        } else if ( item instanceof DiagramFactory ) {
-            diagramFactories.add( ( DiagramFactory<?, ?> ) item );
+    @SuppressWarnings("unchecked")
+    public void register(final T item) {
+        if (item instanceof DefinitionFactory) {
+            definitionFactories.add((DefinitionFactory<?>) item);
+        } else if (item instanceof ElementFactory) {
+            graphFactories.put(((ElementFactory) item).getFactoryType(),
+                               (ElementFactory<?, ?, ?>) item);
+        } else if (item instanceof DiagramFactory) {
+            diagramFactories.add((DiagramFactory<?, ?>) item);
         }
     }
 
     @Override
-    public boolean remove( final T item ) {
-        if ( item instanceof DefinitionFactory ) {
-            return definitionFactories.remove( item );
-        } else if ( item instanceof ElementFactory ) {
-            return null != graphFactories.remove( ( ( ElementFactory ) item ).getFactoryType() );
-        } else if ( item instanceof DiagramFactory ) {
-            return diagramFactories.remove( item );
+    public boolean remove(final T item) {
+        if (item instanceof DefinitionFactory) {
+            return definitionFactories.remove(item);
+        } else if (item instanceof ElementFactory) {
+            return null != graphFactories.remove(((ElementFactory) item).getFactoryType());
+        } else if (item instanceof DiagramFactory) {
+            return diagramFactories.remove(item);
         }
         return false;
     }
@@ -115,13 +115,13 @@ class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T
     }
 
     @Override
-    public boolean contains( final T item ) {
-        if ( item instanceof DefinitionFactory ) {
-            return definitionFactories.contains( item );
-        } else if ( item instanceof ElementFactory ) {
-            return graphFactories.containsValue( item );
-        } else if ( item instanceof DiagramFactory ) {
-            return diagramFactories.contains( item );
+    public boolean contains(final T item) {
+        if (item instanceof DefinitionFactory) {
+            return definitionFactories.contains(item);
+        } else if (item instanceof ElementFactory) {
+            return graphFactories.containsValue(item);
+        } else if (item instanceof DiagramFactory) {
+            return diagramFactories.contains(item);
         }
         return false;
     }
@@ -132,19 +132,19 @@ class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public Collection<T> getAllFactories() {
         return new LinkedList<T>() {{
-            addAll( ( Collection<? extends T> ) definitionFactories );
-            addAll( ( Collection<? extends T> ) diagramFactories );
-            addAll( ( Collection<? extends T> ) graphFactories.values() );
+            addAll((Collection<? extends T>) definitionFactories);
+            addAll((Collection<? extends T>) diagramFactories);
+            addAll((Collection<? extends T>) graphFactories.values());
         }};
     }
 
     @Override
-    public DefinitionFactory<?> getDefinitionFactory( final Class<?> type ) {
-        final String id = BindableAdapterUtils.getDefinitionId( type,
-                                                                adapterManager.registry() );
-        return getDefinitionFactory( id );
+    public DefinitionFactory<?> getDefinitionFactory(final Class<?> type) {
+        final String id = BindableAdapterUtils.getDefinitionId(type,
+                                                               adapterManager.registry());
+        return getDefinitionFactory(id);
     }
 }

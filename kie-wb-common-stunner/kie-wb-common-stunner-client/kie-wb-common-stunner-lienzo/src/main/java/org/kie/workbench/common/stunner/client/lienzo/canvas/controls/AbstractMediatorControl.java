@@ -30,17 +30,17 @@ public abstract class AbstractMediatorControl<M extends IMediator> extends Abstr
     protected M mediator;
 
     @Override
-    public void enable( final AbstractCanvas canvas ) {
-        super.enable( canvas );
+    public void enable(final AbstractCanvas canvas) {
+        super.enable(canvas);
         this.mediator = buildMediator();
-        final LienzoLayer lienzoLayer = ( LienzoLayer ) canvas.getLayer();
+        final LienzoLayer lienzoLayer = (LienzoLayer) canvas.getLayer();
         mediators = lienzoLayer.getLienzoLayer().getViewport().getMediators();
-        mediators.push( getMediator() );
+        mediators.push(getMediator());
     }
 
     @Override
     protected void doDisable() {
-        mediators.remove( getMediator() );
+        mediators.remove(getMediator());
     }
 
     public M getMediator() {

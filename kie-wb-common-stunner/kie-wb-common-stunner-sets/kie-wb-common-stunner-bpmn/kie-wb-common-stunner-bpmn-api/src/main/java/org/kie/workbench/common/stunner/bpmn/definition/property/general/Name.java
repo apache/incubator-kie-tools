@@ -36,7 +36,7 @@ import org.kie.workbench.common.stunner.core.definition.property.type.StringType
 
 @Portable
 @Bindable
-@Property( meta = PropertyMetaTypes.NAME )
+@Property(meta = PropertyMetaTypes.NAME)
 public class Name implements BPMNProperty {
 
     @Caption
@@ -65,7 +65,7 @@ public class Name implements BPMNProperty {
     public Name() {
     }
 
-    public Name( final String value ) {
+    public Name(final String value) {
         this.value = value;
     }
 
@@ -97,7 +97,7 @@ public class Name implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

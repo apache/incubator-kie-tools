@@ -37,7 +37,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchScreen( identifier = ProjectDiagramExplorerScreen.SCREEN_ID )
+@WorkbenchScreen(identifier = ProjectDiagramExplorerScreen.SCREEN_ID)
 public class ProjectDiagramExplorerScreen {
 
     public static final String SCREEN_ID = "ProjectDiagramExplorerScreen";
@@ -51,30 +51,30 @@ public class ProjectDiagramExplorerScreen {
     private String title = TITLE;
 
     protected ProjectDiagramExplorerScreen() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public ProjectDiagramExplorerScreen( final AbstractClientSessionManager clientSessionManager,
-                                         final TreeExplorer treeExplorer,
-                                         final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent ) {
+    public ProjectDiagramExplorerScreen(final AbstractClientSessionManager clientSessionManager,
+                                        final TreeExplorer treeExplorer,
+                                        final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent) {
         this.clientSessionManager = clientSessionManager;
         this.treeExplorer = treeExplorer;
         this.changeTitleNotificationEvent = changeTitleNotificationEvent;
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
+    public void onStartup(final PlaceRequest placeRequest) {
         this.placeRequest = placeRequest;
     }
 
     @OnOpen
     public void onOpen() {
         final ClientSession current = clientSessionManager.getCurrentSession();
-        if ( null != current ) {
-            show( current );
+        if (null != current) {
+            show(current);
         }
     }
 
@@ -103,28 +103,28 @@ public class ProjectDiagramExplorerScreen {
         return "stunnerProjectDiagramExplorerScreenContext";
     }
 
-    public void show( final ClientSession session ) {
-        treeExplorer.show( session.getCanvasHandler() );
-        updateTitle( session );
+    public void show(final ClientSession session) {
+        treeExplorer.show(session.getCanvasHandler());
+        updateTitle(session);
     }
 
     public void close() {
         treeExplorer.clear();
     }
 
-    private void updateTitle( final ClientSession session ) {
+    private void updateTitle(final ClientSession session) {
         String title = TITLE;
-        if ( null != session.getCanvasHandler() && null != session.getCanvasHandler().getDiagram() ) {
+        if (null != session.getCanvasHandler() && null != session.getCanvasHandler().getDiagram()) {
             final Diagram<?, ?> diagram = session.getCanvasHandler().getDiagram();
             title = diagram.getMetadata().getTitle();
         }
-        doUpdateTitle( title );
+        doUpdateTitle(title);
     }
 
-    private void doUpdateTitle( final String title ) {
+    private void doUpdateTitle(final String title) {
         // Change screen title.
         ProjectDiagramExplorerScreen.this.title = title;
-        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
-                                                                       this.title ) );
+        changeTitleNotificationEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
+                                                                     this.title));
     }
 }

@@ -55,7 +55,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class AssigneeEditorWidgetViewImplTest {
 
     @Mock
@@ -80,7 +80,7 @@ public class AssigneeEditorWidgetViewImplTest {
 
     private List<AssigneeRow> rows;
 
-    protected Event<NotificationEvent> notification = mock( EventSourceMock.class );
+    protected Event<NotificationEvent> notification = mock(EventSourceMock.class);
 
     @Mock
     private ClientUserSystemManager userSystemManager;
@@ -93,142 +93,142 @@ public class AssigneeEditorWidgetViewImplTest {
 
     @Before
     public void setUp() {
-        GwtMockito.initMocks( this );
-        view = GWT.create( AssigneeEditorWidgetViewImpl.class );
+        GwtMockito.initMocks(this);
+        view = GWT.create(AssigneeEditorWidgetViewImpl.class);
         view.presenter = presenter;
         view.userSystemManager = userSystemManager;
         view.assigneeRows = assigneeRows;
         view.addButton = button;
         view.nameth = nameth;
         view.notification = notification;
-        doCallRealMethod().when( view ).setAssigneeRows( any( List.class ) );
-        doCallRealMethod().when( view ).init( any( AssigneeEditorWidgetView.Presenter.class ) );
-        doCallRealMethod().when( view ).handleAddButton( any( ClickEvent.class ) );
-        doCallRealMethod().when( view ).getAssigneeRows();
-        doCallRealMethod().when( view ).getAssigneeWidget( anyInt() );
-        doCallRealMethod().when( view ).getAssigneeRowsCount();
-        doCallRealMethod().when( view ).getNames();
-        doCallRealMethod().when( view ).addItemToNames( anyObject() );
+        doCallRealMethod().when(view).setAssigneeRows(any(List.class));
+        doCallRealMethod().when(view).init(any(AssigneeEditorWidgetView.Presenter.class));
+        doCallRealMethod().when(view).handleAddButton(any(ClickEvent.class));
+        doCallRealMethod().when(view).getAssigneeRows();
+        doCallRealMethod().when(view).getAssigneeWidget(anyInt());
+        doCallRealMethod().when(view).getAssigneeRowsCount();
+        doCallRealMethod().when(view).getNames();
+        doCallRealMethod().when(view).addItemToNames(anyObject());
         rows = new ArrayList<AssigneeRow>();
-        rows.add( new AssigneeRow( "user4",
-                                   null ) );
-        rows.add( new AssigneeRow( "user1",
-                                   null ) );
+        rows.add(new AssigneeRow("user4",
+                                 null));
+        rows.add(new AssigneeRow("user1",
+                                 null));
     }
 
     @Test
     public void testInit() {
-        view.init( presenter );
-        verify( button,
-                times( 1 ) ).setIcon( IconType.PLUS );
+        view.init(presenter);
+        verify(button,
+               times(1)).setIcon(IconType.PLUS);
     }
 
     @Test
     public void testHandleAddVarButton() {
-        view.init( presenter );
-        view.handleAddButton( mock( ClickEvent.class ) );
-        verify( presenter,
-                times( 1 ) ).addAssignee();
+        view.init(presenter);
+        view.handleAddButton(mock(ClickEvent.class));
+        verify(presenter,
+               times(1)).addAssignee();
     }
 
     @Test
     public void testGetAssigneeRows() {
-        when( assigneeRows.getValue() ).thenReturn( rows );
-        assertEquals( rows,
-                      view.getAssigneeRows() );
+        when(assigneeRows.getValue()).thenReturn(rows);
+        assertEquals(rows,
+                     view.getAssigneeRows());
     }
 
     @Test
     public void testGetAssigneeCountEmpty() {
-        when( assigneeRows.getValue() ).thenReturn( new ArrayList<AssigneeRow>() );
-        assertEquals( 0,
-                      view.getAssigneeRowsCount() );
+        when(assigneeRows.getValue()).thenReturn(new ArrayList<AssigneeRow>());
+        assertEquals(0,
+                     view.getAssigneeRowsCount());
     }
 
     @Test
     public void testGetAssigneeCount() {
-        when( assigneeRows.getValue() ).thenReturn( rows );
-        assertEquals( 2,
-                      view.getAssigneeRowsCount() );
+        when(assigneeRows.getValue()).thenReturn(rows);
+        assertEquals(2,
+                     view.getAssigneeRowsCount());
     }
 
     @Test
     public void testGetAssigneeWidget() {
-        view.getAssigneeWidget( 0 );
-        verify( assigneeRows ).getComponent( 0 );
+        view.getAssigneeWidget(0);
+        verify(assigneeRows).getComponent(0);
     }
 
     @Test
     public void testGetAssigneeWidget2() {
-        view.getAssigneeWidget( 123 );
-        verify( assigneeRows ).getComponent( 123 );
+        view.getAssigneeWidget(123);
+        verify(assigneeRows).getComponent(123);
     }
 
     @Test
     public void testGetNamesUsers() {
         // Make view type TASK_USER
-        when( presenter.getType() ).thenReturn( AssigneeType.USER );
+        when(presenter.getType()).thenReturn(AssigneeType.USER);
 
         List<User> users = new ArrayList<User>();
-        users.add( new UserImpl( "Jane" ) );
-        users.add( new UserImpl( "Andrew" ) );
-        users.add( new UserImpl( "Mary" ) );
-        AbstractEntityManager.SearchResponse<User> response = mock( AbstractEntityManager.SearchResponse.class );
-        when( response.getResults() ).thenReturn( users );
-        when( userSystemManager.users( any( RemoteCallback.class ),
-                                       any( ErrorCallback.class ) ) ).thenAnswer( new Answer<UserManagerService>() {
+        users.add(new UserImpl("Jane"));
+        users.add(new UserImpl("Andrew"));
+        users.add(new UserImpl("Mary"));
+        AbstractEntityManager.SearchResponse<User> response = mock(AbstractEntityManager.SearchResponse.class);
+        when(response.getResults()).thenReturn(users);
+        when(userSystemManager.users(any(RemoteCallback.class),
+                                     any(ErrorCallback.class))).thenAnswer(new Answer<UserManagerService>() {
             @Override
-            public UserManagerService answer( InvocationOnMock invocationOnMock ) throws Throwable {
+            public UserManagerService answer(InvocationOnMock invocationOnMock) throws Throwable {
                 Object[] args = invocationOnMock.getArguments();
-                RemoteCallback<AbstractEntityManager.SearchResponse<?>> callback = ( RemoteCallback<AbstractEntityManager.SearchResponse<?>> ) args[ 0 ];
-                callback.callback( response );
+                RemoteCallback<AbstractEntityManager.SearchResponse<?>> callback = (RemoteCallback<AbstractEntityManager.SearchResponse<?>>) args[0];
+                callback.callback(response);
                 return userManagerService;
             }
-        } );
-        when( userManagerService.search( any( AbstractEntityManager.SearchRequest.class ) ) ).thenReturn( response );
+        });
+        when(userManagerService.search(any(AbstractEntityManager.SearchRequest.class))).thenReturn(response);
 
         view.getNames();
 
-        verify( userSystemManager,
-                times( 1 ) ).users( any( RemoteCallback.class ),
-                                    any( ErrorCallback.class ) );
-        verify( userManagerService,
-                times( 1 ) ).search( any( AbstractEntityManager.SearchRequest.class ) );
-        assertArrayEquals( new String[]{ "Andrew", "Jane", "Mary" },
-                           view.names.toArray() );
+        verify(userSystemManager,
+               times(1)).users(any(RemoteCallback.class),
+                               any(ErrorCallback.class));
+        verify(userManagerService,
+               times(1)).search(any(AbstractEntityManager.SearchRequest.class));
+        assertArrayEquals(new String[]{"Andrew", "Jane", "Mary"},
+                          view.names.toArray());
     }
 
     @Test
     public void testGetNamesGroups() {
         // Make view type GROUP
-        when( presenter.getType() ).thenReturn( AssigneeType.GROUP );
+        when(presenter.getType()).thenReturn(AssigneeType.GROUP);
 
         List<Group> groups = new ArrayList<Group>();
-        groups.add( new GroupImpl( "marketing" ) );
-        groups.add( new GroupImpl( "admin" ) );
-        groups.add( new GroupImpl( "engineering" ) );
-        AbstractEntityManager.SearchResponse<Group> response = mock( AbstractEntityManager.SearchResponse.class );
-        when( response.getResults() ).thenReturn( groups );
-        when( userSystemManager.groups( any( RemoteCallback.class ),
-                                        any( ErrorCallback.class ) ) ).thenAnswer( new Answer<GroupManagerService>() {
+        groups.add(new GroupImpl("marketing"));
+        groups.add(new GroupImpl("admin"));
+        groups.add(new GroupImpl("engineering"));
+        AbstractEntityManager.SearchResponse<Group> response = mock(AbstractEntityManager.SearchResponse.class);
+        when(response.getResults()).thenReturn(groups);
+        when(userSystemManager.groups(any(RemoteCallback.class),
+                                      any(ErrorCallback.class))).thenAnswer(new Answer<GroupManagerService>() {
             @Override
-            public GroupManagerService answer( InvocationOnMock invocationOnMock ) throws Throwable {
+            public GroupManagerService answer(InvocationOnMock invocationOnMock) throws Throwable {
                 Object[] args = invocationOnMock.getArguments();
-                RemoteCallback<AbstractEntityManager.SearchResponse<?>> callback = ( RemoteCallback<AbstractEntityManager.SearchResponse<?>> ) args[ 0 ];
-                callback.callback( response );
+                RemoteCallback<AbstractEntityManager.SearchResponse<?>> callback = (RemoteCallback<AbstractEntityManager.SearchResponse<?>>) args[0];
+                callback.callback(response);
                 return groupManagerService;
             }
-        } );
-        when( groupManagerService.search( any( AbstractEntityManager.SearchRequest.class ) ) ).thenReturn( response );
+        });
+        when(groupManagerService.search(any(AbstractEntityManager.SearchRequest.class))).thenReturn(response);
 
         view.getNames();
 
-        verify( userSystemManager,
-                times( 1 ) ).groups( any( RemoteCallback.class ),
-                                     any( ErrorCallback.class ) );
-        verify( groupManagerService,
-                times( 1 ) ).search( any( AbstractEntityManager.SearchRequest.class ) );
-        assertArrayEquals( new String[]{ "admin", "engineering", "marketing" },
-                           view.names.toArray() );
+        verify(userSystemManager,
+               times(1)).groups(any(RemoteCallback.class),
+                                any(ErrorCallback.class));
+        verify(groupManagerService,
+               times(1)).search(any(AbstractEntityManager.SearchRequest.class));
+        assertArrayEquals(new String[]{"admin", "engineering", "marketing"},
+                          view.names.toArray());
     }
 }

@@ -23,7 +23,7 @@ public abstract class AbstractCanvasEvent implements UberFireEvent {
 
     protected final Canvas canvas;
 
-    public AbstractCanvasEvent( final Canvas canvas ) {
+    public AbstractCanvasEvent(final Canvas canvas) {
         this.canvas = canvas;
     }
 

@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.core.definition.shape;
 public abstract class AbstractGlyphDef<W> implements GlyphDef<W> {
 
     @Override
-    public String getGlyphDescription( final W element ) {
+    public String getGlyphDescription(final W element) {
         return null;
     }
 }

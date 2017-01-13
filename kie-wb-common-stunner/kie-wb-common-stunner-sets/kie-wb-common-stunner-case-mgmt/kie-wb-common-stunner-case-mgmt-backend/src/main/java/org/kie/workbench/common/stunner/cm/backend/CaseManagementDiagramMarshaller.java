@@ -43,24 +43,24 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 public class CaseManagementDiagramMarshaller extends BaseDiagramMarshaller<CaseManagementDiagram> {
 
     @Inject
-    public CaseManagementDiagramMarshaller( final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
-                                            final @CaseManagement GraphObjectBuilderFactory bpmnGraphBuilderFactory,
-                                            final DefinitionManager definitionManager,
-                                            final GraphUtils graphUtils,
-                                            final GraphIndexBuilder<?> indexBuilder,
-                                            final @CaseManagement OryxManager oryxManager,
-                                            final FactoryManager factoryManager,
-                                            final GraphCommandManager graphCommandManager,
-                                            final GraphCommandFactory commandFactory ) {
-        super( diagramMetadataMarshaller,
-               bpmnGraphBuilderFactory,
-               definitionManager,
-               graphUtils,
-               indexBuilder,
-               oryxManager,
-               factoryManager,
-               graphCommandManager,
-               commandFactory );
+    public CaseManagementDiagramMarshaller(final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
+                                           final @CaseManagement GraphObjectBuilderFactory bpmnGraphBuilderFactory,
+                                           final DefinitionManager definitionManager,
+                                           final GraphUtils graphUtils,
+                                           final GraphIndexBuilder<?> indexBuilder,
+                                           final @CaseManagement OryxManager oryxManager,
+                                           final FactoryManager factoryManager,
+                                           final GraphCommandManager graphCommandManager,
+                                           final GraphCommandFactory commandFactory) {
+        super(diagramMetadataMarshaller,
+              bpmnGraphBuilderFactory,
+              definitionManager,
+              graphUtils,
+              indexBuilder,
+              oryxManager,
+              factoryManager,
+              graphCommandManager,
+              commandFactory);
     }
 
     @Override
@@ -74,20 +74,20 @@ public class CaseManagementDiagramMarshaller extends BaseDiagramMarshaller<CaseM
     }
 
     @Override
-    public String getTitle( final Graph graph ) {
-        final Node<Definition<CaseManagementDiagram>, ?> diagramNode = getFirstDiagramNode( graph );
-        final CaseManagementDiagram diagramBean = null != diagramNode ? ( CaseManagementDiagram ) ( ( Definition ) diagramNode.getContent() ).getDefinition() : null;
-        return getTitle( diagramBean );
+    public String getTitle(final Graph graph) {
+        final Node<Definition<CaseManagementDiagram>, ?> diagramNode = getFirstDiagramNode(graph);
+        final CaseManagementDiagram diagramBean = null != diagramNode ? (CaseManagementDiagram) ((Definition) diagramNode.getContent()).getDefinition() : null;
+        return getTitle(diagramBean);
     }
 
-    private String getTitle( final CaseManagementDiagram diagram ) {
+    private String getTitle(final CaseManagementDiagram diagram) {
         final String title = diagram.getDiagramSet().getName().getValue();
         return title != null && title.trim().length() > 0 ? title : "-- Untitled Case Management diagram --";
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public Node<Definition<CaseManagementDiagram>, ?> getFirstDiagramNode( final Graph graph ) {
-        return CaseManagementUtils.getFirstDiagramNode( graph );
+    @SuppressWarnings("unchecked")
+    public Node<Definition<CaseManagementDiagram>, ?> getFirstDiagramNode(final Graph graph) {
+        return CaseManagementUtils.getFirstDiagramNode(graph);
     }
 }

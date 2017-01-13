@@ -42,37 +42,37 @@ public abstract class AbstractSessionCommandManager
         extends DelegateCommandManager<AbstractCanvasHandler, CanvasViolation>
         implements SessionCommandManager<AbstractCanvasHandler> {
 
-    private static Logger LOGGER = Logger.getLogger( AbstractSessionCommandManager.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(AbstractSessionCommandManager.class.getName());
 
     protected abstract AbstractClientSessionManager getClientSessionManager();
 
     protected abstract CommandListener<AbstractCanvasHandler, CanvasViolation> getRegistryListener();
 
     @Override
-    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context,
-                                                   final Command<AbstractCanvasHandler, CanvasViolation> command ) {
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context,
+                                                  final Command<AbstractCanvasHandler, CanvasViolation> command) {
         try {
-            return super.execute( context,
-                                  command );
-        } catch ( final CommandException ce ) {
-            getClientSessionManager().handleCommandError( ce );
-        } catch ( final RuntimeException e ) {
-            getClientSessionManager().handleClientError( new ClientRuntimeError( e ) );
+            return super.execute(context,
+                                 command);
+        } catch (final CommandException ce) {
+            getClientSessionManager().handleCommandError(ce);
+        } catch (final RuntimeException e) {
+            getClientSessionManager().handleClientError(new ClientRuntimeError(e));
         }
         return CanvasCommandResultBuilder.FAILED;
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         final Command<AbstractCanvasHandler, CanvasViolation> lastEntry = getRegistry().peek();
-        if ( null != lastEntry ) {
+        if (null != lastEntry) {
             try {
-                return getDelegate().undo( context,
-                                           lastEntry );
-            } catch ( final CommandException ce ) {
-                getClientSessionManager().handleCommandError( ce );
-            } catch ( final RuntimeException e ) {
-                getClientSessionManager().handleClientError( new ClientRuntimeError( e ) );
+                return getDelegate().undo(context,
+                                          lastEntry);
+            } catch (final CommandException ce) {
+                getClientSessionManager().handleCommandError(ce);
+            } catch (final RuntimeException e) {
+                getClientSessionManager().handleClientError(new ClientRuntimeError(e));
             }
             return CanvasCommandResultBuilder.FAILED;
         }
@@ -84,19 +84,19 @@ public abstract class AbstractSessionCommandManager
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     protected CommandManager<AbstractCanvasHandler, CanvasViolation> getDelegate() {
         final ClientFullSession<AbstractCanvas, AbstractCanvasHandler> session = getFullSession();
-        if ( null != session ) {
+        if (null != session) {
             final CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCommandManager();
             try {
                 final HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>> hasCommandListener =
-                        ( HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>> ) commandManager;
-                hasCommandListener.setCommandListener( getRegistryListener() );
-            } catch ( final ClassCastException e ) {
-                LOGGER.log( Level.WARNING,
-                            "Current command manager for canvas does not support" +
-                                    "command listeners. Session's registry cannot be updated." );
+                        (HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>>) commandManager;
+                hasCommandListener.setCommandListener(getRegistryListener());
+            } catch (final ClassCastException e) {
+                LOGGER.log(Level.WARNING,
+                           "Current command manager for canvas does not support" +
+                                   "command listeners. Session's registry cannot be updated.");
             }
             return commandManager;
         }
@@ -106,7 +106,7 @@ public abstract class AbstractSessionCommandManager
     @Override
     public CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> getRegistry() {
         final ClientFullSession<AbstractCanvas, AbstractCanvasHandler> session = getFullSession();
-        if ( null != session ) {
+        if (null != session) {
             return session.getCommandRegistry();
         }
         return null;
@@ -115,10 +115,10 @@ public abstract class AbstractSessionCommandManager
     private ClientFullSession<AbstractCanvas, AbstractCanvasHandler> getFullSession() {
         final ClientSession<AbstractCanvas, AbstractCanvasHandler> session = getCurrentSession();
         try {
-            return ( ClientFullSession<AbstractCanvas, AbstractCanvasHandler> ) session;
-        } catch ( final ClassCastException e ) {
-            LOGGER.log( Level.WARNING,
-                        "Session is not type of client full session." );
+            return (ClientFullSession<AbstractCanvas, AbstractCanvasHandler>) session;
+        } catch (final ClassCastException e) {
+            LOGGER.log(Level.WARNING,
+                       "Session is not type of client full session.");
             return null;
         }
     }
@@ -126,6 +126,6 @@ public abstract class AbstractSessionCommandManager
     @Override
     public String toString() {
         return "[" + getClass().getName() + "] - Current session = ["
-                + ( null != getCurrentSession() ? getCurrentSession().toString() : "null" ) + "]";
+                + (null != getCurrentSession() ? getCurrentSession().toString() : "null") + "]";
     }
 }

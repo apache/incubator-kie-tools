@@ -25,22 +25,22 @@ import org.kie.workbench.common.stunner.shapes.def.CircleShapeDef;
 
 public class CircleShape<W> extends AbstractBasicShapeWithTitle<W, CircleView, CircleShapeDef<W>> {
 
-    public CircleShape( final CircleView view,
-                        final CircleShapeDef<W> proxy ) {
-        super( view,
-               proxy );
+    public CircleShape(final CircleView view,
+                       final CircleShapeDef<W> proxy) {
+        super(view,
+              proxy);
     }
 
     @Override
-    public void applyProperties( final Node<View<W>, Edge> element,
-                                 final MutationContext mutationContext ) {
-        super.applyProperties( element,
-                               mutationContext );
+    public void applyProperties(final Node<View<W>, Edge> element,
+                                final MutationContext mutationContext) {
+        super.applyProperties(element,
+                              mutationContext);
         // Radius.
-        final Double radius = proxy.getRadius( getDefinition( element ) );
-        _applyRadius( element,
-                      radius,
-                      mutationContext );
+        final Double radius = proxy.getRadius(getDefinition(element));
+        _applyRadius(element,
+                     radius,
+                     mutationContext);
     }
 
     @Override

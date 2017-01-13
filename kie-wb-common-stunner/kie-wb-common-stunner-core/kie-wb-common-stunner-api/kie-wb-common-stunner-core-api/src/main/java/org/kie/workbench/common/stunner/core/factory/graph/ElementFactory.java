@@ -30,6 +30,6 @@ public interface ElementFactory<C, D extends Definition<C>, T extends Element<D>
 
     Class<? extends ElementFactory> getFactoryType();
 
-    T build( final String uuid,
-             final C definition );
+    T build(final String uuid,
+            final C definition);
 }

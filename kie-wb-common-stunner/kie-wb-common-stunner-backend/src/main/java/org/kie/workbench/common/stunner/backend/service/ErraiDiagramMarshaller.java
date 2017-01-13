@@ -34,26 +34,26 @@ public class ErraiDiagramMarshaller implements DiagramMarshaller<Graph, Metadata
     private XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller;
 
     protected ErraiDiagramMarshaller() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public ErraiDiagramMarshaller( final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller ) {
+    public ErraiDiagramMarshaller(final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller) {
         this.diagramMetadataMarshaller = diagramMetadataMarshaller;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public Graph unmarshall( final Metadata metadata,
-                             final InputStream input ) throws IOException {
-        Graph result = ( Graph ) ServerMarshalling.fromJSON( input );
+    @SuppressWarnings("unchecked")
+    public Graph unmarshall(final Metadata metadata,
+                            final InputStream input) throws IOException {
+        Graph result = (Graph) ServerMarshalling.fromJSON(input);
         return result;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public String marshall( final Diagram<Graph, Metadata> diagram ) throws IOException {
-        String result = ServerMarshalling.toJSON( diagram.getGraph() );
+    @SuppressWarnings("unchecked")
+    public String marshall(final Diagram<Graph, Metadata> diagram) throws IOException {
+        String result = ServerMarshalling.toJSON(diagram.getGraph());
         return result;
     }
 

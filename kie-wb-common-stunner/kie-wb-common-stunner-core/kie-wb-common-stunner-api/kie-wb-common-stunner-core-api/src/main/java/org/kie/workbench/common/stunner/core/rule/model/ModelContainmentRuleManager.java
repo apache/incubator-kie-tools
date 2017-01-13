@@ -32,6 +32,6 @@ public interface ModelContainmentRuleManager extends ContainmentRuleManager {
      * @param targetId The parent node definition's identifier.
      * @param candidateRoles The roles for the candidate child node.
      */
-    RuleViolations evaluate( final String targetId,
-                             final Set<String> candidateRoles );
+    RuleViolations evaluate(final String targetId,
+                            final Set<String> candidateRoles);
 }

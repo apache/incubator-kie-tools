@@ -27,9 +27,9 @@ public abstract class AbstractLienzoPaletteItemView<I extends PaletteItem, V>
 
     protected final LienzoPaletteView paletteView;
 
-    public AbstractLienzoPaletteItemView( final I item,
-                                          final LienzoPaletteView paletteView ) {
-        super( item );
+    public AbstractLienzoPaletteItemView(final I item,
+                                         final LienzoPaletteView paletteView) {
+        super(item);
         this.paletteView = paletteView;
     }
 

@@ -25,24 +25,24 @@ import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 
 public class RectangleShape<W> extends AbstractBasicShapeWithTitle<W, RectangleView, RectangleShapeDef<W>> {
 
-    public RectangleShape( final RectangleView view,
-                           final RectangleShapeDef<W> proxy ) {
-        super( view,
-               proxy );
+    public RectangleShape(final RectangleView view,
+                          final RectangleShapeDef<W> proxy) {
+        super(view,
+              proxy);
     }
 
     @Override
-    public void applyProperties( final Node<View<W>, Edge> element,
-                                 final MutationContext mutationContext ) {
-        super.applyProperties( element,
-                               mutationContext );
+    public void applyProperties(final Node<View<W>, Edge> element,
+                                final MutationContext mutationContext) {
+        super.applyProperties(element,
+                              mutationContext);
         // Width/Height.
-        final Double w = proxy.getWidth( getDefinition( element ) );
-        final Double h = proxy.getHeight( getDefinition( element ) );
-        _applyWidthAndHeight( element,
-                              w,
-                              h,
-                              mutationContext );
+        final Double w = proxy.getWidth(getDefinition(element));
+        final Double h = proxy.getHeight(getDefinition(element));
+        _applyWidthAndHeight(element,
+                             w,
+                             h,
+                             mutationContext);
     }
 
     @Override

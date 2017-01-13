@@ -27,8 +27,8 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 public interface EdgeShape<W, C extends View<W>, E extends Edge<C, Node>, V extends ShapeView>
         extends GraphShape<W, C, E, V> {
 
-    void applyConnections( final E element,
-                           final ShapeView<?> source,
-                           final ShapeView<?> target,
-                           final MutationContext mutationContext );
+    void applyConnections(final E element,
+                          final ShapeView<?> source,
+                          final ShapeView<?> target,
+                          final MutationContext mutationContext);
 }

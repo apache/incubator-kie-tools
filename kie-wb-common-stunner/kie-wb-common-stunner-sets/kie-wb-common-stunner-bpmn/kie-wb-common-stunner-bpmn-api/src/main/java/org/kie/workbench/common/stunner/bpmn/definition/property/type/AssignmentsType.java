@@ -29,15 +29,15 @@ public class AssignmentsType implements PropertyType {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof AssignmentsType ) ) {
+        if (!(o instanceof AssignmentsType)) {
             return false;
         }
-        AssignmentsType that = ( AssignmentsType ) o;
-        if ( !name.equals( that.name ) ) {
+        AssignmentsType that = (AssignmentsType) o;
+        if (!name.equals(that.name)) {
             return false;
         }
         return true;

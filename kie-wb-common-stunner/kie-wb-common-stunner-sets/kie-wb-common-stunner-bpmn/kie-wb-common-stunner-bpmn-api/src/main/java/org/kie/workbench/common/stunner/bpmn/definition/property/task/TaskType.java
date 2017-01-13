@@ -57,11 +57,11 @@ public class TaskType implements BPMNProperty {
     public static final TaskTypes defaultValue = TaskTypes.NONE;
 
     @AllowedValues
-    public static final Iterable<TaskTypes> allowedValues = new ArrayList<TaskTypes>( 4 ) {{
-        add( TaskTypes.NONE );
-        add( TaskTypes.USER );
-        add( TaskTypes.SCRIPT );
-        add( TaskTypes.BUSINESS_RULE );
+    public static final Iterable<TaskTypes> allowedValues = new ArrayList<TaskTypes>(4) {{
+        add(TaskTypes.NONE);
+        add(TaskTypes.USER);
+        add(TaskTypes.SCRIPT);
+        add(TaskTypes.BUSINESS_RULE);
     }};
 
     @Value
@@ -70,7 +70,7 @@ public class TaskType implements BPMNProperty {
     public TaskType() {
     }
 
-    public TaskType( final TaskTypes value ) {
+    public TaskType(final TaskTypes value) {
         this.value = value;
     }
 
@@ -106,7 +106,7 @@ public class TaskType implements BPMNProperty {
         return value;
     }
 
-    public void setValue( TaskTypes value ) {
+    public void setValue(final TaskTypes value) {
         this.value = value;
     }
 }

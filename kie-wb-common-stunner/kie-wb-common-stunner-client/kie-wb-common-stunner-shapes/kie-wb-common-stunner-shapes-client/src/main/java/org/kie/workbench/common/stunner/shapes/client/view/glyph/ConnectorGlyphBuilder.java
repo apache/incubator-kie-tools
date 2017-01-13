@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.shapes.def.ConnectorGlyphDef;
 @ApplicationScoped
 public class ConnectorGlyphBuilder extends AbstractGlyphBuilder<Group, ConnectorGlyphDef<Object>> {
 
-    private static Logger LOGGER = Logger.getLogger( ConnectorGlyphBuilder.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(ConnectorGlyphBuilder.class.getName());
 
     @Override
     public Class<?> getType() {
@@ -36,8 +36,8 @@ public class ConnectorGlyphBuilder extends AbstractGlyphBuilder<Group, Connector
     @Override
     public Glyph<Group> build() {
         final String color = glyphDefinition.getColor();
-        return new ConnectorGlyph( color,
-                                   width,
-                                   height );
+        return new ConnectorGlyph(color,
+                                  width,
+                                  height);
     }
 }

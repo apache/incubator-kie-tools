@@ -26,16 +26,16 @@ public interface ToolboxCommand<H extends CanvasHandler, I> {
         DISABLED;
     }
 
-    I getIcon( final H context,
-               final double width,
-               final double height );
+    I getIcon(final H context,
+              final double width,
+              final double height);
 
     String getTitle();
 
     // TODO: add method -> Status check( Element element );
 
-    void execute( final Context<H> context,
-                  final Element element );
+    void execute(final Context<H> context,
+                 final Element element);
 
     void destroy();
 }

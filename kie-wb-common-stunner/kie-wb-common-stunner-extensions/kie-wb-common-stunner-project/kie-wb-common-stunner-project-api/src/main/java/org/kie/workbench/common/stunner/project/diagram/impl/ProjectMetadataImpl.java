@@ -32,10 +32,10 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
     public ProjectMetadataImpl() {
     }
 
-    private ProjectMetadataImpl( @MapsTo( "definitionSetId" ) String definitionSetId,
-                                 @MapsTo( "projectPkg" ) String projectPkg,
-                                 @MapsTo( "projectName" ) String projectName ) {
-        super( definitionSetId );
+    private ProjectMetadataImpl(final @MapsTo("definitionSetId") String definitionSetId,
+                                final @MapsTo("projectPkg") String projectPkg,
+                                final @MapsTo("projectName") String projectName) {
+        super(definitionSetId);
         this.projectName = projectName;
         this.projectPkg = projectPkg;
     }
@@ -64,37 +64,37 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
         private String pPkg;
         private Path path;
 
-        public ProjectMetadataBuilder forDefinitionSetId( String s ) {
+        public ProjectMetadataBuilder forDefinitionSetId(final String s) {
             this.defSetId = s;
             return this;
         }
 
-        public ProjectMetadataBuilder forTitle( String t ) {
+        public ProjectMetadataBuilder forTitle(final String t) {
             this.title = t;
             return this;
         }
 
-        public ProjectMetadataBuilder forProjectName( String pName ) {
+        public ProjectMetadataBuilder forProjectName(final String pName) {
             this.pName = pName;
             return this;
         }
 
-        public ProjectMetadataBuilder forProjectPackage( String pPkg ) {
+        public ProjectMetadataBuilder forProjectPackage(final String pPkg) {
             this.pPkg = pPkg;
             return this;
         }
 
-        public ProjectMetadataBuilder forPath( Path path ) {
+        public ProjectMetadataBuilder forPath(final Path path) {
             this.path = path;
             return this;
         }
 
         public ProjectMetadataImpl build() {
-            final ProjectMetadataImpl result = new ProjectMetadataImpl( defSetId,
-                                                                        pPkg,
-                                                                        pName );
-            result.setPath( path );
-            result.setTitle( title );
+            final ProjectMetadataImpl result = new ProjectMetadataImpl(defSetId,
+                                                                       pPkg,
+                                                                       pName);
+            result.setPath(path);
+            result.setTitle(title);
             return result;
         }
     }

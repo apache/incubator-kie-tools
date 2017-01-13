@@ -24,9 +24,9 @@ public final class FormPropertiesOpened implements UberFireEvent {
     private final String uuid;
     private final String name;
 
-    public FormPropertiesOpened( final ClientSession session,
-                                 final String uuid,
-                                 final String name ) {
+    public FormPropertiesOpened(final ClientSession session,
+                                final String uuid,
+                                final String name) {
         this.session = session;
         this.uuid = uuid;
         this.name = name;

@@ -30,9 +30,9 @@ public class MapIndex implements MutableIndex<Node, Edge> {
     final Map<String, Node> nodes;
     final Map<String, Edge> edges;
 
-    public MapIndex( final Graph<?, Node> graph,
-                     final Map<String, Node> nodes,
-                     final Map<String, Edge> edges ) {
+    public MapIndex(final Graph<?, Node> graph,
+                    final Map<String, Node> nodes,
+                    final Map<String, Edge> edges) {
         this.graph = graph;
         this.nodes = nodes;
         this.edges = edges;
@@ -44,47 +44,47 @@ public class MapIndex implements MutableIndex<Node, Edge> {
     }
 
     @Override
-    public Element get( final String uuid ) {
-        Element node = nodes.get( uuid );
-        if ( null == node ) {
-            return edges.get( uuid );
+    public Element get(final String uuid) {
+        Element node = nodes.get(uuid);
+        if (null == node) {
+            return edges.get(uuid);
         }
         return node;
     }
 
     @Override
-    public Node getNode( final String uuid ) {
-        return nodes.get( uuid );
+    public Node getNode(final String uuid) {
+        return nodes.get(uuid);
     }
 
     @Override
-    public Edge getEdge( final String uuid ) {
-        return edges.get( uuid );
+    public Edge getEdge(final String uuid) {
+        return edges.get(uuid);
     }
 
     @Override
-    public MutableIndex<Node, Edge> addNode( final Node node ) {
-        nodes.put( node.getUUID(),
-                   node );
+    public MutableIndex<Node, Edge> addNode(final Node node) {
+        nodes.put(node.getUUID(),
+                  node);
         return this;
     }
 
     @Override
-    public MutableIndex<Node, Edge> removeNode( final Node node ) {
-        nodes.remove( node.getUUID() );
+    public MutableIndex<Node, Edge> removeNode(final Node node) {
+        nodes.remove(node.getUUID());
         return this;
     }
 
     @Override
-    public MutableIndex<Node, Edge> addEdge( final Edge edge ) {
-        edges.put( edge.getUUID(),
-                   edge );
+    public MutableIndex<Node, Edge> addEdge(final Edge edge) {
+        edges.put(edge.getUUID(),
+                  edge);
         return this;
     }
 
     @Override
-    public MutableIndex<Node, Edge> removeEdge( final Edge edge ) {
-        edges.remove( edge.getUUID() );
+    public MutableIndex<Node, Edge> removeEdge(final Edge edge) {
+        edges.remove(edge.getUUID());
         return this;
     }
 

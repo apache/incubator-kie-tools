@@ -31,7 +31,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ModelEdgeCardinalityRuleManagerImplTest {
 
     private final static String OROLE1 = "oRole";
@@ -50,122 +50,122 @@ public class ModelEdgeCardinalityRuleManagerImplTest {
 
     @Before
     public void setup() throws Exception {
-        when( orule.getRole() ).thenReturn( OROLE1 );
-        when( orule.getMinOccurrences() ).thenReturn( OMIN1 );
-        when( orule.getMaxOccurrences() ).thenReturn( OMAX1 );
-        when( orule.getType() ).thenReturn( EdgeCardinalityRule.Type.OUTGOING );
-        when( irule.getRole() ).thenReturn( IROLE1 );
-        when( irule.getMinOccurrences() ).thenReturn( IMIN1 );
-        when( irule.getMaxOccurrences() ).thenReturn( IMAX1 );
-        when( irule.getType() ).thenReturn( EdgeCardinalityRule.Type.INCOMING );
+        when(orule.getRole()).thenReturn(OROLE1);
+        when(orule.getMinOccurrences()).thenReturn(OMIN1);
+        when(orule.getMaxOccurrences()).thenReturn(OMAX1);
+        when(orule.getType()).thenReturn(EdgeCardinalityRule.Type.OUTGOING);
+        when(irule.getRole()).thenReturn(IROLE1);
+        when(irule.getMinOccurrences()).thenReturn(IMIN1);
+        when(irule.getMaxOccurrences()).thenReturn(IMAX1);
+        when(irule.getType()).thenReturn(EdgeCardinalityRule.Type.INCOMING);
         tested = new ModelEdgeCardinalityRuleManagerImpl();
-        tested.addRule( orule );
-        tested.addRule( irule );
+        tested.addRule(orule);
+        tested.addRule(irule);
     }
 
     @Test
     public void testOutgoingMaxAccept() {
-        final Set<String> labels = new HashSet<String>( 1 ) {{
-            add( OROLE1 );
+        final Set<String> labels = new HashSet<String>(1) {{
+            add(OROLE1);
         }};
         final RuleViolations violations =
-                tested.evaluate( OROLE1,
-                                 labels,
-                                 1,
-                                 EdgeCardinalityRule.Type.OUTGOING,
-                                 RuleManager.Operation.ADD );
-        assertNotNull( violations );
-        assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+                tested.evaluate(OROLE1,
+                                labels,
+                                1,
+                                EdgeCardinalityRule.Type.OUTGOING,
+                                RuleManager.Operation.ADD);
+        assertNotNull(violations);
+        assertFalse(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
     public void testOutgoingMaxDeny() {
-        final Set<String> labels = new HashSet<String>( 1 ) {{
-            add( OROLE1 );
+        final Set<String> labels = new HashSet<String>(1) {{
+            add(OROLE1);
         }};
         final RuleViolations violations =
-                tested.evaluate( OROLE1,
-                                 labels,
-                                 2,
-                                 EdgeCardinalityRule.Type.OUTGOING,
-                                 RuleManager.Operation.ADD );
-        assertNotNull( violations );
-        assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+                tested.evaluate(OROLE1,
+                                labels,
+                                2,
+                                EdgeCardinalityRule.Type.OUTGOING,
+                                RuleManager.Operation.ADD);
+        assertNotNull(violations);
+        assertTrue(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
     public void testOutgoingMinAccept() {
-        final Set<String> labels = new HashSet<String>( 1 ) {{
-            add( OROLE1 );
+        final Set<String> labels = new HashSet<String>(1) {{
+            add(OROLE1);
         }};
         final RuleViolations violations =
-                tested.evaluate( OROLE1,
-                                 labels,
-                                 2,
-                                 EdgeCardinalityRule.Type.OUTGOING,
-                                 RuleManager.Operation.DELETE );
-        assertNotNull( violations );
-        assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+                tested.evaluate(OROLE1,
+                                labels,
+                                2,
+                                EdgeCardinalityRule.Type.OUTGOING,
+                                RuleManager.Operation.DELETE);
+        assertNotNull(violations);
+        assertFalse(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
     public void testOutgoingMinDeny() {
-        final Set<String> labels = new HashSet<String>( 1 ) {{
-            add( OROLE1 );
+        final Set<String> labels = new HashSet<String>(1) {{
+            add(OROLE1);
         }};
         final RuleViolations violations =
-                tested.evaluate( OROLE1,
-                                 labels,
-                                 1,
-                                 EdgeCardinalityRule.Type.OUTGOING,
-                                 RuleManager.Operation.DELETE );
-        assertNotNull( violations );
-        assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+                tested.evaluate(OROLE1,
+                                labels,
+                                1,
+                                EdgeCardinalityRule.Type.OUTGOING,
+                                RuleManager.Operation.DELETE);
+        assertNotNull(violations);
+        assertTrue(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
     public void testIncomingMaxAccept() {
-        final Set<String> labels = new HashSet<String>( 1 ) {{
-            add( IROLE1 );
+        final Set<String> labels = new HashSet<String>(1) {{
+            add(IROLE1);
         }};
         final RuleViolations violations =
-                tested.evaluate( IROLE1,
-                                 labels,
-                                 0,
-                                 EdgeCardinalityRule.Type.INCOMING,
-                                 RuleManager.Operation.ADD );
-        assertNotNull( violations );
-        assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+                tested.evaluate(IROLE1,
+                                labels,
+                                0,
+                                EdgeCardinalityRule.Type.INCOMING,
+                                RuleManager.Operation.ADD);
+        assertNotNull(violations);
+        assertFalse(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
     public void testIncomingMaxDeny() {
-        final Set<String> labels = new HashSet<String>( 1 ) {{
-            add( IROLE1 );
+        final Set<String> labels = new HashSet<String>(1) {{
+            add(IROLE1);
         }};
         final RuleViolations violations =
-                tested.evaluate( IROLE1,
-                                 labels,
-                                 1,
-                                 EdgeCardinalityRule.Type.INCOMING,
-                                 RuleManager.Operation.ADD );
-        assertNotNull( violations );
-        assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+                tested.evaluate(IROLE1,
+                                labels,
+                                1,
+                                EdgeCardinalityRule.Type.INCOMING,
+                                RuleManager.Operation.ADD);
+        assertNotNull(violations);
+        assertTrue(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
     public void testIncomingMinAccept() {
-        final Set<String> labels = new HashSet<String>( 1 ) {{
-            add( IROLE1 );
+        final Set<String> labels = new HashSet<String>(1) {{
+            add(IROLE1);
         }};
         final RuleViolations violations =
-                tested.evaluate( IROLE1,
-                                 labels,
-                                 1,
-                                 EdgeCardinalityRule.Type.INCOMING,
-                                 RuleManager.Operation.DELETE );
-        assertNotNull( violations );
-        assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+                tested.evaluate(IROLE1,
+                                labels,
+                                1,
+                                EdgeCardinalityRule.Type.INCOMING,
+                                RuleManager.Operation.DELETE);
+        assertNotNull(violations);
+        assertFalse(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     private final static String AROLE1 = "aRole";
@@ -177,21 +177,21 @@ public class ModelEdgeCardinalityRuleManagerImplTest {
 
     @Test
     public void testMinNotNegative() {
-        when( anotherRule.getRole() ).thenReturn( AROLE1 );
-        when( anotherRule.getMinOccurrences() ).thenReturn( AMIN1 );
-        when( anotherRule.getMaxOccurrences() ).thenReturn( AMAX1 );
-        when( anotherRule.getType() ).thenReturn( EdgeCardinalityRule.Type.OUTGOING );
-        tested.addRule( anotherRule );
-        final Set<String> labels = new HashSet<String>( 1 ) {{
-            add( AROLE1 );
+        when(anotherRule.getRole()).thenReturn(AROLE1);
+        when(anotherRule.getMinOccurrences()).thenReturn(AMIN1);
+        when(anotherRule.getMaxOccurrences()).thenReturn(AMAX1);
+        when(anotherRule.getType()).thenReturn(EdgeCardinalityRule.Type.OUTGOING);
+        tested.addRule(anotherRule);
+        final Set<String> labels = new HashSet<String>(1) {{
+            add(AROLE1);
         }};
         final RuleViolations violations =
-                tested.evaluate( AROLE1,
-                                 labels,
-                                 0,
-                                 EdgeCardinalityRule.Type.OUTGOING,
-                                 RuleManager.Operation.DELETE );
-        assertNotNull( violations );
-        assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+                tested.evaluate(AROLE1,
+                                labels,
+                                0,
+                                EdgeCardinalityRule.Type.OUTGOING,
+                                RuleManager.Operation.DELETE);
+        assertNotNull(violations);
+        assertFalse(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 }

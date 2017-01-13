@@ -44,70 +44,70 @@ public class DockingAcceptorControlImpl extends AbstractContainmentBasedControl<
     private CanvasCommandFactory canvasCommandFactory;
 
     @Inject
-    public DockingAcceptorControlImpl( final CanvasCommandFactory canvasCommandFactory,
-                                       final @Request SessionCommandManager<AbstractCanvasHandler> canvasCommandManager ) {
-        super( canvasCommandManager );
+    public DockingAcceptorControlImpl(final CanvasCommandFactory canvasCommandFactory,
+                                      final @Request SessionCommandManager<AbstractCanvasHandler> canvasCommandManager) {
+        super(canvasCommandManager);
         this.canvasCommandFactory = canvasCommandFactory;
     }
 
     @Override
-    protected void doEnable( final WiresCanvas.View view ) {
-        view.setDockingAcceptor( DOCKING_ACCEPTOR );
+    protected void doEnable(final WiresCanvas.View view) {
+        view.setDockingAcceptor(DOCKING_ACCEPTOR);
     }
 
     @Override
-    protected void doDisable( final WiresCanvas.View view ) {
-        view.setDockingAcceptor( IDockingAcceptor.NONE );
+    protected void doDisable(final WiresCanvas.View view) {
+        view.setDockingAcceptor(IDockingAcceptor.NONE);
     }
 
     @Override
-    protected boolean isEdgeAccepted( final Edge edge ) {
+    protected boolean isEdgeAccepted(final Edge edge) {
         return edge.getContent() instanceof Dock;
     }
 
     @Override
-    protected Command<AbstractCanvasHandler, CanvasViolation> getAddEdgeCommand( final Node parent,
-                                                                                 final Node child ) {
-        return canvasCommandFactory.dockNode( parent,
-                                              child );
+    protected Command<AbstractCanvasHandler, CanvasViolation> getAddEdgeCommand(final Node parent,
+                                                                                final Node child) {
+        return canvasCommandFactory.dockNode(parent,
+                                             child);
     }
 
     @Override
-    protected Command<AbstractCanvasHandler, CanvasViolation> getDeleteEdgeCommand( final Node parent,
-                                                                                    final Node child ) {
-        return canvasCommandFactory.unDockNode( parent,
-                                                child );
+    protected Command<AbstractCanvasHandler, CanvasViolation> getDeleteEdgeCommand(final Node parent,
+                                                                                   final Node child) {
+        return canvasCommandFactory.unDockNode(parent,
+                                               child);
     }
 
     private final IDockingAcceptor DOCKING_ACCEPTOR = new IDockingAcceptor() {
         @Override
-        public boolean dockingAllowed( final WiresContainer wiresContainer,
-                                       final WiresShape wiresShape ) {
-            if ( !isAccept( wiresContainer,
-                            wiresShape ) ) {
+        public boolean dockingAllowed(final WiresContainer wiresContainer,
+                                      final WiresShape wiresShape) {
+            if (!isAccept(wiresContainer,
+                          wiresShape)) {
                 return false;
             }
-            final Node childNode = WiresUtils.getNode( getCanvasHandler(),
-                                                       wiresShape );
-            final Node parentNode = WiresUtils.getNode( getCanvasHandler(),
-                                                        wiresContainer );
-            return allow( parentNode,
-                          childNode );
+            final Node childNode = WiresUtils.getNode(getCanvasHandler(),
+                                                      wiresShape);
+            final Node parentNode = WiresUtils.getNode(getCanvasHandler(),
+                                                       wiresContainer);
+            return allow(parentNode,
+                         childNode);
         }
 
         @Override
-        public boolean acceptDocking( final WiresContainer wiresContainer,
-                                      final WiresShape wiresShape ) {
-            if ( !isAccept( wiresContainer,
-                            wiresShape ) ) {
+        public boolean acceptDocking(final WiresContainer wiresContainer,
+                                     final WiresShape wiresShape) {
+            if (!isAccept(wiresContainer,
+                          wiresShape)) {
                 return false;
             }
-            final Node childNode = WiresUtils.getNode( getCanvasHandler(),
-                                                       wiresShape );
-            final Node parentNode = WiresUtils.getNode( getCanvasHandler(),
-                                                        wiresContainer );
-            return accept( parentNode,
-                           childNode );
+            final Node childNode = WiresUtils.getNode(getCanvasHandler(),
+                                                      wiresShape);
+            final Node parentNode = WiresUtils.getNode(getCanvasHandler(),
+                                                       wiresContainer);
+            return accept(parentNode,
+                          childNode);
         }
 
         @Override

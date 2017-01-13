@@ -34,66 +34,66 @@ public class NotificationsView extends Composite implements Notifications.View {
 
     }
 
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     @UiField
     Row logsRow;
 
-    @UiField( provided = true )
+    @UiField(provided = true)
     CellTable logsGrid;
 
-    @UiField( provided = true )
+    @UiField(provided = true)
     SimplePager logsGridPager;
 
     Notifications presenter;
 
     @Override
-    public void init( final Notifications presenter ) {
+    public void init(final Notifications presenter) {
         this.presenter = presenter;
         initGrid();
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     private void initGrid() {
         // Init the logs grid.
-        logsGrid = new CellTable<Notification>( presenter.KEY_PROVIDER );
-        logsGrid.setWidth( "100%",
-                           true );
+        logsGrid = new CellTable<Notification>(presenter.KEY_PROVIDER);
+        logsGrid.setWidth("100%",
+                          true);
         // Do not refresh the headers and footers every time the data is updated.
-        logsGrid.setAutoHeaderRefreshDisabled( true );
-        logsGrid.setAutoFooterRefreshDisabled( true );
+        logsGrid.setAutoHeaderRefreshDisabled(true);
+        logsGrid.setAutoFooterRefreshDisabled(true);
         // Create a Pager to control the table.
-        SimplePager.Resources pagerResources = GWT.create( SimplePager.Resources.class );
-        logsGridPager = new SimplePager( SimplePager.TextLocation.CENTER,
-                                         pagerResources,
-                                         false,
-                                         0,
-                                         true );
-        logsGridPager.setDisplay( logsGrid );
-        presenter.addDataDisplay( logsGrid );
+        SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
+        logsGridPager = new SimplePager(SimplePager.TextLocation.CENTER,
+                                        pagerResources,
+                                        false,
+                                        0,
+                                        true);
+        logsGridPager.setDisplay(logsGrid);
+        presenter.addDataDisplay(logsGrid);
     }
 
     @Override
-    public Notifications.View setColumnSortHandler( final ColumnSortEvent.ListHandler<Notification> sortHandler ) {
-        logsGrid.addColumnSortHandler( sortHandler );
+    public Notifications.View setColumnSortHandler(final ColumnSortEvent.ListHandler<Notification> sortHandler) {
+        logsGrid.addColumnSortHandler(sortHandler);
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public Notifications.View addColumn( final Column<Notification, String> column,
-                                         final String name ) {
-        logsGrid.addColumn( column,
-                            name );
-        logsGrid.setColumnWidth( column,
-                                 5,
-                                 Style.Unit.PCT );
+    @SuppressWarnings("unchecked")
+    public Notifications.View addColumn(final Column<Notification, String> column,
+                                        final String name) {
+        logsGrid.addColumn(column,
+                           name);
+        logsGrid.setColumnWidth(column,
+                                5,
+                                Style.Unit.PCT);
         return this;
     }
 
     @Override
-    public Notifications.View removeColumn( final int index ) {
-        logsGrid.removeColumn( index );
+    public Notifications.View removeColumn(final int index) {
+        logsGrid.removeColumn(index);
         return this;
     }
 

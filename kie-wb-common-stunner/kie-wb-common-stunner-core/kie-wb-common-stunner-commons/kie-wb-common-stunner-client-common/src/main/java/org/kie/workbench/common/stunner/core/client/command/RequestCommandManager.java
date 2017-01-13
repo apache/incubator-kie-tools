@@ -51,16 +51,16 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 @Request
 public class RequestCommandManager extends AbstractSessionCommandManager {
 
-    private static Logger LOGGER = Logger.getLogger( RequestCommandManager.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(RequestCommandManager.class.getName());
 
     private final AbstractClientSessionManager clientSessionManager;
 
     protected RequestCommandManager() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public RequestCommandManager( final AbstractClientSessionManager clientSessionManager ) {
+    public RequestCommandManager(final AbstractClientSessionManager clientSessionManager) {
         this.clientSessionManager = clientSessionManager;
     }
 
@@ -88,9 +88,9 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
             new CommandRegistryListener<AbstractCanvasHandler, CanvasViolation>() {
 
                 @Override
-                public void onAllow( final AbstractCanvasHandler context,
-                                     final Command<AbstractCanvasHandler, CanvasViolation> command,
-                                     final CommandResult<CanvasViolation> result ) {
+                public void onAllow(final AbstractCanvasHandler context,
+                                    final Command<AbstractCanvasHandler, CanvasViolation> command,
+                                    final CommandResult<CanvasViolation> result) {
                     // Nothing to do with the command registry for the allow operation.
                 }
 
@@ -100,13 +100,13 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
                 }
 
                 @Override
-                public void onExecute( final AbstractCanvasHandler context,
-                                       final Command<AbstractCanvasHandler, CanvasViolation> command,
-                                       final CommandResult<CanvasViolation> result ) {
-                    if ( !CommandUtils.isError( result ) ) {
-                        LOGGER.log( Level.FINE,
-                                    "Adding command [" + command + "] into current request command builder." );
-                        currentCommandBuilder.addCommand( command );
+                public void onExecute(final AbstractCanvasHandler context,
+                                      final Command<AbstractCanvasHandler, CanvasViolation> command,
+                                      final CommandResult<CanvasViolation> result) {
+                    if (!CommandUtils.isError(result)) {
+                        LOGGER.log(Level.FINE,
+                                   "Adding command [" + command + "] into current request command builder.");
+                        currentCommandBuilder.addCommand(command);
                     }
                 }
             };
@@ -114,30 +114,30 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
     /**
      * Listens to canvas mouse down event. It produces a new client request to start.
      */
-    void onCanvasMouseDownEvent( final @Observes CanvasMouseDownEvent mouseDownEvent ) {
-        checkNotNull( "mouseDownEvent",
-                      mouseDownEvent );
+    void onCanvasMouseDownEvent(final @Observes CanvasMouseDownEvent mouseDownEvent) {
+        checkNotNull("mouseDownEvent",
+                     mouseDownEvent);
         start();
     }
 
     /**
      * Listens to canvas up down event. It produces the current client request to complete.
      */
-    void onCanvasMouseUpEvent( final @Observes CanvasMouseUpEvent mouseUpEvent ) {
-        checkNotNull( "mouseUpEvent",
-                      mouseUpEvent );
+    void onCanvasMouseUpEvent(final @Observes CanvasMouseUpEvent mouseUpEvent) {
+        checkNotNull("mouseUpEvent",
+                     mouseUpEvent);
         complete();
     }
 
     /**
      * Checks that once opening a new client session, no pending requests are present.
      */
-    void onCanvasSessionOpened( final @Observes SessionOpenedEvent sessionOpenedEvent ) {
-        checkNotNull( "sessionOpenedEvent",
-                      sessionOpenedEvent );
-        if ( isRequestStarted() ) {
-            LOGGER.log( Level.WARNING,
-                        "New session opened but the request has not been completed. Unexpected behaviors can occur." );
+    void onCanvasSessionOpened(final @Observes SessionOpenedEvent sessionOpenedEvent) {
+        checkNotNull("sessionOpenedEvent",
+                     sessionOpenedEvent);
+        if (isRequestStarted()) {
+            LOGGER.log(Level.WARNING,
+                       "New session opened but the request has not been completed. Unexpected behaviors can occur.");
             clear();
         }
     }
@@ -145,12 +145,12 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
     /**
      * Checks that once disposing a client session, no pending requests are present.
      */
-    void onCanvasSessionDisposed( final @Observes SessionDisposedEvent sessionDisposedEvent ) {
-        checkNotNull( "sessionDisposedEvent",
-                      sessionDisposedEvent );
-        if ( isRequestStarted() ) {
-            LOGGER.log( Level.WARNING,
-                        "Current client request has not been completed yet." );
+    void onCanvasSessionDisposed(final @Observes SessionDisposedEvent sessionDisposedEvent) {
+        checkNotNull("sessionDisposedEvent",
+                     sessionDisposedEvent);
+        if (isRequestStarted()) {
+            LOGGER.log(Level.WARNING,
+                       "Current client request has not been completed yet.");
         }
     }
 
@@ -158,12 +158,12 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
      * Starts a new client request.
      */
     private void start() {
-        if ( isRequestStarted() ) {
-            throw new IllegalStateException( "Current client request has not been completed yet. " +
-                                                     "A new client request cannot be started!" );
+        if (isRequestStarted()) {
+            throw new IllegalStateException("Current client request has not been completed yet. " +
+                                                    "A new client request cannot be started!");
         }
-        LOGGER.log( Level.INFO,
-                    "New client request started." );
+        LOGGER.log(Level.INFO,
+                   "New client request started.");
         currentCommandBuilder = new CompositeCommandImpl
                 .CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
                 .forward();
@@ -174,23 +174,23 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
      * session's registry.
      */
     private void complete() {
-        LOGGER.log( Level.INFO,
-                    "Checking if current client request has been completed..." );
+        LOGGER.log(Level.INFO,
+                   "Checking if current client request has been completed...");
         checkRequestStarted();
         // If any commands have been aggregated, let's execute those.
-        if ( currentCommandBuilder.size() > 0 ) {
-            LOGGER.log( Level.FINE,
-                        "Adding commands for current request into registry [size=" + currentCommandBuilder.size() + "]" );
-            getRegistry().register( currentCommandBuilder.build() );
+        if (currentCommandBuilder.size() > 0) {
+            LOGGER.log(Level.FINE,
+                       "Adding commands for current request into registry [size=" + currentCommandBuilder.size() + "]");
+            getRegistry().register(currentCommandBuilder.build());
         }
         clear();
-        LOGGER.log( Level.INFO,
-                    "Current client request completed." );
+        LOGGER.log(Level.INFO,
+                   "Current client request completed.");
     }
 
     private void checkRequestStarted() {
-        if ( !isRequestStarted() ) {
-            throw new IllegalStateException( "Current client request has not been started. " );
+        if (!isRequestStarted()) {
+            throw new IllegalStateException("Current client request has not been started. ");
         }
     }
 

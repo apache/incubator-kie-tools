@@ -58,7 +58,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     private Row row = new Row();
 
-    private Column column = new Column( ColumnSize.MD_12 );
+    private Column column = new Column(ColumnSize.MD_12);
 
     public static final int CONSTANT_MAX_DISPLAY_LENGTH = 10;
 
@@ -66,93 +66,93 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         super();
     }
 
-    public void init( final Presenter presenter ) {
+    public void init(final Presenter presenter) {
         this.presenter = presenter;
-        container.setFluid( true );
-        container.add( row );
-        row.add( column );
-        setTitle( StunnerFormsClientFieldsConstants.INSTANCE.Data_IO() );
-        inputAssignmentsWidget.setVariableType( Variable.VariableType.INPUT );
-        inputAssignmentsWidget.setAllowDuplicateNames( false,
-                                                       StunnerFormsClientFieldsConstants.INSTANCE.A_Data_Input_with_this_name_already_exists() );
-        column.add( inputAssignmentsWidget.getWidget() );
-        outputAssignmentsWidget.setVariableType( Variable.VariableType.OUTPUT );
-        outputAssignmentsWidget.setAllowDuplicateNames( true,
-                                                        "" );
-        column.add( outputAssignmentsWidget.getWidget() );
+        container.setFluid(true);
+        container.add(row);
+        row.add(column);
+        setTitle(StunnerFormsClientFieldsConstants.INSTANCE.Data_IO());
+        inputAssignmentsWidget.setVariableType(Variable.VariableType.INPUT);
+        inputAssignmentsWidget.setAllowDuplicateNames(false,
+                                                      StunnerFormsClientFieldsConstants.INSTANCE.A_Data_Input_with_this_name_already_exists());
+        column.add(inputAssignmentsWidget.getWidget());
+        outputAssignmentsWidget.setVariableType(Variable.VariableType.OUTPUT);
+        outputAssignmentsWidget.setAllowDuplicateNames(true,
+                                                       "");
+        column.add(outputAssignmentsWidget.getWidget());
         final Row btnRow = new Row();
-        btnRow.getElement().getStyle().setMarginTop( 10,
-                                                     Style.Unit.PX );
-        final Column btnColumn = new Column( ColumnSize.MD_12 );
-        btnRow.add( btnColumn );
-        btnSave = new Button( StunnerFormsClientFieldsConstants.INSTANCE.Save() );
-        btnSave.setType( ButtonType.PRIMARY );
-        btnSave.setIcon( IconType.SAVE );
-        btnSave.setPull( Pull.RIGHT );
+        btnRow.getElement().getStyle().setMarginTop(10,
+                                                    Style.Unit.PX);
+        final Column btnColumn = new Column(ColumnSize.MD_12);
+        btnRow.add(btnColumn);
+        btnSave = new Button(StunnerFormsClientFieldsConstants.INSTANCE.Save());
+        btnSave.setType(ButtonType.PRIMARY);
+        btnSave.setIcon(IconType.SAVE);
+        btnSave.setPull(Pull.RIGHT);
         btnSave.addClickHandler(
                 new ClickHandler() {
                     @Override
-                    public void onClick( ClickEvent clickEvent ) {
+                    public void onClick(ClickEvent clickEvent) {
                         presenter.handleSaveClick();
                     }
                 }
         );
-        btnColumn.add( btnSave );
-        btnCancel = new Button( StunnerFormsClientFieldsConstants.INSTANCE.Cancel() );
-        btnCancel.setPull( Pull.RIGHT );
-        btnCancel.addClickHandler( new ClickHandler() {
+        btnColumn.add(btnSave);
+        btnCancel = new Button(StunnerFormsClientFieldsConstants.INSTANCE.Cancel());
+        btnCancel.setPull(Pull.RIGHT);
+        btnCancel.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( final ClickEvent event ) {
+            public void onClick(final ClickEvent event) {
                 presenter.handleCancelClick();
             }
-        } );
-        btnColumn.add( btnCancel );
-        container.add( btnRow );
-        setBody( container );
+        });
+        btnColumn.add(btnCancel);
+        container.add(btnRow);
+        setBody(container);
     }
 
     @Override
-    public void onHide( Event e ) {
+    public void onHide(final Event e) {
     }
 
     @Override
-    public void setCustomViewTitle( String name ) {
-        setTitle( name + " " + StunnerFormsClientFieldsConstants.INSTANCE.Data_IO() );
+    public void setCustomViewTitle(final String name) {
+        setTitle(name + " " + StunnerFormsClientFieldsConstants.INSTANCE.Data_IO());
     }
 
     @Override
     public void setDefaultViewTitle() {
-        setTitle( StunnerFormsClientFieldsConstants.INSTANCE.Data_IO() );
+        setTitle(StunnerFormsClientFieldsConstants.INSTANCE.Data_IO());
     }
 
     @Override
-    public void setInputAssignmentRows( List<AssignmentRow> inputAssignmentRows ) {
-        inputAssignmentsWidget.setData( inputAssignmentRows );
+    public void setInputAssignmentRows(final List<AssignmentRow> inputAssignmentRows) {
+        inputAssignmentsWidget.setData(inputAssignmentRows);
     }
 
     @Override
-    public void setOutputAssignmentRows( List<AssignmentRow> outputAssignmentRows ) {
-        outputAssignmentsWidget.setData( outputAssignmentRows );
+    public void setOutputAssignmentRows(final List<AssignmentRow> outputAssignmentRows) {
+        outputAssignmentsWidget.setData(outputAssignmentRows);
     }
 
     @Override
-    public void setInputAssignmentsVisibility( boolean visible ) {
-        inputAssignmentsWidget.setIsVisible( visible );
+    public void setInputAssignmentsVisibility(final boolean visible) {
+        inputAssignmentsWidget.setIsVisible(visible);
     }
 
     @Override
-    public void setOutputAssignmentsVisibility( boolean visible ) {
-        outputAssignmentsWidget.setIsVisible( visible );
+    public void setOutputAssignmentsVisibility(final boolean visible) {
+        outputAssignmentsWidget.setIsVisible(visible);
     }
 
     @Override
-    public void setIsInputAssignmentSingleVar( boolean single ) {
-        inputAssignmentsWidget.setIsSingleVar( single );
+    public void setIsInputAssignmentSingleVar(final boolean single) {
+        inputAssignmentsWidget.setIsSingleVar(single);
     }
 
     @Override
-    public void setIsOutputAssignmentSingleVar( boolean single ) {
-        outputAssignmentsWidget.setIsSingleVar( single );
+    public void setIsOutputAssignmentSingleVar(final boolean single) {
+        outputAssignmentsWidget.setIsSingleVar(single);
     }
 
     @Override
@@ -176,45 +176,45 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     }
 
     @Override
-    public void setPossibleInputAssignmentsDataTypes( List<String> dataTypeDisplayNames ) {
-        ListBoxValues dataTypeListBoxValues = new ListBoxValues( AssignmentListItemWidgetView.CUSTOM_PROMPT,
-                                                                 StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
-                                                                 presenter.dataTypesTester() );
-        dataTypeListBoxValues.addValues( dataTypeDisplayNames );
-        inputAssignmentsWidget.setDataTypes( dataTypeListBoxValues );
+    public void setPossibleInputAssignmentsDataTypes(final List<String> dataTypeDisplayNames) {
+        ListBoxValues dataTypeListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.CUSTOM_PROMPT,
+                                                                StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
+                                                                presenter.dataTypesTester());
+        dataTypeListBoxValues.addValues(dataTypeDisplayNames);
+        inputAssignmentsWidget.setDataTypes(dataTypeListBoxValues);
     }
 
     @Override
-    public void setPossibleOutputAssignmentsDataTypes( List<String> dataTypeDisplayNames ) {
-        ListBoxValues dataTypeListBoxValues = new ListBoxValues( AssignmentListItemWidgetView.CUSTOM_PROMPT,
-                                                                 StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
-                                                                 presenter.dataTypesTester() );
-        dataTypeListBoxValues.addValues( dataTypeDisplayNames );
-        outputAssignmentsWidget.setDataTypes( dataTypeListBoxValues );
+    public void setPossibleOutputAssignmentsDataTypes(final List<String> dataTypeDisplayNames) {
+        ListBoxValues dataTypeListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.CUSTOM_PROMPT,
+                                                                StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
+                                                                presenter.dataTypesTester());
+        dataTypeListBoxValues.addValues(dataTypeDisplayNames);
+        outputAssignmentsWidget.setDataTypes(dataTypeListBoxValues);
     }
 
     @Override
-    public void setInputAssignmentsProcessVariables( List<String> processVariables ) {
-        ListBoxValues processVarListBoxValues = new ListBoxValues( AssignmentListItemWidgetView.CONSTANT_PROMPT,
-                                                                   StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
-                                                                   presenter.processVarTester(),
-                                                                   CONSTANT_MAX_DISPLAY_LENGTH );
-        processVarListBoxValues.addValues( processVariables );
-        inputAssignmentsWidget.setProcessVariables( processVarListBoxValues );
+    public void setInputAssignmentsProcessVariables(final List<String> processVariables) {
+        ListBoxValues processVarListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.CONSTANT_PROMPT,
+                                                                  StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
+                                                                  presenter.processVarTester(),
+                                                                  CONSTANT_MAX_DISPLAY_LENGTH);
+        processVarListBoxValues.addValues(processVariables);
+        inputAssignmentsWidget.setProcessVariables(processVarListBoxValues);
     }
 
     @Override
-    public void setOutputAssignmentsProcessVariables( List<String> processVariables ) {
-        ListBoxValues processVarListBoxValues = new ListBoxValues( AssignmentListItemWidgetView.CONSTANT_PROMPT,
-                                                                   StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
-                                                                   presenter.processVarTester() );
-        processVarListBoxValues.addValues( processVariables );
-        outputAssignmentsWidget.setProcessVariables( processVarListBoxValues );
+    public void setOutputAssignmentsProcessVariables(final List<String> processVariables) {
+        ListBoxValues processVarListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.CONSTANT_PROMPT,
+                                                                  StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
+                                                                  presenter.processVarTester());
+        processVarListBoxValues.addValues(processVariables);
+        outputAssignmentsWidget.setProcessVariables(processVarListBoxValues);
     }
 
     @Override
-    public void setInputAssignmentsDisallowedNames( Set<String> names ) {
-        inputAssignmentsWidget.setDisallowedNames( names,
-                                                   StunnerFormsClientFieldsConstants.INSTANCE.This_input_should_be_entered_as_a_property_for_the_task() );
+    public void setInputAssignmentsDisallowedNames(final Set<String> names) {
+        inputAssignmentsWidget.setDisallowedNames(names,
+                                                  StunnerFormsClientFieldsConstants.INSTANCE.This_input_should_be_entered_as_a_property_for_the_task());
     }
 }

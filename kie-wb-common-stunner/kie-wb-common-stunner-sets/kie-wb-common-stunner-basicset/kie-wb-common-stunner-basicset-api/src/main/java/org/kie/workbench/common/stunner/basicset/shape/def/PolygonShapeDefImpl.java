@@ -28,67 +28,67 @@ public final class PolygonShapeDefImpl
         implements PolygonShapeDef<Polygon> {
 
     @Override
-    public double getRadius( final Polygon element ) {
+    public double getRadius(final Polygon element) {
         return element.getRadius().getValue();
     }
 
     @Override
-    public String getNamePropertyValue( final Polygon element ) {
+    public String getNamePropertyValue(final Polygon element) {
         return element.getName().getValue();
     }
 
     @Override
-    public String getBackgroundColor( final Polygon element ) {
+    public String getBackgroundColor(final Polygon element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final Polygon element ) {
+    public double getBackgroundAlpha(final Polygon element) {
         return 1;
     }
 
     @Override
-    public String getBorderColor( final Polygon element ) {
+    public String getBorderColor(final Polygon element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final Polygon element ) {
+    public double getBorderSize(final Polygon element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final Polygon element ) {
+    public double getBorderAlpha(final Polygon element) {
         return 1;
     }
 
     @Override
-    public String getFontFamily( final Polygon element ) {
+    public String getFontFamily(final Polygon element) {
         return element.getFontSet().getFontFamily().getValue();
     }
 
     @Override
-    public String getFontColor( final Polygon element ) {
+    public String getFontColor(final Polygon element) {
         return element.getFontSet().getFontColor().getValue();
     }
 
     @Override
-    public double getFontSize( final Polygon element ) {
+    public double getFontSize(final Polygon element) {
         return element.getFontSet().getFontSize().getValue();
     }
 
     @Override
-    public double getFontBorderSize( final Polygon element ) {
+    public double getFontBorderSize(final Polygon element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final Polygon element ) {
+    public HasTitle.Position getFontPosition(final Polygon element) {
         return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public double getFontRotation( final Polygon element ) {
+    public double getFontRotation(final Polygon element) {
         return 0;
     }
 

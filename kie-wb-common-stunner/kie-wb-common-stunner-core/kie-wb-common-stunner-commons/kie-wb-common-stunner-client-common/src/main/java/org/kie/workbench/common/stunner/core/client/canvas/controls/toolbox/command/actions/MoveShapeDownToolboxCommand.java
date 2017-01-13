@@ -29,15 +29,15 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 @Dependent
 public class MoveShapeDownToolboxCommand<I> extends AbstractActionToolboxCommand<I> {
 
-    private static Logger LOGGER = Logger.getLogger( MoveShapeDownToolboxCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(MoveShapeDownToolboxCommand.class.getName());
 
     protected MoveShapeDownToolboxCommand() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public MoveShapeDownToolboxCommand( final DefinitionGlyphTooltip<?> glyphTooltip ) {
-        super( glyphTooltip );
+    public MoveShapeDownToolboxCommand(final DefinitionGlyphTooltip<?> glyphTooltip) {
+        super(glyphTooltip);
     }
 
     // TODO: i18n.
@@ -47,18 +47,18 @@ public class MoveShapeDownToolboxCommand<I> extends AbstractActionToolboxCommand
     }
 
     @Override
-    public void click( final Context<AbstractCanvasHandler> context,
-                       final Element element ) {
-        super.click( context,
-                     element );
+    public void click(final Context<AbstractCanvasHandler> context,
+                      final Element element) {
+        super.click(context,
+                    element);
         final String uuid = element.getUUID();
-        final Shape<?> shape = context.getCanvasHandler().getCanvas().getShape( uuid );
-        if ( null != shape ) {
-            shape.getShapeView().setZIndex( shape.getShapeView().getZIndex() - 1 );
+        final Shape<?> shape = context.getCanvasHandler().getCanvas().getShape(uuid);
+        if (null != shape) {
+            shape.getShapeView().setZIndex(shape.getShapeView().getZIndex() - 1);
             shape.getShapeView().moveDown();
         } else {
-            LOGGER.log( Level.WARNING,
-                        "Shape not found for UUID [" + uuid + "]" );
+            LOGGER.log(Level.WARNING,
+                       "Shape not found for UUID [" + uuid + "]");
         }
     }
 

@@ -31,8 +31,8 @@ public class SwitchGridToolbarCommand extends AbstractToolbarSessionCommand<Abst
     private CanvasGrid grid;
 
     @Inject
-    public SwitchGridToolbarCommand( final SessionCommandFactory sessionCommandFactory ) {
-        super( sessionCommandFactory.newSwitchGridCommand() );
+    public SwitchGridToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
+        super(sessionCommandFactory.newSwitchGridCommand());
     }
 
     @Override

@@ -31,7 +31,7 @@ public abstract class GlyphShapeDef<W> implements GlyphDef<W> {
      * can return the identifier for any shape's definition that will
      * be displayed for a task.
      */
-    public abstract String getGlyphDefinitionId( String id );
+    public abstract String getGlyphDefinitionId(String id);
 
     @Override
     public Class<?> getType() {
@@ -39,7 +39,7 @@ public abstract class GlyphShapeDef<W> implements GlyphDef<W> {
     }
 
     @Override
-    public String getGlyphDescription( final W element ) {
+    public String getGlyphDescription(final W element) {
         return null;
     }
 }

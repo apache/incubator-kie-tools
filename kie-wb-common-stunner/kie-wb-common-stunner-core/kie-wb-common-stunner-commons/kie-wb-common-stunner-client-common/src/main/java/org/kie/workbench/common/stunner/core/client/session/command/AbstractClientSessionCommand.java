@@ -24,40 +24,40 @@ import org.uberfire.mvp.Command;
 
 public abstract class AbstractClientSessionCommand<S extends ClientSession> implements ClientSessionCommand<S> {
 
-    private static Logger LOGGER = Logger.getLogger( AbstractClientSessionCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(AbstractClientSessionCommand.class.getName());
 
     private S session;
     private Command statusCallback;
     private boolean enabled;
 
-    public AbstractClientSessionCommand( final boolean enabled ) {
+    public AbstractClientSessionCommand(final boolean enabled) {
         this.enabled = enabled;
     }
 
     @Override
-    public AbstractClientSessionCommand<S> bind( final S session ) {
+    public AbstractClientSessionCommand<S> bind(final S session) {
         this.session = session;
         return this;
     }
 
     @Override
-    public ClientSessionCommand<S> listen( final Command statusCallback ) {
+    public ClientSessionCommand<S> listen(final Command statusCallback) {
         this.statusCallback = statusCallback;
         return this;
     }
 
     public void execute() {
-        this.execute( new Callback<Object>() {
+        this.execute(new Callback<Object>() {
             @Override
-            public void onSuccess( final Object result ) {
+            public void onSuccess(final Object result) {
             }
 
             @Override
-            public void onError( final ClientRuntimeError error ) {
-                LOGGER.log( Level.SEVERE,
-                            error.toString() );
+            public void onError(final ClientRuntimeError error) {
+                LOGGER.log(Level.SEVERE,
+                           error.toString());
             }
-        } );
+        });
     }
 
     @Override
@@ -70,12 +70,12 @@ public abstract class AbstractClientSessionCommand<S extends ClientSession> impl
         return enabled;
     }
 
-    protected void setEnabled( final boolean enabled ) {
+    protected void setEnabled(final boolean enabled) {
         this.enabled = enabled;
     }
 
     protected void fire() {
-        if ( null != statusCallback ) {
+        if (null != statusCallback) {
             statusCallback.execute();
         }
     }

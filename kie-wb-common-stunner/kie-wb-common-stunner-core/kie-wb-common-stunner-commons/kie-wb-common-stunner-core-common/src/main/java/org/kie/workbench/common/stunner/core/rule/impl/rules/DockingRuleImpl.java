@@ -29,15 +29,15 @@ public class DockingRuleImpl implements DockingRule {
     private String id;
     private Set<String> permittedRoles;
 
-    public DockingRuleImpl( final @MapsTo( "name" ) String name,
-                            final @MapsTo( "id" ) String id,
-                            final @MapsTo( "permittedRoles" ) Set<String> permittedRoles ) {
-        this.name = PortablePreconditions.checkNotNull( "name",
-                                                        name );
-        this.id = PortablePreconditions.checkNotNull( "id",
-                                                      id );
-        this.permittedRoles = PortablePreconditions.checkNotNull( "permittedRoles",
-                                                                  permittedRoles );
+    public DockingRuleImpl(final @MapsTo("name") String name,
+                           final @MapsTo("id") String id,
+                           final @MapsTo("permittedRoles") Set<String> permittedRoles) {
+        this.name = PortablePreconditions.checkNotNull("name",
+                                                       name);
+        this.id = PortablePreconditions.checkNotNull("id",
+                                                     id);
+        this.permittedRoles = PortablePreconditions.checkNotNull("permittedRoles",
+                                                                 permittedRoles);
     }
 
     @Override

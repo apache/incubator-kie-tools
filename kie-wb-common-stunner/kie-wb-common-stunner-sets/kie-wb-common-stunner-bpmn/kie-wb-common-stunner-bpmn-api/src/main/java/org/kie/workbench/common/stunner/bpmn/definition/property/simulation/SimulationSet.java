@@ -52,57 +52,57 @@ public class SimulationSet implements BPMNPropertySet {
     protected Mean mean;
 
     @Property
-    @FieldDef( label = FIELDDEF_TIME_UNIT, property = "value" )
+    @FieldDef(label = FIELDDEF_TIME_UNIT, property = "value")
     @Valid
     protected TimeUnit timeUnit;
 
     @Property
-    @FieldDef( label = FIELDDEF_STANDARD_DEVIATION, property = "value" )
+    @FieldDef(label = FIELDDEF_STANDARD_DEVIATION, property = "value")
     protected StandardDeviation standardDeviation;
 
     @Property
-    @FieldDef( label = FIELDDEF_DISTRIBUTION_TYPE, property = "value" )
+    @FieldDef(label = FIELDDEF_DISTRIBUTION_TYPE, property = "value")
     protected DistributionType distributionType;
 
     @Property
-    @FieldDef( label = FIELDDEF_QUANTITY, property = "value" )
+    @FieldDef(label = FIELDDEF_QUANTITY, property = "value")
     protected Quantity quantity;
 
     @Property
-    @FieldDef( label = FIELDDEF_WORKINGHOURS, property = "value" )
+    @FieldDef(label = FIELDDEF_WORKINGHOURS, property = "value")
     protected WorkingHours workingHours;
 
     @Property
-    @FieldDef( label = FIELDDEF_UNITCOST, property = "value" )
+    @FieldDef(label = FIELDDEF_UNITCOST, property = "value")
     protected UnitCost unitCost;
 
     @Property
-    @FieldDef( label = FIELDDEF_CURRENCY, property = "value" )
+    @FieldDef(label = FIELDDEF_CURRENCY, property = "value")
     protected Currency currency;
 
     public SimulationSet() {
-        this( new Min(),
-              new Max(),
-              new Mean(),
-              new TimeUnit(),
-              new StandardDeviation(),
-              new DistributionType(),
-              new Quantity(),
-              new WorkingHours(),
-              new UnitCost(),
-              new Currency() );
+        this(new Min(),
+             new Max(),
+             new Mean(),
+             new TimeUnit(),
+             new StandardDeviation(),
+             new DistributionType(),
+             new Quantity(),
+             new WorkingHours(),
+             new UnitCost(),
+             new Currency());
     }
 
-    public SimulationSet( @MapsTo( "min" ) Min min,
-                          @MapsTo( "max" ) Max max,
-                          @MapsTo( "mean" ) Mean mean,
-                          @MapsTo( "timeUnit" ) TimeUnit timeUnit,
-                          @MapsTo( "standardDeviation" ) StandardDeviation standardDeviation,
-                          @MapsTo( "distributionType" ) DistributionType distributionType,
-                          @MapsTo( "quantity" ) Quantity quantity,
-                          @MapsTo( "workingHours" ) WorkingHours workingHours,
-                          @MapsTo( "unitCost" ) UnitCost unitCost,
-                          @MapsTo( "currency" ) Currency currency ) {
+    public SimulationSet(final @MapsTo("min") Min min,
+                         final @MapsTo("max") Max max,
+                         final @MapsTo("mean") Mean mean,
+                         final @MapsTo("timeUnit") TimeUnit timeUnit,
+                         final @MapsTo("standardDeviation") StandardDeviation standardDeviation,
+                         final @MapsTo("distributionType") DistributionType distributionType,
+                         final @MapsTo("quantity") Quantity quantity,
+                         final @MapsTo("workingHours") WorkingHours workingHours,
+                         final @MapsTo("unitCost") UnitCost unitCost,
+                         final @MapsTo("currency") Currency currency) {
         this.min = min;
         this.max = max;
         this.mean = mean;
@@ -119,7 +119,7 @@ public class SimulationSet implements BPMNPropertySet {
         return min;
     }
 
-    public void setMin( Min min ) {
+    public void setMin(final Min min) {
         this.min = min;
     }
 
@@ -127,7 +127,7 @@ public class SimulationSet implements BPMNPropertySet {
         return max;
     }
 
-    public void setMax( Max max ) {
+    public void setMax(final Max max) {
         this.max = max;
     }
 
@@ -135,7 +135,7 @@ public class SimulationSet implements BPMNPropertySet {
         return mean;
     }
 
-    public void setMean( Mean mean ) {
+    public void setMean(final Mean mean) {
         this.mean = mean;
     }
 
@@ -143,7 +143,7 @@ public class SimulationSet implements BPMNPropertySet {
         return timeUnit;
     }
 
-    public void setTimeUnit( TimeUnit timeUnit ) {
+    public void setTimeUnit(final TimeUnit timeUnit) {
         this.timeUnit = timeUnit;
     }
 
@@ -151,7 +151,7 @@ public class SimulationSet implements BPMNPropertySet {
         return standardDeviation;
     }
 
-    public void setStandardDeviation( StandardDeviation standardDeviation ) {
+    public void setStandardDeviation(final StandardDeviation standardDeviation) {
         this.standardDeviation = standardDeviation;
     }
 
@@ -159,7 +159,7 @@ public class SimulationSet implements BPMNPropertySet {
         return distributionType;
     }
 
-    public void setDistributionType( DistributionType distributionType ) {
+    public void setDistributionType(final DistributionType distributionType) {
         this.distributionType = distributionType;
     }
 
@@ -167,7 +167,7 @@ public class SimulationSet implements BPMNPropertySet {
         return quantity;
     }
 
-    public void setQuantity( Quantity quantity ) {
+    public void setQuantity(final Quantity quantity) {
         this.quantity = quantity;
     }
 
@@ -175,7 +175,7 @@ public class SimulationSet implements BPMNPropertySet {
         return workingHours;
     }
 
-    public void setWorkingHours( WorkingHours workingHours ) {
+    public void setWorkingHours(final WorkingHours workingHours) {
         this.workingHours = workingHours;
     }
 
@@ -183,7 +183,7 @@ public class SimulationSet implements BPMNPropertySet {
         return unitCost;
     }
 
-    public void setUnitCost( UnitCost unitCost ) {
+    public void setUnitCost(final UnitCost unitCost) {
         this.unitCost = unitCost;
     }
 
@@ -191,7 +191,7 @@ public class SimulationSet implements BPMNPropertySet {
         return currency;
     }
 
-    public void setCurrency( Currency currency ) {
+    public void setCurrency(final Currency currency) {
         this.currency = currency;
     }
 }

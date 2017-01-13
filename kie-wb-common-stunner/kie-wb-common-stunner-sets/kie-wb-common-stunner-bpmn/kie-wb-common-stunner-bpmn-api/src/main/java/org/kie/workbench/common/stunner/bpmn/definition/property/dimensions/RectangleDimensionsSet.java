@@ -39,30 +39,30 @@ public class RectangleDimensionsSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Shape Dimensions";
 
     @Property
-    @FieldDef( label = FIELDDEF_WIDTH, property = "value" )
-    @Slider( min = 100.0, max = 300.0, step = 10.0, precision = 0.0 )
+    @FieldDef(label = FIELDDEF_WIDTH, property = "value")
+    @Slider(min = 100.0, max = 300.0, step = 10.0, precision = 0.0)
     @Valid
     protected Width width;
 
     @Property
-    @FieldDef( label = FIELDDEF_HEIGHT, property = "value" )
-    @Slider( min = 40.0, max = 100.0, step = 5.0, precision = 0.0 )
+    @FieldDef(label = FIELDDEF_HEIGHT, property = "value")
+    @Slider(min = 40.0, max = 100.0, step = 5.0, precision = 0.0)
     @Valid
     protected Height height;
 
     public RectangleDimensionsSet() {
-        this( new Width( Width.defaultValue ),
-              new Height( Height.defaultValue ) );
+        this(new Width(Width.defaultValue),
+             new Height(Height.defaultValue));
     }
 
-    public RectangleDimensionsSet( Double width,
-                                   Double height ) {
-        this( new Width( width ),
-              new Height( height ) );
+    public RectangleDimensionsSet(final Double width,
+                                  final Double height) {
+        this(new Width(width),
+             new Height(height));
     }
 
-    public RectangleDimensionsSet( @MapsTo( "width" ) Width width,
-                                   @MapsTo( "height" ) Height height ) {
+    public RectangleDimensionsSet(final @MapsTo("width") Width width,
+                                  final @MapsTo("height") Height height) {
         this.width = width;
         this.height = height;
     }
@@ -71,7 +71,7 @@ public class RectangleDimensionsSet implements BPMNPropertySet {
         return width;
     }
 
-    public void setWidth( Width width ) {
+    public void setWidth(final Width width) {
         this.width = width;
     }
 
@@ -79,7 +79,7 @@ public class RectangleDimensionsSet implements BPMNPropertySet {
         return height;
     }
 
-    public void setHeight( Height height ) {
+    public void setHeight(final Height height) {
         this.height = height;
     }
 }

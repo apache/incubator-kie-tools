@@ -43,70 +43,70 @@ public class ContainmentAcceptorControlImpl extends AbstractContainmentBasedCont
     private CanvasCommandFactory canvasCommandFactory;
 
     @Inject
-    public ContainmentAcceptorControlImpl( final CanvasCommandFactory canvasCommandFactory,
-                                           final @Request SessionCommandManager<AbstractCanvasHandler> canvasCommandManager ) {
-        super( canvasCommandManager );
+    public ContainmentAcceptorControlImpl(final CanvasCommandFactory canvasCommandFactory,
+                                          final @Request SessionCommandManager<AbstractCanvasHandler> canvasCommandManager) {
+        super(canvasCommandManager);
         this.canvasCommandFactory = canvasCommandFactory;
     }
 
     @Override
-    protected void doEnable( final WiresCanvas.View view ) {
-        view.setContainmentAcceptor( CONTAINMENT_ACCEPTOR );
+    protected void doEnable(final WiresCanvas.View view) {
+        view.setContainmentAcceptor(CONTAINMENT_ACCEPTOR);
     }
 
     @Override
-    protected void doDisable( final WiresCanvas.View view ) {
-        view.setContainmentAcceptor( IContainmentAcceptor.NONE );
+    protected void doDisable(final WiresCanvas.View view) {
+        view.setContainmentAcceptor(IContainmentAcceptor.NONE);
     }
 
     @Override
-    protected boolean isEdgeAccepted( final Edge edge ) {
+    protected boolean isEdgeAccepted(final Edge edge) {
         return edge.getContent() instanceof Child;
     }
 
     @Override
-    protected Command<AbstractCanvasHandler, CanvasViolation> getAddEdgeCommand( final Node parent,
-                                                                                 final Node child ) {
-        return canvasCommandFactory.setChildNode( parent,
-                                                  child );
+    protected Command<AbstractCanvasHandler, CanvasViolation> getAddEdgeCommand(final Node parent,
+                                                                                final Node child) {
+        return canvasCommandFactory.setChildNode(parent,
+                                                 child);
     }
 
     @Override
-    protected Command<AbstractCanvasHandler, CanvasViolation> getDeleteEdgeCommand( final Node parent,
-                                                                                    final Node child ) {
-        return canvasCommandFactory.removeChild( parent,
-                                                 child );
+    protected Command<AbstractCanvasHandler, CanvasViolation> getDeleteEdgeCommand(final Node parent,
+                                                                                   final Node child) {
+        return canvasCommandFactory.removeChild(parent,
+                                                child);
     }
 
     private final IContainmentAcceptor CONTAINMENT_ACCEPTOR = new IContainmentAcceptor() {
         @Override
-        public boolean containmentAllowed( final WiresContainer wiresContainer,
-                                           final WiresShape wiresShape ) {
-            if ( !isAccept( wiresContainer,
-                            wiresShape ) ) {
+        public boolean containmentAllowed(final WiresContainer wiresContainer,
+                                          final WiresShape wiresShape) {
+            if (!isAccept(wiresContainer,
+                          wiresShape)) {
                 return false;
             }
-            final Node childNode = WiresUtils.getNode( getCanvasHandler(),
-                                                       wiresShape );
-            final Node parentNode = WiresUtils.getNode( getCanvasHandler(),
-                                                        wiresContainer );
-            return allow( parentNode,
-                          childNode );
+            final Node childNode = WiresUtils.getNode(getCanvasHandler(),
+                                                      wiresShape);
+            final Node parentNode = WiresUtils.getNode(getCanvasHandler(),
+                                                       wiresContainer);
+            return allow(parentNode,
+                         childNode);
         }
 
         @Override
-        public boolean acceptContainment( final WiresContainer wiresContainer,
-                                          final WiresShape wiresShape ) {
-            if ( !isAccept( wiresContainer,
-                            wiresShape ) ) {
+        public boolean acceptContainment(final WiresContainer wiresContainer,
+                                         final WiresShape wiresShape) {
+            if (!isAccept(wiresContainer,
+                          wiresShape)) {
                 return false;
             }
-            final Node childNode = WiresUtils.getNode( getCanvasHandler(),
-                                                       wiresShape );
-            final Node parentNode = WiresUtils.getNode( getCanvasHandler(),
-                                                        wiresContainer );
-            return accept( parentNode,
-                           childNode );
+            final Node childNode = WiresUtils.getNode(getCanvasHandler(),
+                                                      wiresShape);
+            final Node parentNode = WiresUtils.getNode(getCanvasHandler(),
+                                                       wiresContainer);
+            return accept(parentNode,
+                          childNode);
         }
     };
 }

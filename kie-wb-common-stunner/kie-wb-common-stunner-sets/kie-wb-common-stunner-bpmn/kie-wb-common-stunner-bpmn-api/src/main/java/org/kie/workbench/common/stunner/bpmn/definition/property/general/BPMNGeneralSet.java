@@ -39,35 +39,35 @@ public class BPMNGeneralSet implements BPMNPropertySet {
     public static final transient String propertySetName = "General";
 
     @Property
-    @FieldDef( label = FIELDDEF_NAME, property = "value", position = 0 )
+    @FieldDef(label = FIELDDEF_NAME, property = "value", position = 0)
     @Valid
     private Name name;
 
     @Property
-    @FieldDef( label = FIELDDEF_DOCUMENTATION, property = "value", position = 1 )
-    @TextArea( rows = 3 )
+    @FieldDef(label = FIELDDEF_DOCUMENTATION, property = "value", position = 1)
+    @TextArea(rows = 3)
     @Valid
     private Documentation documentation;
 
     public BPMNGeneralSet() {
-        this( new Name( "" ),
-              new Documentation() );
+        this(new Name(""),
+             new Documentation());
     }
 
-    public BPMNGeneralSet( @MapsTo( "name" ) Name name,
-                           @MapsTo( "documentation" ) Documentation documentation ) {
+    public BPMNGeneralSet(final @MapsTo("name") Name name,
+                          final @MapsTo("documentation") Documentation documentation) {
         this.name = name;
         this.documentation = documentation;
     }
 
-    public BPMNGeneralSet( String name,
-                           String documentation ) {
-        this.name = new Name( name );
-        this.documentation = new Documentation( documentation );
+    public BPMNGeneralSet(final String name,
+                          final String documentation) {
+        this.name = new Name(name);
+        this.documentation = new Documentation(documentation);
     }
 
-    public BPMNGeneralSet( String name ) {
-        this.name = new Name( name );
+    public BPMNGeneralSet(String name) {
+        this.name = new Name(name);
         this.documentation = new Documentation();
     }
 
@@ -83,11 +83,11 @@ public class BPMNGeneralSet implements BPMNPropertySet {
         return documentation;
     }
 
-    public void setName( Name name ) {
+    public void setName(final Name name) {
         this.name = name;
     }
 
-    public void setDocumentation( Documentation documentation ) {
+    public void setDocumentation(final Documentation documentation) {
         this.documentation = documentation;
     }
 }

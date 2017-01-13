@@ -29,18 +29,18 @@ public final class DeleteConnectorCommand extends AbstractCanvasGraphCommand {
 
     private final Edge candidate;
 
-    public DeleteConnectorCommand( final Edge candidate ) {
+    public DeleteConnectorCommand(final Edge candidate) {
         this.candidate = candidate;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.DeleteConnectorCommand( candidate );
+    @SuppressWarnings("unchecked")
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.DeleteConnectorCommand(candidate);
     }
 
     @Override
-    protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new DeleteCanvasConnectorCommand( candidate );
+    protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
+        return new DeleteCanvasConnectorCommand(candidate);
     }
 }

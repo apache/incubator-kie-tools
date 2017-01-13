@@ -30,26 +30,26 @@ public class EdgeCardinalityRuleImpl implements EdgeCardinalityRule {
     private Integer minOccurrences = 0;
     private Integer maxOccurrences = 0;
 
-    public EdgeCardinalityRuleImpl( final @MapsTo( "id" ) String id,
-                                    final @MapsTo( "name" ) String name,
-                                    final @MapsTo( "role" ) String role,
-                                    final @MapsTo( "type" ) Type type,
-                                    final @MapsTo( "minOccurrences" ) Integer minOccurrences,
-                                    final @MapsTo( "maxOccurrences" ) Integer maxOccurrences ) {
-        this.role = PortablePreconditions.checkNotNull( "id",
-                                                        id );
-        this.name = PortablePreconditions.checkNotNull( "name",
-                                                        name );
-        this.role = PortablePreconditions.checkNotNull( "role",
-                                                        role );
-        this.type = PortablePreconditions.checkNotNull( "type",
-                                                        type );
-        if ( minOccurrences < 0 ) {
-            throw new IllegalArgumentException( "minOccurrences cannot be less than 0." );
+    public EdgeCardinalityRuleImpl(final @MapsTo("id") String id,
+                                   final @MapsTo("name") String name,
+                                   final @MapsTo("role") String role,
+                                   final @MapsTo("type") Type type,
+                                   final @MapsTo("minOccurrences") Integer minOccurrences,
+                                   final @MapsTo("maxOccurrences") Integer maxOccurrences) {
+        this.role = PortablePreconditions.checkNotNull("id",
+                                                       id);
+        this.name = PortablePreconditions.checkNotNull("name",
+                                                       name);
+        this.role = PortablePreconditions.checkNotNull("role",
+                                                       role);
+        this.type = PortablePreconditions.checkNotNull("type",
+                                                       type);
+        if (minOccurrences < 0) {
+            throw new IllegalArgumentException("minOccurrences cannot be less than 0.");
         }
         this.minOccurrences = minOccurrences;
-        if ( maxOccurrences > -1 && maxOccurrences < minOccurrences ) {
-            throw new IllegalArgumentException( "maxOccurrences cannot be less than minOccurrences." );
+        if (maxOccurrences > -1 && maxOccurrences < minOccurrences) {
+            throw new IllegalArgumentException("maxOccurrences cannot be less than minOccurrences.");
         }
         this.maxOccurrences = maxOccurrences;
     }

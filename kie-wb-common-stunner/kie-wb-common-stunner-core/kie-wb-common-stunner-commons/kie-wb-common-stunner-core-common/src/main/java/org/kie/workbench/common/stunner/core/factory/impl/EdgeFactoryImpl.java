@@ -44,7 +44,7 @@ public class EdgeFactoryImpl extends AbstractElementFactory<Object, Definition<O
     }
 
     @Inject
-    public EdgeFactoryImpl( final DefinitionManager definitionManager ) {
+    public EdgeFactoryImpl(final DefinitionManager definitionManager) {
         this.definitionManager = definitionManager;
     }
 
@@ -54,28 +54,28 @@ public class EdgeFactoryImpl extends AbstractElementFactory<Object, Definition<O
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public Edge<Definition<Object>, Node> build( final String uuid,
-                                                 final Object definition ) {
-        final EdgeImpl edge = new EdgeImpl<>( uuid );
-        if ( null != definition ) {
-            ViewConnector<Object> content = new ViewConnectorImpl<>( definition,
-                                                                     buildBounds() );
-            edge.setContent( content );
-            edge.getLabels().addAll( getLabels( definition ) );
+    @SuppressWarnings("unchecked")
+    public Edge<Definition<Object>, Node> build(final String uuid,
+                                                final Object definition) {
+        final EdgeImpl edge = new EdgeImpl<>(uuid);
+        if (null != definition) {
+            ViewConnector<Object> content = new ViewConnectorImpl<>(definition,
+                                                                    buildBounds());
+            edge.setContent(content);
+            edge.getLabels().addAll(getLabels(definition));
         }
         return edge;
     }
 
-    private Set<String> getLabels( final Object definition ) {
-        return definitionManager.adapters().forDefinition().getLabels( definition );
+    private Set<String> getLabels(final Object definition) {
+        return definitionManager.adapters().forDefinition().getLabels(definition);
     }
 
     // TODO: Review.
     private Bounds buildBounds() {
-        return new BoundsImpl( new BoundImpl( 0d,
-                                              0d ),
-                               new BoundImpl( 30d,
-                                              30d ) );
+        return new BoundsImpl(new BoundImpl(0d,
+                                            0d),
+                              new BoundImpl(30d,
+                                            30d));
     }
 }

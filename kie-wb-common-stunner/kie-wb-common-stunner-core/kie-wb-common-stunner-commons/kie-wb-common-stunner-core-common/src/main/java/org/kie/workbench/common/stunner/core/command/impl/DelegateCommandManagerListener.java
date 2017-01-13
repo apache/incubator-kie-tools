@@ -24,40 +24,40 @@ public class DelegateCommandManagerListener<C, V> implements CommandListener<C, 
 
     private final CommandListener<C, V> delegate;
 
-    public DelegateCommandManagerListener( final CommandListener<C, V> delegate ) {
+    public DelegateCommandManagerListener(final CommandListener<C, V> delegate) {
         this.delegate = delegate;
     }
 
     @Override
-    public void onAllow( final C context,
-                         final Command<C, V> command,
-                         final CommandResult<V> result ) {
-        if ( null != delegate ) {
-            delegate.onAllow( context,
-                              command,
-                              result );
-        }
-    }
-
-    @Override
-    public void onExecute( final C context,
-                           final Command<C, V> command,
-                           final CommandResult<V> result ) {
-        if ( null != delegate ) {
-            delegate.onExecute( context,
-                                command,
-                                result );
-        }
-    }
-
-    @Override
-    public void onUndo( final C context,
+    public void onAllow(final C context,
                         final Command<C, V> command,
-                        final CommandResult<V> result ) {
-        if ( null != delegate ) {
-            delegate.onUndo( context,
+                        final CommandResult<V> result) {
+        if (null != delegate) {
+            delegate.onAllow(context,
                              command,
-                             result );
+                             result);
+        }
+    }
+
+    @Override
+    public void onExecute(final C context,
+                          final Command<C, V> command,
+                          final CommandResult<V> result) {
+        if (null != delegate) {
+            delegate.onExecute(context,
+                               command,
+                               result);
+        }
+    }
+
+    @Override
+    public void onUndo(final C context,
+                       final Command<C, V> command,
+                       final CommandResult<V> result) {
+        if (null != delegate) {
+            delegate.onUndo(context,
+                            command,
+                            result);
         }
     }
 }

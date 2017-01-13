@@ -32,11 +32,11 @@ public class VariablesEditorFieldProvider extends BasicTypeFieldProvider<Variabl
 
     @Override
     protected void doRegisterFields() {
-        registerPropertyType( String.class );
+        registerPropertyType(String.class);
     }
 
     @Override
-    public VariablesEditorFieldDefinition createFieldByType( FieldTypeInfo typeInfo ) {
+    public VariablesEditorFieldDefinition createFieldByType(final FieldTypeInfo typeInfo) {
         return getDefaultField();
     }
 

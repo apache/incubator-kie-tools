@@ -59,7 +59,7 @@ public class Quantity implements BPMNProperty {
     public Quantity() {
     }
 
-    public Quantity( final Double value ) {
+    public Quantity(final Double value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class Quantity implements BPMNProperty {
         return value;
     }
 
-    public void setValue( Double value ) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 }

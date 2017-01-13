@@ -51,8 +51,8 @@ import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConsta
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = Rectangle.RectangleBuilder.class )
-@Shape( factory = BasicShapesFactory.class, def = RectangleShapeDefImpl.class )
+@Definition(graphFactory = NodeFactory.class, builder = Rectangle.RectangleBuilder.class)
+@Shape(factory = BasicShapesFactory.class, def = RectangleShapeDefImpl.class)
 public class Rectangle {
 
     @Category
@@ -65,34 +65,34 @@ public class Rectangle {
     public static final transient String description = "A rectangle";
 
     @Property
-    @FieldDef( label = FIELDDEF_NAME, property = "value" )
+    @FieldDef(label = FIELDDEF_NAME, property = "value")
     @Valid
     private Name name;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_BACKGROUND_AND_BORDERS, position = 0 )
+    @FieldDef(label = FIELDDEF_BACKGROUND_AND_BORDERS, position = 0)
     @Valid
     private BackgroundAndBorderSet backgroundSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_FONT, position = 1 )
+    @FieldDef(label = FIELDDEF_FONT, position = 1)
     @Valid
     private FontSet fontSet;
 
     @Property
-    @FieldDef( label = FIELDDEF_WIDTH, property = "value" )
+    @FieldDef(label = FIELDDEF_WIDTH, property = "value")
     @Valid
     private Width width;
 
     @Property
-    @FieldDef( label = FIELDDEF_HEIGHT, property = "value" )
+    @FieldDef(label = FIELDDEF_HEIGHT, property = "value")
     @Valid
     private Height height;
 
     @Labels
     private final Set<String> labels = new HashSet<String>() {{
-        add( "all" );
-        add( "rectangle" );
+        add("all");
+        add("rectangle");
     }};
 
     @NonPortable
@@ -106,24 +106,24 @@ public class Rectangle {
 
         @Override
         public Rectangle build() {
-            return new Rectangle( new Name( "Rectangle" ),
-                                  new BackgroundAndBorderSet( COLOR,
-                                                              BORDER_COLOR,
-                                                              BORDER_SIZE ),
-                                  new FontSet(),
-                                  new Width( WIDTH ),
-                                  new Height( HEIGHT ) );
+            return new Rectangle(new Name("Rectangle"),
+                                 new BackgroundAndBorderSet(COLOR,
+                                                            BORDER_COLOR,
+                                                            BORDER_SIZE),
+                                 new FontSet(),
+                                 new Width(WIDTH),
+                                 new Height(HEIGHT));
         }
     }
 
     public Rectangle() {
     }
 
-    public Rectangle( @MapsTo( "name" ) Name name,
-                      @MapsTo( "backgroundSet" ) BackgroundAndBorderSet backgroundSet,
-                      @MapsTo( "fontSet" ) FontSet fontSet,
-                      @MapsTo( "width" ) Width width,
-                      @MapsTo( "height" ) Height height ) {
+    public Rectangle(final @MapsTo("name") Name name,
+                     final @MapsTo("backgroundSet") BackgroundAndBorderSet backgroundSet,
+                     final @MapsTo("fontSet") FontSet fontSet,
+                     final @MapsTo("width") Width width,
+                     final @MapsTo("height") Height height) {
         this.name = name;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
@@ -151,7 +151,7 @@ public class Rectangle {
         return name;
     }
 
-    public void setName( Name name ) {
+    public void setName(final Name name) {
         this.name = name;
     }
 
@@ -159,7 +159,7 @@ public class Rectangle {
         return backgroundSet;
     }
 
-    public void setBackgroundSet( BackgroundAndBorderSet backgroundSet ) {
+    public void setBackgroundSet(final BackgroundAndBorderSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
@@ -167,7 +167,7 @@ public class Rectangle {
         return fontSet;
     }
 
-    public void setFontSet( FontSet fontSet ) {
+    public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
     }
 
@@ -175,7 +175,7 @@ public class Rectangle {
         return width;
     }
 
-    public void setWidth( Width width ) {
+    public void setWidth(final Width width) {
         this.width = width;
     }
 
@@ -183,7 +183,7 @@ public class Rectangle {
         return height;
     }
 
-    public void setHeight( Height height ) {
+    public void setHeight(final Height height) {
         this.height = height;
     }
 }

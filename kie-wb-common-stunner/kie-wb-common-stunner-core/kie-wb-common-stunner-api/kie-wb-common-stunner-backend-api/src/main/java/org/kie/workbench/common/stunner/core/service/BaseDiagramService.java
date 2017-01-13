@@ -31,12 +31,12 @@ public interface BaseDiagramService<M extends Metadata, D extends Diagram<Graph,
      * Returns a Diagram by the given path in the service.
      * Implementations can throw unchecked exceptions.
      */
-    D getDiagramByPath( final Path path );
+    D getDiagramByPath(final Path path);
 
     /**
      * Checks if this service accepts a given Diagram by its path.
      */
-    boolean accepts( final Path path );
+    boolean accepts(final Path path);
 
     /**
      * Creates a new Diagram for the given Definition Set identifier into the given path.
@@ -45,9 +45,9 @@ public interface BaseDiagramService<M extends Metadata, D extends Diagram<Graph,
      * @param name The diagram's name to create.
      * @param defSetId The diagram's and graph resulting by the Definition Set identifier.
      */
-    Path create( final Path path,
-                 final String name,
-                 final String defSetId );
+    Path create(final Path path,
+                final String name,
+                final String defSetId);
 
     /**
      * Saves or updates the diagram.
@@ -55,12 +55,12 @@ public interface BaseDiagramService<M extends Metadata, D extends Diagram<Graph,
      * the resulting metadata instance (eg: when diagrams are created and authored in client side).
      * Update applies if the diagram is already present on the VFS.
      */
-    M saveOrUpdate( final D diagram );
+    M saveOrUpdate(final D diagram);
 
     /**
      * Deletes the diagram.
      * Implementations can throw unchecked exceptions.
      * @return <code>true</code> if the operation result is success, <code>false</code> otherwise.
      */
-    boolean delete( final D diagram );
+    boolean delete(final D diagram);
 }

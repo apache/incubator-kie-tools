@@ -43,25 +43,27 @@ public class RuleFlowGroupFormProvider implements SelectorDataProvider {
     }
 
     @Override
-    public SelectorData getSelectorData( FormRenderingContext context ) {
-        return new SelectorData( getRuleFlowGroupNames(),
-                                 null );
+    @SuppressWarnings("unchecked")
+    public SelectorData getSelectorData(final FormRenderingContext context) {
+        return new SelectorData(getRuleFlowGroupNames(),
+                                null);
     }
 
+    @SuppressWarnings("unchecked")
     private Map<Object, String> getRuleFlowGroupNames() {
         List<RefactoringPageRow> results = queryService.query(
                 FindRuleFlowNamesQuery.NAME,
                 new HashSet<ValueIndexTerm>() {{
-                    add( new ValueSharedPartIndexTerm( "*",
-                                                       PartType.RULEFLOW_GROUP,
-                                                       ValueIndexTerm.TermSearchType.WILDCARD ) );
-                }} );
+                    add(new ValueSharedPartIndexTerm("*",
+                                                     PartType.RULEFLOW_GROUP,
+                                                     ValueIndexTerm.TermSearchType.WILDCARD));
+                }});
 
         Map<Object, String> ruleFlowGroupNames = new TreeMap<Object, String>();
 
-        for ( RefactoringPageRow row : results ) {
-            ruleFlowGroupNames.put( ( ( Map<String, String> ) row.getValue() ).get( "name" ),
-                                    ( ( Map<String, String> ) row.getValue() ).get( "name" ) );
+        for (RefactoringPageRow row : results) {
+            ruleFlowGroupNames.put(((Map<String, String>) row.getValue()).get("name"),
+                                   ((Map<String, String>) row.getValue()).get("name"));
         }
 
         return ruleFlowGroupNames;

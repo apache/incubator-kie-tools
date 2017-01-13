@@ -31,30 +31,30 @@ import org.kie.workbench.common.stunner.core.client.session.impl.ClientReadOnlyS
 @ApplicationScoped
 public class DesktopPlatform extends AbstractClientPlatform {
 
-    private static final String[] USER_AGENTS = { "" };
+    private static final String[] USER_AGENTS = {""};
 
     ManagedInstance<ClientReadOnlySessionImpl> readOnlySessions;
     ManagedInstance<ClientFullSessionImpl> fullSessions;
 
     protected DesktopPlatform() {
-        this( null,
-              null );
+        this(null,
+             null);
     }
 
     @Inject
-    public DesktopPlatform( final ManagedInstance<ClientReadOnlySessionImpl> readOnlySessions,
-                            final ManagedInstance<ClientFullSessionImpl> fullSessions ) {
+    public DesktopPlatform(final ManagedInstance<ClientReadOnlySessionImpl> readOnlySessions,
+                           final ManagedInstance<ClientFullSessionImpl> fullSessions) {
         this.readOnlySessions = readOnlySessions;
         this.fullSessions = fullSessions;
     }
 
     @Override
-    public boolean supports( final String platform ) {
-        return null != platform && !isMobilePlatform( platform );
+    public boolean supports(final String platform) {
+        return null != platform && !isMobilePlatform(platform);
     }
 
-    public static boolean isMobilePlatform( final String platform ) {
-        return platform.contains( "arm" ) || platform.contains( "iOS" );
+    public static boolean isMobilePlatform(final String platform) {
+        return platform.contains("arm") || platform.contains("iOS");
     }
 
     @Override

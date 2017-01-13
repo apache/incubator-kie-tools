@@ -34,22 +34,22 @@ public class BS3PaletteCategories
         extends AbstractPalette<HasPaletteItems<DefinitionPaletteCategory>>
         implements IsWidget {
 
-    private static Logger LOGGER = Logger.getLogger( BS3PaletteCategories.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(BS3PaletteCategories.class.getName());
 
     public interface View extends UberView<BS3PaletteCategories> {
 
-        View setPadding( final int padding );
+        View setPadding(final int padding);
 
-        View setIconWidth( final int iconSize );
+        View setIconWidth(final int iconSize);
 
-        View setIconHeight( final int iconSize );
+        View setIconHeight(final int iconSize);
 
-        View setBackgroundColor( final String color );
+        View setBackgroundColor(final String color);
 
-        View add( final String categoryId,
-                  final String categoryTitle,
-                  final String categoryGlyphId,
-                  final IsWidget view );
+        View add(final String categoryId,
+                 final String categoryTitle,
+                 final String categoryGlyphId,
+                 final IsWidget view);
 
         View clear();
     }
@@ -59,13 +59,13 @@ public class BS3PaletteCategories
     BS3PaletteWidgetImpl bs3PaletteWidget;
 
     @Inject
-    public BS3PaletteCategories( final View view ) {
+    public BS3PaletteCategories(final View view) {
         this.view = view;
     }
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
@@ -73,23 +73,23 @@ public class BS3PaletteCategories
         return view.asWidget();
     }
 
-    public BS3PaletteCategories setPadding( final int padding ) {
-        view.setPadding( padding );
+    public BS3PaletteCategories setPadding(final int padding) {
+        view.setPadding(padding);
         return this;
     }
 
-    public BS3PaletteCategories setIconWidth( final int iconSize ) {
-        view.setIconWidth( iconSize );
+    public BS3PaletteCategories setIconWidth(final int iconSize) {
+        view.setIconWidth(iconSize);
         return this;
     }
 
-    public BS3PaletteCategories setIconHeight( final int iconSize ) {
-        view.setIconHeight( iconSize );
+    public BS3PaletteCategories setIconHeight(final int iconSize) {
+        view.setIconHeight(iconSize);
         return this;
     }
 
-    public BS3PaletteCategories setBackgroundColor( final String color ) {
-        view.setBackgroundColor( color );
+    public BS3PaletteCategories setBackgroundColor(final String color) {
+        view.setBackgroundColor(color);
         return this;
     }
 
@@ -97,12 +97,12 @@ public class BS3PaletteCategories
     protected AbstractPalette<HasPaletteItems<DefinitionPaletteCategory>> bind() {
         final HasPaletteItems<DefinitionPaletteCategory> categoryItems = paletteDefinition;
         final List<DefinitionPaletteCategory> categories = categoryItems.getItems();
-        if ( null != categories && !categories.isEmpty() ) {
-            for ( final DefinitionPaletteCategory category : categories ) {
-                view.add( category.getId(),
-                          category.getTitle(),
-                          category.getDefinitionId(),
-                          bs3PaletteWidget.getCategoryView( category.getId() ) );
+        if (null != categories && !categories.isEmpty()) {
+            for (final DefinitionPaletteCategory category : categories) {
+                view.add(category.getId(),
+                         category.getTitle(),
+                         category.getDefinitionId(),
+                         bs3PaletteWidget.getCategoryView(category.getId()));
             }
         } else {
             clear();
@@ -126,69 +126,69 @@ public class BS3PaletteCategories
     }
 
     @Override
-    protected String getPaletteItemId( final int index ) {
+    protected String getPaletteItemId(final int index) {
         final HasPaletteItems<DefinitionPaletteCategory> categoryItems = paletteDefinition;
         final List<DefinitionPaletteCategory> categories = categoryItems.getItems();
-        if ( null != categories && categories.size() > index ) {
-            return categories.get( index ).getId();
+        if (null != categories && categories.size() > index) {
+            return categories.get(index).getId();
         }
         return null;
     }
 
-    void onItemHover( final String id,
-                      final int mouseX,
-                      final int mouseY,
-                      final int itemX,
-                      final int itemY ) {
-        if ( null != itemHoverCallback ) {
-            itemHoverCallback.onItemHover( id,
-                                           mouseX,
-                                           mouseY,
-                                           itemX,
-                                           itemY );
+    void onItemHover(final String id,
+                     final int mouseX,
+                     final int mouseY,
+                     final int itemX,
+                     final int itemY) {
+        if (null != itemHoverCallback) {
+            itemHoverCallback.onItemHover(id,
+                                          mouseX,
+                                          mouseY,
+                                          itemX,
+                                          itemY);
         }
     }
 
-    void onItemOut( final String id ) {
-        if ( null != itemOutCallback ) {
-            itemOutCallback.onItemOut( id );
+    void onItemOut(final String id) {
+        if (null != itemOutCallback) {
+            itemOutCallback.onItemOut(id);
         }
     }
 
-    void onItemClick( final String id,
-                      final int mouseX,
-                      final int mouseY,
-                      final int itemX,
-                      final int itemY ) {
-        if ( null != itemClickCallback ) {
-            itemClickCallback.onItemClick( id,
-                                           mouseX,
-                                           mouseY,
-                                           itemX,
-                                           itemY );
+    void onItemClick(final String id,
+                     final int mouseX,
+                     final int mouseY,
+                     final int itemX,
+                     final int itemY) {
+        if (null != itemClickCallback) {
+            itemClickCallback.onItemClick(id,
+                                          mouseX,
+                                          mouseY,
+                                          itemX,
+                                          itemY);
         }
     }
 
-    void onItemMouseDown( final String id,
-                          final int mouseX,
-                          final int mouseY,
-                          final int itemX,
-                          final int itemY ) {
-        if ( null != itemMouseDownCallback ) {
-            itemMouseDownCallback.onItemMouseDown( id,
-                                                   mouseX,
-                                                   mouseY,
-                                                   itemX,
-                                                   itemY );
+    void onItemMouseDown(final String id,
+                         final int mouseX,
+                         final int mouseY,
+                         final int itemX,
+                         final int itemY) {
+        if (null != itemMouseDownCallback) {
+            itemMouseDownCallback.onItemMouseDown(id,
+                                                  mouseX,
+                                                  mouseY,
+                                                  itemX,
+                                                  itemY);
         }
     }
 
-    private int getIndex( final String categoryId ) {
+    private int getIndex(final String categoryId) {
         final List<DefinitionPaletteCategory> categories = paletteDefinition.getItems();
-        if ( null != categories && !categories.isEmpty() ) {
+        if (null != categories && !categories.isEmpty()) {
             int x = 0;
-            for ( final DefinitionPaletteCategory category : categories ) {
-                if ( category.getId().equals( categoryId ) ) {
+            for (final DefinitionPaletteCategory category : categories) {
+                if (category.getId().equals(categoryId)) {
                     return x;
                 }
                 x++;

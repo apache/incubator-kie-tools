@@ -32,28 +32,28 @@ public abstract class AbstractGraphRuleManager<R extends Rule, M extends RuleMan
 
     protected DefinitionManager definitionManager;
 
-    public AbstractGraphRuleManager( final DefinitionManager definitionManager ) {
+    public AbstractGraphRuleManager(final DefinitionManager definitionManager) {
         this.definitionManager = definitionManager;
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected String getElementDefinitionId( final Element<?> element ) {
+    @SuppressWarnings("unchecked")
+    protected String getElementDefinitionId(final Element<?> element) {
         String targetId = null;
-        if ( element.getContent() instanceof View ) {
-            Object definition = ( ( View ) element.getContent() ).getDefinition();
-            targetId = getDefinitionId( definition );
-        } else if ( element.getContent() instanceof DefinitionSet ) {
-            targetId = ( ( DefinitionSet ) element.getContent() ).getDefinition();
+        if (element.getContent() instanceof View) {
+            Object definition = ((View) element.getContent()).getDefinition();
+            targetId = getDefinitionId(definition);
+        } else if (element.getContent() instanceof DefinitionSet) {
+            targetId = ((DefinitionSet) element.getContent()).getDefinition();
         }
         return targetId;
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected String getDefinitionId( final Object definition ) {
-        return definitionManager.adapters().forDefinition().getId( definition );
+    @SuppressWarnings("unchecked")
+    protected String getDefinitionId(final Object definition) {
+        return definitionManager.adapters().forDefinition().getId(definition);
     }
 
-    protected Set<String> getLabels( final Element<? extends Definition<?>> element ) {
+    protected Set<String> getLabels(final Element<? extends Definition<?>> element) {
         return element != null ? element.getLabels() : null;
     }
 }

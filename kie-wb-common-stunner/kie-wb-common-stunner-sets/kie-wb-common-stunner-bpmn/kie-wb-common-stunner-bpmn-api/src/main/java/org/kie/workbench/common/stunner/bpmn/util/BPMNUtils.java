@@ -30,9 +30,9 @@ public class BPMNUtils {
      * Finds the first Diagram in the graph structure.
      * @param graph The graph structure.
      */
-    @SuppressWarnings( "unchecked" )
-    public static Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode( final Graph<?, Node> graph ) {
-        return GraphUtils.getFirstNode( graph,
-                                        BPMNDiagram.class );
+    @SuppressWarnings("unchecked")
+    public static Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode(final Graph<?, Node> graph) {
+        return GraphUtils.getFirstNode(graph,
+                                       BPMNDiagram.class);
     }
 }

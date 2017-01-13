@@ -47,8 +47,8 @@ public class ConnectionRuleGenerator extends AbstractGenerator {
         private final String from;
         private final String to;
 
-        public ConnectionRuleEntry( final String from,
-                                    final String to ) {
+        public ConnectionRuleEntry(final String from,
+                                   final String to) {
             this.from = from;
             this.to = to;
         }
@@ -65,63 +65,63 @@ public class ConnectionRuleGenerator extends AbstractGenerator {
     private final ProcessingContext processingContext = ProcessingContext.getInstance();
 
     @Override
-    public StringBuffer generate( final String packageName,
-                                  final PackageElement packageElement,
-                                  final String className,
-                                  final Element element,
-                                  final ProcessingEnvironment processingEnvironment ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final PackageElement packageElement,
+                                 final String className,
+                                 final Element element,
+                                 final ProcessingEnvironment processingEnvironment) throws GenerationException {
         final Messager messager = processingEnvironment.getMessager();
-        messager.printMessage( Diagnostic.Kind.NOTE,
-                               "Starting code generation for [" + className + "]" );
+        messager.printMessage(Diagnostic.Kind.NOTE,
+                              "Starting code generation for [" + className + "]");
         final Elements elementUtils = processingEnvironment.getElementUtils();
         //Extract required information
-        final TypeElement classElement = ( TypeElement ) element;
+        final TypeElement classElement = (TypeElement) element;
         final boolean isInterface = classElement.getKind().isInterface();
-        final String ruleId = MainProcessor.toValidId( className );
+        final String ruleId = MainProcessor.toValidId(className);
         final String ruleDefinitionId = classElement.getQualifiedName().toString();
-        CanConnect[] pcs = classElement.getAnnotationsByType( CanConnect.class );
+        CanConnect[] pcs = classElement.getAnnotationsByType(CanConnect.class);
         List<ConnectionRuleEntry> ruleEntries = new ArrayList<>();
-        if ( null != pcs ) {
-            for ( final CanConnect pc : pcs ) {
+        if (null != pcs) {
+            for (final CanConnect pc : pcs) {
                 String startRole = pc.startRole();
                 String endRole = pc.endRole();
-                ruleEntries.add( new ConnectionRuleEntry( startRole,
-                                                          endRole ) );
+                ruleEntries.add(new ConnectionRuleEntry(startRole,
+                                                        endRole));
             }
         }
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "ruleId",
-                  ruleId );
-        root.put( "ruleDefinitionId",
-                  ruleDefinitionId );
-        root.put( "connectionsSize",
-                  ruleEntries.size() );
-        root.put( "connections",
-                  ruleEntries );
+        root.put("ruleId",
+                 ruleId);
+        root.put("ruleDefinitionId",
+                 ruleDefinitionId);
+        root.put("connectionsSize",
+                 ruleEntries.size());
+        root.put("connections",
+                 ruleEntries);
         //Generate code
         final StringWriter sw = new StringWriter();
-        final BufferedWriter bw = new BufferedWriter( sw );
+        final BufferedWriter bw = new BufferedWriter(sw);
         try {
-            final Template template = config.getTemplate( "ConnectionRule.ftl" );
-            template.process( root,
-                              bw );
-        } catch ( IOException ioe ) {
-            throw new GenerationException( ioe );
-        } catch ( TemplateException te ) {
-            throw new GenerationException( te );
+            final Template template = config.getTemplate("ConnectionRule.ftl");
+            template.process(root,
+                             bw);
+        } catch (IOException ioe) {
+            throw new GenerationException(ioe);
+        } catch (TemplateException te) {
+            throw new GenerationException(te);
         } finally {
             try {
                 bw.close();
                 sw.close();
-            } catch ( IOException ioe ) {
-                throw new GenerationException( ioe );
+            } catch (IOException ioe) {
+                throw new GenerationException(ioe);
             }
         }
-        messager.printMessage( Diagnostic.Kind.NOTE,
-                               "Successfully generated code for [" + className + "]" );
-        processingContext.addRule( ruleId,
-                                   ProcessingRule.TYPE.CONNECTION,
-                                   sw.getBuffer() );
+        messager.printMessage(Diagnostic.Kind.NOTE,
+                              "Successfully generated code for [" + className + "]");
+        processingContext.addRule(ruleId,
+                                  ProcessingRule.TYPE.CONNECTION,
+                                  sw.getBuffer());
         return null;
     }
 }

@@ -38,7 +38,7 @@ public abstract class AbstractRegistryFactory implements RegistryFactory {
     protected AbstractRegistryFactory() {
     }
 
-    public AbstractRegistryFactory( final AdapterManager adapterManager ) {
+    public AbstractRegistryFactory(final AdapterManager adapterManager) {
         this.adapterManager = adapterManager;
     }
 
@@ -49,12 +49,12 @@ public abstract class AbstractRegistryFactory implements RegistryFactory {
 
     @Override
     public <T> TypeDefinitionSetRegistry<T> newDefinitionSetRegistry() {
-        return new DefinitionSetMapRegistry<T>( adapterManager );
+        return new DefinitionSetMapRegistry<T>(adapterManager);
     }
 
     @Override
     public <T> TypeDefinitionRegistry<T> newDefinitionRegistry() {
-        return new DefinitionMapRegistry<T>( adapterManager );
+        return new DefinitionMapRegistry<T>(adapterManager);
     }
 
     @Override
@@ -64,7 +64,7 @@ public abstract class AbstractRegistryFactory implements RegistryFactory {
 
     @Override
     public <T extends Factory<?>> FactoryRegistry<T> newFactoryRegistry() {
-        return new FactoryRegistryImpl<T>( adapterManager );
+        return new FactoryRegistryImpl<T>(adapterManager);
     }
 
     @Override
@@ -72,25 +72,25 @@ public abstract class AbstractRegistryFactory implements RegistryFactory {
         return new DiagramListRegistry<T>();
     }
 
-    public <T> MapRegistry<T> newMapRegistry( final KeyProvider<T> keyProvider ) {
-        return new MapRegistry<T>( keyProvider,
-                                   new HashMap<String, T>() );
+    public <T> MapRegistry<T> newMapRegistry(final KeyProvider<T> keyProvider) {
+        return new MapRegistry<T>(keyProvider,
+                                  new HashMap<String, T>());
     }
 
-    public <T> MapRegistry<T> newMapRegistry( final KeyProvider<T> keyProvider,
-                                              final java.util.Map<String, T> map ) {
-        return new MapRegistry<T>( keyProvider,
-                                   map );
+    public <T> MapRegistry<T> newMapRegistry(final KeyProvider<T> keyProvider,
+                                             final java.util.Map<String, T> map) {
+        return new MapRegistry<T>(keyProvider,
+                                  map);
     }
 
-    public <T> ListRegistry<T> newListRegistry( final KeyProvider<T> keyProvider ) {
-        return new ListRegistry<T>( keyProvider,
-                                    new ArrayList<T>() );
+    public <T> ListRegistry<T> newListRegistry(final KeyProvider<T> keyProvider) {
+        return new ListRegistry<T>(keyProvider,
+                                   new ArrayList<T>());
     }
 
-    public <T> ListRegistry<T> newListRegistry( final KeyProvider<T> keyProvider,
-                                                final java.util.List<T> list ) {
-        return new ListRegistry<T>( keyProvider,
-                                    list );
+    public <T> ListRegistry<T> newListRegistry(final KeyProvider<T> keyProvider,
+                                               final java.util.List<T> list) {
+        return new ListRegistry<T>(keyProvider,
+                                   list);
     }
 }

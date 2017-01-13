@@ -25,7 +25,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class RemoveChildCommandTest extends AbstractCanvasCommandTest {
 
     @Mock
@@ -38,31 +38,31 @@ public class RemoveChildCommandTest extends AbstractCanvasCommandTest {
     @Before
     public void setup() throws Exception {
         super.setup();
-        when( parent.getUUID() ).thenReturn( "uuid1" );
-        when( candidate.getUUID() ).thenReturn( "uuid2" );
-        this.tested = new RemoveChildCommand( parent,
-                                              candidate );
+        when(parent.getUUID()).thenReturn("uuid1");
+        when(candidate.getUUID()).thenReturn("uuid2");
+        this.tested = new RemoveChildCommand(parent,
+                                             candidate);
     }
 
     @Test
     public void testGetGraphCommand() {
         final org.kie.workbench.common.stunner.core.graph.command.impl.RemoveChildCommand graphCommand =
-                ( org.kie.workbench.common.stunner.core.graph.command.impl.RemoveChildCommand ) tested.newGraphCommand( canvasHandler );
-        assertNotNull( graphCommand );
-        assertEquals( parent,
-                      graphCommand.getParent() );
-        assertEquals( candidate,
-                      graphCommand.getCandidate() );
+                (org.kie.workbench.common.stunner.core.graph.command.impl.RemoveChildCommand) tested.newGraphCommand(canvasHandler);
+        assertNotNull(graphCommand);
+        assertEquals(parent,
+                     graphCommand.getParent());
+        assertEquals(candidate,
+                     graphCommand.getCandidate());
     }
 
     @Test
     public void testGetCanvasCommand() {
         final RemoveCanvasChildCommand canvasCommand =
-                ( RemoveCanvasChildCommand ) tested.newCanvasCommand( canvasHandler );
-        assertNotNull( canvasCommand );
-        assertEquals( parent,
-                      canvasCommand.getParent() );
-        assertEquals( candidate,
-                      canvasCommand.getChild() );
+                (RemoveCanvasChildCommand) tested.newCanvasCommand(canvasHandler);
+        assertNotNull(canvasCommand);
+        assertEquals(parent,
+                     canvasCommand.getParent());
+        assertEquals(candidate,
+                     canvasCommand.getChild());
     }
 }

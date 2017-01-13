@@ -30,26 +30,26 @@ import org.slf4j.LoggerFactory;
 @Dependent
 public class RuntimeDefinitionSetAdapter<T> extends AbstractRuntimeDefinitionSetAdapter<T> implements DefinitionSetAdapter<T> {
 
-    private static final Logger LOG = LoggerFactory.getLogger( RuntimeDefinitionSetAdapter.class );
+    private static final Logger LOG = LoggerFactory.getLogger(RuntimeDefinitionSetAdapter.class);
 
     RuntimeDefinitionAdapter annotatedDefinitionAdapter;
 
     @Inject
-    public RuntimeDefinitionSetAdapter( final RuntimeDefinitionAdapter annotatedDefinitionAdapter ) {
+    public RuntimeDefinitionSetAdapter(final RuntimeDefinitionAdapter annotatedDefinitionAdapter) {
         this.annotatedDefinitionAdapter = annotatedDefinitionAdapter;
     }
 
     @Override
-    public boolean accepts( final Class<?> pojo ) {
-        return pojo.getAnnotation( DefinitionSet.class ) != null;
+    public boolean accepts(final Class<?> pojo) {
+        return pojo.getAnnotation(DefinitionSet.class) != null;
     }
 
     @Override
-    public Class<? extends ElementFactory> getGraphFactoryType( final T definitionSet ) {
+    public Class<? extends ElementFactory> getGraphFactoryType(final T definitionSet) {
         Class<? extends ElementFactory> result = null;
-        if ( null != definitionSet ) {
-            DefinitionSet annotation = definitionSet.getClass().getAnnotation( DefinitionSet.class );
-            if ( null != annotation ) {
+        if (null != definitionSet) {
+            DefinitionSet annotation = definitionSet.getClass().getAnnotation(DefinitionSet.class);
+            if (null != annotation) {
                 result = annotation.graphFactory();
             }
         }
@@ -57,18 +57,18 @@ public class RuntimeDefinitionSetAdapter<T> extends AbstractRuntimeDefinitionSet
     }
 
     @Override
-    public String getDescription( final T definitionSet ) {
+    public String getDescription(final T definitionSet) {
         try {
-            return getAnnotatedFieldValue( definitionSet,
-                                           Description.class );
-        } catch ( Exception e ) {
-            LOG.error( "Error obtaining annotated category for DefinitionSet with id " + getId( definitionSet ) );
+            return getAnnotatedFieldValue(definitionSet,
+                                          Description.class);
+        } catch (Exception e) {
+            LOG.error("Error obtaining annotated category for DefinitionSet with id " + getId(definitionSet));
         }
         return null;
     }
 
     @Override
-    public Set<String> getDefinitions( final T definitionSet ) {
-        return getAnnotatedDefinitions( definitionSet );
+    public Set<String> getDefinitions(final T definitionSet) {
+        return getAnnotatedDefinitions(definitionSet);
     }
 }

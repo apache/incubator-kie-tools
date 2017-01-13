@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.core.definition.property.type.DoubleType
 
 @Portable
 @Bindable
-@Property( meta = PropertyMetaTypes.RADIUS )
+@Property(meta = PropertyMetaTypes.RADIUS)
 public class Radius implements BPMNProperty {
 
     @Caption
@@ -61,7 +61,7 @@ public class Radius implements BPMNProperty {
     public Radius() {
     }
 
-    public Radius( @MapsTo( "value" ) Double value ) {
+    public Radius(final @MapsTo("value") Double value) {
         this.value = value;
     }
 
@@ -93,7 +93,7 @@ public class Radius implements BPMNProperty {
         return value;
     }
 
-    public void setValue( Double value ) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 }

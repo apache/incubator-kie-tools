@@ -49,33 +49,33 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
     }
 
     @Override
-    public LienzoLayer initialize( final Object view ) {
-        this.layer = ( com.ait.lienzo.client.core.shape.Layer ) view;
-        this.eventHandlerManager = new ViewEventHandlerManager( layer,
-                                                                SUPPORTED_EVENT_TYPES );
+    public LienzoLayer initialize(final Object view) {
+        this.layer = (com.ait.lienzo.client.core.shape.Layer) view;
+        this.eventHandlerManager = new ViewEventHandlerManager(layer,
+                                                               SUPPORTED_EVENT_TYPES);
         return this;
     }
 
     @Override
-    public LienzoLayer addShape( final ShapeView<?> shape ) {
-        if ( WiresUtils.isWiresContainer( shape ) ) {
-            layer.add( ( ( WiresContainer ) shape ).getGroup() );
-        } else if ( WiresUtils.isWiresConnector( shape ) ) {
-            layer.add( ( ( WiresConnector ) shape ).getLine() );
+    public LienzoLayer addShape(final ShapeView<?> shape) {
+        if (WiresUtils.isWiresContainer(shape)) {
+            layer.add(((WiresContainer) shape).getGroup());
+        } else if (WiresUtils.isWiresConnector(shape)) {
+            layer.add(((WiresConnector) shape).getLine());
         } else {
-            layer.add( ( IPrimitive<?> ) shape );
+            layer.add((IPrimitive<?>) shape);
         }
         return this;
     }
 
     @Override
-    public LienzoLayer removeShape( final ShapeView<?> shape ) {
-        if ( WiresUtils.isWiresContainer( shape ) ) {
-            layer.remove( ( ( WiresContainer ) shape ).getGroup() );
-        } else if ( WiresUtils.isWiresConnector( shape ) ) {
-            layer.remove( ( ( WiresConnector ) shape ).getLine() );
+    public LienzoLayer removeShape(final ShapeView<?> shape) {
+        if (WiresUtils.isWiresContainer(shape)) {
+            layer.remove(((WiresContainer) shape).getGroup());
+        } else if (WiresUtils.isWiresConnector(shape)) {
+            layer.remove(((WiresConnector) shape).getLine());
         } else {
-            layer.remove( ( IPrimitive<?> ) shape );
+            layer.remove((IPrimitive<?>) shape);
         }
         return this;
     }
@@ -93,35 +93,35 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
 
     @Override
     public String toDataURL() {
-        return layer.toDataURL( DataURLType.PNG );
+        return layer.toDataURL(DataURLType.PNG);
     }
 
     @Override
-    public String toDataURL( final int x,
-                             final int y,
-                             final int width,
-                             final int height ) {
-        return LienzoImageDataUtils.toImageData( getLienzoLayer(),
-                                                 x,
-                                                 y,
-                                                 width,
-                                                 height );
+    public String toDataURL(final int x,
+                            final int y,
+                            final int width,
+                            final int height) {
+        return LienzoImageDataUtils.toImageData(getLienzoLayer(),
+                                                x,
+                                                y,
+                                                width,
+                                                height);
     }
 
     @Override
-    public void onAfterDraw( final Command callback ) {
-        layer.setOnLayerAfterDraw( layer1 -> callback.execute() );
+    public void onAfterDraw(final Command callback) {
+        layer.setOnLayerAfterDraw(layer1 -> callback.execute());
     }
 
     @Override
     public void destroy() {
         // Clear registered event handers.
-        if ( null != eventHandlerManager ) {
+        if (null != eventHandlerManager) {
             eventHandlerManager.destroy();
             eventHandlerManager = null;
         }
         // Remove the layer stuff.
-        if ( null != layer ) {
+        if (null != layer) {
             layer.removeAll();
             layer.removeFromParent();
             layer = null;
@@ -129,21 +129,21 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
     }
 
     @Override
-    public boolean supports( final ViewEventType type ) {
-        return eventHandlerManager.supports( type );
+    public boolean supports(final ViewEventType type) {
+        return eventHandlerManager.supports(type);
     }
 
     @Override
-    public LienzoLayer addHandler( final ViewEventType type,
-                                   final ViewHandler<? extends ViewEvent> eventHandler ) {
-        eventHandlerManager.addHandler( type,
-                                        eventHandler );
+    public LienzoLayer addHandler(final ViewEventType type,
+                                  final ViewHandler<? extends ViewEvent> eventHandler) {
+        eventHandlerManager.addHandler(type,
+                                       eventHandler);
         return this;
     }
 
     @Override
-    public LienzoLayer removeHandler( final ViewHandler<? extends ViewEvent> eventHandler ) {
-        eventHandlerManager.removeHandler( eventHandler );
+    public LienzoLayer removeHandler(final ViewHandler<? extends ViewEvent> eventHandler) {
+        eventHandlerManager.removeHandler(eventHandler);
         return this;
     }
 

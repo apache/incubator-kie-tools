@@ -22,13 +22,13 @@ public abstract class AbstractRegistryWrapper<T, R extends Registry<T>> implemen
 
     private final R wrapped;
 
-    protected AbstractRegistryWrapper( final R wrapped ) {
+    protected AbstractRegistryWrapper(final R wrapped) {
         this.wrapped = wrapped;
     }
 
     @Override
-    public boolean contains( final T item ) {
-        return wrapped.contains( item );
+    public boolean contains(final T item) {
+        return wrapped.contains(item);
     }
 
     @Override

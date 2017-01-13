@@ -40,24 +40,24 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 public class BPMNDiagramMarshaller extends BaseDiagramMarshaller<BPMNDiagram> {
 
     @Inject
-    public BPMNDiagramMarshaller( final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
-                                  final GraphObjectBuilderFactory bpmnGraphBuilderFactory,
-                                  final DefinitionManager definitionManager,
-                                  final GraphUtils graphUtils,
-                                  final GraphIndexBuilder<?> indexBuilder,
-                                  final OryxManager oryxManager,
-                                  final FactoryManager factoryManager,
-                                  final GraphCommandManager graphCommandManager,
-                                  final GraphCommandFactory commandFactory ) {
-        super( diagramMetadataMarshaller,
-               bpmnGraphBuilderFactory,
-               definitionManager,
-               graphUtils,
-               indexBuilder,
-               oryxManager,
-               factoryManager,
-               graphCommandManager,
-               commandFactory );
+    public BPMNDiagramMarshaller(final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
+                                 final GraphObjectBuilderFactory bpmnGraphBuilderFactory,
+                                 final DefinitionManager definitionManager,
+                                 final GraphUtils graphUtils,
+                                 final GraphIndexBuilder<?> indexBuilder,
+                                 final OryxManager oryxManager,
+                                 final FactoryManager factoryManager,
+                                 final GraphCommandManager graphCommandManager,
+                                 final GraphCommandFactory commandFactory) {
+        super(diagramMetadataMarshaller,
+              bpmnGraphBuilderFactory,
+              definitionManager,
+              graphUtils,
+              indexBuilder,
+              oryxManager,
+              factoryManager,
+              graphCommandManager,
+              commandFactory);
     }
 
     @Override
@@ -71,20 +71,20 @@ public class BPMNDiagramMarshaller extends BaseDiagramMarshaller<BPMNDiagram> {
     }
 
     @Override
-    public String getTitle( final Graph graph ) {
-        final Node<Definition<BPMNDiagram>, ?> diagramNode = getFirstDiagramNode( graph );
-        final BPMNDiagram diagramBean = null != diagramNode ? ( BPMNDiagram ) ( ( Definition ) diagramNode.getContent() ).getDefinition() : null;
-        return getTitle( diagramBean );
+    public String getTitle(final Graph graph) {
+        final Node<Definition<BPMNDiagram>, ?> diagramNode = getFirstDiagramNode(graph);
+        final BPMNDiagram diagramBean = null != diagramNode ? (BPMNDiagram) ((Definition) diagramNode.getContent()).getDefinition() : null;
+        return getTitle(diagramBean);
     }
 
-    private String getTitle( final BPMNDiagram diagram ) {
+    private String getTitle(final BPMNDiagram diagram) {
         final String title = diagram.getDiagramSet().getName().getValue();
         return title != null && title.trim().length() > 0 ? title : "-- Untitled BPMN2 diagram --";
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode( final Graph graph ) {
-        return BPMNUtils.getFirstDiagramNode( graph );
+    @SuppressWarnings("unchecked")
+    public Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode(final Graph graph) {
+        return BPMNUtils.getFirstDiagramNode(graph);
     }
 }

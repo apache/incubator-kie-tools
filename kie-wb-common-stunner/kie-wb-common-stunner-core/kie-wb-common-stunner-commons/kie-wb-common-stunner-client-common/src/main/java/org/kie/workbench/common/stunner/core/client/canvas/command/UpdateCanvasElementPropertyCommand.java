@@ -25,19 +25,19 @@ public final class UpdateCanvasElementPropertyCommand extends AbstractCanvasComm
 
     private final Element element;
 
-    public UpdateCanvasElementPropertyCommand( final Element element ) {
+    public UpdateCanvasElementPropertyCommand(final Element element) {
         this.element = element;
     }
 
     @Override
-    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
-        context.updateElementProperties( element,
-                                         MutationContext.STATIC );
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+        context.updateElementProperties(element,
+                                        MutationContext.STATIC);
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        return execute( context );
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+        return execute(context);
     }
 }

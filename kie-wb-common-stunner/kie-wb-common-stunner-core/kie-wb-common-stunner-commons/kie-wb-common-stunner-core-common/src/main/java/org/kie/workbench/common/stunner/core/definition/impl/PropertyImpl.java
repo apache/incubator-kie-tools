@@ -33,22 +33,22 @@ public class PropertyImpl<C> {
     protected C value;
     private final PropertyType type;
 
-    public PropertyImpl( final @MapsTo( "id" ) String id,
-                         final @MapsTo( "caption" ) String caption,
-                         final @MapsTo( "description" ) String description,
-                         final @MapsTo( "isReadOnly" ) boolean isReadOnly,
-                         final @MapsTo( "isOptional" ) boolean isOptional,
-                         final @MapsTo( "defaultValue" ) C defaultValue,
-                         final @MapsTo( "value" ) C value,
-                         final @MapsTo( "type" ) PropertyType type ) {
-        this.id = PortablePreconditions.checkNotNull( "id",
-                                                      id );
-        this.caption = PortablePreconditions.checkNotNull( "caption",
-                                                           caption );
-        this.description = PortablePreconditions.checkNotNull( "description",
-                                                               description );
-        this.type = PortablePreconditions.checkNotNull( "type",
-                                                        type );
+    public PropertyImpl(final @MapsTo("id") String id,
+                        final @MapsTo("caption") String caption,
+                        final @MapsTo("description") String description,
+                        final @MapsTo("isReadOnly") boolean isReadOnly,
+                        final @MapsTo("isOptional") boolean isOptional,
+                        final @MapsTo("defaultValue") C defaultValue,
+                        final @MapsTo("value") C value,
+                        final @MapsTo("type") PropertyType type) {
+        this.id = PortablePreconditions.checkNotNull("id",
+                                                     id);
+        this.caption = PortablePreconditions.checkNotNull("caption",
+                                                          caption);
+        this.description = PortablePreconditions.checkNotNull("description",
+                                                              description);
+        this.type = PortablePreconditions.checkNotNull("type",
+                                                       type);
         this.isReadOnly = isReadOnly;
         this.isOptional = isOptional;
         this.defaultValue = defaultValue;
@@ -79,22 +79,22 @@ public class PropertyImpl<C> {
         return type;
     }
 
-    public PropertyImpl setCaption( String caption ) {
+    public PropertyImpl setCaption(String caption) {
         this.caption = caption;
         return this;
     }
 
-    public PropertyImpl setDescription( String description ) {
+    public PropertyImpl setDescription(String description) {
         this.description = description;
         return this;
     }
 
-    public PropertyImpl setReadOnly( boolean readOnly ) {
+    public PropertyImpl setReadOnly(boolean readOnly) {
         isReadOnly = readOnly;
         return this;
     }
 
-    public PropertyImpl setOptional( boolean optional ) {
+    public PropertyImpl setOptional(boolean optional) {
         isOptional = optional;
         return this;
     }
@@ -103,7 +103,7 @@ public class PropertyImpl<C> {
         return value;
     }
 
-    public void setValue( C value ) {
+    public void setValue(C value) {
         this.value = value;
     }
 
@@ -112,30 +112,30 @@ public class PropertyImpl<C> {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof PropertyImpl ) ) {
+        if (!(o instanceof PropertyImpl)) {
             return false;
         }
-        PropertyImpl that = ( PropertyImpl ) o;
-        if ( isOptional != that.isOptional ) {
+        PropertyImpl that = (PropertyImpl) o;
+        if (isOptional != that.isOptional) {
             return false;
         }
-        if ( isReadOnly != that.isReadOnly ) {
+        if (isReadOnly != that.isReadOnly) {
             return false;
         }
-        if ( !caption.equals( that.caption ) ) {
+        if (!caption.equals(that.caption)) {
             return false;
         }
-        if ( !description.equals( that.description ) ) {
+        if (!description.equals(that.description)) {
             return false;
         }
-        if ( !id.equals( that.id ) ) {
+        if (!id.equals(that.id)) {
             return false;
         }
-        if ( !getType().equals( that.getType() ) ) {
+        if (!getType().equals(that.getType())) {
             return false;
         }
         return true;
@@ -151,9 +151,9 @@ public class PropertyImpl<C> {
         result = ~~result;
         result = 31 * result + description.hashCode();
         result = ~~result;
-        result = 31 * result + ( isReadOnly ? 1 : 0 );
+        result = 31 * result + (isReadOnly ? 1 : 0);
         result = ~~result;
-        result = 31 * result + ( isOptional ? 1 : 0 );
+        result = 31 * result + (isOptional ? 1 : 0);
         result = ~~result;
         return result;
     }

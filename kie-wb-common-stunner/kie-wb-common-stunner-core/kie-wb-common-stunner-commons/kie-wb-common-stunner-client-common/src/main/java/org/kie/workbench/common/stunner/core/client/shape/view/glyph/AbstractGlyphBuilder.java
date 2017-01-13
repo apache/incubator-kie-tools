@@ -29,37 +29,37 @@ public abstract class AbstractGlyphBuilder<G, D extends GlyphDef<?>> implements 
     protected double height;
 
     @Override
-    public GlyphBuilder<G, D> definitionType( final Class<?> type ) {
+    public GlyphBuilder<G, D> definitionType(final Class<?> type) {
         this.type = type;
-        this.defId = BindableAdapterUtils.getDefinitionId( type );
+        this.defId = BindableAdapterUtils.getDefinitionId(type);
         return this;
     }
 
-    public GlyphBuilder<G, D> definitionId( final String id ) {
+    public GlyphBuilder<G, D> definitionId(final String id) {
         this.defId = id;
         return this;
     }
 
     @Override
-    public GlyphBuilder<G, D> glyphDef( final D glyphDef ) {
+    public GlyphBuilder<G, D> glyphDef(final D glyphDef) {
         this.glyphDefinition = glyphDef;
         return this;
     }
 
     @Override
-    public GlyphBuilder<G, D> factory( final ShapeFactory factory ) {
+    public GlyphBuilder<G, D> factory(final ShapeFactory factory) {
         this.factory = factory;
         return this;
     }
 
     @Override
-    public GlyphBuilder<G, D> width( final double width ) {
+    public GlyphBuilder<G, D> width(final double width) {
         this.width = width;
         return this;
     }
 
     @Override
-    public GlyphBuilder<G, D> height( final double height ) {
+    public GlyphBuilder<G, D> height(final double height) {
         this.height = height;
         return this;
     }

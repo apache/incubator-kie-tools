@@ -33,39 +33,39 @@ public class HoverPalette extends AbstractPalette<HoverPalette> {
     private CloseCallback closeCallback;
     private int timeout = 800;
 
-    public HoverPalette setCloseCallback( final CloseCallback callback ) {
+    public HoverPalette setCloseCallback(final CloseCallback callback) {
         this.closeCallback = callback;
         return this;
     }
 
-    public HoverPalette setTimeout( final int timeout ) {
+    public HoverPalette setTimeout(final int timeout) {
         this.timeout = timeout;
         return this;
     }
 
     @Override
-    protected void doShowItem( final int index,
-                               final double x,
-                               final double y,
-                               final double itemX,
-                               final double itemY ) {
-        super.doShowItem( index,
-                          x,
-                          y,
-                          itemX,
-                          itemY );
+    protected void doShowItem(final int index,
+                              final double x,
+                              final double y,
+                              final double itemX,
+                              final double itemY) {
+        super.doShowItem(index,
+                         x,
+                         y,
+                         itemX,
+                         itemY);
         stopTimeout();
     }
 
     @Override
-    protected void doItemOut( final int index ) {
-        super.doItemOut( index );
+    protected void doItemOut(final int index) {
+        super.doItemOut(index);
         startTimeout();
     }
 
     @Override
-    public HoverPalette build( final Item... items ) {
-        HoverPalette result = super.build( items );
+    public HoverPalette build(final Item... items) {
+        HoverPalette result = super.build(items);
         drawPaletteDecorator();
         startTimeout();
         return result;
@@ -101,17 +101,17 @@ public class HoverPalette extends AbstractPalette<HoverPalette> {
     }
 
     private void addPaletteDecorator() {
-        if ( null == decorator ) {
-            decorator = new Rectangle( 1,
-                                       1 )
-                    .setFillColor( ColorName.LIGHTGREY );
-            this.add( decorator );
+        if (null == decorator) {
+            decorator = new Rectangle(1,
+                                      1)
+                    .setFillColor(ColorName.LIGHTGREY);
+            this.add(decorator);
             itemsGroup.moveToTop();
             handlerRegistrationManager.register(
-                    decorator.addNodeMouseEnterHandler( event -> stopTimeout() )
+                    decorator.addNodeMouseEnterHandler(event -> stopTimeout())
             );
             handlerRegistrationManager.register(
-                    decorator.addNodeMouseExitHandler( event -> startTimeout() )
+                    decorator.addNodeMouseExitHandler(event -> startTimeout())
             );
         }
     }
@@ -119,17 +119,17 @@ public class HoverPalette extends AbstractPalette<HoverPalette> {
     private void removePaletteDecorator() {
         stopTimeout();
         this.handlerRegistrationManager.removeHandler();
-        if ( null != decorator ) {
+        if (null != decorator) {
             this.decorator.removeFromParent();
             this.decorator = null;
         }
     }
 
     private void drawPaletteDecorator() {
-        if ( null == decorator ) {
+        if (null == decorator) {
             addPaletteDecorator();
         }
-        if ( null != decorator ) {
+        if (null != decorator) {
             final double halfOfPadding = padding != 0 ? padding / 2 : 0;
             final BoundingBox boundingBox = itemsGroup.getBoundingBox();
             final double width = boundingBox.getWidth();
@@ -137,38 +137,38 @@ public class HoverPalette extends AbstractPalette<HoverPalette> {
             final double w = width + halfOfPadding;
             final double h = height + halfOfPadding;
             decorator
-                    .setWidth( w )
-                    .setHeight( h )
-                    .setX( x + ( halfOfPadding / 2 ) )
-                    .setY( y + halfOfPadding );
+                    .setWidth(w)
+                    .setHeight(h)
+                    .setX(x + (halfOfPadding / 2))
+                    .setY(y + halfOfPadding);
         }
     }
 
     private void registerHoverEventHandlers() {
         handlerRegistrationManager.register(
-                this.addNodeMouseEnterHandler( event -> stopTimeout() )
+                this.addNodeMouseEnterHandler(event -> stopTimeout())
         );
         handlerRegistrationManager.register(
-                this.addNodeMouseExitHandler( event -> startTimeout() )
+                this.addNodeMouseExitHandler(event -> startTimeout())
         );
     }
 
     public void startTimeout() {
-        if ( null == timer || !timer.isRunning() ) {
+        if (null == timer || !timer.isRunning()) {
             timer = new Timer() {
                 @Override
                 public void run() {
-                    if ( null != HoverPalette.this.closeCallback ) {
+                    if (null != HoverPalette.this.closeCallback) {
                         HoverPalette.this.closeCallback.onClose();
                     }
                 }
             };
-            timer.schedule( timeout );
+            timer.schedule(timeout);
         }
     }
 
     public void stopTimeout() {
-        if ( null != timer && timer.isRunning() ) {
+        if (null != timer && timer.isRunning()) {
             timer.cancel();
         }
     }

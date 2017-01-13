@@ -58,7 +58,7 @@ public class TimeCycleLanguage implements BPMNProperty {
     public TimeCycleLanguage() {
     }
 
-    public TimeCycleLanguage( final String value ) {
+    public TimeCycleLanguage(final String value) {
         this.value = value;
     }
 
@@ -90,7 +90,7 @@ public class TimeCycleLanguage implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

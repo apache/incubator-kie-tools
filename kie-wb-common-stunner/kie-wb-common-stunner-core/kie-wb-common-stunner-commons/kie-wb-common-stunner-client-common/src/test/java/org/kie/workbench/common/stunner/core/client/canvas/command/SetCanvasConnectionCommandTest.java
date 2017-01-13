@@ -34,7 +34,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class SetCanvasConnectionCommandTest extends AbstractCanvasCommandTest {
 
     private static final String EDGE_ID = "e1";
@@ -61,37 +61,37 @@ public class SetCanvasConnectionCommandTest extends AbstractCanvasCommandTest {
     private SetCanvasConnectionCommand tested;
 
     @Before
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.setup();
-        when( edge.getUUID() ).thenReturn( EDGE_ID );
-        when( source.getUUID() ).thenReturn( SOURCE_ID );
-        when( target.getUUID() ).thenReturn( TARGET_ID );
-        when( edge.getSourceNode() ).thenReturn( source );
-        when( edge.getTargetNode() ).thenReturn( target );
-        when( sourceShape.getShapeView() ).thenReturn( sourceShapeView );
-        when( targetShape.getShapeView() ).thenReturn( targetShapeView );
-        when( canvas.getShape( eq( EDGE_ID ) ) ).thenReturn( edgeShape );
-        when( canvas.getShape( eq( SOURCE_ID ) ) ).thenReturn( sourceShape );
-        when( canvas.getShape( eq( TARGET_ID ) ) ).thenReturn( targetShape );
-        when( sourceShape.getShapeView() ).thenReturn( sourceShapeView );
-        this.tested = new SetCanvasConnectionCommand( edge );
+        when(edge.getUUID()).thenReturn(EDGE_ID);
+        when(source.getUUID()).thenReturn(SOURCE_ID);
+        when(target.getUUID()).thenReturn(TARGET_ID);
+        when(edge.getSourceNode()).thenReturn(source);
+        when(edge.getTargetNode()).thenReturn(target);
+        when(sourceShape.getShapeView()).thenReturn(sourceShapeView);
+        when(targetShape.getShapeView()).thenReturn(targetShapeView);
+        when(canvas.getShape(eq(EDGE_ID))).thenReturn(edgeShape);
+        when(canvas.getShape(eq(SOURCE_ID))).thenReturn(sourceShape);
+        when(canvas.getShape(eq(TARGET_ID))).thenReturn(targetShape);
+        when(sourceShape.getShapeView()).thenReturn(sourceShapeView);
+        this.tested = new SetCanvasConnectionCommand(edge);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecute() {
-        final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR,
-                         result.getType() );
-        verify( edgeShape,
-                times( 1 ) ).applyConnections( eq( edge ),
-                                               eq( sourceShapeView ),
-                                               eq( targetShapeView ),
-                                               any( MutationContext.class ) );
-        verify( canvasHandler,
-                times( 1 ) ).fireCanvasElementUpdated( eq( source ) );
-        verify( canvasHandler,
-                times( 1 ) ).fireCanvasElementUpdated( eq( target ) );
+        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertNotEquals(CommandResult.Type.ERROR,
+                        result.getType());
+        verify(edgeShape,
+               times(1)).applyConnections(eq(edge),
+                                          eq(sourceShapeView),
+                                          eq(targetShapeView),
+                                          any(MutationContext.class));
+        verify(canvasHandler,
+               times(1)).fireCanvasElementUpdated(eq(source));
+        verify(canvasHandler,
+               times(1)).fireCanvasElementUpdated(eq(target));
     }
 }

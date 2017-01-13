@@ -20,7 +20,7 @@ public abstract class AbstractValidationViolation<E> implements ValidationViolat
 
     protected final E entity;
 
-    protected AbstractValidationViolation( final E entity ) {
+    protected AbstractValidationViolation(final E entity) {
         this.entity = entity;
     }
 

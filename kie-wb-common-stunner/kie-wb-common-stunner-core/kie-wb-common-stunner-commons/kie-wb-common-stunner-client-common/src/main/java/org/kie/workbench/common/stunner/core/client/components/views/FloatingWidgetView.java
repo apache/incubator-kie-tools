@@ -58,50 +58,50 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
     }
 
     @Override
-    public void add( final IsWidget item ) {
-        panel.add( item );
+    public void add(final IsWidget item) {
+        panel.add(item);
     }
 
     @Override
-    public FloatingView<IsWidget> setOffsetX( final double ox ) {
+    public FloatingView<IsWidget> setOffsetX(final double ox) {
         this.ox = ox;
         return this;
     }
 
     @Override
-    public FloatingView<IsWidget> setOffsetY( final double oy ) {
+    public FloatingView<IsWidget> setOffsetY(final double oy) {
         this.oy = oy;
         return this;
     }
 
     @Override
-    public FloatingWidgetView setX( final double x ) {
+    public FloatingWidgetView setX(final double x) {
         this.x = x;
         return this;
     }
 
     @Override
-    public FloatingWidgetView setY( final double y ) {
+    public FloatingWidgetView setY(final double y) {
         this.y = y;
         return this;
     }
 
     @Override
-    public FloatingWidgetView setTimeOut( final int timeout ) {
+    public FloatingWidgetView setTimeOut(final int timeout) {
         this.timeout = timeout;
         return this;
     }
 
     @Override
     public FloatingView<IsWidget> clearTimeOut() {
-        setTimeOut( -1 );
+        setTimeOut(-1);
         return this;
     }
 
     @Override
-    public FloatingView<IsWidget> setHideCallback( final Command hideCallback ) {
-        checkNotNull( "hideCallback",
-                      hideCallback );
+    public FloatingView<IsWidget> setHideCallback(final Command hideCallback) {
+        checkNotNull("hideCallback",
+                     hideCallback);
         this.hideCallback = hideCallback;
         return this;
     }
@@ -113,14 +113,14 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     @Override
     public FloatingWidgetView show() {
-        if ( !visible ) {
+        if (!visible) {
             visible = true;
             attach();
             startTimeout();
-            panel.getElement().getStyle().setLeft( ox + x,
-                                                   Style.Unit.PX );
-            panel.getElement().getStyle().setTop( oy + y,
-                                                  Style.Unit.PX );
+            panel.getElement().getStyle().setLeft(ox + x,
+                                                  Style.Unit.PX);
+            panel.getElement().getStyle().setTop(oy + y,
+                                                 Style.Unit.PX);
             doShow();
         }
         return this;
@@ -128,7 +128,7 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     @Override
     public FloatingWidgetView hide() {
-        if ( visible ) {
+        if (visible) {
             this.visible = false;
             stopTimeout();
             doHide();
@@ -137,20 +137,20 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
     }
 
     protected void doShow() {
-        panel.getElement().getStyle().setDisplay( Style.Display.INLINE );
+        panel.getElement().getStyle().setDisplay(Style.Display.INLINE);
     }
 
     protected void doHide() {
-        panel.getElement().getStyle().setDisplay( Style.Display.NONE );
+        panel.getElement().getStyle().setDisplay(Style.Display.NONE);
         hideCallback.execute();
     }
 
     private void attach() {
-        if ( !attached ) {
-            RootPanel.get().add( panel );
+        if (!attached) {
+            RootPanel.get().add(panel);
             registerHoverEventHandlers();
-            panel.getElement().getStyle().setPosition( Style.Position.FIXED );
-            panel.getElement().getStyle().setZIndex( Integer.MAX_VALUE );
+            panel.getElement().getStyle().setPosition(Style.Position.FIXED);
+            panel.getElement().getStyle().setZIndex(Integer.MAX_VALUE);
             doHide();
             attached = true;
         }
@@ -162,28 +162,28 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
     }
 
     private void detach() {
-        if ( attached ) {
+        if (attached) {
             handlerRegistrationManager.removeHandler();
-            RootPanel.get().remove( panel );
+            RootPanel.get().remove(panel);
             attached = false;
         }
     }
 
     public void startTimeout() {
-        if ( timeout > 0 &&
-                ( null == timer || !timer.isRunning() ) ) {
+        if (timeout > 0 &&
+                (null == timer || !timer.isRunning())) {
             timer = new Timer() {
                 @Override
                 public void run() {
                     FloatingWidgetView.this.doHide();
                 }
             };
-            timer.schedule( timeout );
+            timer.schedule(timeout);
         }
     }
 
     public void stopTimeout() {
-        if ( null != timer && timer.isRunning() ) {
+        if (null != timer && timer.isRunning()) {
             timer.cancel();
         }
     }
@@ -194,12 +194,12 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     private void registerHoverEventHandlers() {
         handlerRegistrationManager.register(
-                panel.addDomHandler( mouseOverEvent -> stopTimeout(),
-                                     MouseOverEvent.getType() )
+                panel.addDomHandler(mouseOverEvent -> stopTimeout(),
+                                    MouseOverEvent.getType())
         );
         handlerRegistrationManager.register(
-                panel.addDomHandler( mouseOutEvent -> startTimeout(),
-                                     MouseOutEvent.getType() )
+                panel.addDomHandler(mouseOutEvent -> startTimeout(),
+                                    MouseOutEvent.getType())
         );
     }
 }

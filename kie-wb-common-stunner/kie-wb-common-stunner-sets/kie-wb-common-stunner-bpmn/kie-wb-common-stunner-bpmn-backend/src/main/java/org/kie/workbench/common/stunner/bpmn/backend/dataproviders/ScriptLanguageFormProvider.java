@@ -32,15 +32,16 @@ public class ScriptLanguageFormProvider implements SelectorDataProvider {
     }
 
     @Override
-    public SelectorData getSelectorData( FormRenderingContext context ) {
+    @SuppressWarnings("unchecked")
+    public SelectorData getSelectorData(final FormRenderingContext context) {
         Map<Object, String> values = new TreeMap<>();
-        values.put( "http://www.java.com/java",
-                    "java" );
-        values.put( "http://www.javascript.com/javascript",
-                    "javascript" );
-        values.put( "http://www.mvel.org/2.0",
-                    "mvel" );
-        return new SelectorData( values,
-                                 null );
+        values.put("http://www.java.com/java",
+                   "java");
+        values.put("http://www.javascript.com/javascript",
+                   "javascript");
+        values.put("http://www.mvel.org/2.0",
+                   "mvel");
+        return new SelectorData(values,
+                                null);
     }
 }

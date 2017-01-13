@@ -48,9 +48,9 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIE
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = BPMNDiagram.BPMNDiagramBuilder.class )
-@CanContain( roles = { "all" } )
-@Shape( factory = BasicShapesFactory.class, def = BPMNDiagramShapeDef.class )
+@Definition(graphFactory = NodeFactory.class, builder = BPMNDiagram.BPMNDiagramBuilder.class)
+@CanContain(roles = {"all"})
+@Shape(factory = BasicShapesFactory.class, def = BPMNDiagramShapeDef.class)
 public class BPMNDiagram implements BPMNDefinition {
 
     @Category
@@ -63,12 +63,12 @@ public class BPMNDiagram implements BPMNDefinition {
     public static final transient String description = "BPMN Diagram";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_PROCESS_SETTINGS, position = 0 )
+    @FieldDef(label = FIELDDEF_PROCESS_SETTINGS, position = 0)
     @Valid
     private DiagramSet diagramSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_DATA, position = 1 )
+    @FieldDef(label = FIELDDEF_DATA, position = 1)
     @Valid
     protected ProcessData processData;
 
@@ -84,8 +84,8 @@ public class BPMNDiagram implements BPMNDefinition {
 
     @Labels
     private final Set<String> labels = new HashSet<String>() {{
-        add( "canContainArtifacts" );
-        add( "diagram" );
+        add("canContainArtifacts");
+        add("diagram");
     }};
 
     @NonPortable
@@ -99,25 +99,25 @@ public class BPMNDiagram implements BPMNDefinition {
 
         @Override
         public BPMNDiagram build() {
-            return new BPMNDiagram( new DiagramSet( "" ),
-                                    new ProcessData(),
-                                    new BackgroundSet( COLOR,
-                                                       BORDER_COLOR,
-                                                       BORDER_SIZE ),
-                                    new FontSet(),
-                                    new RectangleDimensionsSet( WIDTH,
-                                                                HEIGHT ) );
+            return new BPMNDiagram(new DiagramSet(""),
+                                   new ProcessData(),
+                                   new BackgroundSet(COLOR,
+                                                     BORDER_COLOR,
+                                                     BORDER_SIZE),
+                                   new FontSet(),
+                                   new RectangleDimensionsSet(WIDTH,
+                                                              HEIGHT));
         }
     }
 
     public BPMNDiagram() {
     }
 
-    public BPMNDiagram( @MapsTo( "diagramSet" ) DiagramSet diagramSet,
-                        @MapsTo( "processData" ) ProcessData processData,
-                        @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                        @MapsTo( "fontSet" ) FontSet fontSet,
-                        @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet ) {
+    public BPMNDiagram(final @MapsTo("diagramSet") DiagramSet diagramSet,
+                       final @MapsTo("processData") ProcessData processData,
+                       final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                       final @MapsTo("fontSet") FontSet fontSet,
+                       final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
         this.diagramSet = diagramSet;
         this.processData = processData;
         this.backgroundSet = backgroundSet;
@@ -149,7 +149,7 @@ public class BPMNDiagram implements BPMNDefinition {
         return dimensionsSet;
     }
 
-    public void setDimensionsSet( RectangleDimensionsSet dimensionsSet ) {
+    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
         this.dimensionsSet = dimensionsSet;
     }
 
@@ -165,19 +165,19 @@ public class BPMNDiagram implements BPMNDefinition {
         return fontSet;
     }
 
-    public void setDiagramSet( DiagramSet diagramSet ) {
+    public void setDiagramSet(final DiagramSet diagramSet) {
         this.diagramSet = diagramSet;
     }
 
-    public void setProcessData( ProcessData processData ) {
+    public void setProcessData(final ProcessData processData) {
         this.processData = processData;
     }
 
-    public void setBackgroundSet( BackgroundSet backgroundSet ) {
+    public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
-    public void setFontSet( FontSet fontSet ) {
+    public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
     }
 }

@@ -59,7 +59,7 @@ public class StandardDeviation implements BPMNProperty {
     public StandardDeviation() {
     }
 
-    public StandardDeviation( final Double value ) {
+    public StandardDeviation(final Double value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class StandardDeviation implements BPMNProperty {
         return value;
     }
 
-    public void setValue( Double value ) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 }

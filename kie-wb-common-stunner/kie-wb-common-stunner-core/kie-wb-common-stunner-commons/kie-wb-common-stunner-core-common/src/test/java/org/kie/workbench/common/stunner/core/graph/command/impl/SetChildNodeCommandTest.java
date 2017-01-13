@@ -39,7 +39,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class SetChildNodeCommandTest extends AbstractGraphCommandTest {
 
     private static final String PARENT_UUID = "parentUUID";
@@ -51,118 +51,118 @@ public class SetChildNodeCommandTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() throws Exception {
-        super.init( 500,
-                    500 );
-        this.parent = mockNode( PARENT_UUID );
-        this.candidate = mockNode( CANDIDATE_UUID );
-        when( graphIndex.getNode( eq( PARENT_UUID ) ) ).thenReturn( parent );
-        when( graphIndex.getNode( eq( CANDIDATE_UUID ) ) ).thenReturn( candidate );
-        this.tested = new SetChildNodeCommand( PARENT_UUID,
-                                               CANDIDATE_UUID );
+        super.init(500,
+                   500);
+        this.parent = mockNode(PARENT_UUID);
+        this.candidate = mockNode(CANDIDATE_UUID);
+        when(graphIndex.getNode(eq(PARENT_UUID))).thenReturn(parent);
+        when(graphIndex.getNode(eq(CANDIDATE_UUID))).thenReturn(candidate);
+        this.tested = new SetChildNodeCommand(PARENT_UUID,
+                                              CANDIDATE_UUID);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testAllow() {
-        CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        verify( containmentRuleManager,
-                times( 1 ) ).evaluate( eq( parent ),
-                                       eq( candidate ) );
-        verify( cardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Graph.class ),
-                                       any( Node.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( connectionRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( Node.class ) );
-        verify( edgeCardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( List.class ),
-                                       any( EdgeCardinalityRule.Type.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( dockingRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
+        CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        verify(containmentRuleManager,
+               times(1)).evaluate(eq(parent),
+                                  eq(candidate));
+        verify(cardinalityRuleManager,
+               times(0)).evaluate(any(Graph.class),
+                                  any(Node.class),
+                                  any(RuleManager.Operation.class));
+        verify(connectionRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(Node.class));
+        verify(edgeCardinalityRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(List.class),
+                                  any(EdgeCardinalityRule.Type.class),
+                                  any(RuleManager.Operation.class));
+        verify(dockingRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testAllowNoRules() {
-        when( graphCommandExecutionContext.getRulesManager() ).thenReturn( null );
-        CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        verify( containmentRuleManager,
-                times( 0 ) ).evaluate( eq( parent ),
-                                       eq( candidate ) );
-        verify( cardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Graph.class ),
-                                       any( Node.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( connectionRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( Node.class ) );
-        verify( edgeCardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( List.class ),
-                                       any( EdgeCardinalityRule.Type.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( dockingRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
+        when(graphCommandExecutionContext.getRulesManager()).thenReturn(null);
+        CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        verify(containmentRuleManager,
+               times(0)).evaluate(eq(parent),
+                                  eq(candidate));
+        verify(cardinalityRuleManager,
+               times(0)).evaluate(any(Graph.class),
+                                  any(Node.class),
+                                  any(RuleManager.Operation.class));
+        verify(connectionRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(Node.class));
+        verify(edgeCardinalityRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(List.class),
+                                  any(EdgeCardinalityRule.Type.class),
+                                  any(RuleManager.Operation.class));
+        verify(dockingRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testNotAllowed() {
         final RuleViolations FAILED_VIOLATIONS = new DefaultRuleViolations()
-                .addViolation( new ContainmentRuleViolation( graph.getUUID(),
-                                                             PARENT_UUID ) );
-        when( containmentRuleManager.evaluate( any( Element.class ),
-                                               any( Element.class ) ) ).thenReturn( FAILED_VIOLATIONS );
-        CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.ERROR,
-                      result.getType() );
+                .addViolation(new ContainmentRuleViolation(graph.getUUID(),
+                                                           PARENT_UUID));
+        when(containmentRuleManager.evaluate(any(Element.class),
+                                             any(Element.class))).thenReturn(FAILED_VIOLATIONS);
+        CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.ERROR,
+                     result.getType());
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecute() {
-        CommandResult<RuleViolation> result = tested.execute( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        assertFalse( parent.getOutEdges().isEmpty() );
-        assertFalse( candidate.getInEdges().isEmpty() );
-        Edge edge = ( Edge ) parent.getOutEdges().get( 0 );
-        assertTrue( edge.getContent() instanceof Child );
-        assertEquals( parent,
-                      edge.getSourceNode() );
-        assertEquals( candidate,
-                      edge.getTargetNode() );
-        verify( graphIndex,
-                times( 1 ) ).addEdge( eq( edge ) );
-        verify( graphIndex,
-                times( 0 ) ).addNode( any( Node.class ) );
+        CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        assertFalse(parent.getOutEdges().isEmpty());
+        assertFalse(candidate.getInEdges().isEmpty());
+        Edge edge = (Edge) parent.getOutEdges().get(0);
+        assertTrue(edge.getContent() instanceof Child);
+        assertEquals(parent,
+                     edge.getSourceNode());
+        assertEquals(candidate,
+                     edge.getTargetNode());
+        verify(graphIndex,
+               times(1)).addEdge(eq(edge));
+        verify(graphIndex,
+               times(0)).addNode(any(Node.class));
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecuteCheckFailed() {
         final RuleViolations FAILED_VIOLATIONS = new DefaultRuleViolations()
-                .addViolation( new ContainmentRuleViolation( graph.getUUID(),
-                                                             PARENT_UUID ) );
-        when( containmentRuleManager.evaluate( any( Element.class ),
-                                               any( Element.class ) ) ).thenReturn( FAILED_VIOLATIONS );
-        CommandResult<RuleViolation> result = tested.execute( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.ERROR,
-                      result.getType() );
-        assertTrue( parent.getOutEdges().isEmpty() );
-        assertTrue( candidate.getInEdges().isEmpty() );
+                .addViolation(new ContainmentRuleViolation(graph.getUUID(),
+                                                           PARENT_UUID));
+        when(containmentRuleManager.evaluate(any(Element.class),
+                                             any(Element.class))).thenReturn(FAILED_VIOLATIONS);
+        CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.ERROR,
+                     result.getType());
+        assertTrue(parent.getOutEdges().isEmpty());
+        assertTrue(candidate.getInEdges().isEmpty());
     }
 }

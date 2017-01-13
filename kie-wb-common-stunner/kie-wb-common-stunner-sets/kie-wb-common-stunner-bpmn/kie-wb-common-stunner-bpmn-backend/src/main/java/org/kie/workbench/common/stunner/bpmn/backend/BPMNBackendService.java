@@ -30,14 +30,14 @@ public class BPMNBackendService extends AbstractDefinitionSetService {
     private BPMNDefinitionSetResourceType bpmnResourceType;
 
     protected BPMNBackendService() {
-        this( null,
-              null );
+        this(null,
+             null);
     }
 
     @Inject
-    public BPMNBackendService( BPMNDiagramMarshaller bpmnDiagramMarshaller,
-                               BPMNDefinitionSetResourceType bpmnResourceType ) {
-        super( bpmnDiagramMarshaller );
+    public BPMNBackendService(final BPMNDiagramMarshaller bpmnDiagramMarshaller,
+                              final BPMNDefinitionSetResourceType bpmnResourceType) {
+        super(bpmnDiagramMarshaller);
         this.bpmnResourceType = bpmnResourceType;
     }
 

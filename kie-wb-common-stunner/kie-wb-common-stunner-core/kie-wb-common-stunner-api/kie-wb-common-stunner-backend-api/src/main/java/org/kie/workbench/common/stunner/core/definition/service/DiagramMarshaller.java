@@ -37,8 +37,8 @@ public interface DiagramMarshaller<G extends Graph, M extends Metadata, D extend
      * @return A graph instance of type <code>G</code>.
      * @throws IOException System I/O error.
      */
-    G unmarshall( final M metadata,
-                  final InputStream input ) throws IOException;
+    G unmarshall(final M metadata,
+                 final InputStream input) throws IOException;
 
     /**
      * Serializes a diagram instance of type <code>D</code> as string.
@@ -46,7 +46,7 @@ public interface DiagramMarshaller<G extends Graph, M extends Metadata, D extend
      * @return The serialized diagram's raw value.
      * @throws IOException System I/O error.
      */
-    String marshall( final D diagram ) throws IOException;
+    String marshall(final D diagram) throws IOException;
 
     /**
      * Provides a un/marshaller instance for the Diagram's metadata.

@@ -39,8 +39,8 @@ import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
 
-@Shape( factory = BasicShapesFactory.class, def = SubprocessShapeDef.class )
-@MorphBase( defaultType = ReusableSubprocess.class, targets = { BaseTask.class } )
+@Shape(factory = BasicShapesFactory.class, def = SubprocessShapeDef.class)
+@MorphBase(defaultType = ReusableSubprocess.class, targets = {BaseTask.class})
 public abstract class BaseSubprocess implements BPMNDefinition {
 
     @Category
@@ -50,7 +50,7 @@ public abstract class BaseSubprocess implements BPMNDefinition {
     public static final transient String description = "A subprocess is a decomposable activity.";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0 )
+    @FieldDef(label = FIELDDEF_GENERAL_SETTINGS, position = 0)
     @Valid
     protected BPMNGeneralSet general;
 
@@ -73,15 +73,15 @@ public abstract class BaseSubprocess implements BPMNDefinition {
 
     @Labels
     protected final Set<String> labels = new HashSet<String>() {{
-        add( "all" );
-        add( "sequence_start" );
-        add( "sequence_end" );
-        add( "messageflow_start" );
-        add( "messageflow_end" );
-        add( "to_task_event" );
-        add( "from_task_event" );
-        add( "fromtoall" );
-        add( "ActivitiesMorph" );
+        add("all");
+        add("sequence_start");
+        add("sequence_end");
+        add("messageflow_start");
+        add("messageflow_end");
+        add("to_task_event");
+        add("from_task_event");
+        add("fromtoall");
+        add("ActivitiesMorph");
     }};
 
     @NonPortable
@@ -97,11 +97,11 @@ public abstract class BaseSubprocess implements BPMNDefinition {
     protected BaseSubprocess() {
     }
 
-    public BaseSubprocess( @MapsTo( "general" ) BPMNGeneralSet general,
-                           @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                           @MapsTo( "fontSet" ) FontSet fontSet,
-                           @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet,
-                           @MapsTo( "simulationSet" ) SimulationSet simulationSet ) {
+    public BaseSubprocess(final @MapsTo("general") BPMNGeneralSet general,
+                          final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                          final @MapsTo("fontSet") FontSet fontSet,
+                          final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                          final @MapsTo("simulationSet") SimulationSet simulationSet) {
         this.general = general;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
@@ -121,7 +121,7 @@ public abstract class BaseSubprocess implements BPMNDefinition {
         return general;
     }
 
-    public void setGeneral( BPMNGeneralSet general ) {
+    public void setGeneral(final BPMNGeneralSet general) {
         this.general = general;
     }
 
@@ -129,7 +129,7 @@ public abstract class BaseSubprocess implements BPMNDefinition {
         return backgroundSet;
     }
 
-    public void setBackgroundSet( BackgroundSet backgroundSet ) {
+    public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
@@ -137,7 +137,7 @@ public abstract class BaseSubprocess implements BPMNDefinition {
         return fontSet;
     }
 
-    public void setFontSet( FontSet fontSet ) {
+    public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
     }
 
@@ -145,7 +145,7 @@ public abstract class BaseSubprocess implements BPMNDefinition {
         return simulationSet;
     }
 
-    public void setSimulationSet( SimulationSet simulationSet ) {
+    public void setSimulationSet(final SimulationSet simulationSet) {
         this.simulationSet = simulationSet;
     }
 
@@ -153,7 +153,7 @@ public abstract class BaseSubprocess implements BPMNDefinition {
         return dimensionsSet;
     }
 
-    public void setDimensionsSet( RectangleDimensionsSet dimensionsSet ) {
+    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
         this.dimensionsSet = dimensionsSet;
     }
 

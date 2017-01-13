@@ -46,8 +46,8 @@ import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
 
-@Shape( factory = BasicShapesFactory.class, def = TaskShapeDef.class )
-@MorphBase( defaultType = NoneTask.class, targets = { ReusableSubprocess.class } )
+@Shape(factory = BasicShapesFactory.class, def = TaskShapeDef.class)
+@MorphBase(defaultType = NoneTask.class, targets = {ReusableSubprocess.class})
 public abstract class BaseTask implements BPMNDefinition {
 
     @Category
@@ -57,13 +57,13 @@ public abstract class BaseTask implements BPMNDefinition {
     public static final transient String description = "A task is a unit of work - the job to be performed";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0 )
+    @FieldDef(label = FIELDDEF_GENERAL_SETTINGS, position = 0)
     @Valid
     protected TaskGeneralSet general;
 
     @Property
     //@FieldDef( label = FIELDDEF_TASK_TYPE, property = "value", position = 3 )
-    @MorphProperty( binder = TaskTypeMorphPropertyBinding.class )
+    @MorphProperty(binder = TaskTypeMorphPropertyBinding.class)
     protected TaskType taskType;
 
     @PropertySet
@@ -86,19 +86,19 @@ public abstract class BaseTask implements BPMNDefinition {
     public static class TaskTypeMorphPropertyBinding implements MorphPropertyValueBinding<TaskType, TaskTypes> {
 
         private static final Map<TaskTypes, Class<?>> MORPH_TARGETS =
-                new HashMap<TaskTypes, Class<?>>( 4 ) {{
-                    put( TaskTypes.NONE,
-                         NoneTask.class );
-                    put( TaskTypes.USER,
-                         UserTask.class );
-                    put( TaskTypes.SCRIPT,
-                         ScriptTask.class );
-                    put( TaskTypes.BUSINESS_RULE,
-                         BusinessRuleTask.class );
+                new HashMap<TaskTypes, Class<?>>(4) {{
+                    put(TaskTypes.NONE,
+                        NoneTask.class);
+                    put(TaskTypes.USER,
+                        UserTask.class);
+                    put(TaskTypes.SCRIPT,
+                        ScriptTask.class);
+                    put(TaskTypes.BUSINESS_RULE,
+                        BusinessRuleTask.class);
                 }};
 
         @Override
-        public TaskTypes getValue( final TaskType property ) {
+        public TaskTypes getValue(final TaskType property) {
             return property.getValue();
         }
 
@@ -110,16 +110,16 @@ public abstract class BaseTask implements BPMNDefinition {
 
     @Labels
     protected final Set<String> labels = new HashSet<String>() {{
-        add( "all" );
-        add( "sequence_start" );
-        add( "sequence_end" );
-        add( "from_task_event" );
-        add( "to_task_event" );
-        add( "FromEventbasedGateway" );
-        add( "messageflow_start" );
-        add( "messageflow_end" );
-        add( "fromtoall" );
-        add( "ActivitiesMorph" );
+        add("all");
+        add("sequence_start");
+        add("sequence_end");
+        add("from_task_event");
+        add("to_task_event");
+        add("FromEventbasedGateway");
+        add("messageflow_start");
+        add("messageflow_end");
+        add("fromtoall");
+        add("ActivitiesMorph");
     }};
 
     @NonPortable
@@ -132,16 +132,16 @@ public abstract class BaseTask implements BPMNDefinition {
         public static final String BORDER_COLOR = "#000000";
     }
 
-    protected BaseTask( final TaskTypes type ) {
-        this.taskType = new TaskType( type );
+    protected BaseTask(final TaskTypes type) {
+        this.taskType = new TaskType(type);
     }
 
-    public BaseTask( @MapsTo( "general" ) TaskGeneralSet general,
-                     @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                     @MapsTo( "fontSet" ) FontSet fontSet,
-                     @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet,
-                     @MapsTo( "simulationSet" ) SimulationSet simulationSet,
-                     @MapsTo( "taskType" ) TaskType taskType ) {
+    public BaseTask(final @MapsTo("general") TaskGeneralSet general,
+                    final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                    final @MapsTo("fontSet") FontSet fontSet,
+                    final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                    final @MapsTo("simulationSet") SimulationSet simulationSet,
+                    final @MapsTo("taskType") TaskType taskType) {
         this.general = general;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
@@ -174,15 +174,15 @@ public abstract class BaseTask implements BPMNDefinition {
         return fontSet;
     }
 
-    public void setGeneral( TaskGeneralSet general ) {
+    public void setGeneral(final TaskGeneralSet general) {
         this.general = general;
     }
 
-    public void setBackgroundSet( BackgroundSet backgroundSet ) {
+    public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
-    public void setFontSet( FontSet fontSet ) {
+    public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
     }
 
@@ -190,7 +190,7 @@ public abstract class BaseTask implements BPMNDefinition {
         return taskType;
     }
 
-    public void setTaskType( TaskType taskType ) {
+    public void setTaskType(final TaskType taskType) {
         this.taskType = taskType;
     }
 
@@ -198,7 +198,7 @@ public abstract class BaseTask implements BPMNDefinition {
         return simulationSet;
     }
 
-    public void setSimulationSet( SimulationSet simulationSet ) {
+    public void setSimulationSet(final SimulationSet simulationSet) {
         this.simulationSet = simulationSet;
     }
 
@@ -206,7 +206,7 @@ public abstract class BaseTask implements BPMNDefinition {
         return dimensionsSet;
     }
 
-    public void setDimensionsSet( RectangleDimensionsSet dimensionsSet ) {
+    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
         this.dimensionsSet = dimensionsSet;
     }
 }

@@ -45,30 +45,30 @@ public class FontSet implements BPMNPropertySet {
     private FontBorderSize fontBorderSize;
 
     public FontSet() {
-        this( new FontFamily(),
-              new FontColor(),
-              new FontSize(),
-              new FontBorderSize() );
+        this(new FontFamily(),
+             new FontColor(),
+             new FontSize(),
+             new FontBorderSize());
     }
 
-    public FontSet( @MapsTo( "fontFamily" ) FontFamily fontFamily,
-                    @MapsTo( "fontColor" ) FontColor fontColor,
-                    @MapsTo( "fontSize" ) FontSize fontSize,
-                    @MapsTo( "fontBorderSize" ) FontBorderSize fontBorderSize ) {
+    public FontSet(final @MapsTo("fontFamily") FontFamily fontFamily,
+                   final @MapsTo("fontColor") FontColor fontColor,
+                   final @MapsTo("fontSize") FontSize fontSize,
+                   final @MapsTo("fontBorderSize") FontBorderSize fontBorderSize) {
         this.fontFamily = fontFamily;
         this.fontColor = fontColor;
         this.fontSize = fontSize;
         this.fontBorderSize = fontBorderSize;
     }
 
-    public FontSet( String fontFamily,
-                    String fontColor,
-                    Double fontSize,
-                    Double fontBorderSize ) {
-        this.fontFamily = new FontFamily( fontFamily );
-        this.fontColor = new FontColor( fontColor );
-        this.fontSize = new FontSize( fontSize );
-        this.fontBorderSize = new FontBorderSize( fontBorderSize );
+    public FontSet(final String fontFamily,
+                   final String fontColor,
+                   final Double fontSize,
+                   final Double fontBorderSize) {
+        this.fontFamily = new FontFamily(fontFamily);
+        this.fontColor = new FontColor(fontColor);
+        this.fontSize = new FontSize(fontSize);
+        this.fontBorderSize = new FontBorderSize(fontBorderSize);
     }
 
     public String getPropertySetName() {
@@ -91,19 +91,19 @@ public class FontSet implements BPMNPropertySet {
         return fontBorderSize;
     }
 
-    public void setFontFamily( FontFamily fontFamily ) {
+    public void setFontFamily(final FontFamily fontFamily) {
         this.fontFamily = fontFamily;
     }
 
-    public void setFontColor( FontColor fontColor ) {
+    public void setFontColor(final FontColor fontColor) {
         this.fontColor = fontColor;
     }
 
-    public void setFontSize( FontSize fontSize ) {
+    public void setFontSize(final FontSize fontSize) {
         this.fontSize = fontSize;
     }
 
-    public void setFontBorderSize( FontBorderSize fontBorderSize ) {
+    public void setFontBorderSize(final FontBorderSize fontBorderSize) {
         this.fontBorderSize = fontBorderSize;
     }
 }

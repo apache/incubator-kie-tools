@@ -29,7 +29,7 @@ import org.mockito.Mock;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class HoverTimerTest {
 
     @Mock
@@ -45,59 +45,59 @@ public class HoverTimerTest {
 
     @Before
     public void setUp() {
-        when( actions.isReadyToHide() ).thenReturn( true );
-        hoverTimer = spy( new HoverTimer( actions ) );
-        when( hoverTimer.createTimer() ).thenReturn( timer );
+        when(actions.isReadyToHide()).thenReturn(true);
+        hoverTimer = spy(new HoverTimer(actions));
+        when(hoverTimer.createTimer()).thenReturn(timer);
     }
 
     @Test
     public void testFirstMouseExit() {
-        hoverTimer.onNodeMouseExit( exitEvent );
-        verify( actions ).isReadyToHide();
-        verify( timer ).schedule( HoverTimer.TIMEOUT );
+        hoverTimer.onNodeMouseExit(exitEvent);
+        verify(actions).isReadyToHide();
+        verify(timer).schedule(HoverTimer.TIMEOUT);
     }
 
     @Test
     public void testNotReadyMouseExit() {
-        when( actions.isReadyToHide() ).thenReturn( false );
-        hoverTimer.onNodeMouseExit( exitEvent );
-        verify( actions ).isReadyToHide();
-        verify( timer,
-                times( 0 ) ).schedule( anyInt() );
+        when(actions.isReadyToHide()).thenReturn(false);
+        hoverTimer.onNodeMouseExit(exitEvent);
+        verify(actions).isReadyToHide();
+        verify(timer,
+               times(0)).schedule(anyInt());
     }
 
     @Test
     public void testTwiceMouseExit() {
-        hoverTimer.onNodeMouseExit( exitEvent );
-        hoverTimer.onNodeMouseExit( exitEvent );
-        verify( actions,
-                times( 2 ) ).isReadyToHide();
-        verify( timer,
-                times( 1 ) ).schedule( HoverTimer.TIMEOUT );
+        hoverTimer.onNodeMouseExit(exitEvent);
+        hoverTimer.onNodeMouseExit(exitEvent);
+        verify(actions,
+               times(2)).isReadyToHide();
+        verify(timer,
+               times(1)).schedule(HoverTimer.TIMEOUT);
     }
 
     @Test
     public void testMouseEnter() {
-        hoverTimer.onNodeMouseExit( exitEvent );
-        hoverTimer.onNodeMouseEnter( enterEvent );
-        verify( timer ).cancel();
-        verify( actions ).onMouseEnter();
-        assertNull( hoverTimer.getTimer() );
+        hoverTimer.onNodeMouseExit(exitEvent);
+        hoverTimer.onNodeMouseEnter(enterEvent);
+        verify(timer).cancel();
+        verify(actions).onMouseEnter();
+        assertNull(hoverTimer.getTimer());
     }
 
     @Test
     public void testMouseEnterWithoutExit() {
-        hoverTimer.onNodeMouseEnter( enterEvent );
-        verify( timer,
-                times( 0 ) ).cancel();
-        verify( actions ).onMouseEnter();
-        assertNull( hoverTimer.getTimer() );
+        hoverTimer.onNodeMouseEnter(enterEvent);
+        verify(timer,
+               times(0)).cancel();
+        verify(actions).onMouseEnter();
+        assertNull(hoverTimer.getTimer());
     }
 
     @Test
     public void testTimer() {
-        Timer t = new HoverTimer( actions ).createTimer();
+        Timer t = new HoverTimer(actions).createTimer();
         t.run();
-        verify( actions ).onMouseExit();
+        verify(actions).onMouseExit();
     }
 }

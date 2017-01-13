@@ -25,19 +25,19 @@ import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 public class AssignmentsTypeSerializer implements Bpmn2OryxPropertySerializer<String> {
 
     @Override
-    public boolean accepts( PropertyType type ) {
-        return AssignmentsType.name.equals( type.getName() );
+    public boolean accepts(final PropertyType type) {
+        return AssignmentsType.name.equals(type.getName());
     }
 
     @Override
-    public String parse( Object property,
-                         String value ) {
+    public String parse(final Object property,
+                        String value) {
         return value;
     }
 
     @Override
-    public String serialize( Object property,
-                             String value ) {
+    public String serialize(final Object property,
+                            String value) {
         return value;
     }
 }

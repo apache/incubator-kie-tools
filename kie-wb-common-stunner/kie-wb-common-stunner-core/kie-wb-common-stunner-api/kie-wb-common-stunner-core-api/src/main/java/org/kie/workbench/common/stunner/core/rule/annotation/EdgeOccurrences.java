@@ -26,8 +26,8 @@ import java.lang.annotation.RetentionPolicy;
  * It's only allowed to use on Definitions of type Edge
  */
 @Inherited
-@Retention( RetentionPolicy.RUNTIME )
-@Repeatable( AllowedEdgeOccurrences.class )
+@Retention(RetentionPolicy.RUNTIME)
+@Repeatable(AllowedEdgeOccurrences.class)
 public @interface EdgeOccurrences {
 
     EdgeType type();

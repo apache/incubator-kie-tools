@@ -31,16 +31,16 @@ import org.kie.workbench.common.stunner.forms.service.fieldProviders.ColorPicker
 public class ColorPickerAnnotationProcessor extends AbstractFieldAnnotationProcessor<ColorPickerFieldDefinition, ColorPickerFieldProvider> {
 
     @Inject
-    public ColorPickerAnnotationProcessor( ColorPickerFieldProvider fieldProvider ) {
-        super( fieldProvider );
+    public ColorPickerAnnotationProcessor(ColorPickerFieldProvider fieldProvider) {
+        super(fieldProvider);
     }
 
     @Override
-    protected void initField( ColorPickerFieldDefinition field,
-                              Annotation annotation,
-                              FieldSetting fieldSetting,
-                              TransformerContext context ) {
-        field.setDefaultValue( ( String ) annotation.getParameters().get( "defaultValue" ) );
+    protected void initField(final ColorPickerFieldDefinition field,
+                             final Annotation annotation,
+                             final FieldSetting fieldSetting,
+                             final TransformerContext context) {
+        field.setDefaultValue((String) annotation.getParameters().get("defaultValue"));
     }
 
     @Override

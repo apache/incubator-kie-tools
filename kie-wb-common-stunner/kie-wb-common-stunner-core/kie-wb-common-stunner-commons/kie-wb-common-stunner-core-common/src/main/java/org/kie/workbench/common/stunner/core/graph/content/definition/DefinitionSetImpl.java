@@ -26,7 +26,7 @@ public class DefinitionSetImpl implements DefinitionSet {
     private String id;
     private Bounds bounds;
 
-    public DefinitionSetImpl( final @MapsTo( "id" ) String id ) {
+    public DefinitionSetImpl(final @MapsTo("id") String id) {
         this.id = id;
     }
 
@@ -36,7 +36,7 @@ public class DefinitionSetImpl implements DefinitionSet {
     }
 
     @Override
-    public void setDefinition( final String definition ) {
+    public void setDefinition(final String definition) {
         this.id = definition;
     }
 
@@ -51,7 +51,7 @@ public class DefinitionSetImpl implements DefinitionSet {
     }
 
     @Override
-    public void setBounds( final Bounds bounds ) {
+    public void setBounds(final Bounds bounds) {
         this.bounds = bounds;
     }
 }

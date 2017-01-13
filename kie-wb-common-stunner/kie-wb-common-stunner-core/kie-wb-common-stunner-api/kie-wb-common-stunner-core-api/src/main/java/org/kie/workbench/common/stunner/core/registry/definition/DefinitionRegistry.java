@@ -29,5 +29,5 @@ public interface DefinitionRegistry<D> extends DynamicRegistry<D> {
      * @param id The Definition's identifier criteria.
      * @return The Definition of type <code>D</code> that this registry contains, <code>null</code> otherwise.
      */
-    D getDefinitionById( final String id );
+    D getDefinitionById(final String id);
 }

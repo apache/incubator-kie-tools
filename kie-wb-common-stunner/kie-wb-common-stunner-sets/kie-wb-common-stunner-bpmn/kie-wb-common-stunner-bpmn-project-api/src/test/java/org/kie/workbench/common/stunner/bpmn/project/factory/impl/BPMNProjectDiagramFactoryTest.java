@@ -38,7 +38,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class BPMNProjectDiagramFactoryTest {
 
     private static final String NAME = "name1";
@@ -54,66 +54,66 @@ public class BPMNProjectDiagramFactoryTest {
     Bounds bounds;
     BPMNDiagram diagram;
     private View<BPMNDiagram> diagramNodeContent;
-    private final List<Node> graphNodes = new ArrayList<>( 1 );
+    private final List<Node> graphNodes = new ArrayList<>(1);
 
     private BPMNProjectDiagramFactory tested;
 
     @Before
     public void setup() throws Exception {
         diagram = new BPMNDiagram.BPMNDiagramBuilder().build();
-        diagramNodeContent = new ViewImpl<BPMNDiagram>( diagram,
-                                                        bounds );
-        graphNodes.add( diagramNode );
-        when( diagramNode.getContent() ).thenReturn( diagramNodeContent );
-        when( graph.nodes() ).thenReturn( graphNodes );
+        diagramNodeContent = new ViewImpl<BPMNDiagram>(diagram,
+                                                       bounds);
+        graphNodes.add(diagramNode);
+        when(diagramNode.getContent()).thenReturn(diagramNodeContent);
+        when(graph.nodes()).thenReturn(graphNodes);
         tested = new BPMNProjectDiagramFactory();
     }
 
     @Test
     public void testMetadataType() {
         Class<? extends Metadata> type = tested.getMetadataType();
-        assertEquals( ProjectMetadata.class,
-                      type );
+        assertEquals(ProjectMetadata.class,
+                     type);
     }
 
     @Test
     public void testDefinitionSetType() {
         Class<?> type = tested.getDefinitionSetType();
-        assertEquals( BPMNDefinitionSet.class,
-                      type );
+        assertEquals(BPMNDefinitionSet.class,
+                     type);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testBuildNoPackageSpecified() {
-        when( metadata.getProjectPackage() ).thenReturn( null );
-        ProjectDiagram pdiagram = tested.build( NAME,
-                                                metadata,
-                                                graph );
-        assertNotNull( pdiagram );
-        assertEquals( graph,
-                      pdiagram.getGraph() );
-        assertEquals( NAME,
-                      diagram.getDiagramSet().getId().getValue() );
-        assertEquals( Package.DEFAULT_PACKAGE,
-                      diagram.getDiagramSet().getPackageProperty().getValue() );
+        when(metadata.getProjectPackage()).thenReturn(null);
+        ProjectDiagram pdiagram = tested.build(NAME,
+                                               metadata,
+                                               graph);
+        assertNotNull(pdiagram);
+        assertEquals(graph,
+                     pdiagram.getGraph());
+        assertEquals(NAME,
+                     diagram.getDiagramSet().getId().getValue());
+        assertEquals(Package.DEFAULT_PACKAGE,
+                     diagram.getDiagramSet().getPackageProperty().getValue());
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testBuild() {
         final String pName = "p1";
-        when( metadata.getProjectPackage() ).thenReturn( PKG );
-        when( metadata.getProjectName() ).thenReturn( pName );
-        ProjectDiagram pdiagram = tested.build( NAME,
-                                                metadata,
-                                                graph );
-        assertNotNull( pdiagram );
-        assertEquals( graph,
-                      pdiagram.getGraph() );
-        assertEquals( pName + "." + NAME,
-                      diagram.getDiagramSet().getId().getValue() );
-        assertEquals( PKG,
-                      diagram.getDiagramSet().getPackageProperty().getValue() );
+        when(metadata.getProjectPackage()).thenReturn(PKG);
+        when(metadata.getProjectName()).thenReturn(pName);
+        ProjectDiagram pdiagram = tested.build(NAME,
+                                               metadata,
+                                               graph);
+        assertNotNull(pdiagram);
+        assertEquals(graph,
+                     pdiagram.getGraph());
+        assertEquals(pName + "." + NAME,
+                     diagram.getDiagramSet().getId().getValue());
+        assertEquals(PKG,
+                     diagram.getDiagramSet().getPackageProperty().getValue());
     }
 }

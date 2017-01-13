@@ -58,7 +58,7 @@ public class TimeCycle implements BPMNProperty {
     public TimeCycle() {
     }
 
-    public TimeCycle( final String value ) {
+    public TimeCycle(final String value) {
         this.value = value;
     }
 
@@ -90,7 +90,7 @@ public class TimeCycle implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

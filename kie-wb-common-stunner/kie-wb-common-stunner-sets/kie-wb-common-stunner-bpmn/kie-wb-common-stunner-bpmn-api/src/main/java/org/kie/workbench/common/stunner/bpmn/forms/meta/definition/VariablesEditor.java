@@ -19,8 +19,8 @@ package org.kie.workbench.common.stunner.bpmn.forms.meta.definition;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.RetentionPolicy;
 
-@java.lang.annotation.Retention( RetentionPolicy.RUNTIME )
-@java.lang.annotation.Target( { ElementType.TYPE, ElementType.FIELD } )
+@java.lang.annotation.Retention(RetentionPolicy.RUNTIME)
+@java.lang.annotation.Target({ElementType.TYPE, ElementType.FIELD})
 public @interface VariablesEditor {
 
     String defaultValue() default "";

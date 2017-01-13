@@ -29,15 +29,15 @@ public class EnumType implements PropertyType {
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof EnumType ) ) {
+        if (!(o instanceof EnumType)) {
             return false;
         }
-        EnumType that = ( EnumType ) o;
-        if ( !name.equals( that.name ) ) {
+        EnumType that = (EnumType) o;
+        if (!name.equals(that.name)) {
             return false;
         }
         return true;

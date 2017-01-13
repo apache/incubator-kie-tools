@@ -25,23 +25,23 @@ class BootstrapPropertySetAdapter implements PropertySetAdapter<Object> {
 
     private final AdapterRegistry adapterRegistry;
 
-    BootstrapPropertySetAdapter( final AdapterRegistry adapterRegistry ) {
+    BootstrapPropertySetAdapter(final AdapterRegistry adapterRegistry) {
         this.adapterRegistry = adapterRegistry;
     }
 
     @Override
-    public String getId( final Object pojo ) {
-        return getWrapped( pojo ).getId( pojo );
+    public String getId(final Object pojo) {
+        return getWrapped(pojo).getId(pojo);
     }
 
     @Override
-    public String getName( final Object pojo ) {
-        return getWrapped( pojo ).getName( pojo );
+    public String getName(final Object pojo) {
+        return getWrapped(pojo).getName(pojo);
     }
 
     @Override
-    public Set<?> getProperties( final Object pojo ) {
-        return getWrapped( pojo ).getProperties( pojo );
+    public Set<?> getProperties(final Object pojo) {
+        return getWrapped(pojo).getProperties(pojo);
     }
 
     @Override
@@ -50,8 +50,8 @@ class BootstrapPropertySetAdapter implements PropertySetAdapter<Object> {
     }
 
     @Override
-    public boolean accepts( final Class<?> type ) {
-        return null != getWrapped( type );
+    public boolean accepts(final Class<?> type) {
+        return null != getWrapped(type);
     }
 
     @Override
@@ -59,11 +59,11 @@ class BootstrapPropertySetAdapter implements PropertySetAdapter<Object> {
         return false;
     }
 
-    private PropertySetAdapter<Object> getWrapped( final Object pojo ) {
-        return getWrapped( pojo.getClass() );
+    private PropertySetAdapter<Object> getWrapped(final Object pojo) {
+        return getWrapped(pojo.getClass());
     }
 
-    private PropertySetAdapter<Object> getWrapped( final Class<?> type ) {
-        return adapterRegistry.getPropertySetAdapter( type );
+    private PropertySetAdapter<Object> getWrapped(final Class<?> type) {
+        return adapterRegistry.getPropertySetAdapter(type);
     }
 }

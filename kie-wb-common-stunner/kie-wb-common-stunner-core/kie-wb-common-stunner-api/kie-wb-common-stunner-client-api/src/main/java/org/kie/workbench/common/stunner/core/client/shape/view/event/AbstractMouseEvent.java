@@ -24,23 +24,23 @@ public abstract class AbstractMouseEvent extends AbstractViewEvent
     private final double clientX;
     private final double clientY;
 
-    public AbstractMouseEvent( final double mouseX,
-                               final double mouseY,
-                               final double clientX,
-                               final double clientY ) {
-        this( mouseX,
-              mouseY,
-              clientX,
-              clientY,
-              false );
+    public AbstractMouseEvent(final double mouseX,
+                              final double mouseY,
+                              final double clientX,
+                              final double clientY) {
+        this(mouseX,
+             mouseY,
+             clientX,
+             clientY,
+             false);
     }
 
-    public AbstractMouseEvent( final double mouseX,
-                               final double mouseY,
-                               final double clientX,
-                               final double clientY,
-                               final boolean isShiftKeyDown ) {
-        setShiftKeyDown( isShiftKeyDown );
+    public AbstractMouseEvent(final double mouseX,
+                              final double mouseY,
+                              final double clientX,
+                              final double clientY,
+                              final boolean isShiftKeyDown) {
+        setShiftKeyDown(isShiftKeyDown);
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.clientX = clientX;

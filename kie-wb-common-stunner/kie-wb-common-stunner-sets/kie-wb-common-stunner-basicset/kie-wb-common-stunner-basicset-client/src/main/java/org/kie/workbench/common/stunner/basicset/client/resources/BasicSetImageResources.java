@@ -23,8 +23,8 @@ import com.google.gwt.resources.client.DataResource;
 
 public interface BasicSetImageResources extends ClientBundleWithLookup {
 
-    public static final BasicSetImageResources INSTANCE = GWT.create( BasicSetImageResources.class );
+    public static final BasicSetImageResources INSTANCE = GWT.create(BasicSetImageResources.class);
 
-    @ClientBundle.Source( "images/basicset_thumb.png" )
+    @ClientBundle.Source("images/basicset_thumb.png")
     DataResource basicSetThumb();
 }

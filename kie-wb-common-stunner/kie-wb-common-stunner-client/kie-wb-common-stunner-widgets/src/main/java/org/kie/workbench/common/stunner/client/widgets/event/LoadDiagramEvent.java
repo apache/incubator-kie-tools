@@ -26,8 +26,8 @@ public final class LoadDiagramEvent implements UberFireEvent {
     private final String uri;
     private final String name;
 
-    public LoadDiagramEvent( final String uri,
-                             final String name ) {
+    public LoadDiagramEvent(final String uri,
+                            final String name) {
         this.name = name;
         this.uri = uri;
     }

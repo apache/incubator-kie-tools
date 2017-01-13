@@ -32,16 +32,17 @@ public class TimeCycleLanguageProvider implements SelectorDataProvider {
     }
 
     @Override
-    public SelectorData getSelectorData( FormRenderingContext context ) {
+    @SuppressWarnings("unchecked")
+    public SelectorData getSelectorData(final FormRenderingContext context) {
         Map<Object, String> values = new TreeMap<>();
 
-        values.put( "None",
-                    "None" );
-        values.put( "Cron",
-                    "Cron" );
+        values.put("None",
+                   "None");
+        values.put("Cron",
+                   "Cron");
 
-        return new SelectorData( values,
-                                 null );
+        return new SelectorData(values,
+                                null);
     }
 }
 

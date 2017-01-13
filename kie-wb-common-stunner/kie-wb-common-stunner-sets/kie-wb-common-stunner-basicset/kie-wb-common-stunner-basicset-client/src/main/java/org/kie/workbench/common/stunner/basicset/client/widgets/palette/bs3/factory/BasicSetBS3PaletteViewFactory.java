@@ -33,23 +33,23 @@ import org.kie.workbench.common.stunner.core.client.ShapeManager;
 public class BasicSetBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactory<Icon> {
 
     private final static Map<String, Icon> CATEGORY_VIEWS = new HashMap<String, Icon>() {{
-        put( Categories.BASIC,
-             getIcon( IconType.SQUARE ) );
-        put( Categories.BASIC_WITH_ICONS,
-             getIcon( IconType.PLUS_SQUARE_O ) );
-        put( Categories.ICONS,
-             getIcon( IconType.DASHBOARD ) );
-        put( Categories.CONNECTORS,
-             getIcon( IconType.LONG_ARROW_RIGHT ) );
+        put(Categories.BASIC,
+            getIcon(IconType.SQUARE));
+        put(Categories.BASIC_WITH_ICONS,
+            getIcon(IconType.PLUS_SQUARE_O));
+        put(Categories.ICONS,
+            getIcon(IconType.DASHBOARD));
+        put(Categories.CONNECTORS,
+            getIcon(IconType.LONG_ARROW_RIGHT));
     }};
 
     protected BasicSetBS3PaletteViewFactory() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public BasicSetBS3PaletteViewFactory( final ShapeManager shapeManager ) {
-        super( shapeManager );
+    public BasicSetBS3PaletteViewFactory(final ShapeManager shapeManager) {
+        super(shapeManager);
     }
 
     @Override
@@ -68,14 +68,14 @@ public class BasicSetBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFa
     }
 
     @Override
-    protected Icon resize( final Icon widget,
-                           final int width,
-                           final int height ) {
-        widget.setSize( IconSize.LARGE );
+    protected Icon resize(final Icon widget,
+                          final int width,
+                          final int height) {
+        widget.setSize(IconSize.LARGE);
         return widget;
     }
 
-    private static Icon getIcon( final IconType iconType ) {
-        return new Icon( iconType );
+    private static Icon getIcon(final IconType iconType) {
+        return new Icon(iconType);
     }
 }

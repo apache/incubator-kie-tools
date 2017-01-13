@@ -37,19 +37,19 @@ public class ScreenErrorViewImpl implements ScreenErrorView,
     private Label message;
 
     @Override
-    public ScreenErrorView showError( final ClientRuntimeError error ) {
-        return showMessage( error.toString() );
+    public ScreenErrorView showError(final ClientRuntimeError error) {
+        return showMessage(error.toString());
     }
 
     @Override
-    public ScreenErrorView showMessage( final String message ) {
-        this.message.setTitle( message );
-        this.message.setText( message );
+    public ScreenErrorView showMessage(final String message) {
+        this.message.setTitle(message);
+        this.message.setText(message);
         return this;
     }
 
     @Override
     public Widget asWidget() {
-        return ElementWrapperWidget.getWidget( this.getElement() );
+        return ElementWrapperWidget.getWidget(this.getElement());
     }
 }

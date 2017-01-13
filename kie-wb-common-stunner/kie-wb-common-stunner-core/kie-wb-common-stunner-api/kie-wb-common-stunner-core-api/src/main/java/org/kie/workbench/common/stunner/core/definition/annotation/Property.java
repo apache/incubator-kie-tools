@@ -24,8 +24,8 @@ import java.lang.annotation.Target;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 
 @Inherited
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.TYPE, ElementType.FIELD } )
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.FIELD})
 public @interface Property {
 
     /**

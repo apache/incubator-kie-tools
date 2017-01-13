@@ -31,41 +31,41 @@ public class LienzoToolboxButtonBuilder implements ToolboxButtonBuilder<IPrimiti
     private ToolboxButtonEventHandler mouseExitHandler;
 
     @Override
-    public ToolboxButtonBuilder<IPrimitive<?>> setIcon( final IPrimitive<?> icon ) {
+    public ToolboxButtonBuilder<IPrimitive<?>> setIcon(final IPrimitive<?> icon) {
         this.icon = icon;
         return this;
     }
 
     @Override
-    public ToolboxButtonBuilder<IPrimitive<?>> setClickHandler( final ToolboxButtonEventHandler handler ) {
+    public ToolboxButtonBuilder<IPrimitive<?>> setClickHandler(final ToolboxButtonEventHandler handler) {
         this.clickHandler = handler;
         return this;
     }
 
     @Override
-    public ToolboxButtonBuilder<IPrimitive<?>> setMouseDownHandler( final ToolboxButtonEventHandler handler ) {
+    public ToolboxButtonBuilder<IPrimitive<?>> setMouseDownHandler(final ToolboxButtonEventHandler handler) {
         this.mouseDownHandler = handler;
         return this;
     }
 
     @Override
-    public ToolboxButtonBuilder<IPrimitive<?>> setMouseEnterHandler( final ToolboxButtonEventHandler handler ) {
+    public ToolboxButtonBuilder<IPrimitive<?>> setMouseEnterHandler(final ToolboxButtonEventHandler handler) {
         this.mouseEnterHandler = handler;
         return this;
     }
 
     @Override
-    public ToolboxButtonBuilder<IPrimitive<?>> setMouseExitHandler( final ToolboxButtonEventHandler handler ) {
+    public ToolboxButtonBuilder<IPrimitive<?>> setMouseExitHandler(final ToolboxButtonEventHandler handler) {
         this.mouseExitHandler = handler;
         return this;
     }
 
     @Override
     public ToolboxButton<IPrimitive<?>> build() {
-        return new LienzoToolboxButton( icon )
-                .setClickHandler( clickHandler )
-                .setMouseDownHandler( mouseDownHandler )
-                .setMouseEnterHandler( mouseEnterHandler )
-                .setMouseExitHandler( mouseExitHandler );
+        return new LienzoToolboxButton(icon)
+                .setClickHandler(clickHandler)
+                .setMouseDownHandler(mouseDownHandler)
+                .setMouseEnterHandler(mouseEnterHandler)
+                .setMouseExitHandler(mouseExitHandler);
     }
 }

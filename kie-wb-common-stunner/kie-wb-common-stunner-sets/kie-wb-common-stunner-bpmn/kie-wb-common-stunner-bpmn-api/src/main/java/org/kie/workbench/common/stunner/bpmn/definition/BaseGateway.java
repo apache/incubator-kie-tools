@@ -35,14 +35,14 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 
 import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
 
-@MorphBase( defaultType = ParallelGateway.class )
+@MorphBase(defaultType = ParallelGateway.class)
 public abstract class BaseGateway implements BPMNDefinition {
 
     @Category
     public static final transient String category = Categories.GATEWAYS;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0 )
+    @FieldDef(label = FIELDDEF_GENERAL_SETTINGS, position = 0)
     @Valid
     protected BPMNGeneralSet general;
 
@@ -61,13 +61,13 @@ public abstract class BaseGateway implements BPMNDefinition {
 
     @Labels
     protected final Set<String> labels = new HashSet<String>() {{
-        add( "all" );
-        add( "sequence_start" );
-        add( "sequence_end" );
-        add( "choreography_sequence_start" );
-        add( "choreography_sequence_end" );
-        add( "fromtoall" );
-        add( "GatewaysMorph" );
+        add("all");
+        add("sequence_start");
+        add("sequence_end");
+        add("choreography_sequence_start");
+        add("choreography_sequence_end");
+        add("fromtoall");
+        add("GatewaysMorph");
     }};
 
     @NonPortable
@@ -83,10 +83,10 @@ public abstract class BaseGateway implements BPMNDefinition {
     public BaseGateway() {
     }
 
-    public BaseGateway( @MapsTo( "general" ) BPMNGeneralSet general,
-                        @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                        @MapsTo( "fontSet" ) FontSet fontSet,
-                        @MapsTo( "dimensionsSet" ) CircleDimensionSet dimensionsSet ) {
+    public BaseGateway(final @MapsTo("general") BPMNGeneralSet general,
+                       final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                       final @MapsTo("fontSet") FontSet fontSet,
+                       final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
         this.general = general;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
@@ -113,15 +113,15 @@ public abstract class BaseGateway implements BPMNDefinition {
         return fontSet;
     }
 
-    public void setGeneral( BPMNGeneralSet general ) {
+    public void setGeneral(final BPMNGeneralSet general) {
         this.general = general;
     }
 
-    public void setBackgroundSet( BackgroundSet backgroundSet ) {
+    public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
-    public void setFontSet( FontSet fontSet ) {
+    public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
     }
 
@@ -129,7 +129,7 @@ public abstract class BaseGateway implements BPMNDefinition {
         return dimensionsSet;
     }
 
-    public void setDimensionsSet( CircleDimensionSet dimensionsSet ) {
+    public void setDimensionsSet(final CircleDimensionSet dimensionsSet) {
         this.dimensionsSet = dimensionsSet;
     }
 }

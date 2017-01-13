@@ -89,91 +89,91 @@ public abstract class AbstractGraphCommandTest {
     @Mock
     protected DefinitionSet graphContent;
 
-    @SuppressWarnings( "unchecked" )
-    public void init( final double width,
-                      final double height ) {
-        MockitoAnnotations.initMocks( this );
-        Bounds bounds = mockBounds( 0,
-                                    0,
-                                    width,
-                                    height );
-        when( graphContent.getBounds() ).thenReturn( bounds );
-        when( graph.getUUID() ).thenReturn( GRAPH_UUID );
-        when( graph.getContent() ).thenReturn( graphContent );
-        when( graph.nodes() ).thenReturn( graphNodes );
-        when( definitionManager.adapters() ).thenReturn( adapterManager );
-        when( adapterManager.registry() ).thenReturn( adapterRegistry );
-        when( adapterManager.forDefinition() ).thenReturn( definitionAdapter );
-        when( adapterManager.forProperty() ).thenReturn( propertyAdapter );
-        when( adapterRegistry.getDefinitionAdapter( any( Class.class ) ) ).thenReturn( definitionAdapter );
-        when( adapterRegistry.getPropertyAdapter( any( Class.class ) ) ).thenReturn( propertyAdapter );
-        when( graphCommandExecutionContext.getDefinitionManager() ).thenReturn( definitionManager );
-        when( graphCommandExecutionContext.getFactoryManager() ).thenReturn( factoryManager );
-        when( graphCommandExecutionContext.getRulesManager() ).thenReturn( graphRulesManager );
-        when( graphCommandExecutionContext.getGraphIndex() ).thenReturn( graphIndex );
-        when( graphIndex.getGraph() ).thenReturn( graph );
-        when( graphRulesManager.containment() ).thenReturn( containmentRuleManager );
-        when( graphRulesManager.connection() ).thenReturn( connectionRuleManager );
-        when( graphRulesManager.cardinality() ).thenReturn( cardinalityRuleManager );
-        when( graphRulesManager.edgeCardinality() ).thenReturn( edgeCardinalityRuleManager );
-        when( graphRulesManager.docking() ).thenReturn( dockingRuleManager );
-        when( containmentRuleManager.evaluate( any( Element.class ),
-                                               any( Element.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
-        when( connectionRuleManager.evaluate( any( Edge.class ),
-                                              any( Node.class ),
-                                              any( Node.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
-        when( cardinalityRuleManager.evaluate( any( Graph.class ),
-                                               any( Node.class ),
-                                               any( RuleManager.Operation.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
-        when( edgeCardinalityRuleManager.evaluate( any( Edge.class ),
-                                                   any( Node.class ),
-                                                   any( List.class ),
-                                                   any( EdgeCardinalityRule.Type.class ),
-                                                   any( RuleManager.Operation.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
-        when( dockingRuleManager.evaluate( any( Element.class ),
-                                           any( Element.class ) ) ).thenReturn( EMPTY_VIOLATIONS );
+    @SuppressWarnings("unchecked")
+    public void init(final double width,
+                     final double height) {
+        MockitoAnnotations.initMocks(this);
+        Bounds bounds = mockBounds(0,
+                                   0,
+                                   width,
+                                   height);
+        when(graphContent.getBounds()).thenReturn(bounds);
+        when(graph.getUUID()).thenReturn(GRAPH_UUID);
+        when(graph.getContent()).thenReturn(graphContent);
+        when(graph.nodes()).thenReturn(graphNodes);
+        when(definitionManager.adapters()).thenReturn(adapterManager);
+        when(adapterManager.registry()).thenReturn(adapterRegistry);
+        when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
+        when(adapterManager.forProperty()).thenReturn(propertyAdapter);
+        when(adapterRegistry.getDefinitionAdapter(any(Class.class))).thenReturn(definitionAdapter);
+        when(adapterRegistry.getPropertyAdapter(any(Class.class))).thenReturn(propertyAdapter);
+        when(graphCommandExecutionContext.getDefinitionManager()).thenReturn(definitionManager);
+        when(graphCommandExecutionContext.getFactoryManager()).thenReturn(factoryManager);
+        when(graphCommandExecutionContext.getRulesManager()).thenReturn(graphRulesManager);
+        when(graphCommandExecutionContext.getGraphIndex()).thenReturn(graphIndex);
+        when(graphIndex.getGraph()).thenReturn(graph);
+        when(graphRulesManager.containment()).thenReturn(containmentRuleManager);
+        when(graphRulesManager.connection()).thenReturn(connectionRuleManager);
+        when(graphRulesManager.cardinality()).thenReturn(cardinalityRuleManager);
+        when(graphRulesManager.edgeCardinality()).thenReturn(edgeCardinalityRuleManager);
+        when(graphRulesManager.docking()).thenReturn(dockingRuleManager);
+        when(containmentRuleManager.evaluate(any(Element.class),
+                                             any(Element.class))).thenReturn(EMPTY_VIOLATIONS);
+        when(connectionRuleManager.evaluate(any(Edge.class),
+                                            any(Node.class),
+                                            any(Node.class))).thenReturn(EMPTY_VIOLATIONS);
+        when(cardinalityRuleManager.evaluate(any(Graph.class),
+                                             any(Node.class),
+                                             any(RuleManager.Operation.class))).thenReturn(EMPTY_VIOLATIONS);
+        when(edgeCardinalityRuleManager.evaluate(any(Edge.class),
+                                                 any(Node.class),
+                                                 any(List.class),
+                                                 any(EdgeCardinalityRule.Type.class),
+                                                 any(RuleManager.Operation.class))).thenReturn(EMPTY_VIOLATIONS);
+        when(dockingRuleManager.evaluate(any(Element.class),
+                                         any(Element.class))).thenReturn(EMPTY_VIOLATIONS);
     }
 
-    public static Node mockNode( String uuid ) {
-        Node node = mock( Node.class );
-        when( node.getUUID() ).thenReturn( uuid );
-        when( node.getInEdges() ).thenReturn( new LinkedList() );
-        when( node.getOutEdges() ).thenReturn( new LinkedList() );
+    public static Node mockNode(String uuid) {
+        Node node = mock(Node.class);
+        when(node.getUUID()).thenReturn(uuid);
+        when(node.getInEdges()).thenReturn(new LinkedList());
+        when(node.getOutEdges()).thenReturn(new LinkedList());
         return node;
     }
 
-    public static Edge mockEdge( String uuid ) {
-        Edge edge = mock( Edge.class );
-        when( edge.getUUID() ).thenReturn( uuid );
+    public static Edge mockEdge(String uuid) {
+        Edge edge = mock(Edge.class);
+        when(edge.getUUID()).thenReturn(uuid);
         return edge;
     }
 
-    public static View mockView( final double x,
-                                 final double y,
-                                 final double w,
-                                 final double h ) {
-        View view = mock( View.class );
-        Bounds bounds = mockBounds( x,
-                                    y,
-                                    w,
-                                    h );
-        when( view.getBounds() ).thenReturn( bounds );
+    public static View mockView(final double x,
+                                final double y,
+                                final double w,
+                                final double h) {
+        View view = mock(View.class);
+        Bounds bounds = mockBounds(x,
+                                   y,
+                                   w,
+                                   h);
+        when(view.getBounds()).thenReturn(bounds);
         return view;
     }
 
-    public static Bounds mockBounds( final double x,
-                                     final double y,
-                                     final double w,
-                                     final double h ) {
-        Bounds bounds = mock( Bounds.class );
-        Bounds.Bound boundUL = mock( Bounds.Bound.class );
-        Bounds.Bound boundLR = mock( Bounds.Bound.class );
-        when( boundUL.getX() ).thenReturn( x );
-        when( boundUL.getY() ).thenReturn( y );
-        when( boundLR.getX() ).thenReturn( x + w );
-        when( boundLR.getY() ).thenReturn( y + h );
-        when( bounds.getLowerRight() ).thenReturn( boundLR );
-        when( bounds.getUpperLeft() ).thenReturn( boundUL );
+    public static Bounds mockBounds(final double x,
+                                    final double y,
+                                    final double w,
+                                    final double h) {
+        Bounds bounds = mock(Bounds.class);
+        Bounds.Bound boundUL = mock(Bounds.Bound.class);
+        Bounds.Bound boundLR = mock(Bounds.Bound.class);
+        when(boundUL.getX()).thenReturn(x);
+        when(boundUL.getY()).thenReturn(y);
+        when(boundLR.getX()).thenReturn(x + w);
+        when(boundLR.getY()).thenReturn(y + h);
+        when(bounds.getLowerRight()).thenReturn(boundLR);
+        when(bounds.getUpperLeft()).thenReturn(boundUL);
         return bounds;
     }
 }

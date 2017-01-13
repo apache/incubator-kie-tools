@@ -46,7 +46,7 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
         implements DefinitionAdapter<T>,
                    HasInheritance {
 
-    private static final Logger LOG = LoggerFactory.getLogger( RuntimeDefinitionAdapter.class );
+    private static final Logger LOG = LoggerFactory.getLogger(RuntimeDefinitionAdapter.class);
 
     private static final Class[] DEF_ANNOTATIONS = new Class[]{
             Title.class,
@@ -59,158 +59,158 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     DefinitionUtils definitionUtils;
 
     @Inject
-    public RuntimeDefinitionAdapter( final DefinitionUtils definitionUtils ) {
+    public RuntimeDefinitionAdapter(final DefinitionUtils definitionUtils) {
         this.definitionUtils = definitionUtils;
     }
 
     @Override
-    public boolean accepts( Class<?> pojo ) {
-        return pojo.getAnnotation( Definition.class ) != null;
+    public boolean accepts(Class<?> pojo) {
+        return pojo.getAnnotation(Definition.class) != null;
     }
 
     @Override
-    public String getId( T definition ) {
-        return getDefinitionId( definition.getClass() );
+    public String getId(T definition) {
+        return getDefinitionId(definition.getClass());
     }
 
     @Override
-    public Object getMetaProperty( final PropertyMetaTypes metaType,
-                                   final T pojo ) {
-        Set<?> properties = getProperties( pojo );
-        if ( null != properties ) {
+    public Object getMetaProperty(final PropertyMetaTypes metaType,
+                                  final T pojo) {
+        Set<?> properties = getProperties(pojo);
+        if (null != properties) {
             return properties
                     .stream()
-                    .filter( property -> {
-                        Property p = getClassAnnotation( property.getClass(),
-                                                         Property.class );
-                        return null != p && metaType.equals( p.meta() );
-                    } )
+                    .filter(property -> {
+                        Property p = getClassAnnotation(property.getClass(),
+                                                        Property.class);
+                        return null != p && metaType.equals(p.meta());
+                    })
                     .findFirst()
-                    .orElse( null );
+                    .orElse(null);
         }
         return null;
     }
 
     @Override
-    public String getCategory( final T definition ) {
+    public String getCategory(final T definition) {
         try {
-            return getAnnotatedFieldValue( definition,
-                                           Category.class );
-        } catch ( Exception e ) {
-            LOG.error( "Error obtaining annotated category for Definition with id " + getId( definition ) );
+            return getAnnotatedFieldValue(definition,
+                                          Category.class);
+        } catch (Exception e) {
+            LOG.error("Error obtaining annotated category for Definition with id " + getId(definition));
         }
         return null;
     }
 
     @Override
-    public String getTitle( final T definition ) {
+    public String getTitle(final T definition) {
         try {
-            return getAnnotatedFieldValue( definition,
-                                           Title.class );
-        } catch ( Exception e ) {
-            LOG.error( "Error obtaining annotated title for Definition with id " + getId( definition ) );
+            return getAnnotatedFieldValue(definition,
+                                          Title.class);
+        } catch (Exception e) {
+            LOG.error("Error obtaining annotated title for Definition with id " + getId(definition));
         }
         return null;
     }
 
     @Override
-    public String getDescription( final T definition ) {
+    public String getDescription(final T definition) {
         try {
-            return getAnnotatedFieldValue( definition,
-                                           Description.class );
-        } catch ( Exception e ) {
-            LOG.error( "Error obtaining annotated description for Definition with id " + getId( definition ) );
+            return getAnnotatedFieldValue(definition,
+                                          Description.class);
+        } catch (Exception e) {
+            LOG.error("Error obtaining annotated description for Definition with id " + getId(definition));
         }
         return null;
     }
 
     @Override
-    public Set<String> getLabels( final T definition ) {
+    public Set<String> getLabels(final T definition) {
         try {
-            return getAnnotatedFieldValue( definition,
-                                           Labels.class );
-        } catch ( Exception e ) {
-            LOG.error( "Error obtaining annotated labels for Definition with id " + getId( definition ) );
+            return getAnnotatedFieldValue(definition,
+                                          Labels.class);
+        } catch (Exception e) {
+            LOG.error("Error obtaining annotated labels for Definition with id " + getId(definition));
         }
         return null;
     }
 
     @Override
-    public Set<?> getPropertySets( final T definition ) {
-        Collection<Field> fields = getFieldAnnotations( definition.getClass(),
-                                                        PropertySet.class );
-        if ( null != fields ) {
+    public Set<?> getPropertySets(final T definition) {
+        Collection<Field> fields = getFieldAnnotations(definition.getClass(),
+                                                       PropertySet.class);
+        if (null != fields) {
             Set<Object> result = new LinkedHashSet<>();
-            fields.forEach( field -> {
+            fields.forEach(field -> {
                 try {
-                    Object v = _getValue( field,
-                                          PropertySet.class,
-                                          definition );
-                    result.add( v );
-                } catch ( Exception e ) {
-                    LOG.error( "Error obtaining annotated property sets for Definition with id " + getId( definition ) );
+                    Object v = _getValue(field,
+                                         PropertySet.class,
+                                         definition);
+                    result.add(v);
+                } catch (Exception e) {
+                    LOG.error("Error obtaining annotated property sets for Definition with id " + getId(definition));
                 }
-            } );
+            });
             return result;
         }
         return null;
     }
 
     @Override
-    public Set<?> getProperties( final T definition ) {
-        if ( null != definition ) {
+    public Set<?> getProperties(final T definition) {
+        if (null != definition) {
             final Set<Object> result = new HashSet<>();
             // Obtain all properties from property sets.
-            Set<?> propertySetProperties = definitionUtils.getPropertiesFromPropertySets( definition );
-            if ( null != propertySetProperties ) {
-                result.addAll( propertySetProperties );
+            Set<?> propertySetProperties = definitionUtils.getPropertiesFromPropertySets(definition);
+            if (null != propertySetProperties) {
+                result.addAll(propertySetProperties);
             }
-            Collection<Field> fields = getFieldAnnotations( definition.getClass(),
-                                                            Property.class );
-            if ( null != fields ) {
-                fields.forEach( field -> {
+            Collection<Field> fields = getFieldAnnotations(definition.getClass(),
+                                                           Property.class);
+            if (null != fields) {
+                fields.forEach(field -> {
                     try {
-                        Object v = _getValue( field,
-                                              Property.class,
-                                              definition );
-                        result.add( v );
-                    } catch ( Exception e ) {
-                        LOG.error( "Error obtaining annotated properties for Definition with id " + getId( definition ) );
+                        Object v = _getValue(field,
+                                             Property.class,
+                                             definition);
+                        result.add(v);
+                    } catch (Exception e) {
+                        LOG.error("Error obtaining annotated properties for Definition with id " + getId(definition));
                     }
-                } );
+                });
                 return result;
             }
         }
         return null;
     }
 
-    @SuppressWarnings( "unchecked" )
-    private <V> V _getValue( final Field field,
-                             final Object annotation,
-                             final T definition ) throws IllegalAccessException {
-        if ( null != annotation ) {
-            field.setAccessible( true );
-            return ( V ) field.get( definition );
+    @SuppressWarnings("unchecked")
+    private <V> V _getValue(final Field field,
+                            final Object annotation,
+                            final T definition) throws IllegalAccessException {
+        if (null != annotation) {
+            field.setAccessible(true);
+            return (V) field.get(definition);
         }
         return null;
     }
 
     @Override
-    public Class<? extends ElementFactory> getGraphFactoryType( final T definition ) {
-        Definition annotation = getDefinitionAnnotation( definition.getClass() );
+    public Class<? extends ElementFactory> getGraphFactoryType(final T definition) {
+        Definition annotation = getDefinitionAnnotation(definition.getClass());
         return null != annotation ? annotation.graphFactory() : null;
     }
 
-    public static Class<? extends ElementFactory> getGraphFactory( final Class<?> type ) {
-        Definition annotation = getDefinitionAnnotation( type );
+    public static Class<? extends ElementFactory> getGraphFactory(final Class<?> type) {
+        Definition annotation = getDefinitionAnnotation(type);
         return null != annotation ? annotation.graphFactory() : null;
     }
 
-    protected static Definition getDefinitionAnnotation( final Class<?> type ) {
-        if ( null != type ) {
-            Definition annotation = getClassAnnotation( type,
-                                                        Definition.class );
-            if ( null != annotation ) {
+    protected static Definition getDefinitionAnnotation(final Class<?> type) {
+        if (null != type) {
+            Definition annotation = getClassAnnotation(type,
+                                                       Definition.class);
+            if (null != annotation) {
                 return annotation;
             }
         }
@@ -218,14 +218,14 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public String getBaseType( final Class<?> type ) {
-        if ( null != type ) {
-            Definition annotation = getClassAnnotation( type,
-                                                        Definition.class );
-            if ( null != annotation ) {
+    public String getBaseType(final Class<?> type) {
+        if (null != type) {
+            Definition annotation = getClassAnnotation(type,
+                                                       Definition.class);
+            if (null != annotation) {
                 Class<?> parentType = type.getSuperclass();
-                if ( isBaseType( parentType ) ) {
-                    return getDefinitionId( parentType );
+                if (isBaseType(parentType)) {
+                    return getDefinitionId(parentType);
                 }
             }
         }
@@ -233,17 +233,17 @@ public class RuntimeDefinitionAdapter<T> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public String[] getTypes( final String baseType ) {
-        throw new UnsupportedOperationException( "Not implemented yet. Must keep some collection for this. " );
+    public String[] getTypes(final String baseType) {
+        throw new UnsupportedOperationException("Not implemented yet. Must keep some collection for this. ");
     }
 
-    private boolean isBaseType( final Class<?> type ) {
+    private boolean isBaseType(final Class<?> type) {
         Field[] fields = type.getDeclaredFields();
-        if ( null != fields ) {
-            for ( Field field : fields ) {
-                for ( Class a : DEF_ANNOTATIONS ) {
-                    Annotation annotation = field.getAnnotation( a );
-                    if ( null != annotation ) {
+        if (null != fields) {
+            for (Field field : fields) {
+                for (Class a : DEF_ANNOTATIONS) {
+                    Annotation annotation = field.getAnnotation(a);
+                    if (null != annotation) {
                         return true;
                     }
                 }

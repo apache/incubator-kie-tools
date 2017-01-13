@@ -26,12 +26,12 @@ import org.kie.workbench.common.stunner.core.client.util.StunnerClientLogger;
 public class SwitchLogLevelDevCommand extends AbstractMenuDevCommand {
 
     protected SwitchLogLevelDevCommand() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public SwitchLogLevelDevCommand( final AbstractClientSessionManager sessionManager ) {
-        super( sessionManager );
+    public SwitchLogLevelDevCommand(final AbstractClientSessionManager sessionManager) {
+        super(sessionManager);
     }
 
     @Override

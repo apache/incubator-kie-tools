@@ -21,13 +21,13 @@ public interface SessionScreenView {
 
     void showEmptySession();
 
-    void showScreenView( IsWidget view );
+    void showScreenView(final IsWidget view);
 
-    void setScreenViewBgColor( String color );
+    void setScreenViewBgColor(final String color);
 
-    void setMarginTop( int px );
+    void setMarginTop(final int px);
 
-    void setPaddingTop( int px );
+    void setPaddingTop(final int px);
 
     IsWidget getView();
 }

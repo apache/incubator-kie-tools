@@ -30,26 +30,26 @@ public class VariablesEditorFieldDefinition extends FieldDefinition {
 
     public static final String CODE = "VariablesEditor";
 
-    @FieldDef( label = FIELDDEF_DEFAULT_VALUE )
+    @FieldDef(label = FIELDDEF_DEFAULT_VALUE)
     @VariablesEditor
     private String defaultValue;
 
     public VariablesEditorFieldDefinition() {
-        super( CODE );
+        super(CODE);
     }
 
     public String getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue( String defaultValue ) {
+    public void setDefaultValue(final String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
     @Override
-    protected void doCopyFrom( FieldDefinition other ) {
-        if ( other instanceof VariablesEditorFieldDefinition ) {
-            this.setDefaultValue( ( ( VariablesEditorFieldDefinition ) other ).getDefaultValue() );
+    protected void doCopyFrom(final FieldDefinition other) {
+        if (other instanceof VariablesEditorFieldDefinition) {
+            this.setDefaultValue(((VariablesEditorFieldDefinition) other).getDefaultValue());
         }
     }
 }

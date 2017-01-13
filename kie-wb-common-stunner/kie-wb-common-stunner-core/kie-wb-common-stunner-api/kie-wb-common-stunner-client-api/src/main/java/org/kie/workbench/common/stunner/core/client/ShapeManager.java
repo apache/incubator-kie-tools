@@ -30,15 +30,15 @@ public interface ShapeManager {
     /**
      * Returns the Shape Set instance by its identifier.
      */
-    ShapeSet<?> getShapeSet( final String shapeSetId );
+    ShapeSet<?> getShapeSet(final String shapeSetId);
 
     /**
      * Returns the default Shape Set instance for the given Definition Set identifier.
      */
-    ShapeSet<?> getDefaultShapeSet( final String definitionSetId );
+    ShapeSet<?> getDefaultShapeSet(final String definitionSetId);
 
     /**
      * Returns the uri for the default icon for the given Definition Set.
      */
-    SafeUri getThumbnail( final String definitionSetId );
+    SafeUri getThumbnail(final String definitionSetId);
 }

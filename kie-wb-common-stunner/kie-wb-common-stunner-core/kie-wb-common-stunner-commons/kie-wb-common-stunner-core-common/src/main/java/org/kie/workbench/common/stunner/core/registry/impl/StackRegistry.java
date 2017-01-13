@@ -25,8 +25,8 @@ class StackRegistry<T> implements DynamicRegistry<T> {
     private final KeyProvider<T> keyProvider;
     private final Stack<T> items;
 
-    public StackRegistry( final KeyProvider<T> keyProvider,
-                          final Stack<T> items ) {
+    public StackRegistry(final KeyProvider<T> keyProvider,
+                         final Stack<T> items) {
         this.keyProvider = keyProvider;
         this.items = items;
     }
@@ -40,17 +40,17 @@ class StackRegistry<T> implements DynamicRegistry<T> {
     }
 
     @Override
-    public void register( final T item ) {
-        items.add( item );
+    public void register(final T item) {
+        items.add(item);
     }
 
-    public boolean remove( final T item ) {
-        return items.remove( item );
+    public boolean remove(final T item) {
+        return items.remove(item);
     }
 
     @Override
-    public boolean contains( final T item ) {
-        return items.contains( item );
+    public boolean contains(final T item) {
+        return items.contains(item);
     }
 
     @Override
@@ -58,11 +58,11 @@ class StackRegistry<T> implements DynamicRegistry<T> {
         return items.isEmpty();
     }
 
-    public T getItemByKey( final String id ) {
-        if ( null != id ) {
-            for ( final T item : items ) {
-                final String itemId = getItemKey( item );
-                if ( id.equals( itemId ) ) {
+    public T getItemByKey(final String id) {
+        if (null != id) {
+            for (final T item : items) {
+                final String itemId = getItemKey(item);
+                if (id.equals(itemId)) {
                     return item;
                 }
             }
@@ -70,12 +70,12 @@ class StackRegistry<T> implements DynamicRegistry<T> {
         return null;
     }
 
-    public int indexOf( final T item ) {
-        return items.indexOf( item );
+    public int indexOf(final T item) {
+        return items.indexOf(item);
     }
 
-    private String getItemKey( final T item ) {
-        return keyProvider.getKey( item );
+    private String getItemKey(final T item) {
+        return keyProvider.getKey(item);
     }
 
     Stack<T> getStack() {

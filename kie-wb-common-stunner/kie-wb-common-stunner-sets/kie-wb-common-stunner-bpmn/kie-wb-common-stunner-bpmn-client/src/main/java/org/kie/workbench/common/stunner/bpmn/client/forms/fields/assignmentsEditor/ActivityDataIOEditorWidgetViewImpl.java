@@ -40,7 +40,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Assignmen
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
-@Templated( "ActivityDataIOEditorWidget.html#widget" )
+@Templated("ActivityDataIOEditorWidget.html#widget")
 public class ActivityDataIOEditorWidgetViewImpl extends Composite implements ActivityDataIOEditorWidgetView {
 
     private Presenter presenter;
@@ -53,7 +53,7 @@ public class ActivityDataIOEditorWidgetViewImpl extends Composite implements Act
     private final TableElement table = Document.get().createTableElement();
 
     @DataField
-    private HeadingElement tabletitle = Document.get().createHElement( 3 );
+    private HeadingElement tabletitle = Document.get().createHElement(3);
 
     @DataField
     protected TableCellElement nameth = Document.get().createTHElement();
@@ -69,25 +69,25 @@ public class ActivityDataIOEditorWidgetViewImpl extends Composite implements Act
      */
     @Inject
     @DataField
-    @Table( root = "tbody" )
+    @Table(root = "tbody")
     protected ListWidget<AssignmentRow, AssignmentListItemWidgetViewImpl> assignments;
 
     @Inject
     protected Event<NotificationEvent> notification;
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init(final Presenter presenter) {
         this.presenter = presenter;
-        addVarButton.setText( StunnerFormsClientFieldsConstants.INSTANCE.Add() );
-        addVarButton.setIcon( IconType.PLUS );
-        nameth.setInnerText( StunnerFormsClientFieldsConstants.INSTANCE.Name() );
-        datatypeth.setInnerText( StunnerFormsClientFieldsConstants.INSTANCE.Data_Type() );
+        addVarButton.setText(StunnerFormsClientFieldsConstants.INSTANCE.Add());
+        addVarButton.setIcon(IconType.PLUS);
+        nameth.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Name());
+        datatypeth.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Data_Type());
     }
 
     @Override
     public void showOnlySingleEntryAllowed() {
-        notification.fire( new NotificationEvent( StunnerFormsClientFieldsConstants.INSTANCE.Only_single_entry_allowed(),
-                                                  NotificationEvent.NotificationType.ERROR ) );
+        notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.INSTANCE.Only_single_entry_allowed(),
+                                                NotificationEvent.NotificationType.ERROR));
     }
 
     @Override
@@ -97,47 +97,47 @@ public class ActivityDataIOEditorWidgetViewImpl extends Composite implements Act
 
     @Override
     public void setTableTitleInputSingle() {
-        tabletitle.setInnerText( StunnerFormsClientFieldsConstants.INSTANCE.Data_Input_and_Assignment() );
+        tabletitle.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Data_Input_and_Assignment());
     }
 
     @Override
     public void setTableTitleInputMultiple() {
-        tabletitle.setInnerText( StunnerFormsClientFieldsConstants.INSTANCE.Data_Inputs_and_Assignments() );
+        tabletitle.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Data_Inputs_and_Assignments());
     }
 
     @Override
     public void setTableTitleOutputSingle() {
-        tabletitle.setInnerText( StunnerFormsClientFieldsConstants.INSTANCE.Data_Output_and_Assignment() );
+        tabletitle.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Data_Output_and_Assignment());
     }
 
     @Override
     public void setTableTitleOutputMultiple() {
-        tabletitle.setInnerText( StunnerFormsClientFieldsConstants.INSTANCE.Data_Outputs_and_Assignments() );
+        tabletitle.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Data_Outputs_and_Assignments());
     }
 
     @Override
     public void setProcessVarAsSource() {
-        processvarorconstantth.setInnerText( StunnerFormsClientFieldsConstants.INSTANCE.Source() );
+        processvarorconstantth.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Source());
     }
 
     @Override
     public void setProcessVarAsTarget() {
-        processvarorconstantth.setInnerText( StunnerFormsClientFieldsConstants.INSTANCE.Target() );
+        processvarorconstantth.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Target());
     }
 
     @Override
     public void setTableDisplayStyle() {
-        table.getStyle().setDisplay( Style.Display.TABLE );
+        table.getStyle().setDisplay(Style.Display.TABLE);
     }
 
     @Override
     public void setNoneDisplayStyle() {
-        table.getStyle().setDisplay( Style.Display.NONE );
+        table.getStyle().setDisplay(Style.Display.NONE);
     }
 
     @Override
-    public void setAssignmentRows( List<AssignmentRow> rows ) {
-        assignments.setValue( rows );
+    public void setAssignmentRows(final List<AssignmentRow> rows) {
+        assignments.setValue(rows);
     }
 
     @Override
@@ -146,12 +146,12 @@ public class ActivityDataIOEditorWidgetViewImpl extends Composite implements Act
     }
 
     @Override
-    public AssignmentListItemWidgetView getAssignmentWidget( int index ) {
-        return assignments.getComponent( index );
+    public AssignmentListItemWidgetView getAssignmentWidget(final int index) {
+        return assignments.getComponent(index);
     }
 
-    @EventHandler( "addVarButton" )
-    public void handleAddVarButton( ClickEvent e ) {
+    @EventHandler("addVarButton")
+    public void handleAddVarButton(final ClickEvent e) {
         presenter.handleAddClick();
     }
 }

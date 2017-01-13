@@ -27,7 +27,7 @@ public abstract class AbstractToolboxControlProvider implements ToolboxControlPr
 
     protected ToolboxFactory toolboxFactory;
 
-    public AbstractToolboxControlProvider( final ToolboxFactory toolboxFactory ) {
+    public AbstractToolboxControlProvider(final ToolboxFactory toolboxFactory) {
         this.toolboxFactory = toolboxFactory;
     }
 }

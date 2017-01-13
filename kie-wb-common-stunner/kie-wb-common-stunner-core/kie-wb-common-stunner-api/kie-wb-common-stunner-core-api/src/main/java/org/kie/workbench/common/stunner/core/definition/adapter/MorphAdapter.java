@@ -27,23 +27,23 @@ public interface MorphAdapter<S> extends Adapter {
     /**
      * Returns the morphing definitions for the given Definition instance, if any.
      */
-    <T> Iterable<MorphDefinition> getMorphDefinitions( final T definition );
+    <T> Iterable<MorphDefinition> getMorphDefinitions(final T definition);
 
     /**
      * Returns the morphing properties for the given Definition instance, if any.
      */
-    <T> Iterable<MorphProperty> getMorphProperties( final T definition );
+    <T> Iterable<MorphProperty> getMorphProperties(final T definition);
 
     /**
      * Returns the morphing targets for the given Morphing Definition.
      */
-    <T> Iterable<String> getTargets( final T definition,
-                                     final MorphDefinition morphDefinition );
+    <T> Iterable<String> getTargets(final T definition,
+                                    final MorphDefinition morphDefinition);
 
     /**
      * Performs the morph operation for a given morph definition and a given target.
      */
-    <T> T morph( final S source,
-                 final MorphDefinition definition,
-                 final String target );
+    <T> T morph(final S source,
+                final MorphDefinition definition,
+                final String target);
 }

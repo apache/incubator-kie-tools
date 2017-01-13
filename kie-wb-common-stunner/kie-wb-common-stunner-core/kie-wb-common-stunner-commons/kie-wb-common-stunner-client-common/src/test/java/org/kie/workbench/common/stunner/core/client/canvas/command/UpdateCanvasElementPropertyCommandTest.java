@@ -30,7 +30,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class UpdateCanvasElementPropertyCommandTest extends AbstractCanvasCommandTest {
 
     @Mock
@@ -41,17 +41,17 @@ public class UpdateCanvasElementPropertyCommandTest extends AbstractCanvasComman
     @Before
     public void setup() throws Exception {
         super.setup();
-        this.tested = new UpdateCanvasElementPropertyCommand( candidate );
+        this.tested = new UpdateCanvasElementPropertyCommand(candidate);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecute() {
-        final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR,
-                         result.getType() );
-        verify( canvasHandler,
-                times( 1 ) ).updateElementProperties( eq( candidate ),
-                                                      any( MutationContext.class ) );
+        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertNotEquals(CommandResult.Type.ERROR,
+                        result.getType());
+        verify(canvasHandler,
+               times(1)).updateElementProperties(eq(candidate),
+                                                 any(MutationContext.class));
     }
 }

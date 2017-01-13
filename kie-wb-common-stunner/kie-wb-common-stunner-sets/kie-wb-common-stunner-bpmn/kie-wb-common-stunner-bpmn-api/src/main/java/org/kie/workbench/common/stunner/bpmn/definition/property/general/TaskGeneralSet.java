@@ -38,23 +38,23 @@ public class TaskGeneralSet implements BPMNPropertySet {
     public static final transient String propertySetName = "General";
 
     @Property
-    @FieldDef( label = FIELDDEF_NAME, property = "value", position = 0 )
+    @FieldDef(label = FIELDDEF_NAME, property = "value", position = 0)
     @Valid
     private Name name;
 
     @Property
-    @FieldDef( label = FIELDDEF_DOCUMENTATION, property = "value", position = 1 )
-    @TextArea( rows = 3 )
+    @FieldDef(label = FIELDDEF_DOCUMENTATION, property = "value", position = 1)
+    @TextArea(rows = 3)
     @Valid
     private Documentation documentation;
 
     public TaskGeneralSet() {
-        this( new Name( "" ),
-              new Documentation() );
+        this(new Name(""),
+             new Documentation());
     }
 
-    public TaskGeneralSet( @MapsTo( "name" ) Name name,
-                           @MapsTo( "documentation" ) Documentation documentation ) {
+    public TaskGeneralSet(final @MapsTo("name") Name name,
+                          final @MapsTo("documentation") Documentation documentation) {
         this.name = name;
         this.documentation = documentation;
     }
@@ -67,7 +67,7 @@ public class TaskGeneralSet implements BPMNPropertySet {
         return name;
     }
 
-    public void setName( Name name ) {
+    public void setName(final Name name) {
         this.name = name;
     }
 
@@ -75,7 +75,7 @@ public class TaskGeneralSet implements BPMNPropertySet {
         return documentation;
     }
 
-    public void setDocumentation( Documentation documentation ) {
+    public void setDocumentation(final Documentation documentation) {
         this.documentation = documentation;
     }
 }

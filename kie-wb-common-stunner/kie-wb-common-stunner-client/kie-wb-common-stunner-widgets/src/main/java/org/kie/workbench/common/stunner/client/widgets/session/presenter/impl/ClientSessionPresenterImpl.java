@@ -45,18 +45,18 @@ public class ClientSessionPresenterImpl
         extends AbstractClientSessionPresenter<AbstractClientSession, ClientSessionPresenter.View> {
 
     protected ClientSessionPresenterImpl() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public ClientSessionPresenterImpl( final AbstractClientSessionManager canvasSessionManager,
-                                       final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent,
-                                       final ClientSessionPresenter.View view ) {
-        super( canvasSessionManager,
-               sessionDiagramOpenedEvent,
-               view );
+    public ClientSessionPresenterImpl(final AbstractClientSessionManager canvasSessionManager,
+                                      final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent,
+                                      final ClientSessionPresenter.View view) {
+        super(canvasSessionManager,
+              sessionDiagramOpenedEvent,
+              view);
     }
 
     @Override
@@ -67,48 +67,48 @@ public class ClientSessionPresenterImpl
     protected void doPauseSession() {
     }
 
-    private void onCanvasSessionDisposed( final @Observes SessionDisposedEvent sessionDisposedEvent ) {
-        checkNotNull( "sessionDisposedEvent",
-                      sessionDisposedEvent );
-        if ( null != getSession() && getSession().equals( sessionDisposedEvent.getSession() ) ) {
+    private void onCanvasSessionDisposed(final @Observes SessionDisposedEvent sessionDisposedEvent) {
+        checkNotNull("sessionDisposedEvent",
+                     sessionDisposedEvent);
+        if (null != getSession() && getSession().equals(sessionDisposedEvent.getSession())) {
             disposeSession();
         }
     }
 
-    private void onCanvasSessionPaused( final @Observes SessionPausedEvent sessionPausedEvent ) {
-        checkNotNull( "sessionPausedEvent",
-                      sessionPausedEvent );
-        if ( null != getSession() && getSession().equals( sessionPausedEvent.getSession() ) ) {
+    private void onCanvasSessionPaused(final @Observes SessionPausedEvent sessionPausedEvent) {
+        checkNotNull("sessionPausedEvent",
+                     sessionPausedEvent);
+        if (null != getSession() && getSession().equals(sessionPausedEvent.getSession())) {
             pauseSession();
         }
     }
 
-    void onGraphCommandExecuted( final @Observes CanvasCommandExecutedEvent<? extends CanvasHandler> commandExecutedEvent ) {
-        if ( accepts( commandExecutedEvent.getCanvasHandler() ) ) {
+    void onGraphCommandExecuted(final @Observes CanvasCommandExecutedEvent<? extends CanvasHandler> commandExecutedEvent) {
+        if (accepts(commandExecutedEvent.getCanvasHandler())) {
             final CommandResult<CanvasViolation> result = commandExecutedEvent.getResult();
-            if ( isDisplayErrors() && CommandUtils.isError( result ) ) {
-                getView().showError( result.toString() );
-            } else if ( isDisplayNotifications() && !CommandUtils.isError( result ) ) {
-                getView().showMessage( result.toString() );
+            if (isDisplayErrors() && CommandUtils.isError(result)) {
+                getView().showError(result.toString());
+            } else if (isDisplayNotifications() && !CommandUtils.isError(result)) {
+                getView().showMessage(result.toString());
             }
         }
     }
 
-    void onCanvasValidationSuccessEvent( final @Observes CanvasValidationSuccessEvent validationSuccessEvent ) {
-        if ( isDisplayNotifications() && accepts( validationSuccessEvent.getEntity() ) ) {
-            getView().showMessage( "Validation successful" );
+    void onCanvasValidationSuccessEvent(final @Observes CanvasValidationSuccessEvent validationSuccessEvent) {
+        if (isDisplayNotifications() && accepts(validationSuccessEvent.getEntity())) {
+            getView().showMessage("Validation successful");
         }
     }
 
-    void onCanvasValidationFailEvent( final @Observes CanvasValidationFailEvent validationFailEvent ) {
-        if ( isDisplayErrors() && accepts( validationFailEvent.getEntity() ) ) {
-            getView().showError( "Validation failed" );
+    void onCanvasValidationFailEvent(final @Observes CanvasValidationFailEvent validationFailEvent) {
+        if (isDisplayErrors() && accepts(validationFailEvent.getEntity())) {
+            getView().showError("Validation failed");
         }
     }
 
-    private boolean accepts( final CanvasHandler handler ) {
+    private boolean accepts(final CanvasHandler handler) {
         return null != getSession()
                 && null != getSession().getCanvasHandler()
-                && getSession().getCanvasHandler().equals( handler );
+                && getSession().getCanvasHandler().equals(handler);
     }
 }

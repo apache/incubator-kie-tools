@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 @ApplicationScoped
 public class ApplicationDefinitionManager extends AbstractDefinitionManager {
 
-    private static final Logger LOG = LoggerFactory.getLogger( ApplicationDefinitionManager.class );
+    private static final Logger LOG = LoggerFactory.getLogger(ApplicationDefinitionManager.class);
 
     Instance<DefinitionSetProxy<?>> definitionSetsInstances;
     Instance<DefinitionSetAdapter<?>> definitionSetAdapterInstances;
@@ -52,17 +52,17 @@ public class ApplicationDefinitionManager extends AbstractDefinitionManager {
     }
 
     @Inject
-    public ApplicationDefinitionManager( final RegistryFactory registryFactory,
-                                         final AdapterManager adapterManager,
-                                         final Instance<DefinitionSetProxy<?>> definitionSetsInstances,
-                                         final Instance<DefinitionSetAdapter<?>> definitionSetAdapterInstances,
-                                         final Instance<DefinitionSetRuleAdapter<?>> definitionSetRuleAdapterInstances,
-                                         final Instance<DefinitionAdapter<?>> definitionAdapterInstances,
-                                         final Instance<PropertySetAdapter<?>> propertySetAdapterInstances,
-                                         final Instance<PropertyAdapter<?, ?>> propertyAdapterInstances,
-                                         final Instance<MorphAdapter<?>> morphAdapterInstances ) {
-        super( registryFactory,
-               adapterManager );
+    public ApplicationDefinitionManager(final RegistryFactory registryFactory,
+                                        final AdapterManager adapterManager,
+                                        final Instance<DefinitionSetProxy<?>> definitionSetsInstances,
+                                        final Instance<DefinitionSetAdapter<?>> definitionSetAdapterInstances,
+                                        final Instance<DefinitionSetRuleAdapter<?>> definitionSetRuleAdapterInstances,
+                                        final Instance<DefinitionAdapter<?>> definitionAdapterInstances,
+                                        final Instance<PropertySetAdapter<?>> propertySetAdapterInstances,
+                                        final Instance<PropertyAdapter<?, ?>> propertyAdapterInstances,
+                                        final Instance<MorphAdapter<?>> morphAdapterInstances) {
+        super(registryFactory,
+              adapterManager);
         this.definitionSetsInstances = definitionSetsInstances;
         this.definitionSetAdapterInstances = definitionSetAdapterInstances;
         this.definitionSetRuleAdapterInstances = definitionSetRuleAdapterInstances;
@@ -81,32 +81,32 @@ public class ApplicationDefinitionManager extends AbstractDefinitionManager {
     }
 
     private void initDefSets() {
-        for ( DefinitionSetProxy definitionSet : definitionSetsInstances ) {
-            addDefinitionSet( definitionSet.getDefinitionSet() );
+        for (DefinitionSetProxy definitionSet : definitionSetsInstances) {
+            addDefinitionSet(definitionSet.getDefinitionSet());
         }
     }
 
     private void initAdapters() {
-        for ( DefinitionSetAdapter definitionSetAdapter : definitionSetAdapterInstances ) {
-            addAdapter( definitionSetAdapter );
+        for (DefinitionSetAdapter definitionSetAdapter : definitionSetAdapterInstances) {
+            addAdapter(definitionSetAdapter);
         }
-        for ( DefinitionSetRuleAdapter definitionSetRuleAdapter : definitionSetRuleAdapterInstances ) {
-            addAdapter( definitionSetRuleAdapter );
+        for (DefinitionSetRuleAdapter definitionSetRuleAdapter : definitionSetRuleAdapterInstances) {
+            addAdapter(definitionSetRuleAdapter);
         }
-        for ( DefinitionAdapter definitionAdapter : definitionAdapterInstances ) {
-            addAdapter( definitionAdapter );
+        for (DefinitionAdapter definitionAdapter : definitionAdapterInstances) {
+            addAdapter(definitionAdapter);
         }
-        for ( PropertySetAdapter propertySetAdapter : propertySetAdapterInstances ) {
-            addAdapter( propertySetAdapter );
+        for (PropertySetAdapter propertySetAdapter : propertySetAdapterInstances) {
+            addAdapter(propertySetAdapter);
         }
-        for ( PropertyAdapter propertyAdapter : propertyAdapterInstances ) {
-            addAdapter( propertyAdapter );
+        for (PropertyAdapter propertyAdapter : propertyAdapterInstances) {
+            addAdapter(propertyAdapter);
         }
     }
 
     private void initMorphAdapters() {
-        for ( MorphAdapter morphAdapter : morphAdapterInstances ) {
-            addAdapter( morphAdapter );
+        for (MorphAdapter morphAdapter : morphAdapterInstances) {
+            addAdapter(morphAdapter);
         }
     }
 }

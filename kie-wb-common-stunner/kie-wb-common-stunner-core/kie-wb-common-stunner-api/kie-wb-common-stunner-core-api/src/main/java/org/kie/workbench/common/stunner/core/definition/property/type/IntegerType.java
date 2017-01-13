@@ -29,15 +29,15 @@ public class IntegerType implements PropertyType {
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof IntegerType ) ) {
+        if (!(o instanceof IntegerType)) {
             return false;
         }
-        IntegerType that = ( IntegerType ) o;
-        if ( !name.equals( that.name ) ) {
+        IntegerType that = (IntegerType) o;
+        if (!name.equals(that.name)) {
             return false;
         }
         return true;

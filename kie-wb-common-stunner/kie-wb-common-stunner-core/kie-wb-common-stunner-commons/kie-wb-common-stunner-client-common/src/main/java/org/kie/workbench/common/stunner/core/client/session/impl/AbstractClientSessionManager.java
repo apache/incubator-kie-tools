@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 
 public abstract class AbstractClientSessionManager implements ClientSessionManager<AbstractCanvas, AbstractCanvasHandler, AbstractClientSession> {
 
-    private static Logger LOGGER = Logger.getLogger( AbstractClientSessionManager.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(AbstractClientSessionManager.class.getName());
 
     AbstractClientSession current;
 
@@ -45,89 +45,89 @@ public abstract class AbstractClientSessionManager implements ClientSessionManag
     }
 
     @Override
-    public void open( final AbstractClientSession session ) {
-        if ( null != this.current && !session.equals( this.current ) ) {
+    public void open(final AbstractClientSession session) {
+        if (null != this.current && !session.equals(this.current)) {
             this.pause();
         }
-        if ( !session.equals( this.current ) ) {
-            log( Level.FINE,
-                 "Opening session [" + session.toString() + "] ..." );
+        if (!session.equals(this.current)) {
+            log(Level.FINE,
+                "Opening session [" + session.toString() + "] ...");
             this.current = session;
             this.current.open();
             postOpen();
-            log( Level.FINE,
-                 "Session [" + current.toString() + "] opened" );
+            log(Level.FINE,
+                "Session [" + current.toString() + "] opened");
         }
     }
 
     @Override
     public void pause() {
-        if ( null != current ) {
-            log( Level.FINE,
-                 "Pausing session [" + current.toString() + "] ..." );
+        if (null != current) {
+            log(Level.FINE,
+                "Pausing session [" + current.toString() + "] ...");
             this.current.pause();
             postPause();
-            log( Level.FINE,
-                 "Session [" + current.toString() + "] paused" );
+            log(Level.FINE,
+                "Session [" + current.toString() + "] paused");
         }
     }
 
     @Override
-    public void resume( final AbstractClientSession session ) {
-        if ( null != current && !current.equals( session ) ) {
+    public void resume(final AbstractClientSession session) {
+        if (null != current && !current.equals(session)) {
             pause();
         }
-        if ( !session.equals( current ) ) {
-            log( Level.FINE,
-                 "Resuming session [" + session.toString() + "] ..." );
+        if (!session.equals(current)) {
+            log(Level.FINE,
+                "Resuming session [" + session.toString() + "] ...");
             this.current = session;
             this.current.resume();
             postResume();
-            log( Level.FINE,
-                 "Session [" + current.toString() + "] resumed" );
+            log(Level.FINE,
+                "Session [" + current.toString() + "] resumed");
         }
     }
 
     @Override
     public void dispose() {
-        if ( null != current ) {
-            log( Level.FINE,
-                 "Disposing session [" + current.toString() + "] ..." );
+        if (null != current) {
+            log(Level.FINE,
+                "Disposing session [" + current.toString() + "] ...");
             this.current.dispose();
             postDispose();
-            log( Level.FINE,
-                 "Session [" + current.toString() + "] disposed" );
+            log(Level.FINE,
+                "Session [" + current.toString() + "] disposed");
             this.current = null;
         }
     }
 
-    public void handleCommandError( final CommandException ce ) {
-        log( Level.SEVERE,
-             "Command execution failed",
-             ce );
+    public void handleCommandError(final CommandException ce) {
+        log(Level.SEVERE,
+            "Command execution failed",
+            ce);
     }
 
-    public void handleClientError( final ClientRuntimeError error ) {
-        log( Level.SEVERE,
-             "An error on client side happened",
-             error.getThrowable() );
+    public void handleClientError(final ClientRuntimeError error) {
+        log(Level.SEVERE,
+            "An error on client side happened",
+            error.getThrowable());
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 
-    private void log( final Level level,
-                      final String message,
-                      final Throwable t ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message,
-                        t );
+    private void log(final Level level,
+                     final String message,
+                     final Throwable t) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message,
+                       t);
         }
     }
 }

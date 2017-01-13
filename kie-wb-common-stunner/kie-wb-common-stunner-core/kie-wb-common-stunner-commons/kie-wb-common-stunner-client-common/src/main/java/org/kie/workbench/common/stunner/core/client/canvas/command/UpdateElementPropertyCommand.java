@@ -29,24 +29,24 @@ public final class UpdateElementPropertyCommand extends AbstractCanvasGraphComma
     private final String propertyId;
     private final Object value;
 
-    public UpdateElementPropertyCommand( final Element element,
-                                         final String propertyId,
-                                         final Object value ) {
+    public UpdateElementPropertyCommand(final Element element,
+                                        final String propertyId,
+                                        final Object value) {
         this.element = element;
         this.propertyId = propertyId;
         this.value = value;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new UpdateElementPropertyValueCommand( ( Node ) element,
-                                                      propertyId,
-                                                      value );
+    @SuppressWarnings("unchecked")
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
+        return new UpdateElementPropertyValueCommand((Node) element,
+                                                     propertyId,
+                                                     value);
     }
 
     @Override
-    protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new UpdateCanvasElementPropertyCommand( element );
+    protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
+        return new UpdateCanvasElementPropertyCommand(element);
     }
 }

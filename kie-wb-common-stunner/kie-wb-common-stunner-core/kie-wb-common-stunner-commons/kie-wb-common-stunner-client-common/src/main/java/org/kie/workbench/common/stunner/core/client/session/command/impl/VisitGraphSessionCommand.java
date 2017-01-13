@@ -27,15 +27,15 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 public class VisitGraphSessionCommand extends AbstractClientSessionCommand<AbstractClientReadOnlySession> {
 
     public VisitGraphSessionCommand() {
-        super( true );
+        super(true);
     }
 
     @Override
-    public <T> void execute( final Callback<T> callback ) {
-        checkNotNull( "callback",
-                      callback );
+    public <T> void execute(final Callback<T> callback) {
+        checkNotNull("callback",
+                     callback);
 
-        new CanvasHighlightVisitor().run( getSession().getCanvasHandler(),
-                                          () -> callback.onSuccess( null ) );
+        new CanvasHighlightVisitor().run(getSession().getCanvasHandler(),
+                                         () -> callback.onSuccess(null));
     }
 }

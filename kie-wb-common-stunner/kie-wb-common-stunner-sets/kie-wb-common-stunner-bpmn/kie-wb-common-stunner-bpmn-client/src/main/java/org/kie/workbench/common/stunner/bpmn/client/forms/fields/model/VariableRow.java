@@ -41,10 +41,10 @@ public class VariableRow {
         this.id = lastId++;
     }
 
-    public VariableRow( Variable.VariableType variableType,
-                        String name,
-                        String dataTypeDisplayName,
-                        String customDataType ) {
+    public VariableRow(final Variable.VariableType variableType,
+                       final String name,
+                       final String dataTypeDisplayName,
+                       final String customDataType) {
         this.id = lastId++;
         this.variableType = variableType;
         this.name = name;
@@ -52,13 +52,13 @@ public class VariableRow {
         this.customDataType = customDataType;
     }
 
-    public VariableRow( Variable variable,
-                        Map<String, String> mapDataTypeNamesToDisplayNames ) {
+    public VariableRow(final Variable variable,
+                       final Map<String, String> mapDataTypeNamesToDisplayNames) {
         this.id = lastId++;
         this.variableType = variable.getVariableType();
         this.name = variable.getName();
-        if ( variable.getDataType() != null && mapDataTypeNamesToDisplayNames.containsKey( variable.getDataType() ) ) {
-            this.dataTypeDisplayName = mapDataTypeNamesToDisplayNames.get( variable.getDataType() );
+        if (variable.getDataType() != null && mapDataTypeNamesToDisplayNames.containsKey(variable.getDataType())) {
+            this.dataTypeDisplayName = mapDataTypeNamesToDisplayNames.get(variable.getDataType());
         } else {
             this.dataTypeDisplayName = variable.getDataType();
         }
@@ -69,7 +69,7 @@ public class VariableRow {
         return id;
     }
 
-    public void setId( long id ) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -77,7 +77,7 @@ public class VariableRow {
         return variableType;
     }
 
-    public void setVariableType( Variable.VariableType variableType ) {
+    public void setVariableType(final Variable.VariableType variableType) {
         this.variableType = variableType;
     }
 
@@ -85,7 +85,7 @@ public class VariableRow {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -93,7 +93,7 @@ public class VariableRow {
         return dataTypeDisplayName;
     }
 
-    public void setDataTypeDisplayName( String dataTypeDisplayName ) {
+    public void setDataTypeDisplayName(final String dataTypeDisplayName) {
         this.dataTypeDisplayName = dataTypeDisplayName;
     }
 
@@ -101,28 +101,28 @@ public class VariableRow {
         return customDataType;
     }
 
-    public void setCustomDataType( String customDataType ) {
+    public void setCustomDataType(final String customDataType) {
         this.customDataType = customDataType;
     }
 
     @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj ) {
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
         }
-        if ( obj == null ) {
+        if (obj == null) {
             return false;
         }
-        if ( getClass() != obj.getClass() ) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        VariableRow other = ( VariableRow ) obj;
-        return ( id == other.id );
+        VariableRow other = (VariableRow) obj;
+        return (id == other.id);
     }
 
     @Override
     public int hashCode() {
-        return ~~( int ) ( id ^ ( id >>> 32 ) );
+        return ~~(int) (id ^ (id >>> 32));
     }
 
     @Override

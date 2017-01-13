@@ -26,62 +26,62 @@ public final class BasicConnectorDefImpl
         implements ConnectorShapeDef<BasicConnector> {
 
     @Override
-    public String getBackgroundColor( final BasicConnector element ) {
+    public String getBackgroundColor(final BasicConnector element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final BasicConnector element ) {
+    public double getBackgroundAlpha(final BasicConnector element) {
         return 1;
     }
 
     @Override
-    public String getBorderColor( final BasicConnector element ) {
+    public String getBorderColor(final BasicConnector element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final BasicConnector element ) {
+    public double getBorderSize(final BasicConnector element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final BasicConnector element ) {
+    public double getBorderAlpha(final BasicConnector element) {
         return 1;
     }
 
     @Override
-    public String getNamePropertyValue( final BasicConnector element ) {
+    public String getNamePropertyValue(final BasicConnector element) {
         return element.getName().getValue();
     }
 
     @Override
-    public String getFontFamily( final BasicConnector element ) {
+    public String getFontFamily(final BasicConnector element) {
         return null;
     }
 
     @Override
-    public String getFontColor( final BasicConnector element ) {
+    public String getFontColor(final BasicConnector element) {
         return null;
     }
 
     @Override
-    public double getFontSize( final BasicConnector element ) {
+    public double getFontSize(final BasicConnector element) {
         return 0;
     }
 
     @Override
-    public double getFontBorderSize( final BasicConnector element ) {
+    public double getFontBorderSize(final BasicConnector element) {
         return 0;
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final BasicConnector element ) {
+    public HasTitle.Position getFontPosition(final BasicConnector element) {
         return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public double getFontRotation( final BasicConnector element ) {
+    public double getFontRotation(final BasicConnector element) {
         return 0;
     }
 
@@ -98,7 +98,7 @@ public final class BasicConnectorDefImpl
         }
 
         @Override
-        public String getGlyphDescription( final BasicConnector element ) {
+        public String getGlyphDescription(final BasicConnector element) {
             return element.getTitle();
         }
     }

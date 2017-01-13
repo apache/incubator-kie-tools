@@ -18,6 +18,6 @@ package org.kie.workbench.common.stunner.core.validation;
 
 public interface Validator<E, K extends ValidatorCallback> {
 
-    void validate( final E item,
-                   final K callback );
+    void validate(final E item,
+                  final K callback);
 }

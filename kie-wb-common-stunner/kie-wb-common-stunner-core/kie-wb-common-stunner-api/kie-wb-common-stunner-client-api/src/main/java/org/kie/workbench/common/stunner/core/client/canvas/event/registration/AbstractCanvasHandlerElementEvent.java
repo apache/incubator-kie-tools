@@ -24,9 +24,9 @@ public abstract class AbstractCanvasHandlerElementEvent extends AbstractCanvasHa
 
     protected final Element<?> element;
 
-    public AbstractCanvasHandlerElementEvent( final CanvasHandler canvasHandler,
-                                              final Element<?> element ) {
-        super( canvasHandler );
+    public AbstractCanvasHandlerElementEvent(final CanvasHandler canvasHandler,
+                                             final Element<?> element) {
+        super(canvasHandler);
         this.element = element;
     }
 

@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.rule.Rule;
 public abstract class AbstractDockingRuleManager<A, B> extends AbstractRuleManager<DockingRule> implements DockingRuleManager {
 
     @Override
-    public boolean supports( final Rule rule ) {
+    public boolean supports(final Rule rule) {
         return rule instanceof DockingRule;
     }
 }

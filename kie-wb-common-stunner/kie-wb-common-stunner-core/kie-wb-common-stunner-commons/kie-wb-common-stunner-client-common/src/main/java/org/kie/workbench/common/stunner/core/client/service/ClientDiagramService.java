@@ -34,17 +34,17 @@ import org.kie.workbench.common.stunner.core.service.DiagramService;
 public class ClientDiagramService extends AbstractClientDiagramService<Metadata, Diagram<Graph, Metadata>, DiagramService> {
 
     protected ClientDiagramService() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public ClientDiagramService( final ShapeManager shapeManager,
-                                 final Caller<DiagramService> diagramServiceCaller,
-                                 final Caller<DiagramLookupService> diagramLookupServiceCaller ) {
-        super( shapeManager,
-               diagramServiceCaller,
-               diagramLookupServiceCaller );
+    public ClientDiagramService(final ShapeManager shapeManager,
+                                final Caller<DiagramService> diagramServiceCaller,
+                                final Caller<DiagramLookupService> diagramLookupServiceCaller) {
+        super(shapeManager,
+              diagramServiceCaller,
+              diagramLookupServiceCaller);
     }
 }

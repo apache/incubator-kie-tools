@@ -34,30 +34,30 @@ public class DefinitionImpl {
     private final Set<Object> propertySets;
     private final Set<Object> properties;
 
-    public DefinitionImpl( final @MapsTo( "id" ) String id,
-                           final @MapsTo( "category" ) String category,
-                           final @MapsTo( "title" ) String title,
-                           final @MapsTo( "description" ) String description,
-                           final @MapsTo( "labels" ) Set<String> labels,
-                           final @MapsTo( "propertySets" ) Set<Object> propertySets,
-                           final @MapsTo( "nameProperty" ) PropertyImpl nameProperty,
-                           final @MapsTo( "properties" ) Set<Object> properties ) {
-        this.category = PortablePreconditions.checkNotNull( "category",
-                                                            category );
-        this.nameProperty = PortablePreconditions.checkNotNull( "nameProperty",
-                                                                nameProperty );
-        this.title = PortablePreconditions.checkNotNull( "title",
-                                                         title );
-        this.description = PortablePreconditions.checkNotNull( "description",
-                                                               description );
-        this.labels = PortablePreconditions.checkNotNull( "labels",
-                                                          labels );
-        this.id = PortablePreconditions.checkNotNull( "id",
-                                                      id );
-        this.propertySets = PortablePreconditions.checkNotNull( "propertySets",
-                                                                propertySets );
-        this.properties = PortablePreconditions.checkNotNull( "properties",
-                                                              properties );
+    public DefinitionImpl(final @MapsTo("id") String id,
+                          final @MapsTo("category") String category,
+                          final @MapsTo("title") String title,
+                          final @MapsTo("description") String description,
+                          final @MapsTo("labels") Set<String> labels,
+                          final @MapsTo("propertySets") Set<Object> propertySets,
+                          final @MapsTo("nameProperty") PropertyImpl nameProperty,
+                          final @MapsTo("properties") Set<Object> properties) {
+        this.category = PortablePreconditions.checkNotNull("category",
+                                                           category);
+        this.nameProperty = PortablePreconditions.checkNotNull("nameProperty",
+                                                               nameProperty);
+        this.title = PortablePreconditions.checkNotNull("title",
+                                                        title);
+        this.description = PortablePreconditions.checkNotNull("description",
+                                                              description);
+        this.labels = PortablePreconditions.checkNotNull("labels",
+                                                         labels);
+        this.id = PortablePreconditions.checkNotNull("id",
+                                                     id);
+        this.propertySets = PortablePreconditions.checkNotNull("propertySets",
+                                                               propertySets);
+        this.properties = PortablePreconditions.checkNotNull("properties",
+                                                             properties);
     }
 
     public PropertyImpl getNameProperty() {

@@ -34,18 +34,18 @@ public class LienzoGlyphsPaletteImpl
         implements LienzoGlyphsPalette {
 
     protected LienzoGlyphsPaletteImpl() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public LienzoGlyphsPaletteImpl( final ShapeManager shapeManager,
-                                    final DefinitionGlyphTooltip definitionGlyphTooltip,
-                                    final LienzoPaletteViewImpl view ) {
-        super( shapeManager,
-               definitionGlyphTooltip,
-               view );
+    public LienzoGlyphsPaletteImpl(final ShapeManager shapeManager,
+                                   final DefinitionGlyphTooltip definitionGlyphTooltip,
+                                   final LienzoPaletteViewImpl view) {
+        super(shapeManager,
+              definitionGlyphTooltip,
+              view);
     }
 
     @PostConstruct

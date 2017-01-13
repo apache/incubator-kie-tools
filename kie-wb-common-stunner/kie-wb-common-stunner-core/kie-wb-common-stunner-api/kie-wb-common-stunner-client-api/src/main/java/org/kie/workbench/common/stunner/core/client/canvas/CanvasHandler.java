@@ -23,12 +23,12 @@ public interface CanvasHandler<D extends Diagram, C extends Canvas> {
     /**
      * Initializes the handler for a given canvas.
      */
-    CanvasHandler<D, C> initialize( final C canvas );
+    CanvasHandler<D, C> initialize(final C canvas);
 
     /**
      * Draws the given diagram..
      */
-    CanvasHandler<D, C> draw( final D diagram );
+    CanvasHandler<D, C> draw(final D diagram);
 
     /**
      * The managed diagram instance.

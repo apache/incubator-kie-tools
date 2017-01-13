@@ -29,7 +29,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class ProjectDiagramWorkbenchDocksTest {
 
     @Mock
@@ -39,15 +39,15 @@ public class ProjectDiagramWorkbenchDocksTest {
 
     @Before
     public void setup() throws Exception {
-        this.tested = new ProjectDiagramWorkbenchDocks( uberfireDocks );
+        this.tested = new ProjectDiagramWorkbenchDocks(uberfireDocks);
     }
 
     @Test
     public void testSetup() {
         String pId = "p1";
-        tested.setup( pId );
-        assertEquals( "p1",
-                      tested.perspectiveId );
+        tested.setup(pId);
+        assertEquals("p1",
+                     tested.perspectiveId);
     }
 
     @Test
@@ -55,10 +55,10 @@ public class ProjectDiagramWorkbenchDocksTest {
         String pId = "p1";
         tested.perspectiveId = pId;
         tested.enableDocks();
-        verify( uberfireDocks,
-                times( 1 ) ).enable( any( UberfireDockPosition.class ),
-                                     eq( pId ) );
-        assertTrue( tested.isEnabled() );
+        verify(uberfireDocks,
+               times(1)).enable(any(UberfireDockPosition.class),
+                                eq(pId));
+        assertTrue(tested.isEnabled());
     }
 
     @Test
@@ -67,9 +67,9 @@ public class ProjectDiagramWorkbenchDocksTest {
         tested.perspectiveId = pId;
         tested.enabled = true;
         tested.disableDocks();
-        verify( uberfireDocks,
-                times( 1 ) ).disable( any( UberfireDockPosition.class ),
-                                      eq( pId ) );
-        assertFalse( tested.isEnabled() );
+        verify(uberfireDocks,
+               times(1)).disable(any(UberfireDockPosition.class),
+                                 eq(pId));
+        assertFalse(tested.isEnabled());
     }
 }

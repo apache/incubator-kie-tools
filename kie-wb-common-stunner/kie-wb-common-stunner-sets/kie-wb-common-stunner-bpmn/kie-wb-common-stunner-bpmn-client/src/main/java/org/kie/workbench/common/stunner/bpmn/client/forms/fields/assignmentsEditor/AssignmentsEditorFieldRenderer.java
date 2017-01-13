@@ -31,7 +31,7 @@ public class AssignmentsEditorFieldRenderer extends FieldRenderer<AssignmentsEdi
     private AssignmentsEditorWidget assignmentsEditor;
 
     @Inject
-    public AssignmentsEditorFieldRenderer( AssignmentsEditorWidget assignmentsEditor ) {
+    public AssignmentsEditorFieldRenderer(final AssignmentsEditorWidget assignmentsEditor) {
         this.assignmentsEditor = assignmentsEditor;
     }
 
@@ -42,10 +42,10 @@ public class AssignmentsEditorFieldRenderer extends FieldRenderer<AssignmentsEdi
 
     @Override
     public void initInputWidget() {
-        assignmentsEditor.setBPMNModel( null );
-        Object model = ContextUtils.getModel( renderingContext );
-        if ( model instanceof BPMNDefinition ) {
-            assignmentsEditor.setBPMNModel( ( BPMNDefinition ) model );
+        assignmentsEditor.setBPMNModel(null);
+        Object model = ContextUtils.getModel(renderingContext);
+        if (model instanceof BPMNDefinition) {
+            assignmentsEditor.setBPMNModel((BPMNDefinition) model);
         }
     }
 
@@ -56,7 +56,7 @@ public class AssignmentsEditorFieldRenderer extends FieldRenderer<AssignmentsEdi
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
+    protected void setReadOnly(final boolean readOnly) {
 
     }
 

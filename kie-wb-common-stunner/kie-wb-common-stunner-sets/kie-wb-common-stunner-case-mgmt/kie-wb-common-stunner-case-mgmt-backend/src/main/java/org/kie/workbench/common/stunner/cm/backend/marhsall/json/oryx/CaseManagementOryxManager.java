@@ -36,10 +36,10 @@ public class CaseManagementOryxManager extends BaseOryxManager {
     }
 
     @Inject
-    public CaseManagementOryxManager( final @CaseManagement OryxIdMappings oryxIdMappings,
-                                      final Bpmn2OryxPropertyManager oryxPropertyManager ) {
-        super( oryxIdMappings,
-               oryxPropertyManager );
+    public CaseManagementOryxManager(final @CaseManagement OryxIdMappings oryxIdMappings,
+                                     final Bpmn2OryxPropertyManager oryxPropertyManager) {
+        super(oryxIdMappings,
+              oryxPropertyManager);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CaseManagementOryxManager extends BaseOryxManager {
     @Override
     public Set<Class<?>> getDefinitionClasses() {
         final CaseManagementDefinitionSet set = new CaseManagementDefinitionSet.CaseManagementDefinitionSetBuilder().build();
-        final Set<Class<?>> defClasses = BackendBindableDefinitionUtils.getDefinitions( set );
+        final Set<Class<?>> defClasses = BackendBindableDefinitionUtils.getDefinitions(set);
         return defClasses;
     }
 }

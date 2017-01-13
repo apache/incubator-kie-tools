@@ -43,15 +43,15 @@ public class BPMNProjectDiagramFactory
         extends BindableDiagramFactory<ProjectMetadata, ProjectDiagram> {
 
     @Override
-    public ProjectDiagram build( final String name,
-                                 final ProjectMetadata metadata,
-                                 final Graph<DefinitionSet, ?> graph ) {
-        updateDiagramProperties( name,
-                                 graph,
-                                 metadata );
-        return new ProjectDiagramImpl( name,
-                                       graph,
-                                       metadata );
+    public ProjectDiagram build(final String name,
+                                final ProjectMetadata metadata,
+                                final Graph<DefinitionSet, ?> graph) {
+        updateDiagramProperties(name,
+                                graph,
+                                metadata);
+        return new ProjectDiagramImpl(name,
+                                      graph,
+                                      metadata);
     }
 
     @Override
@@ -64,36 +64,36 @@ public class BPMNProjectDiagramFactory
         return BPMNDefinitionSet.class;
     }
 
-    private void updateDiagramProperties( final String name,
-                                          final Graph<DefinitionSet, ?> graph,
-                                          final ProjectMetadata metadata ) {
-        final Node<Definition<BPMNDiagram>, ?> diagramNode = getFirstDiagramNode( graph );
-        if ( null == diagramNode ) {
-            throw new IllegalStateException( "A BPMN Diagram is expected to be present on BPMN Diagram graphs." );
+    private void updateDiagramProperties(final String name,
+                                         final Graph<DefinitionSet, ?> graph,
+                                         final ProjectMetadata metadata) {
+        final Node<Definition<BPMNDiagram>, ?> diagramNode = getFirstDiagramNode(graph);
+        if (null == diagramNode) {
+            throw new IllegalStateException("A BPMN Diagram is expected to be present on BPMN Diagram graphs.");
         }
         final BPMNDiagram diagram = diagramNode.getContent().getDefinition();
         final String id = diagram.getDiagramSet().getId().getValue();
         final String projectName = null != metadata.getProjectName() ? metadata.getProjectName() + "." : "";
-        if ( null == id || id.isEmpty() ) {
-            diagram.getDiagramSet().getId().setValue( projectName + name );
+        if (null == id || id.isEmpty()) {
+            diagram.getDiagramSet().getId().setValue(projectName + name);
         }
         final String p = diagram.getDiagramSet().getPackageProperty().getValue();
-        if ( null == p || p.isEmpty() ) {
+        if (null == p || p.isEmpty()) {
             String metadataPackage = metadata.getProjectPackage();
-            if ( metadataPackage == null || metadataPackage.isEmpty() ) {
-                diagram.getDiagramSet().getPackageProperty().setValue( diagram.getDiagramSet().getPackageProperty().DEFAULT_PACKAGE );
+            if (metadataPackage == null || metadataPackage.isEmpty()) {
+                diagram.getDiagramSet().getPackageProperty().setValue(diagram.getDiagramSet().getPackageProperty().DEFAULT_PACKAGE);
             } else {
-                diagram.getDiagramSet().getPackageProperty().setValue( metadata.getProjectPackage() );
+                diagram.getDiagramSet().getPackageProperty().setValue(metadata.getProjectPackage());
             }
         }
         final String diagramName = diagram.getDiagramSet().getName().getValue();
-        if ( null == diagramName || diagramName.isEmpty() ) {
-            diagram.getDiagramSet().getName().setValue( name );
+        if (null == diagramName || diagramName.isEmpty()) {
+            diagram.getDiagramSet().getName().setValue(name);
         }
     }
 
-    @SuppressWarnings( "unchecked" )
-    private static Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode( final Graph graph ) {
-        return BPMNUtils.getFirstDiagramNode( graph );
+    @SuppressWarnings("unchecked")
+    private static Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode(final Graph graph) {
+        return BPMNUtils.getFirstDiagramNode(graph);
     }
 }

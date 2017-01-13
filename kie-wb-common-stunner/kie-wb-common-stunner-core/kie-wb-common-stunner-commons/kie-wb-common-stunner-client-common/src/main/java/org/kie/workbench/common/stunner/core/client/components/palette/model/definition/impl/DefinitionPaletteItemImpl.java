@@ -26,15 +26,15 @@ public final class DefinitionPaletteItemImpl
 
     private final String definitionId;
 
-    private DefinitionPaletteItemImpl( final String itemId,
-                                       final String title,
-                                       final String description,
-                                       final String tooltip,
-                                       final String definitionId ) {
-        super( itemId,
-               title,
-               description,
-               tooltip );
+    private DefinitionPaletteItemImpl(final String itemId,
+                                      final String title,
+                                      final String description,
+                                      final String tooltip,
+                                      final String definitionId) {
+        super(itemId,
+              title,
+              description,
+              tooltip);
         this.definitionId = definitionId;
     }
 
@@ -47,22 +47,22 @@ public final class DefinitionPaletteItemImpl
 
         private String definitionId;
 
-        public DefinitionPaletteItemBuilder( final String id ) {
-            super( id );
+        public DefinitionPaletteItemBuilder(final String id) {
+            super(id);
         }
 
-        public DefinitionPaletteItemBuilder definitionId( final String definitionId ) {
+        public DefinitionPaletteItemBuilder definitionId(final String definitionId) {
             this.definitionId = definitionId;
             return this;
         }
 
         @Override
         public DefinitionPaletteItemImpl build() {
-            return new DefinitionPaletteItemImpl( id,
-                                                  title,
-                                                  description,
-                                                  tooltip,
-                                                  definitionId );
+            return new DefinitionPaletteItemImpl(id,
+                                                 title,
+                                                 description,
+                                                 tooltip,
+                                                 definitionId);
         }
     }
 }

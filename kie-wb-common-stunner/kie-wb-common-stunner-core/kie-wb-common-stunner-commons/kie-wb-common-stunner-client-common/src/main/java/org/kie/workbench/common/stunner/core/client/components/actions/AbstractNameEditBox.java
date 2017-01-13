@@ -28,8 +28,8 @@ public abstract class AbstractNameEditBox<E extends Element> implements NameEdit
     protected Command closeCallback;
 
     @Override
-    public void initialize( final AbstractCanvasHandler canvasHandler,
-                            final Command closeCallback ) {
+    public void initialize(final AbstractCanvasHandler canvasHandler,
+                           final Command closeCallback) {
         this.canvasHandler = canvasHandler;
         this.closeCallback = closeCallback;
     }

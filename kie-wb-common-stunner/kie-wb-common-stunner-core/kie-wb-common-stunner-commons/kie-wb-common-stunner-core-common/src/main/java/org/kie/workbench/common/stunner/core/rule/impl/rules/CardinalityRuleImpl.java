@@ -28,20 +28,20 @@ public class CardinalityRuleImpl implements CardinalityRule {
     private Integer minOccurrences = 0;
     private Integer maxOccurrences = 0;
 
-    public CardinalityRuleImpl( final @MapsTo( "name" ) String name,
-                                final @MapsTo( "role" ) String role,
-                                final @MapsTo( "minOccurrences" ) Integer minOccurrences,
-                                final @MapsTo( "maxOccurrences" ) Integer maxOccurrences ) {
-        this.name = PortablePreconditions.checkNotNull( "name",
-                                                        name );
-        this.role = PortablePreconditions.checkNotNull( "role",
-                                                        role );
-        if ( minOccurrences < 0 ) {
-            throw new IllegalArgumentException( "minOccurrences cannot be less than 0." );
+    public CardinalityRuleImpl(final @MapsTo("name") String name,
+                               final @MapsTo("role") String role,
+                               final @MapsTo("minOccurrences") Integer minOccurrences,
+                               final @MapsTo("maxOccurrences") Integer maxOccurrences) {
+        this.name = PortablePreconditions.checkNotNull("name",
+                                                       name);
+        this.role = PortablePreconditions.checkNotNull("role",
+                                                       role);
+        if (minOccurrences < 0) {
+            throw new IllegalArgumentException("minOccurrences cannot be less than 0.");
         }
         this.minOccurrences = minOccurrences;
-        if ( maxOccurrences > -1 && maxOccurrences < minOccurrences ) {
-            throw new IllegalArgumentException( "maxOccurrences cannot be less than minOccurrences." );
+        if (maxOccurrences > -1 && maxOccurrences < minOccurrences) {
+            throw new IllegalArgumentException("maxOccurrences cannot be less than minOccurrences.");
         }
         this.maxOccurrences = maxOccurrences;
     }

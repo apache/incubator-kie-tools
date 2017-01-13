@@ -34,7 +34,7 @@ public class ToolbarItemView extends Composite implements ToolbarItem.View {
 
     }
 
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     @UiField
     Button button;
@@ -42,52 +42,52 @@ public class ToolbarItemView extends Composite implements ToolbarItem.View {
     AbstractToolbarItem presenter;
 
     @Override
-    public void init( final AbstractToolbarItem presenter ) {
+    public void init(final AbstractToolbarItem presenter) {
         this.presenter = presenter;
-        initWidget( uiBinder.createAndBindUi( this ) );
-        button.getElement().getStyle().setMargin( 5,
-                                                  Style.Unit.PX );
+        initWidget(uiBinder.createAndBindUi(this));
+        button.getElement().getStyle().setMargin(5,
+                                                 Style.Unit.PX);
     }
 
     @Override
-    public ToolbarItem.View setIcon( final IconType icon ) {
-        button.setIcon( icon );
+    public ToolbarItem.View setIcon(final IconType icon) {
+        button.setIcon(icon);
         return this;
     }
 
     @Override
-    public AbstractToolbarItem.View setIconRotate( final IconRotate rotate ) {
-        button.setIconRotate( rotate );
+    public AbstractToolbarItem.View setIconRotate(final IconRotate rotate) {
+        button.setIconRotate(rotate);
         return this;
     }
 
     @Override
-    public AbstractToolbarItem.View setIconSize( final IconSize size ) {
-        button.setIconSize( size );
+    public AbstractToolbarItem.View setIconSize(final IconSize size) {
+        button.setIconSize(size);
         return this;
     }
 
     @Override
-    public AbstractToolbarItem.View setCaption( final String caption ) {
-        button.setText( caption );
+    public AbstractToolbarItem.View setCaption(final String caption) {
+        button.setText(caption);
         return this;
     }
 
     @Override
-    public ToolbarItem.View setTooltip( final String tooltip ) {
-        button.setTitle( tooltip );
+    public ToolbarItem.View setTooltip(final String tooltip) {
+        button.setTitle(tooltip);
         return this;
     }
 
     @Override
-    public ToolbarItem.View setClickHandler( final Command command ) {
-        button.addClickHandler( clickEvent -> command.execute() );
+    public ToolbarItem.View setClickHandler(final Command command) {
+        button.addClickHandler(clickEvent -> command.execute());
         return this;
     }
 
     @Override
-    public ToolbarItem.View setEnabled( final boolean enabled ) {
-        button.setEnabled( enabled );
+    public ToolbarItem.View setEnabled(final boolean enabled) {
+        button.setEnabled(enabled);
         return this;
     }
 

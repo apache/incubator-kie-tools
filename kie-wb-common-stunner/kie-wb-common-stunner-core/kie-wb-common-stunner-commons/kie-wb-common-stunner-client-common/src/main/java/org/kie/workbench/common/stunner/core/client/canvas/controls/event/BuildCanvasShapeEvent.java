@@ -32,22 +32,22 @@ public final class BuildCanvasShapeEvent extends AbstractCanvasHandlerEvent<Abst
     private double x;
     private double y;
 
-    public BuildCanvasShapeEvent( final AbstractCanvasHandler abstractCanvasHandler,
-                                  final Object definition,
-                                  final ShapeFactory<?, ?, ? extends Shape> shapeFactory ) {
-        super( abstractCanvasHandler );
+    public BuildCanvasShapeEvent(final AbstractCanvasHandler abstractCanvasHandler,
+                                 final Object definition,
+                                 final ShapeFactory<?, ?, ? extends Shape> shapeFactory) {
+        super(abstractCanvasHandler);
         this.definition = definition;
         this.shapeFactory = shapeFactory;
         this.x = -1;
         this.y = -1;
     }
 
-    public BuildCanvasShapeEvent( final AbstractCanvasHandler abstractCanvasHandler,
-                                  final Object definition,
-                                  final ShapeFactory<?, ?, ? extends Shape> shapeFactory,
-                                  final double x,
-                                  final double y ) {
-        super( abstractCanvasHandler );
+    public BuildCanvasShapeEvent(final AbstractCanvasHandler abstractCanvasHandler,
+                                 final Object definition,
+                                 final ShapeFactory<?, ?, ? extends Shape> shapeFactory,
+                                 final double x,
+                                 final double y) {
+        super(abstractCanvasHandler);
         this.definition = definition;
         this.shapeFactory = shapeFactory;
         this.x = x;

@@ -25,21 +25,21 @@ public abstract class AbstractDiagram<G extends Graph, S extends Metadata> imple
     private final S metadata;
     private G graph;
 
-    public AbstractDiagram( final @MapsTo( "name" ) String name,
-                            final @MapsTo( "metadata" ) S metadata ) {
+    public AbstractDiagram(final @MapsTo("name") String name,
+                           final @MapsTo("metadata") S metadata) {
         this.name = name;
         this.metadata = metadata;
     }
 
-    public AbstractDiagram( final @MapsTo( "name" ) String name,
-                            final @MapsTo( "graph" ) G graph,
-                            final @MapsTo( "metadata" ) S metadata ) {
+    public AbstractDiagram(final @MapsTo("name") String name,
+                           final @MapsTo("graph") G graph,
+                           final @MapsTo("metadata") S metadata) {
         this.name = name;
         this.metadata = metadata;
         this.graph = graph;
     }
 
-    public void setGraph( G graph ) {
+    public void setGraph(G graph) {
         this.graph = graph;
     }
 
@@ -59,15 +59,15 @@ public abstract class AbstractDiagram<G extends Graph, S extends Metadata> imple
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof Diagram ) ) {
+        if (!(o instanceof Diagram)) {
             return false;
         }
-        Diagram that = ( Diagram ) o;
-        return name != null && name.equals( that.getName() );
+        Diagram that = (Diagram) o;
+        return name != null && name.equals(that.getName());
     }
 
     @Override

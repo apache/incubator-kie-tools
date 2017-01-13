@@ -27,10 +27,10 @@ public interface NavigatorItem<T> {
      * @param height Height in PX
      * @param callback Callback when item selected ( usually on click or touch )
      */
-    void show( final T item,
-               final int width,
-               final int height,
-               final Command callback );
+    void show(final T item,
+              final int width,
+              final int height,
+              final Command callback);
 
     String getName();
 

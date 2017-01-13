@@ -25,7 +25,7 @@ package org.kie.workbench.common.stunner.core.factory.definition;
  */
 public interface TypeDefinitionFactory<T> extends DefinitionFactory<T> {
 
-    boolean accepts( final Class<? extends T> type );
+    boolean accepts(final Class<? extends T> type);
 
-    T build( final Class<? extends T> type );
+    T build(final Class<? extends T> type);
 }

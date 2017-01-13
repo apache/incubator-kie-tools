@@ -28,7 +28,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class CommandRegistryImplTest {
 
     private CommandRegistryImpl<Command> tested;
@@ -44,115 +44,115 @@ public class CommandRegistryImplTest {
         tested = new CommandRegistryImpl<>();
     }
 
-    @Test( expected = UnsupportedOperationException.class )
+    @Test(expected = UnsupportedOperationException.class)
     public void testRemove() {
-        tested.remove( command );
+        tested.remove(command);
     }
 
-    @Test( expected = UnsupportedOperationException.class )
+    @Test(expected = UnsupportedOperationException.class)
     public void testContains() {
-        tested.contains( command );
+        tested.contains(command);
     }
 
     @Test
     public void testRegisterCommand() {
-        tested.register( command );
+        tested.register(command);
         Command result = tested.peek();
-        assertNotNull( result );
-        assertEquals( command,
-                      result );
+        assertNotNull(result);
+        assertEquals(command,
+                     result);
     }
 
     @Test
     public void testEmpty() {
         boolean empty = tested.isEmpty();
-        assertTrue( empty );
+        assertTrue(empty);
     }
 
     @Test
     public void testNotEmpty() {
-        tested.register( command );
+        tested.register(command);
         boolean empty = tested.isEmpty();
-        assertFalse( empty );
+        assertFalse(empty);
     }
 
     @Test
     public void testClear() {
-        tested.register( command );
-        tested.register( command1 );
+        tested.register(command);
+        tested.register(command1);
         tested.clear();
         List<Command> result = tested.getCommandHistory();
-        assertNotNull( result );
-        assertTrue( result.isEmpty() );
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 
     @Test
     public void testPeek() {
-        tested.register( command );
+        tested.register(command);
         Command result = tested.peek();
-        assertNotNull( result );
-        assertEquals( command,
-                      result );
+        assertNotNull(result);
+        assertEquals(command,
+                     result);
         List<Command> result2 = tested.getCommandHistory();
-        assertNotNull( result2 );
-        assertFalse( result2.isEmpty() );
+        assertNotNull(result2);
+        assertFalse(result2.isEmpty());
     }
 
     @Test
     public void testPop() {
-        tested.register( command );
+        tested.register(command);
         Command result = tested.pop();
-        assertNotNull( result );
-        assertEquals( command,
-                      result );
+        assertNotNull(result);
+        assertEquals(command,
+                     result);
         List<Command> result2 = tested.getCommandHistory();
-        assertNotNull( result2 );
-        assertTrue( result2.isEmpty() );
+        assertNotNull(result2);
+        assertTrue(result2.isEmpty());
     }
 
-    @Test( expected = RegistrySizeExceededException.class )
+    @Test(expected = RegistrySizeExceededException.class)
     public void testAddCommandStackExceeded() {
-        tested.setMaxSize( 1 );
-        tested.register( command );
-        tested.register( command1 );
+        tested.setMaxSize(1);
+        tested.register(command);
+        tested.register(command1);
     }
 
-    @Test( expected = RegistrySizeExceededException.class )
+    @Test(expected = RegistrySizeExceededException.class)
     public void testAddCollectionStackExceeded() {
-        tested.setMaxSize( 1 );
-        tested.register( command );
-        tested.register( command1 );
+        tested.setMaxSize(1);
+        tested.register(command);
+        tested.register(command1);
     }
 
     @Test
     public void testGetCommandSize() {
-        tested.register( command );
-        tested.register( command1 );
+        tested.register(command);
+        tested.register(command1);
         int size = tested.getCommandHistory().size();
-        assertEquals( 2,
-                      size );
+        assertEquals(2,
+                     size);
     }
 
     @Test
     public void testGetCommandHistory() {
-        tested.register( command );
-        tested.register( command1 );
+        tested.register(command);
+        tested.register(command1);
         List<Command> result = tested.getCommandHistory();
-        assertNotNull( result );
-        Command r1 = result.get( 0 );
-        assertNotNull( r1 );
-        assertEquals( command1,
-                      r1 );
-        Command r2 = result.get( 1 );
-        assertNotNull( r2 );
-        assertEquals( command,
-                      r2 );
+        assertNotNull(result);
+        Command r1 = result.get(0);
+        assertNotNull(r1);
+        assertEquals(command1,
+                     r1);
+        Command r2 = result.get(1);
+        assertNotNull(r2);
+        assertEquals(command,
+                     r2);
     }
 
-    @Test( expected = RegistrySizeExceededException.class )
+    @Test(expected = RegistrySizeExceededException.class)
     public void testStackSize() {
-        tested.setMaxSize( 1 );
-        tested.register( command );
-        tested.register( command );
+        tested.setMaxSize(1);
+        tested.register(command);
+        tested.register(command);
     }
 }

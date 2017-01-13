@@ -44,16 +44,16 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIE
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = NoneTask.NoneTaskBuilder.class )
-@CanDock( roles = { "IntermediateEventOnActivityBoundary" } )
-@Morph( base = BaseTask.class )
+@Definition(graphFactory = NodeFactory.class, builder = NoneTask.NoneTaskBuilder.class)
+@CanDock(roles = {"IntermediateEventOnActivityBoundary"})
+@Morph(base = BaseTask.class)
 public class NoneTask extends BaseTask {
 
     @Title
     public static final transient String title = "None Task";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
+    @FieldDef(label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1)
     @Valid
     protected EmptyTaskExecutionSet executionSet;
 
@@ -62,37 +62,37 @@ public class NoneTask extends BaseTask {
 
         @Override
         public NoneTask build() {
-            return new NoneTask( new TaskGeneralSet( new Name( "Task" ),
-                                                     new Documentation( "" ) ),
-                                 new EmptyTaskExecutionSet(),
-                                 new BackgroundSet( COLOR,
-                                                    BORDER_COLOR,
-                                                    BORDER_SIZE ),
-                                 new FontSet(),
-                                 new RectangleDimensionsSet( WIDTH,
-                                                             HEIGHT ),
-                                 new SimulationSet(),
-                                 new TaskType( TaskTypes.NONE ) );
+            return new NoneTask(new TaskGeneralSet(new Name("Task"),
+                                                   new Documentation("")),
+                                new EmptyTaskExecutionSet(),
+                                new BackgroundSet(COLOR,
+                                                  BORDER_COLOR,
+                                                  BORDER_SIZE),
+                                new FontSet(),
+                                new RectangleDimensionsSet(WIDTH,
+                                                           HEIGHT),
+                                new SimulationSet(),
+                                new TaskType(TaskTypes.NONE));
         }
     }
 
     public NoneTask() {
-        super( TaskTypes.NONE );
+        super(TaskTypes.NONE);
     }
 
-    public NoneTask( @MapsTo( "general" ) TaskGeneralSet general,
-                     @MapsTo( "executionSet" ) EmptyTaskExecutionSet executionSet,
-                     @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                     @MapsTo( "fontSet" ) FontSet fontSet,
-                     @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet,
-                     @MapsTo( "simulationSet" ) SimulationSet simulationSet,
-                     @MapsTo( "taskType" ) TaskType taskType ) {
-        super( general,
-               backgroundSet,
-               fontSet,
-               dimensionsSet,
-               simulationSet,
-               taskType );
+    public NoneTask(final @MapsTo("general") TaskGeneralSet general,
+                    final @MapsTo("executionSet") EmptyTaskExecutionSet executionSet,
+                    final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                    final @MapsTo("fontSet") FontSet fontSet,
+                    final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                    final @MapsTo("simulationSet") SimulationSet simulationSet,
+                    final @MapsTo("taskType") TaskType taskType) {
+        super(general,
+              backgroundSet,
+              fontSet,
+              dimensionsSet,
+              simulationSet,
+              taskType);
         this.executionSet = executionSet;
     }
 
@@ -104,7 +104,7 @@ public class NoneTask extends BaseTask {
         return executionSet;
     }
 
-    public void setExecutionSet( EmptyTaskExecutionSet executionSet ) {
+    public void setExecutionSet(final EmptyTaskExecutionSet executionSet) {
         this.executionSet = executionSet;
     }
 }

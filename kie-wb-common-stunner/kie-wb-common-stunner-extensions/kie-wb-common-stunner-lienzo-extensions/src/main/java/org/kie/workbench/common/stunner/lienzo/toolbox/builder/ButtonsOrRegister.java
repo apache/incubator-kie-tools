@@ -21,7 +21,7 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.ToolboxButton;
 
 public interface ButtonsOrRegister extends Register {
 
-    ButtonsOrRegister add( ToolboxButton button );
+    ButtonsOrRegister add(final ToolboxButton button);
 
-    Button add( IPrimitive<?> shape );
+    Button add(final IPrimitive<?> shape);
 }

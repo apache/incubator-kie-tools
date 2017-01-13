@@ -21,7 +21,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasH
 
 public final class CanvasClearSelectionEvent extends AbstractCanvasHandlerEvent<CanvasHandler> {
 
-    public CanvasClearSelectionEvent( final CanvasHandler canvasHandler ) {
-        super( canvasHandler );
+    public CanvasClearSelectionEvent(final CanvasHandler canvasHandler) {
+        super(canvasHandler);
     }
 }

@@ -26,9 +26,9 @@ public final class ModelValidationViolationImpl
 
     private final ConstraintViolation<Object> violation;
 
-    protected ModelValidationViolationImpl( final Object entity,
-                                            final ConstraintViolation<Object> violation ) {
-        super( entity );
+    protected ModelValidationViolationImpl(final Object entity,
+                                           final ConstraintViolation<Object> violation) {
+        super(entity);
         this.violation = violation;
     }
 

@@ -29,20 +29,20 @@ public abstract class AbstractBindableShapeSet<F extends ShapeFactory> implement
 
     protected String description;
 
-    public AbstractBindableShapeSet( final DefinitionManager definitionManager,
-                                     final F factory ) {
+    public AbstractBindableShapeSet(final DefinitionManager definitionManager,
+                                    final F factory) {
         this.definitionManager = definitionManager;
         this.factory = factory;
     }
 
     public void doInit() {
-        final Object defSet = definitionManager.definitionSets().getDefinitionSetById( getDefinitionSetId() );
-        this.description = definitionManager.adapters().forDefinitionSet().getDescription( defSet );
+        final Object defSet = definitionManager.definitionSets().getDefinitionSetById(getDefinitionSetId());
+        this.description = definitionManager.adapters().forDefinitionSet().getDescription(defSet);
     }
 
     @Override
     public String getId() {
-        return BindableAdapterUtils.getShapeSetId( getClass() );
+        return BindableAdapterUtils.getShapeSetId(getClass());
     }
 
     @Override
@@ -57,7 +57,7 @@ public abstract class AbstractBindableShapeSet<F extends ShapeFactory> implement
 
     @Override
     public String getDefinitionSetId() {
-        return BindableAdapterUtils.getDefinitionSetId( getDefinitionSetClass() );
+        return BindableAdapterUtils.getDefinitionSetId(getDefinitionSetClass());
     }
 
     @Override

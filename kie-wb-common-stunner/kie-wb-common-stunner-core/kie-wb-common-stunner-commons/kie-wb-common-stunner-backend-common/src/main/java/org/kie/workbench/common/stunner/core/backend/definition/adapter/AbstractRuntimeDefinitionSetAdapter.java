@@ -25,16 +25,16 @@ import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet
 public abstract class AbstractRuntimeDefinitionSetAdapter<T> extends AbstractRuntimeAdapter<T>
         implements DefinitionSetAdapter<T> {
 
-    protected Set<String> getAnnotatedDefinitions( final T definitionSet ) {
+    protected Set<String> getAnnotatedDefinitions(final T definitionSet) {
         Set<String> result = null;
-        if ( null != definitionSet ) {
-            DefinitionSet annotation = definitionSet.getClass().getAnnotation( DefinitionSet.class );
-            if ( null != annotation ) {
+        if (null != definitionSet) {
+            DefinitionSet annotation = definitionSet.getClass().getAnnotation(DefinitionSet.class);
+            if (null != annotation) {
                 Class<?>[] definitions = annotation.definitions();
-                if ( definitions.length > 0 ) {
-                    result = new HashSet<String>( definitions.length );
-                    for ( Class<?> defClass : definitions ) {
-                        result.add( BindableAdapterUtils.getDefinitionSetId( defClass ) );
+                if (definitions.length > 0) {
+                    result = new HashSet<String>(definitions.length);
+                    for (Class<?> defClass : definitions) {
+                        result.add(BindableAdapterUtils.getDefinitionSetId(defClass));
                     }
                 }
             }
@@ -43,20 +43,20 @@ public abstract class AbstractRuntimeDefinitionSetAdapter<T> extends AbstractRun
     }
 
     @Override
-    public String getId( final T definitionSet ) {
-        String defSetId = BindableAdapterUtils.getDefinitionSetId( definitionSet.getClass() );
+    public String getId(final T definitionSet) {
+        String defSetId = BindableAdapterUtils.getDefinitionSetId(definitionSet.getClass());
         // Avoid weld proxy class names issues.
-        if ( defSetId.contains( "$" ) ) {
-            defSetId = defSetId.substring( 0,
-                                           defSetId.indexOf( "$" ) );
+        if (defSetId.contains("$")) {
+            defSetId = defSetId.substring(0,
+                                          defSetId.indexOf("$"));
         }
         return defSetId;
     }
 
     @Override
-    public String getDomain( final T definitionSet ) {
+    public String getDomain(final T definitionSet) {
         String n = definitionSet.getClass().getName();
-        return n.substring( n.lastIndexOf( "." ) + 1,
-                            n.length() );
+        return n.substring(n.lastIndexOf(".") + 1,
+                           n.length());
     }
 }

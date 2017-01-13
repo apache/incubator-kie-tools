@@ -36,9 +36,9 @@ public class GraphDockingRuleManagerImpl extends AbstractGraphRuleManager<Dockin
     ModelDockingRuleManager modelDockingRuleManager;
 
     @Inject
-    public GraphDockingRuleManagerImpl( final DefinitionManager definitionManager,
-                                        final ModelDockingRuleManager modelDockingRuleManager ) {
-        super( definitionManager );
+    public GraphDockingRuleManagerImpl(final DefinitionManager definitionManager,
+                                       final ModelDockingRuleManager modelDockingRuleManager) {
+        super(definitionManager);
         this.modelDockingRuleManager = modelDockingRuleManager;
     }
 
@@ -53,10 +53,10 @@ public class GraphDockingRuleManagerImpl extends AbstractGraphRuleManager<Dockin
     }
 
     @Override
-    public RuleViolations evaluate( final Element<?> parent,
-                                    final Element<? extends Definition<?>> candidate ) {
-        final String targetId = getElementDefinitionId( parent );
-        return modelDockingRuleManager.evaluate( targetId,
-                                                 getLabels( candidate ) );
+    public RuleViolations evaluate(final Element<?> parent,
+                                   final Element<? extends Definition<?>> candidate) {
+        final String targetId = getElementDefinitionId(parent);
+        return modelDockingRuleManager.evaluate(targetId,
+                                                getLabels(candidate));
     }
 }

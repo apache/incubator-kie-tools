@@ -22,7 +22,7 @@ import java.util.Set;
 
 public interface OryxIdMappings {
 
-    void init( final List<Class<?>> definitions );
+    void init(final List<Class<?>> definitions);
 
     Map<Class<?>, String> getGlobalMappings();
 
@@ -32,27 +32,27 @@ public interface OryxIdMappings {
 
     Map<Class<?>, Map<Class<?>, String>> getDefinitionMappings();
 
-    String getOryxDefinitionId( final Class<?> clazz );
+    String getOryxDefinitionId(final Class<?> clazz);
 
-    String getOryxPropertyId( final Class<?> clazz );
+    String getOryxPropertyId(final Class<?> clazz);
 
-    String getOryxPropertyId( final Class<?> definitionClass,
-                              final Class<?> clazz );
+    String getOryxPropertyId(final Class<?> definitionClass,
+                             final Class<?> clazz);
 
-    boolean isSkipProperty( final Class<?> definitionClass,
-                            final String oryxPropertyId );
+    boolean isSkipProperty(final Class<?> definitionClass,
+                           final String oryxPropertyId);
 
-    <T> Class<?> getProperty( final T definition,
-                              final String oryxId );
+    <T> Class<?> getProperty(final T definition,
+                             final String oryxId);
 
-    Class<?> getDefinition( final String oryxId );
+    Class<?> getDefinition(final String oryxId);
 
-    <T> String getPropertyId( final T definition,
-                              final String oryxId );
+    <T> String getPropertyId(final T definition,
+                             final String oryxId);
 
-    String getDefinitionId( final String oryxId );
+    String getDefinitionId(final String oryxId);
 
-    String getPropertyId( final Class<?> clazz );
+    String getPropertyId(final Class<?> clazz);
 
-    String getDefinitionId( final Class<?> clazz );
+    String getDefinitionId(final Class<?> clazz);
 }

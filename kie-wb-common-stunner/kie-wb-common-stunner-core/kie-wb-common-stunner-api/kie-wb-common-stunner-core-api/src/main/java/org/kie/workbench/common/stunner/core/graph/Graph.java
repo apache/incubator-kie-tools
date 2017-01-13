@@ -57,11 +57,11 @@ package org.kie.workbench.common.stunner.core.graph;
  */
 public interface Graph<C, N extends Node> extends Element<C> {
 
-    N addNode( final N node );
+    N addNode(final N node);
 
-    N removeNode( final String uuid );
+    N removeNode(final String uuid);
 
-    N getNode( final String uuid );
+    N getNode(final String uuid);
 
     Iterable<N> nodes();
 

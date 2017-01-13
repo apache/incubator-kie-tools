@@ -37,17 +37,17 @@ public class ProjectDiagramLookupServiceImpl
         implements ProjectDiagramLookupService {
 
     private static final Logger LOG =
-            LoggerFactory.getLogger( ProjectDiagramLookupServiceImpl.class.getName() );
+            LoggerFactory.getLogger(ProjectDiagramLookupServiceImpl.class.getName());
 
     protected ProjectDiagramLookupServiceImpl() {
-        this( null,
-              null );
+        this(null,
+             null);
     }
 
     @Inject
-    public ProjectDiagramLookupServiceImpl( @Named( "ioStrategy" ) IOService ioService,
-                                            ProjectDiagramService diagramService ) {
-        super( ioService,
-               diagramService );
+    public ProjectDiagramLookupServiceImpl(final @Named("ioStrategy") IOService ioService,
+                                           final ProjectDiagramService diagramService) {
+        super(ioService,
+              diagramService);
     }
 }

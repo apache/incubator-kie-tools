@@ -36,54 +36,54 @@ import static org.uberfire.java.nio.file.Files.walkFileTree;
 public abstract class AbstractVFSLookupManager<I, T, R extends LookupManager.LookupRequest> extends AbstractLookupManager<I, T, R> {
 
     private static final Logger LOG =
-            LoggerFactory.getLogger( AbstractVFSLookupManager.class.getName() );
+            LoggerFactory.getLogger(AbstractVFSLookupManager.class.getName());
 
     private final IOService ioService;
 
-    public AbstractVFSLookupManager( IOService ioService ) {
+    public AbstractVFSLookupManager(IOService ioService) {
         this.ioService = ioService;
     }
 
-    protected abstract boolean acceptsPath( final org.uberfire.backend.vfs.Path path );
+    protected abstract boolean acceptsPath(final org.uberfire.backend.vfs.Path path);
 
-    protected abstract I getItemByPath( final org.uberfire.backend.vfs.Path path );
+    protected abstract I getItemByPath(final org.uberfire.backend.vfs.Path path);
 
-    public List<I> getItemsByPath( final org.uberfire.java.nio.file.Path root ) {
+    public List<I> getItemsByPath(final org.uberfire.java.nio.file.Path root) {
         try {
             final List<I> result = new LinkedList<I>();
-            if ( ioService.exists( root ) ) {
-                walkFileTree( checkNotNull( "root",
-                                            root ),
-                              new SimpleFileVisitor<Path>() {
-                                  @Override
-                                  public FileVisitResult visitFile( final org.uberfire.java.nio.file.Path _file,
-                                                                    final BasicFileAttributes attrs ) throws IOException {
-                                      checkNotNull( "file",
-                                                    _file );
-                                      checkNotNull( "attrs",
-                                                    attrs );
-                                      final org.uberfire.backend.vfs.Path file = org.uberfire.backend.server.util.Paths.convert( _file );
-                                      if ( acceptsPath( file ) ) {
-                                          I item = null;
-                                          try {
-                                              // portable diagram representation.
-                                              item = getItemByPath( file );
-                                          } catch ( final Exception e ) {
-                                              LOG.error( "Cannot load diagram for path [" + file + "]",
-                                                         e );
-                                          }
-                                          if ( null != item ) {
-                                              result.add( item );
-                                          }
-                                      }
-                                      return FileVisitResult.CONTINUE;
-                                  }
-                              } );
+            if (ioService.exists(root)) {
+                walkFileTree(checkNotNull("root",
+                                          root),
+                             new SimpleFileVisitor<Path>() {
+                                 @Override
+                                 public FileVisitResult visitFile(final org.uberfire.java.nio.file.Path _file,
+                                                                  final BasicFileAttributes attrs) throws IOException {
+                                     checkNotNull("file",
+                                                  _file);
+                                     checkNotNull("attrs",
+                                                  attrs);
+                                     final org.uberfire.backend.vfs.Path file = org.uberfire.backend.server.util.Paths.convert(_file);
+                                     if (acceptsPath(file)) {
+                                         I item = null;
+                                         try {
+                                             // portable diagram representation.
+                                             item = getItemByPath(file);
+                                         } catch (final Exception e) {
+                                             LOG.error("Cannot load diagram for path [" + file + "]",
+                                                       e);
+                                         }
+                                         if (null != item) {
+                                             result.add(item);
+                                         }
+                                     }
+                                     return FileVisitResult.CONTINUE;
+                                 }
+                             });
             }
             return result;
-        } catch ( Exception e ) {
-            LOG.error( "Error while loading from VFS the item with path [" + root + "].",
-                       e );
+        } catch (Exception e) {
+            LOG.error("Error while loading from VFS the item with path [" + root + "].",
+                      e);
         }
         return null;
     }

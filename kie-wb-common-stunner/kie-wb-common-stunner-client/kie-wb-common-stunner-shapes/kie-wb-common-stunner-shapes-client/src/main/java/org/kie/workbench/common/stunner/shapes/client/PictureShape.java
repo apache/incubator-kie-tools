@@ -23,38 +23,38 @@ import org.kie.workbench.common.stunner.shapes.def.picture.PictureShapeDef;
 
 public class PictureShape<W> extends AbstractBasicShape<W, PictureShapeView, PictureShapeDef<W, ?>> {
 
-    public PictureShape( final PictureShapeView view,
-                         final PictureShapeDef<W, ?> proxy ) {
-        super( view,
-               proxy );
+    public PictureShape(final PictureShapeView view,
+                        final PictureShapeDef<W, ?> proxy) {
+        super(view,
+              proxy);
     }
 
     @Override
-    protected String getBackgroundColor( final Node<View<W>, Edge> element ) {
+    protected String getBackgroundColor(final Node<View<W>, Edge> element) {
         // Background color does not changes as model updates.
         return null;
     }
 
     @Override
-    protected Double getBackgroundAlpha( final Node<View<W>, Edge> element ) {
+    protected Double getBackgroundAlpha(final Node<View<W>, Edge> element) {
         // Background alpha does not changes as model updates.
         return null;
     }
 
     @Override
-    protected String getBorderColor( final Node<View<W>, Edge> element ) {
+    protected String getBorderColor(final Node<View<W>, Edge> element) {
         // Border color does not changes as model updates.
         return null;
     }
 
     @Override
-    protected Double getBorderSize( final Node<View<W>, Edge> element ) {
+    protected Double getBorderSize(final Node<View<W>, Edge> element) {
         // Border size does not changes as model updates.
         return null;
     }
 
     @Override
-    protected Double getBorderAlpha( final Node<View<W>, Edge> element ) {
+    protected Double getBorderAlpha(final Node<View<W>, Edge> element) {
         // Border alpha does not changes as model updates.
         return null;
     }

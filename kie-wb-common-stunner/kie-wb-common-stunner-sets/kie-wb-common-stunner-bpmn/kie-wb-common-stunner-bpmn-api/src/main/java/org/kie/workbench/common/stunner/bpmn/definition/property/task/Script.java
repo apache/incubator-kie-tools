@@ -59,7 +59,7 @@ public class Script implements BPMNProperty {
     public Script() {
     }
 
-    public Script( final String value ) {
+    public Script(final String value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class Script implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

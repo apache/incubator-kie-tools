@@ -25,46 +25,46 @@ public class BootstrapObjectBuilder<W, T extends Element<View<W>>> extends Abstr
 
     GraphObjectBuilderFactory buildersFactory;
 
-    public BootstrapObjectBuilder( GraphObjectBuilderFactory buildersFactory ) {
+    public BootstrapObjectBuilder(final GraphObjectBuilderFactory buildersFactory) {
         super();
         this.buildersFactory = buildersFactory;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public AbstractObjectBuilder<W, T> stencil( String oryxStencilId ) {
+    @SuppressWarnings("unchecked")
+    public AbstractObjectBuilder<W, T> stencil(final String oryxStencilId) {
         assert nodeId != null;
-        AbstractObjectBuilder<W, T> builder = ( AbstractObjectBuilder<W, T> ) buildersFactory.builderFor( oryxStencilId );
-        builder.nodeId( this.nodeId );
-        if ( !properties.isEmpty() ) {
-            for ( Map.Entry<String, String> entry : this.properties.entrySet() ) {
-                builder.property( entry.getKey(),
-                                  entry.getValue() );
+        AbstractObjectBuilder<W, T> builder = (AbstractObjectBuilder<W, T>) buildersFactory.builderFor(oryxStencilId);
+        builder.nodeId(this.nodeId);
+        if (!properties.isEmpty()) {
+            for (Map.Entry<String, String> entry : this.properties.entrySet()) {
+                builder.property(entry.getKey(),
+                                 entry.getValue());
             }
         }
-        if ( !outgoingResourceIds.isEmpty() ) {
-            for ( String outRefId : outgoingResourceIds ) {
-                builder.out( outRefId );
+        if (!outgoingResourceIds.isEmpty()) {
+            for (String outRefId : outgoingResourceIds) {
+                builder.out(outRefId);
             }
         }
-        if ( null != boundLR ) {
-            builder.boundLR( boundLR[ 0 ],
-                             boundLR[ 1 ] );
+        if (null != boundLR) {
+            builder.boundLR(boundLR[0],
+                            boundLR[1]);
         }
-        if ( null != boundUL ) {
-            builder.boundUL( boundUL[ 0 ],
-                             boundUL[ 1 ] );
+        if (null != boundUL) {
+            builder.boundUL(boundUL[0],
+                            boundUL[1]);
         }
         return builder;
     }
 
     @Override
-    protected T doBuild( BuilderContext context ) {
+    protected T doBuild(final BuilderContext context) {
         return null;
     }
 
     @Override
-    public T build( BuilderContext context ) {
+    public T build(final BuilderContext context) {
         return null;
     }
 }

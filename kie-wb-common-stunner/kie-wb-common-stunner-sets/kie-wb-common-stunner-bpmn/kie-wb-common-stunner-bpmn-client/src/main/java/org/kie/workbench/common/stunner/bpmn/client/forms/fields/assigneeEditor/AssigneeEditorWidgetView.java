@@ -32,22 +32,22 @@ public interface AssigneeEditorWidgetView {
 
         void notifyModelChanged();
 
-        List<AssigneeRow> deserializeAssignees( String s );
+        List<AssigneeRow> deserializeAssignees(final String s);
 
-        String serializeAssignees( List<AssigneeRow> assigneeRows );
+        String serializeAssignees(final List<AssigneeRow> assigneeRows);
 
-        void setNames( List<String> names );
+        void setNames(final List<String> names);
 
         void addAssignee();
 
-        boolean isDuplicateName( String name );
+        boolean isDuplicateName(final String name);
 
-        void removeAssignee( AssigneeRow assigneeRow );
+        void removeAssignee(final AssigneeRow assigneeRow);
 
         ListBoxValues.ValueTester namesTester();
     }
 
-    void init( Presenter presenter );
+    void init(final Presenter presenter);
 
     void doSave();
 
@@ -57,13 +57,13 @@ public interface AssigneeEditorWidgetView {
 
     void setNoneDisplayStyle();
 
-    void setAssigneesNames( ListBoxValues nameListBoxValues );
+    void setAssigneesNames(final ListBoxValues nameListBoxValues);
 
-    void setAssigneeRows( List<AssigneeRow> rows );
+    void setAssigneeRows(final List<AssigneeRow> rows);
 
     List<AssigneeRow> getAssigneeRows();
 
-    AssigneeListItemWidgetView getAssigneeWidget( int index );
+    AssigneeListItemWidgetView getAssigneeWidget(final int index);
 
-    boolean isDuplicateName( String name );
+    boolean isDuplicateName(final String name);
 }

@@ -35,70 +35,70 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.def
 @Dependent
 public class BasicSetPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory {
 
-    private static final Map<String, String> CAT_TITLES = new HashMap<String, String>( 6 ) {{
-        put( Categories.BASIC,
-             "Basic shapes" );
-        put( Categories.BASIC_WITH_ICONS,
-             "Basic shapes with inner icons" );
-        put( Categories.ICONS,
-             "Icons" );
-        put( Categories.CONNECTORS,
-             "Connectors" );
+    private static final Map<String, String> CAT_TITLES = new HashMap<String, String>(6) {{
+        put(Categories.BASIC,
+            "Basic shapes");
+        put(Categories.BASIC_WITH_ICONS,
+            "Basic shapes with inner icons");
+        put(Categories.ICONS,
+            "Icons");
+        put(Categories.CONNECTORS,
+            "Connectors");
     }};
 
-    private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>( 1 ) {{
-        put( Categories.BASIC,
-             Rectangle.class );
-        put( Categories.BASIC_WITH_ICONS,
-             PolygonWithIcon.class );
-        put( Categories.ICONS,
-             UserIcon.class );
-        put( Categories.CONNECTORS,
-             BasicConnector.class );
+    private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>(1) {{
+        put(Categories.BASIC,
+            Rectangle.class);
+        put(Categories.BASIC_WITH_ICONS,
+            PolygonWithIcon.class);
+        put(Categories.ICONS,
+            UserIcon.class);
+        put(Categories.CONNECTORS,
+            BasicConnector.class);
     }};
 
-    private static final Map<String, String> MORPH_GROUP_TITLES = new HashMap<String, String>( 0 ) {{
+    private static final Map<String, String> MORPH_GROUP_TITLES = new HashMap<String, String>(0) {{
     }};
 
     @Inject
-    public BasicSetPaletteDefinitionFactory( final ShapeManager shapeManager,
-                                             final DefinitionSetPaletteBuilder paletteBuilder ) {
-        super( shapeManager,
-               paletteBuilder );
+    public BasicSetPaletteDefinitionFactory(final ShapeManager shapeManager,
+                                            final DefinitionSetPaletteBuilder paletteBuilder) {
+        super(shapeManager,
+              paletteBuilder);
     }
 
     @Override
     protected void configureBuilder() {
         super.configureBuilder();
         // TODO: Exclude connectors category from being present on the palette model - Dropping connectors from palette produces an error right now, must fix it on lienzo side.
-        excludeCategory( Categories.CONNECTORS );
+        excludeCategory(Categories.CONNECTORS);
     }
 
     @Override
-    protected String getCategoryTitle( final String id ) {
-        return CAT_TITLES.get( id );
+    protected String getCategoryTitle(final String id) {
+        return CAT_TITLES.get(id);
     }
 
     @Override
-    protected Class<?> getCategoryTargetDefinitionId( final String id ) {
-        return CAT_DEF_IDS.get( id );
+    protected Class<?> getCategoryTargetDefinitionId(final String id) {
+        return CAT_DEF_IDS.get(id);
     }
 
     @Override
-    protected String getCategoryDescription( final String id ) {
-        return CAT_TITLES.get( id );
+    protected String getCategoryDescription(final String id) {
+        return CAT_TITLES.get(id);
     }
 
     @Override
-    protected String getMorphGroupTitle( final String morphBaseId,
-                                         final Object definition ) {
-        return MORPH_GROUP_TITLES.get( morphBaseId );
+    protected String getMorphGroupTitle(final String morphBaseId,
+                                        final Object definition) {
+        return MORPH_GROUP_TITLES.get(morphBaseId);
     }
 
     @Override
-    protected String getMorphGroupDescription( final String morphBaseId,
-                                               final Object definition ) {
-        return MORPH_GROUP_TITLES.get( morphBaseId );
+    protected String getMorphGroupDescription(final String morphBaseId,
+                                              final Object definition) {
+        return MORPH_GROUP_TITLES.get(morphBaseId);
     }
 
     @Override

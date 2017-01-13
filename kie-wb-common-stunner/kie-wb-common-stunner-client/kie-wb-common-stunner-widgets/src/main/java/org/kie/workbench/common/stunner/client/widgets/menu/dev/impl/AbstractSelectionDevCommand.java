@@ -28,38 +28,38 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public abstract class AbstractSelectionDevCommand extends AbstractMenuDevCommand {
 
-    private static Logger LOGGER = Logger.getLogger( AbstractSelectionDevCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(AbstractSelectionDevCommand.class.getName());
 
-    protected AbstractSelectionDevCommand( final AbstractClientSessionManager sessionManager ) {
-        super( sessionManager );
+    protected AbstractSelectionDevCommand(final AbstractClientSessionManager sessionManager) {
+        super(sessionManager);
     }
 
-    protected abstract void execute( Element<View<?>> item );
+    protected abstract void execute(Element<View<?>> item);
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void execute() {
         try {
             boolean found = false;
-            final ClientFullSession session = ( ClientFullSession ) getSession();
+            final ClientFullSession session = (ClientFullSession) getSession();
             final Collection<String> selectedItems = session.getSelectionControl().getSelectedItems();
-            if ( null != selectedItems ) {
-                final String uuid = selectedItems.stream().findFirst().orElse( null );
-                if ( null != uuid ) {
-                    final Element<View<?>> item = getCanvasHandler().getGraphIndex().getNode( uuid );
-                    if ( null != item ) {
-                        execute( item );
+            if (null != selectedItems) {
+                final String uuid = selectedItems.stream().findFirst().orElse(null);
+                if (null != uuid) {
+                    final Element<View<?>> item = getCanvasHandler().getGraphIndex().getNode(uuid);
+                    if (null != item) {
+                        execute(item);
                     }
                     found = true;
                 }
             }
-            if ( !found ) {
-                LOGGER.log( Level.WARNING,
-                            "No item selected." );
+            if (!found) {
+                LOGGER.log(Level.WARNING,
+                           "No item selected.");
             }
-        } catch ( final ClassCastException e ) {
-            LOGGER.log( Level.WARNING,
-                        "Session is not an instance of ClientFullSession" );
+        } catch (final ClassCastException e) {
+            LOGGER.log(Level.WARNING,
+                       "Session is not an instance of ClientFullSession");
         }
     }
 }

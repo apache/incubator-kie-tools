@@ -28,36 +28,36 @@ public abstract class AbstractPaletteDefinitionBuilder<T, P, E>
     public AbstractPaletteDefinitionBuilder() {
     }
 
-    protected String toValidId( final String s ) {
+    protected String toValidId(final String s) {
         return s;
     }
 
     @Override
-    public PaletteDefinitionBuilder<T, P, E> excludeCategory( final String categoryId ) {
-        this.categoryExclusions.add( categoryId );
+    public PaletteDefinitionBuilder<T, P, E> excludeCategory(final String categoryId) {
+        this.categoryExclusions.add(categoryId);
         return this;
     }
 
     @Override
-    public PaletteDefinitionBuilder<T, P, E> excludeDefinition( final String definitionId ) {
-        this.definitionExclusions.add( definitionId );
+    public PaletteDefinitionBuilder<T, P, E> excludeDefinition(final String definitionId) {
+        this.definitionExclusions.add(definitionId);
         return this;
     }
 
-    protected boolean isCategoryExcluded( final String categoryId ) {
-        return this.categoryExclusions.contains( categoryId );
+    protected boolean isCategoryExcluded(final String categoryId) {
+        return this.categoryExclusions.contains(categoryId);
     }
 
-    protected boolean isDefinitionExcluded( final String definitionId ) {
-        return this.definitionExclusions.contains( definitionId );
+    protected boolean isDefinitionExcluded(final String definitionId) {
+        return this.definitionExclusions.contains(definitionId);
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected <I extends PaletteItemBuilder> I getItemBuilder( final List<I> items,
-                                                               final String id ) {
-        for ( final PaletteItemBuilder item : items ) {
-            if ( item.getId().equals( id ) ) {
-                return ( I ) item;
+    @SuppressWarnings("unchecked")
+    protected <I extends PaletteItemBuilder> I getItemBuilder(final List<I> items,
+                                                              final String id) {
+        for (final PaletteItemBuilder item : items) {
+            if (item.getId().equals(id)) {
+                return (I) item;
             }
         }
         return null;

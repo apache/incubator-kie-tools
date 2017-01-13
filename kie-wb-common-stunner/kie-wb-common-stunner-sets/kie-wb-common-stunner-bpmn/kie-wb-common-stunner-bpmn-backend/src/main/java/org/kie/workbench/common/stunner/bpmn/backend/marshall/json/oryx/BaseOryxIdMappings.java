@@ -77,22 +77,22 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
     private final Map<Class<?>, Map<Class<?>, String>> definitionMappings = getDefinitionMappings();
 
     protected BaseOryxIdMappings() {
-        this( null );
+        this(null);
     }
 
-    public BaseOryxIdMappings( final DefinitionManager definitionManager ) {
+    public BaseOryxIdMappings(final DefinitionManager definitionManager) {
         this.definitionManager = definitionManager;
     }
 
     @Override
-    public void init( final List<Class<?>> definitions ) {
+    public void init(final List<Class<?>> definitions) {
         // Load default & custom mappings for BPMN definitions.
-        for ( final Class<?> defClass : definitions ) {
-            String customMapping = customMappings.get( defClass );
-            customMapping = customMapping != null ? customMapping : globalMappings.get( defClass );
-            final String orxId = customMapping != null ? customMapping : getDefaultOryxDefinitionId( defClass );
-            defMappings.put( defClass,
-                             orxId );
+        for (final Class<?> defClass : definitions) {
+            String customMapping = customMappings.get(defClass);
+            customMapping = customMapping != null ? customMapping : globalMappings.get(defClass);
+            final String orxId = customMapping != null ? customMapping : getDefaultOryxDefinitionId(defClass);
+            defMappings.put(defClass,
+                            orxId);
         }
     }
 
@@ -100,52 +100,52 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
     public Map<Class<?>, String> getGlobalMappings() {
         final Map<Class<?>, String> globalMappings = new HashMap<Class<?>, String>() {{
             // Add here global class <-> oryxId mappings, if any.
-            put( Name.class,
-                 "name" );
-            put( TaskType.class,
-                 "tasktype" );
-            put( NoneTask.class,
-                 "Task" );
-            put( UserTask.class,
-                 "Task" );
-            put( ScriptTask.class,
-                 "Task" );
-            put( BusinessRuleTask.class,
-                 "Task" );
-            put( RuleFlowGroup.class,
-                 "ruleflowgroup" );
-            put( CalledElement.class,
-                 "calledelement" );
-            put( ScriptLanguage.class,
-                 "script_language" );
-            put( ConditionExpression.class,
-                 "conditionexpression" );
-            put( ConditionExpressionLanguage.class,
-                 "conditionexpressionlanguage" );
-            put( Priority.class,
-                 "priority" );
-            put( ExclusiveDatabasedGateway.class,
-                 "Exclusive_Databased_Gateway" );
-            put( TimeDate.class,
-                 "timedate" );
-            put( TimeDuration.class,
-                 "timeduration" );
-            put( TimeCycle.class,
-                 "timecycle" );
-            put( TimeCycleLanguage.class,
-                 "timecyclelanguage" );
+            put(Name.class,
+                "name");
+            put(TaskType.class,
+                "tasktype");
+            put(NoneTask.class,
+                "Task");
+            put(UserTask.class,
+                "Task");
+            put(ScriptTask.class,
+                "Task");
+            put(BusinessRuleTask.class,
+                "Task");
+            put(RuleFlowGroup.class,
+                "ruleflowgroup");
+            put(CalledElement.class,
+                "calledelement");
+            put(ScriptLanguage.class,
+                "script_language");
+            put(ConditionExpression.class,
+                "conditionexpression");
+            put(ConditionExpressionLanguage.class,
+                "conditionexpressionlanguage");
+            put(Priority.class,
+                "priority");
+            put(ExclusiveDatabasedGateway.class,
+                "Exclusive_Databased_Gateway");
+            put(TimeDate.class,
+                "timedate");
+            put(TimeDuration.class,
+                "timeduration");
+            put(TimeCycle.class,
+                "timecycle");
+            put(TimeCycleLanguage.class,
+                "timecyclelanguage");
 
             // Simulation properties
-            put( TimeUnit.class,
-                 "timeunit" );
-            put( StandardDeviation.class,
-                 "standarddeviation" );
-            put( DistributionType.class,
-                 "distributiontype" );
-            put( WorkingHours.class,
-                 "workinghours" );
-            put( UnitCost.class,
-                 "unitcost" );
+            put(TimeUnit.class,
+                "timeunit");
+            put(StandardDeviation.class,
+                "standarddeviation");
+            put(DistributionType.class,
+                "distributiontype");
+            put(WorkingHours.class,
+                "workinghours");
+            put(UnitCost.class,
+                "unitcost");
         }};
 
         return globalMappings;
@@ -161,10 +161,10 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
     public Map<Class<?>, Set<String>> getSkippedProperties() {
         final Map<Class<?>, Set<String>> skippedProperties = new HashMap<Class<?>, Set<String>>() {{
             // Add here global class <-> collection oryx property identifiers to skip processing, if any.
-            put( BPMNDiagram.class,
-                 new HashSet<String>() {{
-                     add( "name" );
-                 }} );
+            put(BPMNDiagram.class,
+                new HashSet<String>() {{
+                    add("name");
+                }});
         }};
 
         return skippedProperties;
@@ -175,112 +175,112 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
         final Map<Class<?>, Map<Class<?>, String>> definitionMappings = new HashMap<Class<?>, Map<Class<?>, String>>() {{
             // Add here class <-> oryxId mappings just for a concrete definition (stencil), if any.
             Map<Class<?>, String> diagramPropertiesMap = new HashMap<Class<?>, String>();
-            put( BPMNDiagram.class,
-                 diagramPropertiesMap );
+            put(BPMNDiagram.class,
+                diagramPropertiesMap);
             // The name property in the diagram stencil is "processn".
-            diagramPropertiesMap.put( Name.class,
-                                      "processn" );
+            diagramPropertiesMap.put(Name.class,
+                                     "processn");
             // The process variables property in the diagram stencil is "vardefs".
-            diagramPropertiesMap.put( ProcessVariables.class,
-                                      "vardefs" );
+            diagramPropertiesMap.put(ProcessVariables.class,
+                                     "vardefs");
 
             Map<Class<?>, String> userTaskPropertiesMap = new HashMap<Class<?>, String>();
-            put( UserTask.class,
-                 userTaskPropertiesMap );
-            userTaskPropertiesMap.put( AssignmentsInfo.class,
-                                       "assignmentsinfo" );
-            userTaskPropertiesMap.put( TaskName.class,
-                                       "taskname" );
+            put(UserTask.class,
+                userTaskPropertiesMap);
+            userTaskPropertiesMap.put(AssignmentsInfo.class,
+                                      "assignmentsinfo");
+            userTaskPropertiesMap.put(TaskName.class,
+                                      "taskname");
 
             Map<Class<?>, String> businesRuleTaskPropertiesMap = new HashMap<Class<?>, String>();
-            put( BusinessRuleTask.class,
-                 businesRuleTaskPropertiesMap );
-            businesRuleTaskPropertiesMap.put( AssignmentsInfo.class,
-                                              "assignmentsinfo" );
+            put(BusinessRuleTask.class,
+                businesRuleTaskPropertiesMap);
+            businesRuleTaskPropertiesMap.put(AssignmentsInfo.class,
+                                             "assignmentsinfo");
 
             Map<Class<?>, String> startEventPropertiesMap = new HashMap<Class<?>, String>();
-            put( StartNoneEvent.class,
-                 startEventPropertiesMap );
-            startEventPropertiesMap.put( AssignmentsInfo.class,
-                                         "assignmentsinfo" );
+            put(StartNoneEvent.class,
+                startEventPropertiesMap);
+            startEventPropertiesMap.put(AssignmentsInfo.class,
+                                        "assignmentsinfo");
 
             Map<Class<?>, String> endEventPropertiesMap = new HashMap<Class<?>, String>();
-            put( EndNoneEvent.class,
-                 endEventPropertiesMap );
-            put( EndTerminateEvent.class,
-                 endEventPropertiesMap );
-            endEventPropertiesMap.put( AssignmentsInfo.class,
-                                       "assignmentsinfo" );
+            put(EndNoneEvent.class,
+                endEventPropertiesMap);
+            put(EndTerminateEvent.class,
+                endEventPropertiesMap);
+            endEventPropertiesMap.put(AssignmentsInfo.class,
+                                      "assignmentsinfo");
 
             Map<Class<?>, String> reusableSubprocessPropertiesMap = new HashMap<Class<?>, String>();
-            put( ReusableSubprocess.class,
-                 reusableSubprocessPropertiesMap );
-            reusableSubprocessPropertiesMap.put( AssignmentsInfo.class,
-                                                 "assignmentsinfo" );
+            put(ReusableSubprocess.class,
+                reusableSubprocessPropertiesMap);
+            reusableSubprocessPropertiesMap.put(AssignmentsInfo.class,
+                                                "assignmentsinfo");
 
             Map<Class<?>, String> exclusiveDatabasedGatewayPropertiesMap = new HashMap<Class<?>, String>();
-            put( ExclusiveDatabasedGateway.class,
-                 exclusiveDatabasedGatewayPropertiesMap );
-            exclusiveDatabasedGatewayPropertiesMap.put( DefaultRoute.class,
-                                                        "defaultgate" );
+            put(ExclusiveDatabasedGateway.class,
+                exclusiveDatabasedGatewayPropertiesMap);
+            exclusiveDatabasedGatewayPropertiesMap.put(DefaultRoute.class,
+                                                       "defaultgate");
         }};
 
         return definitionMappings;
     }
 
     @Override
-    public String getOryxDefinitionId( final Class<?> clazz ) {
-        return defMappings.get( clazz );
+    public String getOryxDefinitionId(final Class<?> clazz) {
+        return defMappings.get(clazz);
     }
 
     @Override
-    public String getOryxPropertyId( final Class<?> clazz ) {
-        String mapping = customMappings.get( clazz );
-        mapping = mapping != null ? mapping : globalMappings.get( clazz );
-        return mapping != null ? mapping : getDefaultOryxPropertyId( clazz );
+    public String getOryxPropertyId(final Class<?> clazz) {
+        String mapping = customMappings.get(clazz);
+        mapping = mapping != null ? mapping : globalMappings.get(clazz);
+        return mapping != null ? mapping : getDefaultOryxPropertyId(clazz);
     }
 
     @Override
-    public String getOryxPropertyId( final Class<?> definitionClass,
-                                     final Class<?> clazz ) {
-        Map<Class<?>, String> mappings = definitionMappings.get( definitionClass );
-        if ( null != mappings ) {
-            String r = mappings.get( clazz );
-            if ( null != r ) {
+    public String getOryxPropertyId(final Class<?> definitionClass,
+                                    final Class<?> clazz) {
+        Map<Class<?>, String> mappings = definitionMappings.get(definitionClass);
+        if (null != mappings) {
+            String r = mappings.get(clazz);
+            if (null != r) {
                 return r;
             }
         }
-        return getOryxPropertyId( clazz );
+        return getOryxPropertyId(clazz);
     }
 
     @Override
-    public boolean isSkipProperty( final Class<?> definitionClass,
-                                   final String oryxPropertyId ) {
-        Set<String> toSkip = skippedProperties.get( definitionClass );
-        return toSkip != null && toSkip.contains( oryxPropertyId );
+    public boolean isSkipProperty(final Class<?> definitionClass,
+                                  final String oryxPropertyId) {
+        Set<String> toSkip = skippedProperties.get(definitionClass);
+        return toSkip != null && toSkip.contains(oryxPropertyId);
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public <T> Class<?> getProperty( final T definition,
-                                     final String oryxId ) {
-        Class<?> clazz = getKey( oryxId,
-                                 customMappings );
-        if ( null != clazz ) {
+    @SuppressWarnings("unchecked")
+    public <T> Class<?> getProperty(final T definition,
+                                    final String oryxId) {
+        Class<?> clazz = getKey(oryxId,
+                                customMappings);
+        if (null != clazz) {
             return clazz;
         }
-        clazz = getKey( oryxId,
-                        globalMappings );
-        if ( null != clazz ) {
+        clazz = getKey(oryxId,
+                       globalMappings);
+        if (null != clazz) {
             return clazz;
         }
 
-        Set<Object> properties = ( Set<Object> ) definitionManager.adapters().forDefinition().getProperties( definition );
-        if ( null != properties && !properties.isEmpty() ) {
-            for ( Object property : properties ) {
+        Set<Object> properties = (Set<Object>) definitionManager.adapters().forDefinition().getProperties(definition);
+        if (null != properties && !properties.isEmpty()) {
+            for (Object property : properties) {
                 Class<?> pClass = property.getClass();
-                String pId = getDefaultOryxPropertyId( pClass );
-                if ( oryxId.equals( pId ) ) {
+                String pId = getDefaultOryxPropertyId(pClass);
+                if (oryxId.equals(pId)) {
                     return pClass;
                 }
             }
@@ -289,71 +289,71 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
     }
 
     @Override
-    public Class<?> getDefinition( final String oryxId ) {
-        return get( oryxId,
-                    defMappings );
+    public Class<?> getDefinition(final String oryxId) {
+        return get(oryxId,
+                   defMappings);
     }
 
     @Override
-    public <T> String getPropertyId( final T definition,
-                                     final String oryxId ) {
+    public <T> String getPropertyId(final T definition,
+                                    final String oryxId) {
         Class<?> definitionClass = definition.getClass();
-        Map<Class<?>, String> mappings = definitionMappings.get( definitionClass );
-        if ( null != mappings ) {
-            Class<?> p = get( oryxId,
-                              mappings );
-            if ( null != p ) {
-                return getPropertyId( p );
+        Map<Class<?>, String> mappings = definitionMappings.get(definitionClass);
+        if (null != mappings) {
+            Class<?> p = get(oryxId,
+                             mappings);
+            if (null != p) {
+                return getPropertyId(p);
             }
         }
-        Class<?> c = getProperty( definition,
-                                  oryxId );
-        return null != c ? getPropertyId( c ) : null;
+        Class<?> c = getProperty(definition,
+                                 oryxId);
+        return null != c ? getPropertyId(c) : null;
     }
 
     @Override
-    public String getDefinitionId( final String oryxId ) {
-        Class<?> c = getDefinition( oryxId );
-        return null != c ? getDefinitionId( c ) : null;
+    public String getDefinitionId(final String oryxId) {
+        Class<?> c = getDefinition(oryxId);
+        return null != c ? getDefinitionId(c) : null;
     }
 
     @Override
-    public String getPropertyId( final Class<?> clazz ) {
-        return BindableAdapterUtils.getPropertyId( clazz );
+    public String getPropertyId(final Class<?> clazz) {
+        return BindableAdapterUtils.getPropertyId(clazz);
     }
 
     @Override
-    public String getDefinitionId( final Class<?> clazz ) {
-        return BindableAdapterUtils.getDefinitionId( clazz );
+    public String getDefinitionId(final Class<?> clazz) {
+        return BindableAdapterUtils.getDefinitionId(clazz);
     }
 
-    private Class<?> get( final String oryxId,
-                          final Map<Class<?>, String> map ) {
-        Class<?> r = getKey( oryxId,
-                             map );
-        if ( null != r ) {
+    private Class<?> get(final String oryxId,
+                         final Map<Class<?>, String> map) {
+        Class<?> r = getKey(oryxId,
+                            map);
+        if (null != r) {
             return r;
         }
         return null;
     }
 
-    private Class<?> getKey( final String value,
-                             final Map<Class<?>, String> map ) {
+    private Class<?> getKey(final String value,
+                            final Map<Class<?>, String> map) {
         Set<Map.Entry<Class<?>, String>> entrySet = map.entrySet();
-        for ( Map.Entry<Class<?>, String> entry : entrySet ) {
+        for (Map.Entry<Class<?>, String> entry : entrySet) {
             String oId = entry.getValue();
-            if ( oId.equals( value ) ) {
+            if (oId.equals(value)) {
                 return entry.getKey();
             }
         }
         return null;
     }
 
-    private String getDefaultOryxDefinitionId( final Class<?> clazz ) {
+    private String getDefaultOryxDefinitionId(final Class<?> clazz) {
         return clazz.getSimpleName();
     }
 
-    private String getDefaultOryxPropertyId( final Class<?> clazz ) {
-        return StringUtils.uncapitalize( clazz.getSimpleName() );
+    private String getDefaultOryxPropertyId(final Class<?> clazz) {
+        return StringUtils.uncapitalize(clazz.getSimpleName());
     }
 }

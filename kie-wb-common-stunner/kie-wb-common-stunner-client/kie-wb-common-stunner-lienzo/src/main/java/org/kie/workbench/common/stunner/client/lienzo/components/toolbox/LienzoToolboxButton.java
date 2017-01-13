@@ -29,7 +29,7 @@ public class LienzoToolboxButton implements ToolboxButton<IPrimitive<?>> {
     private ToolboxButtonEventHandler mouseEnterHandler;
     private ToolboxButtonEventHandler mouseExitHandler;
 
-    public LienzoToolboxButton( final IPrimitive<?> icon ) {
+    public LienzoToolboxButton(final IPrimitive<?> icon) {
         this.icon = icon;
     }
 
@@ -58,22 +58,22 @@ public class LienzoToolboxButton implements ToolboxButton<IPrimitive<?>> {
         return mouseExitHandler;
     }
 
-    public LienzoToolboxButton setClickHandler( final ToolboxButtonEventHandler clickHandler ) {
+    public LienzoToolboxButton setClickHandler(final ToolboxButtonEventHandler clickHandler) {
         this.clickHandler = clickHandler;
         return this;
     }
 
-    public LienzoToolboxButton setMouseDownHandler( final ToolboxButtonEventHandler mouseDownHandler ) {
+    public LienzoToolboxButton setMouseDownHandler(final ToolboxButtonEventHandler mouseDownHandler) {
         this.mouseDownHandler = mouseDownHandler;
         return this;
     }
 
-    public LienzoToolboxButton setMouseEnterHandler( final ToolboxButtonEventHandler mouseEnterHandler ) {
+    public LienzoToolboxButton setMouseEnterHandler(final ToolboxButtonEventHandler mouseEnterHandler) {
         this.mouseEnterHandler = mouseEnterHandler;
         return this;
     }
 
-    public LienzoToolboxButton setMouseExitHandler( final ToolboxButtonEventHandler mouseExitHandler ) {
+    public LienzoToolboxButton setMouseExitHandler(final ToolboxButtonEventHandler mouseExitHandler) {
         this.mouseExitHandler = mouseExitHandler;
         return this;
     }

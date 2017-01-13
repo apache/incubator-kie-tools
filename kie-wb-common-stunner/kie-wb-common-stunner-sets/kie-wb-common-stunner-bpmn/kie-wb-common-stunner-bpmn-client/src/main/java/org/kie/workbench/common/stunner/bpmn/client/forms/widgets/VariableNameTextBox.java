@@ -44,15 +44,15 @@ public class VariableNameTextBox extends AbstractValidatingTextBox {
      * @param isCaseSensitive
      * @param invalidValueErrorMessage
      */
-    public void setInvalidValues( final Set<String> invalidValues,
-                                  final boolean isCaseSensitive,
-                                  final String invalidValueErrorMessage ) {
-        if ( isCaseSensitive ) {
+    public void setInvalidValues(final Set<String> invalidValues,
+                                 final boolean isCaseSensitive,
+                                 final String invalidValueErrorMessage) {
+        if (isCaseSensitive) {
             this.invalidValues = invalidValues;
         } else {
             this.invalidValues = new HashSet<String>();
-            for ( String value : invalidValues ) {
-                this.invalidValues.add( value.toLowerCase() );
+            for (String value : invalidValues) {
+                this.invalidValues.add(value.toLowerCase());
             }
         }
         this.isCaseSensitive = isCaseSensitive;
@@ -64,30 +64,30 @@ public class VariableNameTextBox extends AbstractValidatingTextBox {
      * @param pattern
      * @param invalidCharactersInNameErrorMessage
      */
-    public void setRegExp( final String pattern,
-                           final String invalidCharactersInNameErrorMessage,
-                           final String invalidCharacterTypedMessage ) {
-        regExp = RegExp.compile( pattern );
+    public void setRegExp(final String pattern,
+                          final String invalidCharactersInNameErrorMessage,
+                          final String invalidCharacterTypedMessage) {
+        regExp = RegExp.compile(pattern);
         this.invalidCharactersInNameErrorMessage = invalidCharactersInNameErrorMessage;
         this.invalidCharacterTypedMessage = invalidCharacterTypedMessage;
     }
 
     @Override
-    public String isValidValue( final String value,
-                                final boolean isOnFocusLost ) {
-        if ( invalidValues != null && !invalidValues.isEmpty() ) {
-            if ( isOnFocusLost ) {
-                String err = testForInvalidValue( value );
-                if ( err != null && !err.isEmpty() ) {
+    public String isValidValue(final String value,
+                               final boolean isOnFocusLost) {
+        if (invalidValues != null && !invalidValues.isEmpty()) {
+            if (isOnFocusLost) {
+                String err = testForInvalidValue(value);
+                if (err != null && !err.isEmpty()) {
                     return err;
                 }
             }
         }
-        if ( regExp != null ) {
-            boolean isValid = this.regExp.test( value );
-            if ( !isValid ) {
-                String invalidChars = getInvalidCharsInName( value );
-                return ( isOnFocusLost ? invalidCharactersInNameErrorMessage : invalidCharacterTypedMessage )
+        if (regExp != null) {
+            boolean isValid = this.regExp.test(value);
+            if (!isValid) {
+                String invalidChars = getInvalidCharsInName(value);
+                return (isOnFocusLost ? invalidCharactersInNameErrorMessage : invalidCharacterTypedMessage)
                         + ": " + invalidChars;
             }
         }
@@ -99,17 +99,17 @@ public class VariableNameTextBox extends AbstractValidatingTextBox {
      * @param value
      * @return error message if value is invalid; otherwise null
      */
-    protected String testForInvalidValue( final String value ) {
-        if ( value == null || value.isEmpty() || invalidValues == null ) {
+    protected String testForInvalidValue(final String value) {
+        if (value == null || value.isEmpty() || invalidValues == null) {
             return null;
         }
         String testValue;
-        if ( !isCaseSensitive ) {
+        if (!isCaseSensitive) {
             testValue = value.toLowerCase();
         } else {
             testValue = value;
         }
-        if ( invalidValues.contains( testValue ) ) {
+        if (invalidValues.contains(testValue)) {
             return invalidValueErrorMessage;
         } else {
             return null;
@@ -117,43 +117,43 @@ public class VariableNameTextBox extends AbstractValidatingTextBox {
     }
 
     @Override
-    protected String makeValidValue( final String value ) {
-        if ( value == null || value.isEmpty() ) {
+    protected String makeValidValue(final String value) {
+        if (value == null || value.isEmpty()) {
             return "";
         }
         // It's a known invalid value
-        if ( testForInvalidValue( value ) != null ) {
+        if (testForInvalidValue(value) != null) {
             return "";
         } else {
-            StringBuilder validValue = new StringBuilder( value.length() );
-            for ( int i = 0; i < value.length(); i++ ) {
-                char c = value.charAt( i );
-                if ( isValidChar( c ) ) {
-                    validValue.append( c );
+            StringBuilder validValue = new StringBuilder(value.length());
+            for (int i = 0; i < value.length(); i++) {
+                char c = value.charAt(i);
+                if (isValidChar(c)) {
+                    validValue.append(c);
                 }
             }
             return validValue.toString();
         }
     }
 
-    protected String getInvalidCharsInName( final String value ) {
-        if ( value == null || value.isEmpty() ) {
+    protected String getInvalidCharsInName(final String value) {
+        if (value == null || value.isEmpty()) {
             return "";
         } else {
-            StringBuilder invalidChars = new StringBuilder( value.length() );
-            for ( int i = 0; i < value.length(); i++ ) {
-                char c = value.charAt( i );
-                if ( !isValidChar( c ) ) {
-                    invalidChars.append( c );
+            StringBuilder invalidChars = new StringBuilder(value.length());
+            for (int i = 0; i < value.length(); i++) {
+                char c = value.charAt(i);
+                if (!isValidChar(c)) {
+                    invalidChars.append(c);
                 }
             }
             return invalidChars.toString();
         }
     }
 
-    protected boolean isValidChar( final char c ) {
-        if ( regExp != null ) {
-            return regExp.test( "" + c );
+    protected boolean isValidChar(final char c) {
+        if (regExp != null) {
+            return regExp.test("" + c);
         } else {
             return true;
         }

@@ -33,91 +33,91 @@ import static org.kie.workbench.common.stunner.core.backend.definition.adapter.R
 class RuntimeBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdapter<T>
         implements BindableDefinitionAdapter<T> {
 
-    private static final Logger LOG = LoggerFactory.getLogger( RuntimeBindableDefinitionAdapter.class );
+    private static final Logger LOG = LoggerFactory.getLogger(RuntimeBindableDefinitionAdapter.class);
 
-    RuntimeBindableDefinitionAdapter( final DefinitionUtils definitionUtils ) {
-        super( definitionUtils );
+    RuntimeBindableDefinitionAdapter(final DefinitionUtils definitionUtils) {
+        super(definitionUtils);
     }
 
     @Override
-    public String getCategory( final T definition ) {
+    public String getCategory(final T definition) {
         Class<?> type = definition.getClass();
         try {
-            return getFieldValue( definition,
-                                  propertyCategoryFieldNames.get( type ) );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining category for Definition with id " + getId( definition ) );
+            return getFieldValue(definition,
+                                 propertyCategoryFieldNames.get(type));
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining category for Definition with id " + getId(definition));
         }
         return null;
     }
 
     @Override
-    public String getTitle( final T definition ) {
+    public String getTitle(final T definition) {
         Class<?> type = definition.getClass();
         try {
-            return getFieldValue( definition,
-                                  propertyTitleFieldNames.get( type ) );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining title for Definition with id " + getId( definition ) );
+            return getFieldValue(definition,
+                                 propertyTitleFieldNames.get(type));
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining title for Definition with id " + getId(definition));
         }
         return null;
     }
 
     @Override
-    public String getDescription( final T definition ) {
+    public String getDescription(final T definition) {
         Class<?> type = definition.getClass();
         try {
-            return getFieldValue( definition,
-                                  propertyDescriptionFieldNames.get( type ) );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining description for Definition with id " + getId( definition ) );
+            return getFieldValue(definition,
+                                 propertyDescriptionFieldNames.get(type));
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining description for Definition with id " + getId(definition));
         }
         return null;
     }
 
     @Override
-    public Set<String> getLabels( final T definition ) {
+    public Set<String> getLabels(final T definition) {
         Class<?> type = definition.getClass();
         try {
-            return getFieldValue( definition,
-                                  propertyLabelsFieldNames.get( type ) );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining labels for Definition with id " + getId( definition ) );
+            return getFieldValue(definition,
+                                 propertyLabelsFieldNames.get(type));
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining labels for Definition with id " + getId(definition));
         }
         return null;
     }
 
     @Override
-    public Set<?> getPropertySets( final T definition ) {
+    public Set<?> getPropertySets(final T definition) {
         Class<?> type = definition.getClass();
-        Set<String> fields = propertySetsFieldNames.get( type );
+        Set<String> fields = propertySetsFieldNames.get(type);
         try {
-            return getFieldValues( definition,
-                                   fields );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining property sets for Definition with id " + getId( definition ) );
+            return getFieldValues(definition,
+                                  fields);
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining property sets for Definition with id " + getId(definition));
         }
         return null;
     }
 
     @Override
-    protected Set<?> getBindProperties( final T definition ) {
+    protected Set<?> getBindProperties(final T definition) {
         Class<?> type = definition.getClass();
-        Set<String> fields = propertiesFieldNames.get( type );
+        Set<String> fields = propertiesFieldNames.get(type);
         try {
-            if ( null != fields ) {
-                return getFieldValues( definition,
-                                       fields );
+            if (null != fields) {
+                return getFieldValues(definition,
+                                      fields);
             }
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining properties for Definition with id " + getId( definition ) );
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining properties for Definition with id " + getId(definition));
         }
         return null;
     }
 
     @Override
-    public Object getMetaProperty( final PropertyMetaTypes metaPropertyType,
-                                   final T pojo ) {
+    public Object getMetaProperty(final PropertyMetaTypes metaPropertyType,
+                                  final T pojo) {
         // TODO
         return null;
     }

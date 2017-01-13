@@ -21,17 +21,17 @@ package org.kie.workbench.common.stunner.core.client.shape;
  */
 public enum ShapeState {
     NONE,
-    SELECTED( "#0000FF" ),
-    HIGHLIGHT( "#3366CC" ),
-    INVALID( "#FF0000" );
+    SELECTED("#0000FF"),
+    HIGHLIGHT("#3366CC"),
+    INVALID("#FF0000");
 
     private String color;
 
     ShapeState() {
-        this( null );
+        this(null);
     }
 
-    ShapeState( final String color ) {
+    ShapeState(final String color) {
         this.color = color;
     }
 

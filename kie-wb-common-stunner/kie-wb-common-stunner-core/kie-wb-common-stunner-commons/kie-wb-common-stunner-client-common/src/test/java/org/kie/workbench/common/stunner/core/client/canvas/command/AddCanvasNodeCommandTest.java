@@ -32,7 +32,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class AddCanvasNodeCommandTest extends AbstractCanvasCommandTest {
 
     @Mock
@@ -45,23 +45,23 @@ public class AddCanvasNodeCommandTest extends AbstractCanvasCommandTest {
     @Before
     public void setup() throws Exception {
         super.setup();
-        when( candidate.getUUID() ).thenReturn( "someUUID" );
-        when( candidate.getContent() ).thenReturn( content );
-        this.tested = new AddCanvasNodeCommand( candidate,
-                                                SHAPE_SET_ID );
+        when(candidate.getUUID()).thenReturn("someUUID");
+        when(candidate.getContent()).thenReturn(content);
+        this.tested = new AddCanvasNodeCommand(candidate,
+                                               SHAPE_SET_ID);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecute() {
-        final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR,
-                         result.getType() );
-        verify( canvasHandler,
-                times( 1 ) ).register( eq( SHAPE_SET_ID ),
-                                       eq( candidate ) );
-        verify( canvasHandler,
-                times( 1 ) ).applyElementMutation( eq( candidate ),
-                                                   any( MutationContext.class ) );
+        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertNotEquals(CommandResult.Type.ERROR,
+                        result.getType());
+        verify(canvasHandler,
+               times(1)).register(eq(SHAPE_SET_ID),
+                                  eq(candidate));
+        verify(canvasHandler,
+               times(1)).applyElementMutation(eq(candidate),
+                                              any(MutationContext.class));
     }
 }

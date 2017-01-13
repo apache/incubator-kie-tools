@@ -24,7 +24,7 @@ import com.google.gwt.user.client.Timer;
 
 public class CanvasLoadingObserver {
 
-    private static Logger LOGGER = Logger.getLogger( CanvasLoadingObserver.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(CanvasLoadingObserver.class.getName());
 
     private static final int TIMEOUT_DURATION = 5000;
 
@@ -39,63 +39,63 @@ public class CanvasLoadingObserver {
     private Timer timeout;
     private int duration = TIMEOUT_DURATION;
 
-    public void setLoadingObserverCallback( final Callback callback ) {
+    public void setLoadingObserverCallback(final Callback callback) {
         this.callback = callback;
     }
 
-    public void setTimeoutDuration( final int duration ) {
+    public void setTimeoutDuration(final int duration) {
         this.duration = duration;
     }
 
     public void loadingStarted() {
-        if ( null != callback
+        if (null != callback
                 && null != timeout
-                && !timeout.isRunning() ) {
+                && !timeout.isRunning()) {
             callback.onLoadingStarted();
-            log( "Starting timeout..." );
+            log("Starting timeout...");
             this.timeout = new Timer() {
                 @Override
                 public void run() {
-                    logWarn( "Loading timeout timer fired after " + duration + "sec... something went wrong?" );
+                    logWarn("Loading timeout timer fired after " + duration + "sec... something went wrong?");
                     loadingCompleted();
                 }
             };
-            timeout.schedule( duration );
+            timeout.schedule(duration);
         }
     }
 
     public void loadingCompleted() {
         clearTimeout();
-        if ( null != callback ) {
+        if (null != callback) {
             callback.onLoadingCompleted();
         }
     }
 
     private void clearTimeout() {
-        if ( null != this.timeout ) {
-            log( "Clearing timeout..." );
-            if ( this.timeout.isRunning() ) {
+        if (null != this.timeout) {
+            log("Clearing timeout...");
+            if (this.timeout.isRunning()) {
                 this.timeout.cancel();
             }
             this.timeout = null;
         }
     }
 
-    private static void log( final String message ) {
-        log( Level.FINE,
-             message );
+    private static void log(final String message) {
+        log(Level.FINE,
+            message);
     }
 
-    private static void logWarn( final String message ) {
-        log( Level.WARNING,
-             message );
+    private static void logWarn(final String message) {
+        log(Level.WARNING,
+            message);
     }
 
-    private static void log( final Level level,
-                             final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private static void log(final Level level,
+                            final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

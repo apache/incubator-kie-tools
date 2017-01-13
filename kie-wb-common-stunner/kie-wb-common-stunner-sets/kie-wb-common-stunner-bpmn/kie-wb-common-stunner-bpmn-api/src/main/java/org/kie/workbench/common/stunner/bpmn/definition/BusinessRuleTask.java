@@ -46,21 +46,21 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIE
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = BusinessRuleTask.BusinessRuleTaskBuilder.class )
-@CanDock( roles = { "IntermediateEventOnActivityBoundary" } )
-@Morph( base = BaseTask.class )
+@Definition(graphFactory = NodeFactory.class, builder = BusinessRuleTask.BusinessRuleTaskBuilder.class)
+@CanDock(roles = {"IntermediateEventOnActivityBoundary"})
+@Morph(base = BaseTask.class)
 public class BusinessRuleTask extends BaseTask implements DataIOModel {
 
     @Title
     public static final transient String title = "Business Rule Task";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
+    @FieldDef(label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1)
     @Valid
     protected BusinessRuleTaskExecutionSet executionSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_TASK_DATA, position = 2 )
+    @FieldDef(label = FIELDDEF_TASK_DATA, position = 2)
     @Valid
     protected DataIOSet dataIOSet;
 
@@ -69,40 +69,40 @@ public class BusinessRuleTask extends BaseTask implements DataIOModel {
 
         @Override
         public BusinessRuleTask build() {
-            return new BusinessRuleTask( new TaskGeneralSet( new Name( "Task" ),
-                                                             new Documentation( "" ) ),
-                                         new BusinessRuleTaskExecutionSet(),
-                                         new DataIOSet(),
-                                         new BackgroundSet( COLOR,
-                                                            BORDER_COLOR,
-                                                            BORDER_SIZE ),
-                                         new FontSet(),
-                                         new RectangleDimensionsSet( WIDTH,
-                                                                     HEIGHT ),
-                                         new SimulationSet(),
-                                         new TaskType( TaskTypes.BUSINESS_RULE )
+            return new BusinessRuleTask(new TaskGeneralSet(new Name("Task"),
+                                                           new Documentation("")),
+                                        new BusinessRuleTaskExecutionSet(),
+                                        new DataIOSet(),
+                                        new BackgroundSet(COLOR,
+                                                          BORDER_COLOR,
+                                                          BORDER_SIZE),
+                                        new FontSet(),
+                                        new RectangleDimensionsSet(WIDTH,
+                                                                   HEIGHT),
+                                        new SimulationSet(),
+                                        new TaskType(TaskTypes.BUSINESS_RULE)
             );
         }
     }
 
     public BusinessRuleTask() {
-        super( TaskTypes.BUSINESS_RULE );
+        super(TaskTypes.BUSINESS_RULE);
     }
 
-    public BusinessRuleTask( @MapsTo( "general" ) TaskGeneralSet general,
-                             @MapsTo( "executionSet" ) BusinessRuleTaskExecutionSet executionSet,
-                             @MapsTo( "dataIOSet" ) DataIOSet dataIOSet,
-                             @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                             @MapsTo( "fontSet" ) FontSet fontSet,
-                             @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet,
-                             @MapsTo( "simulationSet" ) SimulationSet simulationSet,
-                             @MapsTo( "taskType" ) TaskType taskType ) {
-        super( general,
-               backgroundSet,
-               fontSet,
-               dimensionsSet,
-               simulationSet,
-               taskType );
+    public BusinessRuleTask(final @MapsTo("general") TaskGeneralSet general,
+                            final @MapsTo("executionSet") BusinessRuleTaskExecutionSet executionSet,
+                            final @MapsTo("dataIOSet") DataIOSet dataIOSet,
+                            final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                            final @MapsTo("fontSet") FontSet fontSet,
+                            final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                            final @MapsTo("simulationSet") SimulationSet simulationSet,
+                            final @MapsTo("taskType") TaskType taskType) {
+        super(general,
+              backgroundSet,
+              fontSet,
+              dimensionsSet,
+              simulationSet,
+              taskType);
         this.executionSet = executionSet;
         this.dataIOSet = dataIOSet;
     }
@@ -139,11 +139,11 @@ public class BusinessRuleTask extends BaseTask implements DataIOModel {
         return dataIOSet;
     }
 
-    public void setExecutionSet( BusinessRuleTaskExecutionSet executionSet ) {
+    public void setExecutionSet(final BusinessRuleTaskExecutionSet executionSet) {
         this.executionSet = executionSet;
     }
 
-    public void setDataIOSet( DataIOSet dataIOSet ) {
+    public void setDataIOSet(final DataIOSet dataIOSet) {
         this.dataIOSet = dataIOSet;
     }
 }

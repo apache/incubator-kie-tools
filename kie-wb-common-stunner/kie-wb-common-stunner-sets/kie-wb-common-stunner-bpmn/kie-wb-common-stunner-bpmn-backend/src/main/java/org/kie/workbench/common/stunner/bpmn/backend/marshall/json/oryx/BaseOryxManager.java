@@ -32,8 +32,8 @@ public abstract class BaseOryxManager implements OryxManager {
     protected BaseOryxManager() {
     }
 
-    public BaseOryxManager( final OryxIdMappings oryxIdMappings,
-                            final Bpmn2OryxPropertyManager oryxPropertyManager ) {
+    public BaseOryxManager(final OryxIdMappings oryxIdMappings,
+                           final Bpmn2OryxPropertyManager oryxPropertyManager) {
         this.oryxIdMappings = oryxIdMappings;
         this.oryxPropertyManager = oryxPropertyManager;
     }
@@ -42,10 +42,10 @@ public abstract class BaseOryxManager implements OryxManager {
     public void init() {
         // Load default & custom mappings for definitions.
         final Set<Class<?>> defClasses = getDefinitionClasses();
-        definitions.addAll( defClasses );
+        definitions.addAll(defClasses);
 
         // Initialize the manager for the id mappings.
-        oryxIdMappings.init( definitions );
+        oryxIdMappings.init(definitions);
     }
 
     @Override

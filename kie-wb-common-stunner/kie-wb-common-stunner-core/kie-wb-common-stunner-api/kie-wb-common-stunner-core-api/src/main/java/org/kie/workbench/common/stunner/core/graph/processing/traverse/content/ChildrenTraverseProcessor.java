@@ -27,5 +27,5 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 public interface ChildrenTraverseProcessor
         extends ContentTraverseProcessor<Child, Node<View, Edge>, Edge<Child, Node>, ChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>>> {
 
-    ChildrenTraverseProcessor setRootUUID( final String rootUUID );
+    ChildrenTraverseProcessor setRootUUID(final String rootUUID);
 }

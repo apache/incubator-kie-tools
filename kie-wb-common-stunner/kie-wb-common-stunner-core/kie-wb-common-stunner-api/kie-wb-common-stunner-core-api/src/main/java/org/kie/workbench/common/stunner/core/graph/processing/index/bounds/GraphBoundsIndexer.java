@@ -23,5 +23,5 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public interface GraphBoundsIndexer extends NodeBoundsIndexer<Graph<View, Node<View, Edge>>> {
 
-    GraphBoundsIndexer setRootUUID( final String uuid );
+    GraphBoundsIndexer setRootUUID(final String uuid);
 }

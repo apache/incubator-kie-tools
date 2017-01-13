@@ -29,11 +29,11 @@ public class ColorPickerFieldProvider extends BasicTypeFieldProvider<ColorPicker
 
     @Override
     protected void doRegisterFields() {
-        registerPropertyType( String.class );
+        registerPropertyType(String.class);
     }
 
     @Override
-    public ColorPickerFieldDefinition createFieldByType( FieldTypeInfo typeInfo ) {
+    public ColorPickerFieldDefinition createFieldByType(final FieldTypeInfo typeInfo) {
         return getDefaultField();
     }
 

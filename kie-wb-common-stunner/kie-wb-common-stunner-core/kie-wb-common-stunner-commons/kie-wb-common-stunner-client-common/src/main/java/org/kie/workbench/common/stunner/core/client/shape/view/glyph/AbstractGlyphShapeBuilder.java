@@ -30,21 +30,21 @@ public abstract class AbstractGlyphShapeBuilder<G>
 
     protected abstract FactoryManager getFactoryManager();
 
-    protected abstract Glyph<G> doBuild( final Shape<?> shape );
+    protected abstract Glyph<G> doBuild(final Shape<?> shape);
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public Glyph<G> build() {
-        final String id = glyphDefinition.getGlyphDefinitionId( defId );
-        final Element<View<Object>> element = ( Element<View<Object>> ) getFactoryManager().newElement( UUID.uuid(),
-                                                                                                        id );
+        final String id = glyphDefinition.getGlyphDefinitionId(defId);
+        final Element<View<Object>> element = (Element<View<Object>>) getFactoryManager().newElement(UUID.uuid(),
+                                                                                                     id);
         final Object definition = element.getContent().getDefinition();
-        Shape<?> shape = factory.build( definition,
-                                        null );
-        if ( shape instanceof MutableShape ) {
-            ( ( MutableShape ) shape ).applyProperties( element,
-                                                        MutationContext.STATIC );
+        Shape<?> shape = factory.build(definition,
+                                       null);
+        if (shape instanceof MutableShape) {
+            ((MutableShape) shape).applyProperties(element,
+                                                   MutationContext.STATIC);
         }
-        return doBuild( shape );
+        return doBuild(shape);
     }
 }

@@ -25,20 +25,20 @@ public final class UpdateCanvasElementPositionCommand extends AbstractCanvasComm
 
     private final Element<?> element;
 
-    public UpdateCanvasElementPositionCommand( final Element<?> element ) {
+    public UpdateCanvasElementPositionCommand(final Element<?> element) {
         this.element = element;
     }
 
     @Override
-    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
-        context.updateElementPosition( element,
-                                       MutationContext.STATIC );
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+        context.updateElementPosition(element,
+                                      MutationContext.STATIC);
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        return execute( context );
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+        return execute(context);
     }
 
     public Element<?> getElement() {

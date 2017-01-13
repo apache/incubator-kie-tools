@@ -40,22 +40,22 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
     protected Map<Class, String> propertyCategoryFieldNames;
     protected Map<Class, String> propertyDescriptionFieldNames;
 
-    public AbstractBindableDefinitionAdapter( final DefinitionUtils definitionUtils ) {
+    public AbstractBindableDefinitionAdapter(final DefinitionUtils definitionUtils) {
         this.definitionUtils = definitionUtils;
     }
 
-    protected abstract Set<?> getBindProperties( final T pojo );
+    protected abstract Set<?> getBindProperties(final T pojo);
 
     @Override
-    public void setBindings( final Map<PropertyMetaTypes, Class> metaPropertyTypeClasses,
-                             final Map<Class, Class> baseTypes,
-                             final Map<Class, Set<String>> propertySetsFieldNames,
-                             final Map<Class, Set<String>> propertiesFieldNames,
-                             final Map<Class, Class> propertyGraphFactoryFieldNames,
-                             final Map<Class, String> propertyLabelsFieldNames,
-                             final Map<Class, String> propertyTitleFieldNames,
-                             final Map<Class, String> propertyCategoryFieldNames,
-                             final Map<Class, String> propertyDescriptionFieldNames ) {
+    public void setBindings(final Map<PropertyMetaTypes, Class> metaPropertyTypeClasses,
+                            final Map<Class, Class> baseTypes,
+                            final Map<Class, Set<String>> propertySetsFieldNames,
+                            final Map<Class, Set<String>> propertiesFieldNames,
+                            final Map<Class, Class> propertyGraphFactoryFieldNames,
+                            final Map<Class, String> propertyLabelsFieldNames,
+                            final Map<Class, String> propertyTitleFieldNames,
+                            final Map<Class, String> propertyCategoryFieldNames,
+                            final Map<Class, String> propertyDescriptionFieldNames) {
         this.metaPropertyTypeClasses = metaPropertyTypeClasses;
         this.baseTypes = baseTypes;
         this.propertySetsFieldNames = propertySetsFieldNames;
@@ -68,81 +68,81 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public String getBaseType( final Class<?> type ) {
-        final Class<?> baseType = baseTypes.get( type );
-        if ( null != baseType ) {
-            return getDefinitionId( baseType );
+    @SuppressWarnings("unchecked")
+    public String getBaseType(final Class<?> type) {
+        final Class<?> baseType = baseTypes.get(type);
+        if (null != baseType) {
+            return getDefinitionId(baseType);
         }
         return null;
     }
 
     @Override
-    public String[] getTypes( final String baseType ) {
+    public String[] getTypes(final String baseType) {
         List<String> result = new LinkedList<>();
-        for ( Map.Entry<Class, Class> entry : baseTypes.entrySet() ) {
+        for (Map.Entry<Class, Class> entry : baseTypes.entrySet()) {
             final Class type = entry.getKey();
             final Class _baseType = entry.getValue();
-            final String _id = getDefinitionId( _baseType );
-            if ( baseType.equals( _id ) ) {
-                result.add( getDefinitionId( type ) );
+            final String _id = getDefinitionId(_baseType);
+            if (baseType.equals(_id)) {
+                result.add(getDefinitionId(type));
             }
         }
-        if ( !result.isEmpty() ) {
-            return result.toArray( new String[ result.size() ] );
+        if (!result.isEmpty()) {
+            return result.toArray(new String[result.size()]);
         }
         return null;
     }
 
-    public String getId( final T pojo ) {
-        return getDefinitionId( pojo.getClass() );
+    public String getId(final T pojo) {
+        return getDefinitionId(pojo.getClass());
     }
 
     @Override
-    public Object getMetaProperty( final PropertyMetaTypes metaPropertyType,
-                                   final T pojo ) {
-        final Class pClass = metaPropertyTypeClasses.get( metaPropertyType );
-        if ( null != pClass ) {
-            final Set<?> properties = getProperties( pojo );
-            if ( null != properties ) {
+    public Object getMetaProperty(final PropertyMetaTypes metaPropertyType,
+                                  final T pojo) {
+        final Class pClass = metaPropertyTypeClasses.get(metaPropertyType);
+        if (null != pClass) {
+            final Set<?> properties = getProperties(pojo);
+            if (null != properties) {
                 return properties.stream()
-                        .filter( property -> pClass.equals( property.getClass() ) )
+                        .filter(property -> pClass.equals(property.getClass()))
                         .findFirst()
-                        .orElse( null );
+                        .orElse(null);
             }
         }
         return null;
     }
 
-    public Set<?> getProperties( final T pojo ) {
+    public Set<?> getProperties(final T pojo) {
         final Set<Object> result = new HashSet<>();
         // Obtain all properties from property sets.
-        final Set<?> propertySetProperties = definitionUtils.getPropertiesFromPropertySets( pojo );
-        if ( null != propertySetProperties ) {
-            result.addAll( propertySetProperties );
+        final Set<?> propertySetProperties = definitionUtils.getPropertiesFromPropertySets(pojo);
+        if (null != propertySetProperties) {
+            result.addAll(propertySetProperties);
         }
-        final Set<?> bindProperties = getBindProperties( pojo );
-        if ( null != bindProperties && !bindProperties.isEmpty() ) {
-            result.addAll( bindProperties );
+        final Set<?> bindProperties = getBindProperties(pojo);
+        if (null != bindProperties && !bindProperties.isEmpty()) {
+            result.addAll(bindProperties);
         }
         return result;
     }
 
     @Override
-    public Class<? extends ElementFactory> getGraphFactoryType( final T pojo ) {
-        return getGraphFactory( pojo.getClass() );
+    public Class<? extends ElementFactory> getGraphFactoryType(final T pojo) {
+        return getGraphFactory(pojo.getClass());
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public Class<? extends ElementFactory> getGraphFactory( final Class<?> type ) {
-        return getPropertyGraphFactoryFieldNames().get( type );
+    @SuppressWarnings("unchecked")
+    public Class<? extends ElementFactory> getGraphFactory(final Class<?> type) {
+        return getPropertyGraphFactoryFieldNames().get(type);
     }
 
-    public boolean accepts( final Class<?> type ) {
-        final boolean hasType = getPropertyCategoryFieldNames().containsKey( type );
+    public boolean accepts(final Class<?> type) {
+        final boolean hasType = getPropertyCategoryFieldNames().containsKey(type);
         // If not types found, check if it's a super type.
-        return hasType || baseTypes.values().contains( type );
+        return hasType || baseTypes.values().contains(type);
     }
 
     @Override
@@ -183,7 +183,7 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
         return propertyDescriptionFieldNames;
     }
 
-    protected String getDefinitionId( final Class<?> type ) {
-        return BindableAdapterUtils.getDefinitionId( type );
+    protected String getDefinitionId(final Class<?> type) {
+        return BindableAdapterUtils.getDefinitionId(type);
     }
 }

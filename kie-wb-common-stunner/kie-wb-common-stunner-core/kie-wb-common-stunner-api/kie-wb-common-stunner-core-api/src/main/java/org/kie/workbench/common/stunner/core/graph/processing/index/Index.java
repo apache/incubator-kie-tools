@@ -34,15 +34,15 @@ public interface Index<N extends Node, E extends Edge> {
     /**
      * Returns the element (node or edge) with the given uuid.
      */
-    Element get( final String uuid );
+    Element get(final String uuid);
 
     /**
      * Returns the node with the given uuid.
      */
-    N getNode( final String uuid );
+    N getNode(final String uuid);
 
     /**
      * Returns the edge with the given uuid.
      */
-    E getEdge( final String uuid );
+    E getEdge(final String uuid);
 }

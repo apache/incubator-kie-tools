@@ -34,20 +34,20 @@ public class RuntimeBindableMorphAdapter<S> extends BindableMorphAdapter<S> {
     Instance<MorphDefinitionProvider> morphDefinitionInstances;
 
     @Inject
-    public RuntimeBindableMorphAdapter( final DefinitionUtils definitionUtils,
-                                        final FactoryManager factoryManager,
-                                        final Instance<MorphDefinitionProvider> morphDefinitionInstances ) {
-        super( definitionUtils,
-               factoryManager );
+    public RuntimeBindableMorphAdapter(final DefinitionUtils definitionUtils,
+                                       final FactoryManager factoryManager,
+                                       final Instance<MorphDefinitionProvider> morphDefinitionInstances) {
+        super(definitionUtils,
+              factoryManager);
         this.morphDefinitionInstances = morphDefinitionInstances;
     }
 
-    public RuntimeBindableMorphAdapter( final DefinitionUtils definitionUtils,
-                                        final FactoryManager factoryManager,
-                                        final Collection<MorphDefinition> morphDefinitions1 ) {
-        super( definitionUtils,
-               factoryManager );
-        morphDefinitions.addAll( morphDefinitions1 );
+    public RuntimeBindableMorphAdapter(final DefinitionUtils definitionUtils,
+                                       final FactoryManager factoryManager,
+                                       final Collection<MorphDefinition> morphDefinitions1) {
+        super(definitionUtils,
+              factoryManager);
+        morphDefinitions.addAll(morphDefinitions1);
     }
 
     @PostConstruct
@@ -56,16 +56,16 @@ public class RuntimeBindableMorphAdapter<S> extends BindableMorphAdapter<S> {
     }
 
     private void initMorphDefinitions() {
-        if ( null != morphDefinitionInstances ) {
-            for ( MorphDefinitionProvider morphDefinitionProvider : morphDefinitionInstances ) {
-                morphDefinitions.addAll( morphDefinitionProvider.getMorphDefinitions() );
+        if (null != morphDefinitionInstances) {
+            for (MorphDefinitionProvider morphDefinitionProvider : morphDefinitionInstances) {
+                morphDefinitions.addAll(morphDefinitionProvider.getMorphDefinitions());
             }
         }
     }
 
     @Override
-    protected <T> T doMerge( final S source,
-                             final T result ) {
+    protected <T> T doMerge(final S source,
+                            final T result) {
         // TODO: Merge beans in server side.
         //       See current logic on client side at ClientBindingUtils#merge
         //       For now the morphing operations are only performed on client side.
@@ -73,7 +73,7 @@ public class RuntimeBindableMorphAdapter<S> extends BindableMorphAdapter<S> {
     }
 
     @Override
-    public boolean accepts( final Class<?> type ) {
+    public boolean accepts(final Class<?> type) {
         return true;
     }
 }

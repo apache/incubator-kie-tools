@@ -39,49 +39,49 @@ import org.uberfire.io.IOService;
 public class DiagramLookupServiceImpl
         extends AbstractDiagramLookupService<Metadata, Diagram<Graph, Metadata>> {
 
-    private static final Logger LOG = LoggerFactory.getLogger( DiagramLookupServiceImpl.class.getName() );
+    private static final Logger LOG = LoggerFactory.getLogger(DiagramLookupServiceImpl.class.getName());
 
     protected DiagramLookupServiceImpl() {
-        this( null,
-              null );
+        this(null,
+             null);
     }
 
     @Inject
-    public DiagramLookupServiceImpl( final @Named( "ioStrategy" ) IOService ioService,
-                                     final DiagramServiceImpl diagramService ) {
-        super( ioService,
-               diagramService );
+    public DiagramLookupServiceImpl(final @Named("ioStrategy") IOService ioService,
+                                    final DiagramServiceImpl diagramService) {
+        super(ioService,
+              diagramService);
     }
 
-    protected org.uberfire.java.nio.file.Path parseCriteriaPath( final DiagramLookupRequest request ) {
+    protected org.uberfire.java.nio.file.Path parseCriteriaPath(final DiagramLookupRequest request) {
         String criteria = request.getCriteria();
-        if ( StringUtils.isEmpty( criteria ) ) {
+        if (StringUtils.isEmpty(criteria)) {
             return getServiceImpl().getDiagramsPath();
         } else {
-            Map<String, String> criteriaMap = AbstractCriteriaLookupManager.parseCriteria( criteria );
-            String name = criteriaMap.get( "name" );
-            if ( !StringUtils.isEmpty( name ) ) {
-                Collection<Diagram<Graph, Metadata>> diagrams = getItemsByPath( getServiceImpl().getDiagramsPath() );
-                if ( null != diagrams ) {
+            Map<String, String> criteriaMap = AbstractCriteriaLookupManager.parseCriteria(criteria);
+            String name = criteriaMap.get("name");
+            if (!StringUtils.isEmpty(name)) {
+                Collection<Diagram<Graph, Metadata>> diagrams = getItemsByPath(getServiceImpl().getDiagramsPath());
+                if (null != diagrams) {
                     final Diagram d = diagrams
                             .stream()
-                            .filter( diagram -> name.equals( diagram.getName() ) )
+                            .filter(diagram -> name.equals(diagram.getName()))
                             .findFirst()
-                            .orElse( null );
-                    if ( null != d ) {
-                        return Paths.convert( d.getMetadata().getPath() );
+                            .orElse(null);
+                    if (null != d) {
+                        return Paths.convert(d.getMetadata().getPath());
                     }
                 }
-                LOG.error( "Diagram with name [" + name + "] not found." );
+                LOG.error("Diagram with name [" + name + "] not found.");
                 return null;
             }
         }
         String m = "Criteria [" + criteria + "] not supported.";
-        LOG.error( m );
-        throw new IllegalArgumentException( m );
+        LOG.error(m);
+        throw new IllegalArgumentException(m);
     }
 
     private DiagramServiceImpl getServiceImpl() {
-        return ( DiagramServiceImpl ) getDiagramService();
+        return (DiagramServiceImpl) getDiagramService();
     }
 }

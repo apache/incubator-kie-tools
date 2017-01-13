@@ -30,20 +30,20 @@ public final class AddNodeCommand extends AbstractCanvasGraphCommand {
     private final Node candidate;
     private final String shapeSetId;
 
-    public AddNodeCommand( final Node candidate,
-                           final String shapeSetId ) {
+    public AddNodeCommand(final Node candidate,
+                          final String shapeSetId) {
         this.candidate = candidate;
         this.shapeSetId = shapeSetId;
     }
 
     @Override
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand( candidate );
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand(candidate);
     }
 
     @Override
-    protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new AddCanvasNodeCommand( candidate,
-                                         shapeSetId );
+    protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
+        return new AddCanvasNodeCommand(candidate,
+                                        shapeSetId);
     }
 }

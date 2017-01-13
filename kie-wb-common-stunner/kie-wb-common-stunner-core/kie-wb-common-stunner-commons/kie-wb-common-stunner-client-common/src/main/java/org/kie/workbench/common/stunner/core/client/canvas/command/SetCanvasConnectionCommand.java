@@ -31,55 +31,55 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public final class SetCanvasConnectionCommand extends AbstractCanvasCommand {
 
-    private static Logger LOGGER = Logger.getLogger( SetCanvasConnectionCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(SetCanvasConnectionCommand.class.getName());
 
     private final Edge<? extends View<?>, Node> edge;
 
-    public SetCanvasConnectionCommand( final Edge<? extends View<?>, Node> edge ) {
+    public SetCanvasConnectionCommand(final Edge<? extends View<?>, Node> edge) {
         this.edge = edge;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
+    @SuppressWarnings("unchecked")
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         final Node source = edge.getSourceNode();
         final Node target = edge.getTargetNode();
-        ShapeUtils.applyConnections( edge,
-                                     context,
-                                     MutationContext.STATIC );
-        if ( null != source ) {
-            context.fireCanvasElementUpdated( source );
-            highlightInvalidConnection( context,
-                                        edge,
-                                        source );
+        ShapeUtils.applyConnections(edge,
+                                    context,
+                                    MutationContext.STATIC);
+        if (null != source) {
+            context.fireCanvasElementUpdated(source);
+            highlightInvalidConnection(context,
+                                       edge,
+                                       source);
         }
-        if ( null != target ) {
-            context.fireCanvasElementUpdated( target );
-            highlightInvalidConnection( context,
-                                        edge,
-                                        target );
+        if (null != target) {
+            context.fireCanvasElementUpdated(target);
+            highlightInvalidConnection(context,
+                                       edge,
+                                       target);
         }
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        return new SetCanvasConnectionCommand( edge ).execute( context );
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+        return new SetCanvasConnectionCommand(edge).execute(context);
     }
 
-    public static void highlightInvalidConnection( final AbstractCanvasHandler context,
-                                                   final Edge<? extends View<?>, Node> edge,
-                                                   final Node<? extends View<?>, Edge> node ) {
+    public static void highlightInvalidConnection(final AbstractCanvasHandler context,
+                                                  final Edge<? extends View<?>, Node> edge,
+                                                  final Node<? extends View<?>, Edge> node) {
         final String uuid = edge.getUUID();
-        final Shape<?> shape = context.getCanvas().getShape( uuid );
-        if ( null != shape ) {
+        final Shape<?> shape = context.getCanvas().getShape(uuid);
+        if (null != shape) {
             final ShapeState state = null != node ? ShapeState.NONE : ShapeState.INVALID;
-            LOGGER.log( Level.FINE,
-                        "Highlight connector for UUID [" + uuid + "] with state [" + state + "]" );
-            shape.applyState( state );
+            LOGGER.log(Level.FINE,
+                       "Highlight connector for UUID [" + uuid + "] with state [" + state + "]");
+            shape.applyState(state);
         } else {
-            LOGGER.log( Level.WARNING,
-                        "Cannot highlight connector as it is not found for UUID [" + uuid + "]" );
+            LOGGER.log(Level.WARNING,
+                       "Cannot highlight connector as it is not found for UUID [" + uuid + "]");
         }
     }
 

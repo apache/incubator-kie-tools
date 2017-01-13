@@ -28,7 +28,7 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class AbstractDynamicRegistryWrapperTest {
 
     @Mock
@@ -40,34 +40,34 @@ public class AbstractDynamicRegistryWrapperTest {
 
     @Before
     public void setup() throws Exception {
-        tested = new AbstractDynamicRegistryWrapper<Object, DynamicRegistry<Object>>( registry ) {
+        tested = new AbstractDynamicRegistryWrapper<Object, DynamicRegistry<Object>>(registry) {
         };
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testRegister() {
-        tested.register( s1 );
-        verify( registry,
-                times( 1 ) ).register( eq( s1 ) );
+        tested.register(s1);
+        verify(registry,
+               times(1)).register(eq(s1));
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testRemove() {
-        tested.remove( s1 );
-        verify( registry,
-                times( 1 ) ).remove( eq( s1 ) );
+        tested.remove(s1);
+        verify(registry,
+               times(1)).remove(eq(s1));
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testContains() {
-        when( registry.contains( anyObject() ) ).thenReturn( false );
-        when( registry.contains( eq( s1 ) ) ).thenReturn( true );
-        when( registry.contains( eq( s2 ) ) ).thenReturn( true );
-        assertTrue( tested.contains( s1 ) );
-        assertTrue( tested.contains( s2 ) );
-        assertFalse( tested.contains( "" ) );
+        when(registry.contains(anyObject())).thenReturn(false);
+        when(registry.contains(eq(s1))).thenReturn(true);
+        when(registry.contains(eq(s2))).thenReturn(true);
+        assertTrue(tested.contains(s1));
+        assertTrue(tested.contains(s2));
+        assertFalse(tested.contains(""));
     }
 }

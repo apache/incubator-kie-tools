@@ -18,9 +18,9 @@ package org.kie.workbench.common.stunner.core.client.components.palette.view;
 
 public interface PaletteView<T, L, I extends PaletteElementView> {
 
-    T setX( final double x );
+    T setX(final double x);
 
-    T setY( final double y );
+    T setY(final double y);
 
     double getX();
 
@@ -30,14 +30,14 @@ public interface PaletteView<T, L, I extends PaletteElementView> {
 
     double getHeight();
 
-    T add( final I item );
+    T add(final I item);
 
-    T set( final int pos,
-           final I item );
+    T set(final int pos,
+          final I item);
 
-    T remove( final int pos );
+    T remove(final int pos);
 
-    T attach( final L layer );
+    T attach(final L layer);
 
     T show();
 

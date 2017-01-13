@@ -29,13 +29,13 @@ public final class RuleLookupRequestImpl extends AbstractLookupRequest implement
 
     private final String definitionSetId;
 
-    public RuleLookupRequestImpl( final @MapsTo( "criteria" ) String criteria,
-                                  final @MapsTo( "page" ) int page,
-                                  final @MapsTo( "pageSize" ) int pageSize,
-                                  final @MapsTo( "definitionSetId" ) String definitionSetId ) {
-        super( criteria,
-               page,
-               pageSize );
+    public RuleLookupRequestImpl(final @MapsTo("criteria") String criteria,
+                                 final @MapsTo("page") int page,
+                                 final @MapsTo("pageSize") int pageSize,
+                                 final @MapsTo("definitionSetId") String definitionSetId) {
+        super(criteria,
+              page,
+              pageSize);
         this.definitionSetId = definitionSetId;
     }
 
@@ -62,46 +62,46 @@ public final class RuleLookupRequestImpl extends AbstractLookupRequest implement
         private String defSetId;
         private final StringBuilder criteria = new StringBuilder();
 
-        public Builder id( final String id ) {
-            criteria.append( "id=" ).append( id ).append( ";" );
+        public Builder id(final String id) {
+            criteria.append("id=").append(id).append(";");
             return this;
         }
 
-        public Builder type( final RuleType ruleType ) {
-            criteria.append( "type=" ).append( ruleType.toString().toLowerCase() ).append( ";" );
+        public Builder type(final RuleType ruleType) {
+            criteria.append("type=").append(ruleType.toString().toLowerCase()).append(";");
             return this;
         }
 
-        public Builder definitionSetId( final String defSetId ) {
+        public Builder definitionSetId(final String defSetId) {
             this.defSetId = defSetId;
             return this;
         }
 
-        public Builder from( final Set<String> labels ) {
-            criteria.append( "from=" ).append( fromSet( labels ) ).append( ";" );
+        public Builder from(final Set<String> labels) {
+            criteria.append("from=").append(fromSet(labels)).append(";");
             return this;
         }
 
-        public Builder role( final String role ) {
-            criteria.append( "role=" ).append( role ).append( ";" );
+        public Builder role(final String role) {
+            criteria.append("role=").append(role).append(";");
             return this;
         }
 
-        public Builder roleIn( final Set<String> roles ) {
-            criteria.append( "roleIn=" ).append( fromSet( roles ) ).append( ";" );
+        public Builder roleIn(final Set<String> roles) {
+            criteria.append("roleIn=").append(fromSet(roles)).append(";");
             return this;
         }
 
-        public Builder edgeType( final EdgeType type ) {
-            criteria.append( " edgeType=" ).append( type.name().toLowerCase() ).append( ";" );
+        public Builder edgeType(final EdgeType type) {
+            criteria.append(" edgeType=").append(type.name().toLowerCase()).append(";");
             return this;
         }
 
         public RuleLookupRequest build() {
-            return new RuleLookupRequestImpl( criteria.toString(),
-                                              page,
-                                              pageSize,
-                                              defSetId );
+            return new RuleLookupRequestImpl(criteria.toString(),
+                                             page,
+                                             pageSize,
+                                             defSetId);
         }
     }
 }

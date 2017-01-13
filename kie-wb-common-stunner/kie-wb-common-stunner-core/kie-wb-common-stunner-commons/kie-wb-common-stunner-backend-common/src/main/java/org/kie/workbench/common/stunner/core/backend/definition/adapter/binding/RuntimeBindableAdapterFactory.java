@@ -32,16 +32,16 @@ public class RuntimeBindableAdapterFactory implements BindableAdapterFactory {
     DefinitionUtils definitionUtils;
 
     protected RuntimeBindableAdapterFactory() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public RuntimeBindableAdapterFactory( final DefinitionUtils definitionUtils ) {
+    public RuntimeBindableAdapterFactory(final DefinitionUtils definitionUtils) {
         this.definitionUtils = definitionUtils;
     }
 
     public BindableDefinitionAdapter newBindableDefinitionAdapter() {
-        return new RuntimeBindableDefinitionAdapter( definitionUtils );
+        return new RuntimeBindableDefinitionAdapter(definitionUtils);
     }
 
     public BindableDefinitionSetAdapter newBindableDefinitionSetAdapter() {

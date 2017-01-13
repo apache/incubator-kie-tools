@@ -40,51 +40,51 @@ public class UnDockNodeCommand extends AbstractGraphCommand {
     private transient Node<?, Edge> parent;
     private transient Node<?, Edge> candidate;
 
-    public UnDockNodeCommand( final @MapsTo( "parentUUID" ) String parentUUID,
-                              final @MapsTo( "candidateUUID" ) String candidateUUID ) {
-        this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
-                                                              parentUUID );
-        this.candidateUUID = PortablePreconditions.checkNotNull( "candidateUUID",
-                                                                 candidateUUID );
+    public UnDockNodeCommand(final @MapsTo("parentUUID") String parentUUID,
+                             final @MapsTo("candidateUUID") String candidateUUID) {
+        this.parentUUID = PortablePreconditions.checkNotNull("parentUUID",
+                                                             parentUUID);
+        this.candidateUUID = PortablePreconditions.checkNotNull("candidateUUID",
+                                                                candidateUUID);
     }
 
-    public UnDockNodeCommand( final Node<?, Edge> parent,
-                              final Node<?, Edge> candidate ) {
-        this( parent.getUUID(),
-              candidate.getUUID() );
+    public UnDockNodeCommand(final Node<?, Edge> parent,
+                             final Node<?, Edge> candidate) {
+        this(parent.getUUID(),
+             candidate.getUUID());
         this.parent = parent;
         this.candidate = candidate;
     }
 
     @Override
-    public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        final CommandResult<RuleViolation> results = allow( context );
-        if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            final Node<?, Edge> parent = getParent( context );
-            final Node<?, Edge> candidate = getCandidate( context );
-            final Edge<Dock, Node> edge = getEdgeForTarget( parent,
-                                                            candidate );
-            if ( null != edge ) {
-                edge.setSourceNode( null );
-                edge.setTargetNode( null );
-                parent.getInEdges().remove( edge );
-                candidate.getOutEdges().remove( edge );
-                getMutableIndex( context ).removeEdge( edge );
+    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
+        final CommandResult<RuleViolation> results = allow(context);
+        if (!results.getType().equals(CommandResult.Type.ERROR)) {
+            final Node<?, Edge> parent = getParent(context);
+            final Node<?, Edge> candidate = getCandidate(context);
+            final Edge<Dock, Node> edge = getEdgeForTarget(parent,
+                                                           candidate);
+            if (null != edge) {
+                edge.setSourceNode(null);
+                edge.setTargetNode(null);
+                parent.getInEdges().remove(edge);
+                candidate.getOutEdges().remove(edge);
+                getMutableIndex(context).removeEdge(edge);
             }
         }
         return results;
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Edge<Dock, Node> getEdgeForTarget( final Node<?, Edge> parent,
-                                               final Node<?, Edge> candidate ) {
+    @SuppressWarnings("unchecked")
+    private Edge<Dock, Node> getEdgeForTarget(final Node<?, Edge> parent,
+                                              final Node<?, Edge> candidate) {
         final List<Edge> outEdges = parent.getInEdges();
-        if ( null != outEdges && !outEdges.isEmpty() ) {
-            for ( Edge<?, Node> outEdge : outEdges ) {
-                if ( outEdge.getContent() instanceof Dock ) {
+        if (null != outEdges && !outEdges.isEmpty()) {
+            for (Edge<?, Node> outEdge : outEdges) {
+                if (outEdge.getContent() instanceof Dock) {
                     final Node source = outEdge.getSourceNode();
-                    if ( null != source && source.equals( candidate ) ) {
-                        return ( Edge<Dock, Node> ) outEdge;
+                    if (null != source && source.equals(candidate)) {
+                        return (Edge<Dock, Node>) outEdge;
                     }
                 }
             }
@@ -92,33 +92,33 @@ public class UnDockNodeCommand extends AbstractGraphCommand {
         return null;
     }
 
-    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
-        getParent( context );
-        getCandidate( context );
+    protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
+        getParent(context);
+        getCandidate(context);
         return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
-    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final DockNodeCommand undoCommand = new DockNodeCommand( getParent( context ),
-                                                                 getCandidate( context ) );
-        return undoCommand.execute( context );
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        final DockNodeCommand undoCommand = new DockNodeCommand(getParent(context),
+                                                                getCandidate(context));
+        return undoCommand.execute(context);
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Node<?, Edge> getParent( final GraphCommandExecutionContext context ) {
-        if ( null == parent ) {
-            parent = checkNodeNotNull( context,
-                                       parentUUID );
+    @SuppressWarnings("unchecked")
+    private Node<?, Edge> getParent(final GraphCommandExecutionContext context) {
+        if (null == parent) {
+            parent = checkNodeNotNull(context,
+                                      parentUUID);
         }
         return parent;
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Node<?, Edge> getCandidate( final GraphCommandExecutionContext context ) {
-        if ( null == candidate ) {
-            candidate = checkNodeNotNull( context,
-                                          candidateUUID );
+    @SuppressWarnings("unchecked")
+    private Node<?, Edge> getCandidate(final GraphCommandExecutionContext context) {
+        if (null == candidate) {
+            candidate = checkNodeNotNull(context,
+                                         candidateUUID);
         }
         return candidate;
     }

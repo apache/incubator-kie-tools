@@ -26,15 +26,15 @@ public interface PropertySetAdapter<T> extends PriorityAdapter {
     /**
      * Returns the property set's identifier for a given pojo.
      */
-    String getId( final T pojo );
+    String getId(final T pojo);
 
     /**
      * Returns the property set's name for a given pojo.
      */
-    String getName( final T pojo );
+    String getName(final T pojo);
 
     /**
      * Returns the property set's properties for a given pojo.
      */
-    Set<?> getProperties( final T pojo );
+    Set<?> getProperties(final T pojo);
 }

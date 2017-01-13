@@ -26,44 +26,44 @@ class BS3PaletteGlyphViewFactory implements BS3PaletteViewFactory {
 
     private final ShapeManager shapeManager;
 
-    BS3PaletteGlyphViewFactory( final ShapeManager shapeManager ) {
+    BS3PaletteGlyphViewFactory(final ShapeManager shapeManager) {
         this.shapeManager = shapeManager;
     }
 
     @Override
-    public boolean accepts( final String id ) {
+    public boolean accepts(final String id) {
         return true;
     }
 
     @Override
-    public IsWidget getCategoryView( final String defSetId,
-                                     final String categoryId,
-                                     final int width,
-                                     final int height ) {
+    public IsWidget getCategoryView(final String defSetId,
+                                    final String categoryId,
+                                    final int width,
+                                    final int height) {
         return null;
     }
 
     @Override
-    public IsWidget getDefinitionView( final String defSetId,
-                                       final String defId,
-                                       final int width,
-                                       final int height ) {
-        final Glyph<Group> glyph = getGlyph( defSetId,
-                                             defId,
-                                             width,
-                                             height );
-        return LienzoPanelUtils.newPanel( glyph,
-                                          width,
-                                          height );
+    public IsWidget getDefinitionView(final String defSetId,
+                                      final String defId,
+                                      final int width,
+                                      final int height) {
+        final Glyph<Group> glyph = getGlyph(defSetId,
+                                            defId,
+                                            width,
+                                            height);
+        return LienzoPanelUtils.newPanel(glyph,
+                                         width,
+                                         height);
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Glyph<Group> getGlyph( final String defSetId,
-                                   final String id,
-                                   final int width,
-                                   final int height ) {
-        return shapeManager.getDefaultShapeSet( defSetId ).getShapeFactory().glyph( id,
-                                                                                    width,
-                                                                                    height );
+    @SuppressWarnings("unchecked")
+    private Glyph<Group> getGlyph(final String defSetId,
+                                  final String id,
+                                  final int width,
+                                  final int height) {
+        return shapeManager.getDefaultShapeSet(defSetId).getShapeFactory().glyph(id,
+                                                                                 width,
+                                                                                 height);
     }
 }

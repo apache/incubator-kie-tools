@@ -29,24 +29,24 @@ public final class UpdateElementPositionCommand extends AbstractCanvasGraphComma
     private final Double x;
     private final Double y;
 
-    public UpdateElementPositionCommand( final Node<View<?>, Edge> element,
-                                         final Double x,
-                                         final Double y ) {
+    public UpdateElementPositionCommand(final Node<View<?>, Edge> element,
+                                        final Double x,
+                                        final Double y) {
         this.element = element;
         this.x = x;
         this.y = y;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPositionCommand( element,
-                                                                                                          x,
-                                                                                                          y );
+    @SuppressWarnings("unchecked")
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPositionCommand(element,
+                                                                                                         x,
+                                                                                                         y);
     }
 
     @Override
-    protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new UpdateCanvasElementPositionCommand( element );
+    protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
+        return new UpdateCanvasElementPositionCommand(element);
     }
 }

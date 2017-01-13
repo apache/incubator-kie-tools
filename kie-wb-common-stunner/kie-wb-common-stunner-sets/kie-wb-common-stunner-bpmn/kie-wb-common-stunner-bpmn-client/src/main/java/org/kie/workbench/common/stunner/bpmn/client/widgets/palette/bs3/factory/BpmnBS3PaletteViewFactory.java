@@ -33,25 +33,25 @@ import org.kie.workbench.common.stunner.core.client.ShapeManager;
 public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactory<Icon> {
 
     private final static Map<String, Icon> CATEGORY_VIEWS = new HashMap<String, Icon>() {{
-        put( Categories.ACTIVITIES,
-             getIcon( IconType.SQUARE ) );
-        put( Categories.LANES,
-             getIcon( IconType.COPY ) );
-        put( Categories.GATEWAYS,
-             getIcon( IconType.ASTERISK ) );
-        put( Categories.EVENTS,
-             getIcon( IconType.CIRCLE ) );
-        put( Categories.CONNECTING_OBJECTS,
-             getIcon( IconType.LONG_ARROW_RIGHT ) );
+        put(Categories.ACTIVITIES,
+            getIcon(IconType.SQUARE));
+        put(Categories.LANES,
+            getIcon(IconType.COPY));
+        put(Categories.GATEWAYS,
+            getIcon(IconType.ASTERISK));
+        put(Categories.EVENTS,
+            getIcon(IconType.CIRCLE));
+        put(Categories.CONNECTING_OBJECTS,
+            getIcon(IconType.LONG_ARROW_RIGHT));
     }};
 
     protected BpmnBS3PaletteViewFactory() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public BpmnBS3PaletteViewFactory( final ShapeManager shapeManager ) {
-        super( shapeManager );
+    public BpmnBS3PaletteViewFactory(final ShapeManager shapeManager) {
+        super(shapeManager);
     }
 
     @Override
@@ -71,14 +71,14 @@ public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactor
     }
 
     @Override
-    protected Icon resize( final Icon widget,
-                           final int width,
-                           final int height ) {
-        widget.setSize( IconSize.LARGE );
+    protected Icon resize(final Icon widget,
+                          final int width,
+                          final int height) {
+        widget.setSize(IconSize.LARGE);
         return widget;
     }
 
-    private static Icon getIcon( final IconType iconType ) {
-        return new Icon( iconType );
+    private static Icon getIcon(final IconType iconType) {
+        return new Icon(iconType);
     }
 }

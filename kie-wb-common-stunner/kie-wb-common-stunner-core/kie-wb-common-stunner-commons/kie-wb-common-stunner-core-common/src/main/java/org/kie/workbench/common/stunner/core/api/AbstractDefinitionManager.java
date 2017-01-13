@@ -32,8 +32,8 @@ public abstract class AbstractDefinitionManager implements DefinitionManager {
         this.adapterManager = null;
     }
 
-    public AbstractDefinitionManager( final RegistryFactory registryFactory,
-                                      final AdapterManager adapterManager ) {
+    public AbstractDefinitionManager(final RegistryFactory registryFactory,
+                                     final AdapterManager adapterManager) {
         this.definitionSetRegistry = registryFactory.newDefinitionSetRegistry();
         this.adapterManager = adapterManager;
     }
@@ -48,15 +48,15 @@ public abstract class AbstractDefinitionManager implements DefinitionManager {
         return adapterManager;
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected void addDefinitionSet( final Object object ) {
-        ( ( DynamicRegistry ) definitionSetRegistry ).register( object );
+    @SuppressWarnings("unchecked")
+    protected void addDefinitionSet(final Object object) {
+        ((DynamicRegistry) definitionSetRegistry).register(object);
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected void addAdapter( final Adapter adapter ) {
-        final DynamicRegistry<Adapter> adapterDynamicRegistry = ( DynamicRegistry<Adapter> ) adapterManager.registry();
-        adapterDynamicRegistry.register( adapter );
+    @SuppressWarnings("unchecked")
+    protected void addAdapter(final Adapter adapter) {
+        final DynamicRegistry<Adapter> adapterDynamicRegistry = (DynamicRegistry<Adapter>) adapterManager.registry();
+        adapterDynamicRegistry.register(adapter);
     }
 }
 

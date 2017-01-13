@@ -43,7 +43,7 @@ public class ProcessingContext {
     private final ProcessingMorphingAnnotations morphingAnnotations = new ProcessingMorphingAnnotations();
 
     public synchronized static ProcessingContext getInstance() {
-        if ( null == context ) {
+        if (null == context) {
             context = new ProcessingContext();
         }
         return context;
@@ -56,21 +56,21 @@ public class ProcessingContext {
         return definitionSet;
     }
 
-    public void setDefinitionSet( final String packageName,
-                                  final String className ) {
-        if ( null != this.definitionSet ) {
-            throw new RuntimeException( "Only a single definition set allowed for a single processing." );
+    public void setDefinitionSet(final String packageName,
+                                 final String className) {
+        if (null != this.definitionSet) {
+            throw new RuntimeException("Only a single definition set allowed for a single processing.");
         }
-        this.definitionSet = new ProcessingEntity( packageName + "." + className,
-                                                   className );
+        this.definitionSet = new ProcessingEntity(packageName + "." + className,
+                                                  className);
     }
 
-    public void addRule( final String id,
-                         final ProcessingRule.TYPE type,
-                         final StringBuffer content ) {
-        rules.add( new ProcessingRule( id,
-                                       type,
-                                       content ) );
+    public void addRule(final String id,
+                        final ProcessingRule.TYPE type,
+                        final StringBuffer content) {
+        rules.add(new ProcessingRule(id,
+                                     type,
+                                     content));
     }
 
     public List<ProcessingRule> getRules() {

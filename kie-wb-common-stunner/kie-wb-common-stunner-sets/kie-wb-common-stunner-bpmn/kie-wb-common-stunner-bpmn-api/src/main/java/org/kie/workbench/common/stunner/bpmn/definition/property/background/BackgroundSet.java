@@ -41,43 +41,43 @@ public class BackgroundSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Background Set";
 
     @Property
-    @FieldDef( label = FIELDDEF_BACKGROUND_COLOR, property = "value" )
+    @FieldDef(label = FIELDDEF_BACKGROUND_COLOR, property = "value")
     @ColorPicker
     @Valid
     private BgColor bgColor;
 
     @Property
-    @FieldDef( label = FIELDDEF_BORDER_COLOR, property = "value" )
+    @FieldDef(label = FIELDDEF_BORDER_COLOR, property = "value")
     @ColorPicker
     @Valid
     private BorderColor borderColor;
 
     @Property
-    @FieldDef( label = FIELDDEF_BORDER_SIZE, property = "value" )
-    @Slider( min = 0.0, max = 5.0, step = 0.5 )
+    @FieldDef(label = FIELDDEF_BORDER_SIZE, property = "value")
+    @Slider(min = 0.0, max = 5.0, step = 0.5)
     @Valid
     private BorderSize borderSize;
 
     public BackgroundSet() {
-        this( new BgColor(),
-              new BorderColor(),
-              new BorderSize() );
+        this(new BgColor(),
+             new BorderColor(),
+             new BorderSize());
     }
 
-    public BackgroundSet( @MapsTo( "bgColor" ) BgColor bgColor,
-                          @MapsTo( "borderColor" ) BorderColor borderColor,
-                          @MapsTo( "borderSize" ) BorderSize borderSize ) {
+    public BackgroundSet(final @MapsTo("bgColor") BgColor bgColor,
+                         final @MapsTo("borderColor") BorderColor borderColor,
+                         final @MapsTo("borderSize") BorderSize borderSize) {
         this.bgColor = bgColor;
         this.borderColor = borderColor;
         this.borderSize = borderSize;
     }
 
-    public BackgroundSet( String bgColor,
-                          String borderColor,
-                          Double borderSize ) {
-        this.bgColor = new BgColor( bgColor );
-        this.borderColor = new BorderColor( borderColor );
-        this.borderSize = new BorderSize( borderSize );
+    public BackgroundSet(final String bgColor,
+                         final String borderColor,
+                         final Double borderSize) {
+        this.bgColor = new BgColor(bgColor);
+        this.borderColor = new BorderColor(borderColor);
+        this.borderSize = new BorderSize(borderSize);
     }
 
     public String getPropertySetName() {
@@ -96,15 +96,15 @@ public class BackgroundSet implements BPMNPropertySet {
         return borderSize;
     }
 
-    public void setBgColor( BgColor bgColor ) {
+    public void setBgColor(final BgColor bgColor) {
         this.bgColor = bgColor;
     }
 
-    public void setBorderColor( BorderColor borderColor ) {
+    public void setBorderColor(final BorderColor borderColor) {
         this.borderColor = borderColor;
     }
 
-    public void setBorderSize( BorderSize borderSize ) {
+    public void setBorderSize(final BorderSize borderSize) {
         this.borderSize = borderSize;
     }
 }

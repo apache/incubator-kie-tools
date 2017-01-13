@@ -41,27 +41,27 @@ public class ScriptTaskExecutionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef( label = FIELDDEF_SCRIPT, property = "value", position = 1 )
-    @TextArea( rows = 5 )
+    @FieldDef(label = FIELDDEF_SCRIPT, property = "value", position = 1)
+    @TextArea(rows = 5)
     @Valid
     private Script script;
 
     @Property
-    @FieldDef( label = FIELDDEF_SCRIPT_LANGUAGE, property = "value", position = 2 )
+    @FieldDef(label = FIELDDEF_SCRIPT_LANGUAGE, property = "value", position = 2)
     @ListBox
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
-            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.ScriptLanguageFormProvider" )
+            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.ScriptLanguageFormProvider")
     @Valid
     protected ScriptLanguage scriptLanguage;
 
     public ScriptTaskExecutionSet() {
-        this( new Script( "" ),
-              new ScriptLanguage( "" ) );
+        this(new Script(""),
+             new ScriptLanguage(""));
     }
 
-    public ScriptTaskExecutionSet( @MapsTo( "script" ) Script script,
-                                   @MapsTo( "scriptLanguage" ) ScriptLanguage scriptLanguage ) {
+    public ScriptTaskExecutionSet(final @MapsTo("script") Script script,
+                                  final @MapsTo("scriptLanguage") ScriptLanguage scriptLanguage) {
         this.script = script;
         this.scriptLanguage = scriptLanguage;
     }
@@ -74,7 +74,7 @@ public class ScriptTaskExecutionSet implements BPMNPropertySet {
         return script;
     }
 
-    public void setScript( Script script ) {
+    public void setScript(final Script script) {
         this.script = script;
     }
 
@@ -82,7 +82,7 @@ public class ScriptTaskExecutionSet implements BPMNPropertySet {
         return scriptLanguage;
     }
 
-    public void setScriptLanguage( ScriptLanguage scriptLanguage ) {
+    public void setScriptLanguage(final ScriptLanguage scriptLanguage) {
         this.scriptLanguage = scriptLanguage;
     }
 }

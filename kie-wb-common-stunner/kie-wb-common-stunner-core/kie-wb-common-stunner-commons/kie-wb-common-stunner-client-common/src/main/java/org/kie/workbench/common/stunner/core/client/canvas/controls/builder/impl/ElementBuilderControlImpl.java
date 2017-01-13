@@ -39,23 +39,23 @@ import org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleMana
 public class ElementBuilderControlImpl extends AbstractElementBuilderControl {
 
     @Inject
-    public ElementBuilderControlImpl( final ClientDefinitionManager clientDefinitionManager,
-                                      final ClientFactoryService clientFactoryServices,
-                                      final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
-                                      final GraphUtils graphUtils,
-                                      final ModelContainmentRuleManager modelContainmentRuleManager,
-                                      final ModelCardinalityRuleManager modelCardinalityRuleManager,
-                                      final CanvasCommandFactory canvasCommandFactory,
-                                      final GraphBoundsIndexer graphBoundsIndexer,
-                                      final CanvasLayoutUtils canvasLayoutUtils ) {
-        super( clientDefinitionManager,
-               clientFactoryServices,
-               canvasCommandManager,
-               graphUtils,
-               modelContainmentRuleManager,
-               modelCardinalityRuleManager,
-               canvasCommandFactory,
-               graphBoundsIndexer,
-               canvasLayoutUtils );
+    public ElementBuilderControlImpl(final ClientDefinitionManager clientDefinitionManager,
+                                     final ClientFactoryService clientFactoryServices,
+                                     final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
+                                     final GraphUtils graphUtils,
+                                     final ModelContainmentRuleManager modelContainmentRuleManager,
+                                     final ModelCardinalityRuleManager modelCardinalityRuleManager,
+                                     final CanvasCommandFactory canvasCommandFactory,
+                                     final GraphBoundsIndexer graphBoundsIndexer,
+                                     final CanvasLayoutUtils canvasLayoutUtils) {
+        super(clientDefinitionManager,
+              clientFactoryServices,
+              canvasCommandManager,
+              graphUtils,
+              modelContainmentRuleManager,
+              modelCardinalityRuleManager,
+              canvasCommandFactory,
+              graphBoundsIndexer,
+              canvasLayoutUtils);
     }
 }

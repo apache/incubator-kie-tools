@@ -43,20 +43,20 @@ public class AdapterManagerImpl implements AdapterManager {
     }
 
     @Inject
-    public AdapterManagerImpl( final RegistryFactory registryFactory,
-                               final BootstrapAdapterFactory bootstrapAdapterFactory ) {
-        this( registryFactory.newAdapterRegistry(),
-              bootstrapAdapterFactory );
+    public AdapterManagerImpl(final RegistryFactory registryFactory,
+                              final BootstrapAdapterFactory bootstrapAdapterFactory) {
+        this(registryFactory.newAdapterRegistry(),
+             bootstrapAdapterFactory);
     }
 
-    AdapterManagerImpl( final AdapterRegistry registry,
-                        final BootstrapAdapterFactory bootstrapAdapterFactory ) {
+    AdapterManagerImpl(final AdapterRegistry registry,
+                       final BootstrapAdapterFactory bootstrapAdapterFactory) {
         this.registry = registry;
-        this.definitionSetAdapter = bootstrapAdapterFactory.newDefinitionSetAdapter( registry );
-        this.definitionSetRuleAdapter = bootstrapAdapterFactory.newDefinitionSetRuleAdapter( registry );
-        this.definitionAdapter = bootstrapAdapterFactory.newDefinitionAdapter( registry );
-        this.propertySetAdapter = bootstrapAdapterFactory.newPropertySetAdapter( registry );
-        this.propertyAdapter = bootstrapAdapterFactory.newPropertyAdapter( registry );
+        this.definitionSetAdapter = bootstrapAdapterFactory.newDefinitionSetAdapter(registry);
+        this.definitionSetRuleAdapter = bootstrapAdapterFactory.newDefinitionSetRuleAdapter(registry);
+        this.definitionAdapter = bootstrapAdapterFactory.newDefinitionAdapter(registry);
+        this.propertySetAdapter = bootstrapAdapterFactory.newPropertySetAdapter(registry);
+        this.propertyAdapter = bootstrapAdapterFactory.newPropertyAdapter(registry);
     }
 
     @Override

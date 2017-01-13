@@ -24,6 +24,6 @@ import org.kie.workbench.common.stunner.core.registry.impl.AbstractDiagramListRe
 class SyncDiagramListRegistry<D extends Diagram> extends AbstractDiagramListRegistry<D> {
 
     SyncDiagramListRegistry() {
-        super( Collections.synchronizedList( new ArrayList<D>() ) );
+        super(Collections.synchronizedList(new ArrayList<D>()));
     }
 }

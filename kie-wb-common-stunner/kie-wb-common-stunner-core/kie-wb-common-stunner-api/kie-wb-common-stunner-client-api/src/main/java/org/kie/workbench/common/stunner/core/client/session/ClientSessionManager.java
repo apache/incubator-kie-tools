@@ -48,7 +48,7 @@ public interface ClientSessionManager<C extends Canvas, H extends CanvasHandler,
     /**
      * Opens the session <code>session</code>.
      */
-    void open( final S session );
+    void open(final S session);
 
     /**
      * Pause the current session.
@@ -58,7 +58,7 @@ public interface ClientSessionManager<C extends Canvas, H extends CanvasHandler,
     /**
      * Resume the session <code>session</code> and pause the current one, if any.
      */
-    void resume( final S session );
+    void resume(final S session);
 
     /**
      * Dispose the current session.

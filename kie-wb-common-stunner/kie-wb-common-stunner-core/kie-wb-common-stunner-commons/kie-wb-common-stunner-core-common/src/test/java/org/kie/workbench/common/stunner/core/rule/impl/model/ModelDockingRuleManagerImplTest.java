@@ -30,22 +30,22 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ModelDockingRuleManagerImplTest {
 
     private final static String DEF_ID = "defId";
     private final static String ROLE1 = "role1";
     private final static String ROLE2 = "role2";
-    private final static Set<String> PERMITTED_ROLES = new HashSet<String>( 2 ) {{
-        add( ROLE1 );
-        add( ROLE2 );
+    private final static Set<String> PERMITTED_ROLES = new HashSet<String>(2) {{
+        add(ROLE1);
+        add(ROLE2);
     }};
     private final static String DEF_ID2 = "defId2";
     private final static String ROLE3 = "role3";
     private final static String ROLE4 = "role4";
-    private final static Set<String> PERMITTED_ROLES2 = new HashSet<String>( 2 ) {{
-        add( ROLE3 );
-        add( ROLE4 );
+    private final static Set<String> PERMITTED_ROLES2 = new HashSet<String>(2) {{
+        add(ROLE3);
+        add(ROLE4);
     }};
 
     @Mock
@@ -57,84 +57,84 @@ public class ModelDockingRuleManagerImplTest {
 
     @Before
     public void setup() throws Exception {
-        when( rule.getId() ).thenReturn( DEF_ID );
-        when( rule.getPermittedRoles() ).thenReturn( PERMITTED_ROLES );
-        when( rule2.getId() ).thenReturn( DEF_ID2 );
-        when( rule2.getPermittedRoles() ).thenReturn( PERMITTED_ROLES2 );
+        when(rule.getId()).thenReturn(DEF_ID);
+        when(rule.getPermittedRoles()).thenReturn(PERMITTED_ROLES);
+        when(rule2.getId()).thenReturn(DEF_ID2);
+        when(rule2.getPermittedRoles()).thenReturn(PERMITTED_ROLES2);
         tested = new ModelDockingRuleManagerImpl();
-        tested.addRule( rule );
-        tested.addRule( rule2 );
+        tested.addRule(rule);
+        tested.addRule(rule2);
     }
 
     @Test
     public void test1Role1Accept() {
-        final Set<String> roles = new HashSet<String>( 2 ) {{
-            add( ROLE1 );
-            add( "role3" );
+        final Set<String> roles = new HashSet<String>(2) {{
+            add(ROLE1);
+            add("role3");
         }};
-        final RuleViolations violations = tested.evaluate( DEF_ID,
-                                                           roles );
-        assertNotNull( violations );
-        assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        final RuleViolations violations = tested.evaluate(DEF_ID,
+                                                          roles);
+        assertNotNull(violations);
+        assertFalse(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
     public void test1Role2Accept() {
-        final Set<String> roles = new HashSet<String>( 2 ) {{
-            add( ROLE2 );
-            add( "role3" );
+        final Set<String> roles = new HashSet<String>(2) {{
+            add(ROLE2);
+            add("role3");
         }};
-        final RuleViolations violations = tested.evaluate( DEF_ID,
-                                                           roles );
-        assertNotNull( violations );
-        assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        final RuleViolations violations = tested.evaluate(DEF_ID,
+                                                          roles);
+        assertNotNull(violations);
+        assertFalse(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
     public void test1Deny() {
-        final Set<String> roles = new HashSet<String>( 2 ) {{
-            add( "role3" );
-            add( "role4" );
+        final Set<String> roles = new HashSet<String>(2) {{
+            add("role3");
+            add("role4");
         }};
-        final RuleViolations violations = tested.evaluate( DEF_ID,
-                                                           roles );
-        assertNotNull( violations );
-        assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        final RuleViolations violations = tested.evaluate(DEF_ID,
+                                                          roles);
+        assertNotNull(violations);
+        assertTrue(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
     public void test2Role3Accept() {
-        final Set<String> roles = new HashSet<String>( 2 ) {{
-            add( ROLE3 );
-            add( "role6" );
+        final Set<String> roles = new HashSet<String>(2) {{
+            add(ROLE3);
+            add("role6");
         }};
-        final RuleViolations violations = tested.evaluate( DEF_ID2,
-                                                           roles );
-        assertNotNull( violations );
-        assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        final RuleViolations violations = tested.evaluate(DEF_ID2,
+                                                          roles);
+        assertNotNull(violations);
+        assertFalse(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
     public void test2Role4Accept() {
-        final Set<String> roles = new HashSet<String>( 2 ) {{
-            add( ROLE4 );
-            add( "role1" );
+        final Set<String> roles = new HashSet<String>(2) {{
+            add(ROLE4);
+            add("role1");
         }};
-        final RuleViolations violations = tested.evaluate( DEF_ID2,
-                                                           roles );
-        assertNotNull( violations );
-        assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        final RuleViolations violations = tested.evaluate(DEF_ID2,
+                                                          roles);
+        assertNotNull(violations);
+        assertFalse(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
     public void test2Deny() {
-        final Set<String> roles = new HashSet<String>( 2 ) {{
-            add( ROLE1 );
-            add( "role6" );
+        final Set<String> roles = new HashSet<String>(2) {{
+            add(ROLE1);
+            add("role6");
         }};
-        final RuleViolations violations = tested.evaluate( DEF_ID2,
-                                                           roles );
-        assertNotNull( violations );
-        assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        final RuleViolations violations = tested.evaluate(DEF_ID2,
+                                                          roles);
+        assertNotNull(violations);
+        assertTrue(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 }

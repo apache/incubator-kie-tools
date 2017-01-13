@@ -59,7 +59,7 @@ public class FontColor implements BPMNProperty {
     public FontColor() {
     }
 
-    public FontColor( final String value ) {
+    public FontColor(final String value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class FontColor implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

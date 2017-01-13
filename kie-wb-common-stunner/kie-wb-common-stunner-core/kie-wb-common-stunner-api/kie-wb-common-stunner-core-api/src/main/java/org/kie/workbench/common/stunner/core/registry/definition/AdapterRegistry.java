@@ -34,30 +34,30 @@ public interface AdapterRegistry extends Registry<Adapter> {
     /**
      * Returns the Definition Set adapter instance for the given type.
      */
-    <T> DefinitionSetAdapter<T> getDefinitionSetAdapter( final Class<?> type );
+    <T> DefinitionSetAdapter<T> getDefinitionSetAdapter(final Class<?> type);
 
     /**
      * Returns the Definition Set rules adapter instance for the given type.
      */
-    <T> DefinitionSetRuleAdapter<T> getDefinitionSetRuleAdapter( final Class<?> type );
+    <T> DefinitionSetRuleAdapter<T> getDefinitionSetRuleAdapter(final Class<?> type);
 
     /**
      * Returns the Definition adapter instance for the given type.
      */
-    <T> DefinitionAdapter<T> getDefinitionAdapter( final Class<?> type );
+    <T> DefinitionAdapter<T> getDefinitionAdapter(final Class<?> type);
 
     /**
      * Returns the Property Set adapter instance for the given property set's type.
      */
-    <T> PropertySetAdapter<T> getPropertySetAdapter( final Class<?> type );
+    <T> PropertySetAdapter<T> getPropertySetAdapter(final Class<?> type);
 
     /**
      * Returns the Property adapter instance for the given property's type.
      */
-    <T> PropertyAdapter<T, ?> getPropertyAdapter( final Class<?> type );
+    <T> PropertyAdapter<T, ?> getPropertyAdapter(final Class<?> type);
 
     /**
      * Returns the Morphing adapter instance for a given Definition type.
      */
-    <T> MorphAdapter<T> getMorphAdapter( final Class<?> type );
+    <T> MorphAdapter<T> getMorphAdapter(final Class<?> type);
 }

@@ -26,13 +26,13 @@ class BootstrapDefinitionSetRuleAdapter implements DefinitionSetRuleAdapter<Obje
 
     private final AdapterRegistry adapterRegistry;
 
-    BootstrapDefinitionSetRuleAdapter( final AdapterRegistry adapterRegistry ) {
+    BootstrapDefinitionSetRuleAdapter(final AdapterRegistry adapterRegistry) {
         this.adapterRegistry = adapterRegistry;
     }
 
     @Override
-    public Collection<Rule> getRules( final Object pojo ) {
-        return getWrapped( pojo ).getRules( pojo );
+    public Collection<Rule> getRules(final Object pojo) {
+        return getWrapped(pojo).getRules(pojo);
     }
 
     @Override
@@ -41,8 +41,8 @@ class BootstrapDefinitionSetRuleAdapter implements DefinitionSetRuleAdapter<Obje
     }
 
     @Override
-    public boolean accepts( final Class<?> type ) {
-        return null != getWrapped( type );
+    public boolean accepts(final Class<?> type) {
+        return null != getWrapped(type);
     }
 
     @Override
@@ -50,11 +50,11 @@ class BootstrapDefinitionSetRuleAdapter implements DefinitionSetRuleAdapter<Obje
         return false;
     }
 
-    private DefinitionSetRuleAdapter<Object> getWrapped( final Object pojo ) {
-        return getWrapped( pojo.getClass() );
+    private DefinitionSetRuleAdapter<Object> getWrapped(final Object pojo) {
+        return getWrapped(pojo.getClass());
     }
 
-    private DefinitionSetRuleAdapter<Object> getWrapped( final Class<?> type ) {
-        return adapterRegistry.getDefinitionSetRuleAdapter( type );
+    private DefinitionSetRuleAdapter<Object> getWrapped(final Class<?> type) {
+        return adapterRegistry.getDefinitionSetRuleAdapter(type);
     }
 }

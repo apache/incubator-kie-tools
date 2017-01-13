@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
 @ApplicationScoped
 public class DefaultProfileImpl implements IDiagramProfile {
 
-    private static Logger _logger = LoggerFactory.getLogger( DefaultProfileImpl.class );
+    private static Logger _logger = LoggerFactory.getLogger(DefaultProfileImpl.class);
 
     private Map<String, IDiagramPlugin> _plugins = new LinkedHashMap<String, IDiagramPlugin>();
 
@@ -82,15 +82,15 @@ public class DefaultProfileImpl implements IDiagramProfile {
     public DefaultProfileImpl() {
     }
 
-    public DefaultProfileImpl( ServletContext servletContext ) {
-        this( servletContext,
-              true );
+    public DefaultProfileImpl(ServletContext servletContext) {
+        this(servletContext,
+             true);
     }
 
-    public DefaultProfileImpl( ServletContext servletContext,
-                               boolean initializeLocalPlugins ) {
-        if ( initializeLocalPlugins ) {
-            initializeLocalPlugins( servletContext );
+    public DefaultProfileImpl(ServletContext servletContext,
+                              boolean initializeLocalPlugins) {
+        if (initializeLocalPlugins) {
+            initializeLocalPlugins(servletContext);
         }
     }
 
@@ -107,52 +107,52 @@ public class DefaultProfileImpl implements IDiagramProfile {
     }
 
     public Collection<String> getPlugins() {
-        return Collections.unmodifiableCollection( _plugins.keySet() );
+        return Collections.unmodifiableCollection(_plugins.keySet());
     }
 
-    private void initializeLocalPlugins( ServletContext context ) {
-        Map<String, IDiagramPlugin> registry = PluginServiceImpl.getLocalPluginsRegistry( context );
+    private void initializeLocalPlugins(ServletContext context) {
+        Map<String, IDiagramPlugin> registry = PluginServiceImpl.getLocalPluginsRegistry(context);
         //we read the default.xml file and make sense of it.
         FileInputStream fileStream = null;
         try {
             try {
-                fileStream = new FileInputStream( new StringBuilder( context.getRealPath( "/" ) ).append( "/" ).
-                        append( ConfigurationProvider.getInstance().getDesignerContext() ).append( "profiles" ).append( "/" ).append( "default.xml" ).toString() );
-            } catch ( FileNotFoundException e ) {
-                throw new RuntimeException( e );
+                fileStream = new FileInputStream(new StringBuilder(context.getRealPath("/")).append("/").
+                        append(ConfigurationProvider.getInstance().getDesignerContext()).append("profiles").append("/").append("default.xml").toString());
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
             }
             XMLInputFactory factory = XMLInputFactory.newInstance();
-            XMLStreamReader reader = factory.createXMLStreamReader( fileStream,
-                                                                    "UTF-8" );
-            while ( reader.hasNext() ) {
-                if ( reader.next() == XMLStreamReader.START_ELEMENT ) {
-                    if ( "profile".equals( reader.getLocalName() ) ) {
-                        for ( int i = 0; i < reader.getAttributeCount(); i++ ) {
-                            if ( "stencilset".equals( reader.getAttributeLocalName( i ) ) ) {
-                                _stencilSet = reader.getAttributeValue( i );
+            XMLStreamReader reader = factory.createXMLStreamReader(fileStream,
+                                                                   "UTF-8");
+            while (reader.hasNext()) {
+                if (reader.next() == XMLStreamReader.START_ELEMENT) {
+                    if ("profile".equals(reader.getLocalName())) {
+                        for (int i = 0; i < reader.getAttributeCount(); i++) {
+                            if ("stencilset".equals(reader.getAttributeLocalName(i))) {
+                                _stencilSet = reader.getAttributeValue(i);
                             }
                         }
-                    } else if ( "plugin".equals( reader.getLocalName() ) ) {
+                    } else if ("plugin".equals(reader.getLocalName())) {
                         String name = null;
-                        for ( int i = 0; i < reader.getAttributeCount(); i++ ) {
-                            if ( "name".equals( reader.getAttributeLocalName( i ) ) ) {
-                                name = reader.getAttributeValue( i );
+                        for (int i = 0; i < reader.getAttributeCount(); i++) {
+                            if ("name".equals(reader.getAttributeLocalName(i))) {
+                                name = reader.getAttributeValue(i);
                             }
                         }
-                        _plugins.put( name,
-                                      registry.get( name ) );
+                        _plugins.put(name,
+                                     registry.get(name));
                     }
                 }
             }
-        } catch ( XMLStreamException e ) {
-            _logger.error( e.getMessage(),
-                           e );
-            throw new RuntimeException( e ); // stop initialization
+        } catch (XMLStreamException e) {
+            _logger.error(e.getMessage(),
+                          e);
+            throw new RuntimeException(e); // stop initialization
         } finally {
-            if ( fileStream != null ) {
+            if (fileStream != null) {
                 try {
                     fileStream.close();
-                } catch ( IOException e ) {
+                } catch (IOException e) {
                 }
             }
             ;
@@ -203,7 +203,7 @@ public class DefaultProfileImpl implements IDiagramProfile {
         return _repositoryGlobalDir;
     }
 
-    public String getRepositoryGlobalDir( String uuid ) {
+    public String getRepositoryGlobalDir(String uuid) {
         return _repositoryGlobalDir;
     }
 
@@ -225,71 +225,71 @@ public class DefaultProfileImpl implements IDiagramProfile {
     }
 
     @Override
-    public void init( ServletContext context ) {
+    public void init(ServletContext context) {
     }
 
     public IDiagramMarshaller createMarshaller() {
         return new IDiagramMarshaller() {
-            public String parseModel( String jsonModel,
-                                      String preProcessingData ) {
+            public String parseModel(String jsonModel,
+                                     String preProcessingData) {
                 Bpmn2JsonUnmarshaller unmarshaller = new Bpmn2JsonUnmarshaller();
                 //Definitions def;
                 Resource res;
                 try {
-                    res = unmarshaller.unmarshall( jsonModel,
-                                                   preProcessingData );
+                    res = unmarshaller.unmarshall(jsonModel,
+                                                  preProcessingData);
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                     Map saveMap = new HashMap();
-                    saveMap.put( XMLResource.OPTION_ENCODING,
-                                 "UTF-8" );
-                    saveMap.put( XMLResource.OPTION_DEFER_IDREF_RESOLUTION,
-                                 true );
-                    saveMap.put( XMLResource.OPTION_DISABLE_NOTIFY,
-                                 true );
-                    saveMap.put( XMLResource.OPTION_PROCESS_DANGLING_HREF,
-                                 XMLResource.OPTION_PROCESS_DANGLING_HREF_RECORD );
-                    res.save( outputStream,
-                              saveMap );
+                    saveMap.put(XMLResource.OPTION_ENCODING,
+                                "UTF-8");
+                    saveMap.put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION,
+                                true);
+                    saveMap.put(XMLResource.OPTION_DISABLE_NOTIFY,
+                                true);
+                    saveMap.put(XMLResource.OPTION_PROCESS_DANGLING_HREF,
+                                XMLResource.OPTION_PROCESS_DANGLING_HREF_RECORD);
+                    res.save(outputStream,
+                             saveMap);
                     return outputStream.toString();
-                } catch ( JsonParseException e ) {
-                    _logger.error( e.getMessage(),
-                                   e );
-                } catch ( IOException e ) {
-                    _logger.error( e.getMessage(),
-                                   e );
+                } catch (JsonParseException e) {
+                    _logger.error(e.getMessage(),
+                                  e);
+                } catch (IOException e) {
+                    _logger.error(e.getMessage(),
+                                  e);
                 }
                 return "";
             }
 
-            public Definitions getDefinitions( String jsonModel,
-                                               String preProcessingData ) {
+            public Definitions getDefinitions(String jsonModel,
+                                              String preProcessingData) {
                 try {
                     Bpmn2JsonUnmarshaller unmarshaller = new Bpmn2JsonUnmarshaller();
-                    JBPMBpmn2ResourceImpl res = ( JBPMBpmn2ResourceImpl ) unmarshaller.unmarshall( jsonModel,
-                                                                                                   preProcessingData );
-                    return ( Definitions ) res.getContents().get( 0 );
-                } catch ( JsonParseException e ) {
-                    _logger.error( e.getMessage(),
-                                   e );
-                } catch ( IOException e ) {
-                    _logger.error( e.getMessage(),
-                                   e );
+                    JBPMBpmn2ResourceImpl res = (JBPMBpmn2ResourceImpl) unmarshaller.unmarshall(jsonModel,
+                                                                                                preProcessingData);
+                    return (Definitions) res.getContents().get(0);
+                } catch (JsonParseException e) {
+                    _logger.error(e.getMessage(),
+                                  e);
+                } catch (IOException e) {
+                    _logger.error(e.getMessage(),
+                                  e);
                 }
                 return null;
             }
 
-            public Resource getResource( String jsonModel,
-                                         String preProcessingData ) {
+            public Resource getResource(String jsonModel,
+                                        String preProcessingData) {
                 try {
                     Bpmn2JsonUnmarshaller unmarshaller = new Bpmn2JsonUnmarshaller();
-                    return ( JBPMBpmn2ResourceImpl ) unmarshaller.unmarshall( jsonModel,
-                                                                              preProcessingData );
-                } catch ( JsonParseException e ) {
-                    _logger.error( e.getMessage(),
-                                   e );
-                } catch ( IOException e ) {
-                    _logger.error( e.getMessage(),
-                                   e );
+                    return (JBPMBpmn2ResourceImpl) unmarshaller.unmarshall(jsonModel,
+                                                                           preProcessingData);
+                } catch (JsonParseException e) {
+                    _logger.error(e.getMessage(),
+                                  e);
+                } catch (IOException e) {
+                    _logger.error(e.getMessage(),
+                                  e);
                 }
                 return null;
             }
@@ -298,40 +298,40 @@ public class DefaultProfileImpl implements IDiagramProfile {
 
     public IDiagramUnmarshaller createUnmarshaller() {
         return new IDiagramUnmarshaller() {
-            public String parseModel( String xmlModel,
-                                      IDiagramProfile profile,
-                                      String preProcessingData ) {
+            public String parseModel(String xmlModel,
+                                     IDiagramProfile profile,
+                                     String preProcessingData) {
                 Bpmn2JsonMarshaller marshaller = new Bpmn2JsonMarshaller();
-                marshaller.setProfile( profile );
+                marshaller.setProfile(profile);
                 try {
-                    return marshaller.marshall( getDefinitions( xmlModel ),
-                                                preProcessingData );
-                } catch ( Exception e ) {
-                    _logger.error( e.getMessage(),
-                                   e );
+                    return marshaller.marshall(getDefinitions(xmlModel),
+                                               preProcessingData);
+                } catch (Exception e) {
+                    _logger.error(e.getMessage(),
+                                  e);
                 }
                 return "";
             }
         };
     }
 
-    private Definitions getDefinitions( String xml ) {
+    private Definitions getDefinitions(String xml) {
         try {
             DroolsFactoryImpl.init();
             BpsimFactoryImpl.init();
             ResourceSet resourceSet = new ResourceSetImpl();
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-                    .put( Resource.Factory.Registry.DEFAULT_EXTENSION,
-                          new Bpmn2ResourceFactoryImpl() );
-            resourceSet.getPackageRegistry().put( "http://www.omg.org/spec/BPMN/20100524/MODEL",
-                                                  Bpmn2Package.eINSTANCE );
-            Resource resource = resourceSet.createResource( URI.createURI( "inputStream://dummyUriWithValidSuffix.xml" ) );
-            InputStream is = new ByteArrayInputStream( xml.getBytes( "UTF-8" ) );
-            resource.load( is,
-                           Collections.EMPTY_MAP );
-            resource.load( Collections.EMPTY_MAP );
-            return ( ( DocumentRoot ) resource.getContents().get( 0 ) ).getDefinitions();
-        } catch ( Throwable t ) {
+                    .put(Resource.Factory.Registry.DEFAULT_EXTENSION,
+                         new Bpmn2ResourceFactoryImpl());
+            resourceSet.getPackageRegistry().put("http://www.omg.org/spec/BPMN/20100524/MODEL",
+                                                 Bpmn2Package.eINSTANCE);
+            Resource resource = resourceSet.createResource(URI.createURI("inputStream://dummyUriWithValidSuffix.xml"));
+            InputStream is = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+            resource.load(is,
+                          Collections.EMPTY_MAP);
+            resource.load(Collections.EMPTY_MAP);
+            return ((DocumentRoot) resource.getContents().get(0)).getDefinitions();
+        } catch (Throwable t) {
             t.printStackTrace();
             return null;
         }

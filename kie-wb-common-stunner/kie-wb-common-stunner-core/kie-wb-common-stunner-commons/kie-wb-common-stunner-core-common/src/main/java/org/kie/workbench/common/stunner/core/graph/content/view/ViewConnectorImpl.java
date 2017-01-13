@@ -28,8 +28,8 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
     protected Integer sourceMagnetIndex;
     protected Integer targetMagnetIndex;
 
-    public ViewConnectorImpl( final @MapsTo( "definition" ) W definition,
-                              final @MapsTo( "bounds" ) Bounds bounds ) {
+    public ViewConnectorImpl(final @MapsTo("definition") W definition,
+                             final @MapsTo("bounds") Bounds bounds) {
         this.definition = definition;
         this.bounds = bounds;
         this.sourceMagnetIndex = 0;
@@ -42,7 +42,7 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
     }
 
     @Override
-    public void setDefinition( final W definition ) {
+    public void setDefinition(final W definition) {
         this.definition = definition;
     }
 
@@ -52,7 +52,7 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
     }
 
     @Override
-    public void setBounds( final Bounds bounds ) {
+    public void setBounds(final Bounds bounds) {
         this.bounds = bounds;
     }
 
@@ -67,12 +67,12 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
     }
 
     @Override
-    public void setSourceMagnetIndex( final Integer index ) {
+    public void setSourceMagnetIndex(final Integer index) {
         this.sourceMagnetIndex = index;
     }
 
     @Override
-    public void setTargetMagnetIndex( final Integer index ) {
+    public void setTargetMagnetIndex(final Integer index) {
         this.targetMagnetIndex = index;
     }
 }

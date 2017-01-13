@@ -21,7 +21,7 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 
 public interface ScreenErrorView extends IsWidget {
 
-    ScreenErrorView showError( final ClientRuntimeError error );
+    ScreenErrorView showError(final ClientRuntimeError error);
 
-    ScreenErrorView showMessage( final String message );
+    ScreenErrorView showMessage(final String message);
 }

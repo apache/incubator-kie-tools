@@ -27,7 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class XMLEncoderDiagramMetadataMarshallerTest {
 
     private static final String TEST1 = "org/kie/workbench/common/stunner/backend/service/test1.meta";
@@ -41,34 +41,34 @@ public class XMLEncoderDiagramMetadataMarshallerTest {
 
     @Test
     public void testEncode() throws Exception {
-        MetadataImpl metadata = new MetadataImpl.MetadataImplBuilder( "defSet1" ).build();
-        metadata.setTitle( "title1" );
-        metadata.setCanvasRootUUID( "root1" );
-        metadata.setShapeSetId( "ss1" );
-        metadata.setThumbData( "thumbData1" );
-        metadata.setTitle( "title1" );
-        String result = tested.marshall( metadata );
-        assertNotNull( result );
+        MetadataImpl metadata = new MetadataImpl.MetadataImplBuilder("defSet1").build();
+        metadata.setTitle("title1");
+        metadata.setCanvasRootUUID("root1");
+        metadata.setShapeSetId("ss1");
+        metadata.setThumbData("thumbData1");
+        metadata.setTitle("title1");
+        String result = tested.marshall(metadata);
+        assertNotNull(result);
     }
 
     @Test
     public void testDecodeTest1() throws Exception {
-        InputStream is = loadStream( TEST1 );
-        Metadata metadata = tested.unmarshall( is );
-        assertNotNull( metadata );
-        assertEquals( "defSet1",
-                      metadata.getDefinitionSetId() );
-        assertEquals( "ss1",
-                      metadata.getShapeSetId() );
-        assertEquals( "thumbData1",
-                      metadata.getThumbData() );
-        assertEquals( "title1",
-                      metadata.getTitle() );
-        assertEquals( "root1",
-                      metadata.getCanvasRootUUID() );
+        InputStream is = loadStream(TEST1);
+        Metadata metadata = tested.unmarshall(is);
+        assertNotNull(metadata);
+        assertEquals("defSet1",
+                     metadata.getDefinitionSetId());
+        assertEquals("ss1",
+                     metadata.getShapeSetId());
+        assertEquals("thumbData1",
+                     metadata.getThumbData());
+        assertEquals("title1",
+                     metadata.getTitle());
+        assertEquals("root1",
+                     metadata.getCanvasRootUUID());
     }
 
-    private InputStream loadStream( String path ) {
-        return Thread.currentThread().getContextClassLoader().getResourceAsStream( path );
+    private InputStream loadStream(String path) {
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
     }
 }

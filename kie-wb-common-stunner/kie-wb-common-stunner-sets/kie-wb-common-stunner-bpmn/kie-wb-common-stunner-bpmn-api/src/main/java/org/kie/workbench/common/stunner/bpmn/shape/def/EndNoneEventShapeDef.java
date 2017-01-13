@@ -28,67 +28,67 @@ public final class EndNoneEventShapeDef
         implements CircleShapeDef<EndNoneEvent> {
 
     @Override
-    public double getRadius( final EndNoneEvent element ) {
+    public double getRadius(final EndNoneEvent element) {
         return element.getDimensionsSet().getRadius().getValue();
     }
 
     @Override
-    public String getBackgroundColor( final EndNoneEvent element ) {
+    public String getBackgroundColor(final EndNoneEvent element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final EndNoneEvent element ) {
+    public double getBackgroundAlpha(final EndNoneEvent element) {
         return 1;
     }
 
     @Override
-    public String getBorderColor( final EndNoneEvent element ) {
+    public String getBorderColor(final EndNoneEvent element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final EndNoneEvent element ) {
+    public double getBorderSize(final EndNoneEvent element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final EndNoneEvent element ) {
+    public double getBorderAlpha(final EndNoneEvent element) {
         return 1;
     }
 
     @Override
-    public String getFontFamily( final EndNoneEvent element ) {
+    public String getFontFamily(final EndNoneEvent element) {
         return element.getFontSet().getFontFamily().getValue();
     }
 
     @Override
-    public String getFontColor( final EndNoneEvent element ) {
+    public String getFontColor(final EndNoneEvent element) {
         return element.getFontSet().getFontColor().getValue();
     }
 
     @Override
-    public double getFontSize( final EndNoneEvent element ) {
+    public double getFontSize(final EndNoneEvent element) {
         return element.getFontSet().getFontSize().getValue();
     }
 
     @Override
-    public String getNamePropertyValue( final EndNoneEvent element ) {
+    public String getNamePropertyValue(final EndNoneEvent element) {
         return element.getGeneral().getName().getValue();
     }
 
     @Override
-    public double getFontBorderSize( final EndNoneEvent element ) {
+    public double getFontBorderSize(final EndNoneEvent element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final EndNoneEvent element ) {
+    public HasTitle.Position getFontPosition(final EndNoneEvent element) {
         return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public double getFontRotation( final EndNoneEvent element ) {
+    public double getFontRotation(final EndNoneEvent element) {
         return 0;
     }
 
@@ -96,12 +96,12 @@ public final class EndNoneEventShapeDef
             new PictureGlyphDef<EndNoneEvent, BPMNPictures>() {
 
                 @Override
-                public String getGlyphDescription( EndNoneEvent element ) {
+                public String getGlyphDescription(final EndNoneEvent element) {
                     return element.getDescription();
                 }
 
                 @Override
-                public BPMNPictures getSource( final Class<?> type ) {
+                public BPMNPictures getSource(final Class<?> type) {
                     return BPMNPictures.EVENT_END;
                 }
             };

@@ -37,7 +37,7 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extends Palette<I>>
         implements PaletteFactory<I, P> {
 
-    private static Logger LOGGER = Logger.getLogger( AbstractPaletteFactory.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(AbstractPaletteFactory.class.getName());
 
     protected SyncBeanManager beanManager;
     protected ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance;
@@ -46,29 +46,29 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
     protected final List<DefSetPaletteDefinitionFactory> paletteDefinitionFactories = new LinkedList<>();
     protected P palette;
 
-    public AbstractPaletteFactory( final ShapeManager shapeManager,
-                                   final SyncBeanManager beanManager,
-                                   final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
-                                   final P palette ) {
+    public AbstractPaletteFactory(final ShapeManager shapeManager,
+                                  final SyncBeanManager beanManager,
+                                  final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
+                                  final P palette) {
         this.shapeManager = shapeManager;
         this.beanManager = beanManager;
         this.defaultPaletteDefinitionFactoryInstance = defaultPaletteDefinitionFactoryInstance;
         this.palette = palette;
     }
 
-    protected abstract void applyGrid( final PaletteGrid grid );
+    protected abstract void applyGrid(final PaletteGrid grid);
 
     public void init() {
-        Collection<SyncBeanDef<DefSetPaletteDefinitionFactory>> factorySets = beanManager.lookupBeans( DefSetPaletteDefinitionFactory.class );
-        for ( SyncBeanDef<DefSetPaletteDefinitionFactory> defSet : factorySets ) {
+        Collection<SyncBeanDef<DefSetPaletteDefinitionFactory>> factorySets = beanManager.lookupBeans(DefSetPaletteDefinitionFactory.class);
+        for (SyncBeanDef<DefSetPaletteDefinitionFactory> defSet : factorySets) {
             DefSetPaletteDefinitionFactory factory = defSet.getInstance();
-            paletteDefinitionFactories.add( factory );
+            paletteDefinitionFactories.add(factory);
         }
     }
 
-    protected PaletteDefinitionFactory getPaletteDefinitionFactory( final String defSetId ) {
-        for ( final DefSetPaletteDefinitionFactory factory : paletteDefinitionFactories ) {
-            if ( factory.accepts( defSetId ) ) {
+    protected PaletteDefinitionFactory getPaletteDefinitionFactory(final String defSetId) {
+        for (final DefSetPaletteDefinitionFactory factory : paletteDefinitionFactories) {
+            if (factory.accepts(defSetId)) {
                 return factory;
             }
         }
@@ -76,61 +76,61 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public P newPalette( final String shapeSetId ) {
-        return newPalette( shapeSetId,
-                           null );
+    @SuppressWarnings("unchecked")
+    public P newPalette(final String shapeSetId) {
+        return newPalette(shapeSetId,
+                          null);
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public P newPalette( final String shapeSetId,
-                         final PaletteGrid grid ) {
-        final String defSetId = getShapeSet( shapeSetId ).getDefinitionSetId();
-        final PaletteDefinitionFactory<PaletteDefinitionBuilder<Object, I, ClientRuntimeError>> paletteDefinitionFactory = getPaletteDefinitionFactory( defSetId );
-        final PaletteDefinitionBuilder<Object, I, ClientRuntimeError> paletteDefinitionBuilder = paletteDefinitionFactory.newBuilder( defSetId );
-        paletteDefinitionBuilder.build( defSetId,
-                                        new PaletteDefinitionBuilder.Callback<I, ClientRuntimeError>() {
+    @SuppressWarnings("unchecked")
+    public P newPalette(final String shapeSetId,
+                        final PaletteGrid grid) {
+        final String defSetId = getShapeSet(shapeSetId).getDefinitionSetId();
+        final PaletteDefinitionFactory<PaletteDefinitionBuilder<Object, I, ClientRuntimeError>> paletteDefinitionFactory = getPaletteDefinitionFactory(defSetId);
+        final PaletteDefinitionBuilder<Object, I, ClientRuntimeError> paletteDefinitionBuilder = paletteDefinitionFactory.newBuilder(defSetId);
+        paletteDefinitionBuilder.build(defSetId,
+                                       new PaletteDefinitionBuilder.Callback<I, ClientRuntimeError>() {
 
-                                            @Override
-                                            public void onSuccess( final I paletteDefinition ) {
-                                                applyGrid( grid );
-                                                beforeBindPalette( paletteDefinition,
-                                                                   shapeSetId );
-                                                palette.bind( paletteDefinition );
-                                                afterBindPalette( paletteDefinition,
-                                                                  shapeSetId );
-                                            }
+                                           @Override
+                                           public void onSuccess(final I paletteDefinition) {
+                                               applyGrid(grid);
+                                               beforeBindPalette(paletteDefinition,
+                                                                 shapeSetId);
+                                               palette.bind(paletteDefinition);
+                                               afterBindPalette(paletteDefinition,
+                                                                shapeSetId);
+                                           }
 
-                                            @Override
-                                            public void onError( final ClientRuntimeError error ) {
-                                                logError( error );
-                                            }
-                                        } );
+                                           @Override
+                                           public void onError(final ClientRuntimeError error) {
+                                               logError(error);
+                                           }
+                                       });
         return palette;
     }
 
-    protected void beforeBindPalette( final I paletteDefinition,
-                                      final String shapeSetId ) {
+    protected void beforeBindPalette(final I paletteDefinition,
+                                     final String shapeSetId) {
     }
 
-    protected void afterBindPalette( final I paletteDefinition,
-                                     final String shapeSetId ) {
+    protected void afterBindPalette(final I paletteDefinition,
+                                    final String shapeSetId) {
     }
 
-    private ShapeSet getShapeSet( final String id ) {
-        for ( final ShapeSet set : shapeManager.getShapeSets() ) {
-            if ( set.getId().equals( id ) ) {
+    private ShapeSet getShapeSet(final String id) {
+        for (final ShapeSet set : shapeManager.getShapeSets()) {
+            if (set.getId().equals(id)) {
                 return set;
             }
         }
         return null;
     }
 
-    private void logError( final ClientRuntimeError error ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( Level.SEVERE,
-                        error.toString() );
+    private void logError(final ClientRuntimeError error) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(Level.SEVERE,
+                       error.toString());
         }
     }
 }

@@ -22,9 +22,9 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 
 public interface DockingAcceptorControl<H extends CanvasHandler> extends CanvasControl<H> {
 
-    boolean allow( final Node parent,
-                   final Node child );
+    boolean allow(final Node parent,
+                  final Node child);
 
-    boolean accept( final Node parent,
-                    final Node child );
+    boolean accept(final Node parent,
+                   final Node child);
 }

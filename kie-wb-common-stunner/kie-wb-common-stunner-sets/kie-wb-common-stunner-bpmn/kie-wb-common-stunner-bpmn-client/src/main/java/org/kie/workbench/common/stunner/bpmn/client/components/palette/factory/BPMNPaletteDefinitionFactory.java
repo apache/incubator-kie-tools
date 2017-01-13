@@ -43,92 +43,92 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.def
 @Dependent
 public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory {
 
-    private static final Map<String, String> CAT_TITLES = new HashMap<String, String>( 6 ) {{
-        put( Categories.ACTIVITIES,
-             "Activities" );
-        put( Categories.SUBPROCESSES,
-             "Subprocesses" );
-        put( Categories.CONNECTING_OBJECTS,
-             "Connecting objects" );
-        put( Categories.EVENTS,
-             "Events" );
-        put( Categories.GATEWAYS,
-             "Gateways" );
-        put( Categories.LANES,
-             "Lanes" );
+    private static final Map<String, String> CAT_TITLES = new HashMap<String, String>(6) {{
+        put(Categories.ACTIVITIES,
+            "Activities");
+        put(Categories.SUBPROCESSES,
+            "Subprocesses");
+        put(Categories.CONNECTING_OBJECTS,
+            "Connecting objects");
+        put(Categories.EVENTS,
+            "Events");
+        put(Categories.GATEWAYS,
+            "Gateways");
+        put(Categories.LANES,
+            "Lanes");
     }};
 
-    private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>( 1 ) {{
-        put( Categories.ACTIVITIES,
-             NoneTask.class );
-        put( Categories.SUBPROCESSES,
-             ReusableSubprocess.class );
-        put( Categories.CONNECTING_OBJECTS,
-             SequenceFlow.class );
-        put( Categories.EVENTS,
-             StartNoneEvent.class );
-        put( Categories.GATEWAYS,
-             ParallelGateway.class );
-        put( Categories.LANES,
-             Lane.class );
+    private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>(1) {{
+        put(Categories.ACTIVITIES,
+            NoneTask.class);
+        put(Categories.SUBPROCESSES,
+            ReusableSubprocess.class);
+        put(Categories.CONNECTING_OBJECTS,
+            SequenceFlow.class);
+        put(Categories.EVENTS,
+            StartNoneEvent.class);
+        put(Categories.GATEWAYS,
+            ParallelGateway.class);
+        put(Categories.LANES,
+            Lane.class);
     }};
 
-    private static final Map<String, String> MORPH_GROUP_TITLES = new HashMap<String, String>( 5 ) {{
-        put( BaseTask.class.getName(),
-             "Tasks" );
-        put( BaseStartEvent.class.getName(),
-             "Start Events" );
-        put( BaseEndEvent.class.getName(),
-             "End Events" );
-        put( BaseSubprocess.class.getName(),
-             "Subprocesses" );
-        put( BaseGateway.class.getName(),
-             "Gateways" );
+    private static final Map<String, String> MORPH_GROUP_TITLES = new HashMap<String, String>(5) {{
+        put(BaseTask.class.getName(),
+            "Tasks");
+        put(BaseStartEvent.class.getName(),
+            "Start Events");
+        put(BaseEndEvent.class.getName(),
+            "End Events");
+        put(BaseSubprocess.class.getName(),
+            "Subprocesses");
+        put(BaseGateway.class.getName(),
+            "Gateways");
     }};
 
     @Inject
-    public BPMNPaletteDefinitionFactory( final ShapeManager shapeManager,
-                                         final DefinitionSetPaletteBuilder paletteBuilder ) {
-        super( shapeManager,
-               paletteBuilder );
+    public BPMNPaletteDefinitionFactory(final ShapeManager shapeManager,
+                                        final DefinitionSetPaletteBuilder paletteBuilder) {
+        super(shapeManager,
+              paletteBuilder);
     }
 
     @Override
     protected void configureBuilder() {
         super.configureBuilder();
         // Exclude BPMN Diagram from palette model.
-        excludeDefinition( BPMNDiagram.class );
+        excludeDefinition(BPMNDiagram.class);
         // Exclude the none task from palette, it will be available by dragging from the main Activities category.
-        excludeDefinition( NoneTask.class );
+        excludeDefinition(NoneTask.class);
         // TODO: Exclude connectors category from being present on the palette model - Dropping connectors from palette produces an error right now, must fix it on lienzo side.
-        excludeCategory( Categories.CONNECTING_OBJECTS );
+        excludeCategory(Categories.CONNECTING_OBJECTS);
     }
 
     @Override
-    protected String getCategoryTitle( final String id ) {
-        return CAT_TITLES.get( id );
+    protected String getCategoryTitle(final String id) {
+        return CAT_TITLES.get(id);
     }
 
     @Override
-    protected Class<?> getCategoryTargetDefinitionId( final String id ) {
-        return CAT_DEF_IDS.get( id );
+    protected Class<?> getCategoryTargetDefinitionId(final String id) {
+        return CAT_DEF_IDS.get(id);
     }
 
     @Override
-    protected String getCategoryDescription( final String id ) {
-        return CAT_TITLES.get( id );
+    protected String getCategoryDescription(final String id) {
+        return CAT_TITLES.get(id);
     }
 
     @Override
-    protected String getMorphGroupTitle( final String morphBaseId,
-                                         final Object definition ) {
-        return MORPH_GROUP_TITLES.get( morphBaseId );
+    protected String getMorphGroupTitle(final String morphBaseId,
+                                        final Object definition) {
+        return MORPH_GROUP_TITLES.get(morphBaseId);
     }
 
     @Override
-    protected String getMorphGroupDescription( final String morphBaseId,
-                                               final Object definition ) {
-        return MORPH_GROUP_TITLES.get( morphBaseId );
+    protected String getMorphGroupDescription(final String morphBaseId,
+                                              final Object definition) {
+        return MORPH_GROUP_TITLES.get(morphBaseId);
     }
 
     @Override

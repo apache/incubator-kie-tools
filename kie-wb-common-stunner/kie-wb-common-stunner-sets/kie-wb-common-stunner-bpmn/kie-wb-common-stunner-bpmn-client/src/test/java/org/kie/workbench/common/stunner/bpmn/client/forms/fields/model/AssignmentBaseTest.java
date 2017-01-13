@@ -38,33 +38,33 @@ public class AssignmentBaseTest {
         // MockDesignerEditorConstants replaces DesignerEditorConstants.INSTANCE
         final Answer answer = new Answer() {
             @Override
-            public Object answer( InvocationOnMock invocation ) throws Throwable {
+            public Object answer(InvocationOnMock invocation) throws Throwable {
                 return invocation.getMethod().getName();
             }
         };
-        final StunnerFormsClientFieldsConstants constants = PowerMockito.mock( StunnerFormsClientFieldsConstants.class,
-                                                                               answer );
-        setFinalStaticField( StunnerFormsClientFieldsConstants.class.getDeclaredField( "INSTANCE" ),
-                             constants );
+        final StunnerFormsClientFieldsConstants constants = PowerMockito.mock(StunnerFormsClientFieldsConstants.class,
+                                                                              answer);
+        setFinalStaticField(StunnerFormsClientFieldsConstants.class.getDeclaredField("INSTANCE"),
+                            constants);
         // Mock StringUtils URL Encoding methods
-        PowerMockito.mockStatic( StringUtils.class );
-        PowerMockito.when( StringUtils.urlEncode( Mockito.anyString() ) ).thenAnswer( new Answer<Object>() {
+        PowerMockito.mockStatic(StringUtils.class);
+        PowerMockito.when(StringUtils.urlEncode(Mockito.anyString())).thenAnswer(new Answer<Object>() {
             @Override
-            public String answer( InvocationOnMock invocation ) throws Throwable {
+            public String answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
-                return urlEncode( ( String ) args[ 0 ] );
+                return urlEncode((String) args[0]);
             }
-        } );
-        PowerMockito.when( StringUtils.urlDecode( Mockito.anyString() ) ).thenAnswer( new Answer<Object>() {
+        });
+        PowerMockito.when(StringUtils.urlDecode(Mockito.anyString())).thenAnswer(new Answer<Object>() {
             @Override
-            public String answer( InvocationOnMock invocation ) throws Throwable {
+            public String answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
-                return urlDecode( ( String ) args[ 0 ] );
+                return urlDecode((String) args[0]);
             }
-        } );
-        PowerMockito.when( StringUtils.createQuotedConstant( Mockito.anyString() ) ).thenCallRealMethod();
-        PowerMockito.when( StringUtils.createUnquotedConstant( Mockito.anyString() ) ).thenCallRealMethod();
-        PowerMockito.when( StringUtils.createDataTypeDisplayName( Mockito.anyString() ) ).thenCallRealMethod();
+        });
+        PowerMockito.when(StringUtils.createQuotedConstant(Mockito.anyString())).thenCallRealMethod();
+        PowerMockito.when(StringUtils.createUnquotedConstant(Mockito.anyString())).thenCallRealMethod();
+        PowerMockito.when(StringUtils.createDataTypeDisplayName(Mockito.anyString())).thenCallRealMethod();
     }
 
     public void tearDown() {
@@ -76,14 +76,14 @@ public class AssignmentBaseTest {
      * @param s
      * @return
      */
-    public String urlEncode( String s ) {
-        if ( s == null || s.isEmpty() ) {
+    public String urlEncode(String s) {
+        if (s == null || s.isEmpty()) {
             return s;
         }
         try {
-            return URLEncoder.encode( s,
-                                      "UTF-8" );
-        } catch ( UnsupportedEncodingException e ) {
+            return URLEncoder.encode(s,
+                                     "UTF-8");
+        } catch (UnsupportedEncodingException e) {
             return s;
         }
     }
@@ -93,26 +93,26 @@ public class AssignmentBaseTest {
      * @param s
      * @return
      */
-    public String urlDecode( String s ) {
-        if ( s == null || s.isEmpty() ) {
+    public String urlDecode(String s) {
+        if (s == null || s.isEmpty()) {
             return s;
         }
         try {
-            return URLDecoder.decode( s,
-                                      "UTF-8" );
-        } catch ( UnsupportedEncodingException e ) {
+            return URLDecoder.decode(s,
+                                     "UTF-8");
+        } catch (UnsupportedEncodingException e) {
             return s;
         }
     }
 
-    private void setFinalStaticField( Field field,
-                                      Object newValue ) throws Exception {
-        field.setAccessible( true );
-        Field modifiersField = Field.class.getDeclaredField( "modifiers" );
-        modifiersField.setAccessible( true );
-        modifiersField.setInt( field,
-                               field.getModifiers() & ~Modifier.FINAL );
-        field.set( null,
-                   newValue );
+    private void setFinalStaticField(Field field,
+                                     Object newValue) throws Exception {
+        field.setAccessible(true);
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field,
+                              field.getModifiers() & ~Modifier.FINAL);
+        field.set(null,
+                  newValue);
     }
 }

@@ -27,10 +27,10 @@ public abstract class AbstractCanvasCommandEvent<H extends CanvasHandler> extend
     private final Command<H, CanvasViolation> command;
     private final CommandResult<CanvasViolation> result;
 
-    public AbstractCanvasCommandEvent( final H canvasHandler,
-                                       final Command<H, CanvasViolation> command,
-                                       final CommandResult<CanvasViolation> result ) {
-        super( canvasHandler );
+    public AbstractCanvasCommandEvent(final H canvasHandler,
+                                      final Command<H, CanvasViolation> command,
+                                      final CommandResult<CanvasViolation> result) {
+        super(canvasHandler);
         this.command = command;
         this.result = result;
     }

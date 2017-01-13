@@ -41,7 +41,7 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @ApplicationScoped
-@WorkbenchPerspective( identifier = AuthoringPerspective.PERSPECTIVE_ID, isTransient = false, isDefault = true )
+@WorkbenchPerspective(identifier = AuthoringPerspective.PERSPECTIVE_ID, isTransient = false, isDefault = true)
 public class AuthoringPerspective {
 
     public static final String PERSPECTIVE_ID = "AuthoringPerspective";
@@ -62,44 +62,44 @@ public class AuthoringPerspective {
     private PlaceRequest placeRequest;
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
+    public void onStartup(final PlaceRequest placeRequest) {
         // if ( null == this.placeRequest ) {
         this.placeRequest = placeRequest;
     }
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        perspective.setName( "Authoring" );
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( NavigatorScreen.SCREEN_ID ) ) );
-        palettePanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        palettePanel.setMinWidth( WEST_PANEL_WIDTH );
-        palettePanel.setWidth( WEST_PANEL_WIDTH );
-        palettePanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( BS3PaletteScreen.SCREEN_ID ) ) );
-        treeExplorerPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        treeExplorerPanel.setMinWidth( EAST_PANEL_WIDTH );
-        treeExplorerPanel.setWidth( EAST_PANEL_WIDTH );
-        treeExplorerPanel.setMinHeight( 100 );
-        treeExplorerPanel.setHeight( 300 );
-        treeExplorerPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( TreeExplorerScreen.SCREEN_ID ) ) );
-        propertiesPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        propertiesPanel.setMinWidth( EAST_PANEL_WIDTH );
-        propertiesPanel.setWidth( EAST_PANEL_WIDTH );
-        propertiesPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( FormsPropertiesScreen.SCREEN_ID ) ) );
-        propertiesPanel.appendChild( CompassPosition.SOUTH,
-                                     treeExplorerPanel );
-        notificationsPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        notificationsPanel.setMinWidth( 400 );
-        notificationsPanel.setWidth( 400 );
-        notificationsPanel.setMinHeight( 100 );
-        notificationsPanel.setHeight( 100 );
-        notificationsPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( NotificationsScreen.SCREEN_ID ) ) );
-        perspective.getRoot().insertChild( CompassPosition.WEST,
-                                           palettePanel );
-        perspective.getRoot().insertChild( CompassPosition.EAST,
-                                           propertiesPanel );
-        perspective.getRoot().insertChild( CompassPosition.SOUTH,
-                                           notificationsPanel );
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        perspective.setName("Authoring");
+        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest(NavigatorScreen.SCREEN_ID)));
+        palettePanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        palettePanel.setMinWidth(WEST_PANEL_WIDTH);
+        palettePanel.setWidth(WEST_PANEL_WIDTH);
+        palettePanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(BS3PaletteScreen.SCREEN_ID)));
+        treeExplorerPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        treeExplorerPanel.setMinWidth(EAST_PANEL_WIDTH);
+        treeExplorerPanel.setWidth(EAST_PANEL_WIDTH);
+        treeExplorerPanel.setMinHeight(100);
+        treeExplorerPanel.setHeight(300);
+        treeExplorerPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(TreeExplorerScreen.SCREEN_ID)));
+        propertiesPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        propertiesPanel.setMinWidth(EAST_PANEL_WIDTH);
+        propertiesPanel.setWidth(EAST_PANEL_WIDTH);
+        propertiesPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(FormsPropertiesScreen.SCREEN_ID)));
+        propertiesPanel.appendChild(CompassPosition.SOUTH,
+                                    treeExplorerPanel);
+        notificationsPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        notificationsPanel.setMinWidth(400);
+        notificationsPanel.setWidth(400);
+        notificationsPanel.setMinHeight(100);
+        notificationsPanel.setHeight(100);
+        notificationsPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(NotificationsScreen.SCREEN_ID)));
+        perspective.getRoot().insertChild(CompassPosition.WEST,
+                                          palettePanel);
+        perspective.getRoot().insertChild(CompassPosition.EAST,
+                                          propertiesPanel);
+        perspective.getRoot().insertChild(CompassPosition.SOUTH,
+                                          notificationsPanel);
         return perspective;
     }
 }

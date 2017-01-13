@@ -28,8 +28,8 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientF
 public class ValidateToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientFullSession, ValidateSessionCommand> {
 
     @Inject
-    public ValidateToolbarCommand( final SessionCommandFactory sessionCommandFactory ) {
-        super( sessionCommandFactory.newValidateCommand() );
+    public ValidateToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
+        super(sessionCommandFactory.newValidateCommand());
     }
 
     @Override

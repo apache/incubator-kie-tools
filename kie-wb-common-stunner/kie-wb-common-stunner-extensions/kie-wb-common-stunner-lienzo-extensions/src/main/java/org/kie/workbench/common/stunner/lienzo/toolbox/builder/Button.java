@@ -20,17 +20,17 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.event.ToolboxButtonEventH
 
 public interface Button {
 
-    Button setPadding( int padding );
+    Button setPadding(final int padding);
 
-    Button setIconSize( int iconSize );
+    Button setIconSize(final int iconSize);
 
-    Button setClickHandler( ToolboxButtonEventHandler handler );
+    Button setClickHandler(final ToolboxButtonEventHandler handler);
 
-    Button setMouseDownHandler( ToolboxButtonEventHandler handler );
+    Button setMouseDownHandler(final ToolboxButtonEventHandler handler);
 
-    Button setMouseEnterHandler( ToolboxButtonEventHandler handler );
+    Button setMouseEnterHandler(final ToolboxButtonEventHandler handler);
 
-    Button setMouseExitHandler( ToolboxButtonEventHandler handler );
+    Button setMouseExitHandler(final ToolboxButtonEventHandler handler);
 
     ButtonsOrRegister end();
 }

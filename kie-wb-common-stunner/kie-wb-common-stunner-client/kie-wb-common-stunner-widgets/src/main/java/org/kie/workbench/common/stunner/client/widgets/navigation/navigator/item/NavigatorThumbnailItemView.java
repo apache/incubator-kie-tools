@@ -45,7 +45,7 @@ public class NavigatorThumbnailItemView
 
     }
 
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     @UiField
     FlowPanel mainPanel;
@@ -74,69 +74,69 @@ public class NavigatorThumbnailItemView
     NavigatorItem presenter;
 
     @Override
-    public void init( final NavigatorItem presenter ) {
+    public void init(final NavigatorItem presenter) {
         this.presenter = presenter;
-        initWidget( uiBinder.createAndBindUi( this ) );
-        item.addClickHandler( clickEvent -> presenter.onItemSelected() );
-        footer.addDomHandler( event -> presenter.onItemSelected(),
-                              ClickEvent.getType() );
-        footer.getElement().getStyle().setCursor( Style.Cursor.POINTER );
-        popover.addShowHandler( showEvent -> onGotFocus() );
-        popover.addHideHandler( hideEvent -> onLostFocus() );
+        initWidget(uiBinder.createAndBindUi(this));
+        item.addClickHandler(clickEvent -> presenter.onItemSelected());
+        footer.addDomHandler(event -> presenter.onItemSelected(),
+                             ClickEvent.getType());
+        footer.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+        popover.addShowHandler(showEvent -> onGotFocus());
+        popover.addHideHandler(hideEvent -> onLostFocus());
     }
 
     private void onGotFocus() {
-        panel.getElement().getStyle().setBorderColor( "#0000FF" );
-        heading.getElement().getStyle().setFontWeight( Style.FontWeight.BOLD );
+        panel.getElement().getStyle().setBorderColor("#0000FF");
+        heading.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
     }
 
     private void onLostFocus() {
-        panel.getElement().getStyle().setBorderColor( "#000000" );
-        heading.getElement().getStyle().setFontWeight( Style.FontWeight.NORMAL );
+        panel.getElement().getStyle().setBorderColor("#000000");
+        heading.getElement().getStyle().setFontWeight(Style.FontWeight.NORMAL);
     }
 
     @Override
-    public NavigatorThumbnailItemView setUUID( final String uuid ) {
-        popover.setContent( uuid );
+    public NavigatorThumbnailItemView setUUID(final String uuid) {
+        popover.setContent(uuid);
         return this;
     }
 
     @Override
-    public NavigatorThumbnailItemView setItemTitle( final String title ) {
-        heading.setText( title );
-        heading.setTitle( title );
-        popover.setTitle( title );
+    public NavigatorThumbnailItemView setItemTitle(final String title) {
+        heading.setText(title);
+        heading.setTitle(title);
+        popover.setTitle(title);
         return this;
     }
 
     @Override
-    public NavigatorThumbnailItemView setThumbData( final String thumbData ) {
-        thumbImage.setUrl( thumbData );
+    public NavigatorThumbnailItemView setThumbData(final String thumbData) {
+        thumbImage.setUrl(thumbData);
         return this;
     }
 
     @Override
-    public NavigatorThumbnailItemView setThumbUri( final SafeUri safeUri ) {
-        thumbImage.setUrl( safeUri );
+    public NavigatorThumbnailItemView setThumbUri(final SafeUri safeUri) {
+        thumbImage.setUrl(safeUri);
         return this;
     }
 
     @Override
-    public NavigatorThumbnailItemView setItemPxSize( final int width,
-                                                     final int height ) {
+    public NavigatorThumbnailItemView setItemPxSize(final int width,
+                                                    final int height) {
         final int imgWidth = thumbImage.getWidth();
         final int imgHeight = thumbImage.getHeight();
         final float wfactor = imgWidth > width ? imgWidth / width : 1;
         final float hfactor = imgHeight > height ? imgHeight / height : 1;
         final float factor = wfactor >= hfactor ? wfactor : hfactor;
-        if ( factor > 1 ) {
-            final int w = ( int ) Math.ceil( imgWidth / factor );
-            final int h = ( int ) Math.ceil( imgHeight / factor );
-            thumbImage.setPixelSize( w,
-                                     h );
+        if (factor > 1) {
+            final int w = (int) Math.ceil(imgWidth / factor);
+            final int h = (int) Math.ceil(imgHeight / factor);
+            thumbImage.setPixelSize(w,
+                                    h);
         }
-        body.setPixelSize( width,
-                           height );
+        body.setPixelSize(width,
+                          height);
         return this;
     }
 }

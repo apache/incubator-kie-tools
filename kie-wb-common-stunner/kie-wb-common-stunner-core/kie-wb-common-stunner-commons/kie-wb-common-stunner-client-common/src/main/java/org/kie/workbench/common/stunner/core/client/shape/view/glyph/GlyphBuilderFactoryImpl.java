@@ -31,35 +31,35 @@ public class GlyphBuilderFactoryImpl implements GlyphBuilderFactory {
     private final List<GlyphBuilder> builders = new LinkedList<>();
 
     protected GlyphBuilderFactoryImpl() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public GlyphBuilderFactoryImpl( final ManagedInstance<GlyphBuilder> glyphBuilderInstances ) {
+    public GlyphBuilderFactoryImpl(final ManagedInstance<GlyphBuilder> glyphBuilderInstances) {
         this.glyphBuilderInstances = glyphBuilderInstances;
     }
 
     @PostConstruct
     public void init() {
-        glyphBuilderInstances.forEach( builders::add );
+        glyphBuilderInstances.forEach(builders::add);
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public <D extends GlyphDef<?>> GlyphBuilder<?, D> getBuilder( final D glyphDefinition ) {
-        final GlyphBuilder<?, D> result = _getBuilder( glyphDefinition );
-        if ( null == result ) {
-            throw new UnsupportedOperationException( "No glyph builder instance for glyph definition type ["
-                                                             + glyphDefinition.getClass() + "]" );
+    @SuppressWarnings("unchecked")
+    public <D extends GlyphDef<?>> GlyphBuilder<?, D> getBuilder(final D glyphDefinition) {
+        final GlyphBuilder<?, D> result = _getBuilder(glyphDefinition);
+        if (null == result) {
+            throw new UnsupportedOperationException("No glyph builder instance for glyph definition type ["
+                                                            + glyphDefinition.getClass() + "]");
         }
         return result;
     }
 
-    @SuppressWarnings( "unchecked" )
-    private <D extends GlyphDef<?>> GlyphBuilder<?, D> _getBuilder( final D glyphDefinition ) {
+    @SuppressWarnings("unchecked")
+    private <D extends GlyphDef<?>> GlyphBuilder<?, D> _getBuilder(final D glyphDefinition) {
         return builders.stream()
-                .filter( builder -> builder.getType().equals( glyphDefinition.getType() ) )
+                .filter(builder -> builder.getType().equals(glyphDefinition.getType()))
                 .findFirst()
-                .orElse( null );
+                .orElse(null);
     }
 }

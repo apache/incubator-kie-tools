@@ -26,8 +26,8 @@ public class PermittedConnectionImpl implements ConnectionRule.PermittedConnecti
     private String startRole;
     private String endRole;
 
-    public PermittedConnectionImpl( final @MapsTo( "startRole" ) String startRole,
-                                    final @MapsTo( "endRole" ) String endRole ) {
+    public PermittedConnectionImpl(final @MapsTo("startRole") String startRole,
+                                   final @MapsTo("endRole") String endRole) {
         this.startRole = startRole;
         this.endRole = endRole;
     }

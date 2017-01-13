@@ -26,8 +26,8 @@ import javax.inject.Qualifier;
  * the jbpm-designer together, in oder to avoid ambiguous resolutions.
  */
 @Qualifier
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER } )
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 public @interface StunnerSpecific {
 
 }

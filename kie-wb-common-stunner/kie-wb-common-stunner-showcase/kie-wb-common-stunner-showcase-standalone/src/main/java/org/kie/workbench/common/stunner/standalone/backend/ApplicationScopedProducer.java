@@ -31,7 +31,7 @@ import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 
-@Startup( value = StartupType.BOOTSTRAP )
+@Startup(value = StartupType.BOOTSTRAP)
 @ApplicationScoped
 public class ApplicationScopedProducer {
 
@@ -45,12 +45,12 @@ public class ApplicationScopedProducer {
 
     @PostConstruct
     public void setup() {
-        ioService = new IOServiceNio2WrapperImpl( "1",
-                                                  watchService );
+        ioService = new IOServiceNio2WrapperImpl("1",
+                                                 watchService);
     }
 
     @Produces
-    @Named( "ioStrategy" )
+    @Named("ioStrategy")
     public IOService ioService() {
         return ioService;
     }

@@ -35,14 +35,14 @@ public class AssigneeRow {
         this.id = lastId++;
     }
 
-    public AssigneeRow( String name,
-                        String customName ) {
+    public AssigneeRow(final String name,
+                       final String customName) {
         this.id = lastId++;
         this.name = name;
         this.customName = customName;
     }
 
-    public AssigneeRow( Assignee assignee ) {
+    public AssigneeRow(final Assignee assignee) {
         this.id = lastId++;
         this.name = assignee.getName();
         this.customName = assignee.getCustomName();
@@ -52,7 +52,7 @@ public class AssigneeRow {
         return id;
     }
 
-    public void setId( long id ) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -60,7 +60,7 @@ public class AssigneeRow {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -68,14 +68,14 @@ public class AssigneeRow {
         return customName;
     }
 
-    public void setCustomName( String customName ) {
+    public void setCustomName(final String customName) {
         this.customName = customName;
     }
 
     public boolean isEmpty() {
-        if ( name != null && name.length() > 0 ) {
+        if (name != null && name.length() > 0) {
             return false;
-        } else if ( customName != null && customName.length() > 0 ) {
+        } else if (customName != null && customName.length() > 0) {
             return false;
         } else {
             return true;
@@ -83,23 +83,23 @@ public class AssigneeRow {
     }
 
     @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj ) {
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
         }
-        if ( obj == null ) {
+        if (obj == null) {
             return false;
         }
-        if ( getClass() != obj.getClass() ) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        AssigneeRow other = ( AssigneeRow ) obj;
-        return ( id == other.id );
+        AssigneeRow other = (AssigneeRow) obj;
+        return (id == other.id);
     }
 
     @Override
     public int hashCode() {
-        return ~~( int ) ( id ^ ( id >>> 32 ) );
+        return ~~(int) (id ^ (id >>> 32));
     }
 
     @Override

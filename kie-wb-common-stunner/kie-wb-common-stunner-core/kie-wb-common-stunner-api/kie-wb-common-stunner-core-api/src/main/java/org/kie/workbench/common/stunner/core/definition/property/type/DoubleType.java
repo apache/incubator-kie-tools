@@ -29,15 +29,15 @@ public class DoubleType implements PropertyType {
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof DoubleType ) ) {
+        if (!(o instanceof DoubleType)) {
             return false;
         }
-        DoubleType that = ( DoubleType ) o;
-        if ( !name.equals( that.name ) ) {
+        DoubleType that = (DoubleType) o;
+        if (!name.equals(that.name)) {
             return false;
         }
         return true;

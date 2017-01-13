@@ -23,9 +23,9 @@ import org.kie.workbench.common.stunner.core.validation.event.AbstractValidation
 @NonPortable
 public class CanvasValidationFailEvent extends AbstractValidationFailEvent<CanvasHandler, CanvasValidationViolation> {
 
-    public CanvasValidationFailEvent( final CanvasHandler entity,
-                                      final Iterable<CanvasValidationViolation> violations ) {
-        super( entity,
-               violations );
+    public CanvasValidationFailEvent(final CanvasHandler entity,
+                                     final Iterable<CanvasValidationViolation> violations) {
+        super(entity,
+              violations);
     }
 }

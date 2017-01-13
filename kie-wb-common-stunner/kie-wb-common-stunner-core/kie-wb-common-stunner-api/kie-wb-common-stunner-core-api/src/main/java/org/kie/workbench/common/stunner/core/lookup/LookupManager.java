@@ -25,7 +25,7 @@ public interface LookupManager<T, R extends LookupManager.LookupRequest> {
      * @param request The lookup request constraints. Depends on each implementation.
      * @return List of resulting entities from the lookup result. Depends on each implementation.
      */
-    LookupResponse<T> lookup( final R request );
+    LookupResponse<T> lookup(final R request);
 
     /**
      * <p>The request criteria for a lookup operation.</p>

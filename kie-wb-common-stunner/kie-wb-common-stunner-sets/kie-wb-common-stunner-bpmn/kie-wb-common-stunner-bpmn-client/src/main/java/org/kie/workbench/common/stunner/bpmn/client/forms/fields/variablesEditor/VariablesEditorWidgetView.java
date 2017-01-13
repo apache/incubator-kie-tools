@@ -29,23 +29,23 @@ public interface VariablesEditorWidgetView {
 
         void notifyModelChanged();
 
-        List<VariableRow> deserializeVariables( String s );
+        List<VariableRow> deserializeVariables(final String s);
 
-        String serializeVariables( List<VariableRow> variableRows );
+        String serializeVariables(final List<VariableRow> variableRows);
 
-        void setDataTypes( List<String> dataTypes,
-                           List<String> dataTypeDisplayNames );
+        void setDataTypes(final List<String> dataTypes,
+                          final List<String> dataTypeDisplayNames);
 
         void addVariable();
 
-        boolean isDuplicateName( String name );
+        boolean isDuplicateName(final String name);
 
-        void removeVariable( VariableRow variableRow );
+        void removeVariable(final VariableRow variableRow);
 
         ListBoxValues.ValueTester dataTypesTester();
     }
 
-    void init( Presenter presenter );
+    void init(final Presenter presenter);
 
     void doSave();
 
@@ -55,17 +55,17 @@ public interface VariablesEditorWidgetView {
 
     void setNoneDisplayStyle();
 
-    void setVariablesDataTypes( ListBoxValues dataTypeListBoxValues );
+    void setVariablesDataTypes(final ListBoxValues dataTypeListBoxValues);
 
-    void setVariableRows( List<VariableRow> rows );
+    void setVariableRows(final List<VariableRow> rows);
 
     List<VariableRow> getVariableRows();
 
-    VariableListItemWidgetView getVariableWidget( int index );
+    VariableListItemWidgetView getVariableWidget(final int index);
 
-    void setVisible( boolean visible );
+    void setVisible(final boolean visible);
 
-    boolean isDuplicateName( String name );
+    boolean isDuplicateName(final String name);
 
-    void removeVariable( VariableRow variableRow );
+    void removeVariable(final VariableRow variableRow);
 }

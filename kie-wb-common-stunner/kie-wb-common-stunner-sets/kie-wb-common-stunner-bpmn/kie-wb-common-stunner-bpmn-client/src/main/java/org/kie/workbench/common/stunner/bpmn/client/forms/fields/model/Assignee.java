@@ -27,7 +27,7 @@ public class Assignee {
     public Assignee() {
     }
 
-    public Assignee( AssigneeRow row ) {
+    public Assignee(final AssigneeRow row) {
         this.name = row.getName();
         this.customName = row.getCustomName();
     }
@@ -36,7 +36,7 @@ public class Assignee {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -44,14 +44,14 @@ public class Assignee {
         return customName;
     }
 
-    public void setCustomName( String customName ) {
+    public void setCustomName(final String customName) {
         this.customName = customName;
     }
 
     public String toString() {
-        if ( customName != null && !customName.isEmpty() ) {
+        if (customName != null && !customName.isEmpty()) {
             return customName;
-        } else if ( name != null && !name.isEmpty() ) {
+        } else if (name != null && !name.isEmpty()) {
             return name;
         } else {
             return null;
@@ -63,36 +63,36 @@ public class Assignee {
      * @param s
      * @return
      */
-    public static Assignee deserialize( String s,
-                                        List<String> names ) {
+    public static Assignee deserialize(final String s,
+                                       final List<String> names) {
         Assignee a = new Assignee();
-        if ( names != null && names.contains( s ) ) {
-            a.setName( s );
+        if (names != null && names.contains(s)) {
+            a.setName(s);
         } else {
-            a.setCustomName( s );
+            a.setCustomName(s);
         }
         return a;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof Assignee ) ) {
+        if (!(o instanceof Assignee)) {
             return false;
         }
-        Assignee assignee = ( Assignee ) o;
-        if ( getName() != null ? !getName().equals( assignee.getName() ) : assignee.getName() != null ) {
+        Assignee assignee = (Assignee) o;
+        if (getName() != null ? !getName().equals(assignee.getName()) : assignee.getName() != null) {
             return false;
         }
-        return getCustomName() != null ? getCustomName().equals( assignee.getCustomName() ) : assignee.getCustomName() == null;
+        return getCustomName() != null ? getCustomName().equals(assignee.getCustomName()) : assignee.getCustomName() == null;
     }
 
     @Override
     public int hashCode() {
         int result = getName() != null ? getName().hashCode() : 0;
-        result = 31 * result + ( getCustomName() != null ? getCustomName().hashCode() : 0 );
+        result = 31 * result + (getCustomName() != null ? getCustomName().hashCode() : 0);
         return result;
     }
 }

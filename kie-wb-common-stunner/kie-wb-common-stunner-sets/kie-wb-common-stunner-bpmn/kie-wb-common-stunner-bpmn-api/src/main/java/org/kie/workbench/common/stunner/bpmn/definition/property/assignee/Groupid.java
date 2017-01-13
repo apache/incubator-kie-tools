@@ -59,7 +59,7 @@ public class Groupid implements BPMNProperty {
     public Groupid() {
     }
 
-    public Groupid( final String value ) {
+    public Groupid(final String value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class Groupid implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

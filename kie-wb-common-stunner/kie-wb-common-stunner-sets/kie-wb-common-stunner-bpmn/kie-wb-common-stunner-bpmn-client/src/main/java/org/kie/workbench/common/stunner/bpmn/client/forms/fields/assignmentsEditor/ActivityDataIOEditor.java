@@ -43,7 +43,7 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
      */
     public interface GetDataCallback {
 
-        void getData( String assignmentData );
+        void getData(String assignmentData);
     }
 
     GetDataCallback callback = null;
@@ -59,32 +59,32 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
-    public void setCallback( GetDataCallback callback ) {
+    public void setCallback(final GetDataCallback callback) {
         this.callback = callback;
     }
 
     @Override
     public void handleSaveClick() {
-        if ( callback != null ) {
-            AssignmentData data = new AssignmentData( view.getInputAssignmentData(),
-                                                      view.getOutputAssignmentData(),
-                                                      dataTypes,
-                                                      dataTypeDisplayNames );
-            data.setVariableCountsString( hasInputVars,
-                                          isSingleInputVar,
-                                          hasOutputVars,
-                                          isSingleOutputVar );
-            String sData = marshallToJson( data );
-            callback.getData( sData );
+        if (callback != null) {
+            AssignmentData data = new AssignmentData(view.getInputAssignmentData(),
+                                                     view.getOutputAssignmentData(),
+                                                     dataTypes,
+                                                     dataTypeDisplayNames);
+            data.setVariableCountsString(hasInputVars,
+                                         isSingleInputVar,
+                                         hasOutputVars,
+                                         isSingleOutputVar);
+            String sData = marshallToJson(data);
+            callback.getData(sData);
         }
         view.hideView();
     }
 
-    protected String marshallToJson( AssignmentData data ) {
-        return Marshalling.toJSON( data );
+    protected String marshallToJson(final AssignmentData data) {
+        return Marshalling.toJSON(data);
     }
 
     @Override
@@ -92,59 +92,59 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
         view.hideView();
     }
 
-    public void setDataTypes( List<String> dataTypes,
-                              List<String> dataTypeDisplayNames ) {
+    public void setDataTypes(final List<String> dataTypes,
+                             final List<String> dataTypeDisplayNames) {
         this.dataTypes = dataTypes;
         this.dataTypeDisplayNames = dataTypeDisplayNames;
-        view.setPossibleInputAssignmentsDataTypes( dataTypeDisplayNames );
-        view.setPossibleOutputAssignmentsDataTypes( dataTypeDisplayNames );
+        view.setPossibleInputAssignmentsDataTypes(dataTypeDisplayNames);
+        view.setPossibleOutputAssignmentsDataTypes(dataTypeDisplayNames);
     }
 
-    public void setAssignmentData( AssignmentData assignmentData ) {
+    public void setAssignmentData(final AssignmentData assignmentData) {
         this.assignmentData = assignmentData;
     }
 
-    public void configureDialog( String taskName,
-                                 boolean hasInputVars,
-                                 boolean isSingleInputVar,
-                                 boolean hasOutputVars,
-                                 boolean isSingleOutputVar ) {
+    public void configureDialog(final String taskName,
+                                final boolean hasInputVars,
+                                final boolean isSingleInputVar,
+                                final boolean hasOutputVars,
+                                final boolean isSingleOutputVar) {
         this.hasInputVars = hasInputVars;
         this.isSingleInputVar = isSingleInputVar;
         this.hasOutputVars = hasOutputVars;
         this.isSingleOutputVar = isSingleOutputVar;
-        if ( taskName != null && !taskName.isEmpty() ) {
-            view.setCustomViewTitle( taskName );
+        if (taskName != null && !taskName.isEmpty()) {
+            view.setCustomViewTitle(taskName);
         } else {
             view.setDefaultViewTitle();
         }
-        view.setInputAssignmentsVisibility( hasInputVars );
-        view.setOutputAssignmentsVisibility( hasOutputVars );
-        view.setIsInputAssignmentSingleVar( isSingleInputVar );
-        view.setIsOutputAssignmentSingleVar( isSingleOutputVar );
+        view.setInputAssignmentsVisibility(hasInputVars);
+        view.setOutputAssignmentsVisibility(hasOutputVars);
+        view.setIsInputAssignmentSingleVar(isSingleInputVar);
+        view.setIsOutputAssignmentSingleVar(isSingleOutputVar);
     }
 
-    public void setDisallowedPropertyNames( List<String> disallowedPropertyNames ) {
+    public void setDisallowedPropertyNames(final List<String> disallowedPropertyNames) {
         Set<String> propertyNames = new HashSet<String>();
-        if ( disallowedPropertyNames != null ) {
-            for ( String name : disallowedPropertyNames ) {
-                propertyNames.add( name.toLowerCase() );
+        if (disallowedPropertyNames != null) {
+            for (String name : disallowedPropertyNames) {
+                propertyNames.add(name.toLowerCase());
             }
         }
-        view.setInputAssignmentsDisallowedNames( propertyNames );
+        view.setInputAssignmentsDisallowedNames(propertyNames);
     }
 
-    public void setProcessVariables( List<String> processVariables ) {
-        view.setInputAssignmentsProcessVariables( processVariables );
-        view.setOutputAssignmentsProcessVariables( processVariables );
+    public void setProcessVariables(final List<String> processVariables) {
+        view.setInputAssignmentsProcessVariables(processVariables);
+        view.setOutputAssignmentsProcessVariables(processVariables);
     }
 
-    public void setInputAssignmentRows( List<AssignmentRow> inputAssignmentRows ) {
-        view.setInputAssignmentRows( inputAssignmentRows );
+    public void setInputAssignmentRows(final List<AssignmentRow> inputAssignmentRows) {
+        view.setInputAssignmentRows(inputAssignmentRows);
     }
 
-    public void setOutputAssignmentRows( List<AssignmentRow> outputAssignmentRows ) {
-        view.setOutputAssignmentRows( outputAssignmentRows );
+    public void setOutputAssignmentRows(final List<AssignmentRow> outputAssignmentRows) {
+        view.setOutputAssignmentRows(outputAssignmentRows);
     }
 
     public void show() {
@@ -154,9 +154,9 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
     @Override
     public ListBoxValues.ValueTester dataTypesTester() {
         return new ListBoxValues.ValueTester() {
-            public String getNonCustomValueForUserString( String userValue ) {
-                if ( assignmentData != null ) {
-                    return assignmentData.getDataTypeDisplayNameForUserString( userValue );
+            public String getNonCustomValueForUserString(String userValue) {
+                if (assignmentData != null) {
+                    return assignmentData.getDataTypeDisplayNameForUserString(userValue);
                 } else {
                     return null;
                 }
@@ -167,7 +167,7 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
     @Override
     public ListBoxValues.ValueTester processVarTester() {
         return new ListBoxValues.ValueTester() {
-            public String getNonCustomValueForUserString( String userValue ) {
+            public String getNonCustomValueForUserString(String userValue) {
                 return null;
             }
         };

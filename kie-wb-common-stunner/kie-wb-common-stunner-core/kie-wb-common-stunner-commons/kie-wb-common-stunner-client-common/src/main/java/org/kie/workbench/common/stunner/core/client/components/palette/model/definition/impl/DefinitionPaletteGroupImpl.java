@@ -25,35 +25,35 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.def
 
 public final class DefinitionPaletteGroupImpl extends AbstractPaletteGroup<DefinitionPaletteItem> implements DefinitionPaletteGroup {
 
-    private DefinitionPaletteGroupImpl( final String itemId,
-                                        final String title,
-                                        final String description,
-                                        final String tooltip,
-                                        final List<DefinitionPaletteItem> items,
-                                        final String definitionId ) {
-        super( itemId,
-               title,
-               description,
-               tooltip,
-               definitionId,
-               items );
+    private DefinitionPaletteGroupImpl(final String itemId,
+                                       final String title,
+                                       final String description,
+                                       final String tooltip,
+                                       final List<DefinitionPaletteItem> items,
+                                       final String definitionId) {
+        super(itemId,
+              title,
+              description,
+              tooltip,
+              definitionId,
+              items);
     }
 
     static class DefinitionPaletteGroupBuilder extends AbstractPaletteGroupBuilder<DefinitionPaletteGroupBuilder,
             DefinitionPaletteGroupImpl, DefinitionPaletteItem> {
 
-        public DefinitionPaletteGroupBuilder( final String id ) {
-            super( id );
+        public DefinitionPaletteGroupBuilder(final String id) {
+            super(id);
         }
 
         @Override
-        protected DefinitionPaletteGroupImpl doBuild( final List<DefinitionPaletteItem> items ) {
-            return new DefinitionPaletteGroupImpl( id,
-                                                   title,
-                                                   description,
-                                                   tooltip,
-                                                   items,
-                                                   definitionId );
+        protected DefinitionPaletteGroupImpl doBuild(final List<DefinitionPaletteItem> items) {
+            return new DefinitionPaletteGroupImpl(id,
+                                                  title,
+                                                  description,
+                                                  tooltip,
+                                                  items,
+                                                  definitionId);
         }
     }
 }

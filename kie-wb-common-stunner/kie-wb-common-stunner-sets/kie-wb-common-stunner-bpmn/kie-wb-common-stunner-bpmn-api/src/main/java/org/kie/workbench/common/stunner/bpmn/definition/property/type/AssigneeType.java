@@ -29,15 +29,15 @@ public class AssigneeType implements PropertyType {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof AssigneeType ) ) {
+        if (!(o instanceof AssigneeType)) {
             return false;
         }
-        AssigneeType that = ( AssigneeType ) o;
-        if ( !name.equals( that.name ) ) {
+        AssigneeType that = (AssigneeType) o;
+        if (!name.equals(that.name)) {
             return false;
         }
         return true;

@@ -49,25 +49,25 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIE
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = UserTask.UserTaskBuilder.class )
-@CanDock( roles = { "IntermediateEventOnActivityBoundary" } )
-@Morph( base = BaseTask.class )
+@Definition(graphFactory = NodeFactory.class, builder = UserTask.UserTaskBuilder.class)
+@CanDock(roles = {"IntermediateEventOnActivityBoundary"})
+@Morph(base = BaseTask.class)
 public class UserTask extends BaseTask implements DataIOModel {
 
     @Title
     public static final transient String title = "User Task";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
+    @FieldDef(label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1)
     @Valid
     protected UserTaskExecutionSet executionSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_ASSIGNED_TO, position = 2 )
+    @FieldDef(label = FIELDDEF_ASSIGNED_TO, position = 2)
     protected AssigneeSet assigneeSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_TASK_DATA, position = 3 )
+    @FieldDef(label = FIELDDEF_TASK_DATA, position = 3)
     @Valid
     protected DataIOSet dataIOSet;
 
@@ -76,41 +76,41 @@ public class UserTask extends BaseTask implements DataIOModel {
 
         @Override
         public UserTask build() {
-            return new UserTask( new TaskGeneralSet( new Name( "Task" ),
-                                                     new Documentation( "" ) ),
-                                 new UserTaskExecutionSet(),
-                                 new AssigneeSet(),
-                                 new DataIOSet(),
-                                 new BackgroundSet( COLOR,
-                                                    BORDER_COLOR,
-                                                    BORDER_SIZE ),
-                                 new FontSet(),
-                                 new RectangleDimensionsSet( WIDTH,
-                                                             HEIGHT ),
-                                 new SimulationSet(),
-                                 new TaskType( TaskTypes.USER ) );
+            return new UserTask(new TaskGeneralSet(new Name("Task"),
+                                                   new Documentation("")),
+                                new UserTaskExecutionSet(),
+                                new AssigneeSet(),
+                                new DataIOSet(),
+                                new BackgroundSet(COLOR,
+                                                  BORDER_COLOR,
+                                                  BORDER_SIZE),
+                                new FontSet(),
+                                new RectangleDimensionsSet(WIDTH,
+                                                           HEIGHT),
+                                new SimulationSet(),
+                                new TaskType(TaskTypes.USER));
         }
     }
 
     public UserTask() {
-        super( TaskTypes.USER );
+        super(TaskTypes.USER);
     }
 
-    public UserTask( @MapsTo( "general" ) TaskGeneralSet general,
-                     @MapsTo( "executionSet" ) UserTaskExecutionSet executionSet,
-                     @MapsTo( "assigneeSet" ) AssigneeSet assigneeSet,
-                     @MapsTo( "dataIOSet" ) DataIOSet dataIOSet,
-                     @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                     @MapsTo( "fontSet" ) FontSet fontSet,
-                     @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet,
-                     @MapsTo( "simulationSet" ) SimulationSet simulationSet,
-                     @MapsTo( "taskType" ) TaskType taskType ) {
-        super( general,
-               backgroundSet,
-               fontSet,
-               dimensionsSet,
-               simulationSet,
-               taskType );
+    public UserTask(final @MapsTo("general") TaskGeneralSet general,
+                    final @MapsTo("executionSet") UserTaskExecutionSet executionSet,
+                    final @MapsTo("assigneeSet") AssigneeSet assigneeSet,
+                    final @MapsTo("dataIOSet") DataIOSet dataIOSet,
+                    final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                    final @MapsTo("fontSet") FontSet fontSet,
+                    final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                    final @MapsTo("simulationSet") SimulationSet simulationSet,
+                    final @MapsTo("taskType") TaskType taskType) {
+        super(general,
+              backgroundSet,
+              fontSet,
+              dimensionsSet,
+              simulationSet,
+              taskType);
         this.executionSet = executionSet;
         this.assigneeSet = assigneeSet;
         this.dataIOSet = dataIOSet;
@@ -152,15 +152,15 @@ public class UserTask extends BaseTask implements DataIOModel {
         return dataIOSet;
     }
 
-    public void setExecutionSet( UserTaskExecutionSet executionSet ) {
+    public void setExecutionSet(final UserTaskExecutionSet executionSet) {
         this.executionSet = executionSet;
     }
 
-    public void setAssigneeSet( AssigneeSet assigneeSet ) {
+    public void setAssigneeSet(final AssigneeSet assigneeSet) {
         this.assigneeSet = assigneeSet;
     }
 
-    public void setDataIOSet( DataIOSet dataIOSet ) {
+    public void setDataIOSet(final DataIOSet dataIOSet) {
         this.dataIOSet = dataIOSet;
     }
 }

@@ -49,9 +49,9 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIE
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = Lane.LaneBuilder.class )
-@CanContain( roles = { "all" } )
-@Shape( factory = BasicShapesFactory.class, def = LaneShapeDef.class )
+@Definition(graphFactory = NodeFactory.class, builder = Lane.LaneBuilder.class)
+@CanContain(roles = {"all"})
+@Shape(factory = BasicShapesFactory.class, def = LaneShapeDef.class)
 public class Lane implements BPMNDefinition {
 
     @Category
@@ -66,7 +66,7 @@ public class Lane implements BPMNDefinition {
             "Lanes sub-divide pools or other lanes hierarchically.";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0 )
+    @FieldDef(label = FIELDDEF_GENERAL_SETTINGS, position = 0)
     @Valid
     protected BPMNGeneralSet general;
 
@@ -85,10 +85,10 @@ public class Lane implements BPMNDefinition {
 
     @Labels
     private final Set<String> labels = new HashSet<String>() {{
-        add( "all" );
-        add( "PoolChild" );
-        add( "fromtoall" );
-        add( "canContainArtifacts" );
+        add("all");
+        add("PoolChild");
+        add("fromtoall");
+        add("canContainArtifacts");
     }};
 
     @NonPortable
@@ -102,26 +102,26 @@ public class Lane implements BPMNDefinition {
 
         @Override
         public Lane build() {
-            return new Lane( new BPMNGeneralSet( "Lane" ),
-                             new BackgroundSet( COLOR,
-                                                BORDER_COLOR,
-                                                BORDER_SIZE ),
-                             new FontSet( FontFamily.defaultValue,
-                                          FontColor.defaultValue,
-                                          14d,
-                                          FontBorderSize.defaultValue ),
-                             new RectangleDimensionsSet( WIDTH,
-                                                         HEIGHT ) );
+            return new Lane(new BPMNGeneralSet("Lane"),
+                            new BackgroundSet(COLOR,
+                                              BORDER_COLOR,
+                                              BORDER_SIZE),
+                            new FontSet(FontFamily.defaultValue,
+                                        FontColor.defaultValue,
+                                        14d,
+                                        FontBorderSize.defaultValue),
+                            new RectangleDimensionsSet(WIDTH,
+                                                       HEIGHT));
         }
     }
 
     public Lane() {
     }
 
-    public Lane( @MapsTo( "general" ) BPMNGeneralSet general,
-                 @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                 @MapsTo( "fontSet" ) FontSet fontSet,
-                 @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet ) {
+    public Lane(final @MapsTo("general") BPMNGeneralSet general,
+                final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                final @MapsTo("fontSet") FontSet fontSet,
+                final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
         this.general = general;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
@@ -156,15 +156,15 @@ public class Lane implements BPMNDefinition {
         return fontSet;
     }
 
-    public void setFontSet( FontSet fontSet ) {
+    public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
     }
 
-    public void setBackgroundSet( BackgroundSet backgroundSet ) {
+    public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
-    public void setGeneral( BPMNGeneralSet general ) {
+    public void setGeneral(final BPMNGeneralSet general) {
         this.general = general;
     }
 
@@ -172,7 +172,7 @@ public class Lane implements BPMNDefinition {
         return dimensionsSet;
     }
 
-    public void setDimensionsSet( RectangleDimensionsSet dimensionsSet ) {
+    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
         this.dimensionsSet = dimensionsSet;
     }
 }

@@ -42,35 +42,35 @@ public class SequenceFlowExecutionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef( label = FIELDDEF_PRIORITY, property = "value", position = 1 )
+    @FieldDef(label = FIELDDEF_PRIORITY, property = "value", position = 1)
     @Valid
     private Priority priority;
 
     @Property
-    @FieldDef( label = FIELDDEF_CONDITION_EXPRESSION, property = "value", position = 2 )
-    @TextArea( rows = 5 )
+    @FieldDef(label = FIELDDEF_CONDITION_EXPRESSION, property = "value", position = 2)
+    @TextArea(rows = 5)
     @Valid
     private ConditionExpression conditionExpression;
 
     @Property
-    @FieldDef( label = FIELDDEF_CONDITION_EXPRESSION_LANGUAGE, property = "value", position = 3 )
+    @FieldDef(label = FIELDDEF_CONDITION_EXPRESSION_LANGUAGE, property = "value", position = 3)
     @ListBox
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
-            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.ScriptLanguageFormProvider" )
+            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.ScriptLanguageFormProvider")
     @Valid
     protected ConditionExpressionLanguage conditionExpressionLanguage;
 
     public SequenceFlowExecutionSet() {
-        this( new Priority( "" ),
-              new ConditionExpression( "" ),
-              new ConditionExpressionLanguage( "" )
+        this(new Priority(""),
+             new ConditionExpression(""),
+             new ConditionExpressionLanguage("")
         );
     }
 
-    public SequenceFlowExecutionSet( @MapsTo( "priority" ) Priority priority,
-                                     @MapsTo( "conditionExpression" ) ConditionExpression conditionExpression,
-                                     @MapsTo( "conditionExpressionLanguage" ) ConditionExpressionLanguage conditionExpressionLanguage ) {
+    public SequenceFlowExecutionSet(final @MapsTo("priority") Priority priority,
+                                    final @MapsTo("conditionExpression") ConditionExpression conditionExpression,
+                                    final @MapsTo("conditionExpressionLanguage") ConditionExpressionLanguage conditionExpressionLanguage) {
         this.priority = priority;
         this.conditionExpression = conditionExpression;
         this.conditionExpressionLanguage = conditionExpressionLanguage;
@@ -84,7 +84,7 @@ public class SequenceFlowExecutionSet implements BPMNPropertySet {
         return priority;
     }
 
-    public void setPriority( Priority priority ) {
+    public void setPriority(final Priority priority) {
         this.priority = priority;
     }
 
@@ -92,7 +92,7 @@ public class SequenceFlowExecutionSet implements BPMNPropertySet {
         return conditionExpression;
     }
 
-    public void setConditionExpression( ConditionExpression conditionExpression ) {
+    public void setConditionExpression(final ConditionExpression conditionExpression) {
         this.conditionExpression = conditionExpression;
     }
 
@@ -100,7 +100,7 @@ public class SequenceFlowExecutionSet implements BPMNPropertySet {
         return conditionExpressionLanguage;
     }
 
-    public void setConditionExpressionLanguage( ConditionExpressionLanguage conditionExpressionLanguage ) {
+    public void setConditionExpressionLanguage(final ConditionExpressionLanguage conditionExpressionLanguage) {
         this.conditionExpressionLanguage = conditionExpressionLanguage;
     }
 }

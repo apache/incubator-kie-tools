@@ -23,23 +23,23 @@ public interface DefinitionSetPaletteBuilder extends PaletteDefinitionBuilder<Ob
 
     interface PaletteCategoryProvider {
 
-        String getTitle( final String id );
+        String getTitle(final String id);
 
-        String getDescription( final String id );
+        String getDescription(final String id);
 
-        String getDefinitionId( final String id );
+        String getDefinitionId(final String id);
     }
 
     interface PaletteMorphGroupProvider {
 
-        String getTitle( final String morphBaseId,
-                         final Object definition );
+        String getTitle(final String morphBaseId,
+                        final Object definition);
 
-        String getDescription( final String morphBaseId,
-                               final Object definition );
+        String getDescription(final String morphBaseId,
+                              final Object definition);
     }
 
-    DefinitionSetPaletteBuilder setCategoryProvider( final PaletteCategoryProvider categoryProvider );
+    DefinitionSetPaletteBuilder setCategoryProvider(final PaletteCategoryProvider categoryProvider);
 
-    DefinitionSetPaletteBuilder setMorphGroupProvider( final PaletteMorphGroupProvider groupProvider );
+    DefinitionSetPaletteBuilder setMorphGroupProvider(final PaletteMorphGroupProvider groupProvider);
 }

@@ -22,8 +22,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface Navigator<T> extends IsWidget {
 
-    Navigator<T> setItemPxSize( final int width,
-                                final int height );
+    Navigator<T> setItemPxSize(final int width,
+                               final int height);
 
     Navigator<T> show();
 

@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.factory.Factory;
  */
 public interface DefinitionFactory<T> extends Factory<String> {
 
-    boolean accepts( final String identifier );
+    boolean accepts(final String identifier);
 
-    T build( final String identifier );
+    T build(final String identifier);
 }

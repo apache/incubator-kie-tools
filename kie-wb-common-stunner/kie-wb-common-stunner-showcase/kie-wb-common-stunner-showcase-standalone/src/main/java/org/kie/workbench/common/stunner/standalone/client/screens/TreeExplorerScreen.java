@@ -45,7 +45,7 @@ import org.uberfire.workbench.model.menu.Menus;
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-@WorkbenchScreen( identifier = TreeExplorerScreen.SCREEN_ID )
+@WorkbenchScreen(identifier = TreeExplorerScreen.SCREEN_ID)
 public class TreeExplorerScreen {
 
     public static final String SCREEN_ID = "TreeExplorerScreen";
@@ -66,7 +66,7 @@ public class TreeExplorerScreen {
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
+    public void onStartup(final PlaceRequest placeRequest) {
         this.placeRequest = placeRequest;
     }
 
@@ -100,30 +100,30 @@ public class TreeExplorerScreen {
         return "TreeExplorerScreenContext";
     }
 
-    void onCanvasSessionOpened( @Observes SessionOpenedEvent sessionOpenedEvent ) {
-        checkNotNull( "sessionOpenedEvent",
-                      sessionOpenedEvent );
-        doOpenSession( sessionOpenedEvent.getSession() );
+    void onCanvasSessionOpened(final @Observes SessionOpenedEvent sessionOpenedEvent) {
+        checkNotNull("sessionOpenedEvent",
+                     sessionOpenedEvent);
+        doOpenSession(sessionOpenedEvent.getSession());
     }
 
-    void onCanvasSessionDisposed( @Observes SessionDisposedEvent sessionDisposedEvent ) {
-        checkNotNull( "sessionDisposedEvent",
-                      sessionDisposedEvent );
+    void onCanvasSessionDisposed(final @Observes SessionDisposedEvent sessionDisposedEvent) {
+        checkNotNull("sessionDisposedEvent",
+                     sessionDisposedEvent);
         doCloseSession();
     }
 
-    void onSessionDiagramOpenedEvent( @Observes SessionDiagramOpenedEvent sessionDiagramOpenedEvent ) {
-        checkNotNull( "sessionDiagramOpenedEvent",
-                      sessionDiagramOpenedEvent );
-        if ( null != getCanvas() && getCanvas().equals( sessionDiagramOpenedEvent.getSession().getCanvas() ) ) {
+    void onSessionDiagramOpenedEvent(final @Observes SessionDiagramOpenedEvent sessionDiagramOpenedEvent) {
+        checkNotNull("sessionDiagramOpenedEvent",
+                     sessionDiagramOpenedEvent);
+        if (null != getCanvas() && getCanvas().equals(sessionDiagramOpenedEvent.getSession().getCanvas())) {
             // Force to reload current session, for example, when a new diagram is just created.
-            doOpenSession( session );
+            doOpenSession(session);
         }
     }
 
-    private boolean isAlreadyOpen( final CanvasHandler canvasHandler ) {
+    private boolean isAlreadyOpen(final CanvasHandler canvasHandler) {
         return null != treeExplorer && null != treeExplorer.getCanvasHandler()
-                && canvasHandler.equals( treeExplorer.getCanvasHandler() );
+                && canvasHandler.equals(treeExplorer.getCanvasHandler());
     }
 
     private CanvasHandler getCanvasHandler() {
@@ -134,11 +134,11 @@ public class TreeExplorerScreen {
         return null != session ? session.getCanvas() : null;
     }
 
-    private void doOpenSession( final ClientSession session ) {
+    private void doOpenSession(final ClientSession session) {
         this.session = session;
-        if ( null != getCanvasHandler() && !isAlreadyOpen( getCanvasHandler() ) ) {
-            treeExplorer.show( getCanvasHandler() );
-            updateTitle( session );
+        if (null != getCanvasHandler() && !isAlreadyOpen(getCanvasHandler())) {
+            treeExplorer.show(getCanvasHandler());
+            updateTitle(session);
         }
     }
 
@@ -147,19 +147,19 @@ public class TreeExplorerScreen {
         this.session = null;
     }
 
-    private void updateTitle( final ClientSession session ) {
+    private void updateTitle(final ClientSession session) {
         String title = TITLE;
-        if ( null != session.getCanvasHandler() && null != session.getCanvasHandler().getDiagram() ) {
+        if (null != session.getCanvasHandler() && null != session.getCanvasHandler().getDiagram()) {
             final Diagram<?, ?> diagram = session.getCanvasHandler().getDiagram();
             title = diagram.getMetadata().getTitle();
         }
-        doUpdateTitle( title );
+        doUpdateTitle(title);
     }
 
-    private void doUpdateTitle( final String title ) {
+    private void doUpdateTitle(final String title) {
         // Change screen title.
         TreeExplorerScreen.this.title = title;
-        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
-                                                                       this.title ) );
+        changeTitleNotificationEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
+                                                                     this.title));
     }
 }

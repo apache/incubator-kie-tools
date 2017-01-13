@@ -26,7 +26,7 @@ public interface Shape<V extends ShapeView> {
     /**
      * Sets a unique identifier for the shape in a canvas.
      */
-    void setUUID( final String uuid );
+    void setUUID(final String uuid);
 
     /**
      * The unique identifier for the shape in a canvas.
@@ -36,7 +36,7 @@ public interface Shape<V extends ShapeView> {
     /**
      * Update shape's view state.
      */
-    void applyState( final ShapeState shapeState );
+    void applyState(final ShapeState shapeState);
 
     /**
      * Returns the view representation on the canvas for the shape.

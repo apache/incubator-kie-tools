@@ -32,18 +32,18 @@ public class XMLEncoderDiagramMetadataMarshaller implements DiagramMetadataMarsh
     private static final String CHARSET = "UTF-8";
 
     @Override
-    public Metadata unmarshall( final InputStream input ) throws IOException {
-        XMLDecoder decoder = new XMLDecoder( input );
-        return ( Metadata ) decoder.readObject();
+    public Metadata unmarshall(final InputStream input) throws IOException {
+        XMLDecoder decoder = new XMLDecoder(input);
+        return (Metadata) decoder.readObject();
     }
 
     @Override
-    public String marshall( final Metadata metadata ) throws IOException {
+    public String marshall(final Metadata metadata) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        XMLEncoder encoder = new XMLEncoder( os );
-        encoder.writeObject( metadata );
+        XMLEncoder encoder = new XMLEncoder(os);
+        encoder.writeObject(metadata);
         encoder.close();
-        String raw = os.toString( CHARSET );
+        String raw = os.toString(CHARSET);
         return raw;
     }
 }

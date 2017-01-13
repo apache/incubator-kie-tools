@@ -31,7 +31,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class AssigneeEditorFieldRendererTest {
 
     @Mock
@@ -42,78 +42,78 @@ public class AssigneeEditorFieldRendererTest {
 
     @Spy
     @InjectMocks
-    private AssigneeEditorFieldRenderer assigneeEditor = new AssigneeEditorFieldRenderer( assigneeEditorWidgetView );
+    private AssigneeEditorFieldRenderer assigneeEditor = new AssigneeEditorFieldRenderer(assigneeEditorWidgetView);
 
     @Test
     public void testAddAssignee() {
-        when( assigneeEditorWidgetView.getAssigneeWidget( anyInt() ) ).thenReturn( assigneeListItemWidgetView );
-        when( assigneeEditorWidgetView.getAssigneeRowsCount() ).thenReturn( 1 );
+        when(assigneeEditorWidgetView.getAssigneeWidget(anyInt())).thenReturn(assigneeListItemWidgetView);
+        when(assigneeEditorWidgetView.getAssigneeRowsCount()).thenReturn(1);
         assigneeEditor.addAssignee();
-        verify( assigneeEditorWidgetView,
-                times( 1 ) ).setTableDisplayStyle();
-        verify( assigneeEditorWidgetView,
-                times( 1 ) ).getAssigneeRowsCount();
-        verify( assigneeEditorWidgetView,
-                times( 1 ) ).getAssigneeWidget( 0 );
-        when( assigneeEditorWidgetView.getAssigneeRowsCount() ).thenReturn( 2 );
+        verify(assigneeEditorWidgetView,
+               times(1)).setTableDisplayStyle();
+        verify(assigneeEditorWidgetView,
+               times(1)).getAssigneeRowsCount();
+        verify(assigneeEditorWidgetView,
+               times(1)).getAssigneeWidget(0);
+        when(assigneeEditorWidgetView.getAssigneeRowsCount()).thenReturn(2);
         assigneeEditor.addAssignee();
-        verify( assigneeEditorWidgetView,
-                times( 2 ) ).getAssigneeRowsCount();
-        verify( assigneeEditorWidgetView,
-                times( 1 ) ).getAssigneeWidget( 1 );
+        verify(assigneeEditorWidgetView,
+               times(2)).getAssigneeRowsCount();
+        verify(assigneeEditorWidgetView,
+               times(1)).getAssigneeWidget(1);
     }
 
     @Test
     public void testRemoveAssignee() {
-        when( assigneeEditorWidgetView.getAssigneeWidget( anyInt() ) ).thenReturn( assigneeListItemWidgetView );
-        when( assigneeEditorWidgetView.getAssigneeRowsCount() ).thenReturn( 1 );
+        when(assigneeEditorWidgetView.getAssigneeWidget(anyInt())).thenReturn(assigneeListItemWidgetView);
+        when(assigneeEditorWidgetView.getAssigneeRowsCount()).thenReturn(1);
         assigneeEditor.addAssignee();
         assigneeEditor.addAssignee();
-        assigneeEditor.removeAssignee( null );
-        verify( assigneeEditorWidgetView,
-                times( 3 ) ).getAssigneeRows();
-        verify( assigneeEditorWidgetView,
-                times( 1 ) ).doSave();
-        assigneeEditor.removeAssignee( null );
-        verify( assigneeEditorWidgetView,
-                times( 4 ) ).getAssigneeRows();
-        verify( assigneeEditorWidgetView,
-                times( 2 ) ).doSave();
+        assigneeEditor.removeAssignee(null);
+        verify(assigneeEditorWidgetView,
+               times(3)).getAssigneeRows();
+        verify(assigneeEditorWidgetView,
+               times(1)).doSave();
+        assigneeEditor.removeAssignee(null);
+        verify(assigneeEditorWidgetView,
+               times(4)).getAssigneeRows();
+        verify(assigneeEditorWidgetView,
+               times(2)).doSave();
     }
 
     @Test
     public void testDeserializeAssignee() {
-        List<String> assignees = new ArrayList<String>( Arrays.asList( "user1",
-                                                                       "user2",
-                                                                       "user3",
-                                                                       "user4",
-                                                                       "user5" ) );
-        assigneeEditor.setNames( assignees );
-        List<AssigneeRow> assigneeRows = assigneeEditor.deserializeAssignees( "user3,user2,user5" );
-        assertEquals( 3,
-                      assigneeRows.size() );
-        AssigneeRow a = assigneeRows.get( 0 );
-        assertEquals( "user3",
-                      a.getName() );
-        a = assigneeRows.get( 1 );
-        assertEquals( "user2",
-                      a.getName() );
-        a = assigneeRows.get( 2 );
-        assertEquals( "user5",
-                      a.getName() );
+        List<String> assignees = new ArrayList<String>(Arrays.asList("user1",
+                                                                     "user2",
+                                                                     "user3",
+                                                                     "user4",
+                                                                     "user5"));
+        assigneeEditor.setNames(assignees);
+        List<AssigneeRow> assigneeRows = assigneeEditor.deserializeAssignees("user3,user2,user5");
+        assertEquals(3,
+                     assigneeRows.size());
+        AssigneeRow a = assigneeRows.get(0);
+        assertEquals("user3",
+                     a.getName());
+        a = assigneeRows.get(1);
+        assertEquals("user2",
+                     a.getName());
+        a = assigneeRows.get(2);
+        assertEquals("user5",
+                     a.getName());
     }
 
     @Test
     public void testSerializeAssignee() {
         List<AssigneeRow> assigneeRows = new ArrayList<AssigneeRow>();
-        assigneeRows.add( new AssigneeRow( "user3",
-                                           null ) );
-        assigneeRows.add( new AssigneeRow( "user2",
-                                           null ) );
-        assigneeRows.add( new AssigneeRow( "user5",
-                                           null ) );
-        String s = assigneeEditor.serializeAssignees( assigneeRows );
-        assertEquals( "user3,user2,user5",
-                      s );
+        assigneeRows.add(new AssigneeRow("user3",
+                                         null));
+        assigneeRows.add(new AssigneeRow("user2",
+                                         null));
+        assigneeRows.add(new AssigneeRow("user5",
+                                         null));
+        String s = assigneeEditor.serializeAssignees(assigneeRows);
+        assertEquals("user3,user2,user5",
+                     s);
     }
 }

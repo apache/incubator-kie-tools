@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.core.client.api.platform;
 
 public interface ClientPlatform {
 
-    boolean supports( final String platform );
+    boolean supports(final String platform);
 
     String[] getUserAgents();
 }

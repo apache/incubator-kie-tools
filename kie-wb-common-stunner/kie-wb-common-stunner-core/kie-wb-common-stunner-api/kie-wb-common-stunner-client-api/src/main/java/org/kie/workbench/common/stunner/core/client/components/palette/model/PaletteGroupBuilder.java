@@ -18,10 +18,10 @@ package org.kie.workbench.common.stunner.core.client.components.palette.model;
 
 public interface PaletteGroupBuilder<B, G, I> extends PaletteItemBuilder<B, G> {
 
-    B addItem( final I item );
+    B addItem(final I item);
 
-    B addItem( final int index,
-               final I item );
+    B addItem(final int index,
+              final I item);
 
-    I getItem( final String id );
+    I getItem(final String id);
 }

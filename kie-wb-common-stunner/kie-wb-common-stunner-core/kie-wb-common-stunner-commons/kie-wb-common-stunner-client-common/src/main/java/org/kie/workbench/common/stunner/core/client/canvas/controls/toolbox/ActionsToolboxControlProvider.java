@@ -50,32 +50,32 @@ public class ActionsToolboxControlProvider extends AbstractToolboxControlProvide
     private MoveShapeDownToolboxCommand moveShapeDownToolboxCommand;
 
     protected ActionsToolboxControlProvider() {
-        this( null,
-              null );
+        this(null,
+             null);
     }
 
     @Inject
-    public ActionsToolboxControlProvider( final ToolboxFactory toolboxFactory,
-                                          final ToolboxCommandFactory toolboxCommandFactory ) {
-        super( toolboxFactory );
+    public ActionsToolboxControlProvider(final ToolboxFactory toolboxFactory,
+                                         final ToolboxCommandFactory toolboxCommandFactory) {
+        super(toolboxFactory);
         this.removeToolboxCommand = toolboxCommandFactory.newRemoveToolboxCommand();
         this.moveShapeUpToolboxCommand = toolboxCommandFactory.newMoveShapeUpToolboxCommand();
         this.moveShapeDownToolboxCommand = toolboxCommandFactory.newMoveShapeDownToolboxCommand();
     }
 
     @Override
-    public boolean supports( final Object definition ) {
+    public boolean supports(final Object definition) {
         return true;
     }
 
     @Override
-    public ToolboxButtonGrid getGrid( final AbstractCanvasHandler context,
-                                      final Element item ) {
+    public ToolboxButtonGrid getGrid(final AbstractCanvasHandler context,
+                                     final Element item) {
         final ToolboxButtonGridBuilder buttonGridBuilder = toolboxFactory.toolboxGridBuilder();
         return buttonGridBuilder
-                .setRows( 3 )
-                .setColumns( 1 )
-                .setPadding( DEFAULT_PADDING )
+                .setRows(3)
+                .setColumns(1)
+                .setPadding(DEFAULT_PADDING)
                 .build();
     }
 
@@ -90,13 +90,13 @@ public class ActionsToolboxControlProvider extends AbstractToolboxControlProvide
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public List<ToolboxCommand<AbstractCanvasHandler, ?>> getCommands( final AbstractCanvasHandler context,
-                                                                       final Element item ) {
+    @SuppressWarnings("unchecked")
+    public List<ToolboxCommand<AbstractCanvasHandler, ?>> getCommands(final AbstractCanvasHandler context,
+                                                                      final Element item) {
         return new LinkedList<ToolboxCommand<AbstractCanvasHandler, ?>>() {{
-            add( removeToolboxCommand );
-            add( moveShapeUpToolboxCommand );
-            add( moveShapeDownToolboxCommand );
+            add(removeToolboxCommand);
+            add(moveShapeUpToolboxCommand);
+            add(moveShapeDownToolboxCommand);
         }};
     }
 }

@@ -32,31 +32,31 @@ abstract class AbstractBasicAnimation<S extends Shape>
             new com.ait.lienzo.client.core.animation.AnimationCallback() {
 
                 @Override
-                public void onStart( final IAnimation animation,
-                                     final IAnimationHandle handle ) {
-                    super.onStart( animation,
-                                   handle );
-                    if ( null != getCallback() ) {
+                public void onStart(final IAnimation animation,
+                                    final IAnimationHandle handle) {
+                    super.onStart(animation,
+                                  handle);
+                    if (null != getCallback()) {
                         getCallback().onStart();
                     }
                 }
 
                 @Override
-                public void onFrame( final IAnimation animation,
-                                     final IAnimationHandle handle ) {
-                    super.onFrame( animation,
-                                   handle );
-                    if ( null != getCallback() ) {
+                public void onFrame(final IAnimation animation,
+                                    final IAnimationHandle handle) {
+                    super.onFrame(animation,
+                                  handle);
+                    if (null != getCallback()) {
                         getCallback().onFrame();
                     }
                 }
 
                 @Override
-                public void onClose( final IAnimation animation,
-                                     final IAnimationHandle handle ) {
-                    super.onClose( animation,
-                                   handle );
-                    if ( null != getCallback() ) {
+                public void onClose(final IAnimation animation,
+                                    final IAnimationHandle handle) {
+                    super.onClose(animation,
+                                  handle);
+                    if (null != getCallback()) {
                         getCallback().onComplete();
                     }
                 }

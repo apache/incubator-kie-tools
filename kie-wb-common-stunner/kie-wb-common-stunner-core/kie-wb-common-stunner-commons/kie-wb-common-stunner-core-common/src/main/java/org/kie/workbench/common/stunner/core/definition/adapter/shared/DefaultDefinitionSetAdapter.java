@@ -28,8 +28,8 @@ import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 public class DefaultDefinitionSetAdapter implements DefinitionSetAdapter<DefinitionSetImpl> {
 
     @Override
-    public boolean accepts( final Class<?> pojo ) {
-        return pojo.getName().equals( DefinitionSetImpl.class.getName() );
+    public boolean accepts(final Class<?> pojo) {
+        return pojo.getName().equals(DefinitionSetImpl.class.getName());
     }
 
     @Override
@@ -38,27 +38,27 @@ public class DefaultDefinitionSetAdapter implements DefinitionSetAdapter<Definit
     }
 
     @Override
-    public String getId( final DefinitionSetImpl pojo ) {
+    public String getId(final DefinitionSetImpl pojo) {
         return null;
     }
 
     @Override
-    public String getDomain( final DefinitionSetImpl pojo ) {
+    public String getDomain(final DefinitionSetImpl pojo) {
         return null;
     }
 
     @Override
-    public String getDescription( final DefinitionSetImpl pojo ) {
+    public String getDescription(final DefinitionSetImpl pojo) {
         return null;
     }
 
     @Override
-    public Set<String> getDefinitions( final DefinitionSetImpl pojo ) {
+    public Set<String> getDefinitions(final DefinitionSetImpl pojo) {
         return null;
     }
 
     @Override
-    public Class<? extends ElementFactory> getGraphFactoryType( final DefinitionSetImpl pojo ) {
+    public Class<? extends ElementFactory> getGraphFactoryType(final DefinitionSetImpl pojo) {
         return null;
     }
 

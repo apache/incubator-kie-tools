@@ -27,27 +27,27 @@ public final class SetCanvasChildNodeCommand extends AbstractCanvasCommand {
     private final Node parent;
     private final Node candidate;
 
-    public SetCanvasChildNodeCommand( final Node parent,
-                                      final Node candidate ) {
+    public SetCanvasChildNodeCommand(final Node parent,
+                                     final Node candidate) {
         this.parent = parent;
         this.candidate = candidate;
     }
 
     @Override
-    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
-        context.addChild( parent,
-                          candidate );
-        context.applyElementMutation( parent,
-                                      MutationContext.STATIC );
-        context.applyElementMutation( candidate,
-                                      MutationContext.STATIC );
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+        context.addChild(parent,
+                         candidate);
+        context.applyElementMutation(parent,
+                                     MutationContext.STATIC);
+        context.applyElementMutation(candidate,
+                                     MutationContext.STATIC);
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        return new RemoveCanvasChildCommand( parent,
-                                             candidate ).execute( context );
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+        return new RemoveCanvasChildCommand(parent,
+                                            candidate).execute(context);
     }
 
     public Node getParent() {

@@ -23,10 +23,10 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 
 class ToolbarImpl extends AbstractToolbar<ClientSession> {
 
-    ToolbarImpl( final ManagedInstance<AbstractToolbarItem<ClientSession>> toolbarItems,
-                 final ToolbarView view ) {
-        super( toolbarItems,
-               view );
+    ToolbarImpl(final ManagedInstance<AbstractToolbarItem<ClientSession>> toolbarItems,
+                final ToolbarView view) {
+        super(toolbarItems,
+              view);
         doInit();
     }
 }

@@ -52,23 +52,23 @@ import org.uberfire.client.mvp.UberView;
 @Dependent
 public class TreeExplorer implements IsWidget {
 
-    private static Logger LOGGER = Logger.getLogger( TreeExplorer.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(TreeExplorer.class.getName());
 
     public interface View extends UberView<TreeExplorer> {
 
-        View addItem( final String uuid,
-                      final IsWidget itemView,
-                      final boolean state );
+        View addItem(final String uuid,
+                     final IsWidget itemView,
+                     final boolean state);
 
-        View addItem( final String uuid,
-                      final IsWidget itemView,
-                      final boolean state,
-                      final int... parentIdx );
+        View addItem(final String uuid,
+                     final IsWidget itemView,
+                     final boolean state,
+                     final int... parentIdx);
 
-        View removeItem( final int index );
+        View removeItem(final int index);
 
-        View removeItem( final int index,
-                         final int... parentIdx );
+        View removeItem(final int index,
+                        final int... parentIdx);
 
         View clear();
     }
@@ -82,11 +82,11 @@ public class TreeExplorer implements IsWidget {
     private CanvasHandler canvasHandler;
 
     @Inject
-    public TreeExplorer( final DefinitionManager definitionManager,
-                         final ChildrenTraverseProcessor childrenTraverseProcessor,
-                         final ManagedInstance<TreeExplorerItem> treeExplorerItemInstances,
-                         final Event<CanvasElementSelectedEvent> elementSelectedEventEvent,
-                         final View view ) {
+    public TreeExplorer(final DefinitionManager definitionManager,
+                        final ChildrenTraverseProcessor childrenTraverseProcessor,
+                        final ManagedInstance<TreeExplorerItem> treeExplorerItemInstances,
+                        final Event<CanvasElementSelectedEvent> elementSelectedEventEvent,
+                        final View view) {
         this.definitionManager = definitionManager;
         this.childrenTraverseProcessor = childrenTraverseProcessor;
         this.treeExplorerItemInstances = treeExplorerItemInstances;
@@ -96,121 +96,121 @@ public class TreeExplorer implements IsWidget {
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void show( final CanvasHandler canvasHandler ) {
+    @SuppressWarnings("unchecked")
+    public void show(final CanvasHandler canvasHandler) {
         this.canvasHandler = canvasHandler;
-        if ( null != canvasHandler && null != canvasHandler.getDiagram() ) {
-            doShow( canvasHandler.getDiagram().getGraph() );
+        if (null != canvasHandler && null != canvasHandler.getDiagram()) {
+            doShow(canvasHandler.getDiagram().getGraph());
         }
     }
 
-    private void doShow( final Graph<org.kie.workbench.common.stunner.core.graph.content.view.View, Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>> graph ) {
-        traverseChildrenEdges( graph,
-                               true );
+    private void doShow(final Graph<org.kie.workbench.common.stunner.core.graph.content.view.View, Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>> graph) {
+        traverseChildrenEdges(graph,
+                              true);
     }
 
-    private void traverseChildrenEdges( final Graph<org.kie.workbench.common.stunner.core.graph.content.view.View, Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>> graph,
-                                        final boolean expand ) {
+    private void traverseChildrenEdges(final Graph<org.kie.workbench.common.stunner.core.graph.content.view.View, Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>> graph,
+                                       final boolean expand) {
         assert graph != null;
         clear();
-        childrenTraverseProcessor.traverse( graph,
-                                            new AbstractChildrenTraverseCallback<Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>, Edge<Child, Node>>() {
+        childrenTraverseProcessor.traverse(graph,
+                                           new AbstractChildrenTraverseCallback<Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>, Edge<Child, Node>>() {
 
-                                                Node parent = null;
-                                                int level = 0;
-                                                final List<Integer> levelIdx = new LinkedList<Integer>();
+                                               Node parent = null;
+                                               int level = 0;
+                                               final List<Integer> levelIdx = new LinkedList<Integer>();
 
-                                                @Override
-                                                public void startEdgeTraversal( final Edge<Child, Node> edge ) {
-                                                    super.startEdgeTraversal( edge );
-                                                    final Node newParent = edge.getSourceNode();
-                                                    assert newParent != null;
-                                                    if ( null == parent || ( !parent.equals( newParent ) ) ) {
-                                                        level++;
-                                                    }
-                                                    this.parent = edge.getSourceNode();
-                                                }
+                                               @Override
+                                               public void startEdgeTraversal(final Edge<Child, Node> edge) {
+                                                   super.startEdgeTraversal(edge);
+                                                   final Node newParent = edge.getSourceNode();
+                                                   assert newParent != null;
+                                                   if (null == parent || (!parent.equals(newParent))) {
+                                                       level++;
+                                                   }
+                                                   this.parent = edge.getSourceNode();
+                                               }
 
-                                                @Override
-                                                public void endEdgeTraversal( final Edge<Child, Node> edge ) {
-                                                    super.endEdgeTraversal( edge );
-                                                    final Node newParent = edge.getSourceNode();
-                                                    assert newParent != null;
-                                                    if ( !parent.equals( newParent ) ) {
-                                                        level--;
-                                                        this.parent = newParent;
-                                                    }
-                                                }
+                                               @Override
+                                               public void endEdgeTraversal(final Edge<Child, Node> edge) {
+                                                   super.endEdgeTraversal(edge);
+                                                   final Node newParent = edge.getSourceNode();
+                                                   assert newParent != null;
+                                                   if (!parent.equals(newParent)) {
+                                                       level--;
+                                                       this.parent = newParent;
+                                                   }
+                                               }
 
-                                                @Override
-                                                public void startGraphTraversal( final Graph<DefinitionSet, Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>> graph ) {
-                                                    super.startGraphTraversal( graph );
-                                                    levelIdx.clear();
-                                                    levelIdx.add( -1 );
-                                                }
+                                               @Override
+                                               public void startGraphTraversal(final Graph<DefinitionSet, Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>> graph) {
+                                                   super.startGraphTraversal(graph);
+                                                   levelIdx.clear();
+                                                   levelIdx.add(-1);
+                                               }
 
-                                                @Override
-                                                public boolean startNodeTraversal( final Iterator<Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>> parents,
-                                                                                   final Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge> node ) {
-                                                    super.startNodeTraversal( parents,
-                                                                              node );
-                                                    onStartNodeTraversal( node );
-                                                    return true;
-                                                }
+                                               @Override
+                                               public boolean startNodeTraversal(final Iterator<Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>> parents,
+                                                                                 final Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge> node) {
+                                                   super.startNodeTraversal(parents,
+                                                                            node);
+                                                   onStartNodeTraversal(node);
+                                                   return true;
+                                               }
 
-                                                @Override
-                                                public void startNodeTraversal( final Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge> node ) {
-                                                    super.startNodeTraversal( node );
-                                                    onStartNodeTraversal( node );
-                                                }
+                                               @Override
+                                               public void startNodeTraversal(final Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge> node) {
+                                                   super.startNodeTraversal(node);
+                                                   onStartNodeTraversal(node);
+                                               }
 
-                                                private void onStartNodeTraversal( final Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge> node ) {
-                                                    super.startNodeTraversal( node );
-                                                    inc( levelIdx,
-                                                         level );
-                                                    if ( null == parent ) {
-                                                        final TreeExplorerItem item = treeExplorerItemInstances.get();
-                                                        view.addItem( node.getUUID(),
-                                                                      item.asWidget(),
-                                                                      expand );
-                                                        item.show( getShapeSetId(),
-                                                                   node );
-                                                    } else {
-                                                        int[] parentsIdx = getParentsIdx( levelIdx,
-                                                                                          level );
-                                                        final TreeExplorerItem item = treeExplorerItemInstances.get();
-                                                        view.addItem( node.getUUID(),
-                                                                      item.asWidget(),
-                                                                      expand,
-                                                                      parentsIdx );
-                                                        item.show( getShapeSetId(),
-                                                                   node );
-                                                    }
-                                                }
-                                            } );
+                                               private void onStartNodeTraversal(final Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge> node) {
+                                                   super.startNodeTraversal(node);
+                                                   inc(levelIdx,
+                                                       level);
+                                                   if (null == parent) {
+                                                       final TreeExplorerItem item = treeExplorerItemInstances.get();
+                                                       view.addItem(node.getUUID(),
+                                                                    item.asWidget(),
+                                                                    expand);
+                                                       item.show(getShapeSetId(),
+                                                                 node);
+                                                   } else {
+                                                       int[] parentsIdx = getParentsIdx(levelIdx,
+                                                                                        level);
+                                                       final TreeExplorerItem item = treeExplorerItemInstances.get();
+                                                       view.addItem(node.getUUID(),
+                                                                    item.asWidget(),
+                                                                    expand,
+                                                                    parentsIdx);
+                                                       item.show(getShapeSetId(),
+                                                                 node);
+                                                   }
+                                               }
+                                           });
     }
 
-    private void inc( final List<Integer> levels,
-                      final int level ) {
-        if ( levels.size() < ( level + 1 ) ) {
-            levels.add( 0 );
+    private void inc(final List<Integer> levels,
+                     final int level) {
+        if (levels.size() < (level + 1)) {
+            levels.add(0);
         } else {
-            final int idx = levels.get( level );
-            levels.set( level,
-                        idx + 1 );
+            final int idx = levels.get(level);
+            levels.set(level,
+                       idx + 1);
         }
     }
 
-    private int[] getParentsIdx( final List<Integer> idxList,
-                                 final int maxLevel ) {
-        if ( !idxList.isEmpty() ) {
-            final int targetPos = ( idxList.size() - ( idxList.size() - maxLevel ) ) + 1;
-            final int[] resultArray = new int[ targetPos ];
-            for ( int x = 0; x < targetPos; x++ ) {
-                resultArray[ x ] = idxList.get( x );
+    private int[] getParentsIdx(final List<Integer> idxList,
+                                final int maxLevel) {
+        if (!idxList.isEmpty()) {
+            final int targetPos = (idxList.size() - (idxList.size() - maxLevel)) + 1;
+            final int[] resultArray = new int[targetPos];
+            for (int x = 0; x < targetPos; x++) {
+                resultArray[x] = idxList.get(x);
             }
             return resultArray;
         }
@@ -221,59 +221,59 @@ public class TreeExplorer implements IsWidget {
         view.clear();
     }
 
-    void onSelect( final String uuid ) {
-        selectShape( canvasHandler.getCanvas(),
-                     uuid );
+    void onSelect(final String uuid) {
+        selectShape(canvasHandler.getCanvas(),
+                    uuid);
     }
 
-    private void selectShape( final Canvas canvas,
-                              final String uuid ) {
-        elementSelectedEventEvent.fire( new CanvasElementSelectedEvent( canvasHandler,
-                                                                        uuid ) );
+    private void selectShape(final Canvas canvas,
+                             final String uuid) {
+        elementSelectedEventEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
+                                                                      uuid));
     }
 
-    void onCanvasClearEvent( final @Observes CanvasClearEvent canvasClearEvent ) {
-        if ( canvasHandler != null && canvasHandler.getCanvas().equals( canvasClearEvent.getCanvas() ) ) {
+    void onCanvasClearEvent(final @Observes CanvasClearEvent canvasClearEvent) {
+        if (canvasHandler != null && canvasHandler.getCanvas().equals(canvasClearEvent.getCanvas())) {
             clear();
         }
     }
 
-    void onCanvasElementAddedEvent( final @Observes CanvasElementAddedEvent canvasElementAddedEvent ) {
-        if ( checkEventContext( canvasElementAddedEvent ) ) {
-            showEventGraph( canvasElementAddedEvent );
+    void onCanvasElementAddedEvent(final @Observes CanvasElementAddedEvent canvasElementAddedEvent) {
+        if (checkEventContext(canvasElementAddedEvent)) {
+            showEventGraph(canvasElementAddedEvent);
         }
     }
 
-    void onCanvasElementRemovedEvent( final @Observes CanvasElementRemovedEvent elementRemovedEvent ) {
-        if ( checkEventContext( elementRemovedEvent ) ) {
-            showEventGraph( elementRemovedEvent );
+    void onCanvasElementRemovedEvent(final @Observes CanvasElementRemovedEvent elementRemovedEvent) {
+        if (checkEventContext(elementRemovedEvent)) {
+            showEventGraph(elementRemovedEvent);
         }
     }
 
-    void onCanvasElementsClearEvent( final @Observes CanvasElementsClearEvent canvasClearEvent ) {
-        if ( checkEventContext( canvasClearEvent ) ) {
-            showEventGraph( canvasClearEvent );
+    void onCanvasElementsClearEvent(final @Observes CanvasElementsClearEvent canvasClearEvent) {
+        if (checkEventContext(canvasClearEvent)) {
+            showEventGraph(canvasClearEvent);
         }
     }
 
-    void onCanvasElementUpdatedEvent( final @Observes CanvasElementUpdatedEvent canvasElementUpdatedEvent ) {
-        if ( checkEventContext( canvasElementUpdatedEvent ) ) {
-            showEventGraph( canvasElementUpdatedEvent );
+    void onCanvasElementUpdatedEvent(final @Observes CanvasElementUpdatedEvent canvasElementUpdatedEvent) {
+        if (checkEventContext(canvasElementUpdatedEvent)) {
+            showEventGraph(canvasElementUpdatedEvent);
         }
     }
 
-    private boolean checkEventContext( final AbstractCanvasHandlerEvent canvasHandlerEvent ) {
+    private boolean checkEventContext(final AbstractCanvasHandlerEvent canvasHandlerEvent) {
         final CanvasHandler _canvasHandler = canvasHandlerEvent.getCanvasHandler();
-        return canvasHandler != null && canvasHandler.equals( _canvasHandler );
+        return canvasHandler != null && canvasHandler.equals(_canvasHandler);
     }
 
     private String getShapeSetId() {
         return canvasHandler.getDiagram().getMetadata().getShapeSetId();
     }
 
-    @SuppressWarnings( "unchecked" )
-    private void showEventGraph( final AbstractCanvasHandlerEvent canvasHandlerEvent ) {
-        doShow( canvasHandlerEvent.getCanvasHandler().getDiagram().getGraph() );
+    @SuppressWarnings("unchecked")
+    private void showEventGraph(final AbstractCanvasHandlerEvent canvasHandlerEvent) {
+        doShow(canvasHandlerEvent.getCanvasHandler().getDiagram().getGraph());
     }
 
     @Override

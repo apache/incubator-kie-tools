@@ -26,63 +26,63 @@ import org.kie.workbench.common.stunner.shapes.def.icon.statics.Icons;
 
 public class StaticIconShape<W> extends AbstractBasicShape<W, StaticIconShapeView, IconShapeDef<W>> {
 
-    public StaticIconShape( final StaticIconShapeView view,
-                            final IconShapeDef<W> proxy ) {
-        super( view,
-               proxy );
+    public StaticIconShape(final StaticIconShapeView view,
+                           final IconShapeDef<W> proxy) {
+        super(view,
+              proxy);
     }
 
-    public static <T> Icons getIcon( final IconShapeDef<T> proxy ) {
-        return getIcon( null,
-                        proxy );
+    public static <T> Icons getIcon(final IconShapeDef<T> proxy) {
+        return getIcon(null,
+                       proxy);
     }
 
-    public static <T> Icons getIcon( final T definition,
-                                     final IconShapeDef<T> proxy ) {
+    public static <T> Icons getIcon(final T definition,
+                                    final IconShapeDef<T> proxy) {
         Icons icon = null;
-        if ( null != definition ) {
-            return proxy.getIcon( definition );
+        if (null != definition) {
+            return proxy.getIcon(definition);
         }
         return icon;
     }
 
     @Override
-    public void applyProperties( final Node<View<W>, Edge> element,
-                                 final MutationContext mutationContext ) {
-        super.applyProperties( element,
-                               mutationContext );
+    public void applyProperties(final Node<View<W>, Edge> element,
+                                final MutationContext mutationContext) {
+        super.applyProperties(element,
+                              mutationContext);
         // Icon.
-        Icons icon = getIcon( getDefinition( element ),
-                              proxy );
-        getShapeView().setIcon( icon );
+        Icons icon = getIcon(getDefinition(element),
+                             proxy);
+        getShapeView().setIcon(icon);
     }
 
     @Override
-    protected String getBackgroundColor( final Node<View<W>, Edge> element ) {
+    protected String getBackgroundColor(final Node<View<W>, Edge> element) {
         // Background color does not changes as model updates.
         return null;
     }
 
     @Override
-    protected Double getBackgroundAlpha( final Node<View<W>, Edge> element ) {
+    protected Double getBackgroundAlpha(final Node<View<W>, Edge> element) {
         // Background alpha does not changes as model updates.
         return null;
     }
 
     @Override
-    protected String getBorderColor( final Node<View<W>, Edge> element ) {
+    protected String getBorderColor(final Node<View<W>, Edge> element) {
         // Border color does not changes as model updates.
         return null;
     }
 
     @Override
-    protected Double getBorderSize( final Node<View<W>, Edge> element ) {
+    protected Double getBorderSize(final Node<View<W>, Edge> element) {
         // Border size does not changes as model updates.
         return null;
     }
 
     @Override
-    protected Double getBorderAlpha( final Node<View<W>, Edge> element ) {
+    protected Double getBorderAlpha(final Node<View<W>, Edge> element) {
         // Border alpha does not changes as model updates.
         return null;
     }

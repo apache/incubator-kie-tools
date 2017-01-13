@@ -22,5 +22,5 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.Pal
 
 public interface PaletteWidgetFactory<I extends PaletteDefinition, P extends PaletteWidget<I, ?>> extends PaletteFactory<I, P> {
 
-    PaletteWidgetFactory<I, P> forCanvasHandler( final CanvasHandler canvasHandler );
+    PaletteWidgetFactory<I, P> forCanvasHandler(final CanvasHandler canvasHandler);
 }

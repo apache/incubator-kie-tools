@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> {
 
-    private static final Logger LOG = LoggerFactory.getLogger( BaseDiagramMarshaller.class );
+    private static final Logger LOG = LoggerFactory.getLogger(BaseDiagramMarshaller.class);
 
     private final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller;
     private final GraphObjectBuilderFactory bpmnGraphBuilderFactory;
@@ -71,15 +71,15 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
     protected final GraphUtils graphUtils;
     protected final OryxManager oryxManager;
 
-    public BaseDiagramMarshaller( final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
-                                  final GraphObjectBuilderFactory bpmnGraphBuilderFactory,
-                                  final DefinitionManager definitionManager,
-                                  final GraphUtils graphUtils,
-                                  final GraphIndexBuilder<?> indexBuilder,
-                                  final OryxManager oryxManager,
-                                  final FactoryManager factoryManager,
-                                  final GraphCommandManager graphCommandManager,
-                                  final GraphCommandFactory commandFactory ) {
+    public BaseDiagramMarshaller(final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
+                                 final GraphObjectBuilderFactory bpmnGraphBuilderFactory,
+                                 final DefinitionManager definitionManager,
+                                 final GraphUtils graphUtils,
+                                 final GraphIndexBuilder<?> indexBuilder,
+                                 final OryxManager oryxManager,
+                                 final FactoryManager factoryManager,
+                                 final GraphCommandManager graphCommandManager,
+                                 final GraphCommandFactory commandFactory) {
         this.diagramMetadataMarshaller = diagramMetadataMarshaller;
         this.bpmnGraphBuilderFactory = bpmnGraphBuilderFactory;
         this.definitionManager = definitionManager;
@@ -92,64 +92,64 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public String marshall( final Diagram diagram ) throws IOException {
-        LOG.debug( "Starting diagram marshalling..." );
+    @SuppressWarnings("unchecked")
+    public String marshall(final Diagram diagram) throws IOException {
+        LOG.debug("Starting diagram marshalling...");
 
-        final Bpmn2Marshaller marshaller = new Bpmn2Marshaller( definitionManager,
-                                                                graphUtils,
-                                                                oryxManager );
+        final Bpmn2Marshaller marshaller = new Bpmn2Marshaller(definitionManager,
+                                                               graphUtils,
+                                                               oryxManager);
         String result = null;
         try {
             // Marshall the diagram definition
-            result = marshaller.marshall( diagram );
+            result = marshaller.marshall(diagram);
 
             // Update diagram's settings.
-            updateRootUUID( diagram.getMetadata(),
-                            diagram.getGraph() );
-        } catch ( IOException e ) {
-            LOG.error( "Error marshalling file.",
-                       e );
+            updateRootUUID(diagram.getMetadata(),
+                           diagram.getGraph());
+        } catch (IOException e) {
+            LOG.error("Error marshalling file.",
+                      e);
         }
 
-        LOG.debug( "Diagram marshalling finished successfully." );
+        LOG.debug("Diagram marshalling finished successfully.");
         return result;
     }
 
     @Override
-    public Graph unmarshall( final Metadata metadata,
-                             final InputStream inputStream ) throws IOException {
-        LOG.debug( "Starting diagram unmarshalling..." );
+    public Graph unmarshall(final Metadata metadata,
+                            final InputStream inputStream) throws IOException {
+        LOG.debug("Starting diagram unmarshalling...");
 
         // No rule checking for marshalling/unmarshalling, current jbpm designer marshallers should do it for us.
-        final Bpmn2UnMarshaller parser = new Bpmn2UnMarshaller( bpmnGraphBuilderFactory,
-                                                                definitionManager,
-                                                                factoryManager,
-                                                                graphUtils,
-                                                                oryxManager,
-                                                                graphCommandManager,
-                                                                commandFactory,
-                                                                indexBuilder,
-                                                                getDiagramDefinitionSetClass(),
-                                                                getDiagramDefinitionClass() );
+        final Bpmn2UnMarshaller parser = new Bpmn2UnMarshaller(bpmnGraphBuilderFactory,
+                                                               definitionManager,
+                                                               factoryManager,
+                                                               graphUtils,
+                                                               oryxManager,
+                                                               graphCommandManager,
+                                                               commandFactory,
+                                                               indexBuilder,
+                                                               getDiagramDefinitionSetClass(),
+                                                               getDiagramDefinitionClass());
 
         Graph result = null;
         try {
             // Unmarshall the diagram definition
-            final Definitions definitions = parseDefinitions( inputStream );
-            parser.setProfile( new DefaultProfileImpl() );
-            result = parser.unmarshall( definitions,
-                                        null );
+            final Definitions definitions = parseDefinitions(inputStream);
+            parser.setProfile(new DefaultProfileImpl());
+            result = parser.unmarshall(definitions,
+                                       null);
 
             // Update diagram's settings.
-            updateRootUUID( metadata,
-                            result );
-        } catch ( IOException e ) {
-            LOG.error( "Error unmarshalling file.",
-                       e );
+            updateRootUUID(metadata,
+                           result);
+        } catch (IOException e) {
+            LOG.error("Error unmarshalling file.",
+                      e);
         }
 
-        LOG.debug( "Diagram unmarshalling finished successfully." );
+        LOG.debug("Diagram unmarshalling finished successfully.");
         return result;
     }
 
@@ -157,59 +157,59 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
 
     public abstract Class<? extends BPMNDefinition> getDiagramDefinitionClass();
 
-    public abstract Node<Definition<D>, ?> getFirstDiagramNode( final Graph graph );
+    public abstract Node<Definition<D>, ?> getFirstDiagramNode(final Graph graph);
 
-    public abstract String getTitle( final Graph graph );
+    public abstract String getTitle(final Graph graph);
 
-    public void updateRootUUID( final Metadata settings,
-                                final Graph graph ) {
+    public void updateRootUUID(final Metadata settings,
+                               final Graph graph) {
         // Update settings's root UUID.
-        final String rootUUID = getRootUUID( graph );
-        settings.setCanvasRootUUID( rootUUID );
+        final String rootUUID = getRootUUID(graph);
+        settings.setCanvasRootUUID(rootUUID);
     }
 
-    private String getRootUUID( final Graph graph ) {
-        final Node diagramNode = getFirstDiagramNode( graph );
+    private String getRootUUID(final Graph graph) {
+        final Node diagramNode = getFirstDiagramNode(graph);
         return null != diagramNode ? diagramNode.getUUID() : null;
     }
 
-    private Definitions parseDefinitions( final InputStream inputStream ) throws IOException {
+    private Definitions parseDefinitions(final InputStream inputStream) throws IOException {
         try {
             DroolsPackageImpl.init();
             BpsimPackageImpl.init();
 
             final ResourceSet resourceSet = new ResourceSetImpl();
-            resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put( Resource.Factory.Registry.DEFAULT_EXTENSION,
-                                                                                     new JBPMBpmn2ResourceFactoryImpl() );
-            resourceSet.getPackageRegistry().put( "http://www.omg.org/spec/BPMN/20100524/MODEL",
-                                                  Bpmn2Package.eINSTANCE );
-            resourceSet.getPackageRegistry().put( "http://www.jboss.org/drools",
-                                                  DroolsPackage.eINSTANCE );
+            resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION,
+                                                                                    new JBPMBpmn2ResourceFactoryImpl());
+            resourceSet.getPackageRegistry().put("http://www.omg.org/spec/BPMN/20100524/MODEL",
+                                                 Bpmn2Package.eINSTANCE);
+            resourceSet.getPackageRegistry().put("http://www.jboss.org/drools",
+                                                 DroolsPackage.eINSTANCE);
 
-            final JBPMBpmn2ResourceImpl resource = ( JBPMBpmn2ResourceImpl ) resourceSet.createResource( URI.createURI( "inputStream://dummyUriWithValidSuffix.xml" ) );
-            resource.getDefaultLoadOptions().put( JBPMBpmn2ResourceImpl.OPTION_ENCODING,
-                                                  "UTF-8" );
-            resource.setEncoding( "UTF-8" );
+            final JBPMBpmn2ResourceImpl resource = (JBPMBpmn2ResourceImpl) resourceSet.createResource(URI.createURI("inputStream://dummyUriWithValidSuffix.xml"));
+            resource.getDefaultLoadOptions().put(JBPMBpmn2ResourceImpl.OPTION_ENCODING,
+                                                 "UTF-8");
+            resource.setEncoding("UTF-8");
 
             final Map<String, Object> options = new HashMap<String, Object>();
-            options.put( JBPMBpmn2ResourceImpl.OPTION_ENCODING,
-                         "UTF-8" );
-            options.put( JBPMBpmn2ResourceImpl.OPTION_DEFER_IDREF_RESOLUTION,
-                         true );
-            options.put( JBPMBpmn2ResourceImpl.OPTION_DISABLE_NOTIFY,
-                         true );
-            options.put( JBPMBpmn2ResourceImpl.OPTION_PROCESS_DANGLING_HREF,
-                         JBPMBpmn2ResourceImpl.OPTION_PROCESS_DANGLING_HREF_RECORD );
+            options.put(JBPMBpmn2ResourceImpl.OPTION_ENCODING,
+                        "UTF-8");
+            options.put(JBPMBpmn2ResourceImpl.OPTION_DEFER_IDREF_RESOLUTION,
+                        true);
+            options.put(JBPMBpmn2ResourceImpl.OPTION_DISABLE_NOTIFY,
+                        true);
+            options.put(JBPMBpmn2ResourceImpl.OPTION_PROCESS_DANGLING_HREF,
+                        JBPMBpmn2ResourceImpl.OPTION_PROCESS_DANGLING_HREF_RECORD);
 
-            resource.load( inputStream,
-                           options );
+            resource.load(inputStream,
+                          options);
 
-            final DocumentRoot root = ( DocumentRoot ) resource.getContents().get( 0 );
+            final DocumentRoot root = (DocumentRoot) resource.getContents().get(0);
             return root.getDefinitions();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if ( inputStream != null ) {
+            if (inputStream != null) {
                 inputStream.close();
             }
         }

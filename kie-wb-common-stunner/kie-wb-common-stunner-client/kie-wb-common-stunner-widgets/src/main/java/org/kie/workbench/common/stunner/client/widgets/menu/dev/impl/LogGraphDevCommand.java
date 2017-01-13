@@ -26,12 +26,12 @@ import org.kie.workbench.common.stunner.core.util.StunnerLogger;
 public class LogGraphDevCommand extends AbstractMenuDevCommand {
 
     protected LogGraphDevCommand() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public LogGraphDevCommand( final AbstractClientSessionManager sessionManager ) {
-        super( sessionManager );
+    public LogGraphDevCommand(final AbstractClientSessionManager sessionManager) {
+        super(sessionManager);
     }
 
     @Override
@@ -41,6 +41,6 @@ public class LogGraphDevCommand extends AbstractMenuDevCommand {
 
     @Override
     public void execute() {
-        StunnerLogger.log( getGraph() );
+        StunnerLogger.log(getGraph());
     }
 }

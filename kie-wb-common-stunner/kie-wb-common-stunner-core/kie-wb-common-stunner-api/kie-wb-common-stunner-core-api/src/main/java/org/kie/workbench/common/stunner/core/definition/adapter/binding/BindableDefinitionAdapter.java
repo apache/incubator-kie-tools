@@ -26,15 +26,15 @@ import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 public interface BindableDefinitionAdapter<T> extends DefinitionAdapter<T>,
                                                       HasInheritance {
 
-    void setBindings( Map<PropertyMetaTypes, Class> metaPropertyTypeClasses,
-                      Map<Class, Class> baseTypes,
-                      Map<Class, Set<String>> propertySetsFieldNames,
-                      Map<Class, Set<String>> propertiesFieldNames,
-                      Map<Class, Class> propertyGraphFactoryFieldNames,
-                      Map<Class, String> propertyLabelsFieldNames,
-                      Map<Class, String> propertyTitleFieldNames,
-                      Map<Class, String> propertyCategoryFieldNames,
-                      Map<Class, String> propertyDescriptionFieldNames );
+    void setBindings(Map<PropertyMetaTypes, Class> metaPropertyTypeClasses,
+                     Map<Class, Class> baseTypes,
+                     Map<Class, Set<String>> propertySetsFieldNames,
+                     Map<Class, Set<String>> propertiesFieldNames,
+                     Map<Class, Class> propertyGraphFactoryFieldNames,
+                     Map<Class, String> propertyLabelsFieldNames,
+                     Map<Class, String> propertyTitleFieldNames,
+                     Map<Class, String> propertyCategoryFieldNames,
+                     Map<Class, String> propertyDescriptionFieldNames);
 
-    Class<? extends ElementFactory> getGraphFactory( final Class<?> type );
+    Class<? extends ElementFactory> getGraphFactory(final Class<?> type);
 }

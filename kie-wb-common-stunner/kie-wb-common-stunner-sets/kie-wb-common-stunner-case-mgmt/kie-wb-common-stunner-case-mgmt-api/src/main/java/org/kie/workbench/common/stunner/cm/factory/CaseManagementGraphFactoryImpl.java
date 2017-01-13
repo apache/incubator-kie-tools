@@ -62,19 +62,19 @@ public class CaseManagementGraphFactoryImpl
     private final GraphIndexBuilder<?> indexBuilder;
 
     protected CaseManagementGraphFactoryImpl() {
-        this( null,
-              null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public CaseManagementGraphFactoryImpl( final DefinitionManager definitionManager,
-                                           final FactoryManager factoryManager,
-                                           final GraphCommandManager graphCommandManager,
-                                           final GraphCommandFactory graphCommandFactory,
-                                           final GraphIndexBuilder<?> indexBuilder ) {
+    public CaseManagementGraphFactoryImpl(final DefinitionManager definitionManager,
+                                          final FactoryManager factoryManager,
+                                          final GraphCommandManager graphCommandManager,
+                                          final GraphCommandFactory graphCommandFactory,
+                                          final GraphIndexBuilder<?> indexBuilder) {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
         this.graphCommandManager = graphCommandManager;
@@ -88,38 +88,38 @@ public class CaseManagementGraphFactoryImpl
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public Graph<DefinitionSet, Node> build( final String uuid,
-                                             final String definitionSetId ) {
-        final GraphImpl graph = new GraphImpl<>( uuid,
-                                                 new GraphNodeStoreImpl() );
-        final DefinitionSet content = new DefinitionSetImpl( definitionSetId );
-        graph.setContent( content );
+    @SuppressWarnings("unchecked")
+    public Graph<DefinitionSet, Node> build(final String uuid,
+                                            final String definitionSetId) {
+        final GraphImpl graph = new GraphImpl<>(uuid,
+                                                new GraphNodeStoreImpl());
+        final DefinitionSet content = new DefinitionSetImpl(definitionSetId);
+        graph.setContent(content);
 
-        if ( content.getBounds() == null ) {
-            content.setBounds( new BoundsImpl( new BoundImpl( 0d,
-                                                              0d ),
-                                               new BoundImpl( CaseManagementGraphFactory.GRAPH_DEFAULT_WIDTH,
-                                                              CaseManagementGraphFactory.GRAPH_DEFAULT_HEIGHT )
-            ) );
+        if (content.getBounds() == null) {
+            content.setBounds(new BoundsImpl(new BoundImpl(0d,
+                                                           0d),
+                                             new BoundImpl(CaseManagementGraphFactory.GRAPH_DEFAULT_WIDTH,
+                                                           CaseManagementGraphFactory.GRAPH_DEFAULT_HEIGHT)
+            ));
         }
         // Add a Case Management diagram by default.
-        final Node<Definition<CaseManagementDiagram>, Edge> diagramNode = ( Node<Definition<CaseManagementDiagram>, Edge> ) factoryManager.newElement( UUID.uuid(),
-                                                                                                                                                       CaseManagementDiagram.class );
-        graphCommandManager.execute( createGraphContext( graph ),
-                                     new CompositeCommandImpl.CompositeCommandBuilder()
-                                             .addCommand( graphCommandFactory.addNode( diagramNode ) )
-                                             .build()
+        final Node<Definition<CaseManagementDiagram>, Edge> diagramNode = (Node<Definition<CaseManagementDiagram>, Edge>) factoryManager.newElement(UUID.uuid(),
+                                                                                                                                                    CaseManagementDiagram.class);
+        graphCommandManager.execute(createGraphContext(graph),
+                                    new CompositeCommandImpl.CompositeCommandBuilder()
+                                            .addCommand(graphCommandFactory.addNode(diagramNode))
+                                            .build()
         );
 
         return graph;
     }
 
-    @SuppressWarnings( "unchecked" )
-    private GraphCommandExecutionContext createGraphContext( final GraphImpl graph ) {
-        final Index<?, ?> index = indexBuilder.build( graph );
-        return new EmptyRulesCommandExecutionContext( definitionManager,
-                                                      factoryManager,
-                                                      index );
+    @SuppressWarnings("unchecked")
+    private GraphCommandExecutionContext createGraphContext(final GraphImpl graph) {
+        final Index<?, ?> index = indexBuilder.build(graph);
+        return new EmptyRulesCommandExecutionContext(definitionManager,
+                                                     factoryManager,
+                                                     index);
     }
 }

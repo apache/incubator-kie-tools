@@ -39,60 +39,60 @@ import org.uberfire.commons.validation.PortablePreconditions;
 @Portable
 public class DeregisterNodeCommand extends AbstractGraphCommand {
 
-    private static Logger LOGGER = Logger.getLogger( DeregisterNodeCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(DeregisterNodeCommand.class.getName());
 
     protected final String uuid;
     transient Node<?, Edge> node;
     transient Node<?, Edge> removed;
 
-    public DeregisterNodeCommand( final @MapsTo( "uuid" ) String uuid ) {
-        this.uuid = PortablePreconditions.checkNotNull( "uuid",
-                                                        uuid );
+    public DeregisterNodeCommand(final @MapsTo("uuid") String uuid) {
+        this.uuid = PortablePreconditions.checkNotNull("uuid",
+                                                       uuid);
         this.removed = null;
     }
 
-    public DeregisterNodeCommand( final Node<?, Edge> node ) {
-        this( node.getUUID() );
+    public DeregisterNodeCommand(final Node<?, Edge> node) {
+        this(node.getUUID());
         this.node = node;
     }
 
     @Override
-    public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        CommandResult<RuleViolation> results = allow( context );
-        if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            LOGGER.log( Level.FINE,
-                        "Executing..." );
-            final Graph<?, Node> graph = getGraph( context );
-            final Node<?, Edge> candidate = getCandidate( context );
+    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
+        CommandResult<RuleViolation> results = allow(context);
+        if (!results.getType().equals(CommandResult.Type.ERROR)) {
+            LOGGER.log(Level.FINE,
+                       "Executing...");
+            final Graph<?, Node> graph = getGraph(context);
+            final Node<?, Edge> candidate = getCandidate(context);
             this.removed = candidate;
-            graph.removeNode( candidate.getUUID() );
-            getMutableIndex( context ).removeNode( candidate );
-            LOGGER.log( Level.FINE,
-                        "Node [" + uuid + " removed from strcture and index." );
+            graph.removeNode(candidate.getUUID());
+            getMutableIndex(context).removeNode(candidate);
+            LOGGER.log(Level.FINE,
+                       "Node [" + uuid + " removed from strcture and index.");
         }
         return results;
     }
 
     @Override
-    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final RegisterNodeCommand undoCommand = new RegisterNodeCommand( removed );
-        return undoCommand.execute( context );
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        final RegisterNodeCommand undoCommand = new RegisterNodeCommand(removed);
+        return undoCommand.execute(context);
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
+    @SuppressWarnings("unchecked")
+    protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
         // And check it really exist on the graph storage as well.
-        final Graph<?, Node> graph = getGraph( context );
-        final Node<View<?>, Edge> candidate = ( Node<View<?>, Edge> ) checkCandidateNotNull( context );
+        final Graph<?, Node> graph = getGraph(context);
+        final Node<View<?>, Edge> candidate = (Node<View<?>, Edge>) checkCandidateNotNull(context);
         final GraphCommandResultBuilder builder = new GraphCommandResultBuilder();
         final Collection<RuleViolation> cardinalityRuleViolations =
-                ( Collection<RuleViolation> ) context.getRulesManager()
+                (Collection<RuleViolation>) context.getRulesManager()
                         .cardinality()
-                        .evaluate( graph,
-                                   candidate,
-                                   RuleManager.Operation.DELETE )
+                        .evaluate(graph,
+                                  candidate,
+                                  RuleManager.Operation.DELETE)
                         .violations();
-        builder.addViolations( cardinalityRuleViolations );
+        builder.addViolations(cardinalityRuleViolations);
         return builder.build();
     }
 
@@ -104,21 +104,21 @@ public class DeregisterNodeCommand extends AbstractGraphCommand {
         return removed;
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected Node<?, Edge> getCandidate( final GraphCommandExecutionContext context ) {
-        if ( null == node ) {
-            node = getNode( context,
-                            uuid );
+    @SuppressWarnings("unchecked")
+    protected Node<?, Edge> getCandidate(final GraphCommandExecutionContext context) {
+        if (null == node) {
+            node = getNode(context,
+                           uuid);
         }
         return node;
     }
 
-    protected Node<?, Edge> checkCandidateNotNull( final GraphCommandExecutionContext context ) {
-        final Node<?, Edge> e = getCandidate( context );
-        if ( null == e ) {
-            throw new BadCommandArgumentsException( this,
-                                                    uuid,
-                                                    "Node not found for [" + uuid + "]." );
+    protected Node<?, Edge> checkCandidateNotNull(final GraphCommandExecutionContext context) {
+        final Node<?, Edge> e = getCandidate(context);
+        if (null == e) {
+            throw new BadCommandArgumentsException(this,
+                                                   uuid,
+                                                   "Node not found for [" + uuid + "].");
         }
         return e;
     }

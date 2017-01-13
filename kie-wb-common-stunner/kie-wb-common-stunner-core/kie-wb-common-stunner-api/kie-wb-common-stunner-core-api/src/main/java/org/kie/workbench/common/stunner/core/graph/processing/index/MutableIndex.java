@@ -23,22 +23,22 @@ public interface MutableIndex<N extends Node, E extends Edge> extends Index<N, E
     /**
      * Adds a node into the given index.
      */
-    MutableIndex<N, E> addNode( final N node );
+    MutableIndex<N, E> addNode(final N node);
 
     /**
      * Removes a node from the given index.
      */
-    MutableIndex<N, E> removeNode( final N node );
+    MutableIndex<N, E> removeNode(final N node);
 
     /**
      * Adds an edge into the given index.
      */
-    MutableIndex<N, E> addEdge( final E edge );
+    MutableIndex<N, E> addEdge(final E edge);
 
     /**
      * Removes an edge from the given index.
      */
-    MutableIndex<N, E> removeEdge( final E edge );
+    MutableIndex<N, E> removeEdge(final E edge);
 
     /**
      * Clears an index.

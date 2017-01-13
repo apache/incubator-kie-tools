@@ -52,15 +52,15 @@ public class CanvasCommandManagerImpl
     private CommandListener<AbstractCanvasHandler, CanvasViolation> listener;
 
     protected CanvasCommandManagerImpl() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public CanvasCommandManagerImpl( final Event<CanvasCommandAllowedEvent> isCanvasCommandAllowedEvent,
-                                     final Event<CanvasCommandExecutedEvent> canvasCommandExecutedEvent,
-                                     final Event<CanvasUndoCommandExecutedEvent> canvasUndoCommandExecutedEvent ) {
+    public CanvasCommandManagerImpl(final Event<CanvasCommandAllowedEvent> isCanvasCommandAllowedEvent,
+                                    final Event<CanvasCommandExecutedEvent> canvasCommandExecutedEvent,
+                                    final Event<CanvasUndoCommandExecutedEvent> canvasUndoCommandExecutedEvent) {
         this.isCanvasCommandAllowedEvent = isCanvasCommandAllowedEvent;
         this.canvasCommandExecutedEvent = canvasCommandExecutedEvent;
         this.canvasUndoCommandExecutedEvent = canvasUndoCommandExecutedEvent;
@@ -74,77 +74,77 @@ public class CanvasCommandManagerImpl
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected void postAllow( final AbstractCanvasHandler context,
-                              final Command<AbstractCanvasHandler, CanvasViolation> command,
-                              final CommandResult<CanvasViolation> result ) {
-        super.postAllow( context,
-                         command,
-                         result );
-        if ( null != this.listener ) {
-            listener.onAllow( context,
-                              command,
-                              result );
-        }
-        if ( null != result && null != isCanvasCommandAllowedEvent ) {
-            isCanvasCommandAllowedEvent.fire( new CanvasCommandAllowedEvent( context,
-                                                                             command,
-                                                                             result ) );
-        }
-    }
-
-    @Override
-    @SuppressWarnings( "unchecked" )
-    protected void postExecute( final AbstractCanvasHandler context,
-                                final Command<AbstractCanvasHandler, CanvasViolation> command,
-                                final CommandResult<CanvasViolation> result ) {
-        super.postExecute( context,
-                           command,
-                           result );
-        if ( null != result && !CommandUtils.isError( result ) ) {
-            draw( context );
-        }
-        if ( null != this.listener ) {
-            listener.onExecute( context,
-                                command,
-                                result );
-        }
-        if ( null != result && null != canvasCommandExecutedEvent ) {
-            canvasCommandExecutedEvent.fire( new CanvasCommandExecutedEvent( context,
-                                                                             command,
-                                                                             result ) );
-        }
-    }
-
-    @Override
-    @SuppressWarnings( "unchecked" )
-    protected void postUndo( final AbstractCanvasHandler context,
+    @SuppressWarnings("unchecked")
+    protected void postAllow(final AbstractCanvasHandler context,
                              final Command<AbstractCanvasHandler, CanvasViolation> command,
-                             final CommandResult<CanvasViolation> result ) {
-        super.postUndo( context,
+                             final CommandResult<CanvasViolation> result) {
+        super.postAllow(context,
                         command,
-                        result );
-        if ( null != result && !CommandUtils.isError( result ) ) {
-            draw( context );
-        }
-        if ( null != this.listener ) {
-            listener.onUndo( context,
+                        result);
+        if (null != this.listener) {
+            listener.onAllow(context,
                              command,
-                             result );
+                             result);
         }
-        if ( null != canvasUndoCommandExecutedEvent ) {
-            canvasUndoCommandExecutedEvent.fire( new CanvasUndoCommandExecutedEvent( context,
-                                                                                     command,
-                                                                                     result ) );
+        if (null != result && null != isCanvasCommandAllowedEvent) {
+            isCanvasCommandAllowedEvent.fire(new CanvasCommandAllowedEvent(context,
+                                                                           command,
+                                                                           result));
         }
     }
 
     @Override
-    public void setCommandListener( final CommandListener<AbstractCanvasHandler, CanvasViolation> listener ) {
+    @SuppressWarnings("unchecked")
+    protected void postExecute(final AbstractCanvasHandler context,
+                               final Command<AbstractCanvasHandler, CanvasViolation> command,
+                               final CommandResult<CanvasViolation> result) {
+        super.postExecute(context,
+                          command,
+                          result);
+        if (null != result && !CommandUtils.isError(result)) {
+            draw(context);
+        }
+        if (null != this.listener) {
+            listener.onExecute(context,
+                               command,
+                               result);
+        }
+        if (null != result && null != canvasCommandExecutedEvent) {
+            canvasCommandExecutedEvent.fire(new CanvasCommandExecutedEvent(context,
+                                                                           command,
+                                                                           result));
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void postUndo(final AbstractCanvasHandler context,
+                            final Command<AbstractCanvasHandler, CanvasViolation> command,
+                            final CommandResult<CanvasViolation> result) {
+        super.postUndo(context,
+                       command,
+                       result);
+        if (null != result && !CommandUtils.isError(result)) {
+            draw(context);
+        }
+        if (null != this.listener) {
+            listener.onUndo(context,
+                            command,
+                            result);
+        }
+        if (null != canvasUndoCommandExecutedEvent) {
+            canvasUndoCommandExecutedEvent.fire(new CanvasUndoCommandExecutedEvent(context,
+                                                                                   command,
+                                                                                   result));
+        }
+    }
+
+    @Override
+    public void setCommandListener(final CommandListener<AbstractCanvasHandler, CanvasViolation> listener) {
         this.listener = listener;
     }
 
-    private void draw( final AbstractCanvasHandler context ) {
+    private void draw(final AbstractCanvasHandler context) {
         context.getCanvas().draw();
     }
 }

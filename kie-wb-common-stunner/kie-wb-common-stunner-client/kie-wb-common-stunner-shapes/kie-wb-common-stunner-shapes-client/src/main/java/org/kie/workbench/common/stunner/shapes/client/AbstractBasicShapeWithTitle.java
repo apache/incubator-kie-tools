@@ -28,71 +28,71 @@ public abstract class AbstractBasicShapeWithTitle<W, V extends BasicShapeView, P
 
     protected final transient P proxy;
 
-    public AbstractBasicShapeWithTitle( final V view,
-                                        final P proxy ) {
-        super( view );
+    public AbstractBasicShapeWithTitle(final V view,
+                                       final P proxy) {
+        super(view);
         this.proxy = proxy;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public void applyProperties( final Node<View<W>, Edge> element,
-                                 final MutationContext mutationContext ) {
+    @SuppressWarnings("unchecked")
+    public void applyProperties(final Node<View<W>, Edge> element,
+                                final MutationContext mutationContext) {
         // Apply font position and rotation for title.
-        getShapeView().setTitlePosition( proxy.getFontPosition( getDefinition( element ) ) );
-        getShapeView().setTitleRotation( proxy.getFontRotation( getDefinition( element ) ) );
+        getShapeView().setTitlePosition(proxy.getFontPosition(getDefinition(element)));
+        getShapeView().setTitleRotation(proxy.getFontRotation(getDefinition(element)));
         // Apply other font styles on parent.
-        super.applyProperties( element,
-                               mutationContext );
+        super.applyProperties(element,
+                              mutationContext);
     }
 
     @Override
-    protected String getBackgroundColor( final Node<View<W>, Edge> element ) {
-        return proxy.getBackgroundColor( getDefinition( element ) );
+    protected String getBackgroundColor(final Node<View<W>, Edge> element) {
+        return proxy.getBackgroundColor(getDefinition(element));
     }
 
     @Override
-    protected Double getBackgroundAlpha( final Node<View<W>, Edge> element ) {
-        return proxy.getBackgroundAlpha( getDefinition( element ) );
+    protected Double getBackgroundAlpha(final Node<View<W>, Edge> element) {
+        return proxy.getBackgroundAlpha(getDefinition(element));
     }
 
     @Override
-    protected String getBorderColor( final Node<View<W>, Edge> element ) {
-        return proxy.getBorderColor( getDefinition( element ) );
+    protected String getBorderColor(final Node<View<W>, Edge> element) {
+        return proxy.getBorderColor(getDefinition(element));
     }
 
     @Override
-    protected Double getBorderSize( final Node<View<W>, Edge> element ) {
-        return proxy.getBorderSize( getDefinition( element ) );
+    protected Double getBorderSize(final Node<View<W>, Edge> element) {
+        return proxy.getBorderSize(getDefinition(element));
     }
 
     @Override
-    protected Double getBorderAlpha( final Node<View<W>, Edge> element ) {
-        return proxy.getBorderAlpha( getDefinition( element ) );
+    protected Double getBorderAlpha(final Node<View<W>, Edge> element) {
+        return proxy.getBorderAlpha(getDefinition(element));
     }
 
     @Override
-    protected String getNamePropertyValue( final Node<View<W>, Edge> element ) {
-        return proxy.getNamePropertyValue( getDefinition( element ) );
+    protected String getNamePropertyValue(final Node<View<W>, Edge> element) {
+        return proxy.getNamePropertyValue(getDefinition(element));
     }
 
     @Override
-    protected String getFontFamily( final Node<View<W>, Edge> element ) {
-        return proxy.getFontFamily( getDefinition( element ) );
+    protected String getFontFamily(final Node<View<W>, Edge> element) {
+        return proxy.getFontFamily(getDefinition(element));
     }
 
     @Override
-    protected String getFontColor( final Node<View<W>, Edge> element ) {
-        return proxy.getFontColor( getDefinition( element ) );
+    protected String getFontColor(final Node<View<W>, Edge> element) {
+        return proxy.getFontColor(getDefinition(element));
     }
 
     @Override
-    protected Double getFontSize( final Node<View<W>, Edge> element ) {
-        return proxy.getFontSize( getDefinition( element ) );
+    protected Double getFontSize(final Node<View<W>, Edge> element) {
+        return proxy.getFontSize(getDefinition(element));
     }
 
     @Override
-    protected Double getFontBorderSize( final Node<View<W>, Edge> element ) {
-        return proxy.getFontBorderSize( getDefinition( element ) );
+    protected Double getFontBorderSize(final Node<View<W>, Edge> element) {
+        return proxy.getFontBorderSize(getDefinition(element));
     }
 }

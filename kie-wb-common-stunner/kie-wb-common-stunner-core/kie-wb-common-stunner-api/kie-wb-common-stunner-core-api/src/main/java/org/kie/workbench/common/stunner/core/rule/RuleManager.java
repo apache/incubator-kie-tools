@@ -32,12 +32,12 @@ public interface RuleManager<R extends Rule> {
      */
     String getName();
 
-    boolean supports( final Rule rule );
+    boolean supports(final Rule rule);
 
     /**
      * Add a rule to the Rule Manager
      */
-    RuleManager addRule( final R rule );
+    RuleManager addRule(final R rule);
 
     /**
      * Clear all rules.

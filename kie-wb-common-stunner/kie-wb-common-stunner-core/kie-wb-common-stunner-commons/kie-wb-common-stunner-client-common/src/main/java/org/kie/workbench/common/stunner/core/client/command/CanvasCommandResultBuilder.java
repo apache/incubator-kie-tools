@@ -27,46 +27,46 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class CanvasCommandResultBuilder extends CommandResultBuilder<CanvasViolation> {
 
-    public static final CommandResult<CanvasViolation> SUCCESS = new CommandResultImpl<>( CommandResult.Type.INFO,
-                                                                                          RESULT_SUCCESS,
-                                                                                          new LinkedList<>()
+    public static final CommandResult<CanvasViolation> SUCCESS = new CommandResultImpl<>(CommandResult.Type.INFO,
+                                                                                         RESULT_SUCCESS,
+                                                                                         new LinkedList<>()
     );
 
-    public static final CommandResult<CanvasViolation> FAILED = new CommandResultImpl<>( CommandResult.Type.ERROR,
-                                                                                         RESULT_FAILED,
-                                                                                         new LinkedList<>()
+    public static final CommandResult<CanvasViolation> FAILED = new CommandResultImpl<>(CommandResult.Type.ERROR,
+                                                                                        RESULT_FAILED,
+                                                                                        new LinkedList<>()
     );
 
     public CanvasCommandResultBuilder() {
     }
 
-    public CanvasCommandResultBuilder( final Collection<CanvasViolation> violations ) {
-        super( violations );
+    public CanvasCommandResultBuilder(final Collection<CanvasViolation> violations) {
+        super(violations);
     }
 
-    public CanvasCommandResultBuilder( final CommandResult<RuleViolation> commandResult ) {
+    public CanvasCommandResultBuilder(final CommandResult<RuleViolation> commandResult) {
         // Use same message and result type.
-        this.setMessage( commandResult.getMessage() );
-        this.setType( commandResult.getType() );
+        this.setMessage(commandResult.getMessage());
+        this.setType(commandResult.getType());
         // Translate violations.
         final Iterable<RuleViolation> violations = commandResult.getViolations();
-        if ( null != violations ) {
+        if (null != violations) {
             final Iterator<RuleViolation> violationsIt = violations.iterator();
-            while ( violationsIt.hasNext() ) {
+            while (violationsIt.hasNext()) {
                 final RuleViolation ruleViolation = violationsIt.next();
-                final CanvasViolation canvasViolation = new CanvasViolationImpl.CanvasViolationBuilder( ruleViolation ).build();
-                addViolation( canvasViolation );
+                final CanvasViolation canvasViolation = new CanvasViolationImpl.CanvasViolationBuilder(ruleViolation).build();
+                addViolation(canvasViolation);
             }
         }
     }
 
     @Override
-    public boolean isError( final CanvasViolation violation ) {
-        return RuleViolation.Type.ERROR.equals( violation.getViolationType() );
+    public boolean isError(final CanvasViolation violation) {
+        return RuleViolation.Type.ERROR.equals(violation.getViolationType());
     }
 
     @Override
-    public String getMessage( final CanvasViolation violation ) {
+    public String getMessage(final CanvasViolation violation) {
         return violation.getMessage();
     }
 }

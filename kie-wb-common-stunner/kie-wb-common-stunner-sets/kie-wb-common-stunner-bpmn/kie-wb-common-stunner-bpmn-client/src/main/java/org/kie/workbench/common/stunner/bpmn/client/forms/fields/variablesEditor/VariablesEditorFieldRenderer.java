@@ -50,7 +50,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     ListBoxValues dataTypeListBoxValues;
 
     @Inject
-    public VariablesEditorFieldRenderer( VariablesEditorWidgetView variablesEditor ) {
+    public VariablesEditorFieldRenderer(final VariablesEditorWidgetView variablesEditor) {
         this.view = variablesEditor;
     }
 
@@ -61,12 +61,12 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
 
     @Override
     public void initInputWidget() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
     public IsWidget getInputWidget() {
-        return ( VariablesEditorWidgetViewImpl ) view;
+        return (VariablesEditorWidgetViewImpl) view;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
+    protected void setReadOnly(final boolean readOnly) {
 
     }
 
@@ -93,49 +93,49 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     @Override
     public void addVariable() {
         List<VariableRow> as = view.getVariableRows();
-        if ( as.isEmpty() ) {
+        if (as.isEmpty()) {
             view.setTableDisplayStyle();
         }
         VariableRow newVariable = new VariableRow();
-        newVariable.setVariableType( variableType );
-        as.add( newVariable );
-        VariableListItemWidgetView widget = view.getVariableWidget( view.getVariableRowsCount() - 1 );
-        widget.setDataTypes( dataTypeListBoxValues );
-        widget.setParentWidget( this );
+        newVariable.setVariableType(variableType);
+        as.add(newVariable);
+        VariableListItemWidgetView widget = view.getVariableWidget(view.getVariableRowsCount() - 1);
+        widget.setDataTypes(dataTypeListBoxValues);
+        widget.setParentWidget(this);
     }
 
     @Override
-    public void setDataTypes( List<String> dataTypes,
-                              List<String> dataTypeDisplayNames ) {
+    public void setDataTypes(final List<String> dataTypes,
+                             final List<String> dataTypeDisplayNames) {
         this.dataTypes = dataTypes;
         this.dataTypeDisplayNames = dataTypeDisplayNames;
-        this.mapDataTypeNamesToDisplayNames = createMapDataTypeNamesToDisplayNames( dataTypes,
-                                                                                    dataTypeDisplayNames );
-        this.mapDataTypeDisplayNamesToNames = createMapDataTypeDisplayNamesToNames( dataTypes,
-                                                                                    dataTypeDisplayNames );
-        dataTypeListBoxValues = new ListBoxValues( VariableListItemWidgetView.CUSTOM_PROMPT,
-                                                   "Edit" + " ",
-                                                   dataTypesTester() );
-        dataTypeListBoxValues.addValues( dataTypeDisplayNames );
-        view.setVariablesDataTypes( dataTypeListBoxValues );
+        this.mapDataTypeNamesToDisplayNames = createMapDataTypeNamesToDisplayNames(dataTypes,
+                                                                                   dataTypeDisplayNames);
+        this.mapDataTypeDisplayNamesToNames = createMapDataTypeDisplayNamesToNames(dataTypes,
+                                                                                   dataTypeDisplayNames);
+        dataTypeListBoxValues = new ListBoxValues(VariableListItemWidgetView.CUSTOM_PROMPT,
+                                                  "Edit" + " ",
+                                                  dataTypesTester());
+        dataTypeListBoxValues.addValues(dataTypeDisplayNames);
+        view.setVariablesDataTypes(dataTypeListBoxValues);
     }
 
-    private Map<String, String> createMapDataTypeNamesToDisplayNames( List<String> dataTypes,
-                                                                      List<String> dataTypeDisplayNames ) {
+    private Map<String, String> createMapDataTypeNamesToDisplayNames(final List<String> dataTypes,
+                                                                     final List<String> dataTypeDisplayNames) {
         Map<String, String> mapDataTypeNamesToDisplayNames = new HashMap<String, String>();
-        for ( int i = 0; i < dataTypeDisplayNames.size(); i++ ) {
-            mapDataTypeNamesToDisplayNames.put( dataTypes.get( i ),
-                                                dataTypeDisplayNames.get( i ) );
+        for (int i = 0; i < dataTypeDisplayNames.size(); i++) {
+            mapDataTypeNamesToDisplayNames.put(dataTypes.get(i),
+                                               dataTypeDisplayNames.get(i));
         }
         return mapDataTypeNamesToDisplayNames;
     }
 
-    private Map<String, String> createMapDataTypeDisplayNamesToNames( List<String> dataTypes,
-                                                                      List<String> dataTypeDisplayNames ) {
+    private Map<String, String> createMapDataTypeDisplayNamesToNames(final List<String> dataTypes,
+                                                                     final List<String> dataTypeDisplayNames) {
         Map<String, String> mapDataTypeDisplayNamesToNames = new HashMap<String, String>();
-        for ( int i = 0; i < dataTypes.size(); i++ ) {
-            mapDataTypeDisplayNamesToNames.put( dataTypeDisplayNames.get( i ),
-                                                dataTypes.get( i ) );
+        for (int i = 0; i < dataTypes.size(); i++) {
+            mapDataTypeDisplayNamesToNames.put(dataTypeDisplayNames.get(i),
+                                               dataTypes.get(i));
         }
         return mapDataTypeDisplayNamesToNames;
     }
@@ -146,18 +146,18 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     }
 
     @Override
-    public List<VariableRow> deserializeVariables( String s ) {
+    public List<VariableRow> deserializeVariables(final String s) {
         List<VariableRow> variableRows = new ArrayList<VariableRow>();
-        if ( s != null && !s.isEmpty() ) {
-            String[] vs = s.split( "," );
-            for ( String v : vs ) {
-                if ( !v.isEmpty() ) {
-                    Variable var = Variable.deserialize( v,
-                                                         Variable.VariableType.PROCESS,
-                                                         dataTypes );
-                    if ( var != null && var.getName() != null && !var.getName().isEmpty() ) {
-                        variableRows.add( new VariableRow( var,
-                                                           mapDataTypeNamesToDisplayNames ) );
+        if (s != null && !s.isEmpty()) {
+            String[] vs = s.split(",");
+            for (String v : vs) {
+                if (!v.isEmpty()) {
+                    Variable var = Variable.deserialize(v,
+                                                        Variable.VariableType.PROCESS,
+                                                        dataTypes);
+                    if (var != null && var.getName() != null && !var.getName().isEmpty()) {
+                        variableRows.add(new VariableRow(var,
+                                                         mapDataTypeNamesToDisplayNames));
                     }
                 }
             }
@@ -166,15 +166,15 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     }
 
     @Override
-    public String serializeVariables( List<VariableRow> variableRows ) {
+    public String serializeVariables(final List<VariableRow> variableRows) {
         List<Variable> variables = new ArrayList<Variable>();
-        for ( VariableRow row : variableRows ) {
-            if ( row.getName() != null && row.getName().length() > 0 ) {
-                variables.add( new Variable( row,
-                                             mapDataTypeDisplayNamesToNames ) );
+        for (VariableRow row : variableRows) {
+            if (row.getName() != null && row.getName().length() > 0) {
+                variables.add(new Variable(row,
+                                           mapDataTypeDisplayNamesToNames));
             }
         }
-        return StringUtils.getStringForList( variables );
+        return StringUtils.getStringForList(variables);
     }
 
     /**
@@ -182,17 +182,17 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
      * @param name
      * @return
      */
-    public boolean isDuplicateName( String name ) {
-        if ( name == null || name.trim().isEmpty() ) {
+    public boolean isDuplicateName(final String name) {
+        if (name == null || name.trim().isEmpty()) {
             return false;
         }
         List<VariableRow> as = view.getVariableRows();
-        if ( as != null && !as.isEmpty() ) {
+        if (as != null && !as.isEmpty()) {
             int nameCount = 0;
-            for ( VariableRow row : as ) {
-                if ( name.trim().compareTo( row.getName() ) == 0 ) {
+            for (VariableRow row : as) {
+                if (name.trim().compareTo(row.getName()) == 0) {
                     nameCount++;
-                    if ( nameCount > 1 ) {
+                    if (nameCount > 1) {
                         return true;
                     }
                 }
@@ -201,17 +201,17 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         return false;
     }
 
-    public void removeVariable( VariableRow variableRow ) {
-        view.getVariableRows().remove( variableRow );
+    public void removeVariable(final VariableRow variableRow) {
+        view.getVariableRows().remove(variableRow);
         doSave();
     }
 
     @Override
     public ListBoxValues.ValueTester dataTypesTester() {
         return new ListBoxValues.ValueTester() {
-            public String getNonCustomValueForUserString( String dataTypeDisplayName ) {
-                if ( mapDataTypeNamesToDisplayNames != null && mapDataTypeNamesToDisplayNames.containsKey( dataTypeDisplayName ) ) {
-                    return mapDataTypeNamesToDisplayNames.get( dataTypeDisplayName );
+            public String getNonCustomValueForUserString(String dataTypeDisplayName) {
+                if (mapDataTypeNamesToDisplayNames != null && mapDataTypeNamesToDisplayNames.containsKey(dataTypeDisplayName)) {
+                    return mapDataTypeNamesToDisplayNames.get(dataTypeDisplayName);
                 } else {
                     return null;
                 }

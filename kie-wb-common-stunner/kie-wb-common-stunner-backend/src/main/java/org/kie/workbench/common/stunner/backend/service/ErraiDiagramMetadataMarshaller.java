@@ -28,14 +28,14 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 public class ErraiDiagramMetadataMarshaller implements DiagramMetadataMarshaller<Metadata> {
 
     @Override
-    public Metadata unmarshall( final InputStream input ) throws IOException {
-        Metadata result = ( Metadata ) ServerMarshalling.fromJSON( input );
+    public Metadata unmarshall(final InputStream input) throws IOException {
+        Metadata result = (Metadata) ServerMarshalling.fromJSON(input);
         return result;
     }
 
     @Override
-    public String marshall( final Metadata metadata ) throws IOException {
-        String result = ServerMarshalling.toJSON( metadata );
+    public String marshall(final Metadata metadata) throws IOException {
+        String result = ServerMarshalling.toJSON(metadata);
         return result;
     }
 }

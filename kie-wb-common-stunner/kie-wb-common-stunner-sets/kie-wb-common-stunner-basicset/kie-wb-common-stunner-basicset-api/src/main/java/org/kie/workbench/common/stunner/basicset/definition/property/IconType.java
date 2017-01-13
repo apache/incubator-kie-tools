@@ -60,16 +60,16 @@ public class IconType {
     private Icons value = defaultValue;
 
     @AllowedValues
-    public static final Iterable<Icons> allowedValues = new ArrayList<Icons>( 3 ) {{
-        add( Icons.PLUS );
-        add( Icons.MINUS );
-        add( Icons.XOR );
+    public static final Iterable<Icons> allowedValues = new ArrayList<Icons>(3) {{
+        add(Icons.PLUS);
+        add(Icons.MINUS);
+        add(Icons.XOR);
     }};
 
     public IconType() {
     }
 
-    public IconType( final Icons icon ) {
+    public IconType(final Icons icon) {
         this.value = icon;
     }
 
@@ -101,7 +101,7 @@ public class IconType {
         return value;
     }
 
-    public void setValue( Icons value ) {
+    public void setValue(final Icons value) {
         this.value = value;
     }
 

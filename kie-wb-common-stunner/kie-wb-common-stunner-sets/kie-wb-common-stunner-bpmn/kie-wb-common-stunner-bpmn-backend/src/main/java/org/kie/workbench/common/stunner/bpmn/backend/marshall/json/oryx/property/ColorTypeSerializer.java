@@ -25,19 +25,19 @@ import org.kie.workbench.common.stunner.core.definition.property.type.ColorType;
 public class ColorTypeSerializer implements Bpmn2OryxPropertySerializer<String> {
 
     @Override
-    public boolean accepts( PropertyType type ) {
-        return ColorType.name.equals( type.getName() );
+    public boolean accepts(final PropertyType type) {
+        return ColorType.name.equals(type.getName());
     }
 
     @Override
-    public String parse( Object property,
-                         String value ) {
+    public String parse(final Object property,
+                        final String value) {
         return value;
     }
 
     @Override
-    public String serialize( Object property,
-                             String value ) {
+    public String serialize(final Object property,
+                            final String value) {
         return value;
     }
 }

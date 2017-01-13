@@ -76,16 +76,16 @@ public class BPMNGraphGenerator extends JsonGenerator {
     Graph<DefinitionSet, Node> graph;
     boolean isClosed;
 
-    public BPMNGraphGenerator( final GraphObjectBuilderFactory bpmnGraphBuilderFactory,
-                               final DefinitionManager definitionManager,
-                               final FactoryManager factoryManager,
-                               final GraphUtils graphUtils,
-                               final OryxManager oryxManager,
-                               final CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager,
-                               final GraphCommandFactory commandFactory,
-                               final GraphIndexBuilder<?> indexBuilder,
-                               final Class<?> diagramDefinitionSetClass,
-                               final Class<? extends BPMNDefinition> diagramDefinitionClass ) {
+    public BPMNGraphGenerator(final GraphObjectBuilderFactory bpmnGraphBuilderFactory,
+                              final DefinitionManager definitionManager,
+                              final FactoryManager factoryManager,
+                              final GraphUtils graphUtils,
+                              final OryxManager oryxManager,
+                              final CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager,
+                              final GraphCommandFactory commandFactory,
+                              final GraphIndexBuilder<?> indexBuilder,
+                              final Class<?> diagramDefinitionSetClass,
+                              final Class<? extends BPMNDefinition> diagramDefinitionClass) {
         this.bpmnGraphBuilderFactory = bpmnGraphBuilderFactory;
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
@@ -96,7 +96,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
         this.indexBuilder = indexBuilder;
         this.diagramDefinitionSetClass = diagramDefinitionSetClass;
         this.diagramDefinitionClass = diagramDefinitionClass;
-        this.parsers.push( new RootObjectParser( null ) );
+        this.parsers.push(new RootObjectParser(null));
         this.isClosed = false;
     }
 
@@ -111,13 +111,13 @@ public class BPMNGraphGenerator extends JsonGenerator {
     }
 
     @Override
-    public void writeFieldName( String s ) throws IOException, JsonGenerationException {
-        parsers.peek().writeFieldName( s );
+    public void writeFieldName(final String s) throws IOException, JsonGenerationException {
+        parsers.peek().writeFieldName(s);
     }
 
     @Override
-    public void writeObject( Object o ) throws IOException, JsonProcessingException {
-        parsers.peek().writeObject( o );
+    public void writeObject(final Object o) throws IOException, JsonProcessingException {
+        parsers.peek().writeObject(o);
     }
 
     @Override
@@ -136,46 +136,46 @@ public class BPMNGraphGenerator extends JsonGenerator {
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void close() throws IOException {
         logBuilders();
-        this.graph = ( Graph<DefinitionSet, Node> ) factoryManager.newElement( UUID.uuid(),
-                                                                               diagramDefinitionSetClass );
+        this.graph = (Graph<DefinitionSet, Node>) factoryManager.newElement(UUID.uuid(),
+                                                                            diagramDefinitionSetClass);
         // TODO: Where are the BPMN diagram bounds in the Oryx json structure? Exist?
-        if ( null == graph.getContent().getBounds() ) {
-            graph.getContent().setBounds( new BoundsImpl(
-                    new BoundImpl( 0d,
-                                   0d ),
-                    new BoundImpl( BPMNGraphFactory.GRAPH_DEFAULT_WIDTH,
-                                   BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT )
-            ) );
+        if (null == graph.getContent().getBounds()) {
+            graph.getContent().setBounds(new BoundsImpl(
+                    new BoundImpl(0d,
+                                  0d),
+                    new BoundImpl(BPMNGraphFactory.GRAPH_DEFAULT_WIDTH,
+                                  BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT)
+            ));
         }
         builderContext
                 // Initialize the builder context.
-                .init( graph )
+                .init(graph)
                 // Clears the nodes present, if any, on the recently new graph instance for BPMN. This generator
                 // provides the generation for the complete graph structure and nodes.
-                .execute( builderContext.getCommandFactory().clearGraph() );
-        NodeObjectBuilder diagramBuilder = getDiagramBuilder( builderContext );
-        if ( diagramBuilder == null ) {
-            throw new RuntimeException( "No diagrams found!" );
+                .execute(builderContext.getCommandFactory().clearGraph());
+        NodeObjectBuilder diagramBuilder = getDiagramBuilder(builderContext);
+        if (diagramBuilder == null) {
+            throw new RuntimeException("No diagrams found!");
         }
-        Node<View<BPMNDefinition>, Edge> diagramNode = ( Node<View<BPMNDefinition>, Edge> ) diagramBuilder.build( builderContext );
-        graph.addNode( diagramNode );
+        Node<View<BPMNDefinition>, Edge> diagramNode = (Node<View<BPMNDefinition>, Edge>) diagramBuilder.build(builderContext);
+        graph.addNode(diagramNode);
         this.isClosed = true;
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected NodeObjectBuilder getDiagramBuilder( final GraphObjectBuilder.BuilderContext context ) {
+    @SuppressWarnings("unchecked")
+    protected NodeObjectBuilder getDiagramBuilder(final GraphObjectBuilder.BuilderContext context) {
         Collection<GraphObjectBuilder<?, ?>> builders = context.getBuilders();
-        if ( builders != null && !builders.isEmpty() ) {
-            for ( GraphObjectBuilder<?, ?> builder : builders ) {
+        if (builders != null && !builders.isEmpty()) {
+            for (GraphObjectBuilder<?, ?> builder : builders) {
                 try {
-                    NodeObjectBuilder nodeBuilder = ( NodeObjectBuilder ) builder;
-                    if ( diagramDefinitionClass.equals( nodeBuilder.getDefinitionClass() ) ) {
+                    NodeObjectBuilder nodeBuilder = (NodeObjectBuilder) builder;
+                    if (diagramDefinitionClass.equals(nodeBuilder.getDefinitionClass())) {
                         return nodeBuilder;
                     }
-                } catch ( ClassCastException e ) {
+                } catch (ClassCastException e) {
                     // Not a node. Continue with the search...
                 }
             }
@@ -194,9 +194,9 @@ public class BPMNGraphGenerator extends JsonGenerator {
         Index<?, ?> index;
 
         @Override
-        public GraphObjectBuilder.BuilderContext init( final Graph<DefinitionSet, Node> graph ) {
+        public GraphObjectBuilder.BuilderContext init(final Graph<DefinitionSet, Node> graph) {
             this.graph = graph;
-            this.index = indexBuilder.build( graph );
+            this.index = indexBuilder.build(graph);
             return this;
         }
 
@@ -230,14 +230,14 @@ public class BPMNGraphGenerator extends JsonGenerator {
             return oryxManager;
         }
 
-        @SuppressWarnings( "unchecked" )
-        public CommandResult<RuleViolation> execute( Command<GraphCommandExecutionContext, RuleViolation> command ) {
+        @SuppressWarnings("unchecked")
+        public CommandResult<RuleViolation> execute(final Command<GraphCommandExecutionContext, RuleViolation> command) {
             GraphCommandExecutionContext executionContext =
-                    new EmptyRulesCommandExecutionContext( definitionManager,
-                                                           factoryManager,
-                                                           index );
-            return commandManager.execute( executionContext,
-                                           command );
+                    new EmptyRulesCommandExecutionContext(definitionManager,
+                                                          factoryManager,
+                                                          index);
+            return commandManager.execute(executionContext,
+                                          command);
         }
 
         public GraphCommandFactory getCommandFactory() {
@@ -247,9 +247,9 @@ public class BPMNGraphGenerator extends JsonGenerator {
 
     // For local testing...
     private void logBuilders() {
-        log( "Logging builders at close time..." );
-        for ( GraphObjectBuilder<?, ?> builder : builders ) {
-            log( builder.toString() );
+        log("Logging builders at close time...");
+        for (GraphObjectBuilder<?, ?> builder : builders) {
+            log(builder.toString());
         }
     }
 
@@ -259,9 +259,9 @@ public class BPMNGraphGenerator extends JsonGenerator {
 
         void writeEndObject();
 
-        void writeFieldName( String s );
+        void writeFieldName(String s);
 
-        void writeObject( Object o );
+        void writeObject(Object o);
 
         void writeStartArray();
 
@@ -282,53 +282,53 @@ public class BPMNGraphGenerator extends JsonGenerator {
         String fieldName;
         NodeObjectBuilder parentNodeBuilder;
 
-        public RootObjectParser( NodeObjectBuilder parentNodeBuilder ) {
+        public RootObjectParser(final NodeObjectBuilder parentNodeBuilder) {
             this.parentNodeBuilder = parentNodeBuilder;
         }
 
         @Override
         public void writeStartObject() {
-            if ( fieldName == null ) {
-                nodeBuilders.push( bpmnGraphBuilderFactory.bootstrapBuilder() );
-            } else if ( "properties".equals( fieldName ) ) {
-                parsers.push( new PropertiesObjectParser() );
-            } else if ( "stencil".equals( fieldName ) ) {
-                parsers.push( new StencilObjectParser() );
-            } else if ( "childShapes".equals( fieldName ) ) {
+            if (fieldName == null) {
+                nodeBuilders.push(bpmnGraphBuilderFactory.bootstrapBuilder());
+            } else if ("properties".equals(fieldName)) {
+                parsers.push(new PropertiesObjectParser());
+            } else if ("stencil".equals(fieldName)) {
+                parsers.push(new StencilObjectParser());
+            } else if ("childShapes".equals(fieldName)) {
                 RootObjectParser rootObjectParser = nodeBuilders.empty() ? null :
-                        new RootObjectParser( ( NodeObjectBuilder ) nodeBuilders.peek() );
-                parsers.push( rootObjectParser );
-                nodeBuilders.push( bpmnGraphBuilderFactory.bootstrapBuilder() );
-            } else if ( "outgoing".equals( fieldName ) ) {
-                parsers.push( new OutgoingObjectParser() );
-            } else if ( "bounds".equals( fieldName ) ) {
-                parsers.push( new BoundsObjectParser() );
-            } else if ( "dockers".equals( fieldName ) ) {
-                parsers.push( new DockersObjectParser() );
+                        new RootObjectParser((NodeObjectBuilder) nodeBuilders.peek());
+                parsers.push(rootObjectParser);
+                nodeBuilders.push(bpmnGraphBuilderFactory.bootstrapBuilder());
+            } else if ("outgoing".equals(fieldName)) {
+                parsers.push(new OutgoingObjectParser());
+            } else if ("bounds".equals(fieldName)) {
+                parsers.push(new BoundsObjectParser());
+            } else if ("dockers".equals(fieldName)) {
+                parsers.push(new DockersObjectParser());
             } else {
-                parsers.push( new DummyObjectParser() );
+                parsers.push(new DummyObjectParser());
             }
         }
 
         @Override
         public void writeEndObject() {
             GraphObjectBuilder builder = nodeBuilders.pop();
-            builders.add( builder );
+            builders.add(builder);
             parsers.pop();
         }
 
         @Override
-        public void writeFieldName( String s ) {
+        public void writeFieldName(final String s) {
             this.fieldName = s;
         }
 
         @Override
-        public void writeObject( Object o ) {
+        public void writeObject(final Object o) {
             String value = o.toString();
-            if ( "resourceId".equals( fieldName ) ) {
-                nodeBuilders.peek().nodeId( value );
-                if ( null != parentNodeBuilder ) {
-                    parentNodeBuilder.child( value );
+            if ("resourceId".equals(fieldName)) {
+                nodeBuilders.peek().nodeId(value);
+                if (null != parentNodeBuilder) {
+                    parentNodeBuilder.child(value);
                 }
             }
         }
@@ -358,14 +358,14 @@ public class BPMNGraphGenerator extends JsonGenerator {
         }
 
         @Override
-        public void writeFieldName( String s ) {
+        public void writeFieldName(final String s) {
             this.fieldName = s;
         }
 
         @Override
-        public void writeObject( Object o ) {
-            nodeBuilders.peek().property( fieldName,
-                                          o.toString() );
+        public void writeObject(final Object o) {
+            nodeBuilders.peek().property(fieldName,
+                                         o.toString());
         }
 
         @Override
@@ -391,16 +391,16 @@ public class BPMNGraphGenerator extends JsonGenerator {
         }
 
         @Override
-        public void writeFieldName( String s ) {
+        public void writeFieldName(final String s) {
             this.fieldName = s;
         }
 
         @Override
-        public void writeObject( Object o ) {
-            if ( "id".equals( fieldName ) ) {
+        public void writeObject(final Object o) {
+            if ("id".equals(fieldName)) {
                 // Replace the current node builder by the implementation for the specific stencil identifier.
-                GraphObjectBuilder builder = nodeBuilders.pop().stencil( o.toString() );
-                nodeBuilders.push( builder );
+                GraphObjectBuilder builder = nodeBuilders.pop().stencil(o.toString());
+                nodeBuilders.push(builder);
             }
         }
 
@@ -427,14 +427,14 @@ public class BPMNGraphGenerator extends JsonGenerator {
         }
 
         @Override
-        public void writeFieldName( String s ) {
+        public void writeFieldName(final String s) {
             this.fieldName = s;
         }
 
         @Override
-        public void writeObject( Object o ) {
-            if ( "resourceId".equals( fieldName ) ) {
-                nodeBuilders.peek().out( o.toString() );
+        public void writeObject(final Object o) {
+            if ("resourceId".equals(fieldName)) {
+                nodeBuilders.peek().out(o.toString());
             }
         }
 
@@ -460,50 +460,50 @@ public class BPMNGraphGenerator extends JsonGenerator {
 
         @Override
         public void writeStartObject() {
-            if ( "lowerRight".equals( fieldName ) ) {
+            if ("lowerRight".equals(fieldName)) {
                 isLR = true;
             }
-            if ( "upperLeft".equals( fieldName ) ) {
+            if ("upperLeft".equals(fieldName)) {
                 isUL = true;
             }
         }
 
         @Override
         public void writeEndObject() {
-            if ( end ) {
-                nodeBuilders.peek().boundUL( ulX,
-                                             ulY );
-                nodeBuilders.peek().boundLR( lrX,
-                                             lrY );
+            if (end) {
+                nodeBuilders.peek().boundUL(ulX,
+                                            ulY);
+                nodeBuilders.peek().boundLR(lrX,
+                                            lrY);
                 parsers.pop();
             }
-            if ( isLR && isUL ) {
+            if (isLR && isUL) {
                 end = true;
             }
         }
 
         @Override
-        public void writeFieldName( String s ) {
+        public void writeFieldName(final String s) {
             this.fieldName = s;
         }
 
         @Override
-        public void writeObject( Object o ) {
+        public void writeObject(final Object o) {
             String value = o.toString();
-            Double d = Double.valueOf( value );
-            if ( "x".equals( fieldName ) ) {
-                if ( isUL && ulX == null ) {
+            Double d = Double.valueOf(value);
+            if ("x".equals(fieldName)) {
+                if (isUL && ulX == null) {
                     ulX = d;
                 }
-                if ( isLR && lrX == null ) {
+                if (isLR && lrX == null) {
                     lrX = d;
                 }
             }
-            if ( "y".equals( fieldName ) ) {
-                if ( isUL && ulY == null ) {
+            if ("y".equals(fieldName)) {
+                if (isUL && ulY == null) {
                     ulY = d;
                 }
-                if ( isLR && lrY == null ) {
+                if (isLR && lrY == null) {
                     lrY = d;
                 }
             }
@@ -530,23 +530,23 @@ public class BPMNGraphGenerator extends JsonGenerator {
 
         @Override
         public void writeEndObject() {
-            nodeBuilders.peek().docker( x,
-                                        y );
+            nodeBuilders.peek().docker(x,
+                                       y);
         }
 
         @Override
-        public void writeFieldName( String s ) {
+        public void writeFieldName(final String s) {
             this.fieldName = s;
         }
 
         @Override
-        public void writeObject( Object o ) {
+        public void writeObject(final Object o) {
             String value = o.toString();
-            Double d = Double.valueOf( value );
-            if ( "x".equals( fieldName ) ) {
+            Double d = Double.valueOf(value);
+            if ("x".equals(fieldName)) {
                 this.x = d;
             }
-            if ( "y".equals( fieldName ) ) {
+            if ("y".equals(fieldName)) {
                 this.y = d;
             }
         }
@@ -565,7 +565,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
 
         @Override
         public void writeStartObject() {
-            parsers.push( new DummyObjectParser() );
+            parsers.push(new DummyObjectParser());
         }
 
         @Override
@@ -574,11 +574,11 @@ public class BPMNGraphGenerator extends JsonGenerator {
         }
 
         @Override
-        public void writeFieldName( String s ) {
+        public void writeFieldName(final String s) {
         }
 
         @Override
-        public void writeObject( Object o ) {
+        public void writeObject(final Object o) {
         }
 
         @Override
@@ -590,8 +590,8 @@ public class BPMNGraphGenerator extends JsonGenerator {
         }
     }
 
-    private void log( String message ) {
-        System.out.println( message );
+    private void log(final String message) {
+        System.out.println(message);
     }
 
     /***********************************************************************************
@@ -603,22 +603,22 @@ public class BPMNGraphGenerator extends JsonGenerator {
     }
 
     @Override
-    public JsonGenerator enable( Feature feature ) {
+    public JsonGenerator enable(final Feature feature) {
         return null;
     }
 
     @Override
-    public JsonGenerator disable( Feature feature ) {
+    public JsonGenerator disable(final Feature feature) {
         return null;
     }
 
     @Override
-    public boolean isEnabled( Feature feature ) {
+    public boolean isEnabled(final Feature feature) {
         return false;
     }
 
     @Override
-    public JsonGenerator setCodec( ObjectCodec objectCodec ) {
+    public JsonGenerator setCodec(final ObjectCodec objectCodec) {
         return null;
     }
 
@@ -633,100 +633,100 @@ public class BPMNGraphGenerator extends JsonGenerator {
     }
 
     @Override
-    public void writeString( String s ) throws IOException, JsonGenerationException {
+    public void writeString(final String s) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeString( char[] chars,
-                             int i,
-                             int i1 ) throws IOException, JsonGenerationException {
+    public void writeString(final char[] chars,
+                            final int i,
+                            final int i1) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeRawUTF8String( byte[] bytes,
-                                    int i,
-                                    int i1 ) throws IOException, JsonGenerationException {
+    public void writeRawUTF8String(final byte[] bytes,
+                                   final int i,
+                                   final int i1) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeUTF8String( byte[] bytes,
-                                 int i,
-                                 int i1 ) throws IOException, JsonGenerationException {
+    public void writeUTF8String(final byte[] bytes,
+                                final int i,
+                                final int i1) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeRaw( String s ) throws IOException, JsonGenerationException {
+    public void writeRaw(final String s) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeRaw( String s,
-                          int i,
-                          int i1 ) throws IOException, JsonGenerationException {
+    public void writeRaw(final String s,
+                         final int i,
+                         final int i1) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeRaw( char[] chars,
-                          int i,
-                          int i1 ) throws IOException, JsonGenerationException {
+    public void writeRaw(final char[] chars,
+                         final int i,
+                         final int i1) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeRaw( char c ) throws IOException, JsonGenerationException {
+    public void writeRaw(final char c) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeRawValue( String s ) throws IOException, JsonGenerationException {
+    public void writeRawValue(final String s) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeRawValue( String s,
-                               int i,
-                               int i1 ) throws IOException, JsonGenerationException {
+    public void writeRawValue(final String s,
+                              final int i,
+                              final int i1) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeRawValue( char[] chars,
-                               int i,
-                               int i1 ) throws IOException, JsonGenerationException {
+    public void writeRawValue(char[] chars,
+                              int i,
+                              int i1) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeBinary( Base64Variant base64Variant,
-                             byte[] bytes,
-                             int i,
-                             int i1 ) throws IOException, JsonGenerationException {
+    public void writeBinary(final Base64Variant base64Variant,
+                            final byte[] bytes,
+                            final int i,
+                            final int i1) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeNumber( int i ) throws IOException, JsonGenerationException {
+    public void writeNumber(final int i) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeNumber( long l ) throws IOException, JsonGenerationException {
+    public void writeNumber(final long l) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeNumber( BigInteger bigInteger ) throws IOException, JsonGenerationException {
+    public void writeNumber(final BigInteger bigInteger) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeNumber( double v ) throws IOException, JsonGenerationException {
+    public void writeNumber(final double v) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeNumber( float v ) throws IOException, JsonGenerationException {
+    public void writeNumber(final float v) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeNumber( BigDecimal bigDecimal ) throws IOException, JsonGenerationException {
+    public void writeNumber(final BigDecimal bigDecimal) throws IOException, JsonGenerationException {
     }
 
     @Override
-    public void writeNumber( String s ) throws IOException, JsonGenerationException, UnsupportedOperationException {
+    public void writeNumber(final String s) throws IOException, JsonGenerationException, UnsupportedOperationException {
     }
 
     @Override
-    public void writeBoolean( boolean b ) throws IOException, JsonGenerationException {
+    public void writeBoolean(final boolean b) throws IOException, JsonGenerationException {
     }
 
     @Override
@@ -734,15 +734,15 @@ public class BPMNGraphGenerator extends JsonGenerator {
     }
 
     @Override
-    public void writeTree( JsonNode jsonNode ) throws IOException, JsonProcessingException {
+    public void writeTree(final JsonNode jsonNode) throws IOException, JsonProcessingException {
     }
 
     @Override
-    public void copyCurrentEvent( JsonParser jsonParser ) throws IOException, JsonProcessingException {
+    public void copyCurrentEvent(final JsonParser jsonParser) throws IOException, JsonProcessingException {
     }
 
     @Override
-    public void copyCurrentStructure( JsonParser jsonParser ) throws IOException, JsonProcessingException {
+    public void copyCurrentStructure(final JsonParser jsonParser) throws IOException, JsonProcessingException {
     }
 
     @Override

@@ -30,29 +30,29 @@ public final class DeleteCanvasConnectorCommand extends AbstractCanvasCommand {
     private final Node source;
     private final Node target;
 
-    public DeleteCanvasConnectorCommand( final Edge candidate ) {
+    public DeleteCanvasConnectorCommand(final Edge candidate) {
         this.candidate = candidate;
         this.source = candidate.getSourceNode();
         this.target = candidate.getTargetNode();
     }
 
     @Override
-    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
-        context.deregister( candidate );
-        if ( null != source ) {
-            context.fireCanvasElementUpdated( source );
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+        context.deregister(candidate);
+        if (null != source) {
+            context.fireCanvasElementUpdated(source);
         }
-        if ( null != target ) {
-            context.fireCanvasElementUpdated( target );
+        if (null != target) {
+            context.fireCanvasElementUpdated(target);
         }
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         final String ssid = context.getDiagram().getMetadata().getShapeSetId();
-        return new AddCanvasConnectorCommand( candidate,
-                                              ssid ).execute( context );
+        return new AddCanvasConnectorCommand(candidate,
+                                             ssid).execute(context);
     }
 
     public Edge getCandidate() {

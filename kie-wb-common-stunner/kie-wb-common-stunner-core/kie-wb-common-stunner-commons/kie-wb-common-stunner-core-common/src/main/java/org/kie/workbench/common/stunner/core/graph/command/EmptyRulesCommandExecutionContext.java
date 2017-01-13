@@ -25,12 +25,12 @@ import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
 @NonPortable
 public class EmptyRulesCommandExecutionContext extends AbstractGraphCommandExecutionContext {
 
-    public EmptyRulesCommandExecutionContext( final DefinitionManager definitionManager,
-                                              final FactoryManager factoryManager,
-                                              final Index<?, ?> graphIndex ) {
-        super( definitionManager,
-               factoryManager,
-               graphIndex );
+    public EmptyRulesCommandExecutionContext(final DefinitionManager definitionManager,
+                                             final FactoryManager factoryManager,
+                                             final Index<?, ?> graphIndex) {
+        super(definitionManager,
+              factoryManager,
+              graphIndex);
     }
 
     @Override

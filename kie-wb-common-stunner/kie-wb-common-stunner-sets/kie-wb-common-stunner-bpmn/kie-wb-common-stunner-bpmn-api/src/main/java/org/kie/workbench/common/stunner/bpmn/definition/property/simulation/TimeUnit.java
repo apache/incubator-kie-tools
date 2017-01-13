@@ -59,7 +59,7 @@ public class TimeUnit implements BPMNProperty {
     public TimeUnit() {
     }
 
-    public TimeUnit( final String value ) {
+    public TimeUnit(final String value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class TimeUnit implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

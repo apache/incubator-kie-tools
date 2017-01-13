@@ -23,8 +23,8 @@ public class ProcessingElementMap {
     private final String className;
     private final Map<String, String> elements;
 
-    public ProcessingElementMap( final String className,
-                                 final Map<String, String> elements ) {
+    public ProcessingElementMap(final String className,
+                                final Map<String, String> elements) {
         this.className = className;
         this.elements = elements;
     }

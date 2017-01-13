@@ -24,72 +24,72 @@ import org.kie.workbench.common.stunner.core.definition.adapter.PriorityAdapter;
 
 public abstract class AbstractRuntimeAdapter<T> implements PriorityAdapter {
 
-    @SuppressWarnings( "unchecked" )
-    protected <A extends Annotation, V> V getAnnotatedFieldValue( final T object,
-                                                                  final Class<A> annotationType ) throws IllegalAccessException {
-        return RuntimeAdapterUtils.getAnnotatedFieldValue( object,
-                                                           annotationType );
+    @SuppressWarnings("unchecked")
+    protected <A extends Annotation, V> V getAnnotatedFieldValue(final T object,
+                                                                 final Class<A> annotationType) throws IllegalAccessException {
+        return RuntimeAdapterUtils.getAnnotatedFieldValue(object,
+                                                          annotationType);
     }
 
-    protected <V> Set<V> getFieldValues( final T object,
-                                         final Set<String> fieldNames ) throws IllegalAccessException {
-        return RuntimeAdapterUtils.getFieldValues( object,
-                                                   fieldNames );
+    protected <V> Set<V> getFieldValues(final T object,
+                                        final Set<String> fieldNames) throws IllegalAccessException {
+        return RuntimeAdapterUtils.getFieldValues(object,
+                                                  fieldNames);
     }
 
-    protected <V> V getFieldValue( final T object,
-                                   final String fieldName ) throws IllegalAccessException {
-        return RuntimeAdapterUtils.getFieldValue( object,
-                                                  fieldName );
+    protected <V> V getFieldValue(final T object,
+                                  final String fieldName) throws IllegalAccessException {
+        return RuntimeAdapterUtils.getFieldValue(object,
+                                                 fieldName);
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected <A extends Annotation, V> V getAnnotatedFieldValue( final T object,
-                                                                  final Class<?> sourceType,
-                                                                  final Class<A> annotationType ) throws IllegalAccessException {
-        return RuntimeAdapterUtils.getAnnotatedFieldValue( object,
-                                                           sourceType,
-                                                           annotationType );
+    @SuppressWarnings("unchecked")
+    protected <A extends Annotation, V> V getAnnotatedFieldValue(final T object,
+                                                                 final Class<?> sourceType,
+                                                                 final Class<A> annotationType) throws IllegalAccessException {
+        return RuntimeAdapterUtils.getAnnotatedFieldValue(object,
+                                                          sourceType,
+                                                          annotationType);
     }
 
-    protected <V> V getFieldValue( final T object,
-                                   final Class<?> sourceType,
-                                   final String fieldName ) throws IllegalAccessException {
-        return RuntimeAdapterUtils.getFieldValue( object,
-                                                  sourceType,
-                                                  fieldName );
+    protected <V> V getFieldValue(final T object,
+                                  final Class<?> sourceType,
+                                  final String fieldName) throws IllegalAccessException {
+        return RuntimeAdapterUtils.getFieldValue(object,
+                                                 sourceType,
+                                                 fieldName);
     }
 
-    protected Field getField( final T object,
-                              final String fieldName ) throws IllegalAccessException {
-        return RuntimeAdapterUtils.getField( object,
-                                             fieldName );
+    protected Field getField(final T object,
+                             final String fieldName) throws IllegalAccessException {
+        return RuntimeAdapterUtils.getField(object,
+                                            fieldName);
     }
 
-    protected Field getField( final Class<?> sourceType,
-                              final String fieldName ) throws IllegalAccessException {
-        return RuntimeAdapterUtils.getField( sourceType,
-                                             fieldName );
+    protected Field getField(final Class<?> sourceType,
+                             final String fieldName) throws IllegalAccessException {
+        return RuntimeAdapterUtils.getField(sourceType,
+                                            fieldName);
     }
 
-    protected static <T extends Annotation> T getClassAnnotation( final Class<?> type,
-                                                                  final Class<T> annotationType ) {
-        return RuntimeAdapterUtils.getClassAnnotation( type,
-                                                       annotationType );
+    protected static <T extends Annotation> T getClassAnnotation(final Class<?> type,
+                                                                 final Class<T> annotationType) {
+        return RuntimeAdapterUtils.getClassAnnotation(type,
+                                                      annotationType);
     }
 
-    protected static <T extends Annotation> Collection<Field> getFieldAnnotations( final Class<?> type,
-                                                                                   final Class<T> annotationType ) {
-        return RuntimeAdapterUtils.getFieldAnnotations( type,
-                                                        annotationType );
+    protected static <T extends Annotation> Collection<Field> getFieldAnnotations(final Class<?> type,
+                                                                                  final Class<T> annotationType) {
+        return RuntimeAdapterUtils.getFieldAnnotations(type,
+                                                       annotationType);
     }
 
-    protected String getDefinitionId( final Class<?> type ) {
-        return RuntimeAdapterUtils.getDefinitionId( type );
+    protected String getDefinitionId(final Class<?> type) {
+        return RuntimeAdapterUtils.getDefinitionId(type);
     }
 
-    protected String getPropertyId( final Object pojo ) {
-        return RuntimeAdapterUtils.getPropertyId( pojo.getClass() );
+    protected String getPropertyId(final Object pojo) {
+        return RuntimeAdapterUtils.getPropertyId(pojo.getClass());
     }
 
     @Override

@@ -44,14 +44,14 @@ public abstract class AbstractCanvasCommandTest {
     protected Metadata metadata;
 
     public void setup() throws Exception {
-        MockitoAnnotations.initMocks( this );
+        MockitoAnnotations.initMocks(this);
         ;
-        when( canvasHandler.getDiagram() ).thenReturn( diagram );
-        when( canvasHandler.getCanvas() ).thenReturn( canvas );
-        when( diagram.getMetadata() ).thenReturn( metadata );
-        when( diagram.getGraph() ).thenReturn( graph );
-        when( metadata.getDefinitionSetId() ).thenReturn( DEF_SET_ID );
-        when( metadata.getShapeSetId() ).thenReturn( SHAPE_SET_ID );
-        when( metadata.getCanvasRootUUID() ).thenReturn( CANVAS_ROOT_UUID );
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(canvasHandler.getCanvas()).thenReturn(canvas);
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(metadata.getDefinitionSetId()).thenReturn(DEF_SET_ID);
+        when(metadata.getShapeSetId()).thenReturn(SHAPE_SET_ID);
+        when(metadata.getCanvasRootUUID()).thenReturn(CANVAS_ROOT_UUID);
     }
 }

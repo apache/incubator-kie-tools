@@ -23,9 +23,9 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 @NonPortable
 public final class CanvasShapeRemovedEvent extends AbstractCanvasShapeEvent {
 
-    public CanvasShapeRemovedEvent( final Canvas canvas,
-                                    final Shape shape ) {
-        super( canvas,
-               shape );
+    public CanvasShapeRemovedEvent(final Canvas canvas,
+                                   final Shape shape) {
+        super(canvas,
+              shape);
     }
 }

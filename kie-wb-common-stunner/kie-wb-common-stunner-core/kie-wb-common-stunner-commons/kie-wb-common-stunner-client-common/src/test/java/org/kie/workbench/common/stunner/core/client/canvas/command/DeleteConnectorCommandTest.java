@@ -25,7 +25,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DeleteConnectorCommandTest extends AbstractCanvasCommandTest {
 
     private static final String EDGE_ID = "e1";
@@ -38,25 +38,25 @@ public class DeleteConnectorCommandTest extends AbstractCanvasCommandTest {
     @Before
     public void setup() throws Exception {
         super.setup();
-        when( candidate.getUUID() ).thenReturn( EDGE_ID );
-        this.tested = new DeleteConnectorCommand( candidate );
+        when(candidate.getUUID()).thenReturn(EDGE_ID);
+        this.tested = new DeleteConnectorCommand(candidate);
     }
 
     @Test
     public void testGetGraphCommand() {
         final org.kie.workbench.common.stunner.core.graph.command.impl.DeleteConnectorCommand graphCommand =
-                ( org.kie.workbench.common.stunner.core.graph.command.impl.DeleteConnectorCommand ) tested.newGraphCommand( canvasHandler );
-        assertNotNull( graphCommand );
-        assertEquals( candidate,
-                      graphCommand.getEdge() );
+                (org.kie.workbench.common.stunner.core.graph.command.impl.DeleteConnectorCommand) tested.newGraphCommand(canvasHandler);
+        assertNotNull(graphCommand);
+        assertEquals(candidate,
+                     graphCommand.getEdge());
     }
 
     @Test
     public void testGetCanvasCommand() {
         final DeleteCanvasConnectorCommand canvasCommand =
-                ( DeleteCanvasConnectorCommand ) tested.newCanvasCommand( canvasHandler );
-        assertNotNull( canvasCommand );
-        assertEquals( candidate,
-                      canvasCommand.getCandidate() );
+                (DeleteCanvasConnectorCommand) tested.newCanvasCommand(canvasHandler);
+        assertNotNull(canvasCommand);
+        assertEquals(candidate,
+                     canvasCommand.getCandidate());
     }
 }

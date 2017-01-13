@@ -24,9 +24,9 @@ public class OnSessionErrorEvent extends AbstractSessionEvent {
 
     private final ClientRuntimeError error;
 
-    public OnSessionErrorEvent( final ClientSession session,
-                                final ClientRuntimeError error ) {
-        super( session );
+    public OnSessionErrorEvent(final ClientSession session,
+                               final ClientRuntimeError error) {
+        super(session);
         this.error = error;
     }
 

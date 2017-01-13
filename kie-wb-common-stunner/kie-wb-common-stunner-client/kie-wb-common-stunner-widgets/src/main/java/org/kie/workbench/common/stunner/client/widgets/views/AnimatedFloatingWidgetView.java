@@ -31,32 +31,32 @@ import org.kie.workbench.common.stunner.core.client.components.views.FloatingWid
 @Specializes
 public class AnimatedFloatingWidgetView extends FloatingWidgetView {
 
-    private static Logger LOGGER = Logger.getLogger( AnimatedFloatingWidgetView.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(AnimatedFloatingWidgetView.class.getName());
     private static final int DURATION = 600;
 
     private String aid;
 
     @Override
     protected void doShow() {
-        getPanel().getElement().getStyle().setOpacity( 0 );
+        getPanel().getElement().getStyle().setOpacity(0);
         super.doShow();
-        LOGGER.log( Level.FINE,
-                    "Showing animated floating view." );
-        aid = Animate.animate( getPanel(),
-                               Animation.FADE_IN,
-                               1,
-                               DURATION );
+        LOGGER.log(Level.FINE,
+                   "Showing animated floating view.");
+        aid = Animate.animate(getPanel(),
+                              Animation.FADE_IN,
+                              1,
+                              DURATION);
     }
 
     @Override
     protected void doHide() {
-        LOGGER.log( Level.FINE,
-                    "Hiding animated floating view." );
-        if ( null != aid ) {
-            LOGGER.log( Level.FINE,
-                        "Stopping last animation [" + aid + "]" );
-            Animate.stopAnimation( getPanel(),
-                                   aid );
+        LOGGER.log(Level.FINE,
+                   "Hiding animated floating view.");
+        if (null != aid) {
+            LOGGER.log(Level.FINE,
+                       "Stopping last animation [" + aid + "]");
+            Animate.stopAnimation(getPanel(),
+                                  aid);
             this.aid = null;
         }
         super.doHide();

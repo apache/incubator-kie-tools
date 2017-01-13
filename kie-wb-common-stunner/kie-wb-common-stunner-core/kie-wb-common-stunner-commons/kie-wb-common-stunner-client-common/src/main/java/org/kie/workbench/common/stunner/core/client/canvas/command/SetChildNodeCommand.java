@@ -26,22 +26,22 @@ public final class SetChildNodeCommand extends AbstractCanvasGraphCommand {
     private final Node parent;
     private final Node candidate;
 
-    public SetChildNodeCommand( final Node parent,
-                                final Node candidate ) {
+    public SetChildNodeCommand(final Node parent,
+                               final Node candidate) {
         this.parent = parent;
         this.candidate = candidate;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.SetChildNodeCommand( parent,
-                                                                                                 candidate );
+    @SuppressWarnings("unchecked")
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.SetChildNodeCommand(parent,
+                                                                                                candidate);
     }
 
     @Override
-    protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new SetCanvasChildNodeCommand( parent,
-                                              candidate );
+    protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
+        return new SetCanvasChildNodeCommand(parent,
+                                             candidate);
     }
 }

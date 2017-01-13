@@ -23,18 +23,18 @@ public final class PaletteGridImpl implements PaletteGrid {
     private final int iconSize;
     private final int padding;
 
-    public PaletteGridImpl( final int iconSize,
-                            final int padding ) {
-        this( -1,
-              -1,
-              iconSize,
-              padding );
+    public PaletteGridImpl(final int iconSize,
+                           final int padding) {
+        this(-1,
+             -1,
+             iconSize,
+             padding);
     }
 
-    public PaletteGridImpl( final int rows,
-                            final int cols,
-                            final int iconSize,
-                            final int padding ) {
+    public PaletteGridImpl(final int rows,
+                           final int cols,
+                           final int iconSize,
+                           final int padding) {
         this.rows = rows;
         this.cols = cols;
         this.iconSize = iconSize;

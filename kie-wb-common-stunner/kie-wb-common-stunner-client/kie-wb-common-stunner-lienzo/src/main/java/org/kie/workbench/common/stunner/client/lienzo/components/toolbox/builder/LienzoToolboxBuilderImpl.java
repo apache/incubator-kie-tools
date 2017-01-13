@@ -44,23 +44,23 @@ public class LienzoToolboxBuilderImpl
     private int iconSize = 12;
 
     @Override
-    public LienzoToolboxBuilderImpl forLayer( final Layer layer ) {
+    public LienzoToolboxBuilderImpl forLayer(final Layer layer) {
         this.layer = layer;
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public LienzoToolboxBuilderImpl forView( final ShapeView<?> view ) {
-        if ( view instanceof WiresShape ) {
-            final LienzoLayer lienzoLayerImpl = ( LienzoLayer ) this.layer;
+    @SuppressWarnings("unchecked")
+    public LienzoToolboxBuilderImpl forView(final ShapeView<?> view) {
+        if (view instanceof WiresShape) {
+            final LienzoLayer lienzoLayerImpl = (LienzoLayer) this.layer;
             final com.ait.lienzo.client.core.shape.Layer lienzoLayer = lienzoLayerImpl.getLienzoLayer();
-            on = Toolboxes.staticToolBoxFor( lienzoLayer,
-                                             ( WiresShape ) view );
-            if ( view instanceof HasEventHandlers ) {
-                final HasEventHandlers<?, Shape<?>> hasEventHandlers = ( HasEventHandlers ) view;
-                if ( null != hasEventHandlers.getAttachableShape() ) {
-                    on.attachTo( hasEventHandlers.getAttachableShape() );
+            on = Toolboxes.staticToolBoxFor(lienzoLayer,
+                                            (WiresShape) view);
+            if (view instanceof HasEventHandlers) {
+                final HasEventHandlers<?, Shape<?>> hasEventHandlers = (HasEventHandlers) view;
+                if (null != hasEventHandlers.getAttachableShape()) {
+                    on.attachTo(hasEventHandlers.getAttachableShape());
                 }
             }
         }
@@ -68,47 +68,47 @@ public class LienzoToolboxBuilderImpl
     }
 
     @Override
-    public LienzoToolboxBuilderImpl direction( final Direction ond,
-                                               final Direction towards ) {
-        final com.ait.lienzo.shared.core.types.Direction dOn = getDirection( ond );
-        final com.ait.lienzo.shared.core.types.Direction dT = getDirection( towards );
-        buttonGrid = on.on( dOn ).towards( dT );
+    public LienzoToolboxBuilderImpl direction(final Direction ond,
+                                              final Direction towards) {
+        final com.ait.lienzo.shared.core.types.Direction dOn = getDirection(ond);
+        final com.ait.lienzo.shared.core.types.Direction dT = getDirection(towards);
+        buttonGrid = on.on(dOn).towards(dT);
         return this;
     }
 
     @Override
-    public LienzoToolboxBuilderImpl grid( final LienzoToolboxButtonGrid grid ) {
+    public LienzoToolboxBuilderImpl grid(final LienzoToolboxButtonGrid grid) {
         this.padding = grid.getPadding();
         this.iconSize = grid.getButtonSize();
-        buttonsOrRegister = buttonGrid.grid( grid.getPadding(),
-                                             grid.getButtonSize(),
-                                             grid.getRows(),
-                                             grid.getColumns() );
+        buttonsOrRegister = buttonGrid.grid(grid.getPadding(),
+                                            grid.getButtonSize(),
+                                            grid.getRows(),
+                                            grid.getColumns());
         return this;
     }
 
     @Override
-    public LienzoToolboxBuilderImpl add( final ToolboxButton<Shape<?>> button ) {
-        Button b = buttonsOrRegister.add( button.getIcon() );
-        b.setIconSize( iconSize ).setPadding( padding );
-        if ( null != button.getClickHandler() ) {
-            b.setClickHandler( buildHandler( button.getClickHandler() ) );
+    public LienzoToolboxBuilderImpl add(final ToolboxButton<Shape<?>> button) {
+        Button b = buttonsOrRegister.add(button.getIcon());
+        b.setIconSize(iconSize).setPadding(padding);
+        if (null != button.getClickHandler()) {
+            b.setClickHandler(buildHandler(button.getClickHandler()));
         }
-        if ( null != button.getMouseDownHandler() ) {
-            b.setMouseDownHandler( buildHandler( button.getMouseDownHandler() ) );
+        if (null != button.getMouseDownHandler()) {
+            b.setMouseDownHandler(buildHandler(button.getMouseDownHandler()));
         }
-        if ( null != button.getMouseEnterHandler() ) {
-            b.setMouseEnterHandler( buildHandler( button.getMouseEnterHandler() ) );
+        if (null != button.getMouseEnterHandler()) {
+            b.setMouseEnterHandler(buildHandler(button.getMouseEnterHandler()));
         }
-        if ( null != button.getMouseExitHandler() ) {
-            b.setMouseExitHandler( buildHandler( button.getMouseExitHandler() ) );
+        if (null != button.getMouseExitHandler()) {
+            b.setMouseExitHandler(buildHandler(button.getMouseExitHandler()));
         }
         b.end();
         return this;
     }
 
-    private ToolboxButtonEventHandler buildHandler( final org.kie.workbench.common.stunner.core.client.components.toolbox.event.ToolboxButtonEventHandler handler ) {
-        return event -> handler.fire( new org.kie.workbench.common.stunner.core.client.components.toolbox.event.ToolboxButtonEvent() {
+    private ToolboxButtonEventHandler buildHandler(final org.kie.workbench.common.stunner.core.client.components.toolbox.event.ToolboxButtonEventHandler handler) {
+        return event -> handler.fire(new org.kie.workbench.common.stunner.core.client.components.toolbox.event.ToolboxButtonEvent() {
 
             @Override
             public int getX() {
@@ -139,21 +139,21 @@ public class LienzoToolboxBuilderImpl
             public int getClientY() {
                 return event.getClientY();
             }
-        } );
+        });
     }
 
     @Override
     public LienzoToolbox build() {
-        if ( null != buttonsOrRegister ) {
-            toolbox = new LienzoToolbox( buttonsOrRegister.register() );
+        if (null != buttonsOrRegister) {
+            toolbox = new LienzoToolbox(buttonsOrRegister.register());
         } else {
-            throw new RuntimeException( "No buttons added for toolbox." );
+            throw new RuntimeException("No buttons added for toolbox.");
         }
         return toolbox;
     }
 
-    private com.ait.lienzo.shared.core.types.Direction getDirection( final Direction direction ) {
-        switch ( direction ) {
+    private com.ait.lienzo.shared.core.types.Direction getDirection(final Direction direction) {
+        switch (direction) {
             case EAST:
                 return com.ait.lienzo.shared.core.types.Direction.EAST;
             case WEST:
@@ -171,6 +171,6 @@ public class LienzoToolboxBuilderImpl
             case SOUTH_WEST:
                 return com.ait.lienzo.shared.core.types.Direction.SOUTH_WEST;
         }
-        throw new UnsupportedOperationException( "Toolbox direction [" + direction.name() + "] not supported." );
+        throw new UnsupportedOperationException("Toolbox direction [" + direction.name() + "] not supported.");
     }
 }

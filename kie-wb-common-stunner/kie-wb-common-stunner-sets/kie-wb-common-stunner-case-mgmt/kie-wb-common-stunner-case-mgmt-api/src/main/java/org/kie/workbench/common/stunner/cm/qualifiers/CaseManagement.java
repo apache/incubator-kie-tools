@@ -26,8 +26,8 @@ import javax.inject.Qualifier;
  * Qualify injection point satisfaction for Case Modeller.
  */
 @Qualifier
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER } )
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 public @interface CaseManagement {
 
 }

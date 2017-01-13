@@ -46,24 +46,24 @@ public class ComboBox implements ComboBoxView.ComboBoxPresenter {
     ComboBoxView view;
 
     @Override
-    public void init( final ComboBoxView.ModelPresenter modelPresenter,
-                      final boolean notifyModelChanges,
-                      final ValueListBox<String> listBox,
-                      final TextBox textBox,
-                      final boolean quoteStringValues,
-                      final boolean addCustomValues,
-                      final String customPrompt,
-                      final String placeholder ) {
+    public void init(final ComboBoxView.ModelPresenter modelPresenter,
+                     final boolean notifyModelChanges,
+                     final ValueListBox<String> listBox,
+                     final TextBox textBox,
+                     final boolean quoteStringValues,
+                     final boolean addCustomValues,
+                     final String customPrompt,
+                     final String placeholder) {
         this.quoteStringValues = quoteStringValues;
         this.addCustomValues = addCustomValues;
         this.customPrompt = customPrompt;
         this.modelPresenter = modelPresenter;
         this.notifyModelChanges = notifyModelChanges;
-        view.init( this,
-                   modelPresenter,
-                   listBox,
-                   textBox,
-                   placeholder );
+        view.init(this,
+                  modelPresenter,
+                  listBox,
+                  textBox,
+                  placeholder);
     }
 
     @Override
@@ -72,22 +72,22 @@ public class ComboBox implements ComboBoxView.ComboBoxPresenter {
     }
 
     @Override
-    public void setListBoxValues( final ListBoxValues listBoxValues ) {
+    public void setListBoxValues(final ListBoxValues listBoxValues) {
         this.listBoxValues = listBoxValues;
     }
 
     @Override
-    public void setShowCustomValues( final boolean showCustomValues ) {
+    public void setShowCustomValues(final boolean showCustomValues) {
         this.showCustomValues = showCustomValues;
     }
 
     @Override
-    public void setAddCustomValues( final boolean addCustomValues ) {
+    public void setAddCustomValues(final boolean addCustomValues) {
         this.addCustomValues = addCustomValues;
     }
 
     @Override
-    public void setCurrentTextValue( String currentTextValue ) {
+    public void setCurrentTextValue(final String currentTextValue) {
         this.currentTextValue = currentTextValue;
     }
 
@@ -97,115 +97,115 @@ public class ComboBox implements ComboBoxView.ComboBoxPresenter {
     }
 
     @Override
-    public void updateListBoxValues( String listBoxValue ) {
-        if ( showCustomValues ) {
-            List<String> updatedValues = listBoxValues.update( listBoxValue );
-            view.setAcceptableValues( updatedValues );
+    public void updateListBoxValues(final String listBoxValue) {
+        if (showCustomValues) {
+            List<String> updatedValues = listBoxValues.update(listBoxValue);
+            view.setAcceptableValues(updatedValues);
         } else {
             List<String> values = listBoxValues.getAcceptableValuesWithoutCustomValues();
-            view.setAcceptableValues( values );
+            view.setAcceptableValues(values);
         }
     }
 
     @Override
-    public void listBoxValueChanged( String newValue ) {
-        if ( customPrompt.equals( newValue ) ) {
+    public void listBoxValueChanged(final String newValue) {
+        if (customPrompt.equals(newValue)) {
             // "Custom..." selected, show textBox with empty value
-            setListBoxValue( "" );
-            setTextBoxValue( "" );
-            view.setListBoxVisible( false );
-            view.setTextBoxVisible( true );
-            view.setTextBoxFocus( true );
-        } else if ( newValue.startsWith( "*" ) ) {
+            setListBoxValue("");
+            setTextBoxValue("");
+            view.setListBoxVisible(false);
+            view.setTextBoxVisible(true);
+            view.setTextBoxFocus(true);
+        } else if (newValue.startsWith("*")) {
             // Not a valid value
-            setListBoxValue( "" );
-            setTextBoxValue( "" );
-        } else if ( newValue.startsWith( listBoxValues.getEditPrefix() ) ) {
+            setListBoxValue("");
+            setTextBoxValue("");
+        } else if (newValue.startsWith(listBoxValues.getEditPrefix())) {
             // "Edit <value> ..." selected, show textBox with appropriate value
             String value = view.getModelValue();
-            setTextBoxValue( value );
-            view.setListBoxVisible( false );
-            view.setTextBoxVisible( true );
-            view.setTextBoxFocus( true );
-        } else if ( listBoxValues.isCustomValue( newValue ) ) {
+            setTextBoxValue(value);
+            view.setListBoxVisible(false);
+            view.setTextBoxVisible(true);
+            view.setTextBoxFocus(true);
+        } else if (listBoxValues.isCustomValue(newValue)) {
             // A Custom value has been selected
-            String textValue = listBoxValues.getValueForDisplayValue( newValue );
-            if ( quoteStringValues ) {
-                textValue = StringUtils.createUnquotedConstant( textValue );
+            String textValue = listBoxValues.getValueForDisplayValue(newValue);
+            if (quoteStringValues) {
+                textValue = StringUtils.createUnquotedConstant(textValue);
             }
-            setListBoxValue( newValue );
-            setTextBoxValue( textValue );
-            if ( notifyModelChanges ) {
+            setListBoxValue(newValue);
+            setTextBoxValue(textValue);
+            if (notifyModelChanges) {
                 notifyModelChanged();
             }
-        } else if ( newValue != null ) {
+        } else if (newValue != null) {
             // A non-custom value has been selected
-            setListBoxValue( newValue );
-            setTextBoxValue( "" );
-            if ( notifyModelChanges ) {
+            setListBoxValue(newValue);
+            setTextBoxValue("");
+            if (notifyModelChanges) {
                 notifyModelChanged();
             }
         }
-        updateListBoxValues( view.getListBoxValue() );
+        updateListBoxValues(view.getListBoxValue());
     }
 
     @Override
-    public void textBoxValueChanged( String newValue ) {
-        if ( newValue != null ) {
-            if ( !quoteStringValues ) {
+    public void textBoxValueChanged(String newValue) {
+        if (newValue != null) {
+            if (!quoteStringValues) {
                 newValue = newValue.trim();
             }
-            if ( !newValue.isEmpty() ) {
-                String nonCustomValue = listBoxValues.getNonCustomValueForUserString( newValue );
-                if ( nonCustomValue != null ) {
-                    setListBoxValue( nonCustomValue );
-                    setTextBoxValue( "" );
+            if (!newValue.isEmpty()) {
+                String nonCustomValue = listBoxValues.getNonCustomValueForUserString(newValue);
+                if (nonCustomValue != null) {
+                    setListBoxValue(nonCustomValue);
+                    setTextBoxValue("");
                     currentTextValue = "";
                 } else {
                     String oldValue = currentTextValue;
-                    String displayValue = addCustomValueToListBoxValues( newValue,
-                                                                         oldValue );
-                    setTextBoxValue( newValue );
+                    String displayValue = addCustomValueToListBoxValues(newValue,
+                                                                        oldValue);
+                    setTextBoxValue(newValue);
                     currentTextValue = newValue;
-                    setListBoxValue( displayValue );
+                    setListBoxValue(displayValue);
                 }
             } else {
                 // Set the value even if it's ""
-                setTextBoxValue( newValue );
-                setListBoxValue( newValue );
+                setTextBoxValue(newValue);
+                setListBoxValue(newValue);
                 currentTextValue = newValue;
             }
-            if ( notifyModelChanges ) {
+            if (notifyModelChanges) {
                 notifyModelChanged();
             }
         }
-        view.setTextBoxVisible( false );
-        view.setListBoxVisible( true );
+        view.setTextBoxVisible(false);
+        view.setListBoxVisible(true);
     }
 
     @Override
-    public String addCustomValueToListBoxValues( String newValue,
-                                                 String oldValue ) {
-        if ( quoteStringValues ) {
-            newValue = StringUtils.createQuotedConstant( newValue );
-            oldValue = StringUtils.createQuotedConstant( oldValue );
+    public String addCustomValueToListBoxValues(String newValue,
+                                                String oldValue) {
+        if (quoteStringValues) {
+            newValue = StringUtils.createQuotedConstant(newValue);
+            oldValue = StringUtils.createQuotedConstant(oldValue);
         }
-        if ( addCustomValues ) {
-            return listBoxValues.addCustomValue( newValue,
-                                                 oldValue );
+        if (addCustomValues) {
+            return listBoxValues.addCustomValue(newValue,
+                                                oldValue);
         } else {
             return newValue;
         }
     }
 
-    public void setTextBoxValue( String value ) {
-        view.setTextBoxValue( value );
-        view.setTextBoxModelValue( value );
+    public void setTextBoxValue(final String value) {
+        view.setTextBoxValue(value);
+        view.setTextBoxModelValue(value);
     }
 
-    public void setListBoxValue( String value ) {
-        view.setListBoxValue( value );
-        view.setListBoxModelValue( value );
+    public void setListBoxValue(final String value) {
+        view.setListBoxValue(value);
+        view.setListBoxModelValue(value);
     }
 
     public void notifyModelChanged() {

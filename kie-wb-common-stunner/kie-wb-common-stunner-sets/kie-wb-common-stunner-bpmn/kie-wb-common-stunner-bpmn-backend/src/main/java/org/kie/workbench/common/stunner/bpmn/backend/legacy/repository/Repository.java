@@ -39,7 +39,7 @@ public interface Repository {
      * @param startAt - location where directories should be fetched from
      * @return - list of directories
      */
-    Collection<Directory> listDirectories( String startAt );
+    Collection<Directory> listDirectories(String startAt);
 
     /**
      * Retrieves all directories stored under <code>startAt</code> location including all sub folders.
@@ -48,8 +48,8 @@ public interface Repository {
      * @param filter - filter that allows to narrow the results
      * @return - list of assets found
      */
-    Collection<Asset> listAssetsRecursively( String startAt,
-                                             Filter filter );
+    Collection<Asset> listAssetsRecursively(String startAt,
+                                            Filter filter);
 
     /**
      * Stores new directory in given location, in case of sub folders existence in the location
@@ -57,7 +57,7 @@ public interface Repository {
      * @param location - location in the repository to be created
      * @return - returns identifier of the new directory
      */
-    Directory createDirectory( String location );
+    Directory createDirectory(String location);
 
     /**
      * Examines repository if given directory exists in the repository
@@ -65,7 +65,7 @@ public interface Repository {
      * @param directory - directory to check
      * @return - true if and only if given directory exists
      */
-    boolean directoryExists( String directory );
+    boolean directoryExists(String directory);
 
     /**
      * Deletes directory from repository including its content
@@ -73,8 +73,8 @@ public interface Repository {
      * @param directory - directory to be deleted
      * @param failIfNotEmpty - indicates if delete operation should fail in case given directory is not empty
      */
-    boolean deleteDirectory( String directory,
-                             boolean failIfNotEmpty );
+    boolean deleteDirectory(String directory,
+                            boolean failIfNotEmpty);
 
     /**
      * Copy directory given by <code>uniqueId</code> into destination given by <code>location</code>
@@ -82,8 +82,8 @@ public interface Repository {
      * @param location - destination where directory will be copied to
      * @return - true when copy operation was successful otherwise false
      */
-    boolean copyDirectory( String sourceDirectory,
-                           String location );
+    boolean copyDirectory(String sourceDirectory,
+                          String location);
 
     /**
      * Moves directory given by <code>uniqueId</code> into destination given by <code>location</code>
@@ -93,9 +93,9 @@ public interface Repository {
      * @param name - name of the directory after move, if null is given name is not changed
      * @return - returns true if move operation was successful otherwise false
      */
-    boolean moveDirectory( String sourceDirectory,
-                           String location,
-                           String name );
+    boolean moveDirectory(String sourceDirectory,
+                          String location,
+                          String name);
 
     /**
      * Retrieves all assets stored in the given location.
@@ -103,7 +103,7 @@ public interface Repository {
      * @param location - location that assets should be collected from
      * @return - list of available assets
      */
-    Collection<Asset> listAssets( String location );
+    Collection<Asset> listAssets(String location);
 
     /**
      * Retrieves all assets stored in the given location.
@@ -112,8 +112,8 @@ public interface Repository {
      * @param filter - allows to defined filter criteria to fetch only assets of interest
      * @return - list of available assets
      */
-    Collection<Asset> listAssets( String location,
-                                  Filter filter );
+    Collection<Asset> listAssets(String location,
+                                 Filter filter);
 
     /**
      * Loads an asset given by the <code>assetUniqueId</code> including actual content of the asset.
@@ -121,7 +121,7 @@ public interface Repository {
      * @return return loaded asset including content
      * @throws NoSuchFileException - throws in case of asset given by id does not exist
      */
-    Asset loadAsset( String assetUniqueId ) throws NoSuchFileException;
+    Asset loadAsset(String assetUniqueId) throws NoSuchFileException;
 
     /**
      * Loads an asset given by the <code>path</code> including actual content of the asset.
@@ -129,7 +129,7 @@ public interface Repository {
      * @return return loaded asset including content
      * @throws NoSuchFileException - throws in case of asset given by id does not exist
      */
-    Asset loadAssetFromPath( String path ) throws NoSuchFileException;
+    Asset loadAssetFromPath(String path) throws NoSuchFileException;
 
     /**
      * Stores given asset in the repository. <code>asset</code> need to have all meta data and content available
@@ -137,7 +137,7 @@ public interface Repository {
      * @param asset - asset to be stored
      * @return returns asset unique identifier that can be used to locate it
      */
-    String createAsset( Asset asset );
+    String createAsset(Asset asset);
 
     /**
      * Updates content of the asset
@@ -145,30 +145,30 @@ public interface Repository {
      * @return - returns uniqueId of the asset
      * @throws NoSuchFileException - throws in case of asset given by id does not exist
      */
-    String updateAsset( Asset asset,
-                        String commitMessage,
-                        String sessionId ) throws NoSuchFileException;
+    String updateAsset(Asset asset,
+                       String commitMessage,
+                       String sessionId) throws NoSuchFileException;
 
     /**
      * Deletes asset from repository identified by <code>assetUniqueId</code> if exists
      * @param assetUniqueId - unique identifier of the asset
      * @return return true if and only if operation completed successfully otherwise false
      */
-    boolean deleteAsset( String assetUniqueId );
+    boolean deleteAsset(String assetUniqueId);
 
     /**
      * Deletes asset from repository given by the <code>path</code> if exists
      * @param path - complete path of the asset to delete
      * @return return true if and only if operation completed successfully otherwise false
      */
-    boolean deleteAssetFromPath( String path );
+    boolean deleteAssetFromPath(String path);
 
     /**
      * Examines repository if asset given by the <code>assetUniqueId</code> exists
      * @param assetUniqueId - unique identifier of the asset
      * @return true if and only if asset exists otherwise false
      */
-    boolean assetExists( String assetUniqueId );
+    boolean assetExists(String assetUniqueId);
 
     /**
      * Copy asset given by <code>uniqueId</code> into destination given by <code>location</code>
@@ -176,8 +176,8 @@ public interface Repository {
      * @param location - destination where asset will be copied to
      * @return - true when copy operation was successful otherwise false
      */
-    boolean copyAsset( String uniqueId,
-                       String location );
+    boolean copyAsset(String uniqueId,
+                      String location);
 
     /**
      * Moves asset given by <code>uniqueId</code> into destination given by <code>location</code>
@@ -187,7 +187,7 @@ public interface Repository {
      * @param name - name of the asset after move, if null is given name is not changed
      * @return - returns true if move operation was successful otherwise false
      */
-    boolean moveAsset( String uniqueId,
-                       String location,
-                       String name );
+    boolean moveAsset(String uniqueId,
+                      String location,
+                      String name);
 }

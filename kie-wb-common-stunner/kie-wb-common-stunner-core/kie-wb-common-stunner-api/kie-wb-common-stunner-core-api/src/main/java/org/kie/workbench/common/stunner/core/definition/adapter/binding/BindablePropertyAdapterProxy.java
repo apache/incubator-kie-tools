@@ -20,15 +20,15 @@ import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapterW
 
 public abstract class BindablePropertyAdapterProxy<T, V> extends PropertyAdapterWrapper<T, V, BindablePropertyAdapter<T, V>> {
 
-    protected abstract void setBindings( BindablePropertyAdapter<T, V> adapter );
+    protected abstract void setBindings(BindablePropertyAdapter<T, V> adapter);
 
     protected BindablePropertyAdapterProxy() {
     }
 
-    @SuppressWarnings( "unchecked" )
-    public BindablePropertyAdapterProxy( final BindableAdapterFactory adapterFactory ) {
-        super( adapterFactory.newBindablePropertyAdapter() );
-        setBindings( adapter );
+    @SuppressWarnings("unchecked")
+    public BindablePropertyAdapterProxy(final BindableAdapterFactory adapterFactory) {
+        super(adapterFactory.newBindablePropertyAdapter());
+        setBindings(adapter);
     }
 
     @Override

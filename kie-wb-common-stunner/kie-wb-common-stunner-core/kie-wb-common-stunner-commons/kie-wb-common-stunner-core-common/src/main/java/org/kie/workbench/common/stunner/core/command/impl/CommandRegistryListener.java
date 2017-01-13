@@ -27,19 +27,19 @@ public abstract class CommandRegistryListener<C, V> implements CommandListener<C
     protected abstract CommandRegistry<Command<C, V>> getRegistry();
 
     @Override
-    public void onExecute( final C context,
-                           final Command<C, V> command,
-                           final CommandResult<V> result ) {
-        if ( !CommandUtils.isError( result ) ) {
-            getRegistry().register( command );
+    public void onExecute(final C context,
+                          final Command<C, V> command,
+                          final CommandResult<V> result) {
+        if (!CommandUtils.isError(result)) {
+            getRegistry().register(command);
         }
     }
 
     @Override
-    public void onUndo( final C context,
-                        final Command<C, V> command,
-                        final CommandResult<V> result ) {
-        if ( !CommandUtils.isError( result ) ) {
+    public void onUndo(final C context,
+                       final Command<C, V> command,
+                       final CommandResult<V> result) {
+        if (!CommandUtils.isError(result)) {
             getRegistry().pop();
         }
     }

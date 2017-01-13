@@ -34,10 +34,10 @@ public abstract class AbstractPaletteWidget<D extends PaletteDefinition, V exten
     protected int maxWidth;
     protected int maxHeight;
 
-    public AbstractPaletteWidget( final ShapeManager shapeManager,
-                                  final ClientFactoryService clientFactoryServices,
-                                  final V view ) {
-        super( shapeManager );
+    public AbstractPaletteWidget(final ShapeManager shapeManager,
+                                 final ClientFactoryService clientFactoryServices,
+                                 final V view) {
+        super(shapeManager);
         this.clientFactoryServices = clientFactoryServices;
         this.view = view;
     }
@@ -47,7 +47,7 @@ public abstract class AbstractPaletteWidget<D extends PaletteDefinition, V exten
     public abstract double getIconSize();
 
     @Override
-    public PaletteWidget<D, V> onItemDrop( final ItemDropCallback callback ) {
+    public PaletteWidget<D, V> onItemDrop(final ItemDropCallback callback) {
         this.itemDropCallback = callback;
         return this;
     }
@@ -56,61 +56,61 @@ public abstract class AbstractPaletteWidget<D extends PaletteDefinition, V exten
     protected void beforeBind() {
         super.beforeBind();
         getView().clear();
-        getView().showEmptyView( false );
+        getView().showEmptyView(false);
     }
 
     @Override
     public void unbind() {
         // Only unbind if any definition is already bind.
-        if ( null != paletteDefinition ) {
+        if (null != paletteDefinition) {
             getView().clear();
-            getView().showEmptyView( true );
+            getView().showEmptyView(true);
             this.paletteDefinition = null;
         }
     }
 
     @Override
-    public PaletteWidget<D, V> setMaxWidth( final int maxWidth ) {
+    public PaletteWidget<D, V> setMaxWidth(final int maxWidth) {
         this.maxWidth = maxWidth;
         return this;
     }
 
     @Override
-    public PaletteWidget<D, V> setMaxHeight( final int maxHeight ) {
+    public PaletteWidget<D, V> setMaxHeight(final int maxHeight) {
         this.maxHeight = maxHeight;
         return this;
     }
 
-    public void onDragProxyMove( final String definitionId,
-                                 final double x,
-                                 final double y ) {
+    public void onDragProxyMove(final String definitionId,
+                                final double x,
+                                final double y) {
     }
 
-    public void onDragProxyComplete( final String definitionId ) {
-        onDragProxyComplete( definitionId,
-                             -1,
-                             -1 );
+    public void onDragProxyComplete(final String definitionId) {
+        onDragProxyComplete(definitionId,
+                            -1,
+                            -1);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void onDragProxyComplete( final String definitionId,
-                                     final double x,
-                                     final double y ) {
-        if ( null != itemDropCallback ) {
-            final Object definition = clientFactoryServices.getClientFactoryManager().newDefinition( definitionId );
+    @SuppressWarnings("unchecked")
+    public void onDragProxyComplete(final String definitionId,
+                                    final double x,
+                                    final double y) {
+        if (null != itemDropCallback) {
+            final Object definition = clientFactoryServices.getClientFactoryManager().newDefinition(definitionId);
             final ShapeFactory<?, ?, ? extends Shape> factory = getShapeFactory();
             // Fire the callback as shape dropped onto the target canvas.
-            itemDropCallback.onDropItem( definition,
-                                         factory,
-                                         x,
-                                         y );
+            itemDropCallback.onDropItem(definition,
+                                        factory,
+                                        x,
+                                        y);
         }
     }
 
-    public Glyph<?> getShapeGlyph( final String definitionId ) {
-        return getShapeFactory().glyph( definitionId,
-                                        getIconSize(),
-                                        getIconSize() );
+    public Glyph<?> getShapeGlyph(final String definitionId) {
+        return getShapeFactory().glyph(definitionId,
+                                       getIconSize(),
+                                       getIconSize());
     }
 
     @Override

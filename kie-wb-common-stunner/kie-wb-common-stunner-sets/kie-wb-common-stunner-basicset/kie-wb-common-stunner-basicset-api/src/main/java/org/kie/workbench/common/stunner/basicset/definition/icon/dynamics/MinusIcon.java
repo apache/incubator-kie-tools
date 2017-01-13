@@ -50,8 +50,8 @@ import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConsta
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = MinusIcon.MinusIconBuilder.class )
-@Shape( factory = BasicShapesFactory.class, def = MinusIconShapeDefImpl.class )
+@Definition(graphFactory = NodeFactory.class, builder = MinusIcon.MinusIconBuilder.class)
+@Shape(factory = BasicShapesFactory.class, def = MinusIconShapeDefImpl.class)
 public class MinusIcon implements DynamicIcon {
 
     @Category
@@ -64,29 +64,29 @@ public class MinusIcon implements DynamicIcon {
     public static final transient String description = "Minus Icon";
 
     @Property
-    @FieldDef( label = FIELDDEF_NAME, property = "value" )
+    @FieldDef(label = FIELDDEF_NAME, property = "value")
     @Valid
     private Name name;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_BACKGROUND_AND_BORDERS, position = 0 )
+    @FieldDef(label = FIELDDEF_BACKGROUND_AND_BORDERS, position = 0)
     @Valid
     private BackgroundAndBorderSet backgroundSet;
 
     @Property
-    @FieldDef( label = FIELDDEF_WIDTH, property = "value" )
+    @FieldDef(label = FIELDDEF_WIDTH, property = "value")
     @Valid
     private Width width;
 
     @Property
-    @FieldDef( label = FIELDDEF_HEIGHT, property = "value" )
+    @FieldDef(label = FIELDDEF_HEIGHT, property = "value")
     @Valid
     private Height height;
 
     @Labels
     private final Set<String> labels = new HashSet<String>() {{
-        add( "all" );
-        add( "icon" );
+        add("all");
+        add("icon");
     }};
 
     @NonPortable
@@ -100,22 +100,22 @@ public class MinusIcon implements DynamicIcon {
 
         @Override
         public MinusIcon build() {
-            return new MinusIcon( new Name( "Minus" ),
-                                  new BackgroundAndBorderSet( COLOR,
-                                                              BORDER_COLOR,
-                                                              BORDER_SIZE ),
-                                  new Width( WIDTH ),
-                                  new Height( HEIGHT ) );
+            return new MinusIcon(new Name("Minus"),
+                                 new BackgroundAndBorderSet(COLOR,
+                                                            BORDER_COLOR,
+                                                            BORDER_SIZE),
+                                 new Width(WIDTH),
+                                 new Height(HEIGHT));
         }
     }
 
     public MinusIcon() {
     }
 
-    public MinusIcon( @MapsTo( "name" ) Name name,
-                      @MapsTo( "backgroundSet" ) BackgroundAndBorderSet backgroundSet,
-                      @MapsTo( "width" ) Width width,
-                      @MapsTo( "height" ) Height height ) {
+    public MinusIcon(final @MapsTo("name") Name name,
+                     final @MapsTo("backgroundSet") BackgroundAndBorderSet backgroundSet,
+                     final @MapsTo("width") Width width,
+                     final @MapsTo("height") Height height) {
         this.name = name;
         this.backgroundSet = backgroundSet;
         this.width = width;
@@ -142,7 +142,7 @@ public class MinusIcon implements DynamicIcon {
         return name;
     }
 
-    public void setName( Name name ) {
+    public void setName(Name name) {
         this.name = name;
     }
 
@@ -150,7 +150,7 @@ public class MinusIcon implements DynamicIcon {
         return backgroundSet;
     }
 
-    public void setBackgroundSet( BackgroundAndBorderSet backgroundSet ) {
+    public void setBackgroundSet(final BackgroundAndBorderSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
@@ -158,7 +158,7 @@ public class MinusIcon implements DynamicIcon {
         return width;
     }
 
-    public void setWidth( Width width ) {
+    public void setWidth(final Width width) {
         this.width = width;
     }
 
@@ -166,7 +166,7 @@ public class MinusIcon implements DynamicIcon {
         return height;
     }
 
-    public void setHeight( Height height ) {
+    public void setHeight(final Height height) {
         this.height = height;
     }
 }

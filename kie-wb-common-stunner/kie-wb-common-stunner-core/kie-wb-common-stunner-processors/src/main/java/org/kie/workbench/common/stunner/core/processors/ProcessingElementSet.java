@@ -23,8 +23,8 @@ public class ProcessingElementSet {
     private final String className;
     private final Set<String> elements;
 
-    public ProcessingElementSet( final String className,
-                                 final Set<String> elements ) {
+    public ProcessingElementSet(final String className,
+                                final Set<String> elements) {
         this.className = className;
         this.elements = elements;
     }

@@ -25,12 +25,12 @@ public abstract class AbstractCanvasGrid implements CanvasGrid {
     private final double secAlpha;
     private final String secColor;
 
-    public AbstractCanvasGrid( final double primSize,
-                               final double primAlpha,
-                               final String primColor,
-                               final double secSize,
-                               final double secAlpha,
-                               final String secColor ) {
+    public AbstractCanvasGrid(final double primSize,
+                              final double primAlpha,
+                              final String primColor,
+                              final double secSize,
+                              final double secAlpha,
+                              final String secColor) {
         this.primSize = primSize;
         this.primAlpha = primAlpha;
         this.primColor = primColor;

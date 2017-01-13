@@ -28,33 +28,33 @@ class ClientBindablePropertySetAdapter extends AbstractClientBindableAdapter<Obj
     private Map<Class, Set<String>> propertiesFieldNames;
 
     @Override
-    public void setBindings( final Map<Class, String> propertyNameFieldNames,
-                             final Map<Class, Set<String>> propertiesFieldNames ) {
+    public void setBindings(final Map<Class, String> propertyNameFieldNames,
+                            final Map<Class, Set<String>> propertiesFieldNames) {
         this.propertyNameFieldNames = propertyNameFieldNames;
         this.propertiesFieldNames = propertiesFieldNames;
     }
 
     @Override
-    public String getId( final Object pojo ) {
-        return BindableAdapterUtils.getPropertySetId( pojo.getClass() );
+    public String getId(final Object pojo) {
+        return BindableAdapterUtils.getPropertySetId(pojo.getClass());
     }
 
     @Override
-    public String getName( final Object pojo ) {
-        return getProxiedValue( pojo,
-                                getPropertyNameFieldNames().get( pojo.getClass() ) );
+    public String getName(final Object pojo) {
+        return getProxiedValue(pojo,
+                               getPropertyNameFieldNames().get(pojo.getClass()));
     }
 
     @Override
-    public Set<?> getProperties( final Object pojo ) {
-        return getProxiedSet( pojo,
-                              getPropertiesFieldNames().get( pojo.getClass() ) );
+    public Set<?> getProperties(final Object pojo) {
+        return getProxiedSet(pojo,
+                             getPropertiesFieldNames().get(pojo.getClass()));
     }
 
     @Override
-    public boolean accepts( final Class<?> pojoClass ) {
-        if ( null != propertyNameFieldNames ) {
-            return getPropertyNameFieldNames().containsKey( pojoClass );
+    public boolean accepts(final Class<?> pojoClass) {
+        if (null != propertyNameFieldNames) {
+            return getPropertyNameFieldNames().containsKey(pojoClass);
         }
         return false;
     }

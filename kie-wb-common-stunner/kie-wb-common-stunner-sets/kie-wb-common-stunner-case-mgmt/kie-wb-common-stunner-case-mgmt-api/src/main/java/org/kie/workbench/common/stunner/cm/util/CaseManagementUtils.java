@@ -30,8 +30,8 @@ public class CaseManagementUtils {
      * Finds the first Diagram in the graph structure.
      * @param graph The graph structure.
      */
-    public static Node<Definition<CaseManagementDiagram>, ?> getFirstDiagramNode( final Graph<?, Node> graph ) {
-        return GraphUtils.getFirstNode( graph,
-                                        CaseManagementDiagram.class );
+    public static Node<Definition<CaseManagementDiagram>, ?> getFirstDiagramNode(final Graph<?, Node> graph) {
+        return GraphUtils.getFirstNode(graph,
+                                       CaseManagementDiagram.class);
     }
 }

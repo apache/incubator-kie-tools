@@ -58,7 +58,7 @@ public class ConditionExpressionLanguage implements BPMNProperty {
     public ConditionExpressionLanguage() {
     }
 
-    public ConditionExpressionLanguage( final String value ) {
+    public ConditionExpressionLanguage(final String value) {
         this.value = value;
     }
 
@@ -90,7 +90,7 @@ public class ConditionExpressionLanguage implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

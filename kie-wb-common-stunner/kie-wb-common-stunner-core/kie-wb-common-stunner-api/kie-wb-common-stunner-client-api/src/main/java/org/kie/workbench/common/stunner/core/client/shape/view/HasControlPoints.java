@@ -23,7 +23,7 @@ public interface HasControlPoints<T> {
         MAGNET
     }
 
-    T showControlPoints( final ControlPointType type );
+    T showControlPoints(final ControlPointType type);
 
     T hideControlPoints();
 

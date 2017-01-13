@@ -22,10 +22,10 @@ import com.google.gwt.user.client.ui.Panel;
 public abstract class AbstractClientSessionPresenterView
         extends Composite {
 
-    protected void setWidgetForPanel( final Panel panel,
-                                      final IsWidget widget ) {
+    protected void setWidgetForPanel(final Panel panel,
+                                     final IsWidget widget) {
         panel.clear();
-        panel.add( widget );
+        panel.add(widget);
     }
 
     public void destroy() {

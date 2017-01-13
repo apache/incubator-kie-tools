@@ -23,13 +23,13 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 
 public final class DeleteNodeCommand extends AbstractNodeDeregistrationCommand {
 
-    @SuppressWarnings( "unchecked" )
-    public DeleteNodeCommand( final Node candidate ) {
-        super( candidate );
+    @SuppressWarnings("unchecked")
+    public DeleteNodeCommand(final Node candidate) {
+        super(candidate);
     }
 
     @Override
     protected Command<AbstractCanvasHandler, CanvasViolation> getDeregistrationCommand() {
-        return new DeleteCanvasNodeCommand( getCandidate() );
+        return new DeleteCanvasNodeCommand(getCandidate());
     }
 }

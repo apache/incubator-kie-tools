@@ -34,16 +34,16 @@ public class ModelRulesManagerImpl extends AbstractRulesManager<ModelContainment
     private static final String NAME = "Domain Model Rules Manager";
 
     @Inject
-    public ModelRulesManagerImpl( final ModelContainmentRuleManager containmentRuleManager,
-                                  final ModelConnectionRuleManager connectionRuleManager,
-                                  final ModelCardinalityRuleManager cardinalityRuleManager,
-                                  final ModelEdgeCardinalityRuleManager edgeCardinalityRuleManager,
-                                  final ModelDockingRuleManager dockingRuleManager ) {
-        super( containmentRuleManager,
-               connectionRuleManager,
-               cardinalityRuleManager,
-               edgeCardinalityRuleManager,
-               dockingRuleManager );
+    public ModelRulesManagerImpl(final ModelContainmentRuleManager containmentRuleManager,
+                                 final ModelConnectionRuleManager connectionRuleManager,
+                                 final ModelCardinalityRuleManager cardinalityRuleManager,
+                                 final ModelEdgeCardinalityRuleManager edgeCardinalityRuleManager,
+                                 final ModelDockingRuleManager dockingRuleManager) {
+        super(containmentRuleManager,
+              connectionRuleManager,
+              cardinalityRuleManager,
+              edgeCardinalityRuleManager,
+              dockingRuleManager);
     }
 
     @Override

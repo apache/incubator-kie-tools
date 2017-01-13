@@ -20,12 +20,12 @@ import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContex
 
 public class ContextUtils {
 
-    public static Object getModel( FormRenderingContext context ) {
+    public static Object getModel(final FormRenderingContext context) {
         Object model = null;
-        if ( context != null ) {
-            if ( context.getModel() != null ) {
+        if (context != null) {
+            if (context.getModel() != null) {
                 model = context.getModel();
-            } else if ( context.getParentContext() != null ) {
+            } else if (context.getParentContext() != null) {
                 model = context.getParentContext().getModel();
             }
         }

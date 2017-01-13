@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 @NonPortable
 public final class CanvasDrawnEvent extends AbstractCanvasEvent {
 
-    public CanvasDrawnEvent( final Canvas canvas ) {
-        super( canvas );
+    public CanvasDrawnEvent(final Canvas canvas) {
+        super(canvas);
     }
 }

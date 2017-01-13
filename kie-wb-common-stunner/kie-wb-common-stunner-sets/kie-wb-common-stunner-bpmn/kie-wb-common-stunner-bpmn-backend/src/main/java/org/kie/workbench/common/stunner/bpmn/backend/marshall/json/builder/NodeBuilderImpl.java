@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public class NodeBuilderImpl extends AbstractNodeBuilder<BPMNDefinition, Node<View<BPMNDefinition>, Edge>> {
 
-    public NodeBuilderImpl( Class<?> definitionClass ) {
-        super( definitionClass );
+    public NodeBuilderImpl(final Class<?> definitionClass) {
+        super(definitionClass);
     }
 }

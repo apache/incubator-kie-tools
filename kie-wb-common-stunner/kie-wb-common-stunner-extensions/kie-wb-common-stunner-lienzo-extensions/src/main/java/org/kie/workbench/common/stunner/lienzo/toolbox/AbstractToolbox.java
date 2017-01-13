@@ -47,10 +47,10 @@ import static com.ait.lienzo.client.core.AttributeOp.any;
 
 public abstract class AbstractToolbox implements GridToolbox {
 
-    private static final Flows.BooleanOp XYWH_OP = any( Attribute.X,
-                                                        Attribute.Y,
-                                                        Attribute.WIDTH,
-                                                        Attribute.HEIGHT );
+    private static final Flows.BooleanOp XYWH_OP = any(Attribute.X,
+                                                       Attribute.Y,
+                                                       Attribute.WIDTH,
+                                                       Attribute.HEIGHT);
 
     protected final Layer layer;
     protected final WiresShape shape;
@@ -64,93 +64,93 @@ public abstract class AbstractToolbox implements GridToolbox {
     protected Group group;
 
     protected void initialize() {
-        if ( grid.size() < buttons.size() ) {
-            throw new IllegalStateException( "added more buttons than the grid can contain" );
+        if (grid.size() < buttons.size()) {
+            throw new IllegalStateException("added more buttons than the grid can contain");
         }
-        this.group = new Group().setDraggable( false );
+        this.group = new Group().setDraggable(false);
         Iterator<Grid.Point> gridIterator = grid.iterator();
-        for ( ToolboxButton button : buttons ) {
+        for (ToolboxButton button : buttons) {
             Grid.Point point = gridIterator.next();
-            button.getShape().setX( point.getX() ).setY( point.getY() );
-            button.getShape().getGroup().setAlpha( 0 );
-            registerButton( button );
-            group.add( button.getShape().getGroup() );
+            button.getShape().setX(point.getX()).setY(point.getY());
+            button.getShape().getGroup().setAlpha(0);
+            registerButton(button);
+            group.add(button.getShape().getGroup());
         }
-        getLayer().add( group );
+        getLayer().add(group);
         reposition();
         initHandlers();
         batch();
     }
 
-    protected void registerButton( final ToolboxButton button ) {
+    protected void registerButton(final ToolboxButton button) {
     }
 
     protected void initHandlers() {
-        shape.getGroup().setAttributesChangedBatcher( attributesChangedBatcher );
+        shape.getGroup().setAttributesChangedBatcher(attributesChangedBatcher);
         final AttributesChangedHandler handler = new AttributesChangedHandler() {
             @Override
-            public void onAttributesChanged( AttributesChangedEvent event ) {
-                if ( event.evaluate( XYWH_OP ) ) {
+            public void onAttributesChanged(final AttributesChangedEvent event) {
+                if (event.evaluate(XYWH_OP)) {
                     reposition();
                 }
             }
         };
         // Attribute change handlers.
         handlerRegistrationManager.register(
-                shape.getGroup().addAttributesChangedHandler( Attribute.X,
-                                                              handler )
+                shape.getGroup().addAttributesChangedHandler(Attribute.X,
+                                                             handler)
         );
         handlerRegistrationManager.register(
-                shape.getGroup().addAttributesChangedHandler( Attribute.Y,
-                                                              handler )
+                shape.getGroup().addAttributesChangedHandler(Attribute.Y,
+                                                             handler)
         );
         handlerRegistrationManager.register(
-                shape.getPath().addAttributesChangedHandler( Attribute.WIDTH,
-                                                             handler )
+                shape.getPath().addAttributesChangedHandler(Attribute.WIDTH,
+                                                            handler)
         );
         handlerRegistrationManager.register(
-                shape.getPath().addAttributesChangedHandler( Attribute.HEIGHT,
-                                                             handler )
+                shape.getPath().addAttributesChangedHandler(Attribute.HEIGHT,
+                                                            handler)
         );
         // Shape resize handlers.
         handlerRegistrationManager.register(
-                shape.addWiresResizeStartHandler( event -> reposition( true ) )
+                shape.addWiresResizeStartHandler(event -> reposition(true))
         );
         handlerRegistrationManager.register(
-                shape.addWiresResizeStepHandler( event -> reposition( true ) )
+                shape.addWiresResizeStepHandler(event -> reposition(true))
         );
         handlerRegistrationManager.register(
-                shape.addWiresResizeEndHandler( event -> reposition( true ) )
+                shape.addWiresResizeEndHandler(event -> reposition(true))
         );
     }
 
     private void reposition() {
-        reposition( false );
+        reposition(false);
     }
 
-    private void reposition( final boolean batch ) {
-        final double gx = WiresUtils.getLocation( shape.getGroup() ).getX();
-        final double gy = WiresUtils.getLocation( shape.getGroup() ).getY();
-        final Point2D anchorPoint = Positioning.anchorFor( this.shape.getPath().getBoundingPoints().getBoundingBox(),
-                                                           this.anchor );
-        final Grid.Point toolboxPosition = this.grid.findPosition( new Grid.Point( ( int ) anchorPoint.getX(),
-                                                                                   ( int ) anchorPoint.getY() ),
-                                                                   this.towards );
-        group.setX( gx + toolboxPosition.getX() );
-        group.setY( gy + toolboxPosition.getY() );
-        if ( batch ) {
+    private void reposition(final boolean batch) {
+        final double gx = WiresUtils.getLocation(shape.getGroup()).getX();
+        final double gy = WiresUtils.getLocation(shape.getGroup()).getY();
+        final Point2D anchorPoint = Positioning.anchorFor(this.shape.getPath().getBoundingPoints().getBoundingBox(),
+                                                          this.anchor);
+        final Grid.Point toolboxPosition = this.grid.findPosition(new Grid.Point((int) anchorPoint.getX(),
+                                                                                 (int) anchorPoint.getY()),
+                                                                  this.towards);
+        group.setX(gx + toolboxPosition.getX());
+        group.setY(gy + toolboxPosition.getY());
+        if (batch) {
             batch();
         }
     }
 
     @Override
     public void show() {
-        reposition( true );
-        for ( ToolboxButton button : buttons ) {
-            button.getShape().getGroup().animate( AnimationTweener.LINEAR,
-                                                  AnimationProperties.toPropertyList( AnimationProperty.Properties.ALPHA( 1 ) ),
-                                                  500,
-                                                  new AnimationCallback() );
+        reposition(true);
+        for (ToolboxButton button : buttons) {
+            button.getShape().getGroup().animate(AnimationTweener.LINEAR,
+                                                 AnimationProperties.toPropertyList(AnimationProperty.Properties.ALPHA(1)),
+                                                 500,
+                                                 new AnimationCallback());
         }
     }
 
@@ -158,7 +158,7 @@ public abstract class AbstractToolbox implements GridToolbox {
     public void remove() {
         attributesChangedBatcher.cancelAttributesChangedBatcher();
         handlerRegistrationManager.removeHandler();
-        for ( ToolboxButton button : buttons ) {
+        for (ToolboxButton button : buttons) {
             button.remove();
         }
         group.removeFromParent();
@@ -166,18 +166,18 @@ public abstract class AbstractToolbox implements GridToolbox {
 
     @Override
     public void hide() {
-        for ( final ToolboxButton button : buttons ) {
+        for (final ToolboxButton button : buttons) {
             button.getShape().getGroup().animate(
                     AnimationTweener.LINEAR,
-                    AnimationProperties.toPropertyList( AnimationProperty.Properties.ALPHA( 0 ) ),
+                    AnimationProperties.toPropertyList(AnimationProperty.Properties.ALPHA(0)),
                     500,
                     new AnimationCallback() {
 
                         @Override
-                        public void onClose( final IAnimation animation,
-                                             final IAnimationHandle handle ) {
+                        public void onClose(final IAnimation animation,
+                                            final IAnimationHandle handle) {
                         }
-                    } );
+                    });
         }
     }
 
@@ -185,35 +185,35 @@ public abstract class AbstractToolbox implements GridToolbox {
         return layer;
     }
 
-    protected AbstractToolbox( final Layer layer,
-                               final WiresShape shape,
-                               final Shape<?> attachTo,
-                               final Direction anchor,
-                               final Direction towards,
-                               final int rows,
-                               final int cols,
-                               final int padding,
-                               final int iconSize,
-                               final List<ToolboxButton> buttons ) {
+    protected AbstractToolbox(final Layer layer,
+                              final WiresShape shape,
+                              final Shape<?> attachTo,
+                              final Direction anchor,
+                              final Direction towards,
+                              final int rows,
+                              final int cols,
+                              final int padding,
+                              final int iconSize,
+                              final List<ToolboxButton> buttons) {
         this.layer = layer;
         this.shape = shape;
         this.anchor = anchor;
         this.towards = towards;
         this.buttons = buttons;
-        this.grid = new Grid( padding,
-                              iconSize,
-                              rows,
-                              cols );
+        this.grid = new Grid(padding,
+                             iconSize,
+                             rows,
+                             cols);
         initialize();
-        registerHandlers( attachTo );
+        registerHandlers(attachTo);
     }
 
-    private void registerHandlers( final Shape<?> attachTo ) {
+    private void registerHandlers(final Shape<?> attachTo) {
         Node<?> node = attachTo != null ? attachTo : shape.getPath();
-        registerHandlers( node );
+        registerHandlers(node);
     }
 
-    protected void registerHandlers( final Node<?> node ) {
+    protected void registerHandlers(final Node<?> node) {
     }
 
     private void batch() {

@@ -34,24 +34,24 @@ public class CanvasBoundsIndexerImpl implements CanvasBoundsIndexer<AbstractCanv
 
     private AbstractCanvasHandler canvasHandler;
 
-    public BoundsIndexer<AbstractCanvasHandler, Node<View<?>, Edge>> build( final AbstractCanvasHandler context ) {
+    public BoundsIndexer<AbstractCanvasHandler, Node<View<?>, Edge>> build(final AbstractCanvasHandler context) {
         this.canvasHandler = context;
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public Node<View<?>, Edge> getAt( final double x,
-                                      final double y ) {
+    @SuppressWarnings("unchecked")
+    public Node<View<?>, Edge> getAt(final double x,
+                                     final double y) {
         final AbstractCanvas canvas = canvasHandler.getCanvas();
-        final LienzoLayer lienzoLayer = ( LienzoLayer ) canvas.getLayer();
-        final String viewUUID = LienzoLayerUtils.getUUID_At( lienzoLayer,
-                                                             x,
-                                                             y );
-        if ( null != viewUUID && viewUUID.trim().length() > 0 ) {
-            final Shape<?> shape = canvas.getShape( viewUUID );
-            if ( null != shape ) {
-                return canvasHandler.getGraphIndex().getNode( shape.getUUID() );
+        final LienzoLayer lienzoLayer = (LienzoLayer) canvas.getLayer();
+        final String viewUUID = LienzoLayerUtils.getUUID_At(lienzoLayer,
+                                                            x,
+                                                            y);
+        if (null != viewUUID && viewUUID.trim().length() > 0) {
+            final Shape<?> shape = canvas.getShape(viewUUID);
+            if (null != shape) {
+                return canvasHandler.getGraphIndex().getNode(shape.getUUID());
             }
         }
         return null;
@@ -60,7 +60,7 @@ public class CanvasBoundsIndexerImpl implements CanvasBoundsIndexer<AbstractCanv
     @Override
     public double[] getTrimmedBounds() {
         // TODO
-        return new double[ 0 ];
+        return new double[0];
     }
 
     @Override

@@ -44,16 +44,16 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIE
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = ScriptTask.ScriptTaskBuilder.class )
-@CanDock( roles = { "IntermediateEventOnActivityBoundary" } )
-@Morph( base = BaseTask.class )
+@Definition(graphFactory = NodeFactory.class, builder = ScriptTask.ScriptTaskBuilder.class)
+@CanDock(roles = {"IntermediateEventOnActivityBoundary"})
+@Morph(base = BaseTask.class)
 public class ScriptTask extends BaseTask {
 
     @Title
     public static final transient String title = "Script Task";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
+    @FieldDef(label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1)
     @Valid
     protected ScriptTaskExecutionSet executionSet;
 
@@ -62,37 +62,37 @@ public class ScriptTask extends BaseTask {
 
         @Override
         public ScriptTask build() {
-            return new ScriptTask( new TaskGeneralSet( new Name( "Task" ),
-                                                       new Documentation( "" ) ),
-                                   new ScriptTaskExecutionSet(),
-                                   new BackgroundSet( COLOR,
-                                                      BORDER_COLOR,
-                                                      BORDER_SIZE ),
-                                   new FontSet(),
-                                   new RectangleDimensionsSet( WIDTH,
-                                                               HEIGHT ),
-                                   new SimulationSet(),
-                                   new TaskType( TaskTypes.SCRIPT ) );
+            return new ScriptTask(new TaskGeneralSet(new Name("Task"),
+                                                     new Documentation("")),
+                                  new ScriptTaskExecutionSet(),
+                                  new BackgroundSet(COLOR,
+                                                    BORDER_COLOR,
+                                                    BORDER_SIZE),
+                                  new FontSet(),
+                                  new RectangleDimensionsSet(WIDTH,
+                                                             HEIGHT),
+                                  new SimulationSet(),
+                                  new TaskType(TaskTypes.SCRIPT));
         }
     }
 
     public ScriptTask() {
-        super( TaskTypes.SCRIPT );
+        super(TaskTypes.SCRIPT);
     }
 
-    public ScriptTask( @MapsTo( "general" ) TaskGeneralSet general,
-                       @MapsTo( "executionSet" ) ScriptTaskExecutionSet executionSet,
-                       @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                       @MapsTo( "fontSet" ) FontSet fontSet,
-                       @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet,
-                       @MapsTo( "simulationSet" ) SimulationSet simulationSet,
-                       @MapsTo( "taskType" ) TaskType taskType ) {
-        super( general,
-               backgroundSet,
-               fontSet,
-               dimensionsSet,
-               simulationSet,
-               taskType );
+    public ScriptTask(final @MapsTo("general") TaskGeneralSet general,
+                      final @MapsTo("executionSet") ScriptTaskExecutionSet executionSet,
+                      final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                      final @MapsTo("fontSet") FontSet fontSet,
+                      final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                      final @MapsTo("simulationSet") SimulationSet simulationSet,
+                      final @MapsTo("taskType") TaskType taskType) {
+        super(general,
+              backgroundSet,
+              fontSet,
+              dimensionsSet,
+              simulationSet,
+              taskType);
         this.executionSet = executionSet;
     }
 
@@ -104,7 +104,7 @@ public class ScriptTask extends BaseTask {
         return executionSet;
     }
 
-    public void setExecutionSet( ScriptTaskExecutionSet executionSet ) {
+    public void setExecutionSet(final ScriptTaskExecutionSet executionSet) {
         this.executionSet = executionSet;
     }
 }

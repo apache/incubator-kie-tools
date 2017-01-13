@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 @NonPortable
 public class SessionOpenedEvent extends AbstractSessionEvent {
 
-    public SessionOpenedEvent( final ClientSession session ) {
-        super( session );
+    public SessionOpenedEvent(final ClientSession session) {
+        super(session);
     }
 }

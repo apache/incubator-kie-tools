@@ -44,47 +44,47 @@ public class ShapeSetsMenuItemsBuilder {
 
     public interface Callback {
 
-        void onClick( ShapeSet shapeSet );
+        void onClick(ShapeSet shapeSet);
     }
 
     @Inject
-    public ShapeSetsMenuItemsBuilder( final ShapeManager shapeManager ) {
+    public ShapeSetsMenuItemsBuilder(final ShapeManager shapeManager) {
         this.shapeManager = shapeManager;
     }
 
-    public MenuItem build( final String title,
-                           final String prefix,
-                           final Callback callback ) {
+    public MenuItem build(final String title,
+                          final String prefix,
+                          final Callback callback) {
         final DropDownMenu menu = new DropDownMenu() {{
-            addStyleName( "pull-right" );
+            addStyleName("pull-right");
         }};
         final Collection<ShapeSet<?>> shapeSets = shapeManager.getShapeSets();
-        if ( null != shapeSets ) {
-            shapeSets.stream().forEach( shapeSet -> {
-                menu.add( new AnchorListItem( prefix + " " + shapeSet.getName() ) {{
-                    setTitle( prefix + " " + shapeSet.getDescription() );
-                    setIcon( IconType.PLUS );
-                    addClickHandler( event -> callback.onClick( shapeSet ) );
-                }} );
-            } );
+        if (null != shapeSets) {
+            shapeSets.stream().forEach(shapeSet -> {
+                menu.add(new AnchorListItem(prefix + " " + shapeSet.getName()) {{
+                    setTitle(prefix + " " + shapeSet.getDescription());
+                    setIcon(IconType.PLUS);
+                    addClickHandler(event -> callback.onClick(shapeSet));
+                }});
+            });
         }
         final IsWidget group = new ButtonGroup() {{
-            add( new Button() {{
-                setToggleCaret( false );
-                setDataToggle( Toggle.DROPDOWN );
-                setSize( ButtonSize.SMALL );
-                setText( title );
-                setTitle( title );
-            }} );
-            add( menu );
+            add(new Button() {{
+                setToggleCaret(false);
+                setDataToggle(Toggle.DROPDOWN);
+                setSize(ButtonSize.SMALL);
+                setText(title);
+                setTitle(title);
+            }});
+            add(menu);
         }};
-        return buildItem( group );
+        return buildItem(group);
     }
 
-    private MenuItem buildItem( final IsWidget widget ) {
+    private MenuItem buildItem(final IsWidget widget) {
         return new MenuFactory.CustomMenuBuilder() {
             @Override
-            public void push( MenuFactory.CustomMenuBuilder element ) {
+            public void push(MenuFactory.CustomMenuBuilder element) {
             }
 
             @Override

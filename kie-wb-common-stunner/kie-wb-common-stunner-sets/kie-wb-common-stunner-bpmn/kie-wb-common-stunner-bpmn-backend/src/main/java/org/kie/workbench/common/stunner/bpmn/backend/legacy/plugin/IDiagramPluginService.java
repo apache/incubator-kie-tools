@@ -28,13 +28,13 @@ public interface IDiagramPluginService {
      * @param request the context in which the plugins are requested.
      * @return a unmodifiable collection of the registered plugins.
      */
-    public Collection<IDiagramPlugin> getRegisteredPlugins( HttpServletRequest request );
+    public Collection<IDiagramPlugin> getRegisteredPlugins(HttpServletRequest request);
 
     /**
      * @param request the context in which the plugin is requested
      * @param name the name of the plugin to find
      * @return the plugin object or null
      */
-    public IDiagramPlugin findPlugin( HttpServletRequest request,
-                                      String name );
+    public IDiagramPlugin findPlugin(HttpServletRequest request,
+                                     String name);
 }

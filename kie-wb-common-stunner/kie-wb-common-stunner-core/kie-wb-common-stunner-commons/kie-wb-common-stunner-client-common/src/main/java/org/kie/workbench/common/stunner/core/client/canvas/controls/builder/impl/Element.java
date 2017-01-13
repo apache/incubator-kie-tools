@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.imp
 import java.lang.annotation.RetentionPolicy;
 
 @java.lang.annotation.Documented
-@java.lang.annotation.Retention( RetentionPolicy.RUNTIME )
+@java.lang.annotation.Retention(RetentionPolicy.RUNTIME)
 @javax.inject.Qualifier
 public @interface Element {
 

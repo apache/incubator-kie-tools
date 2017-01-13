@@ -27,38 +27,38 @@ public abstract class AbstractBasicConnector<W, V extends BasicConnectorView, P 
 
     protected final transient P proxy;
 
-    public AbstractBasicConnector( final V view,
-                                   final P proxy ) {
-        super( view );
+    public AbstractBasicConnector(final V view,
+                                  final P proxy) {
+        super(view);
         this.proxy = proxy;
     }
 
     @Override
-    protected String getBackgroundColor( final Edge<ViewConnector<W>, Node> element ) {
-        return proxy.getBackgroundColor( getDefinition( element ) );
+    protected String getBackgroundColor(final Edge<ViewConnector<W>, Node> element) {
+        return proxy.getBackgroundColor(getDefinition(element));
     }
 
     @Override
-    protected Double getBackgroundAlpha( final Edge<ViewConnector<W>, Node> element ) {
-        return proxy.getBackgroundAlpha( getDefinition( element ) );
+    protected Double getBackgroundAlpha(final Edge<ViewConnector<W>, Node> element) {
+        return proxy.getBackgroundAlpha(getDefinition(element));
     }
 
     @Override
-    protected String getBorderColor( final Edge<ViewConnector<W>, Node> element ) {
-        return proxy.getBackgroundColor( getDefinition( element ) );
+    protected String getBorderColor(final Edge<ViewConnector<W>, Node> element) {
+        return proxy.getBackgroundColor(getDefinition(element));
     }
 
     @Override
-    protected Double getBorderSize( final Edge<ViewConnector<W>, Node> element ) {
-        return proxy.getBorderSize( getDefinition( element ) );
+    protected Double getBorderSize(final Edge<ViewConnector<W>, Node> element) {
+        return proxy.getBorderSize(getDefinition(element));
     }
 
     @Override
-    protected Double getBorderAlpha( final Edge<ViewConnector<W>, Node> element ) {
-        return proxy.getBorderAlpha( getDefinition( element ) );
+    protected Double getBorderAlpha(final Edge<ViewConnector<W>, Node> element) {
+        return proxy.getBorderAlpha(getDefinition(element));
     }
 
-    protected W getDefinition( final Edge<ViewConnector<W>, Node> element ) {
+    protected W getDefinition(final Edge<ViewConnector<W>, Node> element) {
         return element.getContent().getDefinition();
     }
 }

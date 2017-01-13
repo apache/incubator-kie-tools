@@ -55,7 +55,7 @@ import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
 @EntryPoint
 public class ShowcaseEntryPoint {
 
-    private static Logger LOGGER = Logger.getLogger( ShowcaseEntryPoint.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(ShowcaseEntryPoint.class.getName());
 
     @Inject
     private PlaceManager placeManager;
@@ -89,7 +89,7 @@ public class ShowcaseEntryPoint {
 
     @AfterInitialization
     public void startApp() {
-        userSystemManager.waitForInitialization( new Command() {
+        userSystemManager.waitForInitialization(new Command() {
             @Override
             public void execute() {
                 setupGlobalErrorHandler();
@@ -97,48 +97,48 @@ public class ShowcaseEntryPoint {
                 hideLoadingPopup();
                 menuDevCommandsBuilder.enable();
             }
-        } );
+        });
     }
 
     private void setupGlobalErrorHandler() {
-        GWT.setUncaughtExceptionHandler( throwable -> {
+        GWT.setUncaughtExceptionHandler(throwable -> {
             final String message = "Uncaught error on client side: " + throwable.getMessage();
-            errorPopupPresenter.showMessage( message );
-            log( Level.SEVERE,
-                 throwable.getMessage() );
-        } );
+            errorPopupPresenter.showMessage(message);
+            log(Level.SEVERE,
+                throwable.getMessage());
+        });
     }
 
     private void setupMenus() {
-        for ( Menus roleMenus : getRoles() ) {
-            userMenu.addMenus( roleMenus );
+        for (Menus roleMenus : getRoles()) {
+            userMenu.addMenus(roleMenus);
         }
         refreshMenus();
     }
 
     private void refreshMenus() {
         menubar.clear();
-        menubar.addMenus( createMenuBar() );
+        menubar.addMenus(createMenuBar());
         final Menus utilityMenus =
-                MenuFactory.newTopLevelCustomMenu( userMenu )
+                MenuFactory.newTopLevelCustomMenu(userMenu)
                         .endMenu()
                         .build();
-        utilityMenuBar.addMenus( utilityMenus );
+        utilityMenuBar.addMenus(utilityMenus);
     }
 
     private Menus createMenuBar() {
-        return newTopLevelMenu( "Authoring" )
-                .perspective( AuthoringPerspective.PERSPECTIVE_ID )
+        return newTopLevelMenu("Authoring")
+                .perspective(AuthoringPerspective.PERSPECTIVE_ID)
                 .endMenu()
                 .build();
     }
 
     private List<Menus> getRoles() {
-        final List<Menus> result = new ArrayList<Menus>( identity.getRoles().size() );
-        result.add( MenuFactory.newSimpleItem( "Logout" ).respondsWith( new LogoutCommand() ).endMenu().build() );
-        for ( Role role : identity.getRoles() ) {
-            if ( !role.getName().equals( "IS_REMEMBER_ME" ) ) {
-                result.add( MenuFactory.newSimpleItem( "Role: " + role.getName() ).endMenu().build() );
+        final List<Menus> result = new ArrayList<Menus>(identity.getRoles().size());
+        result.add(MenuFactory.newSimpleItem("Logout").respondsWith(new LogoutCommand()).endMenu().build());
+        for (Role role : identity.getRoles()) {
+            if (!role.getName().equals("IS_REMEMBER_ME")) {
+                result.add(MenuFactory.newSimpleItem("Role: " + role.getName()).endMenu().build());
             }
         }
         return result;
@@ -146,45 +146,45 @@ public class ShowcaseEntryPoint {
 
     // Fade out the "Loading application" pop-up
     private void hideLoadingPopup() {
-        final Element e = RootPanel.get( "loading" ).getElement();
+        final Element e = RootPanel.get("loading").getElement();
         new Animation() {
 
             @Override
-            protected void onUpdate( double progress ) {
-                e.getStyle().setOpacity( 1.0 - progress );
+            protected void onUpdate(double progress) {
+                e.getStyle().setOpacity(1.0 - progress);
             }
 
             @Override
             protected void onComplete() {
-                e.getStyle().setVisibility( Style.Visibility.HIDDEN );
+                e.getStyle().setVisibility(Style.Visibility.HIDDEN);
             }
-        }.run( 500 );
+        }.run(500);
     }
 
     private class LogoutCommand implements Command {
 
         @Override
         public void execute() {
-            authService.call( new RemoteCallback<Void>() {
+            authService.call(new RemoteCallback<Void>() {
                 @Override
-                public void callback( Void response ) {
-                    final String location = GWT.getModuleBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/",
-                                                                                 "/logout.jsp" );
-                    redirect( location );
+                public void callback(Void response) {
+                    final String location = GWT.getModuleBaseURL().replaceFirst("/" + GWT.getModuleName() + "/",
+                                                                                "/logout.jsp");
+                    redirect(location);
                 }
-            } ).logout();
+            }).logout();
         }
     }
 
-    public static native void redirect( String url )/*-{
+    public static native void redirect(String url)/*-{
         $wnd.location = url;
     }-*/;
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

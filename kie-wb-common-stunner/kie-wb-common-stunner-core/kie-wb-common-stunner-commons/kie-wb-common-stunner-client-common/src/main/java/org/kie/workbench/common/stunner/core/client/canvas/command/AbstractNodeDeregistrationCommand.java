@@ -37,8 +37,8 @@ public abstract class AbstractNodeDeregistrationCommand extends AbstractCanvasGr
     private final Node candidate;
     private transient CompositeCommand<AbstractCanvasHandler, CanvasViolation> command;
 
-    @SuppressWarnings( "unchecked" )
-    public AbstractNodeDeregistrationCommand( final Node candidate ) {
+    @SuppressWarnings("unchecked")
+    public AbstractNodeDeregistrationCommand(final Node candidate) {
         this.candidate = candidate;
         this.command = new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
                 .reverse()
@@ -48,18 +48,18 @@ public abstract class AbstractNodeDeregistrationCommand extends AbstractCanvasGr
     protected abstract Command<AbstractCanvasHandler, CanvasViolation> getDeregistrationCommand();
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new SafeDeleteNodeCommand( candidate,
-                                          getSafeDeleteCallback( context ) );
+    @SuppressWarnings("unchecked")
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
+        return new SafeDeleteNodeCommand(candidate,
+                                         getSafeDeleteCallback(context));
     }
 
-    protected SafeDeleteNodeProcessor.Callback getSafeDeleteCallback( final AbstractCanvasHandler context ) {
+    protected SafeDeleteNodeProcessor.Callback getSafeDeleteCallback(final AbstractCanvasHandler context) {
         return safeDeleteCallback;
     }
 
     @Override
-    protected Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand( final AbstractCanvasHandler context ) {
+    protected Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand(final AbstractCanvasHandler context) {
         return command;
     }
 
@@ -73,42 +73,42 @@ public abstract class AbstractNodeDeregistrationCommand extends AbstractCanvasGr
 
     private final SafeDeleteNodeProcessor.Callback safeDeleteCallback = new SafeDeleteNodeProcessor.Callback() {
         @Override
-        public void deleteChildNode( final Node<Definition<?>, Edge> node ) {
+        public void deleteChildNode(final Node<Definition<?>, Edge> node) {
             // No recursion here.
         }
 
         @Override
-        public void deleteInViewEdge( final Edge<View<?>, Node> edge ) {
-            getCommand().addCommand( new SetCanvasConnectionCommand( edge ) );
+        public void deleteInViewEdge(final Edge<View<?>, Node> edge) {
+            getCommand().addCommand(new SetCanvasConnectionCommand(edge));
         }
 
         @Override
-        public void deleteInChildEdge( final Edge<Child, Node> edge ) {
+        public void deleteInChildEdge(final Edge<Child, Node> edge) {
             final Node parent = edge.getSourceNode();
             final Node candidate = edge.getTargetNode();
-            getCommand().addCommand( new RemoveCanvasChildCommand( parent,
-                                                                   candidate ) );
+            getCommand().addCommand(new RemoveCanvasChildCommand(parent,
+                                                                 candidate));
         }
 
         @Override
-        public void deleteInDockEdge( final Edge<Dock, Node> edge ) {
+        public void deleteInDockEdge(final Edge<Dock, Node> edge) {
             final Node parent = edge.getSourceNode();
             final Node candidate = edge.getTargetNode();
-            getCommand().addCommand( new CanvasUndockNodeCommand( parent,
-                                                                  candidate ) );
+            getCommand().addCommand(new CanvasUndockNodeCommand(parent,
+                                                                candidate));
         }
 
         @Override
-        public void deleteOutViewEdge( final Edge<? extends View<?>, Node> edge ) {
-            getCommand().addCommand( new SetCanvasConnectionCommand( edge ) );
+        public void deleteOutViewEdge(final Edge<? extends View<?>, Node> edge) {
+            getCommand().addCommand(new SetCanvasConnectionCommand(edge));
         }
 
         @Override
-        public void deleteNode( final Node<Definition<?>, Edge> node ) {
-            if ( node.equals( getCandidate() ) ) {
-                getCommand().addCommand( getDeregistrationCommand() );
+        public void deleteNode(final Node<Definition<?>, Edge> node) {
+            if (node.equals(getCandidate())) {
+                getCommand().addCommand(getDeregistrationCommand());
             } else {
-                getCommand().addCommand( new DeleteCanvasNodeCommand( node ) );
+                getCommand().addCommand(new DeleteCanvasNodeCommand(node));
             }
         }
     };

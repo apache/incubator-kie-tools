@@ -31,5 +31,5 @@ public interface ContextualParser extends Parser {
         OryxManager getOryxManager();
     }
 
-    void initialize( Context context );
+    void initialize(final Context context);
 }

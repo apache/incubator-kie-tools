@@ -31,12 +31,12 @@ public final class LookupResponseImpl<T> implements LookupManager.LookupResponse
     private final int page;
     private final int pageSize;
 
-    public LookupResponseImpl( final @MapsTo( "results" ) List<T> results,
-                               final @MapsTo( "total" ) int total,
-                               final @MapsTo( "hasNextPage" ) boolean hasNextPage,
-                               final @MapsTo( "lookupCriteria" ) String lookupCriteria,
-                               final @MapsTo( "page" ) int page,
-                               final @MapsTo( "pageSize" ) int pageSize ) {
+    public LookupResponseImpl(final @MapsTo("results") List<T> results,
+                              final @MapsTo("total") int total,
+                              final @MapsTo("hasNextPage") boolean hasNextPage,
+                              final @MapsTo("lookupCriteria") String lookupCriteria,
+                              final @MapsTo("page") int page,
+                              final @MapsTo("pageSize") int pageSize) {
         this.results = results;
         this.total = total;
         this.hasNextPage = hasNextPage;

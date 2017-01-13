@@ -36,7 +36,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class ProjectDiagramNewResourceHandlerTest {
 
     private static final String DEFSET_ID = "ds1";
@@ -69,39 +69,39 @@ public class ProjectDiagramNewResourceHandlerTest {
     private ProjectDiagramNewResourceHandlerStub tested;
 
     @Before
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        when( definitionManager.adapters() ).thenReturn( adapterManager );
-        when( adapterManager.forDefinitionSet() ).thenReturn( definitionSetAdapter );
-        when( definitionManager.definitionSets() ).thenReturn( definitionSetRegistry );
-        when( definitionSetRegistry.getDefinitionSetByType( any( Class.class ) ) ).thenReturn( definitionSet );
-        when( definitionSetRegistry.getDefinitionSetByType( any( Class.class ) ) ).thenReturn( definitionSet );
-        when( definitionSetAdapter.getId( eq( definitionSet ) ) ).thenReturn( DEFSET_ID );
-        when( aPackage.getPackageMainResourcesPath() ).thenReturn( path );
-        when( aPackage.getPackageName() ).thenReturn( PROJ_PKG );
-        when( aPackage.getProjectRootPath() ).thenReturn( projRootPath );
-        when( projRootPath.getFileName() ).thenReturn( PROJ_ROOT_FILENAME );
-        when( projectDiagramResourceType.getSuffix() ).thenReturn( "bpmn2" );
-        when( projectDiagramResourceType.getPrefix() ).thenReturn( "" );
-        this.tested = new ProjectDiagramNewResourceHandlerStub( definitionManager,
-                                                                projectDiagramServices,
-                                                                projectDiagramResourceType );
+        when(definitionManager.adapters()).thenReturn(adapterManager);
+        when(adapterManager.forDefinitionSet()).thenReturn(definitionSetAdapter);
+        when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
+        when(definitionSetRegistry.getDefinitionSetByType(any(Class.class))).thenReturn(definitionSet);
+        when(definitionSetRegistry.getDefinitionSetByType(any(Class.class))).thenReturn(definitionSet);
+        when(definitionSetAdapter.getId(eq(definitionSet))).thenReturn(DEFSET_ID);
+        when(aPackage.getPackageMainResourcesPath()).thenReturn(path);
+        when(aPackage.getPackageName()).thenReturn(PROJ_PKG);
+        when(aPackage.getProjectRootPath()).thenReturn(projRootPath);
+        when(projRootPath.getFileName()).thenReturn(PROJ_ROOT_FILENAME);
+        when(projectDiagramResourceType.getSuffix()).thenReturn("bpmn2");
+        when(projectDiagramResourceType.getPrefix()).thenReturn("");
+        this.tested = new ProjectDiagramNewResourceHandlerStub(definitionManager,
+                                                               projectDiagramServices,
+                                                               projectDiagramResourceType);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testCreate() {
         final String baseFileName = "file1";
-        tested.create( aPackage,
-                       baseFileName,
-                       presenter );
-        verify( projectDiagramServices,
-                times( 1 ) ).create( eq( path ),
-                                     eq( "file1" ),
-                                     eq( DEFSET_ID ),
-                                     eq( PROJ_ROOT_FILENAME ),
-                                     eq( PROJ_PKG ),
-                                     any( ServiceCallback.class ) );
+        tested.create(aPackage,
+                      baseFileName,
+                      presenter);
+        verify(projectDiagramServices,
+               times(1)).create(eq(path),
+                                eq("file1"),
+                                eq(DEFSET_ID),
+                                eq(PROJ_ROOT_FILENAME),
+                                eq(PROJ_PKG),
+                                any(ServiceCallback.class));
     }
 
     private class ProjectDiagramNewResourceHandlerStub extends AbstractProjectDiagramNewResourceHandler<ClientResourceType> {
@@ -109,12 +109,12 @@ public class ProjectDiagramNewResourceHandlerTest {
         static final String EDITOR_ID = "mockEditorId";
         static final String EDITOR_DESC = "mockEditorDesc";
 
-        public ProjectDiagramNewResourceHandlerStub( DefinitionManager definitionManager,
-                                                     ClientProjectDiagramService projectDiagramServices,
-                                                     ClientResourceType projectDiagramResourceType ) {
-            super( definitionManager,
-                   projectDiagramServices,
-                   projectDiagramResourceType );
+        public ProjectDiagramNewResourceHandlerStub(DefinitionManager definitionManager,
+                                                    ClientProjectDiagramService projectDiagramServices,
+                                                    ClientResourceType projectDiagramResourceType) {
+            super(definitionManager,
+                  projectDiagramServices,
+                  projectDiagramResourceType);
         }
 
         @Override

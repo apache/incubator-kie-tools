@@ -59,7 +59,7 @@ public class AssignmentsInfo implements BPMNProperty {
     public AssignmentsInfo() {
     }
 
-    public AssignmentsInfo( final String value ) {
+    public AssignmentsInfo(final String value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class AssignmentsInfo implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

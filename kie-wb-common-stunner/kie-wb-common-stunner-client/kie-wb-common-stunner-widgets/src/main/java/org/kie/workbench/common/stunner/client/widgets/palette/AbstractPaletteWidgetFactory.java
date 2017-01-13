@@ -35,39 +35,39 @@ public abstract class AbstractPaletteWidgetFactory<I extends PaletteDefinition, 
     protected Event<BuildCanvasShapeEvent> buildCanvasShapeEvent;
     protected CanvasHandler canvasHandler;
 
-    public AbstractPaletteWidgetFactory( final ShapeManager shapeManager,
-                                         final SyncBeanManager beanManager,
-                                         final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
-                                         final P palette,
-                                         final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent ) {
-        super( shapeManager,
-               beanManager,
-               defaultPaletteDefinitionFactoryInstance,
-               palette );
+    public AbstractPaletteWidgetFactory(final ShapeManager shapeManager,
+                                        final SyncBeanManager beanManager,
+                                        final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
+                                        final P palette,
+                                        final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent) {
+        super(shapeManager,
+              beanManager,
+              defaultPaletteDefinitionFactoryInstance,
+              palette);
         this.buildCanvasShapeEvent = buildCanvasShapeEvent;
     }
 
     @Override
-    public PaletteWidgetFactory<I, P> forCanvasHandler( final CanvasHandler canvasHandler ) {
+    public PaletteWidgetFactory<I, P> forCanvasHandler(final CanvasHandler canvasHandler) {
         this.canvasHandler = canvasHandler;
         return this;
     }
 
     @Override
-    protected void beforeBindPalette( final I paletteDefinition,
-                                      final String shapeSetId ) {
-        super.beforeBindPalette( paletteDefinition,
-                                 shapeSetId );
-        if ( null != canvasHandler ) {
-            palette.onItemDrop( ( definition,
-                                  factory,
-                                  x,
-                                  y ) ->
-                                        buildCanvasShapeEvent.fire( new BuildCanvasShapeEvent( ( AbstractCanvasHandler ) canvasHandler,
-                                                                                               definition,
-                                                                                               factory,
-                                                                                               x,
-                                                                                               y ) ) );
+    protected void beforeBindPalette(final I paletteDefinition,
+                                     final String shapeSetId) {
+        super.beforeBindPalette(paletteDefinition,
+                                shapeSetId);
+        if (null != canvasHandler) {
+            palette.onItemDrop((definition,
+                                factory,
+                                x,
+                                y) ->
+                                       buildCanvasShapeEvent.fire(new BuildCanvasShapeEvent((AbstractCanvasHandler) canvasHandler,
+                                                                                            definition,
+                                                                                            factory,
+                                                                                            x,
+                                                                                            y)));
         }
     }
 }

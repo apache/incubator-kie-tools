@@ -36,14 +36,14 @@ public class CircleDimensionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Shape Dimensions";
 
     @Property
-    @FieldDef( label = FIELDDEF_RADIUS, property = "value" )
-    @Slider( min = 25.0, max = 50.0, step = 1, precision = 0.0 )
+    @FieldDef(label = FIELDDEF_RADIUS, property = "value")
+    @Slider(min = 25.0, max = 50.0, step = 1, precision = 0.0)
     protected Radius radius;
 
     public CircleDimensionSet() {
     }
 
-    public CircleDimensionSet( @MapsTo( "radius" ) Radius radius ) {
+    public CircleDimensionSet(final @MapsTo("radius") Radius radius) {
         this.radius = radius;
     }
 
@@ -51,7 +51,7 @@ public class CircleDimensionSet implements BPMNPropertySet {
         return radius;
     }
 
-    public void setRadius( Radius radius ) {
+    public void setRadius(final Radius radius) {
         this.radius = radius;
     }
 }

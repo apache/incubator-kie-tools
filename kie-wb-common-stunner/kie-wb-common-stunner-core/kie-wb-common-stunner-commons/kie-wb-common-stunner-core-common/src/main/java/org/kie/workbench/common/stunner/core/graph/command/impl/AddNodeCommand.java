@@ -33,30 +33,30 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 @Portable
 public final class AddNodeCommand extends RegisterNodeCommand {
 
-    public AddNodeCommand( final @MapsTo( "candidate" ) Node candidate ) {
-        super( candidate );
+    public AddNodeCommand(final @MapsTo("candidate") Node candidate) {
+        super(candidate);
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
-        final CommandResult<RuleViolation> parentResult = super.check( context );
+    @SuppressWarnings("unchecked")
+    protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
+        final CommandResult<RuleViolation> parentResult = super.check(context);
         final GraphCommandResultBuilder builder = new GraphCommandResultBuilder();
-        parentResult.getViolations().forEach( builder::addViolation );
-        final Graph<?, Node> graph = getGraph( context );
+        parentResult.getViolations().forEach(builder::addViolation);
+        final Graph<?, Node> graph = getGraph(context);
         final Collection<RuleViolation> containmentRuleViolations =
-                ( Collection<RuleViolation> ) context.getRulesManager()
+                (Collection<RuleViolation>) context.getRulesManager()
                         .containment()
-                        .evaluate( graph,
-                                   getCandidate() ).violations();
-        builder.addViolations( containmentRuleViolations );
+                        .evaluate(graph,
+                                  getCandidate()).violations();
+        builder.addViolations(containmentRuleViolations);
         return builder.build();
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final SafeDeleteNodeCommand undoCommand = new SafeDeleteNodeCommand( getCandidate() );
-        return undoCommand.execute( context );
+    @SuppressWarnings("unchecked")
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        final SafeDeleteNodeCommand undoCommand = new SafeDeleteNodeCommand(getCandidate());
+        return undoCommand.execute(context);
     }
 
     @Override

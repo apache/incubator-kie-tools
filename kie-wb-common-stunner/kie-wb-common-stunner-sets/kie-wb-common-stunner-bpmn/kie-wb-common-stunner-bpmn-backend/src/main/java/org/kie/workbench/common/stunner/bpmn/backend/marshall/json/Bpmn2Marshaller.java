@@ -40,30 +40,30 @@ public class Bpmn2Marshaller extends Bpmn2JsonUnmarshaller {
     private final GraphUtils graphUtils;
     private final OryxManager oryxManager;
 
-    public Bpmn2Marshaller( final DefinitionManager definitionManager,
-                            final GraphUtils graphUtils,
-                            final OryxManager oryxManager ) {
+    public Bpmn2Marshaller(final DefinitionManager definitionManager,
+                           final GraphUtils graphUtils,
+                           final OryxManager oryxManager) {
         this.definitionManager = definitionManager;
         this.graphUtils = graphUtils;
         this.oryxManager = oryxManager;
     }
 
-    public String marshall( final Diagram<Graph, Metadata> diagram ) throws IOException {
+    public String marshall(final Diagram<Graph, Metadata> diagram) throws IOException {
         DroolsFactoryImpl.init();
         BpsimFactoryImpl.init();
-        BPMN2JsonParser parser = createParser( diagram );
-        JBPMBpmn2ResourceImpl res = ( JBPMBpmn2ResourceImpl ) super.unmarshall( parser,
-                                                                                null );
+        BPMN2JsonParser parser = createParser(diagram);
+        JBPMBpmn2ResourceImpl res = (JBPMBpmn2ResourceImpl) super.unmarshall(parser,
+                                                                             null);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        res.save( outputStream,
-                  new HashMap<>() );
-        return StringEscapeUtils.unescapeHtml4( outputStream.toString( "UTF-8" ) );
+        res.save(outputStream,
+                 new HashMap<>());
+        return StringEscapeUtils.unescapeHtml4(outputStream.toString("UTF-8"));
     }
 
-    private BPMN2JsonParser createParser( final Diagram<Graph, Metadata> diagram ) {
-        return new BPMN2JsonParser( diagram,
-                                    new ParsingContext( definitionManager,
-                                                        graphUtils,
-                                                        oryxManager ) );
+    private BPMN2JsonParser createParser(final Diagram<Graph, Metadata> diagram) {
+        return new BPMN2JsonParser(diagram,
+                                   new ParsingContext(definitionManager,
+                                                      graphUtils,
+                                                      oryxManager));
     }
 }

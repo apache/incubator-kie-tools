@@ -31,7 +31,7 @@ public abstract class AbstractMetadata implements Metadata {
     public AbstractMetadata() {
     }
 
-    public AbstractMetadata( final @MapsTo( "definitionSetId" ) String definitionSetId ) {
+    public AbstractMetadata(final @MapsTo("definitionSetId") String definitionSetId) {
         this.definitionSetId = definitionSetId;
     }
 
@@ -41,7 +41,7 @@ public abstract class AbstractMetadata implements Metadata {
     }
 
     @Override
-    public void setTitle( final String title ) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
@@ -56,7 +56,7 @@ public abstract class AbstractMetadata implements Metadata {
     }
 
     @Override
-    public void setShapeSetId( final String id ) {
+    public void setShapeSetId(final String id) {
         this.shapeSetId = id;
     }
 
@@ -66,7 +66,7 @@ public abstract class AbstractMetadata implements Metadata {
     }
 
     @Override
-    public void setCanvasRootUUID( final String uuid ) {
+    public void setCanvasRootUUID(final String uuid) {
         this.canvasRootUUID = uuid;
     }
 
@@ -76,7 +76,7 @@ public abstract class AbstractMetadata implements Metadata {
     }
 
     @Override
-    public void setThumbData( final String data ) {
+    public void setThumbData(final String data) {
         this.thumbData = data;
     }
 
@@ -86,11 +86,11 @@ public abstract class AbstractMetadata implements Metadata {
     }
 
     @Override
-    public void setPath( final Path path ) {
+    public void setPath(final Path path) {
         this.path = path;
     }
 
-    public void setDefinitionSetId( final String defSetId ) {
+    public void setDefinitionSetId(final String defSetId) {
         this.definitionSetId = defSetId;
     }
 }

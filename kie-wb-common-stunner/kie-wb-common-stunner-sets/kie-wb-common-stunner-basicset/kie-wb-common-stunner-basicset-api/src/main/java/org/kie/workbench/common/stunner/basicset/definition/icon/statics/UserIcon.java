@@ -37,8 +37,8 @@ import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = UserIcon.UserIconBuilder.class )
-@Shape( factory = BasicShapesFactory.class, def = StaticIconShapeDefImpl.class )
+@Definition(graphFactory = NodeFactory.class, builder = UserIcon.UserIconBuilder.class)
+@Shape(factory = BasicShapesFactory.class, def = StaticIconShapeDefImpl.class)
 public class UserIcon implements StaticIcon {
 
     @Category
@@ -52,8 +52,8 @@ public class UserIcon implements StaticIcon {
 
     @Labels
     private final Set<String> labels = new HashSet<String>() {{
-        add( "all" );
-        add( "icon" );
+        add("all");
+        add("icon");
     }};
 
     @NonPortable

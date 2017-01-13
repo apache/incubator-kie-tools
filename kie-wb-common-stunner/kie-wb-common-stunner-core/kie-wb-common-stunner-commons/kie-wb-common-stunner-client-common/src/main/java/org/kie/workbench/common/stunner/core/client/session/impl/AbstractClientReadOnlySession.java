@@ -37,13 +37,13 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
     private CanvasShapeListener shapeListener;
     private CanvasElementListener elementListener;
 
-    public AbstractClientReadOnlySession( final AbstractCanvas canvas,
-                                          final AbstractCanvasHandler canvasHandler,
-                                          final SelectionControl<AbstractCanvasHandler, Element> selectionControl,
-                                          final ZoomControl<AbstractCanvas> zoomControl,
-                                          final PanControl<AbstractCanvas> panControl ) {
-        super( canvas,
-               canvasHandler );
+    public AbstractClientReadOnlySession(final AbstractCanvas canvas,
+                                         final AbstractCanvasHandler canvasHandler,
+                                         final SelectionControl<AbstractCanvasHandler, Element> selectionControl,
+                                         final ZoomControl<AbstractCanvas> zoomControl,
+                                         final PanControl<AbstractCanvas> panControl) {
+        super(canvas,
+              canvasHandler);
         this.selectionControl = selectionControl;
         this.zoomControl = zoomControl;
         this.panControl = panControl;
@@ -92,13 +92,13 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
         this.shapeListener = new CanvasShapeListener() {
 
             @Override
-            public void register( final Shape item ) {
-                onRegisterShape( item );
+            public void register(final Shape item) {
+                onRegisterShape(item);
             }
 
             @Override
-            public void deregister( final Shape item ) {
-                onDeregisterShape( item );
+            public void deregister(final Shape item) {
+                onDeregisterShape(item);
             }
 
             @Override
@@ -106,25 +106,25 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
                 onClear();
             }
         };
-        canvas.addRegistrationListener( shapeListener );
+        canvas.addRegistrationListener(shapeListener);
         // Canvas handler listeners.
         this.elementListener = new CanvasElementListener() {
 
             @Override
-            public void update( final Element item ) {
-                onElementRegistration( item,
-                                       false,
-                                       true );
+            public void update(final Element item) {
+                onElementRegistration(item,
+                                      false,
+                                      true);
             }
 
             @Override
-            public void register( final Element item ) {
-                onRegisterElement( item );
+            public void register(final Element item) {
+                onRegisterElement(item);
             }
 
             @Override
-            public void deregister( final Element item ) {
-                onDeregisterElement( item );
+            public void deregister(final Element item) {
+                onDeregisterElement(item);
             }
 
             @Override
@@ -132,84 +132,84 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
                 onClear();
             }
         };
-        getCanvasHandler().addRegistrationListener( elementListener );
+        getCanvasHandler().addRegistrationListener(elementListener);
     }
 
     private void removeListeners() {
-        if ( null != shapeListener ) {
-            getCanvas().removeRegistrationListener( shapeListener );
+        if (null != shapeListener) {
+            getCanvas().removeRegistrationListener(shapeListener);
         }
-        if ( null != elementListener ) {
-            getCanvasHandler().removeRegistrationListener( elementListener );
+        if (null != elementListener) {
+            getCanvasHandler().removeRegistrationListener(elementListener);
         }
     }
 
-    private void onRegisterShape( final Shape shape ) {
-        onShapeRegistration( shape,
-                             true );
+    private void onRegisterShape(final Shape shape) {
+        onShapeRegistration(shape,
+                            true);
     }
 
-    private void onDeregisterShape( final Shape shape ) {
-        onShapeRegistration( shape,
-                             false );
+    private void onDeregisterShape(final Shape shape) {
+        onShapeRegistration(shape,
+                            false);
     }
 
-    private void onRegisterElement( final Element element ) {
-        onElementRegistration( element,
-                               true,
-                               false );
+    private void onRegisterElement(final Element element) {
+        onElementRegistration(element,
+                              true,
+                              false);
     }
 
-    private void onDeregisterElement( final Element element ) {
-        onElementRegistration( element,
-                               false,
-                               false );
+    private void onDeregisterElement(final Element element) {
+        onElementRegistration(element,
+                              false,
+                              false);
     }
 
-    protected void onElementRegistration( final Element element,
-                                          final boolean add,
-                                          final boolean update ) {
-        if ( update ) {
-            fireRegistrationUpdateListeners( getSelectionControl(),
-                                             element );
+    protected void onElementRegistration(final Element element,
+                                         final boolean add,
+                                         final boolean update) {
+        if (update) {
+            fireRegistrationUpdateListeners(getSelectionControl(),
+                                            element);
         } else {
-            fireRegistrationListeners( getSelectionControl(),
-                                       element,
-                                       add );
+            fireRegistrationListeners(getSelectionControl(),
+                                      element,
+                                      add);
         }
     }
 
-    protected void onShapeRegistration( final Shape shape,
-                                        final boolean add ) {
-        fireRegistrationListeners( getZoomControl(),
-                                   shape,
-                                   add );
-        fireRegistrationListeners( getPanControl(),
-                                   shape,
-                                   add );
+    protected void onShapeRegistration(final Shape shape,
+                                       final boolean add) {
+        fireRegistrationListeners(getZoomControl(),
+                                  shape,
+                                  add);
+        fireRegistrationListeners(getPanControl(),
+                                  shape,
+                                  add);
     }
 
     protected void onClear() {
-        fireRegistrationClearListeners( getSelectionControl() );
+        fireRegistrationClearListeners(getSelectionControl());
     }
 
     protected void enableControls() {
-        enableControl( getSelectionControl(),
-                       getCanvasHandler() );
-        enableControl( getZoomControl(),
-                       getCanvas() );
-        enableControl( getPanControl(),
-                       getCanvas() );
+        enableControl(getSelectionControl(),
+                      getCanvasHandler());
+        enableControl(getZoomControl(),
+                      getCanvas());
+        enableControl(getPanControl(),
+                      getCanvas());
     }
 
     protected void disableControls() {
-        if ( null != getSelectionControl() ) {
+        if (null != getSelectionControl()) {
             getSelectionControl().disable();
         }
-        if ( null != getZoomControl() ) {
+        if (null != getZoomControl()) {
             getZoomControl().disable();
         }
-        if ( null != getPanControl() ) {
+        if (null != getPanControl()) {
             getPanControl().disable();
         }
     }

@@ -24,11 +24,11 @@ import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
  */
 public interface Bpmn2OryxPropertySerializer<T> {
 
-    boolean accepts( PropertyType type );
+    boolean accepts(final PropertyType type);
 
-    T parse( Object property,
-             String value );
+    T parse(final Object property,
+            final String value);
 
-    String serialize( Object property,
-                      T value );
+    String serialize(final Object property,
+                     final T value);
 }

@@ -42,85 +42,85 @@ public final class IntermediateTimerEventShapeDef
     private static final String WHITE = "#FFFFFF";
 
     @Override
-    public double getRadius( final IntermediateTimerEvent element ) {
+    public double getRadius(final IntermediateTimerEvent element) {
         return element.getDimensionsSet().getRadius().getValue();
     }
 
     @Override
-    public String getBackgroundColor( final IntermediateTimerEvent element ) {
+    public String getBackgroundColor(final IntermediateTimerEvent element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final IntermediateTimerEvent element ) {
+    public double getBackgroundAlpha(final IntermediateTimerEvent element) {
         return 1;
     }
 
     @Override
-    public String getBorderColor( final IntermediateTimerEvent element ) {
+    public String getBorderColor(final IntermediateTimerEvent element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final IntermediateTimerEvent element ) {
+    public double getBorderSize(final IntermediateTimerEvent element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final IntermediateTimerEvent element ) {
+    public double getBorderAlpha(final IntermediateTimerEvent element) {
         return 1;
     }
 
     @Override
-    public String getFontFamily( final IntermediateTimerEvent element ) {
+    public String getFontFamily(final IntermediateTimerEvent element) {
         return element.getFontSet().getFontFamily().getValue();
     }
 
     @Override
-    public String getFontColor( final IntermediateTimerEvent element ) {
+    public String getFontColor(final IntermediateTimerEvent element) {
         return element.getFontSet().getFontColor().getValue();
     }
 
     @Override
-    public double getFontSize( final IntermediateTimerEvent element ) {
+    public double getFontSize(final IntermediateTimerEvent element) {
         return element.getFontSet().getFontSize().getValue();
     }
 
     @Override
-    public String getNamePropertyValue( final IntermediateTimerEvent element ) {
+    public String getNamePropertyValue(final IntermediateTimerEvent element) {
         return element.getGeneral().getName().getValue();
     }
 
     @Override
-    public double getFontBorderSize( final IntermediateTimerEvent element ) {
+    public double getFontBorderSize(final IntermediateTimerEvent element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final IntermediateTimerEvent element ) {
+    public HasTitle.Position getFontPosition(final IntermediateTimerEvent element) {
         return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public double getFontRotation( final IntermediateTimerEvent element ) {
+    public double getFontRotation(final IntermediateTimerEvent element) {
         return 0;
     }
 
     @Override
     public Map<ShapeDef<IntermediateTimerEvent>, HasChildren.Layout> getChildShapeDefs() {
         return new HashMap<ShapeDef<IntermediateTimerEvent>, HasChildren.Layout>() {{
-            put( new Circle1Proxy( IntermediateTimerEventShapeDef.this ),
-                 HasChildren.Layout.CENTER );
-            put( new Circle2Proxy( IntermediateTimerEventShapeDef.this ),
-                 HasChildren.Layout.CENTER );
-            put( new Circle3Proxy( IntermediateTimerEventShapeDef.this ),
-                 HasChildren.Layout.CENTER );
-            put( new Circle4Proxy( IntermediateTimerEventShapeDef.this ),
-                 HasChildren.Layout.CENTER );
-            put( new Circle5Proxy( IntermediateTimerEventShapeDef.this ),
-                 HasChildren.Layout.CENTER );
-            put( new TimerIconProxy(),
-                 HasChildren.Layout.CENTER );
+            put(new Circle1Proxy(IntermediateTimerEventShapeDef.this),
+                HasChildren.Layout.CENTER);
+            put(new Circle2Proxy(IntermediateTimerEventShapeDef.this),
+                HasChildren.Layout.CENTER);
+            put(new Circle3Proxy(IntermediateTimerEventShapeDef.this),
+                HasChildren.Layout.CENTER);
+            put(new Circle4Proxy(IntermediateTimerEventShapeDef.this),
+                HasChildren.Layout.CENTER);
+            put(new Circle5Proxy(IntermediateTimerEventShapeDef.this),
+                HasChildren.Layout.CENTER);
+            put(new TimerIconProxy(),
+                HasChildren.Layout.CENTER);
         }};
     }
 
@@ -128,12 +128,12 @@ public final class IntermediateTimerEventShapeDef
             new PictureGlyphDef<IntermediateTimerEvent, BPMNPictures>() {
 
                 @Override
-                public String getGlyphDescription( IntermediateTimerEvent element ) {
+                public String getGlyphDescription(final IntermediateTimerEvent element) {
                     return element.getDescription();
                 }
 
                 @Override
-                public BPMNPictures getSource( final Class<?> type ) {
+                public BPMNPictures getSource(final Class<?> type) {
                     return BPMNPictures.CLOCK_O;
                 }
             };
@@ -149,7 +149,7 @@ public final class IntermediateTimerEventShapeDef
             implements IconShapeDef<IntermediateTimerEvent> {
 
         @Override
-        public Icons getIcon( final IntermediateTimerEvent element ) {
+        public Icons getIcon(final IntermediateTimerEvent element) {
             return Icons.TIMER;
         }
     }
@@ -158,28 +158,28 @@ public final class IntermediateTimerEventShapeDef
     public final class Circle1Proxy extends WrappedBasicNamedShapeDef<IntermediateTimerEvent>
             implements CircleShapeDef<IntermediateTimerEvent> {
 
-        public Circle1Proxy( final BasicShapeWithTitleDef<IntermediateTimerEvent> parent ) {
-            super( parent );
+        public Circle1Proxy(final BasicShapeWithTitleDef<IntermediateTimerEvent> parent) {
+            super(parent);
         }
 
         @Override
-        public double getRadius( final IntermediateTimerEvent element ) {
-            return percent( element,
-                            1 );
+        public double getRadius(final IntermediateTimerEvent element) {
+            return percent(element,
+                           1);
         }
 
         @Override
-        public double getBorderSize( final IntermediateTimerEvent element ) {
+        public double getBorderSize(final IntermediateTimerEvent element) {
             return 1;
         }
 
         @Override
-        public HasTitle.Position getFontPosition( final IntermediateTimerEvent element ) {
+        public HasTitle.Position getFontPosition(final IntermediateTimerEvent element) {
             return HasTitle.Position.BOTTOM;
         }
 
         @Override
-        public double getFontRotation( final IntermediateTimerEvent element ) {
+        public double getFontRotation(final IntermediateTimerEvent element) {
             return 0;
         }
     }
@@ -188,28 +188,28 @@ public final class IntermediateTimerEventShapeDef
     public final class Circle2Proxy extends WrappedBasicNamedShapeDef<IntermediateTimerEvent>
             implements CircleShapeDef<IntermediateTimerEvent> {
 
-        public Circle2Proxy( final BasicShapeWithTitleDef<IntermediateTimerEvent> parent ) {
-            super( parent );
+        public Circle2Proxy(final BasicShapeWithTitleDef<IntermediateTimerEvent> parent) {
+            super(parent);
         }
 
         @Override
-        public double getRadius( final IntermediateTimerEvent element ) {
-            return percent( element,
-                            0.8 );
+        public double getRadius(final IntermediateTimerEvent element) {
+            return percent(element,
+                           0.8);
         }
 
         @Override
-        public double getBorderSize( final IntermediateTimerEvent element ) {
+        public double getBorderSize(final IntermediateTimerEvent element) {
             return 1;
         }
 
         @Override
-        public HasTitle.Position getFontPosition( final IntermediateTimerEvent element ) {
+        public HasTitle.Position getFontPosition(final IntermediateTimerEvent element) {
             return HasTitle.Position.BOTTOM;
         }
 
         @Override
-        public double getFontRotation( final IntermediateTimerEvent element ) {
+        public double getFontRotation(final IntermediateTimerEvent element) {
             return 0;
         }
     }
@@ -218,28 +218,28 @@ public final class IntermediateTimerEventShapeDef
     public final class Circle3Proxy extends WrappedBasicNamedShapeDef<IntermediateTimerEvent>
             implements CircleShapeDef<IntermediateTimerEvent> {
 
-        public Circle3Proxy( final BasicShapeWithTitleDef<IntermediateTimerEvent> parent ) {
-            super( parent );
+        public Circle3Proxy(final BasicShapeWithTitleDef<IntermediateTimerEvent> parent) {
+            super(parent);
         }
 
         @Override
-        public double getRadius( final IntermediateTimerEvent element ) {
-            return percent( element,
-                            1 );
+        public double getRadius(final IntermediateTimerEvent element) {
+            return percent(element,
+                           1);
         }
 
         @Override
-        public double getBorderSize( final IntermediateTimerEvent element ) {
+        public double getBorderSize(final IntermediateTimerEvent element) {
             return 1;
         }
 
         @Override
-        public HasTitle.Position getFontPosition( final IntermediateTimerEvent element ) {
+        public HasTitle.Position getFontPosition(final IntermediateTimerEvent element) {
             return HasTitle.Position.BOTTOM;
         }
 
         @Override
-        public double getFontRotation( final IntermediateTimerEvent element ) {
+        public double getFontRotation(final IntermediateTimerEvent element) {
             return 0;
         }
     }
@@ -248,28 +248,28 @@ public final class IntermediateTimerEventShapeDef
     public final class Circle4Proxy extends WrappedBasicNamedShapeDef<IntermediateTimerEvent>
             implements CircleShapeDef<IntermediateTimerEvent> {
 
-        public Circle4Proxy( final BasicShapeWithTitleDef<IntermediateTimerEvent> parent ) {
-            super( parent );
+        public Circle4Proxy(final BasicShapeWithTitleDef<IntermediateTimerEvent> parent) {
+            super(parent);
         }
 
         @Override
-        public double getRadius( final IntermediateTimerEvent element ) {
-            return percent( element,
-                            0.8 );
+        public double getRadius(final IntermediateTimerEvent element) {
+            return percent(element,
+                           0.8);
         }
 
         @Override
-        public double getBorderSize( final IntermediateTimerEvent element ) {
+        public double getBorderSize(final IntermediateTimerEvent element) {
             return 1;
         }
 
         @Override
-        public HasTitle.Position getFontPosition( final IntermediateTimerEvent element ) {
+        public HasTitle.Position getFontPosition(final IntermediateTimerEvent element) {
             return HasTitle.Position.BOTTOM;
         }
 
         @Override
-        public double getFontRotation( final IntermediateTimerEvent element ) {
+        public double getFontRotation(final IntermediateTimerEvent element) {
             return 0;
         }
     }
@@ -278,41 +278,41 @@ public final class IntermediateTimerEventShapeDef
     public final class Circle5Proxy extends WrappedBasicNamedShapeDef<IntermediateTimerEvent>
             implements CircleShapeDef<IntermediateTimerEvent> {
 
-        public Circle5Proxy( final BasicShapeWithTitleDef<IntermediateTimerEvent> parent ) {
-            super( parent );
+        public Circle5Proxy(final BasicShapeWithTitleDef<IntermediateTimerEvent> parent) {
+            super(parent);
         }
 
         @Override
-        public double getRadius( final IntermediateTimerEvent element ) {
-            return percent( element,
-                            0.67 );
+        public double getRadius(final IntermediateTimerEvent element) {
+            return percent(element,
+                           0.67);
         }
 
         @Override
-        public double getBorderSize( final IntermediateTimerEvent element ) {
+        public double getBorderSize(final IntermediateTimerEvent element) {
             return 1;
         }
 
         @Override
-        public HasTitle.Position getFontPosition( final IntermediateTimerEvent element ) {
+        public HasTitle.Position getFontPosition(final IntermediateTimerEvent element) {
             return HasTitle.Position.BOTTOM;
         }
 
         @Override
-        public double getFontRotation( final IntermediateTimerEvent element ) {
+        public double getFontRotation(final IntermediateTimerEvent element) {
             return 0;
         }
     }
 
-    private double percent( final IntermediateTimerEvent element,
-                            final double pct ) {
-        final double radius = IntermediateTimerEventShapeDef.this.getRadius( element );
-        return percent( radius,
-                        pct );
+    private double percent(final IntermediateTimerEvent element,
+                           final double pct) {
+        final double radius = IntermediateTimerEventShapeDef.this.getRadius(element);
+        return percent(radius,
+                       pct);
     }
 
-    private static double percent( final double value,
-                                   final double pct ) {
-        return ( value * pct );
+    private static double percent(final double value,
+                                  final double pct) {
+        return (value * pct);
     }
 }

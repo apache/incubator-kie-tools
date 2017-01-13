@@ -22,12 +22,12 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler
 
 public interface HasEventHandlers<T, S> {
 
-    boolean supports( final ViewEventType type );
+    boolean supports(final ViewEventType type);
 
-    T addHandler( final ViewEventType type,
-                  ViewHandler<? extends ViewEvent> eventHandler );
+    T addHandler(final ViewEventType type,
+                 ViewHandler<? extends ViewEvent> eventHandler);
 
-    T removeHandler( final ViewHandler<? extends ViewEvent> eventHandler );
+    T removeHandler(final ViewHandler<? extends ViewEvent> eventHandler);
 
     T enableHandlers();
 

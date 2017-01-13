@@ -23,26 +23,26 @@ public abstract class PropertySetAdapterWrapper<T, A extends PropertySetAdapter<
     protected final A adapter;
 
     protected PropertySetAdapterWrapper() {
-        this( null );
+        this(null);
     }
 
-    public PropertySetAdapterWrapper( final A adapter ) {
+    public PropertySetAdapterWrapper(final A adapter) {
         this.adapter = adapter;
     }
 
     @Override
-    public String getId( final T pojo ) {
-        return adapter.getId( pojo );
+    public String getId(final T pojo) {
+        return adapter.getId(pojo);
     }
 
     @Override
-    public String getName( final T pojo ) {
-        return adapter.getName( pojo );
+    public String getName(final T pojo) {
+        return adapter.getName(pojo);
     }
 
     @Override
-    public Set<?> getProperties( final T pojo ) {
-        return adapter.getProperties( pojo );
+    public Set<?> getProperties(final T pojo) {
+        return adapter.getProperties(pojo);
     }
 
     @Override
@@ -51,7 +51,7 @@ public abstract class PropertySetAdapterWrapper<T, A extends PropertySetAdapter<
     }
 
     @Override
-    public boolean accepts( final Class<?> type ) {
-        return adapter.accepts( type );
+    public boolean accepts(final Class<?> type) {
+        return adapter.accepts(type);
     }
 }

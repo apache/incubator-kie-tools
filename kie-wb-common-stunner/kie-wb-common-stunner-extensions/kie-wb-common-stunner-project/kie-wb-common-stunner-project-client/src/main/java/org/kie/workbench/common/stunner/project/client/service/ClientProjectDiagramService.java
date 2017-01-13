@@ -39,57 +39,57 @@ import org.uberfire.backend.vfs.Path;
 public class ClientProjectDiagramService extends AbstractClientDiagramService<ProjectMetadata, ProjectDiagram, ProjectDiagramService> {
 
     protected ClientProjectDiagramService() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public ClientProjectDiagramService( final ShapeManager shapeManager,
-                                        final Caller<ProjectDiagramService> diagramServiceCaller,
-                                        final Caller<DiagramLookupService> diagramLookupServiceCaller ) {
-        super( shapeManager,
-               diagramServiceCaller,
-               diagramLookupServiceCaller );
+    public ClientProjectDiagramService(final ShapeManager shapeManager,
+                                       final Caller<ProjectDiagramService> diagramServiceCaller,
+                                       final Caller<DiagramLookupService> diagramLookupServiceCaller) {
+        super(shapeManager,
+              diagramServiceCaller,
+              diagramLookupServiceCaller);
     }
 
-    public void create( final Path path,
-                        final String name,
-                        final String defSetId,
-                        final String projName,
-                        final String projPkg,
-                        final ServiceCallback<Path> callback ) {
-        diagramServiceCaller.call( new RemoteCallback<Path>() {
-                                       @Override
-                                       public void callback( Path path ) {
-                                           callback.onSuccess( path );
-                                       }
-                                   },
-                                   ( message, throwable ) -> {
-                                       callback.onError( new ClientRuntimeError( throwable ) );
-                                       return false;
-                                   } ).create( path,
-                                               name,
-                                               defSetId,
-                                               projName,
-                                               projPkg );
+    public void create(final Path path,
+                       final String name,
+                       final String defSetId,
+                       final String projName,
+                       final String projPkg,
+                       final ServiceCallback<Path> callback) {
+        diagramServiceCaller.call(new RemoteCallback<Path>() {
+                                      @Override
+                                      public void callback(final Path path) {
+                                          callback.onSuccess(path);
+                                      }
+                                  },
+                                  (message, throwable) -> {
+                                      callback.onError(new ClientRuntimeError(throwable));
+                                      return false;
+                                  }).create(path,
+                                            name,
+                                            defSetId,
+                                            projName,
+                                            projPkg);
     }
 
-    public void saveOrUpdate( final Path path,
-                              final ProjectDiagram diagram,
-                              final Metadata metadata,
-                              final String comment,
-                              final ServiceCallback<ProjectDiagram> callback ) {
-        diagramServiceCaller.call( v -> {
-                                       updateClientMetadata( diagram );
-                                       callback.onSuccess( diagram );
-                                   },
-                                   ( message, throwable ) -> {
-                                       callback.onError( new ClientRuntimeError( throwable ) );
-                                       return false;
-                                   } ).save( path,
-                                             diagram,
-                                             metadata,
-                                             comment );
+    public void saveOrUpdate(final Path path,
+                             final ProjectDiagram diagram,
+                             final Metadata metadata,
+                             final String comment,
+                             final ServiceCallback<ProjectDiagram> callback) {
+        diagramServiceCaller.call(v -> {
+                                      updateClientMetadata(diagram);
+                                      callback.onSuccess(diagram);
+                                  },
+                                  (message, throwable) -> {
+                                      callback.onError(new ClientRuntimeError(throwable));
+                                      return false;
+                                  }).save(path,
+                                          diagram,
+                                          metadata,
+                                          comment);
     }
 }

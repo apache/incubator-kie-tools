@@ -28,14 +28,14 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 public final class CanvasCommandNotification
         extends AbstractNotification<CanvasCommandNotificationSource, CanvasNotificationContext> {
 
-    CanvasCommandNotification( final String uuid,
-                               final Type type,
-                               final CanvasCommandNotificationSource source,
-                               final CanvasNotificationContext context ) {
-        super( uuid,
-               type,
-               source,
-               context );
+    CanvasCommandNotification(final String uuid,
+                              final Type type,
+                              final CanvasCommandNotificationSource source,
+                              final CanvasNotificationContext context) {
+        super(uuid,
+              type,
+              source,
+              context);
     }
 
     public static class CanvasCommandNotificationBuilder<H extends CanvasHandler> {
@@ -44,50 +44,50 @@ public final class CanvasCommandNotification
         Command<H, CanvasViolation> command;
         CommandResult<CanvasViolation> result;
 
-        public CanvasCommandNotificationBuilder<H> canvasHander( final H canvasHander ) {
+        public CanvasCommandNotificationBuilder<H> canvasHander(final H canvasHander) {
             this.canvasHander = canvasHander;
             return this;
         }
 
-        public CanvasCommandNotificationBuilder<H> command( final Command<H, CanvasViolation> command ) {
+        public CanvasCommandNotificationBuilder<H> command(final Command<H, CanvasViolation> command) {
             this.command = command;
             return this;
         }
 
-        public CanvasCommandNotificationBuilder<H> result( final CommandResult<CanvasViolation> result ) {
+        public CanvasCommandNotificationBuilder<H> result(final CommandResult<CanvasViolation> result) {
             this.result = result;
             return this;
         }
 
         public CanvasCommandNotification build() {
-            if ( null == command ) {
-                throw new IllegalArgumentException( "Missing notification's command." );
+            if (null == command) {
+                throw new IllegalArgumentException("Missing notification's command.");
             }
-            final StringBuilder builder = new StringBuilder( command.toString() );
-            final String resultMsg = getResultMessage( result );
-            final CanvasCommandNotificationSource source = new CanvasCommandNotificationSource( builder.toString(),
-                                                                                                resultMsg );
+            final StringBuilder builder = new StringBuilder(command.toString());
+            final String resultMsg = getResultMessage(result);
+            final CanvasCommandNotificationSource source = new CanvasCommandNotificationSource(builder.toString(),
+                                                                                               resultMsg);
             final Diagram diagram = canvasHander.getDiagram();
             final String diagramUUID = diagram.getName();
             final String title = diagram.getMetadata().getTitle();
-            final CanvasNotificationContext context = new CanvasNotificationContext( canvasHander.toString(),
-                                                                                     diagramUUID,
-                                                                                     title );
-            final Notification.Type type = getNotificationType( result );
-            return new CanvasCommandNotification( UUID.uuid(),
-                                                  type,
-                                                  source,
-                                                  context );
+            final CanvasNotificationContext context = new CanvasNotificationContext(canvasHander.toString(),
+                                                                                    diagramUUID,
+                                                                                    title);
+            final Notification.Type type = getNotificationType(result);
+            return new CanvasCommandNotification(UUID.uuid(),
+                                                 type,
+                                                 source,
+                                                 context);
         }
 
-        private Notification.Type getNotificationType( final CommandResult<CanvasViolation> result ) {
-            return CommandResult.Type.ERROR.equals( result.getType() )
+        private Notification.Type getNotificationType(final CommandResult<CanvasViolation> result) {
+            return CommandResult.Type.ERROR.equals(result.getType())
                     ? Notification.Type.ERROR : Notification.Type.INFO;
         }
 
         // TODO: I18n.
-        @SuppressWarnings( "unchecked" )
-        private String getResultMessage( final CommandResult<CanvasViolation> result ) {
+        @SuppressWarnings("unchecked")
+        private String getResultMessage(final CommandResult<CanvasViolation> result) {
             return result.getMessage();
         }
     }

@@ -51,20 +51,20 @@ public class ThrowEventAttributes implements BPMNPropertySet {
     private DistributionType distributionType;
 
     public ThrowEventAttributes() {
-        this( new Min(),
-              new Max(),
-              new Mean(),
-              new TimeUnit(),
-              new StandardDeviation(),
-              new DistributionType() );
+        this(new Min(),
+             new Max(),
+             new Mean(),
+             new TimeUnit(),
+             new StandardDeviation(),
+             new DistributionType());
     }
 
-    public ThrowEventAttributes( @MapsTo( "min" ) Min min,
-                                 @MapsTo( "max" ) Max max,
-                                 @MapsTo( "mean" ) Mean mean,
-                                 @MapsTo( "timeUnit" ) TimeUnit timeUnit,
-                                 @MapsTo( "standardDeviation" ) StandardDeviation standardDeviation,
-                                 @MapsTo( "distributionType" ) DistributionType distributionType ) {
+    public ThrowEventAttributes(final @MapsTo("min") Min min,
+                                final @MapsTo("max") Max max,
+                                final @MapsTo("mean") Mean mean,
+                                final @MapsTo("timeUnit") TimeUnit timeUnit,
+                                final @MapsTo("standardDeviation") StandardDeviation standardDeviation,
+                                final @MapsTo("distributionType") DistributionType distributionType) {
         this.min = min;
         this.max = max;
         this.mean = mean;
@@ -73,18 +73,18 @@ public class ThrowEventAttributes implements BPMNPropertySet {
         this.distributionType = distributionType;
     }
 
-    public ThrowEventAttributes( Double min,
-                                 Double max,
-                                 Double mean,
-                                 String timeUnit,
-                                 Double standardDeviation,
-                                 String distributionType ) {
-        this.min = new Min( min );
-        this.max = new Max( max );
-        this.mean = new Mean( mean );
-        this.timeUnit = new TimeUnit( timeUnit );
-        this.standardDeviation = new StandardDeviation( standardDeviation );
-        this.distributionType = new DistributionType( distributionType );
+    public ThrowEventAttributes(final Double min,
+                                final Double max,
+                                final Double mean,
+                                final String timeUnit,
+                                final Double standardDeviation,
+                                final String distributionType) {
+        this.min = new Min(min);
+        this.max = new Max(max);
+        this.mean = new Mean(mean);
+        this.timeUnit = new TimeUnit(timeUnit);
+        this.standardDeviation = new StandardDeviation(standardDeviation);
+        this.distributionType = new DistributionType(distributionType);
     }
 
     public String getPropertySetName() {
@@ -115,27 +115,27 @@ public class ThrowEventAttributes implements BPMNPropertySet {
         return distributionType;
     }
 
-    public void setMin( Min min ) {
+    public void setMin(final Min min) {
         this.min = min;
     }
 
-    public void setMax( Max max ) {
+    public void setMax(final Max max) {
         this.max = max;
     }
 
-    public void setMean( Mean mean ) {
+    public void setMean(final Mean mean) {
         this.mean = mean;
     }
 
-    public void setTimeUnit( TimeUnit timeUnit ) {
+    public void setTimeUnit(final TimeUnit timeUnit) {
         this.timeUnit = timeUnit;
     }
 
-    public void setStandardDeviation( StandardDeviation standardDeviation ) {
+    public void setStandardDeviation(final StandardDeviation standardDeviation) {
         this.standardDeviation = standardDeviation;
     }
 
-    public void setDistributionType( DistributionType distributionType ) {
+    public void setDistributionType(final DistributionType distributionType) {
         this.distributionType = distributionType;
     }
 }

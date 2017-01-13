@@ -28,8 +28,8 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientF
 public class UndoToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientFullSession, UndoSessionCommand> {
 
     @Inject
-    public UndoToolbarCommand( final SessionCommandFactory sessionCommandFactory ) {
-        super( sessionCommandFactory.newUndoCommand() );
+    public UndoToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
+        super(sessionCommandFactory.newUndoCommand());
     }
 
     @Override

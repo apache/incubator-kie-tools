@@ -30,13 +30,13 @@ public class StringUtils {
      * @param str
      * @return
      */
-    public static String createQuotedConstant( String str ) {
-        if ( str == null || str.isEmpty() ) {
+    public static String createQuotedConstant(String str) {
+        if (str == null || str.isEmpty()) {
             return str;
         }
         try {
-            Double.parseDouble( str );
-        } catch ( NumberFormatException nfe ) {
+            Double.parseDouble(str);
+        } catch (NumberFormatException nfe) {
             return "\"" + str + "\"";
         }
         return str;
@@ -47,16 +47,16 @@ public class StringUtils {
      * @param str
      * @return
      */
-    public static String createUnquotedConstant( String str ) {
-        if ( str == null || str.isEmpty() ) {
+    public static String createUnquotedConstant(String str) {
+        if (str == null || str.isEmpty()) {
             return str;
         }
-        if ( str.startsWith( "\"" ) ) {
-            str = str.substring( 1 );
+        if (str.startsWith("\"")) {
+            str = str.substring(1);
         }
-        if ( str.endsWith( "\"" ) ) {
-            str = str.substring( 0,
-                                 str.length() - 1 );
+        if (str.endsWith("\"")) {
+            str = str.substring(0,
+                                str.length() - 1);
         }
         return str;
     }
@@ -66,11 +66,11 @@ public class StringUtils {
      * @param str
      * @return
      */
-    public static boolean isQuotedConstant( String str ) {
-        if ( str == null || str.isEmpty() ) {
+    public static boolean isQuotedConstant(String str) {
+        if (str == null || str.isEmpty()) {
             return false;
         }
-        return ( str.startsWith( "\"" ) && str.endsWith( "\"" ) );
+        return (str.startsWith("\"") && str.endsWith("\""));
     }
 
     /**
@@ -78,13 +78,13 @@ public class StringUtils {
      * @param objects
      * @return
      */
-    public static String getStringForList( List<? extends Object> objects ) {
+    public static String getStringForList(List<? extends Object> objects) {
         StringBuilder sb = new StringBuilder();
-        for ( Object o : objects ) {
-            sb.append( o.toString() ).append( ',' );
+        for (Object o : objects) {
+            sb.append(o.toString()).append(',');
         }
-        if ( sb.length() > 0 ) {
-            sb.setLength( sb.length() - 1 );
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
         }
         return sb.toString();
     }
@@ -94,11 +94,11 @@ public class StringUtils {
      * @param s
      * @return
      */
-    public static String urlEncode( String s ) {
-        if ( s == null || s.isEmpty() ) {
+    public static String urlEncode(String s) {
+        if (s == null || s.isEmpty()) {
             return s;
         }
-        return URL.encodeQueryString( s );
+        return URL.encodeQueryString(s);
     }
 
     /**
@@ -106,11 +106,11 @@ public class StringUtils {
      * @param s
      * @return
      */
-    public static String urlDecode( String s ) {
-        if ( s == null || s.isEmpty() ) {
+    public static String urlDecode(String s) {
+        if (s == null || s.isEmpty()) {
             return s;
         }
-        return URL.decodeQueryString( s );
+        return URL.decodeQueryString(s);
     }
 
     /**
@@ -118,12 +118,12 @@ public class StringUtils {
      * @param dataType
      * @return
      */
-    public static String createDataTypeDisplayName( String dataType ) {
-        int i = dataType.lastIndexOf( '.' );
+    public static String createDataTypeDisplayName(String dataType) {
+        int i = dataType.lastIndexOf('.');
         StringBuilder formattedDataType = new StringBuilder();
-        formattedDataType.append( dataType.substring( i + 1 ) );
-        formattedDataType.append( " [" ).append( dataType.substring( 0,
-                                                                     i ) ).append( "]" );
+        formattedDataType.append(dataType.substring(i + 1));
+        formattedDataType.append(" [").append(dataType.substring(0,
+                                                                 i)).append("]");
         return formattedDataType.toString();
     }
 }

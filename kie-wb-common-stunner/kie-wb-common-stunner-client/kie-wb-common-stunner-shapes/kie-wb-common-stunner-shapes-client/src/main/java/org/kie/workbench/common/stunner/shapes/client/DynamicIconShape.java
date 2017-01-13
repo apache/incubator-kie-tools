@@ -30,49 +30,49 @@ import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.XORIconShapeDef
 
 public class DynamicIconShape<W> extends AbstractBasicDynamicShape<W, DynamicIconShapeView, IconShapeDef<W>> {
 
-    public DynamicIconShape( final DynamicIconShapeView view,
-                             final IconShapeDef<W> proxy ) {
-        super( view,
-               proxy );
+    public DynamicIconShape(final DynamicIconShapeView view,
+                            final IconShapeDef<W> proxy) {
+        super(view,
+              proxy);
     }
 
-    public static <T> Icons getIcon( final IconShapeDef<T> proxy ) {
-        return getIcon( null,
-                        proxy );
+    public static <T> Icons getIcon(final IconShapeDef<T> proxy) {
+        return getIcon(null,
+                       proxy);
     }
 
-    public static <T> Icons getIcon( final T definition,
-                                     final IconShapeDef<T> proxy ) {
+    public static <T> Icons getIcon(final T definition,
+                                    final IconShapeDef<T> proxy) {
         Icons icon = null;
-        if ( null != definition && proxy instanceof DynamicIconShapeDef ) {
-            final DynamicIconShapeDef<T> dynamicIconProxy = ( DynamicIconShapeDef<T> ) proxy;
-            icon = dynamicIconProxy.getIcon( definition );
-        } else if ( proxy instanceof MinusIconShapeDef ) {
+        if (null != definition && proxy instanceof DynamicIconShapeDef) {
+            final DynamicIconShapeDef<T> dynamicIconProxy = (DynamicIconShapeDef<T>) proxy;
+            icon = dynamicIconProxy.getIcon(definition);
+        } else if (proxy instanceof MinusIconShapeDef) {
             icon = Icons.MINUS;
-        } else if ( proxy instanceof PlusIconShapeDef ) {
+        } else if (proxy instanceof PlusIconShapeDef) {
             icon = Icons.PLUS;
-        } else if ( proxy instanceof XORIconShapeDef ) {
+        } else if (proxy instanceof XORIconShapeDef) {
             icon = Icons.XOR;
         }
         return icon;
     }
 
     @Override
-    public void applyProperties( final Node<View<W>, Edge> element,
-                                 final MutationContext mutationContext ) {
-        super.applyProperties( element,
-                               mutationContext );
+    public void applyProperties(final Node<View<W>, Edge> element,
+                                final MutationContext mutationContext) {
+        super.applyProperties(element,
+                              mutationContext);
         // Width/Height.
-        final Double w = proxy.getWidth( getDefinition( element ) );
-        final Double h = proxy.getHeight( getDefinition( element ) );
-        _applyWidthAndHeight( element,
-                              w,
-                              h,
-                              mutationContext );
+        final Double w = proxy.getWidth(getDefinition(element));
+        final Double h = proxy.getHeight(getDefinition(element));
+        _applyWidthAndHeight(element,
+                             w,
+                             h,
+                             mutationContext);
         // Icon.
-        Icons icon = getIcon( getDefinition( element ),
-                              proxy );
-        getShapeView().setIcon( icon );
+        Icons icon = getIcon(getDefinition(element),
+                             proxy);
+        getShapeView().setIcon(icon);
     }
 
     @Override

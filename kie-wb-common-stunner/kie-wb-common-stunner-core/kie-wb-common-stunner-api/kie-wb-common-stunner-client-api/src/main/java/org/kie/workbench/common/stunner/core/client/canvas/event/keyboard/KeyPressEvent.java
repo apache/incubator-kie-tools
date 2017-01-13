@@ -21,7 +21,7 @@ import org.jboss.errai.common.client.api.annotations.NonPortable;
 @NonPortable
 public final class KeyPressEvent extends AbstractKeyboardEvent {
 
-    public KeyPressEvent( final Key key ) {
-        super( key );
+    public KeyPressEvent(final Key key) {
+        super(key);
     }
 }

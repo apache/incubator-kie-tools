@@ -32,7 +32,7 @@ public interface DiagramMetadataMarshaller<M extends Metadata> {
      * @return A metadata instance of type <code>M</code.
      * @throws IOException System I/O error.
      */
-    M unmarshall( final InputStream input ) throws IOException;
+    M unmarshall(final InputStream input) throws IOException;
 
     /**
      * Serializes a metadata instance of type <code>M</code> as string.
@@ -40,5 +40,5 @@ public interface DiagramMetadataMarshaller<M extends Metadata> {
      * @return The serialized metadata's raw value.
      * @throws IOException System I/O error.
      */
-    String marshall( final M metadata ) throws IOException;
+    String marshall(final M metadata) throws IOException;
 }

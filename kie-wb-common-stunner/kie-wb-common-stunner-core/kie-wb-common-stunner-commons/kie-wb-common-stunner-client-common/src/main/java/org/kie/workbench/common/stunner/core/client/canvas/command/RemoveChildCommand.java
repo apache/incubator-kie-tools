@@ -30,22 +30,22 @@ public final class RemoveChildCommand extends AbstractCanvasGraphCommand {
     private final Node parent;
     private final Node child;
 
-    public RemoveChildCommand( final Node parent,
-                               final Node child ) {
+    public RemoveChildCommand(final Node parent,
+                              final Node child) {
         this.parent = parent;
         this.child = child;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.RemoveChildCommand( parent,
-                                                                                                child );
+    @SuppressWarnings("unchecked")
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.RemoveChildCommand(parent,
+                                                                                               child);
     }
 
     @Override
-    protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new RemoveCanvasChildCommand( parent,
-                                             child );
+    protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
+        return new RemoveCanvasChildCommand(parent,
+                                            child);
     }
 }

@@ -41,32 +41,32 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
     private final LienzoPanel lienzoPanel;
 
     protected WiresCanvasPresenter() {
-        this( null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public WiresCanvasPresenter( final Event<CanvasClearEvent> canvasClearEvent,
-                                 final Event<CanvasShapeAddedEvent> canvasShapeAddedEvent,
-                                 final Event<CanvasShapeRemovedEvent> canvasShapeRemovedEvent,
-                                 final Event<CanvasDrawnEvent> canvasDrawnEvent,
-                                 final Event<CanvasFocusedEvent> canvasFocusedEvent,
-                                 final @Lienzo Layer layer,
-                                 final WiresCanvas.View view,
-                                 final LienzoPanel lienzoPanel ) {
-        super( canvasClearEvent,
-               canvasShapeAddedEvent,
-               canvasShapeRemovedEvent,
-               canvasDrawnEvent,
-               canvasFocusedEvent,
-               layer,
-               view );
+    public WiresCanvasPresenter(final Event<CanvasClearEvent> canvasClearEvent,
+                                final Event<CanvasShapeAddedEvent> canvasShapeAddedEvent,
+                                final Event<CanvasShapeRemovedEvent> canvasShapeRemovedEvent,
+                                final Event<CanvasDrawnEvent> canvasDrawnEvent,
+                                final Event<CanvasFocusedEvent> canvasFocusedEvent,
+                                final @Lienzo Layer layer,
+                                final WiresCanvas.View view,
+                                final LienzoPanel lienzoPanel) {
+        super(canvasClearEvent,
+              canvasShapeAddedEvent,
+              canvasShapeRemovedEvent,
+              canvasDrawnEvent,
+              canvasFocusedEvent,
+              layer,
+              view);
         this.lienzoPanel = lienzoPanel;
     }
 
@@ -76,25 +76,25 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
     }
 
     @Override
-    public Canvas initialize( final int width,
-                              final int height ) {
-        lienzoPanel.show( width,
-                          height,
-                          PADDING );
-        show( lienzoPanel.asWidget(),
-              layer );
-        layer.onAfterDraw( WiresCanvasPresenter.this::afterDrawCanvas );
+    public Canvas initialize(final int width,
+                             final int height) {
+        lienzoPanel.show(width,
+                         height,
+                         PADDING);
+        show(lienzoPanel.asWidget(),
+             layer);
+        layer.onAfterDraw(WiresCanvasPresenter.this::afterDrawCanvas);
         return this;
     }
 
     @Override
-    public void addControl( final IsWidget control ) {
-        view.add( control );
+    public void addControl(final IsWidget control) {
+        view.add(control);
     }
 
     @Override
-    public void deleteControl( final IsWidget control ) {
-        view.remove( control );
+    public void deleteControl(final IsWidget control) {
+        view.remove(control);
     }
 
     @Override

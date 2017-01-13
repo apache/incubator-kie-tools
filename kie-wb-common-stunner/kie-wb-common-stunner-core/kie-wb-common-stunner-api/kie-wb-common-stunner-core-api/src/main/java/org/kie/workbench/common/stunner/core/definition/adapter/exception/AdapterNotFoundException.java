@@ -23,8 +23,8 @@ public class AdapterNotFoundException extends RuntimeException {
     private final Class<? extends Adapter> adapterClass;
     private final Class<?> type;
 
-    public AdapterNotFoundException( final Class<? extends Adapter> adapterClass,
-                                     final Class<?> type ) {
+    public AdapterNotFoundException(final Class<? extends Adapter> adapterClass,
+                                    final Class<?> type) {
         this.adapterClass = adapterClass;
         this.type = type;
     }

@@ -42,29 +42,29 @@ import org.kie.workbench.common.stunner.core.rule.model.ModelRulesManager;
 public class WiresCanvasHandler<D extends Diagram, C extends WiresCanvas> extends AbstractCanvasHandler<D, C> {
 
     @Inject
-    public WiresCanvasHandler( final ClientDefinitionManager clientDefinitionManager,
-                               final ClientFactoryService clientFactoryServices,
-                               final GraphRulesManager graphRulesManager,
-                               final ModelRulesManager modelRulesManager,
-                               final GraphUtils graphUtils,
-                               final GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder,
-                               final ShapeManager shapeManager,
-                               final Event<CanvasElementAddedEvent> canvasElementAddedEvent,
-                               final Event<CanvasElementRemovedEvent> canvasElementRemovedEvent,
-                               final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent,
-                               final Event<CanvasElementsClearEvent> canvasElementsClearEvent,
-                               final CanvasCommandFactory canvasCommandFactory ) {
-        super( clientDefinitionManager,
-               clientFactoryServices,
-               graphRulesManager,
-               modelRulesManager,
-               graphUtils,
-               indexBuilder,
-               shapeManager,
-               canvasElementAddedEvent,
-               canvasElementRemovedEvent,
-               canvasElementUpdatedEvent,
-               canvasElementsClearEvent,
-               canvasCommandFactory );
+    public WiresCanvasHandler(final ClientDefinitionManager clientDefinitionManager,
+                              final ClientFactoryService clientFactoryServices,
+                              final GraphRulesManager graphRulesManager,
+                              final ModelRulesManager modelRulesManager,
+                              final GraphUtils graphUtils,
+                              final GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder,
+                              final ShapeManager shapeManager,
+                              final Event<CanvasElementAddedEvent> canvasElementAddedEvent,
+                              final Event<CanvasElementRemovedEvent> canvasElementRemovedEvent,
+                              final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent,
+                              final Event<CanvasElementsClearEvent> canvasElementsClearEvent,
+                              final CanvasCommandFactory canvasCommandFactory) {
+        super(clientDefinitionManager,
+              clientFactoryServices,
+              graphRulesManager,
+              modelRulesManager,
+              graphUtils,
+              indexBuilder,
+              shapeManager,
+              canvasElementAddedEvent,
+              canvasElementRemovedEvent,
+              canvasElementUpdatedEvent,
+              canvasElementsClearEvent,
+              canvasCommandFactory);
     }
 }

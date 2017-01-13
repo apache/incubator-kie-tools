@@ -25,19 +25,19 @@ import org.kie.workbench.common.stunner.core.definition.property.type.IntegerTyp
 public class IntegerTypeSerializer implements Bpmn2OryxPropertySerializer<Integer> {
 
     @Override
-    public boolean accepts( PropertyType type ) {
-        return IntegerType.name.equals( type.getName() );
+    public boolean accepts(final PropertyType type) {
+        return IntegerType.name.equals(type.getName());
     }
 
     @Override
-    public Integer parse( Object property,
-                          String value ) {
-        return Integer.parseInt( value );
+    public Integer parse(final Object property,
+                         final String value) {
+        return Integer.parseInt(value);
     }
 
     @Override
-    public String serialize( Object property,
-                             Integer value ) {
-        return Integer.toString( value );
+    public String serialize(final Object property,
+                            final Integer value) {
+        return Integer.toString(value);
     }
 }

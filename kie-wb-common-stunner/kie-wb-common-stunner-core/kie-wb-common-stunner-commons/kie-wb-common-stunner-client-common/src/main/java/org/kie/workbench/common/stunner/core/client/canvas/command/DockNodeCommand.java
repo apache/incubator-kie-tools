@@ -26,22 +26,22 @@ public final class DockNodeCommand extends AbstractCanvasGraphCommand {
     private final Node parent;
     private final Node candidate;
 
-    public DockNodeCommand( final Node parent,
-                            final Node candidate ) {
+    public DockNodeCommand(final Node parent,
+                           final Node candidate) {
         this.parent = parent;
         this.candidate = candidate;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.DockNodeCommand( parent,
-                                                                                             candidate );
+    @SuppressWarnings("unchecked")
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.DockNodeCommand(parent,
+                                                                                            candidate);
     }
 
     @Override
-    protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new CanvasDockNodeCommand( parent,
-                                          candidate );
+    protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
+        return new CanvasDockNodeCommand(parent,
+                                         candidate);
     }
 }

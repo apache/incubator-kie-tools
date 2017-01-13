@@ -59,7 +59,7 @@ public class Mean implements BPMNProperty {
     public Mean() {
     }
 
-    public Mean( final Double value ) {
+    public Mean(final Double value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class Mean implements BPMNProperty {
         return value;
     }
 
-    public void setValue( Double value ) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 }

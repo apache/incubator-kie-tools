@@ -22,9 +22,9 @@ public class ProcessingMorphProperty {
     private final String name;
     private final String valueBinderClassName;
 
-    public ProcessingMorphProperty( final String className,
-                                    final String name,
-                                    final String valueBinderClassName ) {
+    public ProcessingMorphProperty(final String className,
+                                   final String name,
+                                   final String valueBinderClassName) {
         this.className = className;
         this.name = name;
         this.valueBinderClassName = valueBinderClassName;

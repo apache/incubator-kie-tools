@@ -31,9 +31,9 @@ public class CaseManagementGraphObjectBuilderFactory extends BPMNGraphObjectBuil
     }
 
     @Inject
-    public CaseManagementGraphObjectBuilderFactory( final DefinitionManager definitionManager,
-                                                    final @CaseManagement OryxManager oryxManager ) {
-        super( definitionManager,
-               oryxManager );
+    public CaseManagementGraphObjectBuilderFactory(final DefinitionManager definitionManager,
+                                                   final @CaseManagement OryxManager oryxManager) {
+        super(definitionManager,
+              oryxManager);
     }
 }

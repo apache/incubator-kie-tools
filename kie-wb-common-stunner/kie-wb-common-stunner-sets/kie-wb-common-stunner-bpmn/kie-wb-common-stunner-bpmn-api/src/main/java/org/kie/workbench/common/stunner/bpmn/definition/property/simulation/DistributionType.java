@@ -59,7 +59,7 @@ public class DistributionType implements BPMNProperty {
     public DistributionType() {
     }
 
-    public DistributionType( final String value ) {
+    public DistributionType(final String value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class DistributionType implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

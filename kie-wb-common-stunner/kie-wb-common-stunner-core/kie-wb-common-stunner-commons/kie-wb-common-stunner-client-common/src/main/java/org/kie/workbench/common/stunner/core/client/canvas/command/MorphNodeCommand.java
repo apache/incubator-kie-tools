@@ -33,10 +33,10 @@ public final class MorphNodeCommand extends AbstractCanvasGraphCommand {
     private String shapeSetId;
     private String oldMorphTarget;
 
-    public MorphNodeCommand( final Node<? extends Definition<?>, Edge> candidate,
-                             final MorphDefinition morphDefinition,
-                             final String morphTarget,
-                             final String shapeSetId ) {
+    public MorphNodeCommand(final Node<? extends Definition<?>, Edge> candidate,
+                            final MorphDefinition morphDefinition,
+                            final String morphTarget,
+                            final String shapeSetId) {
         this.candidate = candidate;
         this.morphDefinition = morphDefinition;
         this.morphTarget = morphTarget;
@@ -44,17 +44,17 @@ public final class MorphNodeCommand extends AbstractCanvasGraphCommand {
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.MorphNodeCommand( ( Node ) candidate,
-                                                                                              morphDefinition,
-                                                                                              morphTarget );
+    @SuppressWarnings("unchecked")
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.MorphNodeCommand((Node) candidate,
+                                                                                             morphDefinition,
+                                                                                             morphTarget);
     }
 
     @Override
-    protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new MorphCanvasNodeCommand( candidate,
-                                           morphDefinition,
-                                           shapeSetId );
+    protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
+        return new MorphCanvasNodeCommand(candidate,
+                                          morphDefinition,
+                                          shapeSetId);
     }
 }

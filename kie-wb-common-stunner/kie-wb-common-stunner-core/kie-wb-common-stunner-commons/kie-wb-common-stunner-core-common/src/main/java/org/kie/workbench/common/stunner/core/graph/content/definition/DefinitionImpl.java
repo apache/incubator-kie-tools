@@ -24,7 +24,7 @@ public class DefinitionImpl<T> implements Definition<T> {
 
     protected T definition;
 
-    public DefinitionImpl( final @MapsTo( "definition" ) T definition ) {
+    public DefinitionImpl(final @MapsTo("definition") T definition) {
         this.definition = definition;
     }
 
@@ -34,7 +34,7 @@ public class DefinitionImpl<T> implements Definition<T> {
     }
 
     @Override
-    public void setDefinition( final T definition ) {
+    public void setDefinition(final T definition) {
         this.definition = definition;
     }
 }

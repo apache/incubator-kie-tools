@@ -31,39 +31,39 @@ public final class AddCanvasNodeCommand extends AbstractCanvasNodeRegistrationCo
 
     private final String shapeSetId;
 
-    public AddCanvasNodeCommand( final TreeWalkTraverseProcessor treeWalkTraverseProcessor,
-                                 final Node candidate,
-                                 final String shapeSetId ) {
-        super( treeWalkTraverseProcessor,
-               candidate );
+    public AddCanvasNodeCommand(final TreeWalkTraverseProcessor treeWalkTraverseProcessor,
+                                final Node candidate,
+                                final String shapeSetId) {
+        super(treeWalkTraverseProcessor,
+              candidate);
         this.shapeSetId = shapeSetId;
     }
 
-    AddCanvasNodeCommand( final Node candidate,
-                          final String shapeSetId ) {
-        super( new TreeWalkTraverseProcessorImpl(),
-               candidate );
+    AddCanvasNodeCommand(final Node candidate,
+                         final String shapeSetId) {
+        super(new TreeWalkTraverseProcessorImpl(),
+              candidate);
         this.shapeSetId = shapeSetId;
     }
 
     @Override
-    protected String getShapeSetId( final AbstractCanvasHandler context ) {
+    protected String getShapeSetId(final AbstractCanvasHandler context) {
         return shapeSetId;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected boolean registerCandidate( final AbstractCanvasHandler context ) {
-        context.register( shapeSetId,
-                          getCandidate() );
-        context.applyElementMutation( getCandidate(),
-                                      MutationContext.STATIC );
+    @SuppressWarnings("unchecked")
+    protected boolean registerCandidate(final AbstractCanvasHandler context) {
+        context.register(shapeSetId,
+                         getCandidate());
+        context.applyElementMutation(getCandidate(),
+                                     MutationContext.STATIC);
         return true;
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        return new DeleteCanvasNodeCommand( getCandidate() ).execute( context );
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+        return new DeleteCanvasNodeCommand(getCandidate()).execute(context);
     }
 
     public String getShapeSetId() {

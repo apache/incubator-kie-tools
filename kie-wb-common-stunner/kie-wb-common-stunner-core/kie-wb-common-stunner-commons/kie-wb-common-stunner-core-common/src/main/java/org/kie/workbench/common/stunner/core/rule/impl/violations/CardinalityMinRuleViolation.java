@@ -22,14 +22,14 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class CardinalityMinRuleViolation extends AbstractCardinalityRuleViolation {
 
-    public CardinalityMinRuleViolation( final @MapsTo( "target" ) String target,
-                                        final @MapsTo( "candidate" ) String candidate,
-                                        final @MapsTo( "restrictedOccurrences" ) Integer restrictedOccurrences,
-                                        final @MapsTo( "currentOccurrences" ) Integer currentOccurrences ) {
-        super( target,
-               candidate,
-               restrictedOccurrences,
-               currentOccurrences );
+    public CardinalityMinRuleViolation(final @MapsTo("target") String target,
+                                       final @MapsTo("candidate") String candidate,
+                                       final @MapsTo("restrictedOccurrences") Integer restrictedOccurrences,
+                                       final @MapsTo("currentOccurrences") Integer currentOccurrences) {
+        super(target,
+              candidate,
+              restrictedOccurrences,
+              currentOccurrences);
     }
 
     @Override

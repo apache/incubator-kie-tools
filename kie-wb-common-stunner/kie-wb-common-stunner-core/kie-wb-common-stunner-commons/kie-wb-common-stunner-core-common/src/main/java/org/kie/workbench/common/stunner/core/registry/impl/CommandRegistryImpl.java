@@ -37,18 +37,18 @@ public class CommandRegistryImpl<C extends Command> implements CommandRegistry<C
     private int maxStackSize = 200;
 
     @Override
-    public void setMaxSize( final int size ) {
+    public void setMaxSize(final int size) {
         this.maxStackSize = size;
     }
 
     @Override
-    public void register( final C command ) {
-        addIntoStack( command );
+    public void register(final C command) {
+        addIntoStack(command);
     }
 
     @Override
-    public boolean remove( final C command ) {
-        throw new UnsupportedOperationException( "Remove not implemented yet." );
+    public boolean remove(final C command) {
+        throw new UnsupportedOperationException("Remove not implemented yet.");
     }
 
     @Override
@@ -57,8 +57,8 @@ public class CommandRegistryImpl<C extends Command> implements CommandRegistry<C
     }
 
     @Override
-    public boolean contains( final C item ) {
-        throw new UnsupportedOperationException( "Contains not implemented yet." );
+    public boolean contains(final C item) {
+        throw new UnsupportedOperationException("Contains not implemented yet.");
     }
 
     @Override
@@ -68,7 +68,7 @@ public class CommandRegistryImpl<C extends Command> implements CommandRegistry<C
 
     @Override
     public List<C> getCommandHistory() {
-        return new ArrayList<C>( commands );
+        return new ArrayList<C>(commands);
     }
 
     @Override
@@ -81,16 +81,16 @@ public class CommandRegistryImpl<C extends Command> implements CommandRegistry<C
         return commands.pop();
     }
 
-    private void addIntoStack( final C command ) {
-        if ( null != command ) {
-            if ( ( commands.size() + 1 ) > maxStackSize ) {
+    private void addIntoStack(final C command) {
+        if (null != command) {
+            if ((commands.size() + 1) > maxStackSize) {
                 stackSizeExceeded();
             }
-            commands.push( command );
+            commands.push(command);
         }
     }
 
     private void stackSizeExceeded() {
-        throw new RegistrySizeExceededException( maxStackSize );
+        throw new RegistrySizeExceededException(maxStackSize);
     }
 }

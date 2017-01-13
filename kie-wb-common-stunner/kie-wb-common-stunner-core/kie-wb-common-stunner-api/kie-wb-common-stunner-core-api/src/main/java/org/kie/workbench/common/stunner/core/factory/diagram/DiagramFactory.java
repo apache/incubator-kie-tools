@@ -44,7 +44,7 @@ public interface DiagramFactory<M extends Metadata, D extends Diagram<Graph, M>>
      * @param metadata The diagram's metadata.
      * @param graph The diagram's graph
      */
-    D build( final String name,
-             final M metadata,
-             final Graph<DefinitionSet, ?> graph );
+    D build(final String name,
+            final M metadata,
+            final Graph<DefinitionSet, ?> graph);
 }

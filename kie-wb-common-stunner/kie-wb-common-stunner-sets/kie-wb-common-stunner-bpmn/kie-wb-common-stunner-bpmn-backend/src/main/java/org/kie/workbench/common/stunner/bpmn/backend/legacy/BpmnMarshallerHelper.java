@@ -31,6 +31,6 @@ public interface BpmnMarshallerHelper {
      * @param baseElement the base element to be customized.
      * @param properties the set of properties extracted from the json model.
      */
-    public void applyProperties( BaseElement baseElement,
-                                 Map<String, String> properties );
+    public void applyProperties(BaseElement baseElement,
+                                Map<String, String> properties);
 }

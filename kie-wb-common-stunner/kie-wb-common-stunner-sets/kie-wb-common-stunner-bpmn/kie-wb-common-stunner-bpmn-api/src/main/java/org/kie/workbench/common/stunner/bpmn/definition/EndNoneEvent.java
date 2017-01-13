@@ -38,9 +38,9 @@ import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = EndNoneEvent.EndNoneEventBuilder.class )
-@Shape( factory = BasicShapesFactory.class, def = EndNoneEventShapeDef.class )
-@Morph( base = BaseEndEvent.class )
+@Definition(graphFactory = NodeFactory.class, builder = EndNoneEvent.EndNoneEventBuilder.class)
+@Shape(factory = BasicShapesFactory.class, def = EndNoneEventShapeDef.class)
+@Morph(base = BaseEndEvent.class)
 public class EndNoneEvent extends BaseEndEvent {
 
     @Title
@@ -54,32 +54,32 @@ public class EndNoneEvent extends BaseEndEvent {
 
         @Override
         public EndNoneEvent build() {
-            return new EndNoneEvent( new BPMNGeneralSet( "End" ),
-                                     new DataIOSet(),
-                                     new BackgroundSet( BG_COLOR,
-                                                        BORDER_COLOR,
-                                                        BORDER_SIZE ),
-                                     new FontSet(),
-                                     new ThrowEventAttributes(),
-                                     new CircleDimensionSet( new Radius( RADIUS ) ) );
+            return new EndNoneEvent(new BPMNGeneralSet("End"),
+                                    new DataIOSet(),
+                                    new BackgroundSet(BG_COLOR,
+                                                      BORDER_COLOR,
+                                                      BORDER_SIZE),
+                                    new FontSet(),
+                                    new ThrowEventAttributes(),
+                                    new CircleDimensionSet(new Radius(RADIUS)));
         }
     }
 
     public EndNoneEvent() {
     }
 
-    public EndNoneEvent( @MapsTo( "general" ) BPMNGeneralSet general,
-                         @MapsTo( "dataIOSet" ) DataIOSet dataIOSet,
-                         @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                         @MapsTo( "fontSet" ) FontSet fontSet,
-                         @MapsTo( "throwEventAttributes" ) ThrowEventAttributes throwEventAttributes,
-                         @MapsTo( "dimensionsSet" ) CircleDimensionSet dimensionsSet ) {
-        super( general,
-               dataIOSet,
-               backgroundSet,
-               fontSet,
-               throwEventAttributes,
-               dimensionsSet );
+    public EndNoneEvent(final @MapsTo("general") BPMNGeneralSet general,
+                        final @MapsTo("dataIOSet") DataIOSet dataIOSet,
+                        final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                        final @MapsTo("fontSet") FontSet fontSet,
+                        final @MapsTo("throwEventAttributes") ThrowEventAttributes throwEventAttributes,
+                        final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
+        super(general,
+              dataIOSet,
+              backgroundSet,
+              fontSet,
+              throwEventAttributes,
+              dimensionsSet);
     }
 
     public String getTitle() {

@@ -23,14 +23,14 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.Parser
 
 public class ArrayParser extends CompositeParser<ArrayParser> {
 
-    public ArrayParser( String name ) {
-        super( name );
+    public ArrayParser(final String name) {
+        super(name);
     }
 
-    public ArrayParser( String name,
-                        Queue<Parser> _parsers ) {
-        super( name,
-               _parsers );
+    public ArrayParser(final String name,
+                       final Queue<Parser> _parsers) {
+        super(name,
+              _parsers);
     }
 
     @Override

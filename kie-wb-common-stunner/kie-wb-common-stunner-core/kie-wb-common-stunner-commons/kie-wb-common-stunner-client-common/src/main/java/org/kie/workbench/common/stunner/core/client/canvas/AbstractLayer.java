@@ -23,7 +23,7 @@ public abstract class AbstractLayer<T, S, A> implements Layer<T, S, A> {
 
     @Override
     public Transform getTransform() {
-        return new TransformImpl( getTranslate(),
-                                  getScale() );
+        return new TransformImpl(getTranslate(),
+                                 getScale());
     }
 }

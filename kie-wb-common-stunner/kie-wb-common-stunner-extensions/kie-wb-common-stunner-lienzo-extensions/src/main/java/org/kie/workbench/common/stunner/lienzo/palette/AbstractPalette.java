@@ -32,8 +32,8 @@ public abstract class AbstractPalette<T> extends Group {
         private final IPrimitive<?> primitive;
         private final ItemDecorator decorator;
 
-        public Item( final IPrimitive<?> primitive,
-                     final ItemDecorator decorator ) {
+        public Item(final IPrimitive<?> primitive,
+                    final ItemDecorator decorator) {
             this.primitive = primitive;
             this.decorator = decorator;
         }
@@ -53,25 +53,25 @@ public abstract class AbstractPalette<T> extends Group {
 
     public interface Callback {
 
-        void onItemHover( int index,
-                          double eventX,
-                          double eventY,
-                          double itemX,
-                          double itemY );
+        void onItemHover(final int index,
+                         final double eventX,
+                         final double eventY,
+                         final double itemX,
+                         final double itemY);
 
-        void onItemOut( int index );
+        void onItemOut(final int index);
 
-        void onItemMouseDown( int index,
-                              double eventX,
-                              double eventY,
-                              double itemX,
-                              double itemY );
+        void onItemMouseDown(final int index,
+                             final double eventX,
+                             final double eventY,
+                             final double itemX,
+                             final double itemY);
 
-        void onItemClick( int index,
-                          double eventX,
-                          double eventY,
-                          double itemX,
-                          double itemY );
+        void onItemClick(final int index,
+                         final double eventX,
+                         final double eventY,
+                         final double itemX,
+                         final double itemY);
     }
 
     protected int iconSize;
@@ -87,81 +87,81 @@ public abstract class AbstractPalette<T> extends Group {
     public AbstractPalette() {
     }
 
-    public T setItemCallback( final Callback callback ) {
+    public T setItemCallback(final Callback callback) {
         this.callback = callback;
-        return ( T ) this;
+        return (T) this;
     }
 
-    public T setIconSize( final int iconSize ) {
+    public T setIconSize(final int iconSize) {
         this.iconSize = iconSize;
-        return ( T ) this;
+        return (T) this;
     }
 
-    public T setPadding( final int padding ) {
+    public T setPadding(final int padding) {
         this.padding = padding;
-        return ( T ) this;
+        return (T) this;
     }
 
-    public T setX( final int x ) {
+    public T setX(final int x) {
         this.x = x;
-        return ( T ) this;
+        return (T) this;
     }
 
-    public T setY( final int y ) {
+    public T setY(final int y) {
         this.y = y;
-        return ( T ) this;
+        return (T) this;
     }
 
-    public T setRows( final int rows ) {
+    public T setRows(final int rows) {
         this.rows = rows;
-        return ( T ) this;
+        return (T) this;
     }
 
-    public T setColumns( final int cols ) {
+    public T setColumns(final int cols) {
         this.cols = cols;
-        return ( T ) this;
+        return (T) this;
     }
 
-    public T build( final Item... items ) {
+    public T build(final Item... items) {
         clear();
-        this.add( itemsGroup );
+        this.add(itemsGroup);
         beforeBuild();
-        final Grid grid = createGrid( items.length );
+        final Grid grid = createGrid(items.length);
         final Iterator<Grid.Point> pointIterator = grid.iterator();
-        for ( int c = 0; c < items.length; c++ ) {
+        for (int c = 0; c < items.length; c++) {
             final Grid.Point point = pointIterator.next();
-            final Item item = items[ c ];
+            final Item item = items[c];
             final int index = c;
             final double px = x + point.getX();
             final double py = y + point.getY();
             final Decorator itemDecorator = item.getDecorator() != null ?
-                    createDecorator( index,
-                                     px,
-                                     py ) : null;
+                    createDecorator(index,
+                                    px,
+                                    py) : null;
             final IPrimitive<?> i = null != itemDecorator ?
-                    itemDecorator.build( item.getPrimitive(),
-                                         toDouble( iconSize ),
-                                         toDouble( iconSize ) ) :
+                    itemDecorator.build(item.getPrimitive(),
+                                        toDouble(iconSize),
+                                        toDouble(iconSize)) :
                     item.getPrimitive();
-            i.setX( px ).setY( py ).moveToTop();
-            this.itemsGroup.add( i );
+            i.setX(px).setY(py).moveToTop();
+            this.itemsGroup.add(i);
             handlerRegistrationManager.register(
-                    i.addNodeMouseDownHandler( event -> onItemMouseDown( index,
-                                                                         event.getX(),
-                                                                         event.getY(),
-                                                                         px,
-                                                                         py ) )
+                    i.addNodeMouseDownHandler(event -> onItemMouseDown(index,
+                                                                       event.getX(),
+                                                                       event.getY(),
+                                                                       px,
+                                                                       py))
             );
             handlerRegistrationManager.register(
-                    i.addNodeMouseClickHandler( event -> onItemClick( index,
-                                                                      event.getX(),
-                                                                      event.getY(),
-                                                                      px,
-                                                                      py ) )
+                    i.addNodeMouseClickHandler(event -> onItemClick(index,
+                                                                    event.getX(),
+                                                                    event.getY(),
+                                                                    px,
+                                                                    py))
             );
         }
         afterBuild();
-        return ( T ) this;
+        return (T) this;
     }
 
     protected void doRedraw() {
@@ -178,41 +178,41 @@ public abstract class AbstractPalette<T> extends Group {
     protected void afterBuild() {
     }
 
-    protected Grid createGrid( final int itemsSize ) {
+    protected Grid createGrid(final int itemsSize) {
         final int r = rows > 0 ? rows : itemsSize;
         final int c = cols > 0 ? cols : itemsSize;
-        return new Grid( padding,
-                         iconSize,
-                         r,
-                         c );
+        return new Grid(padding,
+                        iconSize,
+                        r,
+                        c);
     }
 
-    protected Decorator createDecorator( final int index,
-                                         final double itemX,
-                                         final double itemY ) {
-        return new Decorator( createDecoratorCallback( index,
-                                                       itemX,
-                                                       itemY ) );
+    protected Decorator createDecorator(final int index,
+                                        final double itemX,
+                                        final double itemY) {
+        return new Decorator(createDecoratorCallback(index,
+                                                     itemX,
+                                                     itemY));
     }
 
-    protected ItemCallback createDecoratorCallback( final int index,
-                                                    final double itemX,
-                                                    final double itemY ) {
+    protected ItemCallback createDecoratorCallback(final int index,
+                                                   final double itemX,
+                                                   final double itemY) {
         return new ItemCallback() {
 
             @Override
-            public void onShow( final double x,
-                                final double y ) {
-                doShowItem( index,
-                            x,
-                            y,
-                            itemX,
-                            itemY );
+            public void onShow(final double x,
+                               final double y) {
+                doShowItem(index,
+                           x,
+                           y,
+                           itemX,
+                           itemY);
             }
 
             @Override
             public void onHide() {
-                doItemOut( index );
+                doItemOut(index);
             }
         };
     }
@@ -220,64 +220,64 @@ public abstract class AbstractPalette<T> extends Group {
     public T clearItems() {
         this.handlerRegistrationManager.removeHandler();
         this.itemsGroup.removeAll();
-        return ( T ) this;
+        return (T) this;
     }
 
     public T clear() {
         clearItems();
         this.removeAll();
-        return ( T ) this;
+        return (T) this;
     }
 
-    protected void doShowItem( final int index,
-                               final double x,
-                               final double y,
+    protected void doShowItem(final int index,
+                              final double x,
+                              final double y,
+                              final double itemX,
+                              final double itemY) {
+        if (null != callback) {
+            callback.onItemHover(index,
+                                 x,
+                                 y,
+                                 itemX,
+                                 itemY);
+        }
+    }
+
+    protected void doItemOut(final int index) {
+        if (null != callback) {
+            callback.onItemOut(index);
+        }
+    }
+
+    protected void onItemMouseDown(final int index,
+                                   final double eventX,
+                                   final double eventY,
+                                   final double itemX,
+                                   final double itemY) {
+        if (null != callback) {
+            callback.onItemMouseDown(index,
+                                     eventX,
+                                     eventY,
+                                     itemX,
+                                     itemY);
+        }
+    }
+
+    protected void onItemClick(final int index,
+                               final double eventX,
+                               final double eventY,
                                final double itemX,
-                               final double itemY ) {
-        if ( null != callback ) {
-            callback.onItemHover( index,
-                                  x,
-                                  y,
-                                  itemX,
-                                  itemY );
+                               final double itemY) {
+        if (null != callback) {
+            callback.onItemClick(index,
+                                 eventX,
+                                 eventY,
+                                 itemX,
+                                 itemY);
         }
     }
 
-    protected void doItemOut( final int index ) {
-        if ( null != callback ) {
-            callback.onItemOut( index );
-        }
-    }
-
-    protected void onItemMouseDown( final int index,
-                                    double eventX,
-                                    double eventY,
-                                    double itemX,
-                                    double itemY ) {
-        if ( null != callback ) {
-            callback.onItemMouseDown( index,
-                                      eventX,
-                                      eventY,
-                                      itemX,
-                                      itemY );
-        }
-    }
-
-    protected void onItemClick( final int index,
-                                double eventX,
-                                double eventY,
-                                double itemX,
-                                double itemY ) {
-        if ( null != callback ) {
-            callback.onItemClick( index,
-                                  eventX,
-                                  eventY,
-                                  itemX,
-                                  itemY );
-        }
-    }
-
-    private double toDouble( final int i ) {
-        return ( double ) i;
+    private double toDouble(final int i) {
+        return (double) i;
     }
 }

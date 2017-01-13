@@ -32,8 +32,8 @@ public class Decorator extends Group {
 
     public interface ItemCallback {
 
-        void onShow( double x,
-                     double y );
+        void onShow(double x,
+                    double y);
 
         void onHide();
     }
@@ -44,7 +44,7 @@ public class Decorator extends Group {
     Rectangle decorator;
     ItemCallback callback;
 
-    public Decorator( final ItemCallback callback ) {
+    public Decorator(final ItemCallback callback) {
         this.callback = callback;
     }
 
@@ -59,83 +59,83 @@ public class Decorator extends Group {
         };
     }
 
-    protected void resetTimer( Timer timer ) {
+    protected void resetTimer(final Timer timer) {
         this.timer = timer;
     }
 
-    public Decorator setPadding( final double padding ) {
+    public Decorator setPadding(final double padding) {
         this.padding = padding;
         return this;
     }
 
-    public Decorator setItemCallback( final ItemCallback callback ) {
+    public Decorator setItemCallback(final ItemCallback callback) {
         this.callback = callback;
         return this;
     }
 
-    public IPrimitive<?> build( final IPrimitive<?> item,
-                                final double width,
-                                final double height ) {
-        decorator = createRectangle( width,
-                                     height );
-        this.add( decorator );
-        this.add( item );
-        decorator.setX( item.getX() - ( padding / 4 ) );
-        decorator.setY( item.getY() - ( padding / 4 ) );
-        decorator.addNodeMouseEnterHandler( nodeMouseEnterEvent -> show( nodeMouseEnterEvent.getMouseEvent().getClientX(),
-                                                                         nodeMouseEnterEvent.getMouseEvent().getClientY() ) );
-        decorator.addNodeMouseExitHandler( nodeMouseExitEvent -> hide() );
-        decorator.addNodeMouseMoveHandler( nodeMouseMoveEvent -> timer.cancel() );
-        item.setDraggable( false );
-        decorator.setDraggable( false ).moveToTop();
+    public IPrimitive<?> build(final IPrimitive<?> item,
+                               final double width,
+                               final double height) {
+        decorator = createRectangle(width,
+                                    height);
+        this.add(decorator);
+        this.add(item);
+        decorator.setX(item.getX() - (padding / 4));
+        decorator.setY(item.getY() - (padding / 4));
+        decorator.addNodeMouseEnterHandler(nodeMouseEnterEvent -> show(nodeMouseEnterEvent.getMouseEvent().getClientX(),
+                                                                       nodeMouseEnterEvent.getMouseEvent().getClientY()));
+        decorator.addNodeMouseExitHandler(nodeMouseExitEvent -> hide());
+        decorator.addNodeMouseMoveHandler(nodeMouseMoveEvent -> timer.cancel());
+        item.setDraggable(false);
+        decorator.setDraggable(false).moveToTop();
         return this;
     }
 
-    public Rectangle createRectangle( double width,
-                                      double height ) {
-        return new Rectangle( width + padding,
-                              height + padding )
-                .setCornerRadius( 5 )
-                .setFillColor( ColorName.BLACK )
-                .setFillAlpha( 0.01 )
-                .setStrokeWidth( 1 )
-                .setStrokeColor( ColorName.BLACK )
-                .setStrokeAlpha( 0 );
+    public Rectangle createRectangle(final double width,
+                                     final double height) {
+        return new Rectangle(width + padding,
+                             height + padding)
+                .setCornerRadius(5)
+                .setFillColor(ColorName.BLACK)
+                .setFillAlpha(0.01)
+                .setStrokeWidth(1)
+                .setStrokeColor(ColorName.BLACK)
+                .setStrokeAlpha(0);
     }
 
-    public Decorator show( final double x,
-                           final double y ) {
-        if ( !timer.isRunning() ) {
-            decorator.animate( AnimationTweener.LINEAR,
-                               AnimationProperties.toPropertyList( AnimationProperty.Properties.STROKE_ALPHA( 1 ) ),
-                               ANIMATION_DURATION,
-                               createShowAnimationCallback( x,
-                                                            y ) );
-            timer.schedule( TIMER_DELAY );
+    public Decorator show(final double x,
+                          final double y) {
+        if (!timer.isRunning()) {
+            decorator.animate(AnimationTweener.LINEAR,
+                              AnimationProperties.toPropertyList(AnimationProperty.Properties.STROKE_ALPHA(1)),
+                              ANIMATION_DURATION,
+                              createShowAnimationCallback(x,
+                                                          y));
+            timer.schedule(TIMER_DELAY);
         }
         return this;
     }
 
-    protected AnimationCallback createShowAnimationCallback( final double x,
-                                                             final double y ) {
+    protected AnimationCallback createShowAnimationCallback(final double x,
+                                                            final double y) {
         return new AnimationCallback() {
             @Override
-            public void onClose( IAnimation animation,
-                                 IAnimationHandle handle ) {
-                super.onClose( animation,
-                               handle );
-                fireShow( x,
-                          y );
+            public void onClose(final IAnimation animation,
+                                final IAnimationHandle handle) {
+                super.onClose(animation,
+                              handle);
+                fireShow(x,
+                         y);
             }
         };
     }
 
     public Decorator hide() {
-        if ( !timer.isRunning() ) {
-            decorator.animate( AnimationTweener.LINEAR,
-                               AnimationProperties.toPropertyList( AnimationProperty.Properties.STROKE_ALPHA( 0 ) ),
-                               ANIMATION_DURATION,
-                               createHideAnimationCallback() );
+        if (!timer.isRunning()) {
+            decorator.animate(AnimationTweener.LINEAR,
+                              AnimationProperties.toPropertyList(AnimationProperty.Properties.STROKE_ALPHA(0)),
+                              ANIMATION_DURATION,
+                              createHideAnimationCallback());
         }
         return this;
     }
@@ -143,25 +143,25 @@ public class Decorator extends Group {
     protected AnimationCallback createHideAnimationCallback() {
         return new AnimationCallback() {
             @Override
-            public void onClose( IAnimation animation,
-                                 IAnimationHandle handle ) {
-                super.onClose( animation,
-                               handle );
+            public void onClose(IAnimation animation,
+                                IAnimationHandle handle) {
+                super.onClose(animation,
+                              handle);
                 fireHide();
             }
         };
     }
 
-    protected void fireShow( double x,
-                             double y ) {
-        if ( null != callback ) {
-            callback.onShow( x,
-                             y );
+    protected void fireShow(final double x,
+                            final double y) {
+        if (null != callback) {
+            callback.onShow(x,
+                            y);
         }
     }
 
     protected void fireHide() {
-        if ( null != callback ) {
+        if (null != callback) {
             callback.onHide();
         }
     }

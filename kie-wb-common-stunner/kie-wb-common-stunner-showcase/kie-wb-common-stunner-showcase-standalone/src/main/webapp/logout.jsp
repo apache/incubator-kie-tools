@@ -16,8 +16,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
   request.logout();
-  javax.servlet.http.HttpSession httpSession = request.getSession( false );
-  if ( httpSession != null ) {
+  javax.servlet.http.HttpSession httpSession = request.getSession(false);
+  if (httpSession != null) {
     httpSession.invalidate();
   }
 %>

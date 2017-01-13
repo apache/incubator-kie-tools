@@ -49,33 +49,33 @@ public class JBPMBpmn2ResourceFactoryImpl extends ResourceFactoryImpl {
      * <!-- end-user-doc -->
      */
     @Override
-    public Resource createResource( URI uri ) {
+    public Resource createResource(URI uri) {
         DroolsFactoryImpl.init();
         BpsimFactoryImpl.init();
-        JBPMBpmn2ResourceImpl result = new JBPMBpmn2ResourceImpl( uri );
+        JBPMBpmn2ResourceImpl result = new JBPMBpmn2ResourceImpl(uri);
         ExtendedMetaData extendedMetadata = new XmlExtendedMetadata();
-        result.getDefaultSaveOptions().put( XMLResource.OPTION_EXTENDED_META_DATA,
-                                            extendedMetadata );
-        result.getDefaultLoadOptions().put( XMLResource.OPTION_EXTENDED_META_DATA,
-                                            extendedMetadata );
-        result.getDefaultSaveOptions().put( XMLResource.OPTION_SAVE_TYPE_INFORMATION,
-                                            new OnlyContainmentTypeInfo() );
-        result.getDefaultLoadOptions().put( XMLResource.OPTION_USE_ENCODED_ATTRIBUTE_STYLE,
-                                            Boolean.TRUE );
-        result.getDefaultSaveOptions().put( XMLResource.OPTION_USE_ENCODED_ATTRIBUTE_STYLE,
-                                            Boolean.TRUE );
-        result.getDefaultLoadOptions().put( XMLResource.OPTION_USE_LEXICAL_HANDLER,
-                                            Boolean.TRUE );
-        result.getDefaultSaveOptions().put( XMLResource.OPTION_ELEMENT_HANDLER,
-                                            new ElementHandlerImpl( true ) );
-        result.getDefaultSaveOptions().put( XMLResource.OPTION_ENCODING,
-                                            "UTF-8" );
-        result.getDefaultSaveOptions().put( XMLResource.OPTION_USE_CACHED_LOOKUP_TABLE,
-                                            new ArrayList<Object>() );
-        result.getDefaultSaveOptions().put( XMLResource.OPTION_DEFER_IDREF_RESOLUTION,
-                                            true );
-        result.getDefaultSaveOptions().put( XMLResource.OPTION_PROCESS_DANGLING_HREF,
-                                            XMLResource.OPTION_PROCESS_DANGLING_HREF_RECORD );
+        result.getDefaultSaveOptions().put(XMLResource.OPTION_EXTENDED_META_DATA,
+                                           extendedMetadata);
+        result.getDefaultLoadOptions().put(XMLResource.OPTION_EXTENDED_META_DATA,
+                                           extendedMetadata);
+        result.getDefaultSaveOptions().put(XMLResource.OPTION_SAVE_TYPE_INFORMATION,
+                                           new OnlyContainmentTypeInfo());
+        result.getDefaultLoadOptions().put(XMLResource.OPTION_USE_ENCODED_ATTRIBUTE_STYLE,
+                                           Boolean.TRUE);
+        result.getDefaultSaveOptions().put(XMLResource.OPTION_USE_ENCODED_ATTRIBUTE_STYLE,
+                                           Boolean.TRUE);
+        result.getDefaultLoadOptions().put(XMLResource.OPTION_USE_LEXICAL_HANDLER,
+                                           Boolean.TRUE);
+        result.getDefaultSaveOptions().put(XMLResource.OPTION_ELEMENT_HANDLER,
+                                           new ElementHandlerImpl(true));
+        result.getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING,
+                                           "UTF-8");
+        result.getDefaultSaveOptions().put(XMLResource.OPTION_USE_CACHED_LOOKUP_TABLE,
+                                           new ArrayList<Object>());
+        result.getDefaultSaveOptions().put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION,
+                                           true);
+        result.getDefaultSaveOptions().put(XMLResource.OPTION_PROCESS_DANGLING_HREF,
+                                           XMLResource.OPTION_PROCESS_DANGLING_HREF_RECORD);
         return result;
     }
 
@@ -87,15 +87,15 @@ public class JBPMBpmn2ResourceFactoryImpl extends ResourceFactoryImpl {
      * mandatory.
      */
 
-    public Definitions createAndInitResource( URI uri ) {
+    public Definitions createAndInitResource(URI uri) {
         DroolsFactoryImpl.init();
         BpsimFactoryImpl.init();
-        Resource resource = createResource( uri );
+        Resource resource = createResource(uri);
         Bpmn2Factory factory = Bpmn2Factory.eINSTANCE;
         Definitions definitions = factory.createDefinitions();
         DocumentRoot docummentRoot = factory.createDocumentRoot();
-        docummentRoot.setDefinitions( definitions );
-        resource.getContents().add( docummentRoot );
+        docummentRoot.setDefinitions(definitions);
+        resource.getContents().add(docummentRoot);
         return definitions;
     }
 }

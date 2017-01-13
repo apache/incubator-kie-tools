@@ -51,144 +51,144 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl
         implements DragControl<AbstractCanvasHandler, Element> {
 
-    private static Logger LOGGER = Logger.getLogger( DragControlImpl.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(DragControlImpl.class.getName());
     private static final int delta = 10;
     private final CanvasCommandFactory canvasCommandFactory;
     private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
     private CanvasGrid dragGrid;
 
     protected DragControlImpl() {
-        this( null,
-              null );
+        this(null,
+             null);
     }
 
     @Inject
-    public DragControlImpl( final CanvasCommandFactory canvasCommandFactory,
-                            final @Request SessionCommandManager<AbstractCanvasHandler> canvasCommandManager ) {
+    public DragControlImpl(final CanvasCommandFactory canvasCommandFactory,
+                           final @Request SessionCommandManager<AbstractCanvasHandler> canvasCommandManager) {
         this.canvasCommandFactory = canvasCommandFactory;
         this.canvasCommandManager = canvasCommandManager;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public void register( final Element element ) {
+    @SuppressWarnings("unchecked")
+    public void register(final Element element) {
         final AbstractCanvas<?> canvas = canvasHandler.getCanvas();
-        final Shape<?> shape = canvas.getShape( element.getUUID() );
-        if ( shape.getShapeView() instanceof HasEventHandlers ) {
-            final HasEventHandlers hasEventHandlers = ( HasEventHandlers ) shape.getShapeView();
-            if ( hasEventHandlers.supports( ViewEventType.DRAG ) ) {
+        final Shape<?> shape = canvas.getShape(element.getUUID());
+        if (shape.getShapeView() instanceof HasEventHandlers) {
+            final HasEventHandlers hasEventHandlers = (HasEventHandlers) shape.getShapeView();
+            if (hasEventHandlers.supports(ViewEventType.DRAG)) {
                 final DragHandler handler = new DragHandler() {
 
-                    private final double[] shapeSize = new double[]{ 0, 0 };
+                    private final double[] shapeSize = new double[]{0, 0};
                     private CanvasGrid grid = null;
 
                     @Override
-                    public void start( final DragEvent event ) {
-                        final double[] size = GraphUtils.getSize( ( View ) element.getContent() );
-                        shapeSize[ 0 ] = size[ 0 ];
-                        shapeSize[ 1 ] = size[ 1 ];
-                        if ( isDragGridEnabled() ) {
+                    public void start(final DragEvent event) {
+                        final double[] size = GraphUtils.getSize((View) element.getContent());
+                        shapeSize[0] = size[0];
+                        shapeSize[1] = size[1];
+                        if (isDragGridEnabled()) {
                             this.grid = canvas.getGrid();
-                            if ( null == grid ) {
-                                canvas.setGrid( dragGrid );
+                            if (null == grid) {
+                                canvas.setGrid(dragGrid);
                             }
                         }
                     }
 
                     @Override
-                    public void handle( final DragEvent event ) {
-                        ensureDragConstrains( shape.getShapeView(),
-                                              shapeSize );
+                    public void handle(final DragEvent event) {
+                        ensureDragConstrains(shape.getShapeView(),
+                                             shapeSize);
                     }
 
                     @Override
-                    public void end( final DragEvent event ) {
+                    public void end(final DragEvent event) {
                         final double x = shape.getShapeView().getShapeX();
                         final double y = shape.getShapeView().getShapeY();
-                        move( element,
-                              x,
-                              y );
-                        if ( isDragGridEnabled() ) {
-                            canvas.setGrid( this.grid );
+                        move(element,
+                             x,
+                             y);
+                        if (isDragGridEnabled()) {
+                            canvas.setGrid(this.grid);
                             this.grid = null;
                         }
                     }
                 };
-                hasEventHandlers.addHandler( ViewEventType.DRAG,
-                                             handler );
-                registerHandler( element.getUUID(),
-                                 handler );
+                hasEventHandlers.addHandler(ViewEventType.DRAG,
+                                            handler);
+                registerHandler(element.getUUID(),
+                                handler);
             }
         }
     }
 
     @Override
-    public DragControl<AbstractCanvasHandler, Element> setDragGrid( final CanvasGrid grid ) {
+    public DragControl<AbstractCanvasHandler, Element> setDragGrid(final CanvasGrid grid) {
         this.dragGrid = grid;
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<CanvasViolation> move( final Element element,
-                                                final double tx,
-                                                final double ty ) {
-        final UpdateElementPositionCommand c = canvasCommandFactory.updatePosition( ( Node<View<?>, Edge> ) element,
-                                                                                    tx,
-                                                                                    ty );
-        CommandResult<CanvasViolation> result = canvasCommandManager.allow( canvasHandler,
-                                                                            c );
-        if ( !CommandUtils.isError( result ) ) {
-            result = canvasCommandManager.execute( canvasHandler,
-                                                   c );
+    @SuppressWarnings("unchecked")
+    public CommandResult<CanvasViolation> move(final Element element,
+                                               final double tx,
+                                               final double ty) {
+        final UpdateElementPositionCommand c = canvasCommandFactory.updatePosition((Node<View<?>, Edge>) element,
+                                                                                   tx,
+                                                                                   ty);
+        CommandResult<CanvasViolation> result = canvasCommandManager.allow(canvasHandler,
+                                                                           c);
+        if (!CommandUtils.isError(result)) {
+            result = canvasCommandManager.execute(canvasHandler,
+                                                  c);
         }
-        if ( CommandUtils.isError( result ) ) {
-            LOGGER.log( Level.SEVERE,
-                        "Update element's position command failed [result=" + result + "]" );
+        if (CommandUtils.isError(result)) {
+            LOGGER.log(Level.SEVERE,
+                       "Update element's position command failed [result=" + result + "]");
         }
         return result;
     }
 
-    public CommandResult<CanvasViolation> moveUp( final Element element ) {
-        return translate( element,
-                          0,
-                          -delta );
+    public CommandResult<CanvasViolation> moveUp(final Element element) {
+        return translate(element,
+                         0,
+                         -delta);
     }
 
-    public CommandResult<CanvasViolation> moveDown( final Element element ) {
-        return translate( element,
-                          0,
-                          delta );
+    public CommandResult<CanvasViolation> moveDown(final Element element) {
+        return translate(element,
+                         0,
+                         delta);
     }
 
-    public CommandResult<CanvasViolation> moveLeft( final Element element ) {
-        return translate( element,
-                          -delta,
-                          0 );
+    public CommandResult<CanvasViolation> moveLeft(final Element element) {
+        return translate(element,
+                         -delta,
+                         0);
     }
 
-    public CommandResult<CanvasViolation> moveRight( final Element element ) {
-        return translate( element,
-                          delta,
-                          0 );
+    public CommandResult<CanvasViolation> moveRight(final Element element) {
+        return translate(element,
+                         delta,
+                         0);
     }
 
-    public CommandResult<CanvasViolation> translate( final Element element,
-                                                     final double dx,
-                                                     final double dy ) {
+    public CommandResult<CanvasViolation> translate(final Element element,
+                                                    final double dx,
+                                                    final double dy) {
         final Point2D p;
         try {
-            p = GraphUtils.getPosition( ( View ) element.getContent() );
-        } catch ( ClassCastException e ) {
-            LOGGER.log( Level.WARNING,
-                        "Update element's position command only cannot be applied to View elements." );
+            p = GraphUtils.getPosition((View) element.getContent());
+        } catch (ClassCastException e) {
+            LOGGER.log(Level.WARNING,
+                       "Update element's position command only cannot be applied to View elements.");
             return CanvasCommandResultBuilder.FAILED;
         }
         final double tx = p.getX() + dx;
         final double ty = p.getY() + dy;
-        return move( element,
-                     tx,
-                     ty );
+        return move(element,
+                    tx,
+                    ty);
     }
 
     /**
@@ -196,24 +196,24 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl
      * ensure drag does not exceed the canvas bounds.
      * @param shapeView The shape view instance being drag.
      */
-    private void ensureDragConstrains( final ShapeView<?> shapeView,
-                                       final double[] shapeSize ) {
+    private void ensureDragConstrains(final ShapeView<?> shapeView,
+                                      final double[] shapeSize) {
         final int mw = canvasHandler.getCanvas().getWidth();
         final int mh = canvasHandler.getCanvas().getHeight();
         final Point2D sa = shapeView.getShapeAbsoluteLocation();
-        LOGGER.log( Level.FINE,
-                    "Ensuring drag constraints for absolute coordinates at [" + sa.getX() + ", " + sa.getY() + "]" );
-        final double ax = mw - shapeSize[ 0 ];
-        final double ay = mh - shapeSize[ 1 ];
+        LOGGER.log(Level.FINE,
+                   "Ensuring drag constraints for absolute coordinates at [" + sa.getX() + ", " + sa.getY() + "]");
+        final double ax = mw - shapeSize[0];
+        final double ay = mh - shapeSize[1];
         final boolean xb = sa.getX() >= ax || sa.getX() < 0;
         final boolean yb = sa.getY() >= ay || sa.getY() < 0;
-        if ( xb || yb ) {
-            final double tx = sa.getX() >= ax ? ax : ( sa.getX() < 0 ? 0 : sa.getX() );
-            final double ty = sa.getY() >= ay ? ay : ( sa.getY() < 0 ? 0 : sa.getY() );
-            LOGGER.log( Level.FINE,
-                        "Setting constraint coordinates at [" + tx + ", " + ty + "]" );
-            shapeView.setShapeX( tx );
-            shapeView.setShapeY( ty );
+        if (xb || yb) {
+            final double tx = sa.getX() >= ax ? ax : (sa.getX() < 0 ? 0 : sa.getX());
+            final double ty = sa.getY() >= ay ? ay : (sa.getY() < 0 ? 0 : sa.getY());
+            LOGGER.log(Level.FINE,
+                       "Setting constraint coordinates at [" + tx + ", " + ty + "]");
+            shapeView.setShapeX(tx);
+            shapeView.setShapeY(ty);
         }
     }
 

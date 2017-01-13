@@ -28,8 +28,8 @@ import java.lang.annotation.Target;
  * It's only allowed to use on  Definitions of type Node.
  */
 @Inherited
-@Target( ElementType.TYPE )
-@Retention( RetentionPolicy.RUNTIME )
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface CanDock {
 
     String id() default "";

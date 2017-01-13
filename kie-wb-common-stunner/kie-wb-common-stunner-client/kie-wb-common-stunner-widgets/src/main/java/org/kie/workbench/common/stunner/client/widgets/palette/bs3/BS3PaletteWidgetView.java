@@ -40,7 +40,7 @@ public class BS3PaletteWidgetView extends Composite implements PaletteWidgetView
 
     }
 
-    private static BS3PaletteWidgetView.ViewBinder uiBinder = GWT.create( BS3PaletteWidgetView.ViewBinder.class );
+    private static BS3PaletteWidgetView.ViewBinder uiBinder = GWT.create(BS3PaletteWidgetView.ViewBinder.class);
 
     @UiField
     FlowPanel mainPanel;
@@ -58,71 +58,71 @@ public class BS3PaletteWidgetView extends Composite implements PaletteWidgetView
     }
 
     @Override
-    public void init( final BS3PaletteWidgetImpl presenter ) {
+    public void init(final BS3PaletteWidgetImpl presenter) {
         this.presenter = presenter;
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void showEmptyView( final boolean visible ) {
-        emptyViewPanel.setVisible( visible );
-        palettePanel.setVisible( !visible );
+    public void showEmptyView(final boolean visible) {
+        emptyViewPanel.setVisible(visible);
+        palettePanel.setVisible(!visible);
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public void showDragProxy( final String itemId,
-                               final double x,
-                               final double y ) {
-        final Glyph<Group> glyph = ( Glyph<Group> ) presenter.getShapeGlyph( itemId );
-        shapeGlyphDragHandler.show( glyph,
-                                    x,
-                                    y,
-                                    new ShapeGlyphDragHandler.Callback() {
+    @SuppressWarnings("unchecked")
+    public void showDragProxy(final String itemId,
+                              final double x,
+                              final double y) {
+        final Glyph<Group> glyph = (Glyph<Group>) presenter.getShapeGlyph(itemId);
+        shapeGlyphDragHandler.show(glyph,
+                                   x,
+                                   y,
+                                   new ShapeGlyphDragHandler.Callback() {
 
-                                        @Override
-                                        public void onMove( final double x,
-                                                            final double y ) {
-                                            presenter.onDragProxyMove( itemId,
-                                                                       x,
-                                                                       y );
-                                        }
+                                       @Override
+                                       public void onMove(final double x,
+                                                          final double y) {
+                                           presenter.onDragProxyMove(itemId,
+                                                                     x,
+                                                                     y);
+                                       }
 
-                                        @Override
-                                        public void onComplete( final double x,
-                                                                final double y ) {
-                                            presenter.onDragProxyComplete( itemId,
-                                                                           x,
-                                                                           y );
-                                        }
-                                    } );
+                                       @Override
+                                       public void onComplete(final double x,
+                                                              final double y) {
+                                           presenter.onDragProxyComplete(itemId,
+                                                                         x,
+                                                                         y);
+                                       }
+                                   });
     }
 
     @Override
-    public void setBackgroundColor( final String color ) {
-        palettePanel.getElement().getStyle().setBackgroundColor( color );
+    public void setBackgroundColor(final String color) {
+        palettePanel.getElement().getStyle().setBackgroundColor(color);
     }
 
     @Override
-    public void setMarginTop( final int mTop ) {
-        palettePanel.getElement().getStyle().setMarginTop( mTop,
-                                                           Style.Unit.PX );
+    public void setMarginTop(final int mTop) {
+        palettePanel.getElement().getStyle().setMarginTop(mTop,
+                                                          Style.Unit.PX);
     }
 
     @Override
-    public void show( final IsWidget paletteView ) {
-        palettePanel.add( paletteView );
+    public void show(final IsWidget paletteView) {
+        palettePanel.add(paletteView);
     }
 
     @Override
-    public void show( final IsWidget paletteView,
-                      final int width,
-                      final int height ) {
-        palettePanel.add( paletteView );
-        palettePanel.getElement().getStyle().setWidth( width,
-                                                       Style.Unit.PX );
-        palettePanel.getElement().getStyle().setHeight( height,
-                                                        Style.Unit.PX );
+    public void show(final IsWidget paletteView,
+                     final int width,
+                     final int height) {
+        palettePanel.add(paletteView);
+        palettePanel.getElement().getStyle().setWidth(width,
+                                                      Style.Unit.PX);
+        palettePanel.getElement().getStyle().setHeight(height,
+                                                       Style.Unit.PX);
     }
 
     @Override

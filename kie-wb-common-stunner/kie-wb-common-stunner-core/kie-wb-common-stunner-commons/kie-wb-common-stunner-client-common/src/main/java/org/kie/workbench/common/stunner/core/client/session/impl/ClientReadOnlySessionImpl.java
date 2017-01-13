@@ -30,15 +30,15 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 public class ClientReadOnlySessionImpl extends AbstractClientReadOnlySession {
 
     @Inject
-    public ClientReadOnlySessionImpl( final AbstractCanvas canvas,
-                                      final AbstractCanvasHandler canvasHandler,
-                                      final SelectionControl<AbstractCanvasHandler, Element> selectionControl,
-                                      final ZoomControl<AbstractCanvas> zoomControl,
-                                      final PanControl<AbstractCanvas> panControl ) {
-        super( canvas,
-               canvasHandler,
-               selectionControl,
-               zoomControl,
-               panControl );
+    public ClientReadOnlySessionImpl(final AbstractCanvas canvas,
+                                     final AbstractCanvasHandler canvasHandler,
+                                     final SelectionControl<AbstractCanvasHandler, Element> selectionControl,
+                                     final ZoomControl<AbstractCanvas> zoomControl,
+                                     final PanControl<AbstractCanvas> panControl) {
+        super(canvas,
+              canvasHandler,
+              selectionControl,
+              zoomControl,
+              panControl);
     }
 }

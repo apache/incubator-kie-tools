@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAda
 
 public interface BindableDefinitionSetAdapter<T> extends DefinitionSetAdapter<T> {
 
-    void setBindings( final Map<Class, String> propertyDescriptionFieldNames,
-                      final Map<Class, Class> graphFactoryType,
-                      final Set<String> definitionIds );
+    void setBindings(final Map<Class, String> propertyDescriptionFieldNames,
+                     final Map<Class, Class> graphFactoryType,
+                     final Set<String> definitionIds);
 }

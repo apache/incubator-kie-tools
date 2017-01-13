@@ -26,16 +26,16 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 public class ClearSelectionSessionCommand extends AbstractClientSessionCommand<AbstractClientReadOnlySession> {
 
     public ClearSelectionSessionCommand() {
-        super( false );
+        super(false);
     }
 
     @Override
-    public <T> void execute( final Callback<T> callback ) {
-        checkNotNull( "callback",
-                      callback );
-        if ( null != getSession().getSelectionControl() ) {
+    public <T> void execute(final Callback<T> callback) {
+        checkNotNull("callback",
+                     callback);
+        if (null != getSession().getSelectionControl()) {
             getSession().getSelectionControl().clearSelection();
-            callback.onSuccess( null );
+            callback.onSuccess(null);
         }
     }
 }

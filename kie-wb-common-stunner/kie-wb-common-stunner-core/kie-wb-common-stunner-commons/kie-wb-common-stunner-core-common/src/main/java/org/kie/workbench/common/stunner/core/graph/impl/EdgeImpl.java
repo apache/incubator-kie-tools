@@ -27,8 +27,8 @@ public class EdgeImpl<C> extends ElementImpl<C> implements Edge<C, Node> {
     private Node sourceNode;
     private Node targetNode;
 
-    public EdgeImpl( final @MapsTo( "uuid" ) String uuid ) {
-        super( uuid );
+    public EdgeImpl(final @MapsTo("uuid") String uuid) {
+        super(uuid);
     }
 
     @Override
@@ -41,11 +41,11 @@ public class EdgeImpl<C> extends ElementImpl<C> implements Edge<C, Node> {
         return targetNode;
     }
 
-    public void setSourceNode( final Node sourceNode ) {
+    public void setSourceNode(final Node sourceNode) {
         this.sourceNode = sourceNode;
     }
 
-    public void setTargetNode( final Node targetNode ) {
+    public void setTargetNode(final Node targetNode) {
         this.targetNode = targetNode;
     }
 }

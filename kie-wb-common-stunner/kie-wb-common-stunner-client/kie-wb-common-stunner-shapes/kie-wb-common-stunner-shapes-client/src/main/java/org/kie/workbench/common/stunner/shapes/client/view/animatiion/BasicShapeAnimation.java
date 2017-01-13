@@ -47,41 +47,41 @@ public class BasicShapeAnimation
         final long duration = getDuration();
         // Shape property animations.
         final Shape shape = view.getShape();
-        final AnimationProperties _shapeAnimationProperties = translate( shapeAnimationProperties );
-        shape.animate( tweener,
-                       _shapeAnimationProperties,
-                       duration,
-                       getAnimationCallback() );
+        final AnimationProperties _shapeAnimationProperties = translate(shapeAnimationProperties);
+        shape.animate(tweener,
+                      _shapeAnimationProperties,
+                      duration,
+                      getAnimationCallback());
         shapeAnimationProperties.clear();
         // Decorator property animations.
         final Shape decorator = view.getPath();
-        if ( null != decorator ) {
-            final AnimationProperties _decoratorAnimationProperties = translate( decoratorAnimationProperties );
-            decorator.animate( tweener,
-                               _decoratorAnimationProperties,
-                               duration );
+        if (null != decorator) {
+            final AnimationProperties _decoratorAnimationProperties = translate(decoratorAnimationProperties);
+            decorator.animate(tweener,
+                              _decoratorAnimationProperties,
+                              duration);
             decoratorAnimationProperties.clear();
         }
         // Text animations.
-        if ( null != text ) {
-            final AnimationProperties _textAnimationProperties = translate( textAnimationProperties );
-            text.animate( tweener,
-                          _textAnimationProperties,
-                          duration );
+        if (null != text) {
+            final AnimationProperties _textAnimationProperties = translate(textAnimationProperties);
+            text.animate(tweener,
+                         _textAnimationProperties,
+                         duration);
             textAnimationProperties.clear();
         }
     }
 
-    private AnimationProperties translate( final List<AnimationProperty> ps ) {
+    private AnimationProperties translate(final List<AnimationProperty> ps) {
         final AnimationProperties _ps = new AnimationProperties();
-        for ( final com.ait.lienzo.client.core.animation.AnimationProperty p : ps ) {
-            _ps.push( p );
+        for (final com.ait.lienzo.client.core.animation.AnimationProperty p : ps) {
+            _ps.push(p);
         }
         return _ps;
     }
 
     private BasicShapeView<?> getView() {
-        return ( BasicShapeView<?> ) getSource().getShapeView();
+        return (BasicShapeView<?>) getSource().getShapeView();
     }
 
     public void clear() {
@@ -90,58 +90,58 @@ public class BasicShapeAnimation
         textAnimationProperties.clear();
     }
 
-    public void animatePosition( final Double x,
-                                 final Double y ) {
-        if ( null != x ) {
-            shapeAnimationProperties.add( AnimationProperty.Properties.X( x ) );
+    public void animatePosition(final Double x,
+                                final Double y) {
+        if (null != x) {
+            shapeAnimationProperties.add(AnimationProperty.Properties.X(x));
         }
-        if ( null != y ) {
-            shapeAnimationProperties.add( AnimationProperty.Properties.Y( y ) );
-        }
-    }
-
-    public void animateSize( final Double w,
-                             final Double h ) {
-        if ( null != w && null != h ) {
-            ( ( HasSize ) getView() ).setSize( w,
-                                               h );
-            shapeAnimationProperties.add( AnimationProperty.Properties.WIDTH( w ) );
-            decoratorAnimationProperties.add( AnimationProperty.Properties.WIDTH( w ) );
-            shapeAnimationProperties.add( AnimationProperty.Properties.HEIGHT( h ) );
-            decoratorAnimationProperties.add( AnimationProperty.Properties.HEIGHT( h ) );
-            getView().updateFillGradient( w,
-                                          h );
+        if (null != y) {
+            shapeAnimationProperties.add(AnimationProperty.Properties.Y(y));
         }
     }
 
-    public void animateRadius( final Double value ) {
-        if ( null != value ) {
-            ( ( HasRadius ) getView() ).setRadius( value );
-            shapeAnimationProperties.add( AnimationProperty.Properties.RADIUS( value ) );
-            decoratorAnimationProperties.add( AnimationProperty.Properties.RADIUS( value ) );
+    public void animateSize(final Double w,
+                            final Double h) {
+        if (null != w && null != h) {
+            ((HasSize) getView()).setSize(w,
+                                          h);
+            shapeAnimationProperties.add(AnimationProperty.Properties.WIDTH(w));
+            decoratorAnimationProperties.add(AnimationProperty.Properties.WIDTH(w));
+            shapeAnimationProperties.add(AnimationProperty.Properties.HEIGHT(h));
+            decoratorAnimationProperties.add(AnimationProperty.Properties.HEIGHT(h));
+            getView().updateFillGradient(w,
+                                         h);
+        }
+    }
+
+    public void animateRadius(final Double value) {
+        if (null != value) {
+            ((HasRadius) getView()).setRadius(value);
+            shapeAnimationProperties.add(AnimationProperty.Properties.RADIUS(value));
+            decoratorAnimationProperties.add(AnimationProperty.Properties.RADIUS(value));
             final double size = value * 2;
-            getView().updateFillGradient( size,
-                                          size );
+            getView().updateFillGradient(size,
+                                         size);
         }
     }
 
-    public void animateFillColor( final String value ) {
-        shapeAnimationProperties.add( AnimationProperty.Properties.FILL_COLOR( value ) );
+    public void animateFillColor(final String value) {
+        shapeAnimationProperties.add(AnimationProperty.Properties.FILL_COLOR(value));
     }
 
-    public void animateStrokeColor( final String value ) {
-        shapeAnimationProperties.add( AnimationProperty.Properties.STROKE_COLOR( value ) );
+    public void animateStrokeColor(final String value) {
+        shapeAnimationProperties.add(AnimationProperty.Properties.STROKE_COLOR(value));
     }
 
-    public void animateStrokeWidth( final Double value ) {
-        shapeAnimationProperties.add( AnimationProperty.Properties.STROKE_WIDTH( value ) );
+    public void animateStrokeWidth(final Double value) {
+        shapeAnimationProperties.add(AnimationProperty.Properties.STROKE_WIDTH(value));
     }
 
-    public void animateFontSize( final Double value ) {
-        textAnimationProperties.add( AnimationProperty.Properties.FONT_SIZE( value ) );
+    public void animateFontSize(final Double value) {
+        textAnimationProperties.add(AnimationProperty.Properties.FONT_SIZE(value));
     }
 
-    public void animateFontAlpha( final Double value ) {
-        textAnimationProperties.add( AnimationProperty.Properties.ALPHA( value ) );
+    public void animateFontAlpha(final Double value) {
+        textAnimationProperties.add(AnimationProperty.Properties.ALPHA(value));
     }
 }

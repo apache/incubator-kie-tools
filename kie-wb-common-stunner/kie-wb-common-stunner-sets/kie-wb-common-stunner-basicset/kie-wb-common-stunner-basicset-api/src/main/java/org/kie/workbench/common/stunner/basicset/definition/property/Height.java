@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.definition.property.type.DoubleType
 
 @Portable
 @Bindable
-@Property( meta = PropertyMetaTypes.HEIGHT )
+@Property(meta = PropertyMetaTypes.HEIGHT)
 public class Height {
 
     @Caption
@@ -59,7 +59,7 @@ public class Height {
     public Height() {
     }
 
-    public Height( final Double value ) {
+    public Height(final Double value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class Height {
         return value;
     }
 
-    public void setValue( Double value ) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 }

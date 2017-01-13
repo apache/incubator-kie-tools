@@ -22,8 +22,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Inherited
-@Retention( RetentionPolicy.SOURCE )
-@Target( { ElementType.TYPE } )
+@Retention(RetentionPolicy.SOURCE)
+@Target({ElementType.TYPE})
 public @interface ShapeSet {
 
 }

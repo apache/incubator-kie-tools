@@ -26,7 +26,7 @@ public abstract class AbstractShapeAnimation<S extends Shape>
     private S shape;
 
     @Override
-    public ShapeAnimation<S> forShape( final S shape ) {
+    public ShapeAnimation<S> forShape(final S shape) {
         this.shape = shape;
         return this;
     }

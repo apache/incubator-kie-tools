@@ -21,20 +21,20 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 public interface BasicShapeWithTitleDef<W>
         extends BasicShapeDef<W> {
 
-    String getNamePropertyValue( final W element );
+    String getNamePropertyValue(final W element);
 
-    String getFontFamily( final W element );
+    String getFontFamily(final W element);
 
-    String getFontColor( final W element );
+    String getFontColor(final W element);
 
-    double getFontSize( final W element );
+    double getFontSize(final W element);
 
-    double getFontBorderSize( final W element );
+    double getFontBorderSize(final W element);
 
-    HasTitle.Position getFontPosition( final W element );
+    HasTitle.Position getFontPosition(final W element);
 
     /**
      * The rotation value in degree units.
      */
-    double getFontRotation( final W element );
+    double getFontRotation(final W element);
 }

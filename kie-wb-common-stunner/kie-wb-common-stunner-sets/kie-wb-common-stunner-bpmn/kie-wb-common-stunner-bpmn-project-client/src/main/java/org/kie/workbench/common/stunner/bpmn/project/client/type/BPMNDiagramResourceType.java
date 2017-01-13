@@ -27,15 +27,15 @@ import org.kie.workbench.common.stunner.project.client.type.AbstractStunnerClien
 @ApplicationScoped
 public class BPMNDiagramResourceType extends AbstractStunnerClientResourceType<BPMNDefinitionSetResourceType> {
 
-    private static final Image ICON = new Image( BPMNProjectImageResources.INSTANCE.bpmn2Icon() );
+    private static final Image ICON = new Image(BPMNProjectImageResources.INSTANCE.bpmn2Icon());
 
     protected BPMNDiagramResourceType() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public BPMNDiagramResourceType( final BPMNDefinitionSetResourceType definitionSetResourceType ) {
-        super( definitionSetResourceType );
+    public BPMNDiagramResourceType(final BPMNDefinitionSetResourceType definitionSetResourceType) {
+        super(definitionSetResourceType);
     }
 
     @Override

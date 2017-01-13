@@ -58,7 +58,7 @@ public class Priority implements BPMNProperty {
     public Priority() {
     }
 
-    public Priority( final String value ) {
+    public Priority(final String value) {
         this.value = value;
     }
 
@@ -90,7 +90,7 @@ public class Priority implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

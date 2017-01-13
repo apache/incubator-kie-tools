@@ -23,12 +23,12 @@ public final class LienzoTextPaletteElementViewImpl
 
     private final Text view;
 
-    public LienzoTextPaletteElementViewImpl( final String text,
-                                             final String fontFamily,
-                                             final double fontSize ) {
-        this.view = new Text( text,
-                              fontFamily,
-                              fontSize );
+    public LienzoTextPaletteElementViewImpl(final String text,
+                                            final String fontFamily,
+                                            final double fontSize) {
+        this.view = new Text(text,
+                             fontFamily,
+                             fontSize);
     }
 
     @Override

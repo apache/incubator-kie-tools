@@ -33,7 +33,7 @@ import org.uberfire.mocks.EventSourceMock;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class ClientSessionManagerImplTest {
 
     @Mock
@@ -57,124 +57,124 @@ public class ClientSessionManagerImplTest {
 
     @Before
     public void setup() throws Exception {
-        this.tested = new ClientSessionManagerImpl( platformManager,
-                                                    sessionOpenedEventMock,
-                                                    sessionDisposedEventMock,
-                                                    sessionPausedEventMock,
-                                                    sessionResumedEventMock,
-                                                    sessionErrorEventMock );
+        this.tested = new ClientSessionManagerImpl(platformManager,
+                                                   sessionOpenedEventMock,
+                                                   sessionDisposedEventMock,
+                                                   sessionPausedEventMock,
+                                                   sessionResumedEventMock,
+                                                   sessionErrorEventMock);
     }
 
     @Test
     public void testPostOpen() {
-        tested.open( session );
-        verify( sessionOpenedEventMock,
-                times( 1 ) ).fire( any( SessionOpenedEvent.class ) );
-        verify( sessionPausedEventMock,
-                times( 0 ) ).fire( any( SessionPausedEvent.class ) );
-        verify( sessionResumedEventMock,
-                times( 0 ) ).fire( any( SessionResumedEvent.class ) );
-        verify( sessionErrorEventMock,
-                times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
-        verify( sessionDisposedEventMock,
-                times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
+        tested.open(session);
+        verify(sessionOpenedEventMock,
+               times(1)).fire(any(SessionOpenedEvent.class));
+        verify(sessionPausedEventMock,
+               times(0)).fire(any(SessionPausedEvent.class));
+        verify(sessionResumedEventMock,
+               times(0)).fire(any(SessionResumedEvent.class));
+        verify(sessionErrorEventMock,
+               times(0)).fire(any(OnSessionErrorEvent.class));
+        verify(sessionDisposedEventMock,
+               times(0)).fire(any(SessionDisposedEvent.class));
     }
 
     @Test
     public void testPostOpenAnotherSession() {
         tested.current = session;
-        tested.open( session1 );
-        verify( sessionOpenedEventMock,
-                times( 1 ) ).fire( any( SessionOpenedEvent.class ) );
-        verify( sessionPausedEventMock,
-                times( 1 ) ).fire( any( SessionPausedEvent.class ) );
-        verify( sessionResumedEventMock,
-                times( 0 ) ).fire( any( SessionResumedEvent.class ) );
-        verify( sessionErrorEventMock,
-                times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
-        verify( sessionDisposedEventMock,
-                times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
+        tested.open(session1);
+        verify(sessionOpenedEventMock,
+               times(1)).fire(any(SessionOpenedEvent.class));
+        verify(sessionPausedEventMock,
+               times(1)).fire(any(SessionPausedEvent.class));
+        verify(sessionResumedEventMock,
+               times(0)).fire(any(SessionResumedEvent.class));
+        verify(sessionErrorEventMock,
+               times(0)).fire(any(OnSessionErrorEvent.class));
+        verify(sessionDisposedEventMock,
+               times(0)).fire(any(SessionDisposedEvent.class));
     }
 
     @Test
     public void testPostPause() {
         tested.current = session;
         tested.pause();
-        verify( sessionOpenedEventMock,
-                times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
-        verify( sessionPausedEventMock,
-                times( 1 ) ).fire( any( SessionPausedEvent.class ) );
-        verify( sessionResumedEventMock,
-                times( 0 ) ).fire( any( SessionResumedEvent.class ) );
-        verify( sessionErrorEventMock,
-                times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
-        verify( sessionDisposedEventMock,
-                times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
+        verify(sessionOpenedEventMock,
+               times(0)).fire(any(SessionOpenedEvent.class));
+        verify(sessionPausedEventMock,
+               times(1)).fire(any(SessionPausedEvent.class));
+        verify(sessionResumedEventMock,
+               times(0)).fire(any(SessionResumedEvent.class));
+        verify(sessionErrorEventMock,
+               times(0)).fire(any(OnSessionErrorEvent.class));
+        verify(sessionDisposedEventMock,
+               times(0)).fire(any(SessionDisposedEvent.class));
     }
 
     @Test
     public void testPostResume() {
         tested.current = session1;
-        tested.resume( session );
-        verify( sessionOpenedEventMock,
-                times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
-        verify( sessionPausedEventMock,
-                times( 1 ) ).fire( any( SessionPausedEvent.class ) );
-        verify( sessionResumedEventMock,
-                times( 1 ) ).fire( any( SessionResumedEvent.class ) );
-        verify( sessionErrorEventMock,
-                times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
-        verify( sessionDisposedEventMock,
-                times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
+        tested.resume(session);
+        verify(sessionOpenedEventMock,
+               times(0)).fire(any(SessionOpenedEvent.class));
+        verify(sessionPausedEventMock,
+               times(1)).fire(any(SessionPausedEvent.class));
+        verify(sessionResumedEventMock,
+               times(1)).fire(any(SessionResumedEvent.class));
+        verify(sessionErrorEventMock,
+               times(0)).fire(any(OnSessionErrorEvent.class));
+        verify(sessionDisposedEventMock,
+               times(0)).fire(any(SessionDisposedEvent.class));
     }
 
     @Test
     public void testPostDispose() {
         tested.current = session;
         tested.dispose();
-        verify( sessionOpenedEventMock,
-                times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
-        verify( sessionPausedEventMock,
-                times( 0 ) ).fire( any( SessionPausedEvent.class ) );
-        verify( sessionResumedEventMock,
-                times( 0 ) ).fire( any( SessionResumedEvent.class ) );
-        verify( sessionErrorEventMock,
-                times( 0 ) ).fire( any( OnSessionErrorEvent.class ) );
-        verify( sessionDisposedEventMock,
-                times( 1 ) ).fire( any( SessionDisposedEvent.class ) );
+        verify(sessionOpenedEventMock,
+               times(0)).fire(any(SessionOpenedEvent.class));
+        verify(sessionPausedEventMock,
+               times(0)).fire(any(SessionPausedEvent.class));
+        verify(sessionResumedEventMock,
+               times(0)).fire(any(SessionResumedEvent.class));
+        verify(sessionErrorEventMock,
+               times(0)).fire(any(OnSessionErrorEvent.class));
+        verify(sessionDisposedEventMock,
+               times(1)).fire(any(SessionDisposedEvent.class));
     }
 
     @Test
     public void testHandleClientError() {
         tested.current = session;
-        ClientRuntimeError error = mock( ClientRuntimeError.class );
-        tested.handleClientError( error );
-        verify( sessionOpenedEventMock,
-                times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
-        verify( sessionPausedEventMock,
-                times( 0 ) ).fire( any( SessionPausedEvent.class ) );
-        verify( sessionResumedEventMock,
-                times( 0 ) ).fire( any( SessionResumedEvent.class ) );
-        verify( sessionErrorEventMock,
-                times( 1 ) ).fire( any( OnSessionErrorEvent.class ) );
-        verify( sessionDisposedEventMock,
-                times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
+        ClientRuntimeError error = mock(ClientRuntimeError.class);
+        tested.handleClientError(error);
+        verify(sessionOpenedEventMock,
+               times(0)).fire(any(SessionOpenedEvent.class));
+        verify(sessionPausedEventMock,
+               times(0)).fire(any(SessionPausedEvent.class));
+        verify(sessionResumedEventMock,
+               times(0)).fire(any(SessionResumedEvent.class));
+        verify(sessionErrorEventMock,
+               times(1)).fire(any(OnSessionErrorEvent.class));
+        verify(sessionDisposedEventMock,
+               times(0)).fire(any(SessionDisposedEvent.class));
     }
 
     @Test
     public void testHandleClientCommandError() {
         tested.current = session;
-        CommandException error = mock( CommandException.class );
-        tested.handleCommandError( error );
-        verify( sessionOpenedEventMock,
-                times( 0 ) ).fire( any( SessionOpenedEvent.class ) );
-        verify( sessionPausedEventMock,
-                times( 0 ) ).fire( any( SessionPausedEvent.class ) );
-        verify( sessionResumedEventMock,
-                times( 0 ) ).fire( any( SessionResumedEvent.class ) );
-        verify( sessionErrorEventMock,
-                times( 1 ) ).fire( any( OnSessionErrorEvent.class ) );
-        verify( sessionDisposedEventMock,
-                times( 0 ) ).fire( any( SessionDisposedEvent.class ) );
+        CommandException error = mock(CommandException.class);
+        tested.handleCommandError(error);
+        verify(sessionOpenedEventMock,
+               times(0)).fire(any(SessionOpenedEvent.class));
+        verify(sessionPausedEventMock,
+               times(0)).fire(any(SessionPausedEvent.class));
+        verify(sessionResumedEventMock,
+               times(0)).fire(any(SessionResumedEvent.class));
+        verify(sessionErrorEventMock,
+               times(1)).fire(any(OnSessionErrorEvent.class));
+        verify(sessionDisposedEventMock,
+               times(0)).fire(any(SessionDisposedEvent.class));
     }
 }

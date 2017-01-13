@@ -27,7 +27,7 @@ public abstract class AbstractMenuDevCommand
 
     private final AbstractClientSessionManager sessionManager;
 
-    protected AbstractMenuDevCommand( final AbstractClientSessionManager sessionManager ) {
+    protected AbstractMenuDevCommand(final AbstractClientSessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
 

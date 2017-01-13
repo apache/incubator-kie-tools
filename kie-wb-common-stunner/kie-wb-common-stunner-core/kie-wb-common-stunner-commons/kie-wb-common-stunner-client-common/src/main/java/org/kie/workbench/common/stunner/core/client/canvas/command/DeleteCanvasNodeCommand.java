@@ -35,45 +35,45 @@ public final class DeleteCanvasNodeCommand extends AbstractCanvasCommand {
     private final Node candidate;
     private final Node parent;
 
-    public DeleteCanvasNodeCommand( final Node candidate ) {
+    public DeleteCanvasNodeCommand(final Node candidate) {
         this.candidate = candidate;
-        this.parent = getParent( candidate );
+        this.parent = getParent(candidate);
     }
 
-    public DeleteCanvasNodeCommand( final Node candidate,
-                                    final Node parent ) {
+    public DeleteCanvasNodeCommand(final Node candidate,
+                                   final Node parent) {
         this.candidate = candidate;
         this.parent = parent;
     }
 
     @Override
-    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
-        if ( null != parent ) {
-            context.removeChild( parent.getUUID(),
-                                 candidate.getUUID() );
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+        if (null != parent) {
+            context.removeChild(parent.getUUID(),
+                                candidate.getUUID());
         }
-        context.deregister( candidate );
-        if ( null != parent ) {
-            context.applyElementMutation( parent,
-                                          MutationContext.STATIC );
+        context.deregister(candidate);
+        if (null != parent) {
+            context.applyElementMutation(parent,
+                                         MutationContext.STATIC);
         }
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         final String ssid = context.getDiagram().getMetadata().getShapeSetId();
-        final AbstractCanvasCommand command = new AddCanvasNodeCommand( candidate,
-                                                                        ssid );
-        return command.execute( context );
+        final AbstractCanvasCommand command = new AddCanvasNodeCommand(candidate,
+                                                                       ssid);
+        return command.execute(context);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public static Node getParent( final Node node ) {
+    @SuppressWarnings("unchecked")
+    public static Node getParent(final Node node) {
         List<Edge> inEdges = null != node ? node.getInEdges() : null;
-        if ( null != inEdges && !inEdges.isEmpty() ) {
-            for ( final Edge edge : inEdges ) {
-                if ( isChildEdge( edge ) || isDockEdge( edge ) ) {
+        if (null != inEdges && !inEdges.isEmpty()) {
+            for (final Edge edge : inEdges) {
+                if (isChildEdge(edge) || isDockEdge(edge)) {
                     return edge.getSourceNode();
                 }
             }
@@ -81,11 +81,11 @@ public final class DeleteCanvasNodeCommand extends AbstractCanvasCommand {
         return null;
     }
 
-    public static boolean isChildEdge( final Edge edge ) {
+    public static boolean isChildEdge(final Edge edge) {
         return edge.getContent() instanceof Child;
     }
 
-    public static boolean isDockEdge( final Edge edge ) {
+    public static boolean isDockEdge(final Edge edge) {
         return edge.getContent() instanceof Dock;
     }
 

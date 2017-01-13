@@ -42,64 +42,64 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
     private String morphTarget;
     private String oldMorphTarget;
 
-    public MorphNodeCommand( final @MapsTo( "candidate" ) Node<Definition, Edge> candidate,
-                             final @MapsTo( "morphDefinition" ) MorphDefinition morphDefinition,
-                             final @MapsTo( "morphTarget" ) String morphTarget ) {
-        this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                                                             candidate );
-        this.morphDefinition = PortablePreconditions.checkNotNull( "morphDefinition",
-                                                                   morphDefinition );
-        this.morphTarget = PortablePreconditions.checkNotNull( "morphTarget",
-                                                               morphTarget );
+    public MorphNodeCommand(final @MapsTo("candidate") Node<Definition, Edge> candidate,
+                            final @MapsTo("morphDefinition") MorphDefinition morphDefinition,
+                            final @MapsTo("morphTarget") String morphTarget) {
+        this.candidate = PortablePreconditions.checkNotNull("candidate",
+                                                            candidate);
+        this.morphDefinition = PortablePreconditions.checkNotNull("morphDefinition",
+                                                                  morphDefinition);
+        this.morphTarget = PortablePreconditions.checkNotNull("morphTarget",
+                                                              morphTarget);
         this.oldMorphTarget = null;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        final CommandResult<RuleViolation> results = allow( context );
-        if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
+    @SuppressWarnings("unchecked")
+    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
+        final CommandResult<RuleViolation> results = allow(context);
+        if (!results.getType().equals(CommandResult.Type.ERROR)) {
             final DefinitionManager definitionManager = context.getDefinitionManager();
             final Object currentDef = candidate.getContent().getDefinition();
-            final String currentDefId = definitionManager.adapters().forDefinition().getId( currentDef );
+            final String currentDefId = definitionManager.adapters().forDefinition().getId(currentDef);
             this.oldMorphTarget = currentDefId;
-            final MorphAdapter<Object> morphAdapter = context.getDefinitionManager().adapters().registry().getMorphAdapter( currentDef.getClass() );
-            if ( null == morphAdapter ) {
-                throw new RuntimeException( "No morph adapter found for definition [" + currentDef.toString() + "] " +
-                                                    "and target morph [" + morphTarget + "]" );
+            final MorphAdapter<Object> morphAdapter = context.getDefinitionManager().adapters().registry().getMorphAdapter(currentDef.getClass());
+            if (null == morphAdapter) {
+                throw new RuntimeException("No morph adapter found for definition [" + currentDef.toString() + "] " +
+                                                   "and target morph [" + morphTarget + "]");
             }
-            final Object newDef = morphAdapter.morph( currentDef,
-                                                      morphDefinition,
-                                                      morphTarget );
-            if ( null == newDef ) {
-                throw new RuntimeException( "No morph resulting Definition. [ morphSource=" + currentDefId + ", " +
-                                                    "morphTarget=" + morphTarget + "]" );
+            final Object newDef = morphAdapter.morph(currentDef,
+                                                     morphDefinition,
+                                                     morphTarget);
+            if (null == newDef) {
+                throw new RuntimeException("No morph resulting Definition. [ morphSource=" + currentDefId + ", " +
+                                                   "morphTarget=" + morphTarget + "]");
             }
 
             // Morph the node definition to the new one.
-            candidate.getContent().setDefinition( newDef );
+            candidate.getContent().setDefinition(newDef);
             // Update candidate roles.
-            final Set<String> newLabels = definitionManager.adapters().forDefinition().getLabels( newDef );
+            final Set<String> newLabels = definitionManager.adapters().forDefinition().getLabels(newDef);
             candidate.getLabels().clear();
-            if ( null != newLabels ) {
-                candidate.getLabels().addAll( newLabels );
+            if (null != newLabels) {
+                candidate.getLabels().addAll(newLabels);
             }
         }
         return results;
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
+    @SuppressWarnings("unchecked")
+    protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
         // TODO: check rules before morphing?
         return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
-    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final MorphNodeCommand undoCommand = new MorphNodeCommand( candidate,
-                                                                   morphDefinition,
-                                                                   oldMorphTarget );
-        return undoCommand.execute( context );
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        final MorphNodeCommand undoCommand = new MorphNodeCommand(candidate,
+                                                                  morphDefinition,
+                                                                  oldMorphTarget);
+        return undoCommand.execute(context);
     }
 
     @Override

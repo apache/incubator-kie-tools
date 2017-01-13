@@ -29,8 +29,8 @@ public final class ViewTraverseProcessorImpl extends AbstractContentTraverseProc
         implements ViewTraverseProcessor {
 
     @Inject
-    public ViewTraverseProcessorImpl( final TreeWalkTraverseProcessor treeWalkTraverseProcessor ) {
-        super( treeWalkTraverseProcessor );
+    public ViewTraverseProcessorImpl(final TreeWalkTraverseProcessor treeWalkTraverseProcessor) {
+        super(treeWalkTraverseProcessor);
     }
 
     @Override
@@ -39,7 +39,7 @@ public final class ViewTraverseProcessorImpl extends AbstractContentTraverseProc
     }
 
     @Override
-    protected boolean accepts( final Edge edge ) {
+    protected boolean accepts(final Edge edge) {
         return edge.getContent() instanceof View;
     }
 }

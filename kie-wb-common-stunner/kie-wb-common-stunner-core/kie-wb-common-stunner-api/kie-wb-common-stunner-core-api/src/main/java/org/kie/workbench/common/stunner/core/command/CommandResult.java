@@ -22,13 +22,13 @@ package org.kie.workbench.common.stunner.core.command;
 public interface CommandResult<T> {
 
     enum Type {
-        ERROR( 3 ),
-        WARNING( 2 ),
-        INFO( 1 );
+        ERROR(3),
+        WARNING(2),
+        INFO(1);
 
         private final int severity;
 
-        Type( final int severity ) {
+        Type(final int severity) {
             this.severity = severity;
         }
 

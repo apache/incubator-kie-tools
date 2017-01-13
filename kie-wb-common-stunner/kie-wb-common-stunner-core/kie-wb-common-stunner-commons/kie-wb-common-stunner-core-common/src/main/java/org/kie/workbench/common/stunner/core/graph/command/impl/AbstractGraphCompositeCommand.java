@@ -42,63 +42,63 @@ public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCom
     protected abstract boolean delegateRulesContextToChildren();
 
     @Override
-    protected CommandResult<RuleViolation> doUndo( final GraphCommandExecutionContext context,
-                                                   final Command<GraphCommandExecutionContext, RuleViolation> command ) {
-        return command.undo( delegateRulesContextToChildren() ? context : buildEmptyExecutionContext( context ) );
+    protected CommandResult<RuleViolation> doUndo(final GraphCommandExecutionContext context,
+                                                  final Command<GraphCommandExecutionContext, RuleViolation> command) {
+        return command.undo(delegateRulesContextToChildren() ? context : buildEmptyExecutionContext(context));
     }
 
     @Override
-    protected CommandResult<RuleViolation> doExecute( final GraphCommandExecutionContext context,
-                                                      final Command<GraphCommandExecutionContext, RuleViolation> command ) {
-        return command.execute( delegateRulesContextToChildren() ? context : buildEmptyExecutionContext( context ) );
+    protected CommandResult<RuleViolation> doExecute(final GraphCommandExecutionContext context,
+                                                     final Command<GraphCommandExecutionContext, RuleViolation> command) {
+        return command.execute(delegateRulesContextToChildren() ? context : buildEmptyExecutionContext(context));
     }
 
     @Override
-    protected CommandResult<RuleViolation> doAllow( final GraphCommandExecutionContext context,
-                                                    final Command<GraphCommandExecutionContext, RuleViolation> command ) {
+    protected CommandResult<RuleViolation> doAllow(final GraphCommandExecutionContext context,
+                                                   final Command<GraphCommandExecutionContext, RuleViolation> command) {
         // Check if rules are present.
-        if ( null == context.getRulesManager() ) {
+        if (null == context.getRulesManager()) {
             return GraphCommandResultBuilder.SUCCESS;
         }
-        return command.allow( context );
+        return command.allow(context);
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected MutableIndex<Node, Edge> getMutableIndex( final GraphCommandExecutionContext context ) {
-        return ( MutableIndex<Node, Edge> ) context.getGraphIndex();
+    @SuppressWarnings("unchecked")
+    protected MutableIndex<Node, Edge> getMutableIndex(final GraphCommandExecutionContext context) {
+        return (MutableIndex<Node, Edge>) context.getGraphIndex();
     }
 
-    protected Graph<?, Node> getGraph( final GraphCommandExecutionContext context ) {
-        return GraphUtils.getGraph( context );
+    protected Graph<?, Node> getGraph(final GraphCommandExecutionContext context) {
+        return GraphUtils.getGraph(context);
     }
 
-    protected Node<?, Edge> getNode( final GraphCommandExecutionContext context,
-                                     final String uuid ) {
-        return GraphUtils.getNode( context,
-                                   uuid );
+    protected Node<?, Edge> getNode(final GraphCommandExecutionContext context,
+                                    final String uuid) {
+        return GraphUtils.getNode(context,
+                                  uuid);
     }
 
-    protected Edge<? extends View, Node> getViewEdge( final GraphCommandExecutionContext context,
-                                                      final String uuid ) {
-        return GraphUtils.getViewEdge( context,
-                                       uuid );
+    protected Edge<? extends View, Node> getViewEdge(final GraphCommandExecutionContext context,
+                                                     final String uuid) {
+        return GraphUtils.getViewEdge(context,
+                                      uuid);
     }
 
-    protected Node<?, Edge> checkNodeNotNull( final GraphCommandExecutionContext context,
-                                              final String uuid ) {
-        final Node<?, Edge> e = getNode( context,
-                                         uuid );
-        if ( null == e ) {
-            throw new BadCommandArgumentsException( this,
-                                                    uuid,
-                                                    "Node not found for [" + uuid + "]." );
+    protected Node<?, Edge> checkNodeNotNull(final GraphCommandExecutionContext context,
+                                             final String uuid) {
+        final Node<?, Edge> e = getNode(context,
+                                        uuid);
+        if (null == e) {
+            throw new BadCommandArgumentsException(this,
+                                                   uuid,
+                                                   "Node not found for [" + uuid + "].");
         }
         return e;
     }
 
-    private EmptyRulesCommandExecutionContext buildEmptyExecutionContext( final GraphCommandExecutionContext context ) {
-        return new EmptyRulesCommandExecutionContext( context.getDefinitionManager(),
-                                                      context.getFactoryManager(),
-                                                      context.getGraphIndex() );
+    private EmptyRulesCommandExecutionContext buildEmptyExecutionContext(final GraphCommandExecutionContext context) {
+        return new EmptyRulesCommandExecutionContext(context.getDefinitionManager(),
+                                                     context.getFactoryManager(),
+                                                     context.getGraphIndex());
     }
 }

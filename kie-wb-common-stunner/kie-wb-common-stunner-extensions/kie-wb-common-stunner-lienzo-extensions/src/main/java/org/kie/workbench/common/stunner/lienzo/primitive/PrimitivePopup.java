@@ -33,57 +33,57 @@ public class PrimitivePopup extends FlowPanel {
         attach();
     }
 
-    public PrimitivePopup show( final double width,
-                                final double height,
-                                final double x,
-                                final double y ) {
-        doShow( null,
-                width,
-                height,
-                x,
-                y );
+    public PrimitivePopup show(final double width,
+                               final double height,
+                               final double x,
+                               final double y) {
+        doShow(null,
+               width,
+               height,
+               x,
+               y);
         lienzoPanel.draw();
         return this;
     }
 
-    public PrimitivePopup show( final IPrimitive<?> _primitive,
-                                final double width,
-                                final double height,
-                                final double x,
-                                final double y ) {
-        doShow( _primitive,
-                width,
-                height,
-                x,
-                y );
+    public PrimitivePopup show(final IPrimitive<?> _primitive,
+                               final double width,
+                               final double height,
+                               final double x,
+                               final double y) {
+        doShow(_primitive,
+               width,
+               height,
+               x,
+               y);
         lienzoPanel.draw();
         return this;
     }
 
-    protected void doShow( final IPrimitive<?> _primitive,
-                           final double width,
-                           final double height,
-                           final double x,
-                           final double y ) {
+    protected void doShow(final IPrimitive<?> _primitive,
+                          final double width,
+                          final double height,
+                          final double x,
+                          final double y) {
         reset();
-        lienzoPanel = new LienzoPanel( ( int ) width,
-                                       ( int ) height );
-        this.add( lienzoPanel );
-        lienzoPanel.getScene().add( canvasLayer );
-        if ( null != _primitive ) {
-            canvasLayer.add( _primitive );
+        lienzoPanel = new LienzoPanel((int) width,
+                                      (int) height);
+        this.add(lienzoPanel);
+        lienzoPanel.getScene().add(canvasLayer);
+        if (null != _primitive) {
+            canvasLayer.add(_primitive);
         }
-        this.getElement().getStyle().setLeft( x,
-                                              Style.Unit.PX );
-        this.getElement().getStyle().setTop( y,
-                                             Style.Unit.PX );
-        this.getElement().getStyle().setZIndex( zIndex );
-        this.getElement().getStyle().setDisplay( Style.Display.INLINE );
+        this.getElement().getStyle().setLeft(x,
+                                             Style.Unit.PX);
+        this.getElement().getStyle().setTop(y,
+                                            Style.Unit.PX);
+        this.getElement().getStyle().setZIndex(zIndex);
+        this.getElement().getStyle().setDisplay(Style.Display.INLINE);
     }
 
     public PrimitivePopup hide() {
         reset();
-        this.getElement().getStyle().setDisplay( Style.Display.NONE );
+        this.getElement().getStyle().setDisplay(Style.Display.NONE);
         return this;
     }
 
@@ -93,7 +93,7 @@ public class PrimitivePopup extends FlowPanel {
         return this;
     }
 
-    public void setzIndex( final int zIndex ) {
+    public void setzIndex(final int zIndex) {
         this.zIndex = zIndex;
     }
 
@@ -102,14 +102,14 @@ public class PrimitivePopup extends FlowPanel {
     }
 
     protected void attach() {
-        RootPanel.get().add( this );
-        this.getElement().getStyle().setPosition( Style.Position.FIXED );
-        this.getElement().getStyle().setZIndex( zIndex );
-        this.getElement().getStyle().setDisplay( Style.Display.NONE );
+        RootPanel.get().add(this);
+        this.getElement().getStyle().setPosition(Style.Position.FIXED);
+        this.getElement().getStyle().setZIndex(zIndex);
+        this.getElement().getStyle().setDisplay(Style.Display.NONE);
     }
 
     protected void deattach() {
-        RootPanel.get().remove( this );
+        RootPanel.get().remove(this);
     }
 
     protected void reset() {

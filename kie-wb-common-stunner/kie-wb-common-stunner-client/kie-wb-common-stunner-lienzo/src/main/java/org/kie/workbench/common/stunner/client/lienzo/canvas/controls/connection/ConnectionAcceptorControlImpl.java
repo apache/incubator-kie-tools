@@ -45,7 +45,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 @Dependent
 public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<AbstractCanvasHandler> {
 
-    private static Logger LOGGER = Logger.getLogger( ConnectionAcceptorControlImpl.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(ConnectionAcceptorControlImpl.class.getName());
 
     CanvasCommandFactory canvasCommandFactory;
     CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
@@ -54,25 +54,25 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
     private CanvasHighlight canvasHighlight;
 
     @Inject
-    public ConnectionAcceptorControlImpl( final CanvasCommandFactory canvasCommandFactory,
-                                          final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager ) {
+    public ConnectionAcceptorControlImpl(final CanvasCommandFactory canvasCommandFactory,
+                                         final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager) {
         this.canvasCommandFactory = canvasCommandFactory;
         this.canvasCommandManager = canvasCommandManager;
     }
 
     @Override
-    public void enable( final AbstractCanvasHandler canvasHandler ) {
+    public void enable(final AbstractCanvasHandler canvasHandler) {
         this.canvasHandler = canvasHandler;
-        this.canvasHighlight = new CanvasHighlight( canvasHandler );
-        final WiresCanvas.View canvasView = ( WiresCanvas.View ) canvasHandler.getCanvas().getView();
-        canvasView.setConnectionAcceptor( CONNECTION_ACCEPTOR );
+        this.canvasHighlight = new CanvasHighlight(canvasHandler);
+        final WiresCanvas.View canvasView = (WiresCanvas.View) canvasHandler.getCanvas().getView();
+        canvasView.setConnectionAcceptor(CONNECTION_ACCEPTOR);
     }
 
     @Override
     public void disable() {
-        if ( null != canvasHandler && null != canvasHandler.getCanvas() ) {
-            final WiresCanvas.View canvasView = ( WiresCanvas.View ) canvasHandler.getCanvas().getView();
-            canvasView.setConnectionAcceptor( IConnectionAcceptor.NONE );
+        if (null != canvasHandler && null != canvasHandler.getCanvas()) {
+            final WiresCanvas.View canvasView = (WiresCanvas.View) canvasHandler.getCanvas().getView();
+            canvasView.setConnectionAcceptor(IConnectionAcceptor.NONE);
         }
         this.canvasHighlight.destroy();
         this.canvasHighlight = null;
@@ -80,191 +80,191 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public boolean allowSource( final Node source,
-                                final Edge<View<?>, Node> connector,
-                                final int magnet ) {
-        if ( null == canvasHandler ) {
+    @SuppressWarnings("unchecked")
+    public boolean allowSource(final Node source,
+                               final Edge<View<?>, Node> connector,
+                               final int magnet) {
+        if (null == canvasHandler) {
             return false;
         }
-        final boolean eq = eq( source,
-                               connector.getSourceNode() );
-        if ( !eq ) {
-            final CommandResult<CanvasViolation> violations = canvasCommandManager.allow( canvasHandler,
-                                                                                          canvasCommandFactory.setSourceNode( source,
-                                                                                                                              connector,
-                                                                                                                              magnet ) );
-            final boolean accepts = isAccept( violations );
-            highlight( source,
-                       accepts );
+        final boolean eq = eq(source,
+                              connector.getSourceNode());
+        if (!eq) {
+            final CommandResult<CanvasViolation> violations = canvasCommandManager.allow(canvasHandler,
+                                                                                         canvasCommandFactory.setSourceNode(source,
+                                                                                                                            connector,
+                                                                                                                            magnet));
+            final boolean accepts = isAccept(violations);
+            highlight(source,
+                      accepts);
             return accepts;
         }
         return true;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public boolean allowTarget( final Node target,
-                                final Edge<View<?>, Node> connector,
-                                final int magnet ) {
-        if ( null == canvasHandler ) {
+    @SuppressWarnings("unchecked")
+    public boolean allowTarget(final Node target,
+                               final Edge<View<?>, Node> connector,
+                               final int magnet) {
+        if (null == canvasHandler) {
             return false;
         }
-        final boolean eq = eq( target,
-                               connector.getTargetNode() );
-        if ( !eq ) {
-            final CommandResult<CanvasViolation> violations = canvasCommandManager.allow( canvasHandler,
-                                                                                          canvasCommandFactory.setTargetNode( target,
-                                                                                                                              connector,
-                                                                                                                              magnet ) );
-            final boolean accepts = isAccept( violations );
-            highlight( target,
-                       accepts );
+        final boolean eq = eq(target,
+                              connector.getTargetNode());
+        if (!eq) {
+            final CommandResult<CanvasViolation> violations = canvasCommandManager.allow(canvasHandler,
+                                                                                         canvasCommandFactory.setTargetNode(target,
+                                                                                                                            connector,
+                                                                                                                            magnet));
+            final boolean accepts = isAccept(violations);
+            highlight(target,
+                      accepts);
             return accepts;
         }
         return true;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public boolean acceptSource( final Node source,
-                                 final Edge<View<?>, Node> connector,
-                                 final int magnet ) {
-        if ( null == canvasHandler ) {
+    @SuppressWarnings("unchecked")
+    public boolean acceptSource(final Node source,
+                                final Edge<View<?>, Node> connector,
+                                final int magnet) {
+        if (null == canvasHandler) {
             return false;
         }
-        final boolean eq = eq( source,
-                               connector.getSourceNode() );
-        if ( !eq ) {
+        final boolean eq = eq(source,
+                              connector.getSourceNode());
+        if (!eq) {
             ensureUnHighLight();
-            final CommandResult<CanvasViolation> violations = canvasCommandManager.execute( canvasHandler,
-                                                                                            canvasCommandFactory.setSourceNode( source,
-                                                                                                                                connector,
-                                                                                                                                magnet ) );
-            return isAccept( violations );
+            final CommandResult<CanvasViolation> violations = canvasCommandManager.execute(canvasHandler,
+                                                                                           canvasCommandFactory.setSourceNode(source,
+                                                                                                                              connector,
+                                                                                                                              magnet));
+            return isAccept(violations);
         }
         return true;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public boolean acceptTarget( final Node target,
-                                 final Edge<View<?>, Node> connector,
-                                 final int magnet ) {
-        if ( null == canvasHandler ) {
+    @SuppressWarnings("unchecked")
+    public boolean acceptTarget(final Node target,
+                                final Edge<View<?>, Node> connector,
+                                final int magnet) {
+        if (null == canvasHandler) {
             return false;
         }
-        final boolean eq = eq( target,
-                               connector.getTargetNode() );
-        if ( !eq ) {
+        final boolean eq = eq(target,
+                              connector.getTargetNode());
+        if (!eq) {
             ensureUnHighLight();
-            final CommandResult<CanvasViolation> violations = canvasCommandManager.execute( canvasHandler,
-                                                                                            canvasCommandFactory.setTargetNode( target,
-                                                                                                                                connector,
-                                                                                                                                magnet ) );
-            return isAccept( violations );
+            final CommandResult<CanvasViolation> violations = canvasCommandManager.execute(canvasHandler,
+                                                                                           canvasCommandFactory.setTargetNode(target,
+                                                                                                                              connector,
+                                                                                                                              magnet));
+            return isAccept(violations);
         }
         return true;
     }
 
-    @SuppressWarnings( "unchecked" )
-    private static boolean eq( final Node n1,
-                               final Node n2 ) {
-        if ( n1 == null && n2 == null ) {
+    @SuppressWarnings("unchecked")
+    private static boolean eq(final Node n1,
+                              final Node n2) {
+        if (n1 == null && n2 == null) {
             return true;
         }
-        return null != n1 && n1.equals( n2 );
+        return null != n1 && n1.equals(n2);
     }
 
     private final IConnectionAcceptor CONNECTION_ACCEPTOR = new IConnectionAcceptor() {
 
         // Set the source Node for the connector.
         @Override
-        @SuppressWarnings( "unchecked" )
-        public boolean acceptHead( final WiresConnection head,
-                                   final WiresMagnet magnet ) {
-            log( Level.FINE,
-                 "## Accept Head ##" );
-            final Edge edge = WiresUtils.getEdge( canvasHandler,
-                                                  head.getConnector() );
-            final Node sourceNode = WiresUtils.getNode( canvasHandler,
-                                                        magnet );
-            final int mIndex = getMagnetIndex( magnet );
+        @SuppressWarnings("unchecked")
+        public boolean acceptHead(final WiresConnection head,
+                                  final WiresMagnet magnet) {
+            log(Level.FINE,
+                "## Accept Head ##");
+            final Edge edge = WiresUtils.getEdge(canvasHandler,
+                                                 head.getConnector());
+            final Node sourceNode = WiresUtils.getNode(canvasHandler,
+                                                       magnet);
+            final int mIndex = getMagnetIndex(magnet);
             final String sourceUUID = sourceNode != null ? sourceNode.getUUID() : null;
             final String message = "Executed SetConnectionSourceNodeCommand [source=" + sourceUUID + ", magnet=" + mIndex + "]";
-            log( Level.FINE,
-                 message );
-            return acceptSource( sourceNode,
-                                 edge,
-                                 mIndex );
+            log(Level.FINE,
+                message);
+            return acceptSource(sourceNode,
+                                edge,
+                                mIndex);
         }
 
         // Set the target Node for the connector.
         @Override
-        @SuppressWarnings( "unchecked" )
-        public boolean acceptTail( final WiresConnection tail,
-                                   final WiresMagnet magnet ) {
-            log( Level.FINE,
-                 "## Accept tail ##" );
+        @SuppressWarnings("unchecked")
+        public boolean acceptTail(final WiresConnection tail,
+                                  final WiresMagnet magnet) {
+            log(Level.FINE,
+                "## Accept tail ##");
             final WiresConnection head = tail.getConnector().getHeadConnection();
-            final Edge edge = WiresUtils.getEdge( canvasHandler,
-                                                  head.getConnector() );
-            final Node targetNode = WiresUtils.getNode( canvasHandler,
-                                                        magnet );
-            final int mIndex = getMagnetIndex( magnet );
+            final Edge edge = WiresUtils.getEdge(canvasHandler,
+                                                 head.getConnector());
+            final Node targetNode = WiresUtils.getNode(canvasHandler,
+                                                       magnet);
+            final int mIndex = getMagnetIndex(magnet);
             final String targetUUID = targetNode != null ? targetNode.getUUID() : null;
             final String message = "Executed SetConnectionTargetNodeCommand [target=" + targetUUID + ", magnet=" + mIndex + "]";
-            log( Level.FINE,
-                 message );
-            return acceptTarget( targetNode,
-                                 edge,
-                                 mIndex );
+            log(Level.FINE,
+                message);
+            return acceptTarget(targetNode,
+                                edge,
+                                mIndex);
         }
 
         @Override
-        @SuppressWarnings( "unchecked" )
-        public boolean headConnectionAllowed( final WiresConnection head,
-                                              final WiresShape shape ) {
-            log( Level.FINE,
-                 "## Allow Head ##" );
-            final Edge<View<?>, Node> edge = WiresUtils.getEdge( canvasHandler,
-                                                                 head.getConnector() );
-            final Node sourceNode = WiresUtils.getNode( canvasHandler,
-                                                        shape );
-            final boolean b = allowSource( sourceNode,
-                                           edge,
-                                           0 );
+        @SuppressWarnings("unchecked")
+        public boolean headConnectionAllowed(final WiresConnection head,
+                                             final WiresShape shape) {
+            log(Level.FINE,
+                "## Allow Head ##");
+            final Edge<View<?>, Node> edge = WiresUtils.getEdge(canvasHandler,
+                                                                head.getConnector());
+            final Node sourceNode = WiresUtils.getNode(canvasHandler,
+                                                       shape);
+            final boolean b = allowSource(sourceNode,
+                                          edge,
+                                          0);
             final String nUUID = null != sourceNode ? sourceNode.getUUID() : "null";
-            log( Level.FINE,
-                 "  Is head allowed [" + nUUID + "] = " + b );
+            log(Level.FINE,
+                "  Is head allowed [" + nUUID + "] = " + b);
             return b;
         }
 
         @Override
-        @SuppressWarnings( "unchecked" )
-        public boolean tailConnectionAllowed( final WiresConnection tail,
-                                              final WiresShape shape ) {
-            log( Level.FINE,
-                 "## Allow tail ##" );
-            final Edge<View<?>, Node> edge = WiresUtils.getEdge( canvasHandler,
-                                                                 tail.getConnector() );
-            final Node targetNode = WiresUtils.getNode( canvasHandler,
-                                                        shape );
-            final boolean b = allowTarget( targetNode,
-                                           edge,
-                                           0 );
+        @SuppressWarnings("unchecked")
+        public boolean tailConnectionAllowed(final WiresConnection tail,
+                                             final WiresShape shape) {
+            log(Level.FINE,
+                "## Allow tail ##");
+            final Edge<View<?>, Node> edge = WiresUtils.getEdge(canvasHandler,
+                                                                tail.getConnector());
+            final Node targetNode = WiresUtils.getNode(canvasHandler,
+                                                       shape);
+            final boolean b = allowTarget(targetNode,
+                                          edge,
+                                          0);
             final String nUUID = null != targetNode ? targetNode.getUUID() : "null";
-            log( Level.FINE,
-                 "  Is tail allowed [" + nUUID + "] = " + b );
+            log(Level.FINE,
+                "  Is tail allowed [" + nUUID + "] = " + b);
             return b;
         }
 
-        private int getMagnetIndex( final WiresMagnet magnet ) {
-            if ( null != magnet ) {
+        private int getMagnetIndex(final WiresMagnet magnet) {
+            if (null != magnet) {
                 MagnetManager.Magnets magnets = magnet.getMagnets();
-                for ( int x = 0; x < magnets.size(); x++ ) {
-                    WiresMagnet _m = magnets.getMagnet( x );
-                    if ( _m.equals( magnet ) ) {
+                for (int x = 0; x < magnets.size(); x++) {
+                    WiresMagnet _m = magnets.getMagnet(x);
+                    if (_m.equals(magnet)) {
                         return x;
                     }
                 }
@@ -273,30 +273,30 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
         }
     };
 
-    private boolean isAccept( final CommandResult<CanvasViolation> result ) {
-        return !CommandUtils.isError( result );
+    private boolean isAccept(final CommandResult<CanvasViolation> result) {
+        return !CommandUtils.isError(result);
     }
 
-    private void highlight( final Node node,
-                            final boolean valid ) {
-        if ( null != node && valid ) {
-            canvasHighlight.highLight( node );
-        } else if ( null != node ) {
-            canvasHighlight.invalid( node );
+    private void highlight(final Node node,
+                           final boolean valid) {
+        if (null != node && valid) {
+            canvasHighlight.highLight(node);
+        } else if (null != node) {
+            canvasHighlight.invalid(node);
         }
     }
 
     private void ensureUnHighLight() {
-        if ( null != canvasHighlight ) {
+        if (null != canvasHighlight) {
             canvasHighlight.unhighLight();
         }
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

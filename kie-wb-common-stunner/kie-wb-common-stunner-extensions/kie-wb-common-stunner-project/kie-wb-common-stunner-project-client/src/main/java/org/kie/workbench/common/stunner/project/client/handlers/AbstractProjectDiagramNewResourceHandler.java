@@ -36,15 +36,15 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientResourceType> extends DefaultNewResourceHandler {
 
-    private static Logger LOGGER = Logger.getLogger( AbstractProjectDiagramNewResourceHandler.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(AbstractProjectDiagramNewResourceHandler.class.getName());
 
     private final DefinitionManager definitionManager;
     private final ClientProjectDiagramService projectDiagramServices;
     private final R projectDiagramResourceType;
 
-    public AbstractProjectDiagramNewResourceHandler( final DefinitionManager definitionManager,
-                                                     final ClientProjectDiagramService projectDiagramServices,
-                                                     final R projectDiagramResourceType ) {
+    public AbstractProjectDiagramNewResourceHandler(final DefinitionManager definitionManager,
+                                                    final ClientProjectDiagramService projectDiagramServices,
+                                                    final R projectDiagramResourceType) {
         this.definitionManager = definitionManager;
         this.projectDiagramServices = projectDiagramServices;
         this.projectDiagramResourceType = projectDiagramResourceType;
@@ -60,56 +60,56 @@ public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientR
     }
 
     @Override
-    public void create( final Package pkg,
-                        final String name,
-                        final NewResourcePresenter presenter ) {
-        BusyPopup.showMessage( "Loading..." );
+    public void create(final Package pkg,
+                       final String name,
+                       final NewResourcePresenter presenter) {
+        BusyPopup.showMessage("Loading...");
         final Path path = pkg.getPackageMainResourcesPath();
         final Class<?> type = getDefinitionSetType();
-        final String setId = getId( type );
+        final String setId = getId(type);
         final String projPkg = pkg.getPackageName();
         final String projName = pkg.getProjectRootPath().getFileName();
-        projectDiagramServices.create( path,
-                                       name,
-                                       setId,
-                                       projName,
-                                       projPkg,
-                                       new ServiceCallback<Path>() {
-                                           @Override
-                                           public void onSuccess( Path path ) {
-                                               BusyPopup.close();
-                                               presenter.complete();
-                                               notifySuccess();
-                                               PlaceRequest place = new PathPlaceRequest( path,
-                                                                                          getEditorIdentifier() );
-                                               placeManager.goTo( place );
-                                           }
+        projectDiagramServices.create(path,
+                                      name,
+                                      setId,
+                                      projName,
+                                      projPkg,
+                                      new ServiceCallback<Path>() {
+                                          @Override
+                                          public void onSuccess(final Path path) {
+                                              BusyPopup.close();
+                                              presenter.complete();
+                                              notifySuccess();
+                                              PlaceRequest place = new PathPlaceRequest(path,
+                                                                                        getEditorIdentifier());
+                                              placeManager.goTo(place);
+                                          }
 
-                                           @Override
-                                           public void onError( ClientRuntimeError error ) {
-                                               showError( error );
-                                           }
-                                       } );
+                                          @Override
+                                          public void onError(final ClientRuntimeError error) {
+                                              showError(error);
+                                          }
+                                      });
     }
 
-    private String getId( final Class<?> type ) {
-        final Object set = definitionManager.definitionSets().getDefinitionSetByType( type );
-        return definitionManager.adapters().forDefinitionSet().getId( set );
+    private String getId(final Class<?> type) {
+        final Object set = definitionManager.definitionSets().getDefinitionSetByType(type);
+        return definitionManager.adapters().forDefinitionSet().getId(set);
     }
 
-    private void showError( final ClientRuntimeError error ) {
+    private void showError(final ClientRuntimeError error) {
         final String msg = error.toString();
-        log( Level.SEVERE,
-             msg );
-        ErrorPopup.showMessage( msg );
+        log(Level.SEVERE,
+            msg);
+        ErrorPopup.showMessage(msg);
         BusyPopup.close();
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

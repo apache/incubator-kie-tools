@@ -58,7 +58,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 @Dependent
 public class FormPropertiesWidget implements IsWidget {
 
-    private static Logger LOGGER = Logger.getLogger( FormPropertiesWidget.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(FormPropertiesWidget.class.getName());
 
     private final DefinitionUtils definitionUtils;
     private final CanvasCommandFactory commandFactory;
@@ -68,17 +68,17 @@ public class FormPropertiesWidget implements IsWidget {
     private AbstractClientFullSession session;
 
     protected FormPropertiesWidget() {
-        this( null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public FormPropertiesWidget( final DefinitionUtils definitionUtils,
-                                 final CanvasCommandFactory commandFactory,
-                                 final DynamicFormRenderer formRenderer,
-                                 final Event<FormPropertiesOpened> propertiesOpenedEvent ) {
+    public FormPropertiesWidget(final DefinitionUtils definitionUtils,
+                                final CanvasCommandFactory commandFactory,
+                                final DynamicFormRenderer formRenderer,
+                                final Event<FormPropertiesOpened> propertiesOpenedEvent) {
         this.definitionUtils = definitionUtils;
         this.commandFactory = commandFactory;
         this.formRenderer = formRenderer;
@@ -87,14 +87,14 @@ public class FormPropertiesWidget implements IsWidget {
 
     @PostConstruct
     public void init() {
-        log( Level.INFO,
-             "FormPropertiesWidget instance build." );
+        log(Level.INFO,
+            "FormPropertiesWidget instance build.");
     }
 
     /**
      * Binds a session.
      */
-    public FormPropertiesWidget bind( final AbstractClientFullSession session ) {
+    public FormPropertiesWidget bind(final AbstractClientFullSession session) {
         this.session = session;
         return this;
     }
@@ -116,39 +116,39 @@ public class FormPropertiesWidget implements IsWidget {
      * 2.2- If diagram has a canvas root, show the properties for that element.
      */
     public void show() {
-        this.show( null );
+        this.show(null);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void show( final Command callback ) {
+    @SuppressWarnings("unchecked")
+    public void show(final Command callback) {
         boolean done = false;
-        if ( null != session ) {
+        if (null != session) {
             // Obtain first element selected on session, if any.
             String selectedItemUUID = null;
             final SelectionControl selectionControl = session.getSelectionControl();
-            if ( null != selectionControl ) {
+            if (null != selectionControl) {
                 final Collection<String> selectedItems = selectionControl.getSelectedItems();
-                if ( null != selectedItems && !selectedItems.isEmpty() ) {
+                if (null != selectedItems && !selectedItems.isEmpty()) {
                     selectedItemUUID = selectedItems.iterator().next();
                 }
             }
-            if ( null == selectedItemUUID ) {
+            if (null == selectedItemUUID) {
                 final Diagram<?, ?> diagram = getDiagram();
-                if ( null != diagram ) {
+                if (null != diagram) {
                     final String cRoot = diagram.getMetadata().getCanvasRootUUID();
                     // Check if there exist any canvas root element.
-                    if ( !isEmpty( cRoot ) ) {
+                    if (!isEmpty(cRoot)) {
                         selectedItemUUID = cRoot;
                     }
                 }
             }
-            if ( null != selectedItemUUID ) {
-                showByUUID( selectedItemUUID,
-                            callback );
+            if (null != selectedItemUUID) {
+                showByUUID(selectedItemUUID,
+                           callback);
                 done = true;
             }
         }
-        if ( !done ) {
+        if (!done) {
             doClear();
         }
     }
@@ -156,50 +156,50 @@ public class FormPropertiesWidget implements IsWidget {
     /**
      * Show properties for the element with the given identifier.
      */
-    public void showByUUID( final String uuid ) {
-        this.showByUUID( uuid,
-                         null );
+    public void showByUUID(final String uuid) {
+        this.showByUUID(uuid,
+                        null);
     }
 
-    public void showByUUID( final String uuid,
-                            final Command callback ) {
-        final Element<? extends Definition<?>> element = ( null != uuid && null != getCanvasHandler() ) ?
-                getCanvasHandler().getGraphIndex().get( uuid ) : null;
-        if ( null != element ) {
+    public void showByUUID(final String uuid,
+                           final Command callback) {
+        final Element<? extends Definition<?>> element = (null != uuid && null != getCanvasHandler()) ?
+                getCanvasHandler().getGraphIndex().get(uuid) : null;
+        if (null != element) {
             final Object definition = element.getContent().getDefinition();
-            BindableProxy proxy = ( BindableProxy ) BindableProxyFactory.getBindableProxy( definition );
-            formRenderer.renderDefaultForm( proxy.deepUnwrap(),
-                                            () -> {
-                                                formRenderer.addFieldChangeHandler( ( fieldName, newValue ) -> {
-                                                    try {
-                                                        // TODO - Pere: We have to review this. Meanwhile, note that this is working only for properties
-                                                        // that are direct members of the definitions ( ex: Task#width or StartEvent#radius ).
-                                                        // But it's not working for the properties that are inside property sets, for example an error
-                                                        // occurs when updating "documentation", as thisl callback "fieldName" = "documentation", but
-                                                        // in order to obtain the property it should be "general.documentation".
-                                                        final HasProperties hasProperties = ( HasProperties ) DataBinder.forModel( definition ).getModel();
-                                                        String pId = getModifiedPropertyId( hasProperties,
-                                                                                            fieldName );
-                                                        FormPropertiesWidget.this.executeUpdateProperty( element,
-                                                                                                         pId,
-                                                                                                         newValue );
-                                                    } catch ( Exception ex ) {
-                                                        log( Level.SEVERE,
-                                                             "Something wrong happened refreshing the canvas for field '" + fieldName + "': " + ex.getCause() );
-                                                    } finally {
-                                                        if ( null != callback ) {
-                                                            callback.execute();
-                                                        }
-                                                    }
-                                                } );
-                                            } );
-            final String name = definitionUtils.getName( definition );
-            propertiesOpenedEvent.fire( new FormPropertiesOpened( session,
-                                                                  uuid,
-                                                                  name ) );
+            BindableProxy proxy = (BindableProxy) BindableProxyFactory.getBindableProxy(definition);
+            formRenderer.renderDefaultForm(proxy.deepUnwrap(),
+                                           () -> {
+                                               formRenderer.addFieldChangeHandler((fieldName, newValue) -> {
+                                                   try {
+                                                       // TODO - Pere: We have to review this. Meanwhile, note that this is working only for properties
+                                                       // that are direct members of the definitions ( ex: Task#width or StartEvent#radius ).
+                                                       // But it's not working for the properties that are inside property sets, for example an error
+                                                       // occurs when updating "documentation", as thisl callback "fieldName" = "documentation", but
+                                                       // in order to obtain the property it should be "general.documentation".
+                                                       final HasProperties hasProperties = (HasProperties) DataBinder.forModel(definition).getModel();
+                                                       String pId = getModifiedPropertyId(hasProperties,
+                                                                                          fieldName);
+                                                       FormPropertiesWidget.this.executeUpdateProperty(element,
+                                                                                                       pId,
+                                                                                                       newValue);
+                                                   } catch (Exception ex) {
+                                                       log(Level.SEVERE,
+                                                           "Something wrong happened refreshing the canvas for field '" + fieldName + "': " + ex.getCause());
+                                                   } finally {
+                                                       if (null != callback) {
+                                                           callback.execute();
+                                                       }
+                                                   }
+                                               });
+                                           });
+            final String name = definitionUtils.getName(definition);
+            propertiesOpenedEvent.fire(new FormPropertiesOpened(session,
+                                                                uuid,
+                                                                name));
         } else {
             doClear();
-            if ( null != callback ) {
+            if (null != callback) {
                 callback.execute();
             }
         }
@@ -218,41 +218,41 @@ public class FormPropertiesWidget implements IsWidget {
         return null != getCanvasHandler() ? getCanvasHandler().getDiagram() : null;
     }
 
-    @SuppressWarnings( "unchecked" )
-    void onCanvasElementSelectedEvent( @Observes CanvasElementSelectedEvent event ) {
-        checkNotNull( "event",
-                      event );
-        if ( null != getCanvasHandler() ) {
+    @SuppressWarnings("unchecked")
+    void onCanvasElementSelectedEvent(@Observes CanvasElementSelectedEvent event) {
+        checkNotNull("event",
+                     event);
+        if (null != getCanvasHandler()) {
             final String uuid = event.getElementUUID();
-            showByUUID( uuid );
+            showByUUID(uuid);
         }
     }
 
-    void CanvasClearSelectionEvent( @Observes CanvasClearSelectionEvent clearSelectionEvent ) {
-        checkNotNull( "clearSelectionEvent",
-                      clearSelectionEvent );
+    void CanvasClearSelectionEvent(@Observes CanvasClearSelectionEvent clearSelectionEvent) {
+        checkNotNull("clearSelectionEvent",
+                     clearSelectionEvent);
         doClear();
     }
 
-    void onCanvasSessionOpened( @Observes SessionOpenedEvent sessionOpenedEvent ) {
-        checkNotNull( "sessionOpenedEvent",
-                      sessionOpenedEvent );
-        doOpenSession( sessionOpenedEvent.getSession() );
+    void onCanvasSessionOpened(@Observes SessionOpenedEvent sessionOpenedEvent) {
+        checkNotNull("sessionOpenedEvent",
+                     sessionOpenedEvent);
+        doOpenSession(sessionOpenedEvent.getSession());
     }
 
-    void onCanvasSessionDisposed( @Observes SessionDisposedEvent sessionDisposedEvent ) {
-        checkNotNull( "sessionDisposedEvent",
-                      sessionDisposedEvent );
+    void onCanvasSessionDisposed(@Observes SessionDisposedEvent sessionDisposedEvent) {
+        checkNotNull("sessionDisposedEvent",
+                     sessionDisposedEvent);
         unbind();
     }
 
-    private void doOpenSession( final ClientSession session ) {
+    private void doOpenSession(final ClientSession session) {
         try {
-            bind( ( AbstractClientFullSession ) session ).show();
-        } catch ( ClassCastException e ) {
+            bind((AbstractClientFullSession) session).show();
+        } catch (ClassCastException e) {
             // No writteable session. Do not show properties until read mode available.
-            log( Level.INFO,
-                 "Session discarded for opening as not instance of full session." );
+            log(Level.INFO,
+                "Session discarded for opening as not instance of full session.");
         }
     }
 
@@ -261,56 +261,56 @@ public class FormPropertiesWidget implements IsWidget {
         // TODO: changeTitleNotification.fire(new ChangeTitleWidgetEvent(placeRequest, "Properties"));
     }
 
-    private void executeUpdateProperty( final Element<? extends Definition<?>> element,
-                                        final String propertyId,
-                                        final Object value ) {
+    private void executeUpdateProperty(final Element<? extends Definition<?>> element,
+                                       final String propertyId,
+                                       final Object value) {
         final CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCommandManager();
-        commandManager.execute( getCanvasHandler(),
-                                commandFactory.updatePropertyValue( element,
-                                                                    propertyId,
-                                                                    value ) );
+        commandManager.execute(getCanvasHandler(),
+                               commandFactory.updatePropertyValue(element,
+                                                                  propertyId,
+                                                                  value));
     }
 
-    private void executeMove( final Element<? extends Definition<?>> element,
-                              final double x,
-                              final double y ) {
+    private void executeMove(final Element<? extends Definition<?>> element,
+                             final double x,
+                             final double y) {
         final CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCommandManager();
-        commandManager.execute( getCanvasHandler(),
-                                commandFactory.updatePosition( ( Node<View<?>, Edge> ) element,
-                                                               x,
-                                                               y ) );
+        commandManager.execute(getCanvasHandler(),
+                               commandFactory.updatePosition((Node<View<?>, Edge>) element,
+                                                             x,
+                                                             y));
     }
 
-    private String getModifiedPropertyId( HasProperties model,
-                                          String fieldName ) {
-        int separatorIndex = fieldName.indexOf( "." );
+    private String getModifiedPropertyId(HasProperties model,
+                                         String fieldName) {
+        int separatorIndex = fieldName.indexOf(".");
         // Check if it is a nested property, if it is we must obtain the nested property instead of the root one.
-        if ( separatorIndex != -1 ) {
-            String rootProperty = fieldName.substring( 0,
-                                                       separatorIndex );
-            fieldName = fieldName.substring( separatorIndex + 1 );
-            Object property = model.get( rootProperty );
-            model = ( HasProperties ) DataBinder.forModel( property ).getModel();
-            return getModifiedPropertyId( model,
-                                          fieldName );
+        if (separatorIndex != -1) {
+            String rootProperty = fieldName.substring(0,
+                                                      separatorIndex);
+            fieldName = fieldName.substring(separatorIndex + 1);
+            Object property = model.get(rootProperty);
+            model = (HasProperties) DataBinder.forModel(property).getModel();
+            return getModifiedPropertyId(model,
+                                         fieldName);
         }
-        Object property = model.get( fieldName );
+        Object property = model.get(fieldName);
         return definitionUtils
                 .getDefinitionManager()
                 .adapters()
                 .forProperty()
-                .getId( property );
+                .getId(property);
     }
 
-    private boolean isEmpty( final String s ) {
+    private boolean isEmpty(final String s) {
         return s == null || s.trim().length() == 0;
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

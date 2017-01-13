@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 class RuntimeBindablePropertyAdapter<T, V> extends AbstractRuntimeAdapter<T>
         implements BindablePropertyAdapter<T, V> {
 
-    private static final Logger LOG = LoggerFactory.getLogger( RuntimeBindablePropertyAdapter.class );
+    private static final Logger LOG = LoggerFactory.getLogger(RuntimeBindablePropertyAdapter.class);
 
     private Map<Class, String> propertyTypeFieldNames;
     private Map<Class, String> propertyCaptionFieldNames;
@@ -41,14 +41,14 @@ class RuntimeBindablePropertyAdapter<T, V> extends AbstractRuntimeAdapter<T>
     private Map<Class, String> propertyAllowedValuesFieldNames;
 
     @Override
-    public void setBindings( final Map<Class, String> propertyTypeFieldNames,
-                             final Map<Class, String> propertyCaptionFieldNames,
-                             final Map<Class, String> propertyDescriptionFieldNames,
-                             final Map<Class, String> propertyReadOnlyFieldNames,
-                             final Map<Class, String> propertyOptionalFieldNames,
-                             final Map<Class, String> propertyValueFieldNames,
-                             final Map<Class, String> propertyDefaultValueFieldNames,
-                             final Map<Class, String> propertyAllowedValuesFieldNames ) {
+    public void setBindings(final Map<Class, String> propertyTypeFieldNames,
+                            final Map<Class, String> propertyCaptionFieldNames,
+                            final Map<Class, String> propertyDescriptionFieldNames,
+                            final Map<Class, String> propertyReadOnlyFieldNames,
+                            final Map<Class, String> propertyOptionalFieldNames,
+                            final Map<Class, String> propertyValueFieldNames,
+                            final Map<Class, String> propertyDefaultValueFieldNames,
+                            final Map<Class, String> propertyAllowedValuesFieldNames) {
         this.propertyTypeFieldNames = propertyTypeFieldNames;
         this.propertyCaptionFieldNames = propertyCaptionFieldNames;
         this.propertyDescriptionFieldNames = propertyDescriptionFieldNames;
@@ -60,112 +60,112 @@ class RuntimeBindablePropertyAdapter<T, V> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public String getId( final T property ) {
-        return BindableAdapterUtils.getPropertyId( property.getClass() );
+    public String getId(final T property) {
+        return BindableAdapterUtils.getPropertyId(property.getClass());
     }
 
     @Override
-    public PropertyType getType( final T property ) {
+    public PropertyType getType(final T property) {
         Class<?> type = property.getClass();
         try {
-            return getFieldValue( property,
-                                  propertyTypeFieldNames.get( type ) );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining type for Property with id " + getId( property ) );
+            return getFieldValue(property,
+                                 propertyTypeFieldNames.get(type));
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining type for Property with id " + getId(property));
         }
         return null;
     }
 
     @Override
-    public String getCaption( final T property ) {
+    public String getCaption(final T property) {
         Class<?> type = property.getClass();
         try {
-            return getFieldValue( property,
-                                  propertyCaptionFieldNames.get( type ) );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining caption for Property with id " + getId( property ) );
+            return getFieldValue(property,
+                                 propertyCaptionFieldNames.get(type));
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining caption for Property with id " + getId(property));
         }
         return null;
     }
 
     @Override
-    public String getDescription( final T property ) {
+    public String getDescription(final T property) {
         Class<?> type = property.getClass();
         try {
-            return getFieldValue( property,
-                                  propertyDescriptionFieldNames.get( type ) );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining description for Property with id " + getId( property ) );
+            return getFieldValue(property,
+                                 propertyDescriptionFieldNames.get(type));
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining description for Property with id " + getId(property));
         }
         return null;
     }
 
     @Override
-    public boolean isReadOnly( final T property ) {
+    public boolean isReadOnly(final T property) {
         Class<?> type = property.getClass();
         try {
-            return getFieldValue( property,
-                                  propertyReadOnlyFieldNames.get( type ) );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining read only flag for Property with id " + getId( property ) );
+            return getFieldValue(property,
+                                 propertyReadOnlyFieldNames.get(type));
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining read only flag for Property with id " + getId(property));
         }
         return false;
     }
 
     @Override
-    public boolean isOptional( final T property ) {
+    public boolean isOptional(final T property) {
         Class<?> type = property.getClass();
         try {
-            return getFieldValue( property,
-                                  propertyOptionalFieldNames.get( type ) );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining optional flag for Property with id " + getId( property ) );
+            return getFieldValue(property,
+                                 propertyOptionalFieldNames.get(type));
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining optional flag for Property with id " + getId(property));
         }
         return false;
     }
 
     @Override
-    public V getValue( final T property ) {
+    public V getValue(final T property) {
         Class<?> type = property.getClass();
         try {
-            return getFieldValue( property,
-                                  propertyValueFieldNames.get( type ) );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining value for Property with id " + getId( property ) );
+            return getFieldValue(property,
+                                 propertyValueFieldNames.get(type));
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining value for Property with id " + getId(property));
         }
         return null;
     }
 
     @Override
-    public V getDefaultValue( final T property ) {
+    public V getDefaultValue(final T property) {
         Class<?> type = property.getClass();
         try {
-            return getFieldValue( property,
-                                  propertyDefaultValueFieldNames.get( type ) );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining default value for Property with id " + getId( property ) );
+            return getFieldValue(property,
+                                 propertyDefaultValueFieldNames.get(type));
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining default value for Property with id " + getId(property));
         }
         return null;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public Map<V, String> getAllowedValues( final T property ) {
+    @SuppressWarnings("unchecked")
+    public Map<V, String> getAllowedValues(final T property) {
         Class<?> type = property.getClass();
-        String field = propertyAllowedValuesFieldNames.get( type );
+        String field = propertyAllowedValuesFieldNames.get(type);
         Iterable<?> allowedValues = null;
         try {
-            allowedValues = getFieldValue( property,
-                                           field );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining allowed values for Property with id " + getId( property ) );
+            allowedValues = getFieldValue(property,
+                                          field);
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining allowed values for Property with id " + getId(property));
         }
-        if ( null != allowedValues && allowedValues.iterator().hasNext() ) {
+        if (null != allowedValues && allowedValues.iterator().hasNext()) {
             Map<V, String> result = new LinkedHashMap<V, String>();
-            for ( Object v : allowedValues ) {
-                V allowedValue = ( V ) v;
-                result.put( allowedValue,
-                            allowedValue.toString() );
+            for (Object v : allowedValues) {
+                V allowedValue = (V) v;
+                result.put(allowedValue,
+                           allowedValue.toString());
             }
             return result;
         }
@@ -173,32 +173,32 @@ class RuntimeBindablePropertyAdapter<T, V> extends AbstractRuntimeAdapter<T>
     }
 
     @Override
-    public void setValue( final T property,
-                          final V value ) {
+    public void setValue(final T property,
+                         final V value) {
         Class<?> type = property.getClass();
-        String fieldName = propertyValueFieldNames.get( type );
+        String fieldName = propertyValueFieldNames.get(type);
         Field field = null;
         try {
-            field = getField( property,
-                              fieldName );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error setting value for Property with id " + getId( property )
-                               + ". Field [" + fieldName + "] not found for type [" + type.getName() + "]" );
+            field = getField(property,
+                             fieldName);
+        } catch (IllegalAccessException e) {
+            LOG.error("Error setting value for Property with id " + getId(property)
+                              + ". Field [" + fieldName + "] not found for type [" + type.getName() + "]");
         }
-        if ( null != field ) {
+        if (null != field) {
             try {
-                field.setAccessible( true );
-                field.set( property,
-                           value );
-            } catch ( Exception e ) {
-                LOG.error( "Error setting value for Property with id [" + getId( property ) + "] " +
-                                   "and value [" + ( value != null ? value.toString() : "null" ) + "]" );
+                field.setAccessible(true);
+                field.set(property,
+                          value);
+            } catch (Exception e) {
+                LOG.error("Error setting value for Property with id [" + getId(property) + "] " +
+                                  "and value [" + (value != null ? value.toString() : "null") + "]");
             }
         }
     }
 
     @Override
-    public boolean accepts( final Class<?> type ) {
-        return null != propertyTypeFieldNames && propertyTypeFieldNames.containsKey( type );
+    public boolean accepts(final Class<?> type) {
+        return null != propertyTypeFieldNames && propertyTypeFieldNames.containsKey(type);
     }
 }

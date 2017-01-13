@@ -23,16 +23,16 @@ import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet
 
 public class BackendBindableDefinitionUtils {
 
-    public static <T> Set<Class<?>> getDefinitions( final T definitionSet ) {
+    public static <T> Set<Class<?>> getDefinitions(final T definitionSet) {
         Set<Class<?>> result = null;
-        if ( null != definitionSet ) {
-            DefinitionSet annotation = definitionSet.getClass().getAnnotation( DefinitionSet.class );
-            if ( null != annotation ) {
+        if (null != definitionSet) {
+            DefinitionSet annotation = definitionSet.getClass().getAnnotation(DefinitionSet.class);
+            if (null != annotation) {
                 Class<?>[] definitions = annotation.definitions();
-                if ( definitions.length > 0 ) {
-                    result = new HashSet<Class<?>>( definitions.length );
-                    Collections.addAll( result,
-                                        definitions );
+                if (definitions.length > 0) {
+                    result = new HashSet<Class<?>>(definitions.length);
+                    Collections.addAll(result,
+                                       definitions);
                 }
             }
         }

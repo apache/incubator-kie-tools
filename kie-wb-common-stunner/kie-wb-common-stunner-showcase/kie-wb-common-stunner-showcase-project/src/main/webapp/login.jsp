@@ -149,7 +149,7 @@
     <form action="j_security_check" method="post">
       <c:if test="${param.message != null}">
         <div class="">
-          <%=request.getParameter( "message" )%>
+          <%=request.getParameter("message")%>
         </div>
       </c:if>
       <p>
@@ -165,7 +165,7 @@
       <br style="clear: both;"/>
 
       <p>
-        <% if ( request.getParameter( "gwt.codesvr" ) != null ) { %>
+        <% if (request.getParameter("gwt.codesvr") != null) { %>
         <input type="hidden" name="gwt.codesvr" value="<%= org.owasp.encoder.Encode.forHtmlAttribute(request.getParameter("gwt.codesvr")) %>"/>
         <% } %>
         <input class="button" type="submit" value="Sign In"/>

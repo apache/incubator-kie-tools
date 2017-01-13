@@ -57,61 +57,61 @@ public class ClientSessionPresenterView
 
     @PostConstruct
     public void init() {
-        settings.setShowProgressbar( true );
-        settings.setPauseOnMouseOver( false );
+        settings.setShowProgressbar(true);
+        settings.setPauseOnMouseOver(false);
     }
 
     @Override
-    public ClientSessionPresenter.View setToolbar( final IsWidget widget ) {
-        setWidgetForPanel( toolbarPanel,
-                           widget );
+    public ClientSessionPresenter.View setToolbar(final IsWidget widget) {
+        setWidgetForPanel(toolbarPanel,
+                          widget);
         return this;
     }
 
     @Override
-    public ClientSessionPresenter.View setPalette( final IsWidget widget ) {
-        setWidgetForPanel( palettePanel,
-                           widget );
+    public ClientSessionPresenter.View setPalette(final IsWidget widget) {
+        setWidgetForPanel(palettePanel,
+                          widget);
         return this;
     }
 
     @Override
-    public ClientSessionPresenter.View showError( final String error ) {
-        settings.setType( NotifyType.DANGER );
-        showNotification( "Error",
-                          error,
-                          IconType.CLOSE );
+    public ClientSessionPresenter.View showError(final String error) {
+        settings.setType(NotifyType.DANGER);
+        showNotification("Error",
+                         error,
+                         IconType.CLOSE);
         return this;
     }
 
     @Override
-    public ClientSessionPresenter.View showMessage( final String message ) {
-        settings.setType( NotifyType.SUCCESS );
-        showNotification( "Info",
-                          message,
-                          IconType.STICKY_NOTE );
+    public ClientSessionPresenter.View showMessage(final String message) {
+        settings.setType(NotifyType.SUCCESS);
+        showNotification("Info",
+                         message,
+                         IconType.STICKY_NOTE);
         return this;
     }
 
-    private void showNotification( final String title,
-                                   final String message,
-                                   final IconType icon ) {
-        Notify.notify( title,
-                       message,
-                       icon,
-                       settings );
+    private void showNotification(final String title,
+                                  final String message,
+                                  final IconType icon) {
+        Notify.notify(title,
+                      message,
+                      icon,
+                      settings);
     }
 
     @Override
-    public ClientSessionPresenter.View setCanvas( final IsWidget widget ) {
-        setWidgetForPanel( canvasPanel,
-                           widget );
+    public ClientSessionPresenter.View setCanvas(final IsWidget widget) {
+        setWidgetForPanel(canvasPanel,
+                          widget);
         return this;
     }
 
     @Override
-    public ClientSessionPresenter.View setLoading( final boolean loading ) {
-        loadingPanel.setVisible( loading );
+    public ClientSessionPresenter.View setLoading(final boolean loading) {
+        loadingPanel.setVisible(loading);
         return this;
     }
 }

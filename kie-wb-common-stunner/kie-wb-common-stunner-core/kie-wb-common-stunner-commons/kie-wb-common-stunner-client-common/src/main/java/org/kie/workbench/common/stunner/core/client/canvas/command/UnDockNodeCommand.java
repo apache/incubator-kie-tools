@@ -30,21 +30,21 @@ public final class UnDockNodeCommand extends AbstractCanvasGraphCommand {
     private final Node parent;
     private final Node child;
 
-    public UnDockNodeCommand( final Node parent,
-                              final Node child ) {
+    public UnDockNodeCommand(final Node parent,
+                             final Node child) {
         this.parent = parent;
         this.child = child;
     }
 
     @Override
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.UnDockNodeCommand( parent,
-                                                                                               child );
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.UnDockNodeCommand(parent,
+                                                                                              child);
     }
 
     @Override
-    protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new CanvasUndockNodeCommand( parent,
-                                            child );
+    protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
+        return new CanvasUndockNodeCommand(parent,
+                                           child);
     }
 }

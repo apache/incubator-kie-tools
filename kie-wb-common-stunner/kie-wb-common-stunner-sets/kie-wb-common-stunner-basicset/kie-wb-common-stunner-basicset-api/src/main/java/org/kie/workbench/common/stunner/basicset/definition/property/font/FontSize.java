@@ -58,7 +58,7 @@ public class FontSize {
     public FontSize() {
     }
 
-    public FontSize( final Double value ) {
+    public FontSize(final Double value) {
         this.value = value;
     }
 
@@ -90,7 +90,7 @@ public class FontSize {
         return value;
     }
 
-    public void setValue( Double value ) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 }

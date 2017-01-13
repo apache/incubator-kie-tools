@@ -38,60 +38,60 @@ public class ComboBoxViewImpl implements ComboBoxView {
     protected TextBox textBox;
 
     @Override
-    public void init( final ComboBoxView.ComboBoxPresenter presenter,
-                      final ComboBoxView.ModelPresenter modelPresenter,
-                      final ValueListBox<String> listBox,
-                      final TextBox textBox,
-                      final String placeholder ) {
+    public void init(final ComboBoxView.ComboBoxPresenter presenter,
+                     final ComboBoxView.ModelPresenter modelPresenter,
+                     final ValueListBox<String> listBox,
+                     final TextBox textBox,
+                     final String placeholder) {
         this.presenter = presenter;
         this.modelPresenter = modelPresenter;
         this.listBox = listBox;
         this.textBox = textBox;
-        this.textBox.setPlaceholder( placeholder );
-        textBox.setVisible( false );
-        listBox.addValueChangeHandler( new ValueChangeHandler<String>() {
+        this.textBox.setPlaceholder(placeholder);
+        textBox.setVisible(false);
+        listBox.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
-            public void onValueChange( ValueChangeEvent<String> valueChangeEvent ) {
-                presenter.listBoxValueChanged( valueChangeEvent.getValue() );
+            public void onValueChange(final ValueChangeEvent<String> valueChangeEvent) {
+                presenter.listBoxValueChanged(valueChangeEvent.getValue());
             }
-        } );
-        listBox.addDomHandler( new FocusHandler() {
-                                   @Override
-                                   public void onFocus( FocusEvent focusEvent ) {
-                                       listBoxGotFocus();
-                                   }
-                               },
-                               FocusEvent.getType() );
-        textBox.addFocusHandler( new FocusHandler() {
+        });
+        listBox.addDomHandler(new FocusHandler() {
+                                  @Override
+                                  public void onFocus(final FocusEvent focusEvent) {
+                                      listBoxGotFocus();
+                                  }
+                              },
+                              FocusEvent.getType());
+        textBox.addFocusHandler(new FocusHandler() {
             @Override
-            public void onFocus( FocusEvent focusEvent ) {
+            public void onFocus(final FocusEvent focusEvent) {
                 textBoxGotFocus();
             }
-        } );
-        textBox.addBlurHandler( new BlurHandler() {
+        });
+        textBox.addBlurHandler(new BlurHandler() {
             @Override
-            public void onBlur( BlurEvent blurEvent ) {
+            public void onBlur(final BlurEvent blurEvent) {
                 // Update ListBoxValues and set model values when textBox loses focus
                 textBoxLostFocus();
             }
-        } );
+        });
     }
 
     @Override
     public String getModelValue() {
-        return modelPresenter.getModelValue( listBox );
+        return modelPresenter.getModelValue(listBox);
     }
 
     @Override
-    public void setTextBoxModelValue( String value ) {
-        modelPresenter.setTextBoxModelValue( textBox,
-                                             value );
+    public void setTextBoxModelValue(final String value) {
+        modelPresenter.setTextBoxModelValue(textBox,
+                                            value);
     }
 
     @Override
-    public void setListBoxModelValue( String value ) {
-        modelPresenter.setListBoxModelValue( listBox,
-                                             value );
+    public void setListBoxModelValue(final String value) {
+        modelPresenter.setListBoxModelValue(listBox,
+                                            value);
     }
 
     @Override
@@ -100,53 +100,53 @@ public class ComboBoxViewImpl implements ComboBoxView {
     }
 
     @Override
-    public void setListBoxValue( String value ) {
-        listBox.setValue( value );
+    public void setListBoxValue(final String value) {
+        listBox.setValue(value);
     }
 
     @Override
-    public void setTextBoxValue( String value ) {
-        textBox.setValue( value );
+    public void setTextBoxValue(final String value) {
+        textBox.setValue(value);
     }
 
     @Override
-    public void setTextBoxVisible( boolean visible ) {
-        textBox.setVisible( visible );
+    public void setTextBoxVisible(final boolean visible) {
+        textBox.setVisible(visible);
     }
 
     @Override
-    public void setListBoxVisible( boolean visible ) {
-        listBox.setVisible( visible );
+    public void setListBoxVisible(final boolean visible) {
+        listBox.setVisible(visible);
     }
 
     @Override
-    public void setTextBoxFocus( boolean focus ) {
-        textBox.setFocus( focus );
+    public void setTextBoxFocus(final boolean focus) {
+        textBox.setFocus(focus);
     }
 
     @Override
     public void textBoxGotFocus() {
-        presenter.setCurrentTextValue( textBox.getValue() );
+        presenter.setCurrentTextValue(textBox.getValue());
     }
 
     @Override
     public void textBoxLostFocus() {
-        presenter.textBoxValueChanged( textBox.getValue() );
+        presenter.textBoxValueChanged(textBox.getValue());
     }
 
     @Override
     public void listBoxGotFocus() {
-        presenter.updateListBoxValues( listBox.getValue() );
+        presenter.updateListBoxValues(listBox.getValue());
     }
 
     @Override
-    public void setAcceptableValues( List<String> acceptableValues ) {
-        listBox.setAcceptableValues( acceptableValues );
+    public void setAcceptableValues(final List<String> acceptableValues) {
+        listBox.setAcceptableValues(acceptableValues);
     }
 
     @Override
     public String getValue() {
-        if ( textBox.isVisible() ) {
+        if (textBox.isVisible()) {
             return textBox.getValue();
         } else {
             return listBox.getValue();

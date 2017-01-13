@@ -34,69 +34,69 @@ import org.eclipse.emf.ecore.xmi.impl.XMLSaveImpl;
 
 public class JBPMXMLSaveImpl extends XMLSaveImpl {
 
-    public JBPMXMLSaveImpl( XMLHelper helper ) {
-        super( helper );
+    public JBPMXMLSaveImpl(XMLHelper helper) {
+        super(helper);
     }
 
     @Override
-    protected void init( XMLResource resource,
-                         Map<?, ?> options ) {
-        super.init( resource,
-                    options );
-        featureTable = new JBPMLookup( map,
-                                       extendedMetaData,
-                                       elementHandler );
+    protected void init(XMLResource resource,
+                        Map<?, ?> options) {
+        super.init(resource,
+                   options);
+        featureTable = new JBPMLookup(map,
+                                      extendedMetaData,
+                                      elementHandler);
     }
 
     @Override
-    public void traverse( List<? extends EObject> contents ) {
-        for ( EObject e : contents ) {
-            if ( e instanceof Definitions ) {
-                List<RootElement> roots = ( ( Definitions ) e ).getRootElements();
+    public void traverse(List<? extends EObject> contents) {
+        for (EObject e : contents) {
+            if (e instanceof Definitions) {
+                List<RootElement> roots = ((Definitions) e).getRootElements();
                 Process p = null;
-                for ( RootElement root : roots ) {
-                    if ( root instanceof Process ) {
-                        p = ( Process ) root;
+                for (RootElement root : roots) {
+                    if (root instanceof Process) {
+                        p = (Process) root;
                     }
                 }
-                if ( p != null ) {
-                    ( ( Definitions ) e ).getRootElements().remove( p );
-                    ( ( Definitions ) e ).getRootElements().add( p );
+                if (p != null) {
+                    ((Definitions) e).getRootElements().remove(p);
+                    ((Definitions) e).getRootElements().add(p);
                 }
             }
         }
-        super.traverse( contents );
+        super.traverse(contents);
     }
 
     public static class JBPMLookup extends Lookup {
 
-        public JBPMLookup( XMLMap map,
-                           ExtendedMetaData extendedMetaData,
-                           ElementHandler elementHandler ) {
-            super( map,
-                   extendedMetaData,
-                   elementHandler );
+        public JBPMLookup(XMLMap map,
+                          ExtendedMetaData extendedMetaData,
+                          ElementHandler elementHandler) {
+            super(map,
+                  extendedMetaData,
+                  elementHandler);
         }
 
         @Override
-        public EStructuralFeature[] getFeatures( EClass cls ) {
-            int index = getIndex( cls );
-            EClass c = classes[ index ];
-            if ( c == cls ) {
-                return features[ index ];
+        public EStructuralFeature[] getFeatures(EClass cls) {
+            int index = getIndex(cls);
+            EClass c = classes[index];
+            if (c == cls) {
+                return features[index];
             }
-            EStructuralFeature[] featureList = listFeatures( cls );
-            if ( c == null ) {
-                classes[ index ] = cls;
-                features[ index ] = featureList;
-                featureKinds[ index ] = listKinds( featureList );
+            EStructuralFeature[] featureList = listFeatures(cls);
+            if (c == null) {
+                classes[index] = cls;
+                features[index] = featureList;
+                featureKinds[index] = listKinds(featureList);
             }
-            if ( cls.getName().equalsIgnoreCase( "Process" ) ) {
-                EStructuralFeature[] modifiedFeatureList = getModifiedProcessFeatureSet( featureList );
-                if ( c == null ) {
-                    classes[ index ] = cls;
-                    features[ index ] = modifiedFeatureList;
-                    featureKinds[ index ] = listKinds( modifiedFeatureList );
+            if (cls.getName().equalsIgnoreCase("Process")) {
+                EStructuralFeature[] modifiedFeatureList = getModifiedProcessFeatureSet(featureList);
+                if (c == null) {
+                    classes[index] = cls;
+                    features[index] = modifiedFeatureList;
+                    featureKinds[index] = listKinds(modifiedFeatureList);
                 }
                 return modifiedFeatureList;
             }
@@ -104,7 +104,7 @@ public class JBPMXMLSaveImpl extends XMLSaveImpl {
         }
     }
 
-    private static EStructuralFeature[] getModifiedProcessFeatureSet( EStructuralFeature[] processFeatureList ) {
+    private static EStructuralFeature[] getModifiedProcessFeatureSet(EStructuralFeature[] processFeatureList) {
         /**
          Feature list for Process provided by eclipse.bpmn2:
          - extensionDefinitions (0)
@@ -144,19 +144,19 @@ public class JBPMXMLSaveImpl extends XMLSaveImpl {
 
          Moving auditing, monitoring, property above flowElements...
          */
-        EStructuralFeature[] retArray = new EStructuralFeature[ processFeatureList.length ];
-        for ( int i = 0; i < 13; i++ ) {
-            retArray[ i ] = processFeatureList[ i ];
+        EStructuralFeature[] retArray = new EStructuralFeature[processFeatureList.length];
+        for (int i = 0; i < 13; i++) {
+            retArray[i] = processFeatureList[i];
         }
-        retArray[ 13 ] = processFeatureList[ 15 ]; // auditing
-        retArray[ 14 ] = processFeatureList[ 16 ]; // monitoring
-        retArray[ 15 ] = processFeatureList[ 17 ]; // properties
-        retArray[ 16 ] = processFeatureList[ 13 ]; // lanesets
-        retArray[ 17 ] = processFeatureList[ 14 ]; // flow elements
-        retArray[ 18 ] = processFeatureList[ 18 ]; // artifacts
-        retArray[ 19 ] = processFeatureList[ 19 ]; // resources
-        retArray[ 20 ] = processFeatureList[ 20 ]; // correlationSubscriptions
-        retArray[ 21 ] = processFeatureList[ 21 ]; // supports
+        retArray[13] = processFeatureList[15]; // auditing
+        retArray[14] = processFeatureList[16]; // monitoring
+        retArray[15] = processFeatureList[17]; // properties
+        retArray[16] = processFeatureList[13]; // lanesets
+        retArray[17] = processFeatureList[14]; // flow elements
+        retArray[18] = processFeatureList[18]; // artifacts
+        retArray[19] = processFeatureList[19]; // resources
+        retArray[20] = processFeatureList[20]; // correlationSubscriptions
+        retArray[21] = processFeatureList[21]; // supports
         return retArray;
     }
 }

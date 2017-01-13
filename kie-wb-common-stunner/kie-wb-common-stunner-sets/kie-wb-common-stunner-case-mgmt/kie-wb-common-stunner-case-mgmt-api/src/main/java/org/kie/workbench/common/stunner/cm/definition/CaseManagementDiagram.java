@@ -51,9 +51,9 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIE
 
 @Portable
 @Bindable
-@CanContain( roles = { "all" } )
-@Definition( graphFactory = NodeFactory.class, builder = CaseManagementDiagram.CaseManagementDiagramBuilder.class )
-@Shape( factory = BasicShapesFactory.class, def = CaseManagementDiagramShapeDef.class )
+@CanContain(roles = {"all"})
+@Definition(graphFactory = NodeFactory.class, builder = CaseManagementDiagram.CaseManagementDiagramBuilder.class)
+@Shape(factory = BasicShapesFactory.class, def = CaseManagementDiagramShapeDef.class)
 public class CaseManagementDiagram implements BPMNDefinition {
 
     @Category
@@ -66,12 +66,12 @@ public class CaseManagementDiagram implements BPMNDefinition {
     public static final transient String description = "Case Management Diagram";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_PROCESS_SETTINGS, position = 0 )
+    @FieldDef(label = FIELDDEF_PROCESS_SETTINGS, position = 0)
     @Valid
     private DiagramSet diagramSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_DATA, position = 1 )
+    @FieldDef(label = FIELDDEF_DATA, position = 1)
     @Valid
     protected ProcessData processData;
 
@@ -82,13 +82,13 @@ public class CaseManagementDiagram implements BPMNDefinition {
     private FontSet fontSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 5 )
+    @FieldDef(label = FIELDDEF_SHAPE_DIMENSIONS, position = 5)
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels
     private final Set<String> labels = new HashSet<String>() {{
-        add( "canContainArtifacts" );
-        add( "diagram" );
+        add("canContainArtifacts");
+        add("diagram");
     }};
 
     @NonPortable
@@ -102,25 +102,25 @@ public class CaseManagementDiagram implements BPMNDefinition {
 
         @Override
         public CaseManagementDiagram build() {
-            return new CaseManagementDiagram( new DiagramSet( "" ),
-                                              new ProcessData(),
-                                              new BackgroundSet( COLOR,
-                                                                 BORDER_COLOR,
-                                                                 BORDER_SIZE ),
-                                              new FontSet(),
-                                              new RectangleDimensionsSet( WIDTH,
-                                                                          HEIGHT ) );
+            return new CaseManagementDiagram(new DiagramSet(""),
+                                             new ProcessData(),
+                                             new BackgroundSet(COLOR,
+                                                               BORDER_COLOR,
+                                                               BORDER_SIZE),
+                                             new FontSet(),
+                                             new RectangleDimensionsSet(WIDTH,
+                                                                        HEIGHT));
         }
     }
 
     public CaseManagementDiagram() {
     }
 
-    public CaseManagementDiagram( final @MapsTo( "diagramSet" ) DiagramSet diagramSet,
-                                  final @MapsTo( "processData" ) ProcessData processData,
-                                  final @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                                  final @MapsTo( "fontSet" ) FontSet fontSet,
-                                  final @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet ) {
+    public CaseManagementDiagram(final @MapsTo("diagramSet") DiagramSet diagramSet,
+                                 final @MapsTo("processData") ProcessData processData,
+                                 final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                                 final @MapsTo("fontSet") FontSet fontSet,
+                                 final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
         this.diagramSet = diagramSet;
         this.processData = processData;
         this.backgroundSet = backgroundSet;
@@ -148,7 +148,7 @@ public class CaseManagementDiagram implements BPMNDefinition {
         return dimensionsSet;
     }
 
-    public void setDimensionsSet( final RectangleDimensionsSet dimensionsSet ) {
+    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
         this.dimensionsSet = dimensionsSet;
     }
 
@@ -156,7 +156,7 @@ public class CaseManagementDiagram implements BPMNDefinition {
         return diagramSet;
     }
 
-    public void setDiagramSet( final DiagramSet diagramSet ) {
+    public void setDiagramSet(final DiagramSet diagramSet) {
         this.diagramSet = diagramSet;
     }
 
@@ -164,7 +164,7 @@ public class CaseManagementDiagram implements BPMNDefinition {
         return processData;
     }
 
-    public void setProcessData( final ProcessData processData ) {
+    public void setProcessData(final ProcessData processData) {
         this.processData = processData;
     }
 
@@ -172,7 +172,7 @@ public class CaseManagementDiagram implements BPMNDefinition {
         return backgroundSet;
     }
 
-    public void setBackgroundSet( final BackgroundSet backgroundSet ) {
+    public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
@@ -180,7 +180,7 @@ public class CaseManagementDiagram implements BPMNDefinition {
         return fontSet;
     }
 
-    public void setFontSet( final FontSet fontSet ) {
+    public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
     }
 }

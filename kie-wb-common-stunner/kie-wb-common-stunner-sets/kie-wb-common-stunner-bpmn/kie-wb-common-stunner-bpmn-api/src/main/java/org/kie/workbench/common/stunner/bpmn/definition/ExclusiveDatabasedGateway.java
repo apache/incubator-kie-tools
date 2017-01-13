@@ -40,9 +40,9 @@ import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder.class )
-@Shape( factory = BasicShapesFactory.class, def = ExclusiveDatabasedGatewayShapeDef.class )
-@Morph( base = BaseGateway.class )
+@Definition(graphFactory = NodeFactory.class, builder = ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder.class)
+@Shape(factory = BasicShapesFactory.class, def = ExclusiveDatabasedGatewayShapeDef.class)
+@Morph(base = BaseGateway.class)
 public class ExclusiveDatabasedGateway extends BaseGateway {
 
     @Title
@@ -64,13 +64,13 @@ public class ExclusiveDatabasedGateway extends BaseGateway {
 
         @Override
         public ExclusiveDatabasedGateway build() {
-            return new ExclusiveDatabasedGateway( new BPMNGeneralSet( "Gateway" ),
-                                                  new ExclusiveGatewayExecutionSet(),
-                                                  new BackgroundSet( COLOR,
-                                                                     BORDER_COLOR,
-                                                                     BORDER_SIZE ),
-                                                  new FontSet(),
-                                                  new CircleDimensionSet( new Radius( RADIUS ) ) );
+            return new ExclusiveDatabasedGateway(new BPMNGeneralSet("Gateway"),
+                                                 new ExclusiveGatewayExecutionSet(),
+                                                 new BackgroundSet(COLOR,
+                                                                   BORDER_COLOR,
+                                                                   BORDER_SIZE),
+                                                 new FontSet(),
+                                                 new CircleDimensionSet(new Radius(RADIUS)));
         }
     }
 
@@ -78,15 +78,15 @@ public class ExclusiveDatabasedGateway extends BaseGateway {
         this.Id = nextID++;
     }
 
-    public ExclusiveDatabasedGateway( @MapsTo( "general" ) BPMNGeneralSet general,
-                                      @MapsTo( "executionSet" ) ExclusiveGatewayExecutionSet executionSet,
-                                      @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                                      @MapsTo( "fontSet" ) FontSet fontSet,
-                                      @MapsTo( "dimensionsSet" ) CircleDimensionSet dimensionsSet ) {
-        super( general,
-               backgroundSet,
-               fontSet,
-               dimensionsSet );
+    public ExclusiveDatabasedGateway(final @MapsTo("general") BPMNGeneralSet general,
+                                     final @MapsTo("executionSet") ExclusiveGatewayExecutionSet executionSet,
+                                     final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                                     final @MapsTo("fontSet") FontSet fontSet,
+                                     final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
+        super(general,
+              backgroundSet,
+              fontSet,
+              dimensionsSet);
         this.executionSet = executionSet;
         this.Id = nextID++;
     }
@@ -103,7 +103,7 @@ public class ExclusiveDatabasedGateway extends BaseGateway {
         return executionSet;
     }
 
-    public void setExecutionSet( ExclusiveGatewayExecutionSet executionSet ) {
+    public void setExecutionSet(final ExclusiveGatewayExecutionSet executionSet) {
         this.executionSet = executionSet;
     }
 
@@ -111,7 +111,7 @@ public class ExclusiveDatabasedGateway extends BaseGateway {
         return Id;
     }
 
-    public void setId( long Id ) {
+    public void setId(final long Id) {
         this.Id = Id;
     }
 }

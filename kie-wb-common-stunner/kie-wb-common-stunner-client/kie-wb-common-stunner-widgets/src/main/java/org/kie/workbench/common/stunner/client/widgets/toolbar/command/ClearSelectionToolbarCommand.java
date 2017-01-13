@@ -28,8 +28,8 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientR
 public class ClearSelectionToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientReadOnlySession, ClearSelectionSessionCommand> {
 
     @Inject
-    public ClearSelectionToolbarCommand( final SessionCommandFactory sessionCommandFactory ) {
-        super( sessionCommandFactory.newClearSelectionCommand() );
+    public ClearSelectionToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
+        super(sessionCommandFactory.newClearSelectionCommand());
     }
 
     @Override

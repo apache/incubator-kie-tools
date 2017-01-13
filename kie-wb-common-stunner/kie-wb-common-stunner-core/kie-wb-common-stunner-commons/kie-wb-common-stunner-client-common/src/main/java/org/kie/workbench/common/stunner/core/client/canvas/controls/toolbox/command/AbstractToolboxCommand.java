@@ -26,44 +26,44 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 
 public abstract class AbstractToolboxCommand<I> implements ToolboxCommand<AbstractCanvasHandler, I> {
 
-    public void click( final Context<AbstractCanvasHandler> context,
-                       final Element element ) {
+    public void click(final Context<AbstractCanvasHandler> context,
+                      final Element element) {
     }
 
-    public void mouseDown( final Context<AbstractCanvasHandler> context,
-                           final Element element ) {
+    public void mouseDown(final Context<AbstractCanvasHandler> context,
+                          final Element element) {
     }
 
-    public void mouseEnter( final Context<AbstractCanvasHandler> context,
-                            final Element element ) {
-        context.getCanvasHandler().getCanvas().getView().setCursor( AbstractCanvas.Cursors.POINTER );
+    public void mouseEnter(final Context<AbstractCanvasHandler> context,
+                           final Element element) {
+        context.getCanvasHandler().getCanvas().getView().setCursor(AbstractCanvas.Cursors.POINTER);
     }
 
-    public void mouseExit( final Context<AbstractCanvasHandler> context,
-                           final Element element ) {
-        context.getCanvasHandler().getCanvas().getView().setCursor( AbstractCanvas.Cursors.AUTO );
+    public void mouseExit(final Context<AbstractCanvasHandler> context,
+                          final Element element) {
+        context.getCanvasHandler().getCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
     }
 
     @Override
-    public void execute( final Context<AbstractCanvasHandler> context,
-                         final Element element ) {
+    public void execute(final Context<AbstractCanvasHandler> context,
+                        final Element element) {
         final Context.EventType eventType = context.getEventType();
-        switch ( eventType ) {
+        switch (eventType) {
             case CLICK:
-                click( context,
-                       element );
+                click(context,
+                      element);
                 break;
             case MOUSE_DOWN:
-                mouseDown( context,
-                           element );
+                mouseDown(context,
+                          element);
                 break;
             case MOUSE_ENTER:
-                mouseEnter( context,
-                            element );
+                mouseEnter(context,
+                           element);
                 break;
             case MOUSE_EXIT:
-                mouseExit( context,
-                           element );
+                mouseExit(context,
+                          element);
                 break;
         }
     }
@@ -72,26 +72,26 @@ public abstract class AbstractToolboxCommand<I> implements ToolboxCommand<Abstra
     // TODO: This is a work around. If enabling canvas handlers just here ( without using the timer )
     //       the layer receives a click event, so it fires a clear selection event and it results
     //       on the element just added not being selected.
-    protected void fireElementSelectedEvent( final Event<CanvasElementSelectedEvent> elementSelectedEvent,
-                                             final AbstractCanvasHandler canvasHandler,
-                                             final String uuid ) {
+    protected void fireElementSelectedEvent(final Event<CanvasElementSelectedEvent> elementSelectedEvent,
+                                            final AbstractCanvasHandler canvasHandler,
+                                            final String uuid) {
         canvasHandler.getCanvas().getLayer().disableHandlers();
-        elementSelectedEvent.fire( new CanvasElementSelectedEvent( canvasHandler,
-                                                                   uuid ) );
+        elementSelectedEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
+                                                                 uuid));
         final Timer t = new Timer() {
             @Override
             public void run() {
                 canvasHandler.getCanvas().getLayer().enableHandlers();
             }
         };
-        t.schedule( 500 );
+        t.schedule(500);
     }
 
-    protected void fireLoadingStarted( final Context<AbstractCanvasHandler> context ) {
+    protected void fireLoadingStarted(final Context<AbstractCanvasHandler> context) {
         context.getCanvasHandler().getCanvas().loadingStarted();
     }
 
-    protected void fireLoadingCompleted( final Context<AbstractCanvasHandler> context ) {
+    protected void fireLoadingCompleted(final Context<AbstractCanvasHandler> context) {
         context.getCanvasHandler().getCanvas().loadingCompleted();
     }
 }

@@ -34,87 +34,87 @@ public abstract class AbstractClientDiagramService<M extends Metadata, D extends
     protected Caller<S> diagramServiceCaller;
     protected Caller<DiagramLookupService> diagramLookupServiceCaller;
 
-    public AbstractClientDiagramService( final ShapeManager shapeManager,
-                                         final Caller<S> diagramServiceCaller,
-                                         final Caller<DiagramLookupService> diagramLookupServiceCaller ) {
+    public AbstractClientDiagramService(final ShapeManager shapeManager,
+                                        final Caller<S> diagramServiceCaller,
+                                        final Caller<DiagramLookupService> diagramLookupServiceCaller) {
         this.shapeManager = shapeManager;
         this.diagramServiceCaller = diagramServiceCaller;
         this.diagramLookupServiceCaller = diagramLookupServiceCaller;
     }
 
-    public void create( final Path path,
-                        final String name,
-                        final String defSetId,
-                        final ServiceCallback<Path> callback ) {
-        diagramServiceCaller.call( p -> callback.onSuccess( path ),
-                                   ( message, throwable ) -> {
-                                       callback.onError( new ClientRuntimeError( throwable ) );
-                                       return false;
-                                   } ).create( path,
-                                               name,
-                                               defSetId );
+    public void create(final Path path,
+                       final String name,
+                       final String defSetId,
+                       final ServiceCallback<Path> callback) {
+        diagramServiceCaller.call(p -> callback.onSuccess(path),
+                                  (message, throwable) -> {
+                                      callback.onError(new ClientRuntimeError(throwable));
+                                      return false;
+                                  }).create(path,
+                                            name,
+                                            defSetId);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void saveOrUpdate( final D diagram,
-                              final ServiceCallback<D> callback ) {
-        diagramServiceCaller.call( serverMetadata -> {
-                                       AbstractClientDiagramService.this.updateClientMetadata( diagram );
-                                       diagram.getMetadata().setPath( ( ( M ) serverMetadata ).getPath() );
-                                       callback.onSuccess( diagram );
-                                   },
-                                   ( message, throwable ) -> {
-                                       callback.onError( new ClientRuntimeError( throwable ) );
-                                       return false;
-                                   } ).saveOrUpdate( diagram );
+    @SuppressWarnings("unchecked")
+    public void saveOrUpdate(final D diagram,
+                             final ServiceCallback<D> callback) {
+        diagramServiceCaller.call(serverMetadata -> {
+                                      AbstractClientDiagramService.this.updateClientMetadata(diagram);
+                                      diagram.getMetadata().setPath(((M) serverMetadata).getPath());
+                                      callback.onSuccess(diagram);
+                                  },
+                                  (message, throwable) -> {
+                                      callback.onError(new ClientRuntimeError(throwable));
+                                      return false;
+                                  }).saveOrUpdate(diagram);
     }
 
-    public void add( final D diagram,
-                     final ServiceCallback<D> callback ) {
-        diagramServiceCaller.call( v -> {
-                                       updateClientMetadata( diagram );
-                                       callback.onSuccess( diagram );
-                                   },
-                                   ( message, throwable ) -> {
-                                       callback.onError( new ClientRuntimeError( throwable ) );
-                                       return false;
-                                   } ).saveOrUpdate( diagram );
+    public void add(final D diagram,
+                    final ServiceCallback<D> callback) {
+        diagramServiceCaller.call(v -> {
+                                      updateClientMetadata(diagram);
+                                      callback.onSuccess(diagram);
+                                  },
+                                  (message, throwable) -> {
+                                      callback.onError(new ClientRuntimeError(throwable));
+                                      return false;
+                                  }).saveOrUpdate(diagram);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void getByPath( final Path path,
-                           final ServiceCallback<D> callback ) {
-        diagramServiceCaller.call( diagram -> {
-                                       updateClientMetadata( ( D ) diagram );
-                                       callback.onSuccess( ( D ) diagram );
-                                   },
-                                   ( message, throwable ) -> {
-                                       callback.onError( new ClientRuntimeError( throwable ) );
-                                       return false;
-                                   } ).getDiagramByPath( path );
+    @SuppressWarnings("unchecked")
+    public void getByPath(final Path path,
+                          final ServiceCallback<D> callback) {
+        diagramServiceCaller.call(diagram -> {
+                                      updateClientMetadata((D) diagram);
+                                      callback.onSuccess((D) diagram);
+                                  },
+                                  (message, throwable) -> {
+                                      callback.onError(new ClientRuntimeError(throwable));
+                                      return false;
+                                  }).getDiagramByPath(path);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void lookup( final DiagramLookupRequest request,
-                        final ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>> callback ) {
-        diagramLookupServiceCaller.call( response -> callback.onSuccess( ( LookupManager.LookupResponse<DiagramRepresentation> ) response ),
-                                         ( message, throwable ) -> {
-                                             callback.onError( new ClientRuntimeError( throwable ) );
-                                             return false;
-                                         } ).lookup( request );
+    @SuppressWarnings("unchecked")
+    public void lookup(final DiagramLookupRequest request,
+                       final ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>> callback) {
+        diagramLookupServiceCaller.call(response -> callback.onSuccess((LookupManager.LookupResponse<DiagramRepresentation>) response),
+                                        (message, throwable) -> {
+                                            callback.onError(new ClientRuntimeError(throwable));
+                                            return false;
+                                        }).lookup(request);
     }
 
-    protected void updateClientMetadata( final D diagram ) {
-        if ( null != diagram ) {
+    protected void updateClientMetadata(final D diagram) {
+        if (null != diagram) {
             final Metadata metadata = diagram.getMetadata();
-            if ( null != metadata && isEmpty( metadata.getShapeSetId() ) ) {
-                final String sId = shapeManager.getDefaultShapeSet( metadata.getDefinitionSetId() ).getId();
-                metadata.setShapeSetId( sId );
+            if (null != metadata && isEmpty(metadata.getShapeSetId())) {
+                final String sId = shapeManager.getDefaultShapeSet(metadata.getDefinitionSetId()).getId();
+                metadata.setShapeSetId(sId);
             }
         }
     }
 
-    private static boolean isEmpty( final String s ) {
+    private static boolean isEmpty(final String s) {
         return s == null || s.trim().length() == 0;
     }
 }

@@ -37,59 +37,59 @@ public final class MorphCanvasNodeCommand extends AbstractCanvasCommand {
     private MorphDefinition morphDefinition;
     private String shapeSetId;
 
-    public MorphCanvasNodeCommand( final Node<? extends Definition<?>, Edge> candidate,
-                                   final MorphDefinition morphDefinition,
-                                   final String shapeSetId ) {
+    public MorphCanvasNodeCommand(final Node<? extends Definition<?>, Edge> candidate,
+                                  final MorphDefinition morphDefinition,
+                                  final String shapeSetId) {
         this.candidate = candidate;
         this.morphDefinition = morphDefinition;
         this.shapeSetId = shapeSetId;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
+    @SuppressWarnings("unchecked")
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         // Deregister the existing shape.
         Node parent = getParent();
-        if ( null != parent ) {
-            context.removeChild( parent.getUUID(),
-                                 candidate.getUUID() );
+        if (null != parent) {
+            context.removeChild(parent.getUUID(),
+                                candidate.getUUID());
         }
-        context.deregister( candidate );
+        context.deregister(candidate);
 
         // Register the shape for the new morphed element.
-        context.register( shapeSetId,
-                          candidate );
-        if ( null != parent ) {
-            context.addChild( parent,
-                              candidate );
+        context.register(shapeSetId,
+                         candidate);
+        if (null != parent) {
+            context.addChild(parent,
+                             candidate);
         }
-        context.applyElementMutation( candidate,
-                                      MutationContext.STATIC );
+        context.applyElementMutation(candidate,
+                                     MutationContext.STATIC);
 
         // Update incoming connections for new shape ( so magnets, connectors, etc on view side ).
         final List<Edge> inEdges = candidate.getInEdges();
-        if ( null != inEdges && !inEdges.isEmpty() ) {
-            for ( final Edge inEdge : inEdges ) {
-                if ( isViewEdge( inEdge ) ) {
+        if (null != inEdges && !inEdges.isEmpty()) {
+            for (final Edge inEdge : inEdges) {
+                if (isViewEdge(inEdge)) {
                     final Node inNode = inEdge.getSourceNode();
-                    updateConnections( context,
-                                       inEdge,
-                                       inNode,
-                                       candidate );
+                    updateConnections(context,
+                                      inEdge,
+                                      inNode,
+                                      candidate);
                 }
             }
         }
 
         // Update outgoing connections as well for new shape.
         final List<Edge> outEdges = candidate.getOutEdges();
-        if ( null != outEdges && !outEdges.isEmpty() ) {
-            for ( final Edge outEdge : outEdges ) {
-                if ( isViewEdge( outEdge ) ) {
+        if (null != outEdges && !outEdges.isEmpty()) {
+            for (final Edge outEdge : outEdges) {
+                if (isViewEdge(outEdge)) {
                     final Node targetNode = outEdge.getTargetNode();
-                    updateConnections( context,
-                                       outEdge,
-                                       candidate,
-                                       targetNode );
+                    updateConnections(context,
+                                      outEdge,
+                                      candidate,
+                                      targetNode);
                 }
             }
         }
@@ -97,31 +97,31 @@ public final class MorphCanvasNodeCommand extends AbstractCanvasCommand {
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        return execute( context );
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+        return execute(context);
     }
 
-    @SuppressWarnings( "unchecked" )
-    private void updateConnections( final AbstractCanvasHandler context,
-                                    final Edge edge,
-                                    final Node sourceNode,
-                                    final Node targetNode ) {
-        if ( null != edge && null != sourceNode && null != targetNode ) {
-            final EdgeShape edgeShape = ( EdgeShape ) context.getCanvas().getShape( edge.getUUID() );
-            final Shape sourceNodeShape = context.getCanvas().getShape( sourceNode.getUUID() );
-            final Shape targetNodeShape = context.getCanvas().getShape( targetNode.getUUID() );
-            edgeShape.applyConnections( edge,
-                                        sourceNodeShape.getShapeView(),
-                                        targetNodeShape.getShapeView(),
-                                        MutationContext.STATIC );
+    @SuppressWarnings("unchecked")
+    private void updateConnections(final AbstractCanvasHandler context,
+                                   final Edge edge,
+                                   final Node sourceNode,
+                                   final Node targetNode) {
+        if (null != edge && null != sourceNode && null != targetNode) {
+            final EdgeShape edgeShape = (EdgeShape) context.getCanvas().getShape(edge.getUUID());
+            final Shape sourceNodeShape = context.getCanvas().getShape(sourceNode.getUUID());
+            final Shape targetNodeShape = context.getCanvas().getShape(targetNode.getUUID());
+            edgeShape.applyConnections(edge,
+                                       sourceNodeShape.getShapeView(),
+                                       targetNodeShape.getShapeView(),
+                                       MutationContext.STATIC);
         }
     }
 
     private Node getParent() {
         List<Edge> inEdges = candidate.getInEdges();
-        if ( null != inEdges && !inEdges.isEmpty() ) {
-            for ( final Edge edge : inEdges ) {
-                if ( isChildEdge( edge ) || isDockEdge( edge ) ) {
+        if (null != inEdges && !inEdges.isEmpty()) {
+            for (final Edge edge : inEdges) {
+                if (isChildEdge(edge) || isDockEdge(edge)) {
                     return edge.getSourceNode();
                 }
             }
@@ -129,15 +129,15 @@ public final class MorphCanvasNodeCommand extends AbstractCanvasCommand {
         return null;
     }
 
-    private boolean isChildEdge( final Edge edge ) {
+    private boolean isChildEdge(final Edge edge) {
         return edge.getContent() instanceof Child;
     }
 
-    private boolean isDockEdge( final Edge edge ) {
+    private boolean isDockEdge(final Edge edge) {
         return edge.getContent() instanceof Dock;
     }
 
-    private boolean isViewEdge( final Edge edge ) {
+    private boolean isViewEdge(final Edge edge) {
         return edge.getContent() instanceof View;
     }
 }

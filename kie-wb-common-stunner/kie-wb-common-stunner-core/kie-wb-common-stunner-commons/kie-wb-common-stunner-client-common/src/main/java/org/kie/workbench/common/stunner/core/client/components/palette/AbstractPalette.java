@@ -31,10 +31,10 @@ public abstract class AbstractPalette<D extends HasPaletteItems> implements Pale
     protected D paletteDefinition;
 
     protected AbstractPalette() {
-        this( null );
+        this(null);
     }
 
-    protected AbstractPalette( final ShapeManager shapeManager ) {
+    protected AbstractPalette(final ShapeManager shapeManager) {
         this.shapeManager = shapeManager;
     }
 
@@ -42,11 +42,11 @@ public abstract class AbstractPalette<D extends HasPaletteItems> implements Pale
 
     protected abstract void doDestroy();
 
-    protected abstract String getPaletteItemId( final int index );
+    protected abstract String getPaletteItemId(final int index);
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public AbstractPalette<D> bind( final D paletteDefinition ) {
+    @SuppressWarnings("unchecked")
+    public AbstractPalette<D> bind(final D paletteDefinition) {
         this.paletteDefinition = paletteDefinition;
         beforeBind();
         bind();
@@ -61,43 +61,43 @@ public abstract class AbstractPalette<D extends HasPaletteItems> implements Pale
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public AbstractPalette<D> onClose( final CloseCallback callback ) {
+    @SuppressWarnings("unchecked")
+    public AbstractPalette<D> onClose(final CloseCallback callback) {
         this.closeCallback = callback;
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public AbstractPalette<D> onItemHover( final ItemHoverCallback callback ) {
+    @SuppressWarnings("unchecked")
+    public AbstractPalette<D> onItemHover(final ItemHoverCallback callback) {
         this.itemHoverCallback = callback;
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public AbstractPalette<D> onItemOut( final ItemOutCallback callback ) {
+    @SuppressWarnings("unchecked")
+    public AbstractPalette<D> onItemOut(final ItemOutCallback callback) {
         this.itemOutCallback = callback;
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public AbstractPalette<D> onItemMouseDown( final ItemMouseDownCallback callback ) {
+    @SuppressWarnings("unchecked")
+    public AbstractPalette<D> onItemMouseDown(final ItemMouseDownCallback callback) {
         this.itemMouseDownCallback = callback;
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public AbstractPalette<D> onItemClick( final ItemClickCallback callback ) {
+    @SuppressWarnings("unchecked")
+    public AbstractPalette<D> onItemClick(final ItemClickCallback callback) {
         this.itemClickCallback = callback;
         return this;
     }
 
     public boolean onClose() {
         doClose();
-        if ( null != closeCallback ) {
+        if (null != closeCallback) {
             return closeCallback.onClose();
         }
         return true;
@@ -106,99 +106,99 @@ public abstract class AbstractPalette<D extends HasPaletteItems> implements Pale
     protected void doClose() {
     }
 
-    public boolean onItemHover( final int index,
-                                final double mouseX,
-                                final double mouseY,
-                                final double itemX,
-                                final double itemY ) {
-        final String id = getPaletteItemId( index );
-        doItemHover( id,
-                     mouseX,
-                     mouseY,
-                     itemX,
-                     itemY );
-        if ( null != itemHoverCallback ) {
-            return itemHoverCallback.onItemHover( getPaletteItemId( index ),
-                                                  mouseX,
-                                                  mouseY,
-                                                  itemX,
-                                                  itemY );
+    public boolean onItemHover(final int index,
+                               final double mouseX,
+                               final double mouseY,
+                               final double itemX,
+                               final double itemY) {
+        final String id = getPaletteItemId(index);
+        doItemHover(id,
+                    mouseX,
+                    mouseY,
+                    itemX,
+                    itemY);
+        if (null != itemHoverCallback) {
+            return itemHoverCallback.onItemHover(getPaletteItemId(index),
+                                                 mouseX,
+                                                 mouseY,
+                                                 itemX,
+                                                 itemY);
         }
         return true;
     }
 
-    protected void doItemHover( final String id,
-                                final double mouseX,
-                                final double mouseY,
-                                final double itemX,
-                                final double itemY ) {
+    protected void doItemHover(final String id,
+                               final double mouseX,
+                               final double mouseY,
+                               final double itemX,
+                               final double itemY) {
     }
 
-    public boolean onItemOut( final int index ) {
-        if ( null != itemOutCallback ) {
-            return itemOutCallback.onItemOut( getPaletteItemId( index ) );
+    public boolean onItemOut(final int index) {
+        if (null != itemOutCallback) {
+            return itemOutCallback.onItemOut(getPaletteItemId(index));
         }
         return true;
     }
 
-    public boolean onItemMouseDown( final int index,
-                                    final double mouseX,
-                                    final double mouseY,
-                                    final double itemX,
-                                    final double itemY ) {
-        if ( null != itemMouseDownCallback ) {
-            final String id = getPaletteItemId( index );
-            return this.onItemMouseDown( id,
-                                         mouseX,
-                                         mouseY,
-                                         itemX,
-                                         itemY );
+    public boolean onItemMouseDown(final int index,
+                                   final double mouseX,
+                                   final double mouseY,
+                                   final double itemX,
+                                   final double itemY) {
+        if (null != itemMouseDownCallback) {
+            final String id = getPaletteItemId(index);
+            return this.onItemMouseDown(id,
+                                        mouseX,
+                                        mouseY,
+                                        itemX,
+                                        itemY);
         }
         return true;
     }
 
-    public boolean onItemMouseDown( final String id,
-                                    final double mouseX,
-                                    final double mouseY,
-                                    final double itemX,
-                                    final double itemY ) {
-        if ( null != itemMouseDownCallback ) {
-            return itemMouseDownCallback.onItemMouseDown( id,
-                                                          mouseX,
-                                                          mouseY,
-                                                          itemX,
-                                                          itemY );
+    public boolean onItemMouseDown(final String id,
+                                   final double mouseX,
+                                   final double mouseY,
+                                   final double itemX,
+                                   final double itemY) {
+        if (null != itemMouseDownCallback) {
+            return itemMouseDownCallback.onItemMouseDown(id,
+                                                         mouseX,
+                                                         mouseY,
+                                                         itemX,
+                                                         itemY);
         }
         return true;
     }
 
-    public boolean onItemClick( final int index,
-                                final double mouseX,
-                                final double mouseY,
-                                final double itemX,
-                                final double itemY ) {
-        if ( null != itemClickCallback ) {
-            final String id = getPaletteItemId( index );
-            return itemClickCallback.onItemClick( id,
-                                                  mouseX,
-                                                  mouseY,
-                                                  itemX,
-                                                  itemY );
+    public boolean onItemClick(final int index,
+                               final double mouseX,
+                               final double mouseY,
+                               final double itemX,
+                               final double itemY) {
+        if (null != itemClickCallback) {
+            final String id = getPaletteItemId(index);
+            return itemClickCallback.onItemClick(id,
+                                                 mouseX,
+                                                 mouseY,
+                                                 itemX,
+                                                 itemY);
         }
         return true;
     }
 
-    public boolean onItemClick( final String id,
-                                final double mouseX,
-                                final double mouseY,
-                                final double itemX,
-                                final double itemY ) {
-        if ( null != itemClickCallback ) {
-            return itemClickCallback.onItemClick( id,
-                                                  mouseX,
-                                                  mouseY,
-                                                  itemX,
-                                                  itemY );
+    public boolean onItemClick(final String id,
+                               final double mouseX,
+                               final double mouseY,
+                               final double itemX,
+                               final double itemY) {
+        if (null != itemClickCallback) {
+            return itemClickCallback.onItemClick(id,
+                                                 mouseX,
+                                                 mouseY,
+                                                 itemX,
+                                                 itemY);
         }
         return true;
     }

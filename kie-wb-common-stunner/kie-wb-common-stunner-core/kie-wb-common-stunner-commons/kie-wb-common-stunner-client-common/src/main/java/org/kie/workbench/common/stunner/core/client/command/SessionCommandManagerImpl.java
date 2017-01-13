@@ -40,11 +40,11 @@ public class SessionCommandManagerImpl
     private final AbstractClientSessionManager clientSessionManager;
 
     protected SessionCommandManagerImpl() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public SessionCommandManagerImpl( final AbstractClientSessionManager clientSessionManager ) {
+    public SessionCommandManagerImpl(final AbstractClientSessionManager clientSessionManager) {
         this.clientSessionManager = clientSessionManager;
     }
 
@@ -62,9 +62,9 @@ public class SessionCommandManagerImpl
             new CommandRegistryListener<AbstractCanvasHandler, CanvasViolation>() {
 
                 @Override
-                public void onAllow( final AbstractCanvasHandler context,
-                                     final Command<AbstractCanvasHandler, CanvasViolation> command,
-                                     final CommandResult<CanvasViolation> result ) {
+                public void onAllow(final AbstractCanvasHandler context,
+                                    final Command<AbstractCanvasHandler, CanvasViolation> command,
+                                    final CommandResult<CanvasViolation> result) {
                     // Nothing to do with the command registry for the allow operation.
                 }
 

@@ -39,52 +39,52 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 @Dependent
 public class RefreshSessionCommand extends AbstractClientSessionCommand<AbstractClientFullSession> {
 
-    private static Logger LOGGER = Logger.getLogger( RefreshSessionCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(RefreshSessionCommand.class.getName());
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final ClientDiagramService clientDiagramService;
 
     protected RefreshSessionCommand() {
-        this( null,
-              null );
+        this(null,
+             null);
     }
 
     @Inject
-    public RefreshSessionCommand( final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                  final ClientDiagramService clientDiagramService ) {
-        super( false );
+    public RefreshSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                 final ClientDiagramService clientDiagramService) {
+        super(false);
         this.clientDiagramService = clientDiagramService;
         this.sessionCommandManager = sessionCommandManager;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public <T> void execute( final Callback<T> callback ) {
-        checkNotNull( "callback",
-                      callback );
+    @SuppressWarnings("unchecked")
+    public <T> void execute(final Callback<T> callback) {
+        checkNotNull("callback",
+                     callback);
         final Path path = getDiagramPath();
-        LOGGER.log( Level.FINE,
-                    "Refreshing diagram for path [" + path + "]..." );
+        LOGGER.log(Level.FINE,
+                   "Refreshing diagram for path [" + path + "]...");
         getSession().getCanvasHandler().clear();
-        clientDiagramService.getByPath( path,
-                                        new ServiceCallback<Diagram<Graph, Metadata>>() {
-                                            @Override
-                                            public void onSuccess( final Diagram diagram ) {
-                                                LOGGER.log( Level.FINE,
-                                                            "Refreshing diagram for path [" + path + "]..." );
-                                                getSession().getCanvasHandler().draw( diagram );
-                                                callback.onSuccess( ( T ) diagram );
-                                                // TODO: Apply session commands.
-                                            }
+        clientDiagramService.getByPath(path,
+                                       new ServiceCallback<Diagram<Graph, Metadata>>() {
+                                           @Override
+                                           public void onSuccess(final Diagram diagram) {
+                                               LOGGER.log(Level.FINE,
+                                                          "Refreshing diagram for path [" + path + "]...");
+                                               getSession().getCanvasHandler().draw(diagram);
+                                               callback.onSuccess((T) diagram);
+                                               // TODO: Apply session commands.
+                                           }
 
-                                            @Override
-                                            public void onError( final ClientRuntimeError error ) {
-                                                LOGGER.log( Level.SEVERE,
-                                                            "Error when loading diagram for path [" + path + "]",
-                                                            error.getThrowable() );
-                                                callback.onError( error );
-                                            }
-                                        } );
+                                           @Override
+                                           public void onError(final ClientRuntimeError error) {
+                                               LOGGER.log(Level.SEVERE,
+                                                          "Error when loading diagram for path [" + path + "]",
+                                                          error.getThrowable());
+                                               callback.onError(error);
+                                           }
+                                       });
         checkState();
     }
 
@@ -93,7 +93,7 @@ public class RefreshSessionCommand extends AbstractClientSessionCommand<Abstract
     }
 
     private void checkState() {
-        setEnabled( hasSessionCommands() );
+        setEnabled(hasSessionCommands());
         fire();
     }
 

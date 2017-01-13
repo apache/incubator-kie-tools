@@ -38,60 +38,60 @@ public class BindableShapeFactoryGenerator extends AbstractBindableAdapterGenera
         return "BindableShapeFactory.ftl";
     }
 
-    public StringBuffer generate( final String packageName,
-                                  final String className,
-                                  final ProcessingDefinitionAnnotations processingDefinitionAnnotations,
-                                  final Messager messager ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final String className,
+                                 final ProcessingDefinitionAnnotations processingDefinitionAnnotations,
+                                 final Messager messager) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "packageName",
-                  packageName );
-        root.put( "className",
-                  className );
-        root.put( "generatedByClassName",
-                  BindableShapeFactoryGenerator.class.getName() );
-        root.put( "parentClassName",
-                  ShapeFactoryWrapper.class.getName() );
+        root.put("packageName",
+                 packageName);
+        root.put("className",
+                 className);
+        root.put("generatedByClassName",
+                 BindableShapeFactoryGenerator.class.getName());
+        root.put("parentClassName",
+                 ShapeFactoryWrapper.class.getName());
         Map<String, String[]> shapeDefs = processingDefinitionAnnotations.getShapeDefinitions();
         Set<String> definitionClasses = shapeDefs.keySet();
         Collection<String[]> values = shapeDefs.values();
-        Collection<String> factoryClasses = getCollection( values,
-                                                           0 );
-        Collection<String> shapeDefClasses = getCollection( values,
-                                                            1 );
+        Collection<String> factoryClasses = getCollection(values,
+                                                          0);
+        Collection<String> shapeDefClasses = getCollection(values,
+                                                           1);
         Collection<ProcessingEntity> shapeDefFactoryEntities = new LinkedList<>();
-        for ( String s : factoryClasses ) {
-            shapeDefFactoryEntities.add( new ProcessingEntity( s,
-                                                               MainProcessor.toClassMemberId( s ) ) );
+        for (String s : factoryClasses) {
+            shapeDefFactoryEntities.add(new ProcessingEntity(s,
+                                                             MainProcessor.toClassMemberId(s)));
         }
-        root.put( "shapeDefFactoryEntities",
-                  shapeDefFactoryEntities );
-        root.put( "definitionClasses",
-                  definitionClasses );
-        root.put( "shapeDefClasses",
-                  shapeDefClasses );
+        root.put("shapeDefFactoryEntities",
+                 shapeDefFactoryEntities);
+        root.put("definitionClasses",
+                 definitionClasses);
+        root.put("shapeDefClasses",
+                 shapeDefClasses);
         Collection<String> addProxySentences = new LinkedList<>();
-        for ( Map.Entry<String, String[]> entry : shapeDefs.entrySet() ) {
+        for (Map.Entry<String, String[]> entry : shapeDefs.entrySet()) {
             String classname = entry.getKey();
-            String factoryClass = entry.getValue()[ 0 ];
-            String factoryId = MainProcessor.toClassMemberId( factoryClass );
-            String shapeDefClass = entry.getValue()[ 1 ];
-            addProxySentences.add( factoryId + ".addShapeDef( " + classname + ".class, new " + shapeDefClass + "() );" );
+            String factoryClass = entry.getValue()[0];
+            String factoryId = MainProcessor.toClassMemberId(factoryClass);
+            String shapeDefClass = entry.getValue()[1];
+            addProxySentences.add(factoryId + ".addShapeDef( " + classname + ".class, new " + shapeDefClass + "() );");
         }
-        root.put( "addProxySentences",
-                  addProxySentences );
+        root.put("addProxySentences",
+                 addProxySentences);
 
         //Generate code
-        return writeTemplate( packageName,
-                              className,
-                              root,
-                              messager );
+        return writeTemplate(packageName,
+                             className,
+                             root,
+                             messager);
     }
 
-    private Collection<String> getCollection( final Collection<String[]> c,
-                                              final int index ) {
+    private Collection<String> getCollection(final Collection<String[]> c,
+                                             final int index) {
         Collection<String> result = new LinkedHashSet<>();
-        for ( String[] s : c ) {
-            result.add( s[ index ] );
+        for (String[] s : c) {
+            result.add(s[index]);
         }
         return result;
     }

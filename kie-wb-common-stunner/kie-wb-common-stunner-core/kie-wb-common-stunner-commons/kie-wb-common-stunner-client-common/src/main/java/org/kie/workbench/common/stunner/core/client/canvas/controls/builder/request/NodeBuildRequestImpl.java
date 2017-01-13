@@ -27,36 +27,36 @@ public final class NodeBuildRequestImpl extends AbstractBuildRequest implements 
     private final int sourceMagnet;
     private final int targetMagnet;
 
-    public NodeBuildRequestImpl( final double x,
-                                 final double y,
-                                 final Node<View<?>, Edge> node ) {
-        super( x,
-               y );
+    public NodeBuildRequestImpl(final double x,
+                                final double y,
+                                final Node<View<?>, Edge> node) {
+        super(x,
+              y);
         this.node = node;
         this.sourceMagnet = 0;
         this.targetMagnet = 0;
     }
 
-    public NodeBuildRequestImpl( final double x,
-                                 final double y,
-                                 final Node<View<?>, Edge> node,
-                                 final Edge<View<?>, Node> inEdge ) {
-        super( x,
-               y );
+    public NodeBuildRequestImpl(final double x,
+                                final double y,
+                                final Node<View<?>, Edge> node,
+                                final Edge<View<?>, Node> inEdge) {
+        super(x,
+              y);
         this.node = node;
         this.inEdge = inEdge;
         this.sourceMagnet = 0;
         this.targetMagnet = 0;
     }
 
-    public NodeBuildRequestImpl( final double x,
-                                 final double y,
-                                 final Node<View<?>, Edge> node,
-                                 final Edge<View<?>, Node> inEdge,
-                                 final int sourceMagnet,
-                                 final int targetMagnet ) {
-        super( x,
-               y );
+    public NodeBuildRequestImpl(final double x,
+                                final double y,
+                                final Node<View<?>, Edge> node,
+                                final Edge<View<?>, Node> inEdge,
+                                final int sourceMagnet,
+                                final int targetMagnet) {
+        super(x,
+              y);
         this.node = node;
         this.inEdge = inEdge;
         this.targetMagnet = targetMagnet;

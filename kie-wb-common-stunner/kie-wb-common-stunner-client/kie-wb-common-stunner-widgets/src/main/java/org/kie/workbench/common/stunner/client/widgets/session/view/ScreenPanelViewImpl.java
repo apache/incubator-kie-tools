@@ -28,9 +28,9 @@ public class ScreenPanelViewImpl implements ScreenPanelView {
     private final FlowPanel panel = new FlowPanel();
 
     @Override
-    public ScreenPanelView setWidget( final IsWidget widget ) {
+    public ScreenPanelView setWidget(final IsWidget widget) {
         panel.clear();
-        panel.add( widget );
+        panel.add(widget);
         return this;
     }
 

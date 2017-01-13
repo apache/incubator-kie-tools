@@ -25,36 +25,36 @@ public abstract class DefinitionSetAdapterWrapper<T, A extends DefinitionSetAdap
     protected final A adapter;
 
     protected DefinitionSetAdapterWrapper() {
-        this( null );
+        this(null);
     }
 
-    public DefinitionSetAdapterWrapper( final A adapter ) {
+    public DefinitionSetAdapterWrapper(final A adapter) {
         this.adapter = adapter;
     }
 
     @Override
-    public String getId( final T pojo ) {
-        return adapter.getId( pojo );
+    public String getId(final T pojo) {
+        return adapter.getId(pojo);
     }
 
     @Override
-    public String getDomain( final T pojo ) {
-        return adapter.getDomain( pojo );
+    public String getDomain(final T pojo) {
+        return adapter.getDomain(pojo);
     }
 
     @Override
-    public String getDescription( final T pojo ) {
-        return adapter.getDescription( pojo );
+    public String getDescription(final T pojo) {
+        return adapter.getDescription(pojo);
     }
 
     @Override
-    public Set<String> getDefinitions( final T pojo ) {
-        return adapter.getDefinitions( pojo );
+    public Set<String> getDefinitions(final T pojo) {
+        return adapter.getDefinitions(pojo);
     }
 
     @Override
-    public Class<? extends ElementFactory> getGraphFactoryType( final T pojo ) {
-        return adapter.getGraphFactoryType( pojo );
+    public Class<? extends ElementFactory> getGraphFactoryType(final T pojo) {
+        return adapter.getGraphFactoryType(pojo);
     }
 
     @Override
@@ -68,7 +68,7 @@ public abstract class DefinitionSetAdapterWrapper<T, A extends DefinitionSetAdap
     }
 
     @Override
-    public boolean accepts( final Class<?> type ) {
-        return adapter.accepts( type );
+    public boolean accepts(final Class<?> type) {
+        return adapter.accepts(type);
     }
 }

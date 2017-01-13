@@ -35,42 +35,42 @@ public class ClientSessionUtils {
     private GraphBoundsIndexer graphBoundsIndexer;
 
     protected ClientSessionUtils() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public ClientSessionUtils( final GraphBoundsIndexer graphBoundsIndexer ) {
+    public ClientSessionUtils(final GraphBoundsIndexer graphBoundsIndexer) {
         this.graphBoundsIndexer = graphBoundsIndexer;
     }
 
-    @SuppressWarnings( "unchecked" )
-    public String canvasToImageData( final ClientSession session ) {
-        if ( session instanceof ClientReadOnlySession ) {
-            final SelectionControl<CanvasHandler<?, Canvas<?>>, Element> selectionControl = ( ( ClientReadOnlySession ) session ).getSelectionControl();
-            if ( null != selectionControl ) {
+    @SuppressWarnings("unchecked")
+    public String canvasToImageData(final ClientSession session) {
+        if (session instanceof ClientReadOnlySession) {
+            final SelectionControl<CanvasHandler<?, Canvas<?>>, Element> selectionControl = ((ClientReadOnlySession) session).getSelectionControl();
+            if (null != selectionControl) {
                 // Ensure no selection present before creating the image data for the canvas.
                 selectionControl.clearSelection();
             }
         }
         final CanvasHandler<?, Canvas<?>> canvasHandler = session.getCanvasHandler();
-        return canvasToImageData( canvasHandler );
+        return canvasToImageData(canvasHandler);
     }
 
-    @SuppressWarnings( "unchecked" )
-    private String canvasToImageData( final CanvasHandler<?, Canvas<?>> canvasHandler ) {
+    @SuppressWarnings("unchecked")
+    private String canvasToImageData(final CanvasHandler<?, Canvas<?>> canvasHandler) {
         final Diagram diagram = canvasHandler.getDiagram();
         final Graph graph = diagram.getGraph();
         final double[] dBounds = graphBoundsIndexer
-                .build( graph )
+                .build(graph)
                 .getTrimmedBounds();
         String thumbData = null;
-        if ( dBounds[ 2 ] > 0 && dBounds[ 3 ] > 0 ) {
+        if (dBounds[2] > 0 && dBounds[3] > 0) {
             final Layer layer = canvasHandler.getCanvas().getLayer();
-            if ( null != layer ) {
-                thumbData = layer.toDataURL( ( int ) dBounds[ 0 ],
-                                             ( int ) dBounds[ 1 ],
-                                             ( int ) dBounds[ 2 ],
-                                             ( int ) dBounds[ 3 ] );
+            if (null != layer) {
+                thumbData = layer.toDataURL((int) dBounds[0],
+                                            (int) dBounds[1],
+                                            (int) dBounds[2],
+                                            (int) dBounds[3]);
             }
         }
         return thumbData;

@@ -33,7 +33,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class ProjectDiagramExplorerScreenTest {
 
     @Mock
@@ -53,34 +53,34 @@ public class ProjectDiagramExplorerScreenTest {
 
     @Before
     public void setup() throws Exception {
-        when( treeExplorer.asWidget() ).thenReturn( treeExplorerWidget );
-        when( session.getCanvasHandler() ).thenReturn( canvasHandler );
-        this.tested = new ProjectDiagramExplorerScreen( clientSessionManager,
-                                                        treeExplorer,
-                                                        changeTitleNotificationEvent );
+        when(treeExplorer.asWidget()).thenReturn(treeExplorerWidget);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        this.tested = new ProjectDiagramExplorerScreen(clientSessionManager,
+                                                       treeExplorer,
+                                                       changeTitleNotificationEvent);
     }
 
     @Test
     public void testView() {
-        assertEquals( treeExplorerWidget,
-                      tested.getWidget() );
+        assertEquals(treeExplorerWidget,
+                     tested.getWidget());
     }
 
     @Test
     public void testShow() {
-        tested.show( session );
-        verify( treeExplorer,
-                times( 1 ) ).show( eq( canvasHandler ) );
-        verify( treeExplorer,
-                times( 0 ) ).clear();
+        tested.show(session);
+        verify(treeExplorer,
+               times(1)).show(eq(canvasHandler));
+        verify(treeExplorer,
+               times(0)).clear();
     }
 
     @Test
     public void testClose() {
         tested.close();
-        verify( treeExplorer,
-                times( 1 ) ).clear();
-        verify( treeExplorer,
-                times( 0 ) ).show( any( AbstractCanvasHandler.class ) );
+        verify(treeExplorer,
+               times(1)).clear();
+        verify(treeExplorer,
+               times(0)).show(any(AbstractCanvasHandler.class));
     }
 }

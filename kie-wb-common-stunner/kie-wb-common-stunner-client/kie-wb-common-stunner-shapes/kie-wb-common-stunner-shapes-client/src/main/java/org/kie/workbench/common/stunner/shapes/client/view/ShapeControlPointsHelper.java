@@ -52,16 +52,16 @@ import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
  */
 public class ShapeControlPointsHelper {
 
-    public static void showOnlyLowerRightCP( final IControlHandleList controlHandles ) {
+    public static void showOnlyLowerRightCP(final IControlHandleList controlHandles) {
         controlHandles.show();
-        hideCP( controlHandles.getHandle( 0 ) );
-        hideCP( controlHandles.getHandle( 1 ) );
-        hideCP( controlHandles.getHandle( 3 ) );
+        hideCP(controlHandles.getHandle(0));
+        hideCP(controlHandles.getHandle(1));
+        hideCP(controlHandles.getHandle(3));
     }
 
-    public static void hideCP( final IControlHandle handle ) {
-        if ( null != handle && null != handle.getControl() ) {
-            handle.getControl().setVisible( false );
+    public static void hideCP(final IControlHandle handle) {
+        if (null != handle && null != handle.getControl()) {
+            handle.getControl().setVisible(false);
         }
     }
 }

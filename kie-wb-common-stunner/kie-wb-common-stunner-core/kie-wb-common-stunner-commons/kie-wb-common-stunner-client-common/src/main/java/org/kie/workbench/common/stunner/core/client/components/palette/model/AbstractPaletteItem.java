@@ -23,10 +23,10 @@ public abstract class AbstractPaletteItem implements PaletteItem {
     protected final String description;
     protected final String tooltip;
 
-    public AbstractPaletteItem( final String itemId,
-                                final String title,
-                                final String description,
-                                final String tooltip ) {
+    public AbstractPaletteItem(final String itemId,
+                               final String title,
+                               final String description,
+                               final String tooltip) {
         this.itemId = itemId;
         this.title = title;
         this.description = description;
@@ -54,15 +54,15 @@ public abstract class AbstractPaletteItem implements PaletteItem {
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof AbstractPaletteItem ) ) {
+        if (!(o instanceof AbstractPaletteItem)) {
             return false;
         }
-        AbstractPaletteItem that = ( AbstractPaletteItem ) o;
-        return itemId != null && itemId.equals( that.itemId );
+        AbstractPaletteItem that = (AbstractPaletteItem) o;
+        return itemId != null && itemId.equals(that.itemId);
     }
 
     @Override

@@ -22,7 +22,7 @@ public interface HasFillGradient<T> {
         LINEAR
     }
 
-    T setFillGradient( final Type type,
-                       final String startColor,
-                       final String endColor );
+    T setFillGradient(final Type type,
+                      final String startColor,
+                      final String endColor);
 }

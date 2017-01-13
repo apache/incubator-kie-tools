@@ -28,37 +28,37 @@ public final class SequenceFlowConnectorDef
         implements ConnectorShapeDef<SequenceFlow> {
 
     @Override
-    public String getBackgroundColor( final SequenceFlow element ) {
+    public String getBackgroundColor(final SequenceFlow element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final SequenceFlow element ) {
+    public double getBackgroundAlpha(final SequenceFlow element) {
         return 1;
     }
 
     @Override
-    public String getBorderColor( final SequenceFlow element ) {
+    public String getBorderColor(final SequenceFlow element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final SequenceFlow element ) {
+    public double getBorderSize(final SequenceFlow element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final SequenceFlow element ) {
+    public double getBorderAlpha(final SequenceFlow element) {
         return 1;
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final SequenceFlow element ) {
+    public HasTitle.Position getFontPosition(final SequenceFlow element) {
         return HasTitle.Position.TOP;
     }
 
     @Override
-    public double getFontRotation( final SequenceFlow element ) {
+    public double getFontRotation(final SequenceFlow element) {
         return 0;
     }
 
@@ -70,7 +70,7 @@ public final class SequenceFlowConnectorDef
         }
 
         @Override
-        public String getGlyphDescription( final SequenceFlow element ) {
+        public String getGlyphDescription(final SequenceFlow element) {
             return element.getTitle();
         }
     }

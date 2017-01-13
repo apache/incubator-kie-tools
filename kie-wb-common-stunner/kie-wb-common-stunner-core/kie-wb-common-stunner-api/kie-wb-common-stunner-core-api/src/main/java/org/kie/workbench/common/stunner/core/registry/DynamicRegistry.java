@@ -22,7 +22,7 @@ package org.kie.workbench.common.stunner.core.registry;
  */
 public interface DynamicRegistry<T> extends Registry<T> {
 
-    void register( final T item );
+    void register(final T item);
 
-    boolean remove( final T item );
+    boolean remove(final T item);
 }

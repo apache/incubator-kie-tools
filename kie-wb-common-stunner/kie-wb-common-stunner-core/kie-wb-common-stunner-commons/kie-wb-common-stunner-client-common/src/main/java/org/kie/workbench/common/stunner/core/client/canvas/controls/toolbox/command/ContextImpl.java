@@ -29,14 +29,14 @@ public class ContextImpl implements Context {
     private final int clientX;
     private final int clientY;
 
-    public ContextImpl( final AbstractCanvasHandler canvasHandler,
-                        final EventType eventType,
-                        final int x,
-                        final int y,
-                        final int absX,
-                        final int absY,
-                        final int clientX,
-                        final int clientY ) {
+    public ContextImpl(final AbstractCanvasHandler canvasHandler,
+                       final EventType eventType,
+                       final int x,
+                       final int y,
+                       final int absX,
+                       final int absY,
+                       final int clientX,
+                       final int clientY) {
         this.canvasHandler = canvasHandler;
         this.eventType = eventType;
         this.x = x;

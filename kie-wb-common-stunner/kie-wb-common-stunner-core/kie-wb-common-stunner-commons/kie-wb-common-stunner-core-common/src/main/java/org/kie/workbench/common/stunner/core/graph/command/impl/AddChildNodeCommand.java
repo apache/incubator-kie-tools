@@ -43,83 +43,83 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
     private final Double y;
     private transient Node<?, Edge> parent;
 
-    public AddChildNodeCommand( final @MapsTo( "parentUUID" ) String parentUUID,
-                                final @MapsTo( "candidate" ) Node candidate,
-                                final @MapsTo( "x" ) Double x,
-                                final @MapsTo( "y" ) Double y ) {
-        this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
-                                                              parentUUID );
-        this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                                                             candidate );
+    public AddChildNodeCommand(final @MapsTo("parentUUID") String parentUUID,
+                               final @MapsTo("candidate") Node candidate,
+                               final @MapsTo("x") Double x,
+                               final @MapsTo("y") Double y) {
+        this.parentUUID = PortablePreconditions.checkNotNull("parentUUID",
+                                                             parentUUID);
+        this.candidate = PortablePreconditions.checkNotNull("candidate",
+                                                            candidate);
         this.x = x;
         this.y = y;
     }
 
-    public AddChildNodeCommand( final Node<?, Edge> parent,
-                                final Node candidate,
-                                final Double x,
-                                final Double y ) {
-        this( parent.getUUID(),
-              candidate,
-              x,
-              y );
+    public AddChildNodeCommand(final Node<?, Edge> parent,
+                               final Node candidate,
+                               final Double x,
+                               final Double y) {
+        this(parent.getUUID(),
+             candidate,
+             x,
+             y);
         this.parent = parent;
     }
 
-    public AddChildNodeCommand( final Node<?, Edge> parent,
-                                final Node candidate ) {
-        this( parent,
-              candidate,
-              null,
-              null );
+    public AddChildNodeCommand(final Node<?, Edge> parent,
+                               final Node candidate) {
+        this(parent,
+             candidate,
+             null,
+             null);
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected AddChildNodeCommand initialize( final GraphCommandExecutionContext context ) {
-        super.initialize( context );
-        final Node<?, Edge> parent = getParent( context );
-        this.addCommand( new RegisterNodeCommand( candidate ) );
-        this.addCommand( new SetChildNodeCommand( parent,
-                                                  candidate ) );
-        if ( null != x && null != y ) {
-            this.addCommand( new UpdateElementPositionCommand( candidate,
-                                                               x,
-                                                               y ) );
+    @SuppressWarnings("unchecked")
+    protected AddChildNodeCommand initialize(final GraphCommandExecutionContext context) {
+        super.initialize(context);
+        final Node<?, Edge> parent = getParent(context);
+        this.addCommand(new RegisterNodeCommand(candidate));
+        this.addCommand(new SetChildNodeCommand(parent,
+                                                candidate));
+        if (null != x && null != y) {
+            this.addCommand(new UpdateElementPositionCommand(candidate,
+                                                             x,
+                                                             y));
         }
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> allow( final GraphCommandExecutionContext context ) {
-        ensureInitialized( context );
+    @SuppressWarnings("unchecked")
+    public CommandResult<RuleViolation> allow(final GraphCommandExecutionContext context) {
+        ensureInitialized(context);
         // Check if rules are present.
-        if ( null == context.getRulesManager() ) {
+        if (null == context.getRulesManager()) {
             return GraphCommandResultBuilder.SUCCESS;
         }
-        final Node<?, Edge> parent = getParent( context );
-        final Collection<RuleViolation> containmentRuleViolations = ( Collection<RuleViolation> ) context.getRulesManager().containment().evaluate( parent,
-                                                                                                                                                    candidate ).violations();
-        final Collection<RuleViolation> cardinalityRuleViolations = ( Collection<RuleViolation> ) context.getRulesManager().cardinality().evaluate( getGraph( context ),
-                                                                                                                                                    candidate,
-                                                                                                                                                    RuleManager.Operation.ADD ).violations();
+        final Node<?, Edge> parent = getParent(context);
+        final Collection<RuleViolation> containmentRuleViolations = (Collection<RuleViolation>) context.getRulesManager().containment().evaluate(parent,
+                                                                                                                                                 candidate).violations();
+        final Collection<RuleViolation> cardinalityRuleViolations = (Collection<RuleViolation>) context.getRulesManager().cardinality().evaluate(getGraph(context),
+                                                                                                                                                 candidate,
+                                                                                                                                                 RuleManager.Operation.ADD).violations();
         final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
-        violations.addAll( containmentRuleViolations );
-        violations.addAll( cardinalityRuleViolations );
-        return new GraphCommandResultBuilder( violations ).build();
+        violations.addAll(containmentRuleViolations);
+        violations.addAll(cardinalityRuleViolations);
+        return new GraphCommandResultBuilder(violations).build();
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        return new SafeDeleteNodeCommand( getCandidate() ).execute( context );
+    @SuppressWarnings("unchecked")
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        return new SafeDeleteNodeCommand(getCandidate()).execute(context);
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Node<?, Edge> getParent( final GraphCommandExecutionContext context ) {
-        if ( null == parent ) {
-            parent = checkNodeNotNull( context,
-                                       parentUUID );
+    @SuppressWarnings("unchecked")
+    private Node<?, Edge> getParent(final GraphCommandExecutionContext context) {
+        if (null == parent) {
+            parent = checkNodeNotNull(context,
+                                      parentUUID);
         }
         return parent;
     }

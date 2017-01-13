@@ -36,67 +36,67 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ClearGraphCommandTest extends AbstractGraphCommandTest {
 
     private ClearGraphCommand tested;
 
     @Before
     public void setup() throws Exception {
-        super.init( 500,
-                    500 );
-        this.tested = new ClearGraphCommand( "" );
+        super.init(500,
+                   500);
+        this.tested = new ClearGraphCommand("");
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testAllow() {
-        CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        verify( containmentRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
-        verify( cardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Graph.class ),
-                                       any( Node.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( connectionRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( Node.class ) );
-        verify( edgeCardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( List.class ),
-                                       any( EdgeCardinalityRule.Type.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( dockingRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
+        CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        verify(containmentRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
+        verify(cardinalityRuleManager,
+               times(0)).evaluate(any(Graph.class),
+                                  any(Node.class),
+                                  any(RuleManager.Operation.class));
+        verify(connectionRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(Node.class));
+        verify(edgeCardinalityRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(List.class),
+                                  any(EdgeCardinalityRule.Type.class),
+                                  any(RuleManager.Operation.class));
+        verify(dockingRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
     }
 
-    @Test( expected = BadCommandArgumentsException.class )
+    @Test(expected = BadCommandArgumentsException.class)
     public void testAllowWithNonExistingRootUUID() {
-        this.tested = new ClearGraphCommand( "someId" );
-        CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.ERROR,
-                      result.getType() );
+        this.tested = new ClearGraphCommand("someId");
+        CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.ERROR,
+                     result.getType());
     }
 
     @Test
     public void testExecute() {
-        CommandResult<RuleViolation> result = tested.execute( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        verify( graph,
-                times( 1 ) ).clear();
-        verify( graphIndex,
-                times( 1 ) ).clear();
+        CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        verify(graph,
+               times(1)).clear();
+        verify(graphIndex,
+               times(1)).clear();
     }
 
-    @Test( expected = UnsupportedOperationException.class )
+    @Test(expected = UnsupportedOperationException.class)
     public void testUndo() {
-        tested.undo( graphCommandExecutionContext );
+        tested.undo(graphCommandExecutionContext);
     }
 }

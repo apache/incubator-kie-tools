@@ -31,7 +31,7 @@ public class StaticIconShapeDefImpl
     private static final String DESCRIPTION = "An icon";
 
     @Override
-    public Icons getIcon( final StaticIcon element ) {
+    public Icons getIcon(final StaticIcon element) {
         return element.getIcon();
     }
 

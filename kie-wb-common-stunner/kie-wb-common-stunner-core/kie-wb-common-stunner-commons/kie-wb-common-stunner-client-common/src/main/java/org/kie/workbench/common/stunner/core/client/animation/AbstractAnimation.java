@@ -24,13 +24,13 @@ public abstract class AbstractAnimation<S> implements Animation<S> {
     private long duration = ANIMATION_DURATION;
 
     @Override
-    public AbstractAnimation setCallback( final AnimationCallback callback ) {
+    public AbstractAnimation setCallback(final AnimationCallback callback) {
         this.callback = callback;
         return this;
     }
 
     @Override
-    public AbstractAnimation setDuration( final long duration ) {
+    public AbstractAnimation setDuration(final long duration) {
         this.duration = duration;
         return this;
     }

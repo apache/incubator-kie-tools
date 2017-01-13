@@ -44,10 +44,10 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchScreen( identifier = ProjectDiagramPropertiesScreen.SCREEN_ID )
+@WorkbenchScreen(identifier = ProjectDiagramPropertiesScreen.SCREEN_ID)
 public class ProjectDiagramPropertiesScreen {
 
-    private static Logger LOGGER = Logger.getLogger( ProjectDiagramPropertiesScreen.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(ProjectDiagramPropertiesScreen.class.getName());
     public static final String SCREEN_ID = "ProjectDiagramPropertiesScreen";
 
     private final FormPropertiesWidget formPropertiesWidget;
@@ -60,17 +60,17 @@ public class ProjectDiagramPropertiesScreen {
     private String title = "Properties";
 
     protected ProjectDiagramPropertiesScreen() {
-        this( null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public ProjectDiagramPropertiesScreen( final FormPropertiesWidget formPropertiesWidget,
-                                           final AbstractClientSessionManager clientSessionManager,
-                                           final Event<ChangeTitleWidgetEvent> changeTitleNotification,
-                                           final ProjectScreenView view ) {
+    public ProjectDiagramPropertiesScreen(final FormPropertiesWidget formPropertiesWidget,
+                                          final AbstractClientSessionManager clientSessionManager,
+                                          final Event<ChangeTitleWidgetEvent> changeTitleNotification,
+                                          final ProjectScreenView view) {
         this.formPropertiesWidget = formPropertiesWidget;
         this.clientSessionManager = clientSessionManager;
         this.changeTitleNotificationEvent = changeTitleNotification;
@@ -79,51 +79,51 @@ public class ProjectDiagramPropertiesScreen {
 
     @PostConstruct
     public void init() {
-        view.setWidget( formPropertiesWidget.asWidget() );
+        view.setWidget(formPropertiesWidget.asWidget());
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
+    public void onStartup(final PlaceRequest placeRequest) {
         this.placeRequest = placeRequest;
     }
 
     @OnOpen
     public void onOpen() {
-        log( Level.INFO,
-             "Opening ProjectDiagramPropertiesScreen." );
+        log(Level.INFO,
+            "Opening ProjectDiagramPropertiesScreen.");
         final ClientSession current = clientSessionManager.getCurrentSession();
-        handleSession( current );
+        handleSession(current);
     }
 
     @OnClose
     public void onClose() {
-        log( Level.INFO,
-             "Closing ProjectDiagramPropertiesScreen." );
-        handleSession( null );
+        log(Level.INFO,
+            "Closing ProjectDiagramPropertiesScreen.");
+        handleSession(null);
     }
 
-    @SuppressWarnings( "unchecked" )
-    private void handleSession( final ClientSession session ) {
+    @SuppressWarnings("unchecked")
+    private void handleSession(final ClientSession session) {
         boolean done = false;
         view.showLoading();
-        if ( null != session ) {
+        if (null != session) {
             this.session = session;
             try {
-                final AbstractClientFullSession fullSession = ( AbstractClientFullSession ) session;
+                final AbstractClientFullSession fullSession = (AbstractClientFullSession) session;
                 // Show the loading view.
                 view.showLoading();
                 // Open the forms properties widget for the current session.
                 formPropertiesWidget
-                        .bind( fullSession )
-                        .show( () -> view.hideLoading() );
+                        .bind(fullSession)
+                        .show(() -> view.hideLoading());
                 done = true;
-            } catch ( ClassCastException e ) {
+            } catch (ClassCastException e) {
                 // No writteable session. Do not show properties until read mode available.
-                log( Level.INFO,
-                     "Session discarded for opening as not instance of full session." );
+                log(Level.INFO,
+                    "Session discarded for opening as not instance of full session.");
             }
         }
-        if ( !done ) {
+        if (!done) {
             formPropertiesWidget.unbind();
             view.hideLoading();
             this.session = null;
@@ -151,24 +151,24 @@ public class ProjectDiagramPropertiesScreen {
         return "stunnerProjectDiagramPropertiesScreenContext";
     }
 
-    void onFormPropertiesOpened( @Observes FormPropertiesOpened propertiesOpened ) {
-        if ( null != session && session.equals( propertiesOpened.getSession() ) ) {
-            updateTitle( propertiesOpened.getName() );
+    void onFormPropertiesOpened(final @Observes FormPropertiesOpened propertiesOpened) {
+        if (null != session && session.equals(propertiesOpened.getSession())) {
+            updateTitle(propertiesOpened.getName());
         }
     }
 
-    private void updateTitle( final String title ) {
+    private void updateTitle(final String title) {
         // Change screen title.
         ProjectDiagramPropertiesScreen.this.title = title;
-        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
-                                                                       this.title ) );
+        changeTitleNotificationEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
+                                                                     this.title));
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

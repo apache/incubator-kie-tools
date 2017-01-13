@@ -36,62 +36,62 @@ public final class DeleteConnectorCommand extends AbstractGraphCompositeCommand 
     private final String edgeUUID;
     private transient Edge<? extends View, Node> edge;
 
-    public DeleteConnectorCommand( final @MapsTo( "edge" ) String edgeUUID ) {
-        this.edgeUUID = PortablePreconditions.checkNotNull( "edgeUUID",
-                                                            edgeUUID );
+    public DeleteConnectorCommand(final @MapsTo("edge") String edgeUUID) {
+        this.edgeUUID = PortablePreconditions.checkNotNull("edgeUUID",
+                                                           edgeUUID);
     }
 
-    public DeleteConnectorCommand( final Edge<? extends View, Node> edge ) {
-        this( edge.getUUID() );
+    public DeleteConnectorCommand(final Edge<? extends View, Node> edge) {
+        this(edge.getUUID());
         this.edge = edge;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected DeleteConnectorCommand initialize( final GraphCommandExecutionContext context ) {
-        super.initialize( context );
-        final Edge<? extends ViewConnector, Node> edge = getCandidateEdge( context );
+    @SuppressWarnings("unchecked")
+    protected DeleteConnectorCommand initialize(final GraphCommandExecutionContext context) {
+        super.initialize(context);
+        final Edge<? extends ViewConnector, Node> edge = getCandidateEdge(context);
         final Node<View<?>, Edge> targetNode = edge.getTargetNode();
         final Node<View<?>, Edge> sourceNode = edge.getSourceNode();
-        if ( null != sourceNode ) {
-            commands.add( new SetConnectionSourceNodeCommand( null,
-                                                              edge ) );
+        if (null != sourceNode) {
+            commands.add(new SetConnectionSourceNodeCommand(null,
+                                                            edge));
         }
-        if ( null != targetNode ) {
-            commands.add( new SetConnectionTargetNodeCommand( null,
-                                                              edge ) );
+        if (null != targetNode) {
+            commands.add(new SetConnectionTargetNodeCommand(null,
+                                                            edge));
         }
         return this;
     }
 
     @Override
-    public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        final CommandResult<RuleViolation> result = super.execute( context );
-        if ( !CommandUtils.isError( result ) ) {
-            final Edge<? extends ViewConnector, Node> edge = getCandidateEdge( context );
-            getMutableIndex( context ).removeEdge( edge );
+    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
+        final CommandResult<RuleViolation> result = super.execute(context);
+        if (!CommandUtils.isError(result)) {
+            final Edge<? extends ViewConnector, Node> edge = getCandidateEdge(context);
+            getMutableIndex(context).removeEdge(edge);
         }
         return result;
     }
 
     @Override
-    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        getMutableIndex( context ).addEdge( edge );
-        final CommandResult<RuleViolation> result = super.undo( context,
-                                                                true );
-        if ( CommandUtils.isError( result ) ) {
-            getMutableIndex( context ).removeEdge( edge );
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        getMutableIndex(context).addEdge(edge);
+        final CommandResult<RuleViolation> result = super.undo(context,
+                                                               true);
+        if (CommandUtils.isError(result)) {
+            getMutableIndex(context).removeEdge(edge);
         }
         return result;
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Edge<? extends ViewConnector, Node> getCandidateEdge( final GraphCommandExecutionContext context ) {
-        if ( null == edge ) {
-            edge = getViewEdge( context,
-                                edgeUUID );
+    @SuppressWarnings("unchecked")
+    private Edge<? extends ViewConnector, Node> getCandidateEdge(final GraphCommandExecutionContext context) {
+        if (null == edge) {
+            edge = getViewEdge(context,
+                               edgeUUID);
         }
-        return ( Edge<? extends ViewConnector, Node> ) edge;
+        return (Edge<? extends ViewConnector, Node>) edge;
     }
 
     public Edge<? extends View, Node> getEdge() {

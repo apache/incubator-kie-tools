@@ -23,8 +23,8 @@ public final class CanvasViolationImpl implements CanvasViolation {
     private final String message;
     private final Type type;
 
-    CanvasViolationImpl( final String message,
-                         final Type type ) {
+    CanvasViolationImpl(final String message,
+                        final Type type) {
         this.type = type;
         this.message = message;
     }
@@ -43,13 +43,13 @@ public final class CanvasViolationImpl implements CanvasViolation {
 
         private final RuleViolation ruleViolation;
 
-        public CanvasViolationBuilder( final RuleViolation ruleViolation ) {
+        public CanvasViolationBuilder(final RuleViolation ruleViolation) {
             this.ruleViolation = ruleViolation;
         }
 
         public CanvasViolation build() {
-            return new CanvasViolationImpl( ruleViolation.getMessage(),
-                                            ruleViolation.getViolationType() );
+            return new CanvasViolationImpl(ruleViolation.getMessage(),
+                                           ruleViolation.getViolationType());
         }
     }
 

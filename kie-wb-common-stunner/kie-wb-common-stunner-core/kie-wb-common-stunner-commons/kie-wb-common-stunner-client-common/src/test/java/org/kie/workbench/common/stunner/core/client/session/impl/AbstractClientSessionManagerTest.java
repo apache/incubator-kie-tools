@@ -28,7 +28,7 @@ import org.mockito.Mock;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class AbstractClientSessionManagerTest {
 
     @Mock
@@ -44,7 +44,7 @@ public class AbstractClientSessionManagerTest {
 
     @Before
     public void setup() throws Exception {
-        this.tested = spy( new AbstractClientSessionManager() {
+        this.tested = spy(new AbstractClientSessionManager() {
             @Override
             protected void postOpen() {
             }
@@ -70,140 +70,140 @@ public class AbstractClientSessionManagerTest {
             public ClientFullSession<AbstractCanvas, AbstractCanvasHandler> newFullSession() {
                 return fullSession;
             }
-        } );
+        });
     }
 
     @Test
     public void testOpen() {
-        tested.open( session );
-        assertEquals( session,
-                      tested.getCurrentSession() );
-        verify( session,
-                times( 1 ) ).open();
-        verify( session,
-                times( 0 ) ).pause();
-        verify( session,
-                times( 0 ) ).resume();
-        verify( session,
-                times( 0 ) ).dispose();
-        verify( tested,
-                times( 1 ) ).postOpen();
-        verify( tested,
-                times( 0 ) ).postPause();
-        verify( tested,
-                times( 0 ) ).postResume();
-        verify( tested,
-                times( 0 ) ).postDispose();
+        tested.open(session);
+        assertEquals(session,
+                     tested.getCurrentSession());
+        verify(session,
+               times(1)).open();
+        verify(session,
+               times(0)).pause();
+        verify(session,
+               times(0)).resume();
+        verify(session,
+               times(0)).dispose();
+        verify(tested,
+               times(1)).postOpen();
+        verify(tested,
+               times(0)).postPause();
+        verify(tested,
+               times(0)).postResume();
+        verify(tested,
+               times(0)).postDispose();
     }
 
     @Test
     public void testOpenAnotherSession() {
         tested.current = session;
-        tested.open( session1 );
-        assertEquals( session1,
-                      tested.getCurrentSession() );
-        verify( session,
-                times( 1 ) ).pause();
-        verify( session,
-                times( 0 ) ).open();
-        verify( session,
-                times( 0 ) ).resume();
-        verify( session,
-                times( 0 ) ).dispose();
-        verify( session1,
-                times( 1 ) ).open();
-        verify( session1,
-                times( 0 ) ).pause();
-        verify( session1,
-                times( 0 ) ).resume();
-        verify( session1,
-                times( 0 ) ).dispose();
-        verify( tested,
-                times( 1 ) ).postOpen();
-        verify( tested,
-                times( 1 ) ).postPause();
-        verify( tested,
-                times( 0 ) ).postResume();
-        verify( tested,
-                times( 0 ) ).postDispose();
+        tested.open(session1);
+        assertEquals(session1,
+                     tested.getCurrentSession());
+        verify(session,
+               times(1)).pause();
+        verify(session,
+               times(0)).open();
+        verify(session,
+               times(0)).resume();
+        verify(session,
+               times(0)).dispose();
+        verify(session1,
+               times(1)).open();
+        verify(session1,
+               times(0)).pause();
+        verify(session1,
+               times(0)).resume();
+        verify(session1,
+               times(0)).dispose();
+        verify(tested,
+               times(1)).postOpen();
+        verify(tested,
+               times(1)).postPause();
+        verify(tested,
+               times(0)).postResume();
+        verify(tested,
+               times(0)).postDispose();
     }
 
     @Test
     public void testPause() {
         tested.current = session;
         tested.pause();
-        assertEquals( session,
-                      tested.getCurrentSession() );
-        verify( session,
-                times( 0 ) ).open();
-        verify( session,
-                times( 1 ) ).pause();
-        verify( session,
-                times( 0 ) ).resume();
-        verify( session,
-                times( 0 ) ).dispose();
-        verify( tested,
-                times( 0 ) ).postOpen();
-        verify( tested,
-                times( 1 ) ).postPause();
-        verify( tested,
-                times( 0 ) ).postResume();
-        verify( tested,
-                times( 0 ) ).postDispose();
+        assertEquals(session,
+                     tested.getCurrentSession());
+        verify(session,
+               times(0)).open();
+        verify(session,
+               times(1)).pause();
+        verify(session,
+               times(0)).resume();
+        verify(session,
+               times(0)).dispose();
+        verify(tested,
+               times(0)).postOpen();
+        verify(tested,
+               times(1)).postPause();
+        verify(tested,
+               times(0)).postResume();
+        verify(tested,
+               times(0)).postDispose();
     }
 
     @Test
     public void testResume() {
         tested.current = session1;
-        tested.resume( session );
-        assertEquals( session,
-                      tested.getCurrentSession() );
-        verify( session1,
-                times( 0 ) ).open();
-        verify( session1,
-                times( 1 ) ).pause();
-        verify( session1,
-                times( 0 ) ).resume();
-        verify( session1,
-                times( 0 ) ).dispose();
-        verify( session,
-                times( 0 ) ).open();
-        verify( session,
-                times( 0 ) ).pause();
-        verify( session,
-                times( 1 ) ).resume();
-        verify( session,
-                times( 0 ) ).dispose();
-        verify( tested,
-                times( 0 ) ).postOpen();
-        verify( tested,
-                times( 1 ) ).postPause();
-        verify( tested,
-                times( 1 ) ).postResume();
-        verify( tested,
-                times( 0 ) ).postDispose();
+        tested.resume(session);
+        assertEquals(session,
+                     tested.getCurrentSession());
+        verify(session1,
+               times(0)).open();
+        verify(session1,
+               times(1)).pause();
+        verify(session1,
+               times(0)).resume();
+        verify(session1,
+               times(0)).dispose();
+        verify(session,
+               times(0)).open();
+        verify(session,
+               times(0)).pause();
+        verify(session,
+               times(1)).resume();
+        verify(session,
+               times(0)).dispose();
+        verify(tested,
+               times(0)).postOpen();
+        verify(tested,
+               times(1)).postPause();
+        verify(tested,
+               times(1)).postResume();
+        verify(tested,
+               times(0)).postDispose();
     }
 
     @Test
     public void testDispose() {
         tested.current = session;
         tested.dispose();
-        assertNull( tested.getCurrentSession() );
-        verify( session,
-                times( 0 ) ).open();
-        verify( session,
-                times( 0 ) ).pause();
-        verify( session,
-                times( 0 ) ).resume();
-        verify( session,
-                times( 1 ) ).dispose();
-        verify( tested,
-                times( 0 ) ).postOpen();
-        verify( tested,
-                times( 0 ) ).postPause();
-        verify( tested,
-                times( 0 ) ).postResume();
-        verify( tested,
-                times( 1 ) ).postDispose();
+        assertNull(tested.getCurrentSession());
+        verify(session,
+               times(0)).open();
+        verify(session,
+               times(0)).pause();
+        verify(session,
+               times(0)).resume();
+        verify(session,
+               times(1)).dispose();
+        verify(tested,
+               times(0)).postOpen();
+        verify(tested,
+               times(0)).postPause();
+        verify(tested,
+               times(0)).postResume();
+        verify(tested,
+               times(1)).postDispose();
     }
 }

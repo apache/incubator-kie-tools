@@ -45,12 +45,12 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
     private ShapeFactory factory;
 
     @Inject
-    public AbstractElementBuilderCommand( final ClientFactoryService clientFactoryServices,
-                                          final ShapeManager shapeManager,
-                                          final DefinitionGlyphTooltip<?> glyphTooltip,
-                                          final GraphBoundsIndexer graphBoundsIndexer ) {
-        super( clientFactoryServices,
-               graphBoundsIndexer );
+    public AbstractElementBuilderCommand(final ClientFactoryService clientFactoryServices,
+                                         final ShapeManager shapeManager,
+                                         final DefinitionGlyphTooltip<?> glyphTooltip,
+                                         final GraphBoundsIndexer graphBoundsIndexer) {
+        super(clientFactoryServices,
+              graphBoundsIndexer);
         this.shapeManager = shapeManager;
         this.glyphTooltip = glyphTooltip;
     }
@@ -65,100 +65,100 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public I getIcon( final AbstractCanvasHandler context,
-                      final double width,
-                      final double height ) {
-        if ( null == iconView ) {
-            final ShapeFactory factory = getFactory( context );
+    @SuppressWarnings("unchecked")
+    public I getIcon(final AbstractCanvasHandler context,
+                     final double width,
+                     final double height) {
+        if (null == iconView) {
+            final ShapeFactory factory = getFactory(context);
             // TODO: Review why glyphs result smaller than expected. Adding some padding pixels here.
-            final Glyph<I> glyph = factory.glyph( getGlyphDefinitionId(),
-                                                  width + 6,
-                                                  height + 6 );
+            final Glyph<I> glyph = factory.glyph(getGlyphDefinitionId(),
+                                                 width + 6,
+                                                 height + 6);
             this.iconView = glyph.getGroup();
         }
         return iconView;
     }
 
     @Override
-    public void mouseEnter( final Context<AbstractCanvasHandler> context,
-                            final Element element ) {
-        super.mouseEnter( context,
-                          element );
-        if ( null != getFactory( context.getCanvasHandler() ) ) {
+    public void mouseEnter(final Context<AbstractCanvasHandler> context,
+                           final Element element) {
+        super.mouseEnter(context,
+                         element);
+        if (null != getFactory(context.getCanvasHandler())) {
             final Transform transform = context.getCanvasHandler().getCanvas().getLayer().getTransform();
             final double ax = context.getCanvasHandler().getCanvas().getView().getAbsoluteX();
             final double ay = context.getCanvasHandler().getCanvas().getView().getAbsoluteY();
             // As tooltip is a floating view (not part of the canvas), need to transform the cartesian coordinates
             // using current transform attributes to obtain the right absolute position on the screen.
-            final Point2D t = transform.transform( context.getX(),
-                                                   context.getY() );
-            glyphTooltip.showTooltip( getGlyphDefinitionId(),
-                                      ax + t.getX() + 20,
-                                      ay + t.getY(),
-                                      GlyphTooltip.Direction.WEST );
+            final Point2D t = transform.transform(context.getX(),
+                                                  context.getY());
+            glyphTooltip.showTooltip(getGlyphDefinitionId(),
+                                     ax + t.getX() + 20,
+                                     ay + t.getY(),
+                                     GlyphTooltip.Direction.WEST);
         }
     }
 
     @Override
-    public void mouseExit( final Context<AbstractCanvasHandler> context,
-                           final Element element ) {
-        super.mouseExit( context,
-                         element );
+    public void mouseExit(final Context<AbstractCanvasHandler> context,
+                          final Element element) {
+        super.mouseExit(context,
+                        element);
         glyphTooltip.hide();
     }
 
-    protected ShapeFactory getFactory( final AbstractCanvasHandler context ) {
-        if ( null == factory ) {
+    protected ShapeFactory getFactory(final AbstractCanvasHandler context) {
+        if (null == factory) {
             final String ssid = context.getDiagram().getMetadata().getShapeSetId();
-            factory = shapeManager.getShapeSet( ssid )
+            factory = shapeManager.getShapeSet(ssid)
                     .getShapeFactory();
         }
         return factory;
     }
 
     @Override
-    protected DragProxyCallback getDragProxyCallback( final Context<AbstractCanvasHandler> context,
-                                                      final Element element,
-                                                      final Element item ) {
+    protected DragProxyCallback getDragProxyCallback(final Context<AbstractCanvasHandler> context,
+                                                     final Element element,
+                                                     final Element item) {
         return new DragProxyCallback() {
             @Override
-            public void onStart( final int x1,
-                                 final int y1 ) {
-                AbstractElementBuilderCommand.this.onStart( context,
-                                                            element,
-                                                            item,
-                                                            x1,
-                                                            y1 );
-            }
-
-            @Override
-            public void onMove( final int x1,
-                                final int y1 ) {
-                AbstractElementBuilderCommand.this.onMove( context,
+            public void onStart(final int x1,
+                                final int y1) {
+                AbstractElementBuilderCommand.this.onStart(context,
                                                            element,
                                                            item,
                                                            x1,
-                                                           y1 );
+                                                           y1);
             }
 
             @Override
-            public void onComplete( final int x1,
-                                    final int y1 ) {
-                AbstractElementBuilderCommand.this.onComplete( context,
-                                                               element,
-                                                               item,
-                                                               x1,
-                                                               y1 );
+            public void onMove(final int x1,
+                               final int y1) {
+                AbstractElementBuilderCommand.this.onMove(context,
+                                                          element,
+                                                          item,
+                                                          x1,
+                                                          y1);
+            }
+
+            @Override
+            public void onComplete(final int x1,
+                                   final int y1) {
+                AbstractElementBuilderCommand.this.onComplete(context,
+                                                              element,
+                                                              item,
+                                                              x1,
+                                                              y1);
             }
         };
     }
 
     @Override
-    protected void onItemBuilt( final Context<AbstractCanvasHandler> context,
-                                final String uuid ) {
-        super.onItemBuilt( context,
-                           uuid );
+    protected void onItemBuilt(final Context<AbstractCanvasHandler> context,
+                               final String uuid) {
+        super.onItemBuilt(context,
+                          uuid);
         glyphTooltip.hide();
     }
 
@@ -177,11 +177,11 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
     /**
      * Listens for <code>ESC</code> key pressed - cancels the current drag/build operation.
      */
-    void onKeyDownEvent( final @Observes KeyDownEvent keyDownEvent ) {
-        checkNotNull( "keyDownEvent",
-                      keyDownEvent );
+    void onKeyDownEvent(final @Observes KeyDownEvent keyDownEvent) {
+        checkNotNull("keyDownEvent",
+                     keyDownEvent);
         final KeyboardEvent.Key key = keyDownEvent.getKey();
-        if ( null != key && KeyboardEvent.Key.ESC.equals( key ) ) {
+        if (null != key && KeyboardEvent.Key.ESC.equals(key)) {
             clearDragProxy();
         }
     }

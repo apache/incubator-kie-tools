@@ -37,60 +37,60 @@ public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
 
     public void init() {
         super.init();
-        wiresManager = WiresManager.get( canvasLayer );
+        wiresManager = WiresManager.get(canvasLayer);
     }
 
     @Override
-    public WiresCanvas.View addShape( final ShapeView<?> shapeView ) {
-        if ( WiresUtils.isWiresShape( shapeView ) ) {
-            WiresShape wiresShape = ( WiresShape ) shapeView;
-            wiresManager.register( wiresShape );
-            wiresManager.getMagnetManager().createMagnets( wiresShape );
-            wiresShape.getContainer().setUserData( WiresCanvas.WIRES_CANVAS_GROUP_ID );
-        } else if ( WiresUtils.isWiresConnector( shapeView ) ) {
-            WiresConnector wiresConnector = ( WiresConnector ) shapeView;
-            final WiresConnectorControl connectorControl = wiresManager.register( wiresConnector );
-            if ( shapeView instanceof AbstractConnectorView ) {
-                ( ( AbstractConnectorView ) shapeView ).setControl( connectorControl );
+    public WiresCanvas.View addShape(final ShapeView<?> shapeView) {
+        if (WiresUtils.isWiresShape(shapeView)) {
+            WiresShape wiresShape = (WiresShape) shapeView;
+            wiresManager.register(wiresShape);
+            wiresManager.getMagnetManager().createMagnets(wiresShape);
+            wiresShape.getContainer().setUserData(WiresCanvas.WIRES_CANVAS_GROUP_ID);
+        } else if (WiresUtils.isWiresConnector(shapeView)) {
+            WiresConnector wiresConnector = (WiresConnector) shapeView;
+            final WiresConnectorControl connectorControl = wiresManager.register(wiresConnector);
+            if (shapeView instanceof AbstractConnectorView) {
+                ((AbstractConnectorView) shapeView).setControl(connectorControl);
             }
-            wiresConnector.getGroup().setUserData( WiresCanvas.WIRES_CANVAS_GROUP_ID );
+            wiresConnector.getGroup().setUserData(WiresCanvas.WIRES_CANVAS_GROUP_ID);
         } else {
-            super.addShape( shapeView );
+            super.addShape(shapeView);
         }
         return this;
     }
 
     @Override
-    public WiresCanvas.View removeShape( final ShapeView<?> shapeView ) {
-        if ( WiresUtils.isWiresShape( shapeView ) ) {
-            WiresShape wiresShape = ( WiresShape ) shapeView;
-            wiresManager.deregister( wiresShape );
-        } else if ( WiresUtils.isWiresShape( shapeView ) ) {
-            WiresConnector wiresConnector = ( WiresConnector ) shapeView;
-            wiresManager.deregister( wiresConnector );
+    public WiresCanvas.View removeShape(final ShapeView<?> shapeView) {
+        if (WiresUtils.isWiresShape(shapeView)) {
+            WiresShape wiresShape = (WiresShape) shapeView;
+            wiresManager.deregister(wiresShape);
+        } else if (WiresUtils.isWiresShape(shapeView)) {
+            WiresConnector wiresConnector = (WiresConnector) shapeView;
+            wiresManager.deregister(wiresConnector);
         } else {
-            super.removeShape( shapeView );
+            super.removeShape(shapeView);
         }
         return this;
     }
 
     @Override
-    public WiresCanvas.View setConnectionAcceptor( final IConnectionAcceptor connectionAcceptor ) {
-        wiresManager.setConnectionAcceptor( connectionAcceptor );
+    public WiresCanvas.View setConnectionAcceptor(final IConnectionAcceptor connectionAcceptor) {
+        wiresManager.setConnectionAcceptor(connectionAcceptor);
         return this;
     }
 
     @Override
-    public WiresCanvas.View setContainmentAcceptor( final IContainmentAcceptor containmentAcceptor ) {
-        wiresManager.setContainmentAcceptor( containmentAcceptor );
-        wiresManager.getLayer().setContainmentAcceptor( containmentAcceptor );
+    public WiresCanvas.View setContainmentAcceptor(final IContainmentAcceptor containmentAcceptor) {
+        wiresManager.setContainmentAcceptor(containmentAcceptor);
+        wiresManager.getLayer().setContainmentAcceptor(containmentAcceptor);
         return this;
     }
 
     @Override
-    public WiresCanvas.View setDockingAcceptor( final IDockingAcceptor dockingAcceptor ) {
-        wiresManager.setDockingAcceptor( dockingAcceptor );
-        wiresManager.getLayer().setDockingAcceptor( dockingAcceptor );
+    public WiresCanvas.View setDockingAcceptor(final IDockingAcceptor dockingAcceptor) {
+        wiresManager.setDockingAcceptor(dockingAcceptor);
+        wiresManager.getLayer().setDockingAcceptor(dockingAcceptor);
         return this;
     }
 

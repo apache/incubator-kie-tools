@@ -31,16 +31,16 @@ import org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders.Assign
 public class AssignmentsEditorAnnotationProcessor extends AbstractFieldAnnotationProcessor<AssignmentsEditorFieldDefinition, AssignmentsEditorFieldProvider> {
 
     @Inject
-    public AssignmentsEditorAnnotationProcessor( AssignmentsEditorFieldProvider fieldProvider ) {
-        super( fieldProvider );
+    public AssignmentsEditorAnnotationProcessor(final AssignmentsEditorFieldProvider fieldProvider) {
+        super(fieldProvider);
     }
 
     @Override
-    protected void initField( AssignmentsEditorFieldDefinition field,
-                              Annotation annotation,
-                              FieldSetting fieldSetting,
-                              TransformerContext context ) {
-        field.setDefaultValue( ( String ) annotation.getParameters().get( "defaultValue" ) );
+    protected void initField(final AssignmentsEditorFieldDefinition field,
+                             final Annotation annotation,
+                             final FieldSetting fieldSetting,
+                             final TransformerContext context) {
+        field.setDefaultValue((String) annotation.getParameters().get("defaultValue"));
     }
 
     @Override

@@ -18,5 +18,5 @@ package org.kie.workbench.common.stunner.core.client.shape.view;
 
 public interface HasRadius<T> {
 
-    T setRadius( final double radius );
+    T setRadius(final double radius);
 }

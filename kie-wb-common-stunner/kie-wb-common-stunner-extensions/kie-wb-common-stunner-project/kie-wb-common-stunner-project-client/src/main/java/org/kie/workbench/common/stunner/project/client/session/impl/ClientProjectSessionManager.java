@@ -36,33 +36,33 @@ import org.kie.workbench.common.stunner.project.client.screens.ProjectDiagramWor
 @Specializes
 public class ClientProjectSessionManager extends ClientSessionManagerImpl {
 
-    private static Logger LOGGER = Logger.getLogger( ClientProjectSessionManager.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(ClientProjectSessionManager.class.getName());
     private final ProjectDiagramWorkbenchDocks editorDocks;
 
     protected ClientProjectSessionManager() {
-        this( null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public ClientProjectSessionManager( final ProjectDiagramWorkbenchDocks editorDocks,
-                                        final PlatformManager platformManager,
-                                        final Event<SessionOpenedEvent> sessionOpenedEvent,
-                                        final Event<SessionDisposedEvent> sessionDisposedEvent,
-                                        final Event<SessionPausedEvent> sessionPausedEvent,
-                                        final Event<SessionResumedEvent> sessionResumedEvent,
-                                        final Event<OnSessionErrorEvent> sessionErrorEvent ) {
-        super( platformManager,
-               sessionOpenedEvent,
-               sessionDisposedEvent,
-               sessionPausedEvent,
-               sessionResumedEvent,
-               sessionErrorEvent );
+    public ClientProjectSessionManager(final ProjectDiagramWorkbenchDocks editorDocks,
+                                       final PlatformManager platformManager,
+                                       final Event<SessionOpenedEvent> sessionOpenedEvent,
+                                       final Event<SessionDisposedEvent> sessionDisposedEvent,
+                                       final Event<SessionPausedEvent> sessionPausedEvent,
+                                       final Event<SessionResumedEvent> sessionResumedEvent,
+                                       final Event<OnSessionErrorEvent> sessionErrorEvent) {
+        super(platformManager,
+              sessionOpenedEvent,
+              sessionDisposedEvent,
+              sessionPausedEvent,
+              sessionResumedEvent,
+              sessionErrorEvent);
         this.editorDocks = editorDocks;
     }
 
@@ -87,11 +87,11 @@ public class ClientProjectSessionManager extends ClientSessionManagerImpl {
         editorDocks.disableDocks();
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

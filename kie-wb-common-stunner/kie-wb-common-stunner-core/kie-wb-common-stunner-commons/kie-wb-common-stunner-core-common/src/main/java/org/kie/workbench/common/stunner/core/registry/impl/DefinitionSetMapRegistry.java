@@ -27,30 +27,30 @@ class DefinitionSetMapRegistry<T> extends AbstractDynamicRegistryWrapper<T, MapR
 
     private AdapterManager adapterManager;
 
-    DefinitionSetMapRegistry( final AdapterManager adapterManager ) {
+    DefinitionSetMapRegistry(final AdapterManager adapterManager) {
         super(
                 new MapRegistry<T>(
-                        item -> null != item ? adapterManager.forDefinitionSet().getId( item ) : null,
-                        new HashMap<String, T>() )
+                        item -> null != item ? adapterManager.forDefinitionSet().getId(item) : null,
+                        new HashMap<String, T>())
         );
         this.adapterManager = adapterManager;
     }
 
     @Override
-    public T getDefinitionSetById( final String id ) {
-        return getWrapped().getItemByKey( id );
+    public T getDefinitionSetById(final String id) {
+        return getWrapped().getItemByKey(id);
     }
 
     @Override
-    public T getDefinitionSetByType( final Class<?> type ) {
-        final String id = BindableAdapterUtils.getDefinitionSetId( type,
-                                                                   adapterManager.registry() );
-        return getDefinitionSetById( id );
+    public T getDefinitionSetByType(final Class<?> type) {
+        final String id = BindableAdapterUtils.getDefinitionSetId(type,
+                                                                  adapterManager.registry());
+        return getDefinitionSetById(id);
     }
 
     @Override
-    public boolean contains( final T item ) {
-        return super.contains( item );
+    public boolean contains(final T item) {
+        return super.contains(item);
     }
 
     @Override

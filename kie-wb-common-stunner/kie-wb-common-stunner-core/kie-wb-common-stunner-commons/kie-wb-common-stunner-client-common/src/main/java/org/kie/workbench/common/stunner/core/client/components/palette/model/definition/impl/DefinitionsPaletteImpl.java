@@ -26,7 +26,7 @@ public final class DefinitionsPaletteImpl
         extends AbstractPaletteDefinition<DefinitionPaletteItem>
         implements DefinitionsPalette {
 
-    protected DefinitionsPaletteImpl( final List<DefinitionPaletteItem> items ) {
-        super( items );
+    protected DefinitionsPaletteImpl(final List<DefinitionPaletteItem> items) {
+        super(items);
     }
 }

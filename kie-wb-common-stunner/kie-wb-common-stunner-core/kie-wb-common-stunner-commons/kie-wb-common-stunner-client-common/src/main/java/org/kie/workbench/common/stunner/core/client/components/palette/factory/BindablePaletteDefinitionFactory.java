@@ -23,10 +23,10 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.Bindable
 public abstract class BindablePaletteDefinitionFactory<B extends PaletteDefinitionBuilder>
         extends AbstractPaletteDefinitionFactory<B> {
 
-    public BindablePaletteDefinitionFactory( final ShapeManager shapeManager,
-                                             final B paletteBuilder ) {
-        super( shapeManager,
-               paletteBuilder );
+    public BindablePaletteDefinitionFactory(final ShapeManager shapeManager,
+                                            final B paletteBuilder) {
+        super(shapeManager,
+              paletteBuilder);
     }
 
     protected abstract Class<?> getDefinitionSetType();
@@ -34,17 +34,17 @@ public abstract class BindablePaletteDefinitionFactory<B extends PaletteDefiniti
     protected abstract B newBuilder();
 
     @Override
-    public boolean accepts( final String defSetId ) {
-        final String s = getId( getDefinitionSetType() );
-        return null != defSetId && defSetId.equals( s );
+    public boolean accepts(final String defSetId) {
+        final String s = getId(getDefinitionSetType());
+        return null != defSetId && defSetId.equals(s);
     }
 
     @Override
-    public B newBuilder( final String defSetId ) {
+    public B newBuilder(final String defSetId) {
         return newBuilder();
     }
 
-    protected String getId( final Class<?> defSetType ) {
-        return BindableAdapterUtils.getDefinitionSetId( defSetType );
+    protected String getId(final Class<?> defSetType) {
+        return BindableAdapterUtils.getDefinitionSetId(defSetType);
     }
 }

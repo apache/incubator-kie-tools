@@ -22,9 +22,9 @@ public abstract class AbstractValidationFailEvent<E, V extends ValidationViolati
 
     protected final Iterable<V> violations;
 
-    public AbstractValidationFailEvent( final E entity,
-                                        final Iterable<V> violations ) {
-        super( entity );
+    public AbstractValidationFailEvent(final E entity,
+                                       final Iterable<V> violations) {
+        super(entity);
         this.violations = violations;
     }
 

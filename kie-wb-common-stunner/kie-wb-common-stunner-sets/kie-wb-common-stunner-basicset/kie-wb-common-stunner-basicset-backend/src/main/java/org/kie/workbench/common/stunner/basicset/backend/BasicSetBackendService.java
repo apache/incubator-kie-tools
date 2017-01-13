@@ -31,14 +31,14 @@ public class BasicSetBackendService extends AbstractDefinitionSetService {
     private BasicSetResourceType basicSetResourceType;
 
     protected BasicSetBackendService() {
-        this( null,
-              null );
+        this(null,
+             null);
     }
 
     @Inject
-    public BasicSetBackendService( ErraiDiagramMarshaller erraiDiagramMarshaller,
-                                   BasicSetResourceType basicSetResourceType ) {
-        super( erraiDiagramMarshaller );
+    public BasicSetBackendService(final ErraiDiagramMarshaller erraiDiagramMarshaller,
+                                  final BasicSetResourceType basicSetResourceType) {
+        super(erraiDiagramMarshaller);
         this.basicSetResourceType = basicSetResourceType;
     }
 

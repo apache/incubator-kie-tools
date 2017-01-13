@@ -34,7 +34,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class AddCanvasConnectorCommandTest extends AbstractCanvasCommandTest {
 
     private static final String EDGE_ID = "e1";
@@ -56,34 +56,34 @@ public class AddCanvasConnectorCommandTest extends AbstractCanvasCommandTest {
     @Before
     public void setup() throws Exception {
         super.setup();
-        when( candidate.getUUID() ).thenReturn( EDGE_ID );
-        when( source.getUUID() ).thenReturn( SOURCE_ID );
-        when( candidate.getSourceNode() ).thenReturn( source );
-        when( canvas.getShape( eq( EDGE_ID ) ) ).thenReturn( candidateShape );
-        when( canvas.getShape( eq( SOURCE_ID ) ) ).thenReturn( sourceShape );
-        when( sourceShape.getShapeView() ).thenReturn( sourceShapeView );
-        this.tested = new AddCanvasConnectorCommand( candidate,
-                                                     SHAPE_SET_ID );
+        when(candidate.getUUID()).thenReturn(EDGE_ID);
+        when(source.getUUID()).thenReturn(SOURCE_ID);
+        when(candidate.getSourceNode()).thenReturn(source);
+        when(canvas.getShape(eq(EDGE_ID))).thenReturn(candidateShape);
+        when(canvas.getShape(eq(SOURCE_ID))).thenReturn(sourceShape);
+        when(sourceShape.getShapeView()).thenReturn(sourceShapeView);
+        this.tested = new AddCanvasConnectorCommand(candidate,
+                                                    SHAPE_SET_ID);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecute() {
-        final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR,
-                         result.getType() );
-        verify( canvasHandler,
-                times( 1 ) ).register( eq( SHAPE_SET_ID ),
-                                       eq( candidate ) );
-        verify( canvasHandler,
-                times( 1 ) ).applyElementMutation( eq( candidate ),
-                                                   any( MutationContext.class ) );
-        verify( candidateShape,
-                times( 1 ) ).applyConnections( eq( candidate ),
-                                               eq( sourceShapeView ),
-                                               eq( null ),
-                                               any( MutationContext.class ) );
-        verify( canvasHandler,
-                times( 1 ) ).fireCanvasElementUpdated( eq( source ) );
+        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertNotEquals(CommandResult.Type.ERROR,
+                        result.getType());
+        verify(canvasHandler,
+               times(1)).register(eq(SHAPE_SET_ID),
+                                  eq(candidate));
+        verify(canvasHandler,
+               times(1)).applyElementMutation(eq(candidate),
+                                              any(MutationContext.class));
+        verify(candidateShape,
+               times(1)).applyConnections(eq(candidate),
+                                          eq(sourceShapeView),
+                                          eq(null),
+                                          any(MutationContext.class));
+        verify(canvasHandler,
+               times(1)).fireCanvasElementUpdated(eq(source));
     }
 }

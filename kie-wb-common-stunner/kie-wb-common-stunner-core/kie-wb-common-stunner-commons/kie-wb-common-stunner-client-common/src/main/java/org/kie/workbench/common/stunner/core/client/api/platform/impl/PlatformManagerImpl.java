@@ -35,53 +35,53 @@ import org.kie.workbench.common.stunner.core.client.api.platform.PlatformManager
 @ApplicationScoped
 public class PlatformManagerImpl implements PlatformManager {
 
-    private static Logger LOGGER = Logger.getLogger( PlatformManagerImpl.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(PlatformManagerImpl.class.getName());
 
     SyncBeanManager beanManager;
     private final List<ClientPlatform> supportedPlatforms = new LinkedList<>();
 
     protected PlatformManagerImpl() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public PlatformManagerImpl( final SyncBeanManager beanManager ) {
+    public PlatformManagerImpl(final SyncBeanManager beanManager) {
         this.beanManager = beanManager;
     }
 
     @PostConstruct
     public void init() {
         // Client platforms.
-        Collection<SyncBeanDef<ClientPlatform>> sets = beanManager.lookupBeans( ClientPlatform.class );
-        for ( SyncBeanDef<ClientPlatform> set : sets ) {
+        Collection<SyncBeanDef<ClientPlatform>> sets = beanManager.lookupBeans(ClientPlatform.class);
+        for (SyncBeanDef<ClientPlatform> set : sets) {
             ClientPlatform platform = set.getInstance();
-            supportedPlatforms.add( platform );
+            supportedPlatforms.add(platform);
         }
     }
 
     @Override
     public Iterable<ClientPlatform> getSupportedPlatforms() {
-        return Collections.unmodifiableCollection( supportedPlatforms );
+        return Collections.unmodifiableCollection(supportedPlatforms);
     }
 
     @Override
     public ClientPlatform getCurrentPlatform() {
         final String platform = Window.Navigator.getPlatform();
-        for ( final ClientPlatform clientPlatform : supportedPlatforms ) {
-            if ( clientPlatform.supports( platform ) ) {
+        for (final ClientPlatform clientPlatform : supportedPlatforms) {
+            if (clientPlatform.supports(platform)) {
                 return clientPlatform;
             }
         }
-        log( Level.SEVERE,
-             "No client plaform found for [" + platform + "]" );
+        log(Level.SEVERE,
+            "No client plaform found for [" + platform + "]");
         return null;
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

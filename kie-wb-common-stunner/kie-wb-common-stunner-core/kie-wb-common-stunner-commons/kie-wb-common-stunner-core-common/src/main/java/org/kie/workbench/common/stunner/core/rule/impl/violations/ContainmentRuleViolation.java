@@ -26,8 +26,8 @@ public class ContainmentRuleViolation extends AbstractRuleViolation {
     private String graph;
     private String candidate;
 
-    public ContainmentRuleViolation( final @MapsTo( "graph" ) String graph,
-                                     final @MapsTo( "candidate" ) String candidate ) {
+    public ContainmentRuleViolation(final @MapsTo("graph") String graph,
+                                    final @MapsTo("candidate") String candidate) {
         this.graph = graph;
         this.candidate = candidate;
     }

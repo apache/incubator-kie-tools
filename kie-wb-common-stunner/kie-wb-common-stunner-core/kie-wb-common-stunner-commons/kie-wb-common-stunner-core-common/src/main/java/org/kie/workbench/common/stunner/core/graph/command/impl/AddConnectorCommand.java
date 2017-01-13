@@ -37,74 +37,74 @@ public final class AddConnectorCommand extends AbstractGraphCompositeCommand {
     private final Integer magnetIndex;
     private transient Node<?, Edge> node;
 
-    public AddConnectorCommand( final @MapsTo( "nodeUUID" ) String nodeUUID,
-                                final @MapsTo( "edge" ) Edge edge,
-                                final @MapsTo( "magnetIndex" ) Integer magnetIndex ) {
-        this.nodeUUID = PortablePreconditions.checkNotNull( "nodeUUID",
-                                                            nodeUUID );
-        this.edge = PortablePreconditions.checkNotNull( "edge",
-                                                        edge );
-        this.magnetIndex = PortablePreconditions.checkNotNull( "magnetIndex",
-                                                               magnetIndex );
+    public AddConnectorCommand(final @MapsTo("nodeUUID") String nodeUUID,
+                               final @MapsTo("edge") Edge edge,
+                               final @MapsTo("magnetIndex") Integer magnetIndex) {
+        this.nodeUUID = PortablePreconditions.checkNotNull("nodeUUID",
+                                                           nodeUUID);
+        this.edge = PortablePreconditions.checkNotNull("edge",
+                                                       edge);
+        this.magnetIndex = PortablePreconditions.checkNotNull("magnetIndex",
+                                                              magnetIndex);
     }
 
-    public AddConnectorCommand( final Node<?, Edge> sourceNode,
-                                final Edge edge,
-                                final Integer magnetIndex ) {
-        this( sourceNode.getUUID(),
-              edge,
-              magnetIndex );
+    public AddConnectorCommand(final Node<?, Edge> sourceNode,
+                               final Edge edge,
+                               final Integer magnetIndex) {
+        this(sourceNode.getUUID(),
+             edge,
+             magnetIndex);
         this.node = sourceNode;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected AddConnectorCommand initialize( final GraphCommandExecutionContext context ) {
-        super.initialize( context );
-        final Node<? extends View<?>, Edge> source = ( Node<? extends View<?>, Edge> ) getNode( context );
-        commands.add( new SetConnectionSourceNodeCommand( source,
-                                                          edge,
-                                                          magnetIndex ) );
+    @SuppressWarnings("unchecked")
+    protected AddConnectorCommand initialize(final GraphCommandExecutionContext context) {
+        super.initialize(context);
+        final Node<? extends View<?>, Edge> source = (Node<? extends View<?>, Edge>) getNode(context);
+        commands.add(new SetConnectionSourceNodeCommand(source,
+                                                        edge,
+                                                        magnetIndex));
         return this;
     }
 
     @Override
-    public CommandResult<RuleViolation> allow( final GraphCommandExecutionContext context ) {
+    public CommandResult<RuleViolation> allow(final GraphCommandExecutionContext context) {
         // Add the edge into index, so child commands can find it.
-        getMutableIndex( context ).addEdge( edge );
-        final CommandResult<RuleViolation> results = super.allow( context );
-        if ( CommandUtils.isError( results ) ) {
+        getMutableIndex(context).addEdge(edge);
+        final CommandResult<RuleViolation> results = super.allow(context);
+        if (CommandUtils.isError(results)) {
             // Remove the transient edge after the error.
-            getMutableIndex( context ).removeEdge( edge );
+            getMutableIndex(context).removeEdge(edge);
         }
         return results;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
+    @SuppressWarnings("unchecked")
+    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
         // Add the edge into index, so child commands can find it.
-        getMutableIndex( context ).addEdge( edge );
-        final CommandResult<RuleViolation> results = super.execute( context );
-        if ( CommandUtils.isError( results ) ) {
+        getMutableIndex(context).addEdge(edge);
+        final CommandResult<RuleViolation> results = super.execute(context);
+        if (CommandUtils.isError(results)) {
             // Remove the transient edge after the error.
-            getMutableIndex( context ).removeEdge( edge );
+            getMutableIndex(context).removeEdge(edge);
         }
         return results;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final DeleteConnectorCommand undoCommand = new DeleteConnectorCommand( edge );
-        return undoCommand.execute( context );
+    @SuppressWarnings("unchecked")
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        final DeleteConnectorCommand undoCommand = new DeleteConnectorCommand(edge);
+        return undoCommand.execute(context);
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Node<?, Edge> getNode( final GraphCommandExecutionContext context ) {
-        if ( null == node ) {
-            node = getNode( context,
-                            nodeUUID );
+    @SuppressWarnings("unchecked")
+    private Node<?, Edge> getNode(final GraphCommandExecutionContext context) {
+        if (null == node) {
+            node = getNode(context,
+                           nodeUUID);
         }
         return node;
     }

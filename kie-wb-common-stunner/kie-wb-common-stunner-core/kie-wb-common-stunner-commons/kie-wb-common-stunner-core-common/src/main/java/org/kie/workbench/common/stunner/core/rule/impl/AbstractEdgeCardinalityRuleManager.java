@@ -24,7 +24,7 @@ public abstract class AbstractEdgeCardinalityRuleManager extends AbstractRuleMan
         implements EdgeCardinalityRuleManager {
 
     @Override
-    public boolean supports( final Rule rule ) {
+    public boolean supports(final Rule rule) {
         return rule instanceof EdgeCardinalityRule;
     }
 }

@@ -21,9 +21,9 @@ import org.kie.workbench.common.stunner.shapes.def.icon.statics.Icons;
 
 public class StaticIcons {
 
-    public static String getIconDefinitionId( final Icons icon ) {
+    public static String getIconDefinitionId(final Icons icon) {
         Class<?> type = null;
-        switch ( icon ) {
+        switch (icon) {
             case BUSINESS_RULE:
                 type = BusinessRuleIcon.class;
                 break;
@@ -37,13 +37,13 @@ public class StaticIcons {
                 type = TimerIcon.class;
                 break;
         }
-        if ( null != type ) {
-            return getDefinitionId( type );
+        if (null != type) {
+            return getDefinitionId(type);
         }
         return null;
     }
 
-    private static String getDefinitionId( final Class<?> type ) {
-        return BindableAdapterUtils.getDefinitionId( type );
+    private static String getDefinitionId(final Class<?> type) {
+        return BindableAdapterUtils.getDefinitionId(type);
     }
 }

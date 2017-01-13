@@ -42,7 +42,7 @@ public class BootstrapNavigatorView
 
     }
 
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     @UiField
     FlowPanel mainPanel;
@@ -57,15 +57,15 @@ public class BootstrapNavigatorView
     private int itemCounter;
 
     public BootstrapNavigatorView() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
         this.currentRow = null;
         this.itemCounter = 0;
-        setLoading( false );
+        setLoading(false);
     }
 
     @Override
-    public BootstrapNavigatorView add( final NavigatorItemView<NavigatorItem<?>> view ) {
-        addItem( view.asWidget() );
+    public BootstrapNavigatorView add(final NavigatorItemView<NavigatorItem<?>> view) {
+        addItem(view.asWidget());
         return this;
     }
 
@@ -77,25 +77,25 @@ public class BootstrapNavigatorView
     }
 
     @Override
-    public NavigatorView<NavigatorItem<?>> setLoading( final boolean loading ) {
-        container.setVisible( !loading );
-        loadingPanel.setVisible( loading );
+    public NavigatorView<NavigatorItem<?>> setLoading(final boolean loading) {
+        container.setVisible(!loading);
+        loadingPanel.setVisible(loading);
         return this;
     }
 
-    private void addItem( final IsWidget widget ) {
-        if ( null == currentRow || ( itemCounter == 4 ) ) {
+    private void addItem(final IsWidget widget) {
+        if (null == currentRow || (itemCounter == 4)) {
             resetRow();
         }
-        final Column column = new Column( ColumnSize.MD_3 );
-        column.add( widget );
-        currentRow.add( column );
+        final Column column = new Column(ColumnSize.MD_3);
+        column.add(widget);
+        currentRow.add(column);
         itemCounter++;
     }
 
     private void resetRow() {
         currentRow = new Row();
-        container.add( currentRow );
+        container.add(currentRow);
         itemCounter = 0;
     }
 }

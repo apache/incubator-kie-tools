@@ -32,40 +32,40 @@ import org.slf4j.LoggerFactory;
 @Dependent
 public class RuntimePropertySetAdapter<T> extends AbstractRuntimeAdapter<T> implements PropertySetAdapter<T> {
 
-    private static final Logger LOG = LoggerFactory.getLogger( RuntimePropertySetAdapter.class );
+    private static final Logger LOG = LoggerFactory.getLogger(RuntimePropertySetAdapter.class);
 
     @Override
-    public String getId( final T propertySet ) {
-        return BindableAdapterUtils.getPropertySetId( propertySet.getClass() );
+    public String getId(final T propertySet) {
+        return BindableAdapterUtils.getPropertySetId(propertySet.getClass());
     }
 
     @Override
-    public String getName( final T propertySet ) {
+    public String getName(final T propertySet) {
         try {
-            return getAnnotatedFieldValue( propertySet,
-                                           Name.class );
-        } catch ( Exception e ) {
-            LOG.error( "Error obtaining annotated category for PropertySet with id " + getId( propertySet ) );
+            return getAnnotatedFieldValue(propertySet,
+                                          Name.class);
+        } catch (Exception e) {
+            LOG.error("Error obtaining annotated category for PropertySet with id " + getId(propertySet));
         }
         return null;
     }
 
     @Override
-    public Set<?> getProperties( final T propertySet ) {
+    public Set<?> getProperties(final T propertySet) {
         Set<Object> result = null;
-        if ( null != propertySet ) {
+        if (null != propertySet) {
             Field[] fields = propertySet.getClass().getDeclaredFields();
-            if ( null != fields ) {
+            if (null != fields) {
                 result = new HashSet<>();
-                for ( Field field : fields ) {
-                    Property annotation = field.getAnnotation( Property.class );
-                    if ( null != annotation ) {
+                for (Field field : fields) {
+                    Property annotation = field.getAnnotation(Property.class);
+                    if (null != annotation) {
                         try {
-                            field.setAccessible( true );
-                            Object property = field.get( propertySet );
-                            result.add( property );
-                        } catch ( Exception e ) {
-                            LOG.error( "Error obtaining annotated properties for T with id " + getId( propertySet ) );
+                            field.setAccessible(true);
+                            Object property = field.get(propertySet);
+                            result.add(property);
+                        } catch (Exception e) {
+                            LOG.error("Error obtaining annotated properties for T with id " + getId(propertySet));
                         }
                     }
                 }
@@ -75,7 +75,7 @@ public class RuntimePropertySetAdapter<T> extends AbstractRuntimeAdapter<T> impl
     }
 
     @Override
-    public boolean accepts( final Class<?> pojo ) {
-        return pojo.getAnnotation( PropertySet.class ) != null;
+    public boolean accepts(final Class<?> pojo) {
+        return pojo.getAnnotation(PropertySet.class) != null;
     }
 }

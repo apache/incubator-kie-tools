@@ -25,12 +25,12 @@ public class LoadingBoxView implements LoadingBox.View {
     @Override
     public LoadingBox.View show() {
         NotifySettings settings = NotifySettings.newSettings();
-        settings.setShowProgressbar( true );
-        settings.setPauseOnMouseOver( false );
-        Notify.notify( "Please wait",
-                       "Loading...",
-                       IconType.CLOCK_O,
-                       settings );
+        settings.setShowProgressbar(true);
+        settings.setPauseOnMouseOver(false);
+        Notify.notify("Please wait",
+                      "Loading...",
+                      IconType.CLOCK_O,
+                      settings);
         return this;
     }
 

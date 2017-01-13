@@ -47,32 +47,32 @@ public class ColorPickerWidget extends Composite implements HasValue<String> {
 
     private String color;
 
-    @EventHandler( "colorButton" )
-    public void onClickColorButton( ClickEvent clickEvent ) {
-        showColorDialog( colorButton );
+    @EventHandler("colorButton")
+    public void onClickColorButton(final ClickEvent clickEvent) {
+        showColorDialog(colorButton);
     }
 
-    @EventHandler( "colorTextBox" )
-    public void onClickColorTextBox( ClickEvent clickEvent ) {
-        showColorDialog( colorTextBox );
+    @EventHandler("colorTextBox")
+    public void onClickColorTextBox(final ClickEvent clickEvent) {
+        showColorDialog(colorTextBox);
     }
 
-    protected void showColorDialog( final UIObject owner ) {
+    protected void showColorDialog(final UIObject owner) {
         final ColorPickerDialog dlg = new ColorPickerDialog();
-        dlg.getElement().getStyle().setZIndex( 9999 );
-        dlg.addDialogClosedHandler( event -> {
-            if ( !event.isCanceled() ) {
-                setValue( "#" + dlg.getColor(),
-                          true );
+        dlg.getElement().getStyle().setZIndex(9999);
+        dlg.addDialogClosedHandler(event -> {
+            if (!event.isCanceled()) {
+                setValue("#" + dlg.getColor(),
+                         true);
             }
-        } );
+        });
         String color = getValue();
-        if ( color.startsWith( "#" ) ) {
-            color = color.substring( 1,
-                                     color.length() );
+        if (color.startsWith("#")) {
+            color = color.substring(1,
+                                    color.length());
         }
-        dlg.setColor( color );
-        dlg.showRelativeTo( owner );
+        dlg.setColor(color);
+        dlg.showRelativeTo(owner);
     }
 
     @Override
@@ -81,31 +81,31 @@ public class ColorPickerWidget extends Composite implements HasValue<String> {
     }
 
     @Override
-    public void setValue( String value ) {
-        setValue( value,
-                  false );
+    public void setValue(final String value) {
+        setValue(value,
+                 false);
     }
 
     @Override
-    public void setValue( String value,
-                          boolean fireEvents ) {
+    public void setValue(final String value,
+                         final boolean fireEvents) {
         String oldValue = color;
         color = value;
         initTextBox();
-        if ( fireEvents ) {
-            ValueChangeEvent.fireIfNotEqual( this,
-                                             oldValue,
-                                             color );
+        if (fireEvents) {
+            ValueChangeEvent.fireIfNotEqual(this,
+                                            oldValue,
+                                            color);
         }
     }
 
     protected void initTextBox() {
-        colorTextBox.getElement().getStyle().setBackgroundColor( color );
+        colorTextBox.getElement().getStyle().setBackgroundColor(color);
     }
 
     @Override
-    public HandlerRegistration addValueChangeHandler( ValueChangeHandler<String> handler ) {
-        return addHandler( handler,
-                           ValueChangeEvent.getType() );
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+        return addHandler(handler,
+                          ValueChangeEvent.getType());
     }
 }

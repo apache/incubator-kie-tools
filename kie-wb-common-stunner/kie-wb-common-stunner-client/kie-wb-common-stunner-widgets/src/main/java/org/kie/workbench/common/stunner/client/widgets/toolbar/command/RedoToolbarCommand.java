@@ -28,8 +28,8 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientF
 public class RedoToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientFullSession, RedoSessionCommand> {
 
     @Inject
-    public RedoToolbarCommand( final SessionCommandFactory sessionCommandFactory ) {
-        super( sessionCommandFactory.newRedoCommand() );
+    public RedoToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
+        super(sessionCommandFactory.newRedoCommand());
     }
 
     @Override

@@ -20,7 +20,7 @@ public abstract class AbstractValidationEvent<E> {
 
     private final E entity;
 
-    public AbstractValidationEvent( final E entity ) {
+    public AbstractValidationEvent(final E entity) {
         this.entity = entity;
     }
 

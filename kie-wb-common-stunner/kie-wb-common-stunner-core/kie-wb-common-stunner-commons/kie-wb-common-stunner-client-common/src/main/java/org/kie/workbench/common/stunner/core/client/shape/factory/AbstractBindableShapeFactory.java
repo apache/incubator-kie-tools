@@ -26,28 +26,28 @@ public abstract class AbstractBindableShapeFactory<W, S extends Shape> extends A
 
     public abstract Set<Class<?>> getSupportedModelClasses();
 
-    protected abstract String getDescription( final Class<?> clazz );
+    protected abstract String getDescription(final Class<?> clazz);
 
-    protected abstract Glyph glyph( final Class<?> clazz,
-                                    final double width,
-                                    final double height );
+    protected abstract Glyph glyph(final Class<?> clazz,
+                                   final double width,
+                                   final double height);
 
     @Override
-    public Glyph glyph( final String definitionId,
-                        final double width,
-                        final double height ) {
-        return glyph( getDefinitionClass( definitionId ),
-                      width,
-                      height );
+    public Glyph glyph(final String definitionId,
+                       final double width,
+                       final double height) {
+        return glyph(getDefinitionClass(definitionId),
+                     width,
+                     height);
     }
 
     @Override
-    public boolean accepts( final String definitionId ) {
+    public boolean accepts(final String definitionId) {
         final Set<Class<?>> supportedClasses = getSupportedModelClasses();
-        if ( null != supportedClasses && !supportedClasses.isEmpty() ) {
-            for ( final Class<?> supportedClass : supportedClasses ) {
-                final String _id = BindableAdapterUtils.getDefinitionId( supportedClass );
-                if ( _id.equals( definitionId ) ) {
+        if (null != supportedClasses && !supportedClasses.isEmpty()) {
+            for (final Class<?> supportedClass : supportedClasses) {
+                final String _id = BindableAdapterUtils.getDefinitionId(supportedClass);
+                if (_id.equals(definitionId)) {
                     return true;
                 }
             }
@@ -56,21 +56,21 @@ public abstract class AbstractBindableShapeFactory<W, S extends Shape> extends A
     }
 
     @Override
-    public String getDescription( final String definitionId ) {
-        final Class<?> clazz = getDefinitionClass( definitionId );
-        return getDescription( clazz );
+    public String getDescription(final String definitionId) {
+        final Class<?> clazz = getDefinitionClass(definitionId);
+        return getDescription(clazz);
     }
 
-    protected String getDefinitionId( final Class<?> definitionClazz ) {
-        return BindableAdapterUtils.getDefinitionId( definitionClazz );
+    protected String getDefinitionId(final Class<?> definitionClazz) {
+        return BindableAdapterUtils.getDefinitionId(definitionClazz);
     }
 
-    protected Class<?> getDefinitionClass( final String definitionId ) {
+    protected Class<?> getDefinitionClass(final String definitionId) {
         final Set<Class<?>> supportedClasses = getSupportedModelClasses();
-        if ( null != supportedClasses && !supportedClasses.isEmpty() ) {
-            for ( final Class<?> supportedClass : supportedClasses ) {
-                final String _id = BindableAdapterUtils.getDefinitionId( supportedClass );
-                if ( _id.equals( definitionId ) ) {
+        if (null != supportedClasses && !supportedClasses.isEmpty()) {
+            for (final Class<?> supportedClass : supportedClasses) {
+                final String _id = BindableAdapterUtils.getDefinitionId(supportedClass);
+                if (_id.equals(definitionId)) {
                     return supportedClass;
                 }
             }

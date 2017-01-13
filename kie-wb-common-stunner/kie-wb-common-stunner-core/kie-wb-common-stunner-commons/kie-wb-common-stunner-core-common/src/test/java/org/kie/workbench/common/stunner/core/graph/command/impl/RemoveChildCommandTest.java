@@ -39,7 +39,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class RemoveChildCommandTest extends AbstractGraphCommandTest {
 
     private static final String PARENT_UUID = "parentUUID";
@@ -59,78 +59,78 @@ public class RemoveChildCommandTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() throws Exception {
-        super.init( 500,
-                    500 );
-        this.parent = mockNode( PARENT_UUID );
-        this.candidate = mockNode( CANDIDATE_UUID );
-        this.edge = mockEdge( CANDIDATE_UUID );
-        when( edge.getContent() ).thenReturn( edgeContent );
-        when( edge.getTargetNode() ).thenReturn( candidate );
-        when( edge.getSourceNode() ).thenReturn( parent );
-        when( graphIndex.getNode( eq( PARENT_UUID ) ) ).thenReturn( parent );
-        when( graphIndex.getNode( eq( CANDIDATE_UUID ) ) ).thenReturn( candidate );
-        when( graphIndex.getEdge( eq( Edge_UUID ) ) ).thenReturn( edge );
-        when( parent.getOutEdges() ).thenReturn( parentOutEdges );
-        when( candidate.getInEdges() ).thenReturn( candidateInEdges );
-        parentOutEdges.add( edge );
-        this.tested = new RemoveChildCommand( PARENT_UUID,
-                                              CANDIDATE_UUID );
+        super.init(500,
+                   500);
+        this.parent = mockNode(PARENT_UUID);
+        this.candidate = mockNode(CANDIDATE_UUID);
+        this.edge = mockEdge(CANDIDATE_UUID);
+        when(edge.getContent()).thenReturn(edgeContent);
+        when(edge.getTargetNode()).thenReturn(candidate);
+        when(edge.getSourceNode()).thenReturn(parent);
+        when(graphIndex.getNode(eq(PARENT_UUID))).thenReturn(parent);
+        when(graphIndex.getNode(eq(CANDIDATE_UUID))).thenReturn(candidate);
+        when(graphIndex.getEdge(eq(Edge_UUID))).thenReturn(edge);
+        when(parent.getOutEdges()).thenReturn(parentOutEdges);
+        when(candidate.getInEdges()).thenReturn(candidateInEdges);
+        parentOutEdges.add(edge);
+        this.tested = new RemoveChildCommand(PARENT_UUID,
+                                             CANDIDATE_UUID);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testAllow() {
-        CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        verify( containmentRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
-        verify( cardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Graph.class ),
-                                       any( Node.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( connectionRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( Node.class ) );
-        verify( edgeCardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( List.class ),
-                                       any( EdgeCardinalityRule.Type.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( dockingRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
+        CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        verify(containmentRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
+        verify(cardinalityRuleManager,
+               times(0)).evaluate(any(Graph.class),
+                                  any(Node.class),
+                                  any(RuleManager.Operation.class));
+        verify(connectionRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(Node.class));
+        verify(edgeCardinalityRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(List.class),
+                                  any(EdgeCardinalityRule.Type.class),
+                                  any(RuleManager.Operation.class));
+        verify(dockingRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
     }
 
-    @Test( expected = BadCommandArgumentsException.class )
-    @SuppressWarnings( "unchecked" )
+    @Test(expected = BadCommandArgumentsException.class)
+    @SuppressWarnings("unchecked")
     public void testNotAllowed() {
-        when( graphIndex.getNode( eq( PARENT_UUID ) ) ).thenReturn( null );
-        CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.ERROR,
-                      result.getType() );
+        when(graphIndex.getNode(eq(PARENT_UUID))).thenReturn(null);
+        CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.ERROR,
+                     result.getType());
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecute() {
-        CommandResult<RuleViolation> result = tested.execute( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        assertTrue( parentOutEdges.isEmpty() );
-        assertTrue( candidateInEdges.isEmpty() );
-        verify( graphIndex,
-                times( 1 ) ).removeEdge( any( Edge.class ) );
-        verify( graphIndex,
-                times( 0 ) ).removeNode( any( Node.class ) );
-        verify( graph,
-                times( 0 ) ).addNode( any( Node.class ) );
-        verify( graphIndex,
-                times( 0 ) ).addNode( any( Node.class ) );
-        verify( graphIndex,
-                times( 0 ) ).addEdge( any( Edge.class ) );
+        CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        assertTrue(parentOutEdges.isEmpty());
+        assertTrue(candidateInEdges.isEmpty());
+        verify(graphIndex,
+               times(1)).removeEdge(any(Edge.class));
+        verify(graphIndex,
+               times(0)).removeNode(any(Node.class));
+        verify(graph,
+               times(0)).addNode(any(Node.class));
+        verify(graphIndex,
+               times(0)).addNode(any(Node.class));
+        verify(graphIndex,
+               times(0)).addEdge(any(Edge.class));
     }
 }

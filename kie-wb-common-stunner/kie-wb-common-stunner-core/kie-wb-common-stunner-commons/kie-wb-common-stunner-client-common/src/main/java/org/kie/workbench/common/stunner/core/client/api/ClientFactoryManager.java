@@ -41,25 +41,25 @@ public class ClientFactoryManager extends AbstractFactoryManager implements Fact
     private final ManagedInstance<EdgeFactory> edgeFactoryInstances;
 
     protected ClientFactoryManager() {
-        this( null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public ClientFactoryManager( final RegistryFactory registryFactory,
-                                 final DefinitionManager definitionManager,
-                                 final ManagedInstance<DefinitionFactory> definitionFactoryInstances,
-                                 final ManagedInstance<DiagramFactory> diagramFactoryInstances,
-                                 final ManagedInstance<GraphFactory> graphFactoryInstances,
-                                 final ManagedInstance<NodeFactory> nodeFactoryInstances,
-                                 final ManagedInstance<EdgeFactory> edgeFactoryInstances ) {
-        super( registryFactory,
-               definitionManager );
+    public ClientFactoryManager(final RegistryFactory registryFactory,
+                                final DefinitionManager definitionManager,
+                                final ManagedInstance<DefinitionFactory> definitionFactoryInstances,
+                                final ManagedInstance<DiagramFactory> diagramFactoryInstances,
+                                final ManagedInstance<GraphFactory> graphFactoryInstances,
+                                final ManagedInstance<NodeFactory> nodeFactoryInstances,
+                                final ManagedInstance<EdgeFactory> edgeFactoryInstances) {
+        super(registryFactory,
+              definitionManager);
         this.definitionFactoryInstances = definitionFactoryInstances;
         this.diagramFactoryInstances = diagramFactoryInstances;
         this.graphFactoryInstances = graphFactoryInstances;
@@ -68,17 +68,17 @@ public class ClientFactoryManager extends AbstractFactoryManager implements Fact
     }
 
     @PostConstruct
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void init() {
         // Client definition factories.
-        definitionFactoryInstances.forEach( factory -> registry().register( factory ) );
+        definitionFactoryInstances.forEach(factory -> registry().register(factory));
         // Client diagram factories..
-        diagramFactoryInstances.forEach( factory -> registry().register( factory ) );
+        diagramFactoryInstances.forEach(factory -> registry().register(factory));
         // Graph factories.
-        graphFactoryInstances.forEach( factory -> registry().register( factory ) );
+        graphFactoryInstances.forEach(factory -> registry().register(factory));
         // Node factories.
-        nodeFactoryInstances.forEach( factory -> registry().register( factory ) );
+        nodeFactoryInstances.forEach(factory -> registry().register(factory));
         // Edge factories.
-        edgeFactoryInstances.forEach( factory -> registry().register( factory ) );
+        edgeFactoryInstances.forEach(factory -> registry().register(factory));
     }
 }

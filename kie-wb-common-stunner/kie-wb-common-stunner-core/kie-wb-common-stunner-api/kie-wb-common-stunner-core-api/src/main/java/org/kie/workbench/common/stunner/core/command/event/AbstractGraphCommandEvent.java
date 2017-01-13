@@ -23,9 +23,9 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public abstract class AbstractGraphCommandEvent extends AbstractCommandEvent<GraphCommandExecutionContext, RuleViolation> {
 
-    public AbstractGraphCommandEvent( final Command<GraphCommandExecutionContext, RuleViolation> command,
-                                      final CommandResult<RuleViolation> result ) {
-        super( command,
-               result );
+    public AbstractGraphCommandEvent(final Command<GraphCommandExecutionContext, RuleViolation> command,
+                                     final CommandResult<RuleViolation> result) {
+        super(command,
+              result);
     }
 }

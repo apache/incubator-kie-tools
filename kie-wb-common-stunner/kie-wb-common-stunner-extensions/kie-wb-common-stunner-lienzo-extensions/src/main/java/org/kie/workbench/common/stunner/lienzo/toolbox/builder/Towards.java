@@ -20,5 +20,5 @@ import com.ait.lienzo.shared.core.types.Direction;
 
 public interface Towards {
 
-    ButtonGrid towards( Direction towards );
+    ButtonGrid towards(final Direction towards);
 }

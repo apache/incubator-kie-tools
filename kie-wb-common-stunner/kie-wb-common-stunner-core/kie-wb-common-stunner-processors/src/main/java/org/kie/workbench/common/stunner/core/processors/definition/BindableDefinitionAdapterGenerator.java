@@ -36,67 +36,67 @@ public class BindableDefinitionAdapterGenerator extends AbstractBindableAdapterG
         return "BindableDefinitionAdapter.ftl";
     }
 
-    public StringBuffer generate( final String packageName,
-                                  final String className,
-                                  final ProcessingContext processingContext,
-                                  final Messager messager ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final String className,
+                                 final ProcessingContext processingContext,
+                                 final Messager messager) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "packageName",
-                  packageName );
-        root.put( "className",
-                  className );
-        root.put( "parentAdapterClassName",
-                  BindableDefinitionAdapterProxy.class.getName() );
-        root.put( "generatedByClassName",
-                  BindableDefinitionAdapterGenerator.class.getName() );
-        root.put( "adapterFactoryClassName",
-                  BindableAdapterFactory.class.getName() );
+        root.put("packageName",
+                 packageName);
+        root.put("className",
+                 className);
+        root.put("parentAdapterClassName",
+                 BindableDefinitionAdapterProxy.class.getName());
+        root.put("generatedByClassName",
+                 BindableDefinitionAdapterGenerator.class.getName());
+        root.put("adapterFactoryClassName",
+                 BindableAdapterFactory.class.getName());
         ProcessingDefinitionAnnotations processingDefinitionAnnotations = processingContext.getDefinitionAnnotations();
-        addFields( "baseTypes",
-                   root,
-                   processingDefinitionAnnotations.getBaseTypes() );
-        addFields( "categoryFieldNames",
-                   root,
-                   processingDefinitionAnnotations.getCategoryFieldNames() );
-        addFields( "titleFieldNames",
-                   root,
-                   processingDefinitionAnnotations.getTitleFieldNames() );
-        addFields( "descriptionFieldNames",
-                   root,
-                   processingDefinitionAnnotations.getDescriptionFieldNames() );
-        addFields( "labelsFieldNames",
-                   root,
-                   processingDefinitionAnnotations.getLabelsFieldNames() );
-        addFields( "graphFactoryFieldNames",
-                   root,
-                   processingDefinitionAnnotations.getGraphFactoryFieldNames() );
-        addSetFields( "propertySetsFieldNames",
-                      root,
-                      processingDefinitionAnnotations.getPropertySetFieldNames() );
-        addSetFields( "propertiesFieldNames",
-                      root,
-                      processingDefinitionAnnotations.getPropertyFieldNames() );
+        addFields("baseTypes",
+                  root,
+                  processingDefinitionAnnotations.getBaseTypes());
+        addFields("categoryFieldNames",
+                  root,
+                  processingDefinitionAnnotations.getCategoryFieldNames());
+        addFields("titleFieldNames",
+                  root,
+                  processingDefinitionAnnotations.getTitleFieldNames());
+        addFields("descriptionFieldNames",
+                  root,
+                  processingDefinitionAnnotations.getDescriptionFieldNames());
+        addFields("labelsFieldNames",
+                  root,
+                  processingDefinitionAnnotations.getLabelsFieldNames());
+        addFields("graphFactoryFieldNames",
+                  root,
+                  processingDefinitionAnnotations.getGraphFactoryFieldNames());
+        addSetFields("propertySetsFieldNames",
+                     root,
+                     processingDefinitionAnnotations.getPropertySetFieldNames());
+        addSetFields("propertiesFieldNames",
+                     root,
+                     processingDefinitionAnnotations.getPropertyFieldNames());
 
         // Meta-properties.
         final Map<String, String> metaMap = new LinkedHashMap<>();
-        processingContext.getMetaPropertyTypes().entrySet().stream().forEach( entry -> {
-            metaMap.put( toStringMetaType( entry.getKey() ),
-                         entry.getValue() );
-        } );
-        root.put( "metaTypeClass",
-                  PropertyMetaTypes.class.getName() );
-        addFields( "metaTypes",
-                   root,
-                   metaMap );
+        processingContext.getMetaPropertyTypes().entrySet().stream().forEach(entry -> {
+            metaMap.put(toStringMetaType(entry.getKey()),
+                        entry.getValue());
+        });
+        root.put("metaTypeClass",
+                 PropertyMetaTypes.class.getName());
+        addFields("metaTypes",
+                  root,
+                  metaMap);
 
         //Generate code
-        return writeTemplate( packageName,
-                              className,
-                              root,
-                              messager );
+        return writeTemplate(packageName,
+                             className,
+                             root,
+                             messager);
     }
 
-    private String toStringMetaType( final PropertyMetaTypes type ) {
+    private String toStringMetaType(final PropertyMetaTypes type) {
         return PropertyMetaTypes.class.getName() + "." + type.name();
     }
 }

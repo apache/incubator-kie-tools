@@ -38,9 +38,9 @@ public class GraphConnectionRuleManagerImpl extends AbstractGraphRuleManager<Con
     private ModelConnectionRuleManager modelConnectionRuleManager;
 
     @Inject
-    public GraphConnectionRuleManagerImpl( final DefinitionManager definitionManager,
-                                           final ModelConnectionRuleManager modelConnectionRuleManager ) {
-        super( definitionManager );
+    public GraphConnectionRuleManagerImpl(final DefinitionManager definitionManager,
+                                          final ModelConnectionRuleManager modelConnectionRuleManager) {
+        super(definitionManager);
         this.modelConnectionRuleManager = modelConnectionRuleManager;
     }
 
@@ -55,15 +55,15 @@ public class GraphConnectionRuleManagerImpl extends AbstractGraphRuleManager<Con
     }
 
     @Override
-    public RuleViolations evaluate( final Edge<? extends View<?>, ? extends Node> edge,
-                                    final Node<? extends View<?>, ? extends Edge> outgoing,
-                                    final Node<? extends View<?>, ? extends Edge> incoming ) {
-        if ( incoming == null || outgoing == null ) {
+    public RuleViolations evaluate(final Edge<? extends View<?>, ? extends Node> edge,
+                                   final Node<? extends View<?>, ? extends Edge> outgoing,
+                                   final Node<? extends View<?>, ? extends Edge> incoming) {
+        if (incoming == null || outgoing == null) {
             return new DefaultRuleViolations();
         }
-        final String edgeId = getElementDefinitionId( edge );
-        return modelConnectionRuleManager.evaluate( edgeId,
-                                                    getLabels( outgoing ),
-                                                    getLabels( incoming ) );
+        final String edgeId = getElementDefinitionId(edge);
+        return modelConnectionRuleManager.evaluate(edgeId,
+                                                   getLabels(outgoing),
+                                                   getLabels(incoming));
     }
 }

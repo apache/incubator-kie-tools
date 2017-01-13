@@ -26,9 +26,9 @@ public final class CanvasValidationViolationImpl
 
     private final ValidationViolation<?> root;
 
-    protected CanvasValidationViolationImpl( final CanvasHandler entity,
-                                             final ValidationViolation<?> root ) {
-        super( entity );
+    protected CanvasValidationViolationImpl(final CanvasHandler entity,
+                                            final ValidationViolation<?> root) {
+        super(entity);
         this.root = root;
     }
 

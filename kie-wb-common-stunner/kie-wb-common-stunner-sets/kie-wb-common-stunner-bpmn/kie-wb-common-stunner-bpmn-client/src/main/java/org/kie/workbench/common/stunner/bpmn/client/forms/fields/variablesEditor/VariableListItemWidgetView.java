@@ -28,21 +28,21 @@ public interface VariableListItemWidgetView extends HasModel<VariableRow> {
 
     void init();
 
-    void setParentWidget( VariablesEditorWidgetView.Presenter parentWidget );
+    void setParentWidget(final VariablesEditorWidgetView.Presenter parentWidget);
 
     void notifyModelChanged();
 
-    void setDataTypes( ListBoxValues dataTypeListBoxValues );
+    void setDataTypes(final ListBoxValues dataTypeListBoxValues);
 
-    boolean isDuplicateName( String name );
+    boolean isDuplicateName(final String name);
 
     VariableType getVariableType();
 
     String getDataTypeDisplayName();
 
-    void setDataTypeDisplayName( String dataTypeDisplayName );
+    void setDataTypeDisplayName(final String dataTypeDisplayName);
 
     String getCustomDataType();
 
-    void setCustomDataType( String customDataType );
+    void setCustomDataType(final String customDataType);
 }

@@ -34,16 +34,16 @@ public class GraphRulesManagerImpl extends AbstractRulesManager<GraphContainment
     private static final String NAME = "Graph Rules Manager";
 
     @Inject
-    public GraphRulesManagerImpl( final GraphContainmentRuleManager containmentRuleManager,
-                                  final GraphConnectionRuleManager connectionRuleManager,
-                                  final GraphCardinalityRuleManager cardinalityRuleManager,
-                                  final GraphEdgeCardinalityRuleManager edgeCardinalityRuleManager,
-                                  final GraphDockingRuleManager graphDockingRuleManager ) {
-        super( containmentRuleManager,
-               connectionRuleManager,
-               cardinalityRuleManager,
-               edgeCardinalityRuleManager,
-               graphDockingRuleManager );
+    public GraphRulesManagerImpl(final GraphContainmentRuleManager containmentRuleManager,
+                                 final GraphConnectionRuleManager connectionRuleManager,
+                                 final GraphCardinalityRuleManager cardinalityRuleManager,
+                                 final GraphEdgeCardinalityRuleManager edgeCardinalityRuleManager,
+                                 final GraphDockingRuleManager graphDockingRuleManager) {
+        super(containmentRuleManager,
+              connectionRuleManager,
+              cardinalityRuleManager,
+              edgeCardinalityRuleManager,
+              graphDockingRuleManager);
     }
 
     @Override

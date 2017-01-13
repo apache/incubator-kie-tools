@@ -25,9 +25,9 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 
 public interface DragControl<C extends CanvasHandler, E extends Element> extends CanvasRegistationControl<C, E> {
 
-    DragControl<C, E> setDragGrid( final CanvasGrid grid );
+    DragControl<C, E> setDragGrid(final CanvasGrid grid);
 
-    CommandResult<CanvasViolation> move( final E element,
-                                         final double x,
-                                         final double y );
+    CommandResult<CanvasViolation> move(final E element,
+                                        final double x,
+                                        final double y);
 }

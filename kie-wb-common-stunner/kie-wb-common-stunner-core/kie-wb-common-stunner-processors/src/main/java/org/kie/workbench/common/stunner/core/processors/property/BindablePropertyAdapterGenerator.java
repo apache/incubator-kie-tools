@@ -33,50 +33,50 @@ public class BindablePropertyAdapterGenerator extends AbstractBindableAdapterGen
         return "BindablePropertyAdapter.ftl";
     }
 
-    public StringBuffer generate( final String packageName,
-                                  final String className,
-                                  final ProcessingPropertyAnnotations processingPropertyAnnotations,
-                                  final Messager messager ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final String className,
+                                 final ProcessingPropertyAnnotations processingPropertyAnnotations,
+                                 final Messager messager) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "packageName",
-                  packageName );
-        root.put( "className",
-                  className );
-        root.put( "parentAdapterClassName",
-                  BindablePropertyAdapterProxy.class.getName() );
-        root.put( "adapterFactoryClassName",
-                  BindableAdapterFactory.class.getName() );
-        root.put( "generatedByClassName",
-                  BindablePropertyAdapterGenerator.class.getName() );
-        addFields( "valuePropNames",
-                   root,
-                   processingPropertyAnnotations.getValueFieldNames() );
-        addFields( "defaultValuePropNames",
-                   root,
-                   processingPropertyAnnotations.getDefaultValueFieldNames() );
-        addFields( "captionPropNames",
-                   root,
-                   processingPropertyAnnotations.getCaptionFieldNames() );
-        addFields( "descriptionPropNames",
-                   root,
-                   processingPropertyAnnotations.getDescriptionFieldNames() );
-        addFields( "propTypePropNames",
-                   root,
-                   processingPropertyAnnotations.getTypeFieldNames() );
-        addFields( "readOnlyPropNames",
-                   root,
-                   processingPropertyAnnotations.getReadOnlyFieldNames() );
-        addFields( "optionalPropNames",
-                   root,
-                   processingPropertyAnnotations.getOptionalFieldNames() );
-        addFields( "allowedValuesPropNames",
-                   root,
-                   processingPropertyAnnotations.getAllowedValuesFieldNames() );
+        root.put("packageName",
+                 packageName);
+        root.put("className",
+                 className);
+        root.put("parentAdapterClassName",
+                 BindablePropertyAdapterProxy.class.getName());
+        root.put("adapterFactoryClassName",
+                 BindableAdapterFactory.class.getName());
+        root.put("generatedByClassName",
+                 BindablePropertyAdapterGenerator.class.getName());
+        addFields("valuePropNames",
+                  root,
+                  processingPropertyAnnotations.getValueFieldNames());
+        addFields("defaultValuePropNames",
+                  root,
+                  processingPropertyAnnotations.getDefaultValueFieldNames());
+        addFields("captionPropNames",
+                  root,
+                  processingPropertyAnnotations.getCaptionFieldNames());
+        addFields("descriptionPropNames",
+                  root,
+                  processingPropertyAnnotations.getDescriptionFieldNames());
+        addFields("propTypePropNames",
+                  root,
+                  processingPropertyAnnotations.getTypeFieldNames());
+        addFields("readOnlyPropNames",
+                  root,
+                  processingPropertyAnnotations.getReadOnlyFieldNames());
+        addFields("optionalPropNames",
+                  root,
+                  processingPropertyAnnotations.getOptionalFieldNames());
+        addFields("allowedValuesPropNames",
+                  root,
+                  processingPropertyAnnotations.getAllowedValuesFieldNames());
 
         //Generate code
-        return writeTemplate( packageName,
-                              className,
-                              root,
-                              messager );
+        return writeTemplate(packageName,
+                             className,
+                             root,
+                             messager);
     }
 }

@@ -27,8 +27,8 @@ import org.kie.workbench.common.stunner.core.rule.Rule;
 public class DefaultDefinitionSetRuleAdapter implements DefinitionSetRuleAdapter<DefinitionSetImpl> {
 
     @Override
-    public boolean accepts( final Class<?> pojo ) {
-        return pojo.getName().equals( DefinitionSetImpl.class.getName() );
+    public boolean accepts(final Class<?> pojo) {
+        return pojo.getName().equals(DefinitionSetImpl.class.getName());
     }
 
     @Override
@@ -37,7 +37,7 @@ public class DefaultDefinitionSetRuleAdapter implements DefinitionSetRuleAdapter
     }
 
     @Override
-    public Collection<Rule> getRules( final DefinitionSetImpl pojo ) {
+    public Collection<Rule> getRules(final DefinitionSetImpl pojo) {
         return null;
     }
 

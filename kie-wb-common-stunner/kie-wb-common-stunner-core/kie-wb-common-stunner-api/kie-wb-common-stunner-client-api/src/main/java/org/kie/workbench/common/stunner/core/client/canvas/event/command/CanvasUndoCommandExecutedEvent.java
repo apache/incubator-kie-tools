@@ -23,11 +23,11 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 
 public final class CanvasUndoCommandExecutedEvent<H extends CanvasHandler> extends AbstractCanvasCommandEvent<H> {
 
-    public CanvasUndoCommandExecutedEvent( final H canvasHandler,
-                                           final Command<H, CanvasViolation> command,
-                                           final CommandResult<CanvasViolation> violation ) {
-        super( canvasHandler,
-               command,
-               violation );
+    public CanvasUndoCommandExecutedEvent(final H canvasHandler,
+                                          final Command<H, CanvasViolation> command,
+                                          final CommandResult<CanvasViolation> violation) {
+        super(canvasHandler,
+              command,
+              violation);
     }
 }

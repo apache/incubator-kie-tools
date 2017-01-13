@@ -38,23 +38,23 @@ public class ModelContainmentRuleManagerImpl extends AbstractContainmentRuleMana
     }
 
     @Override
-    public RuleViolations evaluate( final String targetId,
-                                    final Set<String> candidateRoles ) {
-        if ( rules.isEmpty() ) {
+    public RuleViolations evaluate(final String targetId,
+                                   final Set<String> candidateRoles) {
+        if (rules.isEmpty()) {
             return new DefaultRuleViolations();
         }
         final DefaultRuleViolations results = new DefaultRuleViolations();
-        for ( ContainmentRule rule : rules ) {
-            if ( rule.getId().equals( targetId ) ) {
-                final Set<String> permittedStrings = new HashSet<String>( rule.getPermittedRoles() );
-                permittedStrings.retainAll( candidateRoles );
-                if ( permittedStrings.size() > 0 ) {
+        for (ContainmentRule rule : rules) {
+            if (rule.getId().equals(targetId)) {
+                final Set<String> permittedStrings = new HashSet<String>(rule.getPermittedRoles());
+                permittedStrings.retainAll(candidateRoles);
+                if (permittedStrings.size() > 0) {
                     return results;
                 }
             }
         }
-        results.addViolation( new ContainmentRuleViolation( targetId,
-                                                            candidateRoles.toString() ) );
+        results.addViolation(new ContainmentRuleViolation(targetId,
+                                                          candidateRoles.toString()));
         return results;
     }
 }

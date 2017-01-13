@@ -25,16 +25,16 @@ public interface GlyphTooltip<G> {
         NORTH;
     }
 
-    void show( final String text,
-               final double x,
-               final double y,
-               final Direction direction );
+    void show(final String text,
+              final double x,
+              final double y,
+              final Direction direction);
 
-    void show( final Glyph<G> glyph,
-               final String text,
-               final double x,
-               final double y,
-               final Direction direction );
+    void show(final Glyph<G> glyph,
+              final String text,
+              final double x,
+              final double y,
+              final Direction direction);
 
     void hide();
 

@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.lienzo.util.LienzoPaths;
 
 public class ToolboxButton {
 
-    private static Logger LOGGER = Logger.getLogger( ToolboxButton.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(ToolboxButton.class.getName());
 
     private static final int CLICK_HANDLER_TIMER_DURATION = 100;
     private static final String DECORATOR_STROKE_COLOR = "#8c8c8c";
@@ -53,22 +53,22 @@ public class ToolboxButton {
 
     private MultiPath decorator;
 
-    public ToolboxButton( final Layer layer,
-                          final IPrimitive<?> shape,
-                          final int padding,
-                          final int iconSize,
-                          final ToolboxButtonEventHandler clickHandler,
-                          final ToolboxButtonEventHandler mouseDownHandler,
-                          final ToolboxButtonEventHandler mouseEnterHandler,
-                          final ToolboxButtonEventHandler mouseExitHandler ) {
+    public ToolboxButton(final Layer layer,
+                         final IPrimitive<?> shape,
+                         final int padding,
+                         final int iconSize,
+                         final ToolboxButtonEventHandler clickHandler,
+                         final ToolboxButtonEventHandler mouseDownHandler,
+                         final ToolboxButtonEventHandler mouseEnterHandler,
+                         final ToolboxButtonEventHandler mouseExitHandler) {
         this.layer = layer;
         this.clickHandler = clickHandler;
         this.mouseDownHandler = mouseDownHandler;
         this.mouseEnterHandler = mouseEnterHandler;
         this.mouseExitHandler = mouseExitHandler;
-        this.primitive = build( shape,
-                                iconSize,
-                                padding );
+        this.primitive = build(shape,
+                               iconSize,
+                               padding);
         this.clickHandlerTimer = null;
     }
 
@@ -88,192 +88,192 @@ public class ToolboxButton {
         layer.batch();
     }
 
-    private WiresShape build( final IPrimitive<?> shape,
-                              final int padding,
-                              final int iconSize ) {
-        final WiresManager manager = WiresManager.get( layer );
+    private WiresShape build(final IPrimitive<?> shape,
+                             final int padding,
+                             final int iconSize) {
+        final WiresManager manager = WiresManager.get(layer);
         // Create the wires shape multipath that will be used as decorator.
         final float dPad4 = padding / 4;
-        decorator = LienzoPaths.rectangle( iconSize + padding,
-                                           iconSize + padding,
-                                           0 )
-                .setX( 0 )
-                .setY( 0 )
-                .setStrokeWidth( 1.5 )
-                .setStrokeAlpha( 0 )
-                .setStrokeColor( DECORATOR_STROKE_COLOR )
-                .setDraggable( false )
+        decorator = LienzoPaths.rectangle(iconSize + padding,
+                                          iconSize + padding,
+                                          0)
+                .setX(0)
+                .setY(0)
+                .setStrokeWidth(1.5)
+                .setStrokeAlpha(0)
+                .setStrokeColor(DECORATOR_STROKE_COLOR)
+                .setDraggable(false)
                 // TODO: This is a workaround to make the mouse over/exit event handlers registered here work - review.
-                .setFillAlpha( 0.01 );
+                .setFillAlpha(0.01);
         // Create and register the wires shape.
-        final WiresShape wiresShape = new WiresShape( decorator ).setDraggable( false ).setResizable( false );
-        manager.register( wiresShape,
-                          false );
+        final WiresShape wiresShape = new WiresShape(decorator).setDraggable(false).setResizable(false);
+        manager.register(wiresShape,
+                         false);
         // Add the primitive shape as child.
-        wiresShape.addChild( shape.setDraggable( false ) );
+        wiresShape.addChild(shape.setDraggable(false));
         // TODO: Ensure decorator is on top to receive the differnt events - review this.
         decorator.moveToTop();
-        registerShapeHandlers( wiresShape,
-                               decorator );
+        registerShapeHandlers(wiresShape,
+                              decorator);
         return wiresShape;
     }
 
-    private void registerShapeHandlers( final WiresShape wiresShape,
-                                        final IDrawable<?> shape ) {
+    private void registerShapeHandlers(final WiresShape wiresShape,
+                                       final IDrawable<?> shape) {
         // Add mouse enter event handlers for the wiresshape's multipath.
         handlerRegistrationManager.register(
-                shape.addNodeMouseEnterHandler( event ->
-                                                        onButtonMouseEnter( shape,
-                                                                            getLocation( wiresShape ),
-                                                                            wiresShape.getGroup().getAbsoluteLocation(),
-                                                                            event.getHumanInputEvent().getClientX(),
-                                                                            event.getHumanInputEvent().getClientY() )
-                ) );
-        // Add mouse exit event handlers for the wiresshape's multipath.
-        handlerRegistrationManager.register(
-                shape.addNodeMouseExitHandler( event ->
-                                                       onButtonMouseExit( shape,
-                                                                          getLocation( wiresShape ),
+                shape.addNodeMouseEnterHandler(event ->
+                                                       onButtonMouseEnter(shape,
+                                                                          getLocation(wiresShape),
                                                                           wiresShape.getGroup().getAbsoluteLocation(),
                                                                           event.getHumanInputEvent().getClientX(),
-                                                                          event.getHumanInputEvent().getClientY() )
-                ) );
-        if ( null != clickHandler ) {
+                                                                          event.getHumanInputEvent().getClientY())
+                ));
+        // Add mouse exit event handlers for the wiresshape's multipath.
+        handlerRegistrationManager.register(
+                shape.addNodeMouseExitHandler(event ->
+                                                      onButtonMouseExit(shape,
+                                                                        getLocation(wiresShape),
+                                                                        wiresShape.getGroup().getAbsoluteLocation(),
+                                                                        event.getHumanInputEvent().getClientX(),
+                                                                        event.getHumanInputEvent().getClientY())
+                ));
+        if (null != clickHandler) {
             // Add mouse click event handlers for the primitive shape.
             handlerRegistrationManager.register(
-                    shape.addNodeMouseClickHandler( event ->
-                                                            ToolboxButton.this.onButtonMouseClick( shape,
-                                                                                                   getLocation( wiresShape ),
-                                                                                                   wiresShape.getGroup().getAbsoluteLocation(),
-                                                                                                   event.getHumanInputEvent().getClientX(),
-                                                                                                   event.getHumanInputEvent().getClientY() )
-                    ) );
-        }
-        if ( null != mouseDownHandler ) {
-            // Add mouse down event handlers for the primitive shape.
-            handlerRegistrationManager.register(
-                    shape.addNodeMouseDownHandler( event ->
-                                                           ToolboxButton.this.onButtonMouseDown( shape,
-                                                                                                 getLocation( wiresShape ),
+                    shape.addNodeMouseClickHandler(event ->
+                                                           ToolboxButton.this.onButtonMouseClick(shape,
+                                                                                                 getLocation(wiresShape),
                                                                                                  wiresShape.getGroup().getAbsoluteLocation(),
                                                                                                  event.getHumanInputEvent().getClientX(),
-                                                                                                 event.getHumanInputEvent().getClientY() )
-                    ) );
+                                                                                                 event.getHumanInputEvent().getClientY())
+                    ));
+        }
+        if (null != mouseDownHandler) {
+            // Add mouse down event handlers for the primitive shape.
+            handlerRegistrationManager.register(
+                    shape.addNodeMouseDownHandler(event ->
+                                                          ToolboxButton.this.onButtonMouseDown(shape,
+                                                                                               getLocation(wiresShape),
+                                                                                               wiresShape.getGroup().getAbsoluteLocation(),
+                                                                                               event.getHumanInputEvent().getClientX(),
+                                                                                               event.getHumanInputEvent().getClientY())
+                    ));
         }
     }
 
-    private Point2D getLocation( final WiresShape shape ) {
-        return WiresUtils.getLocation( shape.getGroup() );
+    private Point2D getLocation(final WiresShape shape) {
+        return WiresUtils.getLocation(shape.getGroup());
     }
 
-    private void onButtonMouseEnter( final IDrawable<?> shape,
-                                     final Point2D location,
-                                     final Point2D abs,
-                                     final int clientX,
-                                     final int clientY ) {
-        LOGGER.log( Level.FINE,
-                    "Entering into toolbox button..." );
-        showDecorator();
-        if ( null != mouseEnterHandler ) {
-            mouseEnterHandler.fire( buildEvent( location,
-                                                abs,
-                                                clientX,
-                                                clientY ) );
-        }
-        layer.batch();
-    }
-
-    private void onButtonMouseExit( final IDrawable<?> shape,
+    private void onButtonMouseEnter(final IDrawable<?> shape,
                                     final Point2D location,
                                     final Point2D abs,
                                     final int clientX,
-                                    final int clientY ) {
-        LOGGER.log( Level.FINE,
-                    "Exiting from toolbox button..." );
-        hideDecorator();
-        if ( null != mouseExitHandler ) {
-            mouseExitHandler.fire( buildEvent( location,
-                                               abs,
-                                               clientX,
-                                               clientY ) );
+                                    final int clientY) {
+        LOGGER.log(Level.FINE,
+                   "Entering into toolbox button...");
+        showDecorator();
+        if (null != mouseEnterHandler) {
+            mouseEnterHandler.fire(buildEvent(location,
+                                              abs,
+                                              clientX,
+                                              clientY));
         }
         layer.batch();
     }
 
-    private void onButtonMouseClick( final IDrawable<?> shape,
-                                     final Point2D location,
-                                     final Point2D abs,
-                                     final int clientX,
-                                     final int clientY ) {
-        LOGGER.log( Level.FINE,
-                    "Clicking on toolbox button..." );
+    private void onButtonMouseExit(final IDrawable<?> shape,
+                                   final Point2D location,
+                                   final Point2D abs,
+                                   final int clientX,
+                                   final int clientY) {
+        LOGGER.log(Level.FINE,
+                   "Exiting from toolbox button...");
+        hideDecorator();
+        if (null != mouseExitHandler) {
+            mouseExitHandler.fire(buildEvent(location,
+                                             abs,
+                                             clientX,
+                                             clientY));
+        }
+        layer.batch();
+    }
+
+    private void onButtonMouseClick(final IDrawable<?> shape,
+                                    final Point2D location,
+                                    final Point2D abs,
+                                    final int clientX,
+                                    final int clientY) {
+        LOGGER.log(Level.FINE,
+                   "Clicking on toolbox button...");
         hideDecorator();
         ToolboxButton.this.clearClickHandlerTimer();
         clickHandler.fire(
-                buildEvent( location,
-                            abs,
-                            clientX,
-                            clientY ) );
+                buildEvent(location,
+                           abs,
+                           clientX,
+                           clientY));
         layer.batch();
     }
 
-    private void onButtonMouseDown( final IDrawable<?> shape,
-                                    final Point2D location,
-                                    final Point2D abs,
-                                    final int clientX,
-                                    final int clientY ) {
-        if ( null == ToolboxButton.this.clickHandlerTimer ) {
+    private void onButtonMouseDown(final IDrawable<?> shape,
+                                   final Point2D location,
+                                   final Point2D abs,
+                                   final int clientX,
+                                   final int clientY) {
+        if (null == ToolboxButton.this.clickHandlerTimer) {
             ToolboxButton.this.clickHandlerTimer = new Timer() {
                 @Override
                 public void run() {
-                    LOGGER.log( Level.FINE,
-                                "Mouse down on toolbox button..." );
+                    LOGGER.log(Level.FINE,
+                               "Mouse down on toolbox button...");
                     hideDecorator();
                     layer.batch();
                     mouseDownHandler.fire(
-                            buildEvent( location,
-                                        abs,
-                                        clientX,
-                                        clientY ) );
+                            buildEvent(location,
+                                       abs,
+                                       clientX,
+                                       clientY));
                     ToolboxButton.this.clickHandlerTimer = null;
                 }
             };
-            ToolboxButton.this.clickHandlerTimer.schedule( CLICK_HANDLER_TIMER_DURATION );
+            ToolboxButton.this.clickHandlerTimer.schedule(CLICK_HANDLER_TIMER_DURATION);
         }
     }
 
     private void showDecorator() {
-        decorator.setStrokeAlpha( 1 );
+        decorator.setStrokeAlpha(1);
     }
 
     private void hideDecorator() {
-        decorator.setStrokeAlpha( 0 );
+        decorator.setStrokeAlpha(0);
     }
 
-    private ToolboxButtonEvent buildEvent( final Point2D location,
-                                           final Point2D abs,
-                                           final int clientX,
-                                           final int clientY ) {
+    private ToolboxButtonEvent buildEvent(final Point2D location,
+                                          final Point2D abs,
+                                          final int clientX,
+                                          final int clientY) {
         return new ToolboxButtonEvent() {
 
             @Override
             public int getX() {
-                return ( int ) location.getX();
+                return (int) location.getX();
             }
 
             @Override
             public int getY() {
-                return ( int ) location.getY();
+                return (int) location.getY();
             }
 
             @Override
             public int getAbsoluteX() {
-                return ( int ) abs.getX();
+                return (int) abs.getX();
             }
 
             @Override
             public int getAbsoluteY() {
-                return ( int ) abs.getY();
+                return (int) abs.getY();
             }
 
             @Override
@@ -289,8 +289,8 @@ public class ToolboxButton {
     }
 
     private void clearClickHandlerTimer() {
-        if ( null != this.clickHandlerTimer ) {
-            if ( this.clickHandlerTimer.isRunning() ) {
+        if (null != this.clickHandlerTimer) {
+            if (this.clickHandlerTimer.isRunning()) {
                 this.clickHandlerTimer.cancel();
             }
             this.clickHandlerTimer = null;

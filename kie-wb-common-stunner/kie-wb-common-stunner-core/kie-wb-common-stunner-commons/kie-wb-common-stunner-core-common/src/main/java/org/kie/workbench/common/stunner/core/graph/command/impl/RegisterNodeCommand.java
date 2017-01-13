@@ -44,42 +44,42 @@ public class RegisterNodeCommand extends AbstractGraphCommand {
 
     private final Node candidate;
 
-    public RegisterNodeCommand( final @MapsTo( "candidate" ) Node candidate ) {
-        this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                                                             candidate );
+    public RegisterNodeCommand(final @MapsTo("candidate") Node candidate) {
+        this.candidate = PortablePreconditions.checkNotNull("candidate",
+                                                            candidate);
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        final CommandResult<RuleViolation> results = allow( context );
-        if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            final Graph<?, Node> graph = getGraph( context );
-            graph.addNode( candidate );
-            getMutableIndex( context ).addNode( candidate );
+    @SuppressWarnings("unchecked")
+    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
+        final CommandResult<RuleViolation> results = allow(context);
+        if (!results.getType().equals(CommandResult.Type.ERROR)) {
+            final Graph<?, Node> graph = getGraph(context);
+            graph.addNode(candidate);
+            getMutableIndex(context).addNode(candidate);
         }
         return results;
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
-        final Graph<?, Node> graph = getGraph( context );
+    @SuppressWarnings("unchecked")
+    protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
+        final Graph<?, Node> graph = getGraph(context);
         final Collection<RuleViolation> cardinalityRuleViolations =
-                ( Collection<RuleViolation> ) context.getRulesManager()
+                (Collection<RuleViolation>) context.getRulesManager()
                         .cardinality()
-                        .evaluate( graph,
-                                   getCandidate(),
-                                   RuleManager.Operation.ADD ).violations();
-        return new GraphCommandResultBuilder( new ArrayList<RuleViolation>( 1 ) {{
-            addAll( cardinalityRuleViolations );
-        }} ).build();
+                        .evaluate(graph,
+                                  getCandidate(),
+                                  RuleManager.Operation.ADD).violations();
+        return new GraphCommandResultBuilder(new ArrayList<RuleViolation>(1) {{
+            addAll(cardinalityRuleViolations);
+        }}).build();
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final DeregisterNodeCommand undoCommand = new DeregisterNodeCommand( candidate );
-        return undoCommand.execute( context );
+    @SuppressWarnings("unchecked")
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        final DeregisterNodeCommand undoCommand = new DeregisterNodeCommand(candidate);
+        return undoCommand.execute(context);
     }
 
     public Node getCandidate() {

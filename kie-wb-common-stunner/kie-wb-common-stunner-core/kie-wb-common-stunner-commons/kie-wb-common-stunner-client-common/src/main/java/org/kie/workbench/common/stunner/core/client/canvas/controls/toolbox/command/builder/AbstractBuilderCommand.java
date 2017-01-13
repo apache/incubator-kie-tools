@@ -40,193 +40,193 @@ import org.uberfire.mvp.Command;
 
 public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I> {
 
-    private static Logger LOGGER = Logger.getLogger( AbstractBuilderCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(AbstractBuilderCommand.class.getName());
 
     private final ClientFactoryService clientFactoryServices;
     private final GraphBoundsIndexer graphBoundsIndexer;
 
     private CanvasHighlight canvasHighlight;
 
-    public AbstractBuilderCommand( final ClientFactoryService clientFactoryServices,
-                                   final GraphBoundsIndexer graphBoundsIndexer ) {
+    public AbstractBuilderCommand(final ClientFactoryService clientFactoryServices,
+                                  final GraphBoundsIndexer graphBoundsIndexer) {
         this.clientFactoryServices = clientFactoryServices;
         this.graphBoundsIndexer = graphBoundsIndexer;
     }
 
-    protected abstract String getDefinitionIdentifier( final Context<AbstractCanvasHandler> context );
+    protected abstract String getDefinitionIdentifier(final Context<AbstractCanvasHandler> context);
 
     protected abstract DragProxy getDragProxyFactory();
 
-    protected abstract DragProxyCallback getDragProxyCallback( final Context<AbstractCanvasHandler> context,
-                                                               final Element element,
-                                                               final Element newElement );
+    protected abstract DragProxyCallback getDragProxyCallback(final Context<AbstractCanvasHandler> context,
+                                                              final Element element,
+                                                              final Element newElement);
 
     protected abstract BuilderControl getBuilderControl();
 
-    protected abstract Object createtBuilderControlItem( final Context<AbstractCanvasHandler> context,
-                                                         final Element source,
-                                                         final Element newElement );
-
-    protected abstract boolean onDragProxyMove( final int x,
-                                                final int y,
-                                                final Element source,
-                                                final Element newElement,
-                                                final Node targetNode );
-
-    protected abstract BuildRequest createBuildRequest( final int x,
-                                                        final int y,
+    protected abstract Object createtBuilderControlItem(final Context<AbstractCanvasHandler> context,
                                                         final Element source,
-                                                        final Element newElement,
-                                                        final Node targetNode );
+                                                        final Element newElement);
 
-    protected void onDefinitionInstanceBuilt( final Context<AbstractCanvasHandler> context,
-                                              final Element source,
-                                              final Element newElement,
-                                              final Command callback ) {
+    protected abstract boolean onDragProxyMove(final int x,
+                                               final int y,
+                                               final Element source,
+                                               final Element newElement,
+                                               final Node targetNode);
+
+    protected abstract BuildRequest createBuildRequest(final int x,
+                                                       final int y,
+                                                       final Element source,
+                                                       final Element newElement,
+                                                       final Node targetNode);
+
+    protected void onDefinitionInstanceBuilt(final Context<AbstractCanvasHandler> context,
+                                             final Element source,
+                                             final Element newElement,
+                                             final Command callback) {
         callback.execute();
     }
 
     @Override
-    public void mouseDown( final Context<AbstractCanvasHandler> context,
-                           final Element element ) {
-        super.mouseDown( context,
-                         element );
-        showDragProxy( context,
-                       element );
+    public void mouseDown(final Context<AbstractCanvasHandler> context,
+                          final Element element) {
+        super.mouseDown(context,
+                        element);
+        showDragProxy(context,
+                      element);
     }
 
     @Override
-    public void click( final Context<AbstractCanvasHandler> context,
-                       final Element element ) {
-        super.click( context,
-                     element );
+    public void click(final Context<AbstractCanvasHandler> context,
+                      final Element element) {
+        super.click(context,
+                    element);
     }
 
-    @SuppressWarnings( "unchecked" )
-    private void showDragProxy( final Context<AbstractCanvasHandler> context,
-                                final Element element ) {
+    @SuppressWarnings("unchecked")
+    private void showDragProxy(final Context<AbstractCanvasHandler> context,
+                               final Element element) {
         final AbstractCanvasHandler canvasHandler = context.getCanvasHandler();
         final double x = context.getAbsoluteX();
         final double y = context.getAbsoluteY();
-        graphBoundsIndexer.setRootUUID( canvasHandler.getDiagram().getMetadata().getCanvasRootUUID() );
-        clientFactoryServices.newElement( UUID.uuid(),
-                                          getDefinitionIdentifier( context ),
-                                          new ServiceCallback<Element>() {
+        graphBoundsIndexer.setRootUUID(canvasHandler.getDiagram().getMetadata().getCanvasRootUUID());
+        clientFactoryServices.newElement(UUID.uuid(),
+                                         getDefinitionIdentifier(context),
+                                         new ServiceCallback<Element>() {
 
-                                              @Override
-                                              public void onSuccess( final Element item ) {
-                                                  onDefinitionInstanceBuilt( context,
-                                                                             element,
-                                                                             item,
-                                                                             () -> {
-                                                                                 getBuilderControl().enable( canvasHandler );
-                                                                                 canvasHighlight = new CanvasHighlight( canvasHandler );
-                                                                                 graphBoundsIndexer.build( canvasHandler.getDiagram().getGraph() );
-                                                                                 DragProxyCallback proxyCallback = getDragProxyCallback( context,
-                                                                                                                                         element,
-                                                                                                                                         item );
-                                                                                 getDragProxyFactory().proxyFor( canvasHandler )
-                                                                                         .show(
-                                                                                                 createtBuilderControlItem( context,
-                                                                                                                            element,
-                                                                                                                            item ),
-                                                                                                 ( int ) x,
-                                                                                                 ( int ) y,
-                                                                                                 proxyCallback
-                                                                                         );
-                                                                             } );
-                                              }
+                                             @Override
+                                             public void onSuccess(final Element item) {
+                                                 onDefinitionInstanceBuilt(context,
+                                                                           element,
+                                                                           item,
+                                                                           () -> {
+                                                                               getBuilderControl().enable(canvasHandler);
+                                                                               canvasHighlight = new CanvasHighlight(canvasHandler);
+                                                                               graphBoundsIndexer.build(canvasHandler.getDiagram().getGraph());
+                                                                               DragProxyCallback proxyCallback = getDragProxyCallback(context,
+                                                                                                                                      element,
+                                                                                                                                      item);
+                                                                               getDragProxyFactory().proxyFor(canvasHandler)
+                                                                                       .show(
+                                                                                               createtBuilderControlItem(context,
+                                                                                                                         element,
+                                                                                                                         item),
+                                                                                               (int) x,
+                                                                                               (int) y,
+                                                                                               proxyCallback
+                                                                                       );
+                                                                           });
+                                             }
 
-                                              @Override
-                                              public void onError( final ClientRuntimeError error ) {
-                                                  AbstractBuilderCommand.this.onError( context,
-                                                                                       error );
-                                              }
-                                          } );
+                                             @Override
+                                             public void onError(final ClientRuntimeError error) {
+                                                 AbstractBuilderCommand.this.onError(context,
+                                                                                     error);
+                                             }
+                                         });
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected void onStart( final Context<AbstractCanvasHandler> context,
-                            final Element element,
-                            final Element item,
-                            final int x1,
-                            final int y1 ) {
-    }
-
-    @SuppressWarnings( "unchecked" )
-    protected void onMove( final Context<AbstractCanvasHandler> context,
+    @SuppressWarnings("unchecked")
+    protected void onStart(final Context<AbstractCanvasHandler> context,
                            final Element element,
                            final Element item,
                            final int x1,
-                           final int y1 ) {
+                           final int y1) {
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void onMove(final Context<AbstractCanvasHandler> context,
+                          final Element element,
+                          final Element item,
+                          final int x1,
+                          final int y1) {
         // TODO: Two expensive calls to bounds indexer, this one and the one inside connectorDragProxyFactory.
-        final Node targetNode = graphBoundsIndexer.getAt( x1,
-                                                          y1 );
-        final boolean accepts = onDragProxyMove( x1,
-                                                 y1,
-                                                 element,
-                                                 item,
-                                                 targetNode );
-        if ( null != targetNode && accepts ) {
-            canvasHighlight.highLight( targetNode );
-        } else if ( null != targetNode ) {
-            canvasHighlight.invalid( targetNode );
+        final Node targetNode = graphBoundsIndexer.getAt(x1,
+                                                         y1);
+        final boolean accepts = onDragProxyMove(x1,
+                                                y1,
+                                                element,
+                                                item,
+                                                targetNode);
+        if (null != targetNode && accepts) {
+            canvasHighlight.highLight(targetNode);
+        } else if (null != targetNode) {
+            canvasHighlight.invalid(targetNode);
         }
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected void onComplete( final Context<AbstractCanvasHandler> context,
-                               final Element element,
-                               final Element item,
-                               final int x1,
-                               final int y1 ) {
-        fireLoadingStarted( context );
-        final Node targetNode = graphBoundsIndexer.getAt( x1,
-                                                          y1 );
-        log( Level.INFO,
-             "Completing element creation - Creating node for parent ["
-                     + ( null != targetNode ? targetNode.getUUID() : "null" ) );
-        if ( null != targetNode ) {
+    @SuppressWarnings("unchecked")
+    protected void onComplete(final Context<AbstractCanvasHandler> context,
+                              final Element element,
+                              final Element item,
+                              final int x1,
+                              final int y1) {
+        fireLoadingStarted(context);
+        final Node targetNode = graphBoundsIndexer.getAt(x1,
+                                                         y1);
+        log(Level.INFO,
+            "Completing element creation - Creating node for parent ["
+                    + (null != targetNode ? targetNode.getUUID() : "null"));
+        if (null != targetNode) {
             // Ensure back to NONE shape state before any further operations.
             ensureUnHighLight();
             // Create the build request.
-            final BuildRequest buildRequest = createBuildRequest( x1,
-                                                                  y1,
-                                                                  element,
-                                                                  item,
-                                                                  targetNode );
+            final BuildRequest buildRequest = createBuildRequest(x1,
+                                                                 y1,
+                                                                 element,
+                                                                 item,
+                                                                 targetNode);
             // Use the builder control to perform the operation.
-            getBuilderControl().build( buildRequest,
-                                       new BuilderControl.BuildCallback() {
+            getBuilderControl().build(buildRequest,
+                                      new BuilderControl.BuildCallback() {
 
-                                           @Override
-                                           public void onSuccess( final String uuid ) {
-                                               log( Level.INFO,
-                                                    "Item build with UUID [" + uuid + "]" );
-                                               onItemBuilt( context,
-                                                            uuid );
-                                               fireLoadingCompleted( context );
-                                           }
+                                          @Override
+                                          public void onSuccess(final String uuid) {
+                                              log(Level.INFO,
+                                                  "Item build with UUID [" + uuid + "]");
+                                              onItemBuilt(context,
+                                                          uuid);
+                                              fireLoadingCompleted(context);
+                                          }
 
-                                           @Override
-                                           public void onError( final ClientRuntimeError error ) {
-                                               AbstractBuilderCommand.this.onError( context,
-                                                                                    error );
-                                           }
-                                       } );
+                                          @Override
+                                          public void onError(final ClientRuntimeError error) {
+                                              AbstractBuilderCommand.this.onError(context,
+                                                                                  error);
+                                          }
+                                      });
         }
-        context.getCanvasHandler().getCanvas().getView().setCursor( AbstractCanvas.Cursors.AUTO );
+        context.getCanvasHandler().getCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
     }
 
-    protected void onError( final Context<AbstractCanvasHandler> context,
-                            final ClientRuntimeError error ) {
-        fireLoadingCompleted( context );
-        LOGGER.log( Level.SEVERE,
-                    error.toString() );
+    protected void onError(final Context<AbstractCanvasHandler> context,
+                           final ClientRuntimeError error) {
+        fireLoadingCompleted(context);
+        LOGGER.log(Level.SEVERE,
+                   error.toString());
     }
 
-    protected void onItemBuilt( final Context<AbstractCanvasHandler> context,
-                                final String uuid ) {
+    protected void onItemBuilt(final Context<AbstractCanvasHandler> context,
+                               final String uuid) {
         // Nothing to do by default.
     }
 
@@ -235,7 +235,7 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
         this.getDragProxyFactory().destroy();
         this.getBuilderControl().disable();
         this.graphBoundsIndexer.destroy();
-        if ( null != canvasHighlight ) {
+        if (null != canvasHighlight) {
             this.canvasHighlight.destroy();
             this.canvasHighlight = null;
         }
@@ -250,16 +250,16 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
     }
 
     private void ensureUnHighLight() {
-        if ( null != canvasHighlight ) {
+        if (null != canvasHighlight) {
             canvasHighlight.unhighLight();
         }
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

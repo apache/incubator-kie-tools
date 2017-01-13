@@ -30,9 +30,9 @@ public class ProcessingRule {
     private final TYPE type;
     private final StringBuffer content;
 
-    public ProcessingRule( final String name,
-                           final TYPE type,
-                           final StringBuffer content ) {
+    public ProcessingRule(final String name,
+                          final TYPE type,
+                          final StringBuffer content) {
         this.name = name;
         this.type = type;
         this.content = content;

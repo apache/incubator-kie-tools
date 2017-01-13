@@ -25,15 +25,15 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.builder.T
 
 public interface ToolboxControlProvider<C extends CanvasHandler, T> {
 
-    boolean supports( final Object definition );
+    boolean supports(final Object definition);
 
-    ToolboxButtonGrid getGrid( final C context,
-                               final T item );
+    ToolboxButtonGrid getGrid(final C context,
+                              final T item);
 
     ToolboxBuilder.Direction getOn();
 
     ToolboxBuilder.Direction getTowards();
 
-    List<ToolboxCommand<C, ?>> getCommands( final C context,
-                                            final T item );
+    List<ToolboxCommand<C, ?>> getCommands(final C context,
+                                           final T item);
 }

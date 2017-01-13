@@ -44,15 +44,15 @@ public class CaseManagementProjectDiagramFactory
         extends BindableDiagramFactory<ProjectMetadata, ProjectDiagram> {
 
     @Override
-    public ProjectDiagram build( final String name,
-                                 final ProjectMetadata metadata,
-                                 final Graph<DefinitionSet, ?> graph ) {
-        updateDiagramProperties( name,
-                                 graph,
-                                 metadata );
-        return new ProjectDiagramImpl( name,
-                                       graph,
-                                       metadata );
+    public ProjectDiagram build(final String name,
+                                final ProjectMetadata metadata,
+                                final Graph<DefinitionSet, ?> graph) {
+        updateDiagramProperties(name,
+                                graph,
+                                metadata);
+        return new ProjectDiagramImpl(name,
+                                      graph,
+                                      metadata);
     }
 
     @Override
@@ -65,42 +65,42 @@ public class CaseManagementProjectDiagramFactory
         return CaseManagementDefinitionSet.class;
     }
 
-    private void updateDiagramProperties( final String name,
-                                          final Graph<DefinitionSet, ?> graph,
-                                          final ProjectMetadata metadata ) {
-        final Node<Definition<CaseManagementDiagram>, ?> diagramNode = getFirstDiagramNode( graph );
-        if ( null == diagramNode ) {
-            throw new IllegalStateException( "A Case Management Diagram is expected to be present on CaseManagementDiagram graphs." );
+    private void updateDiagramProperties(final String name,
+                                         final Graph<DefinitionSet, ?> graph,
+                                         final ProjectMetadata metadata) {
+        final Node<Definition<CaseManagementDiagram>, ?> diagramNode = getFirstDiagramNode(graph);
+        if (null == diagramNode) {
+            throw new IllegalStateException("A Case Management Diagram is expected to be present on CaseManagementDiagram graphs.");
         }
 
         final CaseManagementDiagram diagram = diagramNode.getContent().getDefinition();
         final String id = diagram.getDiagramSet().getId().getValue();
         final String projectName = null != metadata.getProjectName() ? metadata.getProjectName() + "." : "";
-        if ( null == id || diagram.getDiagramSet().getId().getDefaultValue().equals( id ) ) {
-            diagram.getDiagramSet().getId().setValue( projectName + name );
+        if (null == id || diagram.getDiagramSet().getId().getDefaultValue().equals(id)) {
+            diagram.getDiagramSet().getId().setValue(projectName + name);
         }
 
         final String p = diagram.getDiagramSet().getPackageProperty().getValue();
-        if ( nil( p ) ) {
+        if (nil(p)) {
             final String metadataPackage = metadata.getProjectPackage();
-            if ( nil( metadataPackage ) ) {
-                diagram.getDiagramSet().getPackageProperty().setValue( Package.DEFAULT_PACKAGE );
+            if (nil(metadataPackage)) {
+                diagram.getDiagramSet().getPackageProperty().setValue(Package.DEFAULT_PACKAGE);
             } else {
-                diagram.getDiagramSet().getPackageProperty().setValue( metadata.getProjectPackage() );
+                diagram.getDiagramSet().getPackageProperty().setValue(metadata.getProjectPackage());
             }
         }
         final String diagramName = diagram.getDiagramSet().getName().getValue();
-        if ( nil( diagramName ) ) {
-            diagram.getDiagramSet().getName().setValue( name );
+        if (nil(diagramName)) {
+            diagram.getDiagramSet().getName().setValue(name);
         }
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Node<Definition<CaseManagementDiagram>, ?> getFirstDiagramNode( final Graph graph ) {
-        return CaseManagementUtils.getFirstDiagramNode( graph );
+    @SuppressWarnings("unchecked")
+    private Node<Definition<CaseManagementDiagram>, ?> getFirstDiagramNode(final Graph graph) {
+        return CaseManagementUtils.getFirstDiagramNode(graph);
     }
 
-    private boolean nil( final String value ) {
+    private boolean nil(final String value) {
         return value == null || value.isEmpty();
     }
 }

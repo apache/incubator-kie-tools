@@ -29,15 +29,15 @@ public class StringType implements PropertyType {
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof StringType ) ) {
+        if (!(o instanceof StringType)) {
             return false;
         }
-        StringType that = ( StringType ) o;
-        if ( !name.equals( that.name ) ) {
+        StringType that = (StringType) o;
+        if (!name.equals(that.name)) {
             return false;
         }
         return true;

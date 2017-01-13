@@ -58,7 +58,7 @@ public class InnerRadius {
     public InnerRadius() {
     }
 
-    public InnerRadius( final Double radius ) {
+    public InnerRadius(final Double radius) {
         this.value = radius;
     }
 
@@ -90,7 +90,7 @@ public class InnerRadius {
         return value;
     }
 
-    public void setValue( Double value ) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 }

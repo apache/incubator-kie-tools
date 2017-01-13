@@ -27,25 +27,25 @@ public final class AddChildNodeCommand extends AbstractCanvasGraphCommand {
     private final Node candidate;
     private final String shapeSetId;
 
-    public AddChildNodeCommand( final Node parent,
-                                final Node candidate,
-                                final String shapeSetId ) {
+    public AddChildNodeCommand(final Node parent,
+                               final Node candidate,
+                               final String shapeSetId) {
         this.parent = parent;
         this.candidate = candidate;
         this.shapeSetId = shapeSetId;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.AddChildNodeCommand( parent,
-                                                                                                 candidate );
+    @SuppressWarnings("unchecked")
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.AddChildNodeCommand(parent,
+                                                                                                candidate);
     }
 
     @Override
-    protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new AddCanvasChildNodeCommand( parent,
-                                              candidate,
-                                              shapeSetId );
+    protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
+        return new AddCanvasChildNodeCommand(parent,
+                                             candidate,
+                                             shapeSetId);
     }
 }

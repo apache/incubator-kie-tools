@@ -68,7 +68,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         implements CanvasHandler<D, C>,
                    HasCanvasListeners<CanvasElementListener> {
 
-    private static Logger LOGGER = Logger.getLogger( AbstractCanvasHandler.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(AbstractCanvasHandler.class.getName());
 
     private final ClientDefinitionManager clientDefinitionManager;
     private final ClientFactoryService clientFactoryServices;
@@ -90,18 +90,18 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     private MutableIndex<?, ?> graphIndex;
 
     @Inject
-    public AbstractCanvasHandler( final ClientDefinitionManager clientDefinitionManager,
-                                  final ClientFactoryService clientFactoryServices,
-                                  final GraphRulesManager graphRulesManager,
-                                  final ModelRulesManager modelRulesManager,
-                                  final GraphUtils graphUtils,
-                                  final GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder,
-                                  final ShapeManager shapeManager,
-                                  final Event<CanvasElementAddedEvent> canvasElementAddedEvent,
-                                  final Event<CanvasElementRemovedEvent> canvasElementRemovedEvent,
-                                  final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent,
-                                  final Event<CanvasElementsClearEvent> canvasElementsClearEvent,
-                                  final CanvasCommandFactory canvasCommandFactory ) {
+    public AbstractCanvasHandler(final ClientDefinitionManager clientDefinitionManager,
+                                 final ClientFactoryService clientFactoryServices,
+                                 final GraphRulesManager graphRulesManager,
+                                 final ModelRulesManager modelRulesManager,
+                                 final GraphUtils graphUtils,
+                                 final GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder,
+                                 final ShapeManager shapeManager,
+                                 final Event<CanvasElementAddedEvent> canvasElementAddedEvent,
+                                 final Event<CanvasElementRemovedEvent> canvasElementRemovedEvent,
+                                 final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent,
+                                 final Event<CanvasElementsClearEvent> canvasElementsClearEvent,
+                                 final CanvasCommandFactory canvasCommandFactory) {
         this.clientDefinitionManager = clientDefinitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.modelRulesManager = modelRulesManager;
@@ -118,58 +118,58 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     }
 
     @Override
-    public CanvasHandler<D, C> initialize( final C canvas ) {
+    public CanvasHandler<D, C> initialize(final C canvas) {
         this.canvas = canvas;
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public AbstractCanvasHandler<D, C> draw( final D diagram ) {
+    @SuppressWarnings("unchecked")
+    public AbstractCanvasHandler<D, C> draw(final D diagram) {
         this.diagram = diagram;
         // Initialize the graph handler that provides processing and querying operations over the graph.
-        this.graphIndex = indexBuilder.build( diagram.getGraph() );
-        initializeGraphBounds( diagram );
+        this.graphIndex = indexBuilder.build(diagram.getGraph());
+        initializeGraphBounds(diagram);
         doLoadRules();
         return this;
     }
 
     // TODO: just temporal...
-    @SuppressWarnings( "unchecked" )
-    private void initializeGraphBounds( final D diagram ) {
+    @SuppressWarnings("unchecked")
+    private void initializeGraphBounds(final D diagram) {
         final double w = getCanvas().getWidth();
         final double h = getCanvas().getHeight();
-        final Bounds bounds = new BoundsImpl( new BoundImpl( 0d,
-                                                             0d ),
-                                              new BoundImpl( w,
-                                                             h ) );
+        final Bounds bounds = new BoundsImpl(new BoundImpl(0d,
+                                                           0d),
+                                             new BoundImpl(w,
+                                                           h));
         final Graph<DefinitionSet, ?> graph = diagram.getGraph();
-        graph.getContent().setBounds( bounds );
+        graph.getContent().setBounds(bounds);
     }
 
     protected void doLoadRules() {
         // Load the rules that apply for the diagram.
         final String defSetId = getDiagram().getMetadata().getDefinitionSetId();
-        clientFactoryServices.newDefinition( defSetId,
-                                             new ServiceCallback<Object>() {
-                                                 @Override
-                                                 public void onSuccess( final Object definitionSet ) {
-                                                     final Collection<Rule> rules = clientDefinitionManager.adapters().forRules().getRules( definitionSet );
-                                                     if ( rules != null ) {
-                                                         for ( final Rule rule : rules ) {
-                                                             graphRulesManager.addRule( rule );
-                                                             modelRulesManager.addRule( rule );
-                                                         }
-                                                     }
-                                                     // Run the draw command.
-                                                     canvasCommandFactory.draw().execute( AbstractCanvasHandler.this );
-                                                 }
+        clientFactoryServices.newDefinition(defSetId,
+                                            new ServiceCallback<Object>() {
+                                                @Override
+                                                public void onSuccess(final Object definitionSet) {
+                                                    final Collection<Rule> rules = clientDefinitionManager.adapters().forRules().getRules(definitionSet);
+                                                    if (rules != null) {
+                                                        for (final Rule rule : rules) {
+                                                            graphRulesManager.addRule(rule);
+                                                            modelRulesManager.addRule(rule);
+                                                        }
+                                                    }
+                                                    // Run the draw command.
+                                                    canvasCommandFactory.draw().execute(AbstractCanvasHandler.this);
+                                                }
 
-                                                 @Override
-                                                 public void onError( final ClientRuntimeError error ) {
-                                                     showError( error );
-                                                 }
-                                             } );
+                                                @Override
+                                                public void onError(final ClientRuntimeError error) {
+                                                    showError(error);
+                                                }
+                                            });
     }
 
     @Override
@@ -188,271 +188,271 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         ***************************************************************************************
      */
 
-    @SuppressWarnings( "unchecked" )
-    public void register( final String shapeSetId,
-                          final Element<View<?>> candidate ) {
+    @SuppressWarnings("unchecked")
+    public void register(final String shapeSetId,
+                         final Element<View<?>> candidate) {
         final ShapeFactory<Object, AbstractCanvasHandler, Shape> factory = shapeManager
-                .getShapeSet( shapeSetId )
+                .getShapeSet(shapeSetId)
                 .getShapeFactory();
-        register( factory,
-                  candidate,
-                  true );
+        register(factory,
+                 candidate,
+                 true);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void register( final ShapeFactory<Object, AbstractCanvasHandler, Shape> factory,
-                          final Element<View<?>> candidate,
-                          final boolean fireEvents ) {
+    @SuppressWarnings("unchecked")
+    public void register(final ShapeFactory<Object, AbstractCanvasHandler, Shape> factory,
+                         final Element<View<?>> candidate,
+                         final boolean fireEvents) {
         assert factory != null && candidate != null;
-        final Shape shape = factory.build( candidate.getContent().getDefinition(),
-                                           AbstractCanvasHandler.this );
+        final Shape shape = factory.build(candidate.getContent().getDefinition(),
+                                          AbstractCanvasHandler.this);
         // Set the same identifier as the graph element's one.
-        if ( null == shape.getUUID() ) {
-            shape.setUUID( candidate.getUUID() );
+        if (null == shape.getUUID()) {
+            shape.setUUID(candidate.getUUID());
         }
         // Add the shapes on canvas and fire events.
-        addShape( shape );
+        addShape(shape);
         canvas.draw();
-        if ( fireEvents ) {
+        if (fireEvents) {
             // Fire listeners.
-            fireCanvasElementAdded( candidate );
+            fireCanvasElementAdded(candidate);
             // Fire updates.
-            afterElementAdded( candidate,
-                               shape );
+            afterElementAdded(candidate,
+                              shape);
         }
     }
 
-    public void deregister( final Element element ) {
-        deregister( element,
-                    true );
+    public void deregister(final Element element) {
+        deregister(element,
+                   true);
     }
 
-    public void deregister( final Element element,
-                            final boolean fireEvents ) {
-        final Shape shape = canvas.getShape( element.getUUID() );
-        if ( fireEvents ) {
+    public void deregister(final Element element,
+                           final boolean fireEvents) {
+        final Shape shape = canvas.getShape(element.getUUID());
+        if (fireEvents) {
             // Fire listeners.
-            fireCanvasElementRemoved( element );
+            fireCanvasElementRemoved(element);
             // Fire events.
-            beforeElementDeleted( element,
-                                  shape );
+            beforeElementDeleted(element,
+                                 shape);
         }
-        doDeregister( shape,
-                      element );
-        removeShape( shape );
+        doDeregister(shape,
+                     element);
+        removeShape(shape);
         canvas.draw();
-        if ( fireEvents ) {
-            afterElementDeleted( element,
-                                 shape );
+        if (fireEvents) {
+            afterElementDeleted(element,
+                                shape);
         }
     }
 
-    protected void doDeregister( final Shape shape,
-                                 final Element element ) {
+    protected void doDeregister(final Shape shape,
+                                final Element element) {
     }
 
-    public void applyElementMutation( final Element element,
-                                      final MutationContext mutationContext ) {
-        applyElementMutation( element,
-                              true,
-                              true,
-                              mutationContext );
+    public void applyElementMutation(final Element element,
+                                     final MutationContext mutationContext) {
+        applyElementMutation(element,
+                             true,
+                             true,
+                             mutationContext);
     }
 
-    public void updateElementPosition( final Element element,
-                                       final MutationContext mutationContext ) {
-        applyElementMutation( element,
-                              true,
-                              false,
-                              mutationContext );
+    public void updateElementPosition(final Element element,
+                                      final MutationContext mutationContext) {
+        applyElementMutation(element,
+                             true,
+                             false,
+                             mutationContext);
     }
 
-    public void updateElementProperties( final Element element,
-                                         final MutationContext mutationContext ) {
-        applyElementMutation( element,
-                              false,
-                              true,
-                              mutationContext );
+    public void updateElementProperties(final Element element,
+                                        final MutationContext mutationContext) {
+        applyElementMutation(element,
+                             false,
+                             true,
+                             mutationContext);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void applyElementMutation( final Element candidate,
-                                      final boolean applyPosition,
-                                      final boolean applyProperties,
-                                      final MutationContext mutationContext ) {
-        if ( null != candidate && !isCanvasRoot( candidate ) ) {
-            final Shape shape = canvas.getShape( candidate.getUUID() );
-            if ( shape instanceof GraphShape ) {
-                final GraphShape graphShape = ( GraphShape ) shape;
-                if ( applyPosition ) {
-                    graphShape.applyPosition( candidate,
-                                              mutationContext );
+    @SuppressWarnings("unchecked")
+    public void applyElementMutation(final Element candidate,
+                                     final boolean applyPosition,
+                                     final boolean applyProperties,
+                                     final MutationContext mutationContext) {
+        if (null != candidate && !isCanvasRoot(candidate)) {
+            final Shape shape = canvas.getShape(candidate.getUUID());
+            if (shape instanceof GraphShape) {
+                final GraphShape graphShape = (GraphShape) shape;
+                if (applyPosition) {
+                    graphShape.applyPosition(candidate,
+                                             mutationContext);
                 }
-                if ( applyProperties ) {
-                    graphShape.applyProperties( candidate,
-                                                mutationContext );
+                if (applyProperties) {
+                    graphShape.applyProperties(candidate,
+                                               mutationContext);
                 }
-                beforeElementUpdated( candidate,
-                                      graphShape );
+                beforeElementUpdated(candidate,
+                                     graphShape);
                 canvas.draw();
-                fireCanvasElementUpdated( candidate );
-                afterElementUpdated( candidate,
-                                     graphShape );
+                fireCanvasElementUpdated(candidate);
+                afterElementUpdated(candidate,
+                                    graphShape);
             }
         }
     }
 
-    public void addShape( final Shape shape ) {
-        shape.getShapeView().setZIndex( 0 );
-        canvas.addShape( shape );
+    public void addShape(final Shape shape) {
+        shape.getShapeView().setZIndex(0);
+        canvas.addShape(shape);
     }
 
-    public void removeShape( final Shape shape ) {
-        canvas.deleteShape( shape );
+    public void removeShape(final Shape shape) {
+        canvas.deleteShape(shape);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void addChild( final Element parent,
-                          final Element child ) {
-        final Shape childShape = canvas.getShape( child.getUUID() );
-        if ( !isCanvasRoot( parent ) ) {
-            final Shape parentShape = canvas.getShape( parent.getUUID() );
-            handleParentChildZIndex( parent,
-                                     child,
-                                     parentShape,
-                                     childShape,
-                                     true );
-            canvas.addChildShape( parentShape,
-                                  childShape );
+    @SuppressWarnings("unchecked")
+    public void addChild(final Element parent,
+                         final Element child) {
+        final Shape childShape = canvas.getShape(child.getUUID());
+        if (!isCanvasRoot(parent)) {
+            final Shape parentShape = canvas.getShape(parent.getUUID());
+            handleParentChildZIndex(parent,
+                                    child,
+                                    parentShape,
+                                    childShape,
+                                    true);
+            canvas.addChildShape(parentShape,
+                                 childShape);
         } else {
             // -- Special case when parent is the canvas root --
             // Ensure the shape is added into the layer, but no need to register it again and generate new
             // handlers ( f.i. using canvas#addShape() method ).
-            canvas.getLayer().addShape( childShape.getShapeView() );
+            canvas.getLayer().addShape(childShape.getShapeView());
         }
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void removeChild( final String parentUUID,
-                             final String childUUID ) {
-        final Shape childShape = canvas.getShape( childUUID );
-        if ( !isCanvasRoot( parentUUID ) ) {
-            final Shape parentShape = canvas.getShape( parentUUID );
-            handleParentChildZIndex( null,
-                                     null,
-                                     parentShape,
-                                     childShape,
-                                     false );
-            canvas.deleteChildShape( parentShape,
-                                     childShape );
+    @SuppressWarnings("unchecked")
+    public void removeChild(final String parentUUID,
+                            final String childUUID) {
+        final Shape childShape = canvas.getShape(childUUID);
+        if (!isCanvasRoot(parentUUID)) {
+            final Shape parentShape = canvas.getShape(parentUUID);
+            handleParentChildZIndex(null,
+                                    null,
+                                    parentShape,
+                                    childShape,
+                                    false);
+            canvas.deleteChildShape(parentShape,
+                                    childShape);
         } else {
             // -- Special case when parent is the canvas root --
             // Ensure the shape is removed from the layer, but no need to deregister any
             // handlers ( f.i. using canvas#removeShape() method ).
-            canvas.getLayer().removeShape( childShape.getShapeView() );
+            canvas.getLayer().removeShape(childShape.getShapeView());
         }
     }
 
-    private boolean isCanvasRoot( final Element parent ) {
-        return CanvasLayoutUtils.isCanvasRoot( getDiagram(),
-                                               parent );
+    private boolean isCanvasRoot(final Element parent) {
+        return CanvasLayoutUtils.isCanvasRoot(getDiagram(),
+                                              parent);
     }
 
-    private boolean isCanvasRoot( final String pUUID ) {
-        return CanvasLayoutUtils.isCanvasRoot( getDiagram(),
-                                               pUUID );
+    private boolean isCanvasRoot(final String pUUID) {
+        return CanvasLayoutUtils.isCanvasRoot(getDiagram(),
+                                              pUUID);
     }
 
-    public void dock( final Element parent,
-                      final Element child ) {
-        if ( !isCanvasRoot( parent ) ) {
-            final Shape parentShape = canvas.getShape( parent.getUUID() );
-            final Shape childShape = canvas.getShape( child.getUUID() );
-            handleParentChildZIndex( parent,
-                                     child,
-                                     parentShape,
-                                     childShape,
-                                     true );
-            canvas.dock( parentShape,
-                         childShape );
+    public void dock(final Element parent,
+                     final Element child) {
+        if (!isCanvasRoot(parent)) {
+            final Shape parentShape = canvas.getShape(parent.getUUID());
+            final Shape childShape = canvas.getShape(child.getUUID());
+            handleParentChildZIndex(parent,
+                                    child,
+                                    parentShape,
+                                    childShape,
+                                    true);
+            canvas.dock(parentShape,
+                        childShape);
         }
     }
 
-    public void undock( final String parentUUID,
-                        final String childUUID ) {
-        if ( !isCanvasRoot( parentUUID ) ) {
-            final Shape parentShape = canvas.getShape( parentUUID );
-            final Shape childShape = canvas.getShape( childUUID );
-            handleParentChildZIndex( null,
-                                     null,
-                                     parentShape,
-                                     childShape,
-                                     false );
-            canvas.undock( parentShape,
-                           childShape );
+    public void undock(final String parentUUID,
+                       final String childUUID) {
+        if (!isCanvasRoot(parentUUID)) {
+            final Shape parentShape = canvas.getShape(parentUUID);
+            final Shape childShape = canvas.getShape(childUUID);
+            handleParentChildZIndex(null,
+                                    null,
+                                    parentShape,
+                                    childShape,
+                                    false);
+            canvas.undock(parentShape,
+                          childShape);
         }
     }
 
-    protected void handleParentChildZIndex( final Element parent,
-                                            final Element child,
-                                            final Shape parentShape,
-                                            final Shape childShape,
-                                            final boolean add ) {
-        if ( add ) {
-            handleZIndex( childShape,
-                          parentShape.getShapeView().getZIndex() + 1 );
-            handleZIndex( child,
-                          parentShape.getShapeView().getZIndex() + 1 );
+    protected void handleParentChildZIndex(final Element parent,
+                                           final Element child,
+                                           final Shape parentShape,
+                                           final Shape childShape,
+                                           final boolean add) {
+        if (add) {
+            handleZIndex(childShape,
+                         parentShape.getShapeView().getZIndex() + 1);
+            handleZIndex(child,
+                         parentShape.getShapeView().getZIndex() + 1);
         } else {
-            handleZIndex( childShape,
-                          0 );
-            final Element element = getGraphIndex().get( childShape.getUUID() );
-            if ( null != element ) {
-                handleZIndex( element,
-                              0 );
+            handleZIndex(childShape,
+                         0);
+            final Element element = getGraphIndex().get(childShape.getUUID());
+            if (null != element) {
+                handleZIndex(element,
+                             0);
             }
         }
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected void handleZIndex( final Element child,
-                                 final int zindex ) {
+    @SuppressWarnings("unchecked")
+    protected void handleZIndex(final Element child,
+                                final int zindex) {
         // ZIndex for child shape's outgoing connectors.
-        if ( child instanceof Node ) {
-            final Node childNode = ( Node ) child;
+        if (child instanceof Node) {
+            final Node childNode = (Node) child;
             final List<Edge> outEdges = childNode.getOutEdges();
-            if ( null != outEdges && !outEdges.isEmpty() ) {
+            if (null != outEdges && !outEdges.isEmpty()) {
                 final Set<String> suuids = new LinkedHashSet<>();
-                for ( final Edge edge : outEdges ) {
-                    if ( edge.getContent() instanceof View ) {
-                        suuids.add( edge.getUUID() );
+                for (final Edge edge : outEdges) {
+                    if (edge.getContent() instanceof View) {
+                        suuids.add(edge.getUUID());
                     }
                 }
-                handleZIndex( suuids,
-                              zindex );
+                handleZIndex(suuids,
+                             zindex);
             }
         }
     }
 
-    protected void handleZIndex( final Set<String> shapeUUIDs,
-                                 final int zindex ) {
-        for ( final String suuid : shapeUUIDs ) {
-            final Shape edgeShape = canvas.getShape( suuid );
-            handleZIndex( edgeShape,
-                          zindex );
+    protected void handleZIndex(final Set<String> shapeUUIDs,
+                                final int zindex) {
+        for (final String suuid : shapeUUIDs) {
+            final Shape edgeShape = canvas.getShape(suuid);
+            handleZIndex(edgeShape,
+                         zindex);
         }
     }
 
-    protected void handleZIndex( final Shape shape,
-                                 final int zindex ) {
-        if ( null != shape ) {
-            shape.getShapeView().setZIndex( zindex );
+    protected void handleZIndex(final Shape shape,
+                                final int zindex) {
+        if (null != shape) {
+            shape.getShapeView().setZIndex(zindex);
         }
     }
 
     public void clearCanvas() {
         fireCanvasClear();
-        canvasElementsClearEvent.fire( new CanvasElementsClearEvent( this ) );
+        canvasElementsClearEvent.fire(new CanvasElementsClearEvent(this));
         canvas.clear();
         canvas.draw();
     }
@@ -477,21 +477,21 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     }
 
     private void destroyGraphIndex() {
-        if ( null != graphIndex ) {
+        if (null != graphIndex) {
             graphIndex.clear();
             graphIndex = null;
         }
     }
 
     @Override
-    public HasCanvasListeners<CanvasElementListener> addRegistrationListener( final CanvasElementListener instance ) {
-        listeners.add( instance );
+    public HasCanvasListeners<CanvasElementListener> addRegistrationListener(final CanvasElementListener instance) {
+        listeners.add(instance);
         return this;
     }
 
     @Override
-    public HasCanvasListeners<CanvasElementListener> removeRegistrationListener( final CanvasElementListener instance ) {
-        listeners.remove( instance );
+    public HasCanvasListeners<CanvasElementListener> removeRegistrationListener(final CanvasElementListener instance) {
+        listeners.remove(instance);
         return this;
     }
 
@@ -501,72 +501,72 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         return this;
     }
 
-    public void fireCanvasElementRemoved( final Element candidate ) {
-        for ( final CanvasElementListener instance : listeners ) {
-            instance.deregister( candidate );
+    public void fireCanvasElementRemoved(final Element candidate) {
+        for (final CanvasElementListener instance : listeners) {
+            instance.deregister(candidate);
         }
     }
 
-    public void fireCanvasElementAdded( final Element candidate ) {
-        for ( final CanvasElementListener instance : listeners ) {
-            instance.register( candidate );
+    public void fireCanvasElementAdded(final Element candidate) {
+        for (final CanvasElementListener instance : listeners) {
+            instance.register(candidate);
         }
     }
 
-    public void fireCanvasElementUpdated( final Element candidate ) {
-        for ( final CanvasElementListener instance : listeners ) {
-            instance.update( candidate );
+    public void fireCanvasElementUpdated(final Element candidate) {
+        for (final CanvasElementListener instance : listeners) {
+            instance.update(candidate);
         }
     }
 
     protected void fireCanvasClear() {
-        for ( final CanvasElementListener instance : listeners ) {
+        for (final CanvasElementListener instance : listeners) {
             instance.clear();
         }
     }
 
-    protected void afterElementAdded( final Element element,
-                                      final Shape shape ) {
+    protected void afterElementAdded(final Element element,
+                                     final Shape shape) {
         // Fire a canvas element added event.
-        canvasElementAddedEvent.fire( new CanvasElementAddedEvent( this,
-                                                                   element ) );
+        canvasElementAddedEvent.fire(new CanvasElementAddedEvent(this,
+                                                                 element));
     }
 
-    protected void beforeElementDeleted( final Element element,
-                                         final Shape shape ) {
+    protected void beforeElementDeleted(final Element element,
+                                        final Shape shape) {
         // Fire a canvas element deleted event.
-        canvasElementRemovedEvent.fire( new CanvasElementRemovedEvent( this,
-                                                                       element ) );
+        canvasElementRemovedEvent.fire(new CanvasElementRemovedEvent(this,
+                                                                     element));
     }
 
-    protected void afterElementDeleted( final Element element,
-                                        final Shape shape ) {
+    protected void afterElementDeleted(final Element element,
+                                       final Shape shape) {
     }
 
-    protected void beforeElementUpdated( final Element element,
-                                         final Shape shape ) {
-        if ( shape instanceof Lifecycle ) {
-            final Lifecycle lifecycle = ( Lifecycle ) shape;
+    protected void beforeElementUpdated(final Element element,
+                                        final Shape shape) {
+        if (shape instanceof Lifecycle) {
+            final Lifecycle lifecycle = (Lifecycle) shape;
             lifecycle.beforeDraw();
         }
     }
 
-    protected void afterElementUpdated( final Element element,
-                                        final Shape shape ) {
-        if ( shape instanceof Lifecycle ) {
-            final Lifecycle lifecycle = ( Lifecycle ) shape;
+    protected void afterElementUpdated(final Element element,
+                                       final Shape shape) {
+        if (shape instanceof Lifecycle) {
+            final Lifecycle lifecycle = (Lifecycle) shape;
             lifecycle.afterDraw();
         }
         // Fire a canvas element added event.
-        canvasElementUpdatedEvent.fire( new CanvasElementUpdatedEvent( this,
-                                                                       element ) );
+        canvasElementUpdatedEvent.fire(new CanvasElementUpdatedEvent(this,
+                                                                     element));
     }
 
-    protected void showError( final ClientRuntimeError error ) {
+    protected void showError(final ClientRuntimeError error) {
         final String message = error.getThrowable() != null ?
                 error.getThrowable().getMessage() : error.getMessage();
-        log( Level.SEVERE,
-             message );
+        log(Level.SEVERE,
+            message);
     }
 
     public ClientDefinitionManager getClientDefinitionManager() {
@@ -601,20 +601,20 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         return shapeManager;
     }
 
-    protected String getDefinitionId( final Object definition ) {
-        return clientDefinitionManager.adapters().forDefinition().getId( definition );
+    protected String getDefinitionId(final Object definition) {
+        return clientDefinitionManager.adapters().forDefinition().getId(definition);
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof AbstractCanvasHandler ) ) {
+        if (!(o instanceof AbstractCanvasHandler)) {
             return false;
         }
-        AbstractCanvasHandler that = ( AbstractCanvasHandler ) o;
-        return uuid.equals( that.uuid );
+        AbstractCanvasHandler that = (AbstractCanvasHandler) o;
+        return uuid.equals(that.uuid);
     }
 
     @Override
@@ -627,11 +627,11 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         return "AbstractCanvasHandler [" + uuid + "]";
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

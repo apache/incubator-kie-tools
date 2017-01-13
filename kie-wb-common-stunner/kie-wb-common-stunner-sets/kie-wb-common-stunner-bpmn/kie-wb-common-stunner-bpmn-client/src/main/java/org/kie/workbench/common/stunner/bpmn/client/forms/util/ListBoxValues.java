@@ -44,24 +44,24 @@ public class ListBoxValues {
 
     public interface ValueTester {
 
-        String getNonCustomValueForUserString( String userValue );
+        String getNonCustomValueForUserString(final String userValue);
     }
 
     ValueTester valueTester = null;
 
-    public ListBoxValues( final String customPrompt,
-                          final String editPrefix,
-                          final ValueTester valueTester,
-                          final int maxDisplayLength ) {
+    public ListBoxValues(final String customPrompt,
+                         final String editPrefix,
+                         final ValueTester valueTester,
+                         final int maxDisplayLength) {
         this.customPrompt = customPrompt;
         this.editPrefix = editPrefix;
         this.valueTester = valueTester;
         this.maxDisplayLength = maxDisplayLength;
     }
 
-    public ListBoxValues( final String customPrompt,
-                          final String editPrefix,
-                          final ValueTester valueTester ) {
+    public ListBoxValues(final String customPrompt,
+                         final String editPrefix,
+                         final ValueTester valueTester) {
         this.customPrompt = customPrompt;
         this.editPrefix = editPrefix;
         this.valueTester = valueTester;
@@ -72,40 +72,40 @@ public class ListBoxValues {
         return editPrefix;
     }
 
-    public void addValues( List<String> acceptableValues ) {
+    public void addValues(final List<String> acceptableValues) {
         clear();
-        if ( acceptableValues != null ) {
-            List<String> displayValues = createDisplayValues( acceptableValues );
-            acceptableValuesWithoutCustomValues.addAll( displayValues );
-            acceptableValuesWithCustomValues.add( "" );
-            acceptableValuesWithCustomValues.add( customPrompt );
-            acceptableValuesWithCustomValues.addAll( displayValues );
+        if (acceptableValues != null) {
+            List<String> displayValues = createDisplayValues(acceptableValues);
+            acceptableValuesWithoutCustomValues.addAll(displayValues);
+            acceptableValuesWithCustomValues.add("");
+            acceptableValuesWithCustomValues.add(customPrompt);
+            acceptableValuesWithCustomValues.addAll(displayValues);
         }
     }
 
-    public String addCustomValue( String newValue,
-                                  String oldValue ) {
-        if ( oldValue != null && !oldValue.isEmpty() ) {
-            if ( acceptableValuesWithCustomValues.contains( oldValue ) ) {
-                acceptableValuesWithCustomValues.remove( oldValue );
+    public String addCustomValue(final String newValue,
+                                 final String oldValue) {
+        if (oldValue != null && !oldValue.isEmpty()) {
+            if (acceptableValuesWithCustomValues.contains(oldValue)) {
+                acceptableValuesWithCustomValues.remove(oldValue);
             }
-            if ( customValues.contains( oldValue ) ) {
-                customValues.remove( oldValue );
+            if (customValues.contains(oldValue)) {
+                customValues.remove(oldValue);
             }
             // Do not remove from mapDisplayValuesToValues
         }
-        if ( newValue != null && !newValue.isEmpty() ) {
-            String newDisplayValue = addDisplayValue( newValue );
-            if ( !acceptableValuesWithCustomValues.contains( newDisplayValue ) ) {
+        if (newValue != null && !newValue.isEmpty()) {
+            String newDisplayValue = addDisplayValue(newValue);
+            if (!acceptableValuesWithCustomValues.contains(newDisplayValue)) {
                 int index = 1;
-                if ( acceptableValuesWithCustomValues.size() < 1 ) {
+                if (acceptableValuesWithCustomValues.size() < 1) {
                     index = acceptableValuesWithCustomValues.size();
                 }
-                acceptableValuesWithCustomValues.add( index,
-                                                      newDisplayValue );
+                acceptableValuesWithCustomValues.add(index,
+                                                     newDisplayValue);
             }
-            if ( !customValues.contains( newDisplayValue ) ) {
-                customValues.add( newDisplayValue );
+            if (!customValues.contains(newDisplayValue)) {
+                customValues.add(newDisplayValue);
             }
             return newDisplayValue;
         } else {
@@ -113,28 +113,28 @@ public class ListBoxValues {
         }
     }
 
-    public List<String> update( String currentValue ) {
-        String currentEditValuePrompt = getEditValuePrompt( editPrefix );
+    public List<String> update(final String currentValue) {
+        String currentEditValuePrompt = getEditValuePrompt(editPrefix);
         String newEditValuePrompt = editPrefix + currentValue + EDIT_SUFFIX;
-        if ( isCustomValue( currentValue ) ) {
-            if ( newEditValuePrompt.equals( currentEditValuePrompt ) ) {
+        if (isCustomValue(currentValue)) {
+            if (newEditValuePrompt.equals(currentEditValuePrompt)) {
                 return acceptableValuesWithCustomValues;
             }
-            if ( currentEditValuePrompt != null ) {
-                acceptableValuesWithCustomValues.remove( currentEditValuePrompt );
+            if (currentEditValuePrompt != null) {
+                acceptableValuesWithCustomValues.remove(currentEditValuePrompt);
             }
-            int editPromptIndex = acceptableValuesWithCustomValues.indexOf( currentValue );
-            if ( editPromptIndex > -1 ) {
+            int editPromptIndex = acceptableValuesWithCustomValues.indexOf(currentValue);
+            if (editPromptIndex > -1) {
                 editPromptIndex++;
-            } else if ( acceptableValuesWithCustomValues.size() > 1 ) {
+            } else if (acceptableValuesWithCustomValues.size() > 1) {
                 editPromptIndex = 2;
             } else {
                 editPromptIndex = acceptableValuesWithCustomValues.size();
             }
-            acceptableValuesWithCustomValues.add( editPromptIndex,
-                                                  newEditValuePrompt );
-        } else if ( currentEditValuePrompt != null ) {
-            acceptableValuesWithCustomValues.remove( currentEditValuePrompt );
+            acceptableValuesWithCustomValues.add(editPromptIndex,
+                                                 newEditValuePrompt);
+        } else if (currentEditValuePrompt != null) {
+            acceptableValuesWithCustomValues.remove(currentEditValuePrompt);
         }
         return acceptableValuesWithCustomValues;
     }
@@ -147,11 +147,11 @@ public class ListBoxValues {
         return acceptableValuesWithoutCustomValues;
     }
 
-    public boolean isCustomValue( String value ) {
-        if ( value == null || value.isEmpty() ) {
+    public boolean isCustomValue(final String value) {
+        if (value == null || value.isEmpty()) {
             return false;
         } else {
-            return customValues.contains( value );
+            return customValues.contains(value);
         }
     }
 
@@ -162,11 +162,11 @@ public class ListBoxValues {
         mapDisplayValuesToValues.clear();
     }
 
-    protected String getEditValuePrompt( String editPrefix ) {
-        if ( acceptableValuesWithCustomValues.size() > 0 ) {
-            for ( int i = 0; i < acceptableValuesWithCustomValues.size(); i++ ) {
-                String value = acceptableValuesWithCustomValues.get( i );
-                if ( value.startsWith( editPrefix ) ) {
+    protected String getEditValuePrompt(final String editPrefix) {
+        if (acceptableValuesWithCustomValues.size() > 0) {
+            for (int i = 0; i < acceptableValuesWithCustomValues.size(); i++) {
+                String value = acceptableValuesWithCustomValues.get(i);
+                if (value.startsWith(editPrefix)) {
                     return value;
                 }
             }
@@ -174,11 +174,11 @@ public class ListBoxValues {
         return null;
     }
 
-    protected List<String> createDisplayValues( List<String> acceptableValues ) {
+    protected List<String> createDisplayValues(final List<String> acceptableValues) {
         List<String> displayValues = new ArrayList<String>();
-        for ( String value : acceptableValues ) {
-            if ( value != null ) {
-                displayValues.add( addDisplayValue( value ) );
+        for (String value : acceptableValues) {
+            if (value != null) {
+                displayValues.add(addDisplayValue(value));
             }
         }
         return displayValues;
@@ -195,53 +195,53 @@ public class ListBoxValues {
      * @param value the value
      * @return the displayValue for value
      */
-    protected String addDisplayValue( String value ) {
-        if ( mapDisplayValuesToValues.containsValue( value ) ) {
-            for ( Map.Entry<String, String> entry : mapDisplayValuesToValues.entrySet() ) {
-                if ( value.equals( entry.getValue() ) ) {
+    protected String addDisplayValue(final String value) {
+        if (mapDisplayValuesToValues.containsValue(value)) {
+            for (Map.Entry<String, String> entry : mapDisplayValuesToValues.entrySet()) {
+                if (value.equals(entry.getValue())) {
                     return entry.getKey();
                 }
             }
         }
         String displayValue = value;
         // Create special displayValue only for quoted constants longer than maxDisplayLength
-        if ( maxDisplayLength > 0 && value != null && StringUtils.isQuotedConstant( value ) && value.length() > maxDisplayLength + 2 ) {
-            String displayValueStart = value.substring( 0,
-                                                        maxDisplayLength + 1 );
+        if (maxDisplayLength > 0 && value != null && StringUtils.isQuotedConstant(value) && value.length() > maxDisplayLength + 2) {
+            String displayValueStart = value.substring(0,
+                                                       maxDisplayLength + 1);
             int nextIndex = 0;
-            for ( String existingDisplayValue : mapDisplayValuesToValues.keySet() ) {
-                if ( existingDisplayValue.startsWith( displayValueStart ) ) {
+            for (String existingDisplayValue : mapDisplayValuesToValues.keySet()) {
+                if (existingDisplayValue.startsWith(displayValueStart)) {
                     // Is it like "\"abcdeabcde...(01)\""
-                    if ( existingDisplayValue.length() == ( maxDisplayLength + 9 ) ) {
-                        String sExistingIndex = existingDisplayValue.substring( existingDisplayValue.length() - 4,
-                                                                                existingDisplayValue.length() - 2 );
+                    if (existingDisplayValue.length() == (maxDisplayLength + 9)) {
+                        String sExistingIndex = existingDisplayValue.substring(existingDisplayValue.length() - 4,
+                                                                               existingDisplayValue.length() - 2);
                         try {
-                            int existingIndex = Integer.parseInt( sExistingIndex );
-                            if ( nextIndex <= existingIndex ) {
+                            int existingIndex = Integer.parseInt(sExistingIndex);
+                            if (nextIndex <= existingIndex) {
                                 nextIndex = existingIndex + 1;
                             }
-                        } catch ( NumberFormatException nfe ) {
+                        } catch (NumberFormatException nfe) {
                             // do nothing
                         }
                     } else {
-                        if ( nextIndex == 0 ) {
+                        if (nextIndex == 0) {
                             nextIndex++;
                         }
                     }
                 }
             }
-            if ( nextIndex == 0 ) {
+            if (nextIndex == 0) {
                 displayValue = displayValueStart + "..." + "\"";
             } else {
-                String sNextIndex = Integer.toString( nextIndex );
-                if ( nextIndex < 10 ) {
+                String sNextIndex = Integer.toString(nextIndex);
+                if (nextIndex < 10) {
                     sNextIndex = "0" + sNextIndex;
                 }
                 displayValue = displayValueStart + "...(" + sNextIndex + ")\"";
             }
         }
-        mapDisplayValuesToValues.put( displayValue,
-                                      value );
+        mapDisplayValuesToValues.put(displayValue,
+                                     value);
         return displayValue;
     }
 
@@ -250,16 +250,16 @@ public class ListBoxValues {
      * @param key
      * @return
      */
-    public String getValueForDisplayValue( String key ) {
-        if ( mapDisplayValuesToValues.containsKey( key ) ) {
-            return mapDisplayValuesToValues.get( key );
+    public String getValueForDisplayValue(final String key) {
+        if (mapDisplayValuesToValues.containsKey(key)) {
+            return mapDisplayValuesToValues.get(key);
         }
         return key;
     }
 
-    public String getNonCustomValueForUserString( String userValue ) {
-        if ( valueTester != null ) {
-            return valueTester.getNonCustomValueForUserString( userValue );
+    public String getNonCustomValueForUserString(final String userValue) {
+        if (valueTester != null) {
+            return valueTester.getNonCustomValueForUserString(userValue);
         } else {
             return null;
         }
@@ -267,14 +267,14 @@ public class ListBoxValues {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append( "acceptableValuesWithoutCustomValues:\n" );
-        for ( String value : acceptableValuesWithoutCustomValues ) {
-            sb.append( '\t' ).append( value ).append( ",\n" );
+        sb.append("acceptableValuesWithoutCustomValues:\n");
+        for (String value : acceptableValuesWithoutCustomValues) {
+            sb.append('\t').append(value).append(",\n");
         }
-        sb.append( '\n' );
-        sb.append( "acceptableValuesWithCustomValues:\n" );
-        for ( String value : acceptableValuesWithCustomValues ) {
-            sb.append( '\t' ).append( value ).append( ",\n" );
+        sb.append('\n');
+        sb.append("acceptableValuesWithCustomValues:\n");
+        for (String value : acceptableValuesWithCustomValues) {
+            sb.append('\t').append(value).append(",\n");
         }
         return sb.toString();
     }

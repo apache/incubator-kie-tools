@@ -27,8 +27,8 @@ import org.kie.workbench.common.stunner.core.definition.impl.PropertySetImpl;
 public class DefaultPropertySetAdapter implements PropertySetAdapter<PropertySetImpl> {
 
     @Override
-    public boolean accepts( final Class<?> pojo ) {
-        return pojo.getName().equals( PropertySetImpl.class.getName() );
+    public boolean accepts(final Class<?> pojo) {
+        return pojo.getName().equals(PropertySetImpl.class.getName());
     }
 
     @Override
@@ -37,17 +37,17 @@ public class DefaultPropertySetAdapter implements PropertySetAdapter<PropertySet
     }
 
     @Override
-    public String getId( final PropertySetImpl pojo ) {
+    public String getId(final PropertySetImpl pojo) {
         return null;
     }
 
     @Override
-    public String getName( final PropertySetImpl pojo ) {
+    public String getName(final PropertySetImpl pojo) {
         return null;
     }
 
     @Override
-    public Set<?> getProperties( final PropertySetImpl pojo ) {
+    public Set<?> getProperties(final PropertySetImpl pojo) {
         return null;
     }
 

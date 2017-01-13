@@ -29,15 +29,15 @@ public class ColorType implements PropertyType {
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ColorType ) ) {
+        if (!(o instanceof ColorType)) {
             return false;
         }
-        ColorType that = ( ColorType ) o;
-        if ( !name.equals( that.name ) ) {
+        ColorType that = (ColorType) o;
+        if (!name.equals(that.name)) {
             return false;
         }
         return true;

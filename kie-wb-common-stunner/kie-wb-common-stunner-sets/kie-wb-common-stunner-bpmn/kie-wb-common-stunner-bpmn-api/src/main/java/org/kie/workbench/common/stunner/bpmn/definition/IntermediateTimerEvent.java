@@ -48,8 +48,8 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIE
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = IntermediateTimerEvent.IntermediateTimerEventBuilder.class )
-@Shape( factory = BasicShapesFactory.class, def = IntermediateTimerEventShapeDef.class )
+@Definition(graphFactory = NodeFactory.class, builder = IntermediateTimerEvent.IntermediateTimerEventBuilder.class)
+@Shape(factory = BasicShapesFactory.class, def = IntermediateTimerEventShapeDef.class)
 public class IntermediateTimerEvent implements BPMNDefinition {
 
     @Category
@@ -63,12 +63,12 @@ public class IntermediateTimerEvent implements BPMNDefinition {
             "is reached or a particular duration is over.";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_GENERAL_SETTINGS, position = 0 )
+    @FieldDef(label = FIELDDEF_GENERAL_SETTINGS, position = 0)
     @Valid
     private BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
+    @FieldDef(label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1)
     @Valid
     protected IntermediateTimerEventExecutionSet executionSet;
 
@@ -87,19 +87,19 @@ public class IntermediateTimerEvent implements BPMNDefinition {
 
     @Labels
     private final Set<String> labels = new HashSet<String>() {{
-        add( "all" );
-        add( "sequence_start" );
-        add( "sequence_end" );
-        add( "to_task_event" );
-        add( "from_task_event" );
-        add( "fromtoall" );
-        add( "choreography_sequence_start" );
-        add( "choreography_sequence_end" );
-        add( "FromEventbasedGateway" );
-        add( "IntermediateEventOnSubprocessBoundary" );
-        add( "IntermediateEventOnActivityBoundary" );
-        add( "EventOnChoreographyActivityBoundary" );
-        add( "IntermediateEventsMorph" );
+        add("all");
+        add("sequence_start");
+        add("sequence_end");
+        add("to_task_event");
+        add("from_task_event");
+        add("fromtoall");
+        add("choreography_sequence_start");
+        add("choreography_sequence_end");
+        add("FromEventbasedGateway");
+        add("IntermediateEventOnSubprocessBoundary");
+        add("IntermediateEventOnActivityBoundary");
+        add("EventOnChoreographyActivityBoundary");
+        add("IntermediateEventsMorph");
     }};
 
     @NonPortable
@@ -112,24 +112,24 @@ public class IntermediateTimerEvent implements BPMNDefinition {
 
         @Override
         public IntermediateTimerEvent build() {
-            return new IntermediateTimerEvent( new BPMNGeneralSet( "Timer" ),
-                                               new IntermediateTimerEventExecutionSet(),
-                                               new BackgroundSet( COLOR,
-                                                                  BORDER_COLOR,
-                                                                  BORDER_SIZE ),
-                                               new FontSet(),
-                                               new CircleDimensionSet( new Radius( RADIUS ) ) );
+            return new IntermediateTimerEvent(new BPMNGeneralSet("Timer"),
+                                              new IntermediateTimerEventExecutionSet(),
+                                              new BackgroundSet(COLOR,
+                                                                BORDER_COLOR,
+                                                                BORDER_SIZE),
+                                              new FontSet(),
+                                              new CircleDimensionSet(new Radius(RADIUS)));
         }
     }
 
     public IntermediateTimerEvent() {
     }
 
-    public IntermediateTimerEvent( @MapsTo( "general" ) BPMNGeneralSet general,
-                                   @MapsTo( "executionSet" ) IntermediateTimerEventExecutionSet executionSet,
-                                   @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                                   @MapsTo( "fontSet" ) FontSet fontSet,
-                                   @MapsTo( "dimensionsSet" ) CircleDimensionSet dimensionsSet ) {
+    public IntermediateTimerEvent(final @MapsTo("general") BPMNGeneralSet general,
+                                  final @MapsTo("executionSet") IntermediateTimerEventExecutionSet executionSet,
+                                  final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                                  final @MapsTo("fontSet") FontSet fontSet,
+                                  final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
         this.general = general;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
@@ -165,15 +165,15 @@ public class IntermediateTimerEvent implements BPMNDefinition {
         return fontSet;
     }
 
-    public void setGeneral( BPMNGeneralSet general ) {
+    public void setGeneral(final BPMNGeneralSet general) {
         this.general = general;
     }
 
-    public void setBackgroundSet( BackgroundSet backgroundSet ) {
+    public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
-    public void setFontSet( FontSet fontSet ) {
+    public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
     }
 
@@ -181,7 +181,7 @@ public class IntermediateTimerEvent implements BPMNDefinition {
         return dimensionsSet;
     }
 
-    public void setDimensionsSet( CircleDimensionSet dimensionsSet ) {
+    public void setDimensionsSet(final CircleDimensionSet dimensionsSet) {
         this.dimensionsSet = dimensionsSet;
     }
 
@@ -189,7 +189,7 @@ public class IntermediateTimerEvent implements BPMNDefinition {
         return executionSet;
     }
 
-    public void setExecutionSet( IntermediateTimerEventExecutionSet executionSet ) {
+    public void setExecutionSet(final IntermediateTimerEventExecutionSet executionSet) {
         this.executionSet = executionSet;
     }
 }

@@ -28,17 +28,17 @@ public abstract class AbstractBasicShape<W, V extends BasicShapeView, P extends 
 
     protected final transient P proxy;
 
-    public AbstractBasicShape( final V view,
-                               final P proxy ) {
-        super( view );
+    public AbstractBasicShape(final V view,
+                              final P proxy) {
+        super(view);
         this.proxy = proxy;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public void applyProperties( final Node<View<W>, Edge> element,
-                                 final MutationContext mutationContext ) {
-        super.applyProperties( element,
-                               mutationContext );
+    @SuppressWarnings("unchecked")
+    public void applyProperties(final Node<View<W>, Edge> element,
+                                final MutationContext mutationContext) {
+        super.applyProperties(element,
+                              mutationContext);
     }
 }

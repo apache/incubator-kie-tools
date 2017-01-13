@@ -36,7 +36,7 @@ public interface GraphCardinalityRuleManager
      * @param candidates The node to add or remove.
      * @param operation Add or remove
      */
-    RuleViolations evaluate( final Graph<?, ? extends Node> graph,
-                             final Node<? extends View<?>, ? extends Edge> candidates,
-                             final Operation operation );
+    RuleViolations evaluate(final Graph<?, ? extends Node> graph,
+                            final Node<? extends View<?>, ? extends Edge> candidates,
+                            final Operation operation);
 }

@@ -23,7 +23,7 @@ public abstract class AbstractStunnerClientResourceType<R extends DefinitionSetR
 
     private final R definitionSetResourceType;
 
-    protected AbstractStunnerClientResourceType( final R definitionSetResourceType ) {
+    protected AbstractStunnerClientResourceType(final R definitionSetResourceType) {
         this.definitionSetResourceType = definitionSetResourceType;
     }
 
@@ -58,8 +58,8 @@ public abstract class AbstractStunnerClientResourceType<R extends DefinitionSetR
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        return getDefinitionSetResourceType().accept( path );
+    public boolean accept(final Path path) {
+        return getDefinitionSetResourceType().accept(path);
     }
 
     private R getDefinitionSetResourceType() {

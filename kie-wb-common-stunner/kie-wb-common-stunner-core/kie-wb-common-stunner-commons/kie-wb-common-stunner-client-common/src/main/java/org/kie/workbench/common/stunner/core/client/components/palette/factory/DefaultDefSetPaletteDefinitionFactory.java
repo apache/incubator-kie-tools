@@ -31,14 +31,14 @@ public class DefaultDefSetPaletteDefinitionFactory extends AbstractPaletteDefini
         implements DefSetPaletteDefinitionFactory {
 
     @Inject
-    public DefaultDefSetPaletteDefinitionFactory( final ShapeManager shapeManager,
-                                                  final DefinitionSetPaletteBuilder paletteBuilder ) {
-        super( shapeManager,
-               paletteBuilder );
+    public DefaultDefSetPaletteDefinitionFactory(final ShapeManager shapeManager,
+                                                 final DefinitionSetPaletteBuilder paletteBuilder) {
+        super(shapeManager,
+              paletteBuilder);
     }
 
     @Override
-    public boolean accepts( final String defSetId ) {
+    public boolean accepts(final String defSetId) {
         return false;
     }
 }

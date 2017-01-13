@@ -39,26 +39,26 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIE
 
 @Portable
 @Bindable
-@Definition( graphFactory = EdgeFactory.class, builder = SequenceFlow.SequenceFlowBuilder.class )
+@Definition(graphFactory = EdgeFactory.class, builder = SequenceFlow.SequenceFlowBuilder.class)
 // *** Connection rules for sequence flows ****
-@CanConnect( startRole = "sequence_start", endRole = "sequence_end" )
-@CanConnect( startRole = "choreography_sequence_start", endRole = "choreography_sequence_end" )
-@CanConnect( startRole = "Exclusive_Eventbased_Gateway", endRole = "FromEventbasedGateway" )
-@CanConnect( startRole = "EventbasedGateway", endRole = "FromEventbasedGateway" )
+@CanConnect(startRole = "sequence_start", endRole = "sequence_end")
+@CanConnect(startRole = "choreography_sequence_start", endRole = "choreography_sequence_end")
+@CanConnect(startRole = "Exclusive_Eventbased_Gateway", endRole = "FromEventbasedGateway")
+@CanConnect(startRole = "EventbasedGateway", endRole = "FromEventbasedGateway")
 // **** Cardinality rules for connectors ****
 // No incoming sequence flows for start events.
-@EdgeOccurrences( role = "Startevents_all", type = EdgeOccurrences.EdgeType.INCOMING, max = 0 )
+@EdgeOccurrences(role = "Startevents_all", type = EdgeOccurrences.EdgeType.INCOMING, max = 0)
 // No outgoing sequence flows for end events.
-@EdgeOccurrences( role = "Endevents_all", type = EdgeOccurrences.EdgeType.OUTGOING, max = 0 )
+@EdgeOccurrences(role = "Endevents_all", type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 // A single outgoing sequence flows for messageflow_start roles, such as Tasks or Subprocess.
-@EdgeOccurrences( role = "messageflow_start", type = EdgeOccurrences.EdgeType.OUTGOING, max = 1 )
+@EdgeOccurrences(role = "messageflow_start", type = EdgeOccurrences.EdgeType.OUTGOING, max = 1)
 public class SequenceFlow extends BaseConnector {
 
     @Title
     public static final transient String title = "Sequence Flow";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
+    @FieldDef(label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1)
     @Valid
     protected SequenceFlowExecutionSet executionSet;
 
@@ -67,25 +67,25 @@ public class SequenceFlow extends BaseConnector {
 
         @Override
         public SequenceFlow build() {
-            return new SequenceFlow( new BPMNGeneralSet( "Sequence" ),
-                                     new SequenceFlowExecutionSet(),
-                                     new BackgroundSet( COLOR,
-                                                        BORDER_COLOR,
-                                                        BORDER_SIZE ),
-                                     new FontSet() );
+            return new SequenceFlow(new BPMNGeneralSet("Sequence"),
+                                    new SequenceFlowExecutionSet(),
+                                    new BackgroundSet(COLOR,
+                                                      BORDER_COLOR,
+                                                      BORDER_SIZE),
+                                    new FontSet());
         }
     }
 
     public SequenceFlow() {
     }
 
-    public SequenceFlow( @MapsTo( "general" ) BPMNGeneralSet general,
-                         @MapsTo( "executionSet" ) SequenceFlowExecutionSet executionSet,
-                         @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                         @MapsTo( "fontSet" ) FontSet fontSet ) {
-        super( general,
-               backgroundSet,
-               fontSet );
+    public SequenceFlow(final @MapsTo("general") BPMNGeneralSet general,
+                        final @MapsTo("executionSet") SequenceFlowExecutionSet executionSet,
+                        final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                        final @MapsTo("fontSet") FontSet fontSet) {
+        super(general,
+              backgroundSet,
+              fontSet);
         this.executionSet = executionSet;
     }
 
@@ -113,11 +113,11 @@ public class SequenceFlow extends BaseConnector {
         return backgroundSet;
     }
 
-    public void setGeneral( BPMNGeneralSet general ) {
+    public void setGeneral(final BPMNGeneralSet general) {
         this.general = general;
     }
 
-    public void setBackgroundSet( BackgroundSet backgroundSet ) {
+    public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
@@ -125,7 +125,7 @@ public class SequenceFlow extends BaseConnector {
         return executionSet;
     }
 
-    public void setExecutionSet( SequenceFlowExecutionSet executionSet ) {
+    public void setExecutionSet(final SequenceFlowExecutionSet executionSet) {
         this.executionSet = executionSet;
     }
 }

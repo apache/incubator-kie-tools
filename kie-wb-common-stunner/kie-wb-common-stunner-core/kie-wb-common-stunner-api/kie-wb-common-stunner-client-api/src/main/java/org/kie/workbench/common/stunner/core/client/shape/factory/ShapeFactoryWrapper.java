@@ -24,29 +24,29 @@ public abstract class ShapeFactoryWrapper<W, C, S extends Shape> implements Shap
     protected abstract ShapeFactory getFactory();
 
     @Override
-    public boolean accepts( final String definitionId ) {
-        return getFactory().accepts( definitionId );
+    public boolean accepts(final String definitionId) {
+        return getFactory().accepts(definitionId);
     }
 
     @Override
-    public String getDescription( final String definitionId ) {
-        return getFactory().getDescription( definitionId );
+    public String getDescription(final String definitionId) {
+        return getFactory().getDescription(definitionId);
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public S build( final W definition,
-                    final C context ) {
-        return ( S ) getFactory().build( definition,
-                                         context );
+    @SuppressWarnings("unchecked")
+    public S build(final W definition,
+                   final C context) {
+        return (S) getFactory().build(definition,
+                                      context);
     }
 
     @Override
-    public Glyph glyph( final String definitionId,
-                        final double width,
-                        final double height ) {
-        return getFactory().glyph( definitionId,
-                                   width,
-                                   height );
+    public Glyph glyph(final String definitionId,
+                       final double width,
+                       final double height) {
+        return getFactory().glyph(definitionId,
+                                  width,
+                                  height);
     }
 }

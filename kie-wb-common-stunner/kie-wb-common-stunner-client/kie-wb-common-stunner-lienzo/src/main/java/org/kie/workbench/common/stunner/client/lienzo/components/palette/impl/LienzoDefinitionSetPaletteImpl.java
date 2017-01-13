@@ -50,62 +50,62 @@ public class LienzoDefinitionSetPaletteImpl
     private final List<GlyphPaletteItem> items = new LinkedList<>();
 
     protected LienzoDefinitionSetPaletteImpl() {
-        this( null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public LienzoDefinitionSetPaletteImpl( final ShapeManager shapeManager,
-                                           final LienzoHoverPaletteView view,
-                                           final DefinitionGlyphTooltip definitionGlyphTooltip,
-                                           final LienzoGlyphsHoverPalette glyphsFloatingPalette ) {
-        super( shapeManager,
-               definitionGlyphTooltip,
-               view );
+    public LienzoDefinitionSetPaletteImpl(final ShapeManager shapeManager,
+                                          final LienzoHoverPaletteView view,
+                                          final DefinitionGlyphTooltip definitionGlyphTooltip,
+                                          final LienzoGlyphsHoverPalette glyphsFloatingPalette) {
+        super(shapeManager,
+              definitionGlyphTooltip,
+              view);
         this.glyphsFloatingPalette = glyphsFloatingPalette;
     }
 
     @PostConstruct
     public void init() {
         super.doInit();
-        onShowGlyTooltip( ( glyphTooltip,
-                            item,
-                            mouseX,
-                            mouseY,
-                            itemX,
-                            itemY ) -> {
-            if ( !hasPaletteItems( item ) ) {
-                glyphTooltip.show( getGlyphTooltipText( item ),
-                                   mouseX,
-                                   mouseY,
-                                   GlyphTooltip.Direction.WEST );
+        onShowGlyTooltip((glyphTooltip,
+                          item,
+                          mouseX,
+                          mouseY,
+                          itemX,
+                          itemY) -> {
+            if (!hasPaletteItems(item)) {
+                glyphTooltip.show(getGlyphTooltipText(item),
+                                  mouseX,
+                                  mouseY,
+                                  GlyphTooltip.Direction.WEST);
             }
             return false;
-        } );
-        glyphsFloatingPalette.setExpandable( false );
-        glyphsFloatingPalette.setLayout( LienzoPalette.Layout.HORIZONTAL );
-        glyphsFloatingPalette.onClose( floatingPaletteCloseCallback );
-        glyphsFloatingPalette.onShowGlyTooltip( floatingPaletteGlyphTooltipCallback );
+        });
+        glyphsFloatingPalette.setExpandable(false);
+        glyphsFloatingPalette.setLayout(LienzoPalette.Layout.HORIZONTAL);
+        glyphsFloatingPalette.onClose(floatingPaletteCloseCallback);
+        glyphsFloatingPalette.onShowGlyTooltip(floatingPaletteGlyphTooltipCallback);
     }
 
     @Override
-    protected void doItemHover( final String id,
-                                final double mouseX,
-                                final double mouseY,
-                                final double itemX,
-                                final double itemY ) {
-        super.doItemHover( id,
-                           mouseX,
-                           mouseY,
-                           itemX,
-                           itemY );
-        showFloatingPalette( id,
-                             mouseX,
-                             mouseY,
-                             itemX,
-                             itemY );
+    protected void doItemHover(final String id,
+                               final double mouseX,
+                               final double mouseY,
+                               final double itemX,
+                               final double itemY) {
+        super.doItemHover(id,
+                          mouseX,
+                          mouseY,
+                          itemX,
+                          itemY);
+        showFloatingPalette(id,
+                            mouseX,
+                            mouseY,
+                            itemX,
+                            itemY);
     }
 
     private final CloseCallback floatingPaletteCloseCallback = () -> {
@@ -114,24 +114,24 @@ public class LienzoDefinitionSetPaletteImpl
     };
 
     private final LienzoGlyphItemsPalette.GlyphTooltipCallback floatingPaletteGlyphTooltipCallback =
-            ( glyphTooltip,
-              item,
-              mouseX,
-              mouseY,
-              itemX,
-              itemY ) -> {
+            (glyphTooltip,
+             item,
+             mouseX,
+             mouseY,
+             itemX,
+             itemY) -> {
                 // final int[] mainPaletteSize = getMainPaletteSize();
                 // final double px = getView().getX() + mainPaletteSize[0] + itemX;
                 // final double py = getView().getY() + itemY + ( getIconSize() / 2 ) - getPadding();
-                glyphTooltip.show( getGlyphTooltipText( item ),
-                                   mouseX,
-                                   mouseY + getIconSize() + getPadding(),
-                                   GlyphTooltip.Direction.NORTH );
+                glyphTooltip.show(getGlyphTooltipText(item),
+                                  mouseX,
+                                  mouseY + getIconSize() + getPadding(),
+                                  GlyphTooltip.Direction.NORTH);
                 return false;
             };
 
     // TODO: I18n.
-    private String getGlyphTooltipText( final GlyphPaletteItem item ) {
+    private String getGlyphTooltipText(final GlyphPaletteItem item) {
         return "Create a " + item.getTitle();
     }
 
@@ -139,18 +139,18 @@ public class LienzoDefinitionSetPaletteImpl
     protected void doBind() {
         items.clear();
         final DefinitionSetPalette definitionSetPalette = paletteDefinition;
-        final String ssid = shapeManager.getDefaultShapeSet( paletteDefinition.getDefinitionSetId() ).getId();
-        glyphsFloatingPalette.setShapeSetId( ssid );
+        final String ssid = shapeManager.getDefaultShapeSet(paletteDefinition.getDefinitionSetId()).getId();
+        glyphsFloatingPalette.setShapeSetId(ssid);
         final List<DefinitionPaletteCategory> categories = definitionSetPalette.getItems();
-        if ( null != categories && !categories.isEmpty() ) {
+        if (null != categories && !categories.isEmpty()) {
             final PaletteGrid grid = getGrid();
-            for ( final DefinitionPaletteCategory category : categories ) {
+            for (final DefinitionPaletteCategory category : categories) {
                 final List<DefinitionPaletteItem> categoryItems = category.getItems();
-                if ( null != categoryItems && !categoryItems.isEmpty() ) {
-                    for ( final GlyphPaletteItem item : categoryItems ) {
-                        addGlyphItemIntoView( item,
-                                              grid );
-                        items.add( item );
+                if (null != categoryItems && !categoryItems.isEmpty()) {
+                    for (final GlyphPaletteItem item : categoryItems) {
+                        addGlyphItemIntoView(item,
+                                             grid);
+                        items.add(item);
                     }
                 }
             }
@@ -167,60 +167,60 @@ public class LienzoDefinitionSetPaletteImpl
         super.doDestroy();
     }
 
-    @SuppressWarnings( "unchecked" )
-    private boolean showFloatingPalette( final String id,
-                                         final double x,
-                                         final double y,
-                                         final double itemX,
-                                         final double itemY ) {
-        final GlyphPaletteItem item = getItem( id );
-        if ( hasPaletteItems( item ) ) {
-            final HasPaletteItems<GlyphPaletteItem> hasPaletteItems = ( HasPaletteItems<GlyphPaletteItem> ) item;
-            glyphsFloatingPalette.setIconSize( getIconSize() );
-            glyphsFloatingPalette.setPadding( getPadding() );
-            glyphsFloatingPalette.bind( hasPaletteItems );
+    @SuppressWarnings("unchecked")
+    private boolean showFloatingPalette(final String id,
+                                        final double x,
+                                        final double y,
+                                        final double itemX,
+                                        final double itemY) {
+        final GlyphPaletteItem item = getItem(id);
+        if (hasPaletteItems(item)) {
+            final HasPaletteItems<GlyphPaletteItem> hasPaletteItems = (HasPaletteItems<GlyphPaletteItem>) item;
+            glyphsFloatingPalette.setIconSize(getIconSize());
+            glyphsFloatingPalette.setPadding(getPadding());
+            glyphsFloatingPalette.bind(hasPaletteItems);
             final int[] mainPaletteSize = getMainPaletteSize();
-            final double pX = getView().getX() + mainPaletteSize[ 0 ] - ( getPadding() * 1.5 ) - getIconSize();
-            final double pY = getView().getY() + itemY - ( getPadding() * 3 ) + ( getIconSize() / 2 );
+            final double pX = getView().getX() + mainPaletteSize[0] - (getPadding() * 1.5) - getIconSize();
+            final double pY = getView().getY() + itemY - (getPadding() * 3) + (getIconSize() / 2);
             final Layer paletteLayer = getView().getLayer();
             glyphsFloatingPalette
                     .getView()
-                    .attach( paletteLayer )
-                    .setX( pX )
-                    .setY( pY );
-            glyphsFloatingPalette.onItemHover( ( id12,
-                                                 mouseX,
-                                                 mouseY,
-                                                 itemX12,
-                                                 itemY12 ) -> {
+                    .attach(paletteLayer)
+                    .setX(pX)
+                    .setY(pY);
+            glyphsFloatingPalette.onItemHover((id12,
+                                               mouseX,
+                                               mouseY,
+                                               itemX12,
+                                               itemY12) -> {
                 getView().clearTimeOut();
                 return true;
-            } );
-            glyphsFloatingPalette.onItemOut( id13 -> {
+            });
+            glyphsFloatingPalette.onItemOut(id13 -> {
                 getView().startTimeOut();
                 return false;
-            } );
-            glyphsFloatingPalette.onItemClick( new ItemClickCallback() {
+            });
+            glyphsFloatingPalette.onItemClick(new ItemClickCallback() {
                 @Override
-                public boolean onItemClick( final String id14,
-                                            final double mouseX,
-                                            final double mouseY,
-                                            final double itemX,
-                                            final double itemY ) {
-                    final GlyphPaletteItem item1 = getPaletteItem( id14,
-                                                                   hasPaletteItems.getItems() );
-                    if ( !hasPaletteItems( item1 ) ) {
+                public boolean onItemClick(final String id14,
+                                           final double mouseX,
+                                           final double mouseY,
+                                           final double itemX,
+                                           final double itemY) {
+                    final GlyphPaletteItem item1 = getPaletteItem(id14,
+                                                                  hasPaletteItems.getItems());
+                    if (!hasPaletteItems(item1)) {
                         // Fire the main palette's callback.
-                        LienzoDefinitionSetPaletteImpl.this.onItemClick( id14,
-                                                                         mouseX,
-                                                                         mouseY,
-                                                                         getView().getX(),
-                                                                         getView().getY() );
+                        LienzoDefinitionSetPaletteImpl.this.onItemClick(id14,
+                                                                        mouseX,
+                                                                        mouseY,
+                                                                        getView().getX(),
+                                                                        getView().getY());
                     }
                     clearFloatingPalette();
                     return true;
                 }
-            } );
+            });
 
             glyphsFloatingPalette.getView().show();
             return false;
@@ -229,8 +229,8 @@ public class LienzoDefinitionSetPaletteImpl
     }
 
     @Override
-    protected String getPaletteItemId( final int index ) {
-        final GlyphPaletteItem item = getMainPaletteItem( index );
+    protected String getPaletteItemId(final int index) {
+        final GlyphPaletteItem item = getMainPaletteItem(index);
         return null != item ? item.getId() : null;
     }
 
@@ -245,32 +245,32 @@ public class LienzoDefinitionSetPaletteImpl
     private int[] getMainPaletteSize() {
         double width = 0;
         double height = 0;
-        if ( null != paletteDefinition ) {
+        if (null != paletteDefinition) {
             final List<? extends GlyphPaletteItem> items = getItems();
             final int itemsSize = null != items ? items.size() : 0;
-            final double[] mainPaletteSize = ClientPaletteUtils.computeSizeForVerticalLayout( itemsSize,
-                                                                                              getIconSize(),
-                                                                                              getPadding(),
-                                                                                              0 );
-            width = mainPaletteSize[ 0 ];
-            height = mainPaletteSize[ 1 ];
+            final double[] mainPaletteSize = ClientPaletteUtils.computeSizeForVerticalLayout(itemsSize,
+                                                                                             getIconSize(),
+                                                                                             getPadding(),
+                                                                                             0);
+            width = mainPaletteSize[0];
+            height = mainPaletteSize[1];
         }
-        return new int[]{ ( int ) width, ( int ) height };
+        return new int[]{(int) width, (int) height};
     }
 
-    private boolean hasPaletteItems( final GlyphPaletteItem item ) {
+    private boolean hasPaletteItems(final GlyphPaletteItem item) {
         return item instanceof HasPaletteItems;
     }
 
-    private GlyphPaletteItem getMainPaletteItem( final int index ) {
-        return getItems().get( index );
+    private GlyphPaletteItem getMainPaletteItem(final int index) {
+        return getItems().get(index);
     }
 
-    private GlyphPaletteItem getPaletteItem( final String id,
-                                             final List<GlyphPaletteItem> items ) {
-        if ( null != items && !items.isEmpty() ) {
-            for ( final GlyphPaletteItem item : items ) {
-                if ( item.getId().equals( id ) ) {
+    private GlyphPaletteItem getPaletteItem(final String id,
+                                            final List<GlyphPaletteItem> items) {
+        if (null != items && !items.isEmpty()) {
+            for (final GlyphPaletteItem item : items) {
+                if (item.getId().equals(id)) {
                     return item;
                 }
             }

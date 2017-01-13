@@ -33,8 +33,8 @@ public class CanvasToolboxControlView implements CanvasToolboxControl.View {
     }
 
     @Override
-    public CanvasToolboxControl.View addWidget( final IsWidget widget ) {
-        panel.add( widget );
+    public CanvasToolboxControl.View addWidget(final IsWidget widget) {
+        panel.add(widget);
         return this;
     }
 

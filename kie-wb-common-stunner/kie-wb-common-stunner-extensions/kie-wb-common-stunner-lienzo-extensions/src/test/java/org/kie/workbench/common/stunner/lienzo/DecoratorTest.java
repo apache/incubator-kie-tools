@@ -33,7 +33,7 @@ import org.mockito.Mock;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( LienzoMockitoTestRunner.class )
+@RunWith(LienzoMockitoTestRunner.class)
 public class DecoratorTest {
 
     @Mock
@@ -55,139 +55,139 @@ public class DecoratorTest {
 
     @Before
     public void setUp() {
-        decorator = spy( new Decorator( callback ) );
-        doReturn( group ).when( ( GroupOf ) decorator ).add( anyObject() );
-        doReturn( rectangle ).when( decorator ).createRectangle( anyDouble(),
-                                                                 anyDouble() );
-        doReturn( rectangle ).when( rectangle ).setDraggable( anyBoolean() );
+        decorator = spy(new Decorator(callback));
+        doReturn(group).when((GroupOf) decorator).add(anyObject());
+        doReturn(rectangle).when(decorator).createRectangle(anyDouble(),
+                                                            anyDouble());
+        doReturn(rectangle).when(rectangle).setDraggable(anyBoolean());
     }
 
     @Test
     public void testBuild() {
-        decorator.build( primitive,
-                         5.0,
-                         8.0 );
-        verify( decorator ).createRectangle( 5.0,
-                                             8.0 );
-        verify( decorator ).add( primitive );
-        verify( decorator ).add( rectangle );
-        verify( rectangle ).addNodeMouseEnterHandler( anyObject() );
-        verify( rectangle ).addNodeMouseExitHandler( anyObject() );
-        verify( rectangle ).addNodeMouseMoveHandler( anyObject() );
-        verify( rectangle ).setDraggable( false );
-        verify( rectangle ).moveToTop();
+        decorator.build(primitive,
+                        5.0,
+                        8.0);
+        verify(decorator).createRectangle(5.0,
+                                          8.0);
+        verify(decorator).add(primitive);
+        verify(decorator).add(rectangle);
+        verify(rectangle).addNodeMouseEnterHandler(anyObject());
+        verify(rectangle).addNodeMouseExitHandler(anyObject());
+        verify(rectangle).addNodeMouseMoveHandler(anyObject());
+        verify(rectangle).setDraggable(false);
+        verify(rectangle).moveToTop();
     }
 
     @Test
     public void testFireHide() {
         decorator.fireHide();
-        verify( callback ).onHide();
+        verify(callback).onHide();
     }
 
     @Test
     public void testFireHideOnNull() {
-        decorator.setItemCallback( null );
+        decorator.setItemCallback(null);
         decorator.fireHide();
-        verify( callback,
-                never() ).onHide();
+        verify(callback,
+               never()).onHide();
     }
 
     @Test
     public void testFireShow() {
-        decorator.fireShow( 3.0,
-                            5.0 );
-        verify( callback ).onShow( 3.0,
-                                   5.0 );
+        decorator.fireShow(3.0,
+                           5.0);
+        verify(callback).onShow(3.0,
+                                5.0);
     }
 
     @Test
     public void testFireShowOnNull() {
-        decorator.setItemCallback( null );
-        decorator.fireShow( 3.0,
-                            5.0 );
-        verify( callback,
-                never() ).onShow( anyDouble(),
-                                  anyDouble() );
+        decorator.setItemCallback(null);
+        decorator.fireShow(3.0,
+                           5.0);
+        verify(callback,
+               never()).onShow(anyDouble(),
+                               anyDouble());
     }
 
     @Test
     public void testHide() {
-        decorator.build( primitive,
-                         6.0,
-                         0.6 );
-        doReturn( animationHandle ).when( ( Node ) rectangle ).animate( anyObject(),
-                                                                        anyObject(),
-                                                                        anyDouble(),
-                                                                        anyObject() );
-        decorator.resetTimer( timer );
-        when( timer.isRunning() ).thenReturn( true );
+        decorator.build(primitive,
+                        6.0,
+                        0.6);
+        doReturn(animationHandle).when((Node) rectangle).animate(anyObject(),
+                                                                 anyObject(),
+                                                                 anyDouble(),
+                                                                 anyObject());
+        decorator.resetTimer(timer);
+        when(timer.isRunning()).thenReturn(true);
         decorator.hide();
-        verify( rectangle,
-                never() ).animate( anyObject(),
-                                   anyObject(),
-                                   anyDouble(),
-                                   anyObject() );
-        when( timer.isRunning() ).thenReturn( false );
+        verify(rectangle,
+               never()).animate(anyObject(),
+                                anyObject(),
+                                anyDouble(),
+                                anyObject());
+        when(timer.isRunning()).thenReturn(false);
         decorator.hide();
-        verify( decorator ).createHideAnimationCallback();
-        verify( rectangle ).animate( anyObject(),
-                                     anyObject(),
-                                     anyDouble(),
-                                     anyObject() );
+        verify(decorator).createHideAnimationCallback();
+        verify(rectangle).animate(anyObject(),
+                                  anyObject(),
+                                  anyDouble(),
+                                  anyObject());
     }
 
     @Test
     public void testCreateHideAnimationCallback() {
-        decorator.createHideAnimationCallback().onClose( animation,
-                                                         animationHandle );
-        verify( decorator ).fireHide();
+        decorator.createHideAnimationCallback().onClose(animation,
+                                                        animationHandle);
+        verify(decorator).fireHide();
     }
 
     @Test
     public void testTimer() {
-        decorator.build( primitive,
-                         1.0,
-                         2.0 );
+        decorator.build(primitive,
+                        1.0,
+                        2.0);
         decorator.createTimer().run();
-        verify( decorator ).hide();
+        verify(decorator).hide();
     }
 
     @Test
     public void testShow() {
-        decorator.build( primitive,
-                         6.0,
-                         0.6 );
-        doReturn( animationHandle ).when( ( Node ) rectangle ).animate( anyObject(),
-                                                                        anyObject(),
-                                                                        anyDouble(),
-                                                                        anyObject() );
-        decorator.resetTimer( timer );
-        when( timer.isRunning() ).thenReturn( true );
-        decorator.show( 4,
-                        5 );
-        verify( rectangle,
-                never() ).animate( anyObject(),
-                                   anyObject(),
-                                   anyDouble(),
-                                   anyObject() );
-        when( timer.isRunning() ).thenReturn( false );
-        decorator.show( 0.1,
-                        0 );
-        verify( decorator ).createShowAnimationCallback( 0.1,
-                                                         0 );
-        verify( rectangle ).animate( anyObject(),
-                                     anyObject(),
-                                     anyDouble(),
-                                     anyObject() );
-        verify( timer ).schedule( anyInt() );
+        decorator.build(primitive,
+                        6.0,
+                        0.6);
+        doReturn(animationHandle).when((Node) rectangle).animate(anyObject(),
+                                                                 anyObject(),
+                                                                 anyDouble(),
+                                                                 anyObject());
+        decorator.resetTimer(timer);
+        when(timer.isRunning()).thenReturn(true);
+        decorator.show(4,
+                       5);
+        verify(rectangle,
+               never()).animate(anyObject(),
+                                anyObject(),
+                                anyDouble(),
+                                anyObject());
+        when(timer.isRunning()).thenReturn(false);
+        decorator.show(0.1,
+                       0);
+        verify(decorator).createShowAnimationCallback(0.1,
+                                                      0);
+        verify(rectangle).animate(anyObject(),
+                                  anyObject(),
+                                  anyDouble(),
+                                  anyObject());
+        verify(timer).schedule(anyInt());
     }
 
     @Test
     public void testCreateShowAnimationCallback() {
-        decorator.createShowAnimationCallback( 0.9,
-                                               1.1 ).onClose( animation,
-                                                              animationHandle );
-        verify( decorator ).fireShow( 0.9,
-                                      1.1 );
+        decorator.createShowAnimationCallback(0.9,
+                                              1.1).onClose(animation,
+                                                           animationHandle);
+        verify(decorator).fireShow(0.9,
+                                   1.1);
     }
 }

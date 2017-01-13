@@ -25,8 +25,8 @@ import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFactor
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
 @Inherited
-@Retention( RetentionPolicy.SOURCE )
-@Target( { ElementType.TYPE } )
+@Retention(RetentionPolicy.SOURCE)
+@Target({ElementType.TYPE})
 public @interface Shape {
 
     Class<? extends ShapeDefFactory> factory();

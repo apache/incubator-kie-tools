@@ -41,7 +41,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class UpdateElementPropertyValueCommandTest extends AbstractGraphCommandTest {
 
     private static final String UUID = "testUUID";
@@ -55,94 +55,94 @@ public class UpdateElementPropertyValueCommandTest extends AbstractGraphCommandT
     private View content;
     @Mock
     private Object definition;
-    private Object property = new PropertyStub( PROPERTY_ID );
+    private Object property = new PropertyStub(PROPERTY_ID);
     private UpdateElementPropertyValueCommand tested;
 
     @Before
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        super.init( 500,
-                    500 );
-        content = mockView( 10,
-                            10,
-                            50,
-                            50 );
-        when( candidate.getContent() ).thenReturn( content );
-        when( content.getDefinition() ).thenReturn( definition );
-        Set<Object> properties = new HashSet<Object>( 1 ) {{
-            add( property );
+        super.init(500,
+                   500);
+        content = mockView(10,
+                           10,
+                           50,
+                           50);
+        when(candidate.getContent()).thenReturn(content);
+        when(content.getDefinition()).thenReturn(definition);
+        Set<Object> properties = new HashSet<Object>(1) {{
+            add(property);
         }};
-        when( definitionAdapter.getProperties( eq( definition ) ) ).thenReturn( properties );
-        when( definitionAdapter.getId( eq( definition ) ) ).thenReturn( DEF_ID );
-        when( propertyAdapter.getId( eq( property ) ) ).thenReturn( PROPERTY_ID );
-        when( propertyAdapter.getValue( eq( property ) ) ).thenReturn( PROPERTY_OLD_VALUE );
-        when( graphIndex.getNode( eq( UUID ) ) ).thenReturn( candidate );
-        this.tested = new UpdateElementPropertyValueCommand( UUID,
-                                                             PROPERTY_ID,
-                                                             PROPERTY_VALUE );
+        when(definitionAdapter.getProperties(eq(definition))).thenReturn(properties);
+        when(definitionAdapter.getId(eq(definition))).thenReturn(DEF_ID);
+        when(propertyAdapter.getId(eq(property))).thenReturn(PROPERTY_ID);
+        when(propertyAdapter.getValue(eq(property))).thenReturn(PROPERTY_OLD_VALUE);
+        when(graphIndex.getNode(eq(UUID))).thenReturn(candidate);
+        this.tested = new UpdateElementPropertyValueCommand(UUID,
+                                                            PROPERTY_ID,
+                                                            PROPERTY_VALUE);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testAllow() {
-        CommandResult<RuleViolation> result = tested.allow( graphCommandExecutionContext );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        verify( containmentRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
-        verify( cardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Graph.class ),
-                                       any( Node.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( connectionRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( Node.class ) );
-        verify( edgeCardinalityRuleManager,
-                times( 0 ) ).evaluate( any( Edge.class ),
-                                       any( Node.class ),
-                                       any( List.class ),
-                                       any( EdgeCardinalityRule.Type.class ),
-                                       any( RuleManager.Operation.class ) );
-        verify( dockingRuleManager,
-                times( 0 ) ).evaluate( any( Element.class ),
-                                       any( Element.class ) );
+        CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        verify(containmentRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
+        verify(cardinalityRuleManager,
+               times(0)).evaluate(any(Graph.class),
+                                  any(Node.class),
+                                  any(RuleManager.Operation.class));
+        verify(connectionRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(Node.class));
+        verify(edgeCardinalityRuleManager,
+               times(0)).evaluate(any(Edge.class),
+                                  any(Node.class),
+                                  any(List.class),
+                                  any(EdgeCardinalityRule.Type.class),
+                                  any(RuleManager.Operation.class));
+        verify(dockingRuleManager,
+               times(0)).evaluate(any(Element.class),
+                                  any(Element.class));
     }
 
-    @Test( expected = BadCommandArgumentsException.class )
+    @Test(expected = BadCommandArgumentsException.class)
     public void testAllowNodeNotFound() {
-        when( graphIndex.getNode( eq( UUID ) ) ).thenReturn( null );
-        tested.allow( graphCommandExecutionContext );
+        when(graphIndex.getNode(eq(UUID))).thenReturn(null);
+        tested.allow(graphCommandExecutionContext);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecute() {
-        CommandResult<RuleViolation> result = tested.execute( graphCommandExecutionContext );
-        ArgumentCaptor<Bounds> bounds = ArgumentCaptor.forClass( Bounds.class );
-        assertEquals( CommandResult.Type.INFO,
-                      result.getType() );
-        assertEquals( PROPERTY_OLD_VALUE,
-                      tested.getOldValue() );
-        verify( propertyAdapter,
-                times( 1 ) ).getValue( eq( property ) );
-        verify( propertyAdapter,
-                times( 1 ) ).setValue( eq( property ),
-                                       eq( PROPERTY_VALUE ) );
+        CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
+        ArgumentCaptor<Bounds> bounds = ArgumentCaptor.forClass(Bounds.class);
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+        assertEquals(PROPERTY_OLD_VALUE,
+                     tested.getOldValue());
+        verify(propertyAdapter,
+               times(1)).getValue(eq(property));
+        verify(propertyAdapter,
+               times(1)).setValue(eq(property),
+                                  eq(PROPERTY_VALUE));
     }
 
-    @Test( expected = BadCommandArgumentsException.class )
+    @Test(expected = BadCommandArgumentsException.class)
     public void testExecuteNodeNotFound() {
-        when( graphIndex.getNode( eq( UUID ) ) ).thenReturn( null );
-        tested.execute( graphCommandExecutionContext );
+        when(graphIndex.getNode(eq(UUID))).thenReturn(null);
+        tested.execute(graphCommandExecutionContext);
     }
 
     private class PropertyStub {
 
         private final String uuid;
 
-        private PropertyStub( String uuid ) {
+        private PropertyStub(String uuid) {
             this.uuid = uuid;
         }
     }

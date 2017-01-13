@@ -65,7 +65,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
         },
         builder = BasicSet.BasicSetBuilder.class
 )
-@CanContain( roles = { "all" } )
+@CanContain(roles = {"all"})
 @ShapeSet
 public class BasicSet {
 

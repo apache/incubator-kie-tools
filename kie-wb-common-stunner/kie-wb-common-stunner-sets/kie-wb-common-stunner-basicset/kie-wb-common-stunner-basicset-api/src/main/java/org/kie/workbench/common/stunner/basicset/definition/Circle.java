@@ -49,9 +49,9 @@ import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConsta
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = Circle.CircleBuilder.class )
-@Shape( factory = BasicShapesFactory.class,
-        def = CircleShapeDefImpl.class )
+@Definition(graphFactory = NodeFactory.class, builder = Circle.CircleBuilder.class)
+@Shape(factory = BasicShapesFactory.class,
+        def = CircleShapeDefImpl.class)
 public class Circle {
 
     @Category
@@ -64,29 +64,29 @@ public class Circle {
     public static final transient String description = "A circle";
 
     @Property
-    @FieldDef( label = FIELDDEF_NAME, property = "value" )
+    @FieldDef(label = FIELDDEF_NAME, property = "value")
     @Valid
     private Name name;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_BACKGROUND_AND_BORDERS, position = 0 )
+    @FieldDef(label = FIELDDEF_BACKGROUND_AND_BORDERS, position = 0)
     @Valid
     private BackgroundAndBorderSet backgroundSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_FONT, position = 1 )
+    @FieldDef(label = FIELDDEF_FONT, position = 1)
     @Valid
     private FontSet fontSet;
 
     @Property
-    @FieldDef( label = FIELDDEF_RADIUS, property = "value" )
+    @FieldDef(label = FIELDDEF_RADIUS, property = "value")
     @Valid
     private Radius radius;
 
     @Labels
     private final Set<String> labels = new HashSet<String>() {{
-        add( "all" );
-        add( "circle" );
+        add("all");
+        add("circle");
     }};
 
     @NonPortable
@@ -99,22 +99,22 @@ public class Circle {
 
         @Override
         public Circle build() {
-            return new Circle( new Name( "Circle" ),
-                               new BackgroundAndBorderSet( COLOR,
-                                                           BORDER_COLOR,
-                                                           BORDER_SIZE ),
-                               new FontSet(),
-                               new Radius( RADIUS ) );
+            return new Circle(new Name("Circle"),
+                              new BackgroundAndBorderSet(COLOR,
+                                                         BORDER_COLOR,
+                                                         BORDER_SIZE),
+                              new FontSet(),
+                              new Radius(RADIUS));
         }
     }
 
     public Circle() {
     }
 
-    public Circle( @MapsTo( "name" ) Name name,
-                   @MapsTo( "backgroundSet" ) BackgroundAndBorderSet backgroundSet,
-                   @MapsTo( "fontSet" ) FontSet fontSet,
-                   @MapsTo( "radius" ) Radius radius ) {
+    public Circle(final @MapsTo("name") Name name,
+                  final @MapsTo("backgroundSet") BackgroundAndBorderSet backgroundSet,
+                  final @MapsTo("fontSet") FontSet fontSet,
+                  final @MapsTo("radius") Radius radius) {
         this.name = name;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
@@ -141,7 +141,7 @@ public class Circle {
         return name;
     }
 
-    public void setName( Name name ) {
+    public void setName(Name name) {
         this.name = name;
     }
 
@@ -149,7 +149,7 @@ public class Circle {
         return backgroundSet;
     }
 
-    public void setBackgroundSet( BackgroundAndBorderSet backgroundSet ) {
+    public void setBackgroundSet(final BackgroundAndBorderSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
@@ -157,7 +157,7 @@ public class Circle {
         return fontSet;
     }
 
-    public void setFontSet( FontSet fontSet ) {
+    public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
     }
 
@@ -165,7 +165,7 @@ public class Circle {
         return radius;
     }
 
-    public void setRadius( Radius radius ) {
+    public void setRadius(final Radius radius) {
         this.radius = radius;
     }
 }

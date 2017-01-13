@@ -35,21 +35,21 @@ public interface FactoryRegistry<F extends Factory<?>> extends DynamicRegistry<F
      * Return the factory for the Definition with <code>id</code> as identifier.
      * @param id The identifier for the Definition.
      */
-    DefinitionFactory<?> getDefinitionFactory( final String id );
+    DefinitionFactory<?> getDefinitionFactory(final String id);
 
     /**
      * Returns the factory for the type of the graph element.
      * @param type The graph element type, such as Nodes, Edges.
      */
-    ElementFactory<?, ?, ?> getElementFactory( final Class<? extends ElementFactory> type );
+    ElementFactory<?, ?, ?> getElementFactory(final Class<? extends ElementFactory> type);
 
     /**
      * Returns the diagram factory for the given metadata type and the given DefinitionSet item.
      * @param id The Definition Set identifier for the diagram's graph.
      * @param metadataType The diagram's metadata type
      */
-    DiagramFactory<?, ?> getDiagramFactory( final String id,
-                                            final Class<? extends Metadata> metadataType );
+    DiagramFactory<?, ?> getDiagramFactory(final String id,
+                                           final Class<? extends Metadata> metadataType);
 
     /**
      * Return all registered factories.

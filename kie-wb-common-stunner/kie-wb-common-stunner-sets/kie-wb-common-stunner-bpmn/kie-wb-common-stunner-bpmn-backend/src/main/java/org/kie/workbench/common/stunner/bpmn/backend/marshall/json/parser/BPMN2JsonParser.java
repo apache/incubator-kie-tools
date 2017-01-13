@@ -52,10 +52,10 @@ public class BPMN2JsonParser extends JsonParserMinimalBase {
     private Diagram<Graph, Metadata> diagram;
     private NodeParser rootParser;
 
-    public BPMN2JsonParser( Diagram<Graph, Metadata> diagram,
-                            ContextualParser.Context parsingContext ) {
+    public BPMN2JsonParser(final Diagram<Graph, Metadata> diagram,
+                           final ContextualParser.Context parsingContext) {
         this.diagram = diagram;
-        initialize( parsingContext );
+        initialize(parsingContext);
     }
 
     /*
@@ -64,85 +64,85 @@ public class BPMN2JsonParser extends JsonParserMinimalBase {
         ****************************************************************
      */
 
-    @SuppressWarnings( "unchecked" )
-    private void initialize( ContextualParser.Context parsingContext ) {
+    @SuppressWarnings("unchecked")
+    private void initialize(final ContextualParser.Context parsingContext) {
         Graph graph = diagram.getGraph();
         final Map<String, EdgeParser> edgeParsers = new HashMap<>();
-        new ChildrenTraverseProcessorImpl( new TreeWalkTraverseProcessorImpl() )
-                .traverse( graph,
-                           new AbstractChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>>() {
+        new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl())
+                .traverse(graph,
+                          new AbstractChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>>() {
 
-                               final Stack<NodeParser> parsers = new Stack<NodeParser>();
-                               NodeParser currentParser = null;
+                              final Stack<NodeParser> parsers = new Stack<NodeParser>();
+                              NodeParser currentParser = null;
 
-                               @Override
-                               public void startGraphTraversal( Graph<DefinitionSet, Node<View, Edge>> graph ) {
-                                   super.startGraphTraversal( graph );
-                               }
+                              @Override
+                              public void startGraphTraversal(Graph<DefinitionSet, Node<View, Edge>> graph) {
+                                  super.startGraphTraversal(graph);
+                              }
 
-                               @Override
-                               public boolean startNodeTraversal( final Iterator<Node<View, Edge>> parents,
-                                                                  final Node<View, Edge> node ) {
-                                   super.startNodeTraversal( parents,
-                                                             node );
-                                   onNodeTraversal( node );
-                                   return true;
-                               }
+                              @Override
+                              public boolean startNodeTraversal(final Iterator<Node<View, Edge>> parents,
+                                                                final Node<View, Edge> node) {
+                                  super.startNodeTraversal(parents,
+                                                           node);
+                                  onNodeTraversal(node);
+                                  return true;
+                              }
 
-                               @Override
-                               public void startNodeTraversal( final Node<View, Edge> node ) {
-                                   super.startNodeTraversal( node );
-                                   onNodeTraversal( node );
-                               }
+                              @Override
+                              public void startNodeTraversal(final Node<View, Edge> node) {
+                                  super.startNodeTraversal(node);
+                                  onNodeTraversal(node);
+                              }
 
-                               private void onNodeTraversal( final Node node ) {
-                                   NodeParser p = new NodeParser( "",
-                                                                  node );
-                                   if ( null != currentParser ) {
-                                       parsers.peek().addChild( p );
-                                   } else {
-                                       BPMN2JsonParser.this.rootParser = p;
-                                   }
-                                   currentParser = p;
-                                   List<Edge> outEdges = node.getOutEdges();
-                                   if ( null != outEdges && !outEdges.isEmpty() ) {
-                                       for ( Edge edge : outEdges ) {
-                                           // Only add the edges with view connector types into the resulting structure to generate the bpmn definition.
-                                           if ( edge.getContent() instanceof ViewConnector && !edgeParsers.containsKey( edge.getUUID() ) ) {
-                                               edgeParsers.put( edge.getUUID(),
-                                                                new EdgeParser( "",
-                                                                                ( Edge ) edge ) );
-                                           }
-                                       }
-                                   }
-                               }
+                              private void onNodeTraversal(final Node node) {
+                                  NodeParser p = new NodeParser("",
+                                                                node);
+                                  if (null != currentParser) {
+                                      parsers.peek().addChild(p);
+                                  } else {
+                                      BPMN2JsonParser.this.rootParser = p;
+                                  }
+                                  currentParser = p;
+                                  List<Edge> outEdges = node.getOutEdges();
+                                  if (null != outEdges && !outEdges.isEmpty()) {
+                                      for (Edge edge : outEdges) {
+                                          // Only add the edges with view connector types into the resulting structure to generate the bpmn definition.
+                                          if (edge.getContent() instanceof ViewConnector && !edgeParsers.containsKey(edge.getUUID())) {
+                                              edgeParsers.put(edge.getUUID(),
+                                                              new EdgeParser("",
+                                                                             (Edge) edge));
+                                          }
+                                      }
+                                  }
+                              }
 
-                               @Override
-                               public void startEdgeTraversal( Edge<Child, Node> edge ) {
-                                   super.startEdgeTraversal( edge );
-                                   parsers.push( currentParser );
-                               }
+                              @Override
+                              public void startEdgeTraversal(Edge<Child, Node> edge) {
+                                  super.startEdgeTraversal(edge);
+                                  parsers.push(currentParser);
+                              }
 
-                               @Override
-                               public void endEdgeTraversal( Edge<Child, Node> edge ) {
-                                   super.endEdgeTraversal( edge );
-                                   currentParser = parsers.pop();
-                               }
+                              @Override
+                              public void endEdgeTraversal(Edge<Child, Node> edge) {
+                                  super.endEdgeTraversal(edge);
+                                  currentParser = parsers.pop();
+                              }
 
-                               @Override
-                               public void endGraphTraversal() {
-                                   super.endGraphTraversal();
-                               }
-                           } );
+                              @Override
+                              public void endGraphTraversal() {
+                                  super.endGraphTraversal();
+                              }
+                          });
         // In oryx format, all edges are added into the main BPMNDiagram node.
-        if ( null != rootParser && !edgeParsers.isEmpty() ) {
-            for ( EdgeParser edgeParser : edgeParsers.values() ) {
-                rootParser.addChild( edgeParser );
+        if (null != rootParser && !edgeParsers.isEmpty()) {
+            for (EdgeParser edgeParser : edgeParsers.values()) {
+                rootParser.addChild(edgeParser);
             }
         }
         // Initialize all the element parsers added in the tree.
-        BPMN2JsonParser.this.rootParser.initialize( parsingContext );
-        System.out.println( "End of children and view traverse" );
+        BPMN2JsonParser.this.rootParser.initialize(parsingContext);
+        System.out.println("End of children and view traverse");
     }
 
 
@@ -158,7 +158,7 @@ public class BPMN2JsonParser extends JsonParserMinimalBase {
     }
 
     @Override
-    public void setCodec( ObjectCodec c ) {
+    public void setCodec(final ObjectCodec c) {
     }
 
     @Override
@@ -206,7 +206,7 @@ public class BPMN2JsonParser extends JsonParserMinimalBase {
 
     @Override
     public char[] getTextCharacters() throws IOException, JsonParseException {
-        return new char[ 0 ];
+        return new char[0];
     }
 
     @Override
@@ -265,8 +265,8 @@ public class BPMN2JsonParser extends JsonParserMinimalBase {
     }
 
     @Override
-    public byte[] getBinaryValue( Base64Variant b64variant ) throws IOException, JsonParseException {
-        return new byte[ 0 ];
+    public byte[] getBinaryValue(final Base64Variant b64variant) throws IOException, JsonParseException {
+        return new byte[0];
     }
 
     @Override

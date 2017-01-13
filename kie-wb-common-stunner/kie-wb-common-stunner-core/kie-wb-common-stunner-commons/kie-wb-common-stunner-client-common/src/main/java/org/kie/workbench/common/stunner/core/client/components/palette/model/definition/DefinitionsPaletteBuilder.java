@@ -23,9 +23,9 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 
 public interface DefinitionsPaletteBuilder extends PaletteDefinitionBuilder<Iterable<String>, DefinitionsPalette, ClientRuntimeError> {
 
-    void buildFromDefinitionSet( final String defintionSetId,
-                                 final Callback<DefinitionsPalette, ClientRuntimeError> callback );
+    void buildFromDefinitionSet(final String defintionSetId,
+                                final Callback<DefinitionsPalette, ClientRuntimeError> callback);
 
-    void buildFromPaletteItems( final List<DefinitionPaletteItem> definitionPaletteItems,
-                                final Callback<DefinitionsPalette, ClientRuntimeError> callback );
+    void buildFromPaletteItems(final List<DefinitionPaletteItem> definitionPaletteItems,
+                               final Callback<DefinitionsPalette, ClientRuntimeError> callback);
 }

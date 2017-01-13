@@ -35,13 +35,13 @@ public interface ActivityDataIOEditorView {
         ListBoxValues.ValueTester processVarTester();
     }
 
-    void init( Presenter presenter );
+    void init(final Presenter presenter);
 
     void hideView();
 
     void showView();
 
-    void setCustomViewTitle( String view );
+    void setCustomViewTitle(final String view);
 
     void setDefaultViewTitle();
 
@@ -49,25 +49,25 @@ public interface ActivityDataIOEditorView {
 
     List<AssignmentRow> getOutputAssignmentData();
 
-    void setInputAssignmentsVisibility( boolean visible );
+    void setInputAssignmentsVisibility(final boolean visible);
 
-    void setOutputAssignmentsVisibility( boolean visible );
+    void setOutputAssignmentsVisibility(final boolean visible);
 
-    void setIsInputAssignmentSingleVar( boolean single );
+    void setIsInputAssignmentSingleVar(final boolean single);
 
-    void setIsOutputAssignmentSingleVar( boolean single );
+    void setIsOutputAssignmentSingleVar(final boolean single);
 
-    void setPossibleInputAssignmentsDataTypes( List<String> dataTypeDisplayNames );
+    void setPossibleInputAssignmentsDataTypes(final List<String> dataTypeDisplayNames);
 
-    void setPossibleOutputAssignmentsDataTypes( List<String> dataTypeDisplayNames );
+    void setPossibleOutputAssignmentsDataTypes(final List<String> dataTypeDisplayNames);
 
-    void setInputAssignmentsProcessVariables( List<String> processVariables );
+    void setInputAssignmentsProcessVariables(final List<String> processVariables);
 
-    void setOutputAssignmentsProcessVariables( List<String> processVariables );
+    void setOutputAssignmentsProcessVariables(final List<String> processVariables);
 
-    void setInputAssignmentRows( List<AssignmentRow> inputAssignmentRows );
+    void setInputAssignmentRows(final List<AssignmentRow> inputAssignmentRows);
 
-    void setOutputAssignmentRows( List<AssignmentRow> outputAssignmentRows );
+    void setOutputAssignmentRows(final List<AssignmentRow> outputAssignmentRows);
 
-    void setInputAssignmentsDisallowedNames( Set<String> names );
+    void setInputAssignmentsDisallowedNames(final Set<String> names);
 }

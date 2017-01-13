@@ -39,40 +39,40 @@ public class BackgroundAndBorderSet {
     public static final transient String propertySetName = "Background And Borders";
 
     @Property
-    @FieldDef( label = FIELDDEF_BACKGROUND_COLOR, property = "value" )
+    @FieldDef(label = FIELDDEF_BACKGROUND_COLOR, property = "value")
     @Valid
     private BgColor bgColor;
 
     @Property
-    @FieldDef( label = FIELDDEF_BORDER_COLOR, property = "value" )
+    @FieldDef(label = FIELDDEF_BORDER_COLOR, property = "value")
     @Valid
     private BorderColor borderColor;
 
     @Property
-    @FieldDef( label = FIELDDEF_BORDER_SIZE, property = "value" )
+    @FieldDef(label = FIELDDEF_BORDER_SIZE, property = "value")
     @Valid
     private BorderSize borderSize;
 
     public BackgroundAndBorderSet() {
-        this( new BgColor(),
-              new BorderColor(),
-              new BorderSize() );
+        this(new BgColor(),
+             new BorderColor(),
+             new BorderSize());
     }
 
-    public BackgroundAndBorderSet( @MapsTo( "bgColor" ) BgColor bgColor,
-                                   @MapsTo( "borderColor" ) BorderColor borderColor,
-                                   @MapsTo( "borderSize" ) BorderSize borderSize ) {
+    public BackgroundAndBorderSet(final @MapsTo("bgColor") BgColor bgColor,
+                                  final @MapsTo("borderColor") BorderColor borderColor,
+                                  final @MapsTo("borderSize") BorderSize borderSize) {
         this.bgColor = bgColor;
         this.borderColor = borderColor;
         this.borderSize = borderSize;
     }
 
-    public BackgroundAndBorderSet( final String bgColor,
-                                   final String borderColor,
-                                   final Double borderSize ) {
-        this.bgColor = new BgColor( bgColor );
-        this.borderColor = new BorderColor( borderColor );
-        this.borderSize = new BorderSize( borderSize );
+    public BackgroundAndBorderSet(final String bgColor,
+                                  final String borderColor,
+                                  final Double borderSize) {
+        this.bgColor = new BgColor(bgColor);
+        this.borderColor = new BorderColor(borderColor);
+        this.borderSize = new BorderSize(borderSize);
     }
 
     public String getPropertySetName() {
@@ -91,15 +91,15 @@ public class BackgroundAndBorderSet {
         return borderSize;
     }
 
-    public void setBgColor( BgColor bgColor ) {
+    public void setBgColor(final BgColor bgColor) {
         this.bgColor = bgColor;
     }
 
-    public void setBorderColor( BorderColor borderColor ) {
+    public void setBorderColor(final BorderColor borderColor) {
         this.borderColor = borderColor;
     }
 
-    public void setBorderSize( BorderSize borderSize ) {
+    public void setBorderSize(final BorderSize borderSize) {
         this.borderSize = borderSize;
     }
 }

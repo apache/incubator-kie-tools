@@ -51,71 +51,71 @@ public abstract class AbstractCanvasGraphCommand
     /**
      * Creates a new command instance for the graph context.
      */
-    protected abstract Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context );
+    protected abstract Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context);
 
     /**
      * Creates a new command instance for the canvas context.
      */
-    protected abstract Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand( final AbstractCanvasHandler context );
+    protected abstract Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand(final AbstractCanvasHandler context);
 
     @Override
-    public Command<GraphCommandExecutionContext, RuleViolation> getGraphCommand( final AbstractCanvasHandler context ) {
-        if ( null == graphCommand ) {
-            graphCommand = newGraphCommand( context );
+    public Command<GraphCommandExecutionContext, RuleViolation> getGraphCommand(final AbstractCanvasHandler context) {
+        if (null == graphCommand) {
+            graphCommand = newGraphCommand(context);
         }
         return graphCommand;
     }
 
-    public Command<AbstractCanvasHandler, CanvasViolation> getCanvasCommand( final AbstractCanvasHandler context ) {
-        if ( null == canvasCommand ) {
-            canvasCommand = newCanvasCommand( context );
+    public Command<AbstractCanvasHandler, CanvasViolation> getCanvasCommand(final AbstractCanvasHandler context) {
+        if (null == canvasCommand) {
+            canvasCommand = newCanvasCommand(context);
         }
         return canvasCommand;
     }
 
     @Override
-    public CommandResult<CanvasViolation> allow( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> allow(final AbstractCanvasHandler context) {
         // Ensure the canvas command is initialized before updating the element on the graph side.
-        getCanvasCommand( context );
+        getCanvasCommand(context);
         final CommandResult<CanvasViolation> canvasResult =
-                performOperationOnGraph( context,
-                                         CommandOperation.ALLOW );
-        if ( !CommandUtils.isError( canvasResult ) ) {
-            return getCanvasCommand( context ).allow( context );
+                performOperationOnGraph(context,
+                                        CommandOperation.ALLOW);
+        if (!CommandUtils.isError(canvasResult)) {
+            return getCanvasCommand(context).allow(context);
         }
         return canvasResult;
     }
 
     @Override
-    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         // Ensure the canvas command is initialized before updating the element on the graph side.
-        getCanvasCommand( context );
+        getCanvasCommand(context);
         final CommandResult<CanvasViolation> canvasResult =
-                performOperationOnGraph( context,
-                                         CommandOperation.EXECUTE );
-        if ( !CommandUtils.isError( canvasResult ) ) {
-            return getCanvasCommand( context ).execute( context );
+                performOperationOnGraph(context,
+                                        CommandOperation.EXECUTE);
+        if (!CommandUtils.isError(canvasResult)) {
+            return getCanvasCommand(context).execute(context);
         }
         return canvasResult;
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         // Ensure the canvas command is initialized before updating the element on the graph side.
-        getCanvasCommand( context );
+        getCanvasCommand(context);
         final CommandResult<CanvasViolation> canvasResult =
-                performOperationOnGraph( context,
-                                         CommandOperation.UNDO );
-        if ( !CommandUtils.isError( canvasResult ) ) {
-            return getCanvasCommand( context ).undo( context );
+                performOperationOnGraph(context,
+                                        CommandOperation.UNDO);
+        if (!CommandUtils.isError(canvasResult)) {
+            return getCanvasCommand(context).undo(context);
         }
         return canvasResult;
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected Node<?, Edge> getNode( final AbstractCanvasHandler context,
-                                     final String uuid ) {
-        return context.getGraphIndex().getNode( uuid );
+    @SuppressWarnings("unchecked")
+    protected Node<?, Edge> getNode(final AbstractCanvasHandler context,
+                                    final String uuid) {
+        return context.getGraphIndex().getNode(uuid);
     }
 
     private enum CommandOperation {
@@ -127,31 +127,31 @@ public abstract class AbstractCanvasGraphCommand
     /**
      * Performs any of the following operations on the graph command.
      */
-    private CommandResult<CanvasViolation> performOperationOnGraph( final AbstractCanvasHandler context,
-                                                                    final CommandOperation op ) {
-        final GraphCommandExecutionContext graphContext = getGraphCommandExecutionContext( context );
-        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = getGraphCommand( context );
+    private CommandResult<CanvasViolation> performOperationOnGraph(final AbstractCanvasHandler context,
+                                                                   final CommandOperation op) {
+        final GraphCommandExecutionContext graphContext = getGraphCommandExecutionContext(context);
+        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = getGraphCommand(context);
         CommandResult<RuleViolation> graphResult = null;
-        switch ( op ) {
+        switch (op) {
             case ALLOW:
-                graphResult = graphCommand.allow( graphContext );
+                graphResult = graphCommand.allow(graphContext);
                 break;
             case EXECUTE:
-                graphResult = graphCommand.execute( graphContext );
+                graphResult = graphCommand.execute(graphContext);
                 break;
             case UNDO:
-                graphResult = graphCommand.undo( graphContext );
+                graphResult = graphCommand.undo(graphContext);
                 break;
         }
-        return new CanvasCommandResultBuilder( graphResult ).build();
+        return new CanvasCommandResultBuilder(graphResult).build();
     }
 
-    private GraphCommandExecutionContext getGraphCommandExecutionContext( final AbstractCanvasHandler context ) {
-        return new GraphCommandExecutionContextImpl( context.getClientDefinitionManager(),
-                                                     context.getClientFactoryServices().getClientFactoryManager(),
-                                                     context.getGraphRulesManager(),
-                                                     context.getGraphIndex(),
-                                                     context.getGraphUtils() );
+    private GraphCommandExecutionContext getGraphCommandExecutionContext(final AbstractCanvasHandler context) {
+        return new GraphCommandExecutionContextImpl(context.getClientDefinitionManager(),
+                                                    context.getClientFactoryServices().getClientFactoryManager(),
+                                                    context.getGraphRulesManager(),
+                                                    context.getGraphIndex(),
+                                                    context.getGraphUtils());
     }
 
     @Override
@@ -160,9 +160,9 @@ public abstract class AbstractCanvasGraphCommand
                 this.getClass().getName() +
                 "]" +
                 " [canvasCommand=" +
-                ( null != canvasCommand ? canvasCommand.toString() : "null" ) +
+                (null != canvasCommand ? canvasCommand.toString() : "null") +
                 " [graphCommand=" +
-                ( null != graphCommand ? graphCommand.toString() : null ) +
+                (null != graphCommand ? graphCommand.toString() : null) +
                 "]";
     }
 }

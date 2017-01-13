@@ -21,11 +21,11 @@ import org.uberfire.mvp.Command;
 
 public interface Layer<T, S, A> extends HasEventHandlers<T, A> {
 
-    T initialize( final Object view );
+    T initialize(final Object view);
 
-    T addShape( final S shape );
+    T addShape(final S shape);
 
-    T removeShape( final S shape );
+    T removeShape(final S shape);
 
     T draw();
 
@@ -35,12 +35,12 @@ public interface Layer<T, S, A> extends HasEventHandlers<T, A> {
 
     String toDataURL();
 
-    String toDataURL( final int x,
-                      final int y,
-                      final int width,
-                      final int height );
+    String toDataURL(final int x,
+                     final int y,
+                     final int width,
+                     final int height);
 
-    void onAfterDraw( Command callback );
+    void onAfterDraw(Command callback);
 
     void destroy();
 }

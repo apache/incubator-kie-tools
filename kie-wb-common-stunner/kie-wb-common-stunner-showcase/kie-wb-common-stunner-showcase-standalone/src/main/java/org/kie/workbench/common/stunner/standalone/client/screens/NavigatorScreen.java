@@ -47,7 +47,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 
 // TODO: I18n.
 @Dependent
-@WorkbenchScreen( identifier = NavigatorScreen.SCREEN_ID )
+@WorkbenchScreen(identifier = NavigatorScreen.SCREEN_ID)
 public class NavigatorScreen {
 
     public static final String SCREEN_ID = "NavigatorScreen";
@@ -69,7 +69,7 @@ public class NavigatorScreen {
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
+    public void onStartup(final PlaceRequest placeRequest) {
         this.menu = makeMenuBar();
         diagramsNavigator.clear();
     }
@@ -77,12 +77,12 @@ public class NavigatorScreen {
     private Menus makeMenuBar() {
         final MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> m =
                 MenuFactory
-                        .newTopLevelMenu( "Load" )
-                        .respondsWith( getLoadDiagramsCommand() )
+                        .newTopLevelMenu("Load")
+                        .respondsWith(getLoadDiagramsCommand())
                         .endMenu();
-        m.newTopLevelMenu( newDiagramMenuItemsBuilder.build( "Create",
-                                                             "Create a new",
-                                                             NavigatorScreen.this::create ) ).endMenu();
+        m.newTopLevelMenu(newDiagramMenuItemsBuilder.build("Create",
+                                                           "Create a new",
+                                                           NavigatorScreen.this::create)).endMenu();
         return m.build();
     }
 
@@ -119,32 +119,32 @@ public class NavigatorScreen {
         return "navigatorScreenContext";
     }
 
-    void onLoadDiagramEvent( @Observes LoadDiagramEvent loadDiagramEvent ) {
-        checkNotNull( "loadDiagramEvent",
-                      loadDiagramEvent );
+    void onLoadDiagramEvent(final @Observes LoadDiagramEvent loadDiagramEvent) {
+        checkNotNull("loadDiagramEvent",
+                     loadDiagramEvent);
         final String name = loadDiagramEvent.getName();
         Map<String, String> params = new HashMap<String, String>();
-        params.put( "name",
-                    name );
-        open( params );
+        params.put("name",
+                   name);
+        open(params);
     }
 
-    private void create( final ShapeSet shapeSet ) {
+    private void create(final ShapeSet shapeSet) {
         final String shapSetName = shapeSet.getName();
         final String defSetId = shapeSet.getDefinitionSetId();
         Map<String, String> params = new HashMap<String, String>();
-        params.put( "defSetId",
-                    defSetId );
-        params.put( "shapeSetId",
-                    shapeSet.getId() );
-        params.put( "title",
-                    "New " + shapSetName + " diagram" );
-        open( params );
+        params.put("defSetId",
+                   defSetId);
+        params.put("shapeSetId",
+                   shapeSet.getId());
+        params.put("title",
+                   "New " + shapSetName + " diagram");
+        open(params);
     }
 
-    private void open( final Map<String, String> params ) {
-        PlaceRequest diagramScreenPlaceRequest = new DefaultPlaceRequest( DiagramScreen.SCREEN_ID,
-                                                                          params );
-        placeManager.goTo( diagramScreenPlaceRequest );
+    private void open(final Map<String, String> params) {
+        PlaceRequest diagramScreenPlaceRequest = new DefaultPlaceRequest(DiagramScreen.SCREEN_ID,
+                                                                         params);
+        placeManager.goTo(diagramScreenPlaceRequest);
     }
 }

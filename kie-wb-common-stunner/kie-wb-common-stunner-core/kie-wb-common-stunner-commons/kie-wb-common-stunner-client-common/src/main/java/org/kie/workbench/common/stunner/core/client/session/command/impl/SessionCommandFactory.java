@@ -35,27 +35,27 @@ public class SessionCommandFactory {
     private final ManagedInstance<RefreshSessionCommand> refreshSessionCommand;
 
     protected SessionCommandFactory() {
-        this( null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public SessionCommandFactory( final ManagedInstance<ClearSelectionSessionCommand> clearSelectionCommand,
-                                  final ManagedInstance<VisitGraphSessionCommand> visitGraphCommand,
-                                  final ManagedInstance<SwitchGridSessionCommand> switchGridCommand,
-                                  final ManagedInstance<ClearSessionCommand> clearCommand,
-                                  final ManagedInstance<DeleteSelectionSessionCommand> deleteSelectionCommand,
-                                  final ManagedInstance<UndoSessionCommand> undoCommand,
-                                  final ManagedInstance<RedoSessionCommand> redoCommand,
-                                  final ManagedInstance<ValidateSessionCommand> validateCommand,
-                                  final ManagedInstance<RefreshSessionCommand> refreshSessionCommand ) {
+    public SessionCommandFactory(final ManagedInstance<ClearSelectionSessionCommand> clearSelectionCommand,
+                                 final ManagedInstance<VisitGraphSessionCommand> visitGraphCommand,
+                                 final ManagedInstance<SwitchGridSessionCommand> switchGridCommand,
+                                 final ManagedInstance<ClearSessionCommand> clearCommand,
+                                 final ManagedInstance<DeleteSelectionSessionCommand> deleteSelectionCommand,
+                                 final ManagedInstance<UndoSessionCommand> undoCommand,
+                                 final ManagedInstance<RedoSessionCommand> redoCommand,
+                                 final ManagedInstance<ValidateSessionCommand> validateCommand,
+                                 final ManagedInstance<RefreshSessionCommand> refreshSessionCommand) {
         this.clearSelectionCommand = clearSelectionCommand;
         this.visitGraphCommand = visitGraphCommand;
         this.switchGridCommand = switchGridCommand;

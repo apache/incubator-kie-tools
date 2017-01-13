@@ -40,24 +40,24 @@ public class ExclusiveGatewayExecutionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef( label = FIELDDEF_DEFAULT_ROUTE, property = "value" )
+    @FieldDef(label = FIELDDEF_DEFAULT_ROUTE, property = "value")
     @ListBox
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.CLIENT,
-            className = "org.kie.workbench.common.stunner.bpmn.client.forms.fields.exclusiveGateway.DefaultRouteFormProvider" )
+            className = "org.kie.workbench.common.stunner.bpmn.client.forms.fields.exclusiveGateway.DefaultRouteFormProvider")
     @Valid
     protected DefaultRoute defaultRoute;
 
     public ExclusiveGatewayExecutionSet() {
-        this( new DefaultRoute() );
+        this(new DefaultRoute());
     }
 
-    public ExclusiveGatewayExecutionSet( @MapsTo( "defaultRoute" ) DefaultRoute defaultRoute ) {
+    public ExclusiveGatewayExecutionSet(final @MapsTo("defaultRoute") DefaultRoute defaultRoute) {
         this.defaultRoute = defaultRoute;
     }
 
-    public ExclusiveGatewayExecutionSet( String defaultRoute ) {
-        this.defaultRoute = new DefaultRoute( defaultRoute );
+    public ExclusiveGatewayExecutionSet(final String defaultRoute) {
+        this.defaultRoute = new DefaultRoute(defaultRoute);
     }
 
     public String getPropertySetName() {
@@ -68,7 +68,7 @@ public class ExclusiveGatewayExecutionSet implements BPMNPropertySet {
         return defaultRoute;
     }
 
-    public void setDefaultRoute( DefaultRoute defaultRoute ) {
+    public void setDefaultRoute(final DefaultRoute defaultRoute) {
         this.defaultRoute = defaultRoute;
     }
 }

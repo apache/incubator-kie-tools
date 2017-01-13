@@ -26,47 +26,47 @@ public abstract class AbstractFullContentTraverseCallback<N extends Node<View, E
         implements FullContentTraverseCallback<N, E> {
 
     @Override
-    public void startViewEdgeTraversal( final E edge ) {
+    public void startViewEdgeTraversal(final E edge) {
     }
 
     @Override
-    public void endViewEdgeTraversal( final E edge ) {
+    public void endViewEdgeTraversal(final E edge) {
     }
 
     @Override
-    public void startChildEdgeTraversal( final E edge ) {
+    public void startChildEdgeTraversal(final E edge) {
     }
 
     @Override
-    public void endChildEdgeTraversal( final E edge ) {
+    public void endChildEdgeTraversal(final E edge) {
     }
 
     @Override
-    public void startParentEdgeTraversal( final E edge ) {
+    public void startParentEdgeTraversal(final E edge) {
     }
 
     @Override
-    public void endParentEdgeTraversal( final E edge ) {
+    public void endParentEdgeTraversal(final E edge) {
     }
 
     @Override
-    public void startGraphTraversal( final Graph<DefinitionSet, N> graph ) {
+    public void startGraphTraversal(final Graph<DefinitionSet, N> graph) {
     }
 
     @Override
-    public void startEdgeTraversal( final E edge ) {
+    public void startEdgeTraversal(final E edge) {
     }
 
     @Override
-    public void endEdgeTraversal( final E edge ) {
+    public void endEdgeTraversal(final E edge) {
     }
 
     @Override
-    public void startNodeTraversal( final N node ) {
+    public void startNodeTraversal(final N node) {
     }
 
     @Override
-    public void endNodeTraversal( final N node ) {
+    public void endNodeTraversal(final N node) {
     }
 
     @Override

@@ -21,13 +21,13 @@ public interface BoundsIndexer<C, T> {
     /**
      * Builds a index of all the visible graph elements bounds for a given context ( usually a canvas or canvas handler ).
      */
-    BoundsIndexer<C, T> build( final C context );
+    BoundsIndexer<C, T> build(final C context);
 
     /**
      * Return the graph element at the given x,y cartesian coordinate.
      */
-    T getAt( final double x,
-             final double y );
+    T getAt(final double x,
+            final double y);
 
     /**
      * Determines a rectangle area which area is given as:

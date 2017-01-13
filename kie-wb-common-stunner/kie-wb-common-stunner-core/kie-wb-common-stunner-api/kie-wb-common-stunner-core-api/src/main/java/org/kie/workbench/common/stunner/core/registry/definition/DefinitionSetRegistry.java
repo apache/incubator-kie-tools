@@ -31,7 +31,7 @@ public interface DefinitionSetRegistry<T> extends Registry<T> {
      * @param id The Definition Set's identifier criteria.
      * @return The Defintiion Set of type <code>T</code> that this registry contains, <code>null</code> ortherwise.
      */
-    T getDefinitionSetById( final String id );
+    T getDefinitionSetById(final String id);
 
     /**
      * Retun a collection of all Definition Set's present on this registry.

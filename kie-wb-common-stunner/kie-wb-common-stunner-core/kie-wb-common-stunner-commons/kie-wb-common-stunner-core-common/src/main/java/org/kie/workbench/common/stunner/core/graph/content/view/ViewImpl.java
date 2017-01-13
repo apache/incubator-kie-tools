@@ -26,8 +26,8 @@ public final class ViewImpl<W> implements View<W> {
     protected W definition;
     protected Bounds bounds;
 
-    public ViewImpl( final @MapsTo( "definition" ) W definition,
-                     final @MapsTo( "bounds" ) Bounds bounds ) {
+    public ViewImpl(final @MapsTo("definition") W definition,
+                    final @MapsTo("bounds") Bounds bounds) {
         this.definition = definition;
         this.bounds = bounds;
     }
@@ -38,7 +38,7 @@ public final class ViewImpl<W> implements View<W> {
     }
 
     @Override
-    public void setDefinition( final W definition ) {
+    public void setDefinition(final W definition) {
         this.definition = definition;
     }
 
@@ -48,7 +48,7 @@ public final class ViewImpl<W> implements View<W> {
     }
 
     @Override
-    public void setBounds( final Bounds bounds ) {
+    public void setBounds(final Bounds bounds) {
         this.bounds = bounds;
     }
 }

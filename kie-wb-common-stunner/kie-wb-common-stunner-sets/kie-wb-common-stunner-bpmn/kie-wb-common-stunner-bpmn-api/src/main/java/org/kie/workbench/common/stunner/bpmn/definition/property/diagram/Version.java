@@ -64,7 +64,7 @@ public class Version implements BPMNProperty {
     public Version() {
     }
 
-    public Version( final String value ) {
+    public Version(final String value) {
         this.value = value;
     }
 
@@ -96,7 +96,7 @@ public class Version implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

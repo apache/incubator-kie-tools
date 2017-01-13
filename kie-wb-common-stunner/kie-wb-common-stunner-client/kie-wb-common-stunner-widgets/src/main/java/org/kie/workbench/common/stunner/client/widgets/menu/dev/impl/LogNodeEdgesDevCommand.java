@@ -31,15 +31,15 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 @Dependent
 public class LogNodeEdgesDevCommand extends AbstractSelectionDevCommand {
 
-    private static Logger LOGGER = Logger.getLogger( LogNodeEdgesDevCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(LogNodeEdgesDevCommand.class.getName());
 
     protected LogNodeEdgesDevCommand() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public LogNodeEdgesDevCommand( final AbstractClientSessionManager sessionManager ) {
-        super( sessionManager );
+    public LogNodeEdgesDevCommand(final AbstractClientSessionManager sessionManager) {
+        super(sessionManager);
     }
 
     @Override
@@ -48,53 +48,53 @@ public class LogNodeEdgesDevCommand extends AbstractSelectionDevCommand {
     }
 
     @Override
-    protected void execute( final Element<View<?>> item ) {
+    protected void execute(final Element<View<?>> item) {
         final String uuid = item.getUUID();
         try {
-            final Node<View<?>, Edge> node = ( Node<View<?>, Edge> ) item;
+            final Node<View<?>, Edge> node = (Node<View<?>, Edge>) item;
             final List<Edge> inEdges = node.getInEdges();
-            log( uuid,
-                 inEdges,
-                 true );
+            log(uuid,
+                inEdges,
+                true);
             final List<Edge> outEdges = node.getOutEdges();
-            log( uuid,
-                 outEdges,
-                 false );
-        } catch ( final ClassCastException e ) {
-            log( "Item [" + uuid + "is not a Node" );
+            log(uuid,
+                outEdges,
+                false);
+        } catch (final ClassCastException e) {
+            log("Item [" + uuid + "is not a Node");
         }
     }
 
-    private void log( final String uuid,
-                      final List<Edge> edges,
-                      final boolean in ) {
+    private void log(final String uuid,
+                     final List<Edge> edges,
+                     final boolean in) {
         final String eType = in ? "incoming" : "outgoing";
-        if ( null != edges && !edges.isEmpty() ) {
-            log( "************ " + eType + " edges for [" + uuid + "] *********************" );
-            edges.stream().forEach( this::log );
-            log( "************ End of " + eType + " edges for [" + uuid + "] *********************" );
+        if (null != edges && !edges.isEmpty()) {
+            log("************ " + eType + " edges for [" + uuid + "] *********************");
+            edges.stream().forEach(this::log);
+            log("************ End of " + eType + " edges for [" + uuid + "] *********************");
         } else {
-            log( "Item [" + uuid + "] has not " + eType + " edges." );
+            log("Item [" + uuid + "] has not " + eType + " edges.");
         }
     }
 
-    private void log( final Edge edge ) {
-        if ( null != edge ) {
+    private void log(final Edge edge) {
+        if (null != edge) {
             final String uuid = edge.getUUID();
             final Object content = edge.getContent();
             final Node source = edge.getSourceNode();
             final String sId = null != source ? source.getUUID() : "null";
             final Node target = edge.getTargetNode();
             final String tId = null != target ? target.getUUID() : "null";
-            log( "-- Edge [uuid=" + uuid + ", content=" + content.getClass().getName()
-                         + ", source=" + sId + ", target=" + tId + "]" );
+            log("-- Edge [uuid=" + uuid + ", content=" + content.getClass().getName()
+                        + ", source=" + sId + ", target=" + tId + "]");
         } else {
-            log( "Edge is null..." );
+            log("Edge is null...");
         }
     }
 
-    private void log( final String s ) {
-        LOGGER.log( Level.FINE,
-                    s );
+    private void log(final String s) {
+        LOGGER.log(Level.FINE,
+                   s);
     }
 }

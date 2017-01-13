@@ -18,5 +18,5 @@ package org.kie.workbench.common.stunner.shapes.def.icon.dynamics;
 
 public interface DynamicIconShapeDef<W> extends IconShapeDef<W> {
 
-    Icons getIcon( final W definition );
+    Icons getIcon(final W definition);
 }

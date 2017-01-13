@@ -31,7 +31,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class CanvasUndockNodeCommandTest extends AbstractCanvasCommandTest {
 
     private static final String P_ID = "p1";
@@ -47,32 +47,32 @@ public class CanvasUndockNodeCommandTest extends AbstractCanvasCommandTest {
     @Before
     public void setup() throws Exception {
         super.setup();
-        when( parent.getUUID() ).thenReturn( P_ID );
-        when( candidate.getUUID() ).thenReturn( C_ID );
-        this.tested = new CanvasUndockNodeCommand( parent,
-                                                   candidate );
+        when(parent.getUUID()).thenReturn(P_ID);
+        when(candidate.getUUID()).thenReturn(C_ID);
+        this.tested = new CanvasUndockNodeCommand(parent,
+                                                  candidate);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecute() {
-        final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR,
-                         result.getType() );
-        verify( canvasHandler,
-                times( 0 ) ).register( anyString(),
-                                       eq( candidate ) );
-        verify( canvasHandler,
-                times( 0 ) ).addChild( any( Node.class ),
-                                       any( Node.class ) );
-        verify( canvasHandler,
-                times( 1 ) ).undock( eq( P_ID ),
-                                     eq( C_ID ) );
-        verify( canvasHandler,
-                times( 1 ) ).applyElementMutation( eq( candidate ),
-                                                   any( MutationContext.class ) );
-        verify( canvasHandler,
-                times( 1 ) ).applyElementMutation( eq( parent ),
-                                                   any( MutationContext.class ) );
+        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertNotEquals(CommandResult.Type.ERROR,
+                        result.getType());
+        verify(canvasHandler,
+               times(0)).register(anyString(),
+                                  eq(candidate));
+        verify(canvasHandler,
+               times(0)).addChild(any(Node.class),
+                                  any(Node.class));
+        verify(canvasHandler,
+               times(1)).undock(eq(P_ID),
+                                eq(C_ID));
+        verify(canvasHandler,
+               times(1)).applyElementMutation(eq(candidate),
+                                              any(MutationContext.class));
+        verify(canvasHandler,
+               times(1)).applyElementMutation(eq(parent),
+                                              any(MutationContext.class));
     }
 }

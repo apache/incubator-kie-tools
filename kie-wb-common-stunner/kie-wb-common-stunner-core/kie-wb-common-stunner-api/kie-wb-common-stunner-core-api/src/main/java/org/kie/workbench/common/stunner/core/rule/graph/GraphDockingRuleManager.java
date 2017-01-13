@@ -31,6 +31,6 @@ public interface GraphDockingRuleManager extends DockingRuleManager {
      * @param parent The parent node.
      * @param candidate The candidate to be dock into parent.
      */
-    RuleViolations evaluate( final Element<?> parent,
-                             final Element<? extends Definition<?>> candidate );
+    RuleViolations evaluate(final Element<?> parent,
+                            final Element<? extends Definition<?>> candidate);
 }

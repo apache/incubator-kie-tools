@@ -24,8 +24,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasContro
  */
 public interface CanvasPaletteControl<C extends CanvasHandler> extends CanvasControl<C> {
 
-    CanvasPaletteControl<C> show( final double x,
-                                  final double y );
+    CanvasPaletteControl<C> show(final double x,
+                                 final double y);
 
     CanvasPaletteControl<C> hide();
 }

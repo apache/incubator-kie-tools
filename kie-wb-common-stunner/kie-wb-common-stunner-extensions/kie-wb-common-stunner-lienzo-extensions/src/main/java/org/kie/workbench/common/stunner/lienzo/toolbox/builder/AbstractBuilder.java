@@ -44,41 +44,41 @@ public abstract class AbstractBuilder implements On,
     protected int padding;
     protected int iconSize;
 
-    public AbstractBuilder( Layer layer,
-                            WiresShape shape ) {
+    public AbstractBuilder(final Layer layer,
+                           final WiresShape shape) {
         this.layer = layer;
         this.shape = shape;
     }
 
     @Override
-    public Towards on( Direction anchor ) {
+    public Towards on(final Direction anchor) {
         this.anchor = anchor;
         return this;
     }
 
     @Override
-    public On attachTo( Shape<?> shape ) {
+    public On attachTo(final Shape<?> shape) {
         this.attachTo = shape;
         return this;
     }
 
     @Override
-    public ButtonGrid towards( Direction towards ) {
+    public ButtonGrid towards(final Direction towards) {
         this.towards = towards;
         return this;
     }
 
     @Override
-    public ButtonsOrRegister add( ToolboxButton button ) {
-        this.buttons.add( button );
+    public ButtonsOrRegister add(final ToolboxButton button) {
+        this.buttons.add(button);
         return this;
     }
 
     @Override
-    public ButtonsOrRegister grid( int padding,
-                                   int iconSize,
-                                   int rows,
-                                   int cols ) {
+    public ButtonsOrRegister grid(final int padding,
+                                  final int iconSize,
+                                  final int rows,
+                                  final int cols) {
         this.rows = rows;
         this.cols = cols;
         this.padding = padding;
@@ -87,9 +87,9 @@ public abstract class AbstractBuilder implements On,
     }
 
     @Override
-    public Button add( IPrimitive<?> iconShape ) {
-        return new ButtonBuilder( this,
-                                  iconShape );
+    public Button add(final IPrimitive<?> iconShape) {
+        return new ButtonBuilder(this,
+                                 iconShape);
     }
 
     @Override
@@ -106,56 +106,56 @@ public abstract class AbstractBuilder implements On,
         private ToolboxButtonEventHandler mouseEnterHandler;
         private ToolboxButtonEventHandler mouseExitHandler;
 
-        public ButtonBuilder( final AbstractBuilder builder,
-                              final IPrimitive<?> shape ) {
+        public ButtonBuilder(final AbstractBuilder builder,
+                             final IPrimitive<?> shape) {
             this.builder = builder;
             this.shape = shape;
         }
 
-        public ButtonBuilder setPadding( final int padding ) {
+        public ButtonBuilder setPadding(final int padding) {
             this.padding = padding;
             return this;
         }
 
-        public ButtonBuilder setIconSize( final int size ) {
+        public ButtonBuilder setIconSize(final int size) {
             this.iconSize = size;
             return this;
         }
 
         @Override
-        public Button setClickHandler( final ToolboxButtonEventHandler handler ) {
+        public Button setClickHandler(final ToolboxButtonEventHandler handler) {
             this.clickHandler = handler;
             return this;
         }
 
         @Override
-        public Button setMouseDownHandler( final ToolboxButtonEventHandler handler ) {
+        public Button setMouseDownHandler(final ToolboxButtonEventHandler handler) {
             this.moveDownHandler = handler;
             return this;
         }
 
         @Override
-        public Button setMouseEnterHandler( final ToolboxButtonEventHandler handler ) {
+        public Button setMouseEnterHandler(final ToolboxButtonEventHandler handler) {
             this.mouseEnterHandler = handler;
             return this;
         }
 
         @Override
-        public Button setMouseExitHandler( final ToolboxButtonEventHandler handler ) {
+        public Button setMouseExitHandler(final ToolboxButtonEventHandler handler) {
             this.mouseExitHandler = handler;
             return this;
         }
 
         @Override
         public ButtonsOrRegister end() {
-            builder.add( new ToolboxButton( builder.layer,
-                                            shape,
-                                            padding,
-                                            iconSize,
-                                            clickHandler,
-                                            moveDownHandler,
-                                            mouseEnterHandler,
-                                            mouseExitHandler ) );
+            builder.add(new ToolboxButton(builder.layer,
+                                          shape,
+                                          padding,
+                                          iconSize,
+                                          clickHandler,
+                                          moveDownHandler,
+                                          mouseEnterHandler,
+                                          mouseExitHandler));
             return builder;
         }
     }

@@ -42,87 +42,87 @@ public final class TaskShapeDef
                    HasChildShapeDefs<BaseTask> {
 
     @Override
-    public String getBackgroundColor( final BaseTask element ) {
+    public String getBackgroundColor(final BaseTask element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final BaseTask element ) {
+    public double getBackgroundAlpha(final BaseTask element) {
         return 1;
     }
 
     @Override
-    public String getBorderColor( final BaseTask element ) {
+    public String getBorderColor(final BaseTask element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final BaseTask element ) {
+    public double getBorderSize(final BaseTask element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final BaseTask element ) {
+    public double getBorderAlpha(final BaseTask element) {
         return 1;
     }
 
     @Override
-    public String getFontFamily( final BaseTask element ) {
+    public String getFontFamily(final BaseTask element) {
         return element.getFontSet().getFontFamily().getValue();
     }
 
     @Override
-    public String getFontColor( final BaseTask element ) {
+    public String getFontColor(final BaseTask element) {
         return element.getFontSet().getFontColor().getValue();
     }
 
     @Override
-    public double getFontSize( final BaseTask element ) {
+    public double getFontSize(final BaseTask element) {
         return element.getFontSet().getFontSize().getValue();
     }
 
     @Override
-    public String getNamePropertyValue( final BaseTask element ) {
+    public String getNamePropertyValue(final BaseTask element) {
         return element.getGeneral().getName().getValue();
     }
 
     @Override
-    public double getFontBorderSize( final BaseTask element ) {
+    public double getFontBorderSize(final BaseTask element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final BaseTask element ) {
+    public HasTitle.Position getFontPosition(final BaseTask element) {
         return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public double getFontRotation( final BaseTask element ) {
+    public double getFontRotation(final BaseTask element) {
         return 0;
     }
 
     private static final PictureGlyphDef<BaseTask, BPMNPictures> TASK_GLYPH_DEF = new PictureGlyphDef<BaseTask, BPMNPictures>() {
 
-        private final Map<Class<?>, BPMNPictures> PICTURES = new HashMap<Class<?>, BPMNPictures>( 3 ) {{
+        private final Map<Class<?>, BPMNPictures> PICTURES = new HashMap<Class<?>, BPMNPictures>(3) {{
             // TODO: Change NoneTask image!
-            put( NoneTask.class,
-                 BPMNPictures.TASK_USER );
-            put( UserTask.class,
-                 BPMNPictures.TASK_USER );
-            put( ScriptTask.class,
-                 BPMNPictures.TASK_SCRIPT );
-            put( BusinessRuleTask.class,
-                 BPMNPictures.TASK_BUSINESS_RULE );
+            put(NoneTask.class,
+                BPMNPictures.TASK_USER);
+            put(UserTask.class,
+                BPMNPictures.TASK_USER);
+            put(ScriptTask.class,
+                BPMNPictures.TASK_SCRIPT);
+            put(BusinessRuleTask.class,
+                BPMNPictures.TASK_BUSINESS_RULE);
         }};
 
         @Override
-        public String getGlyphDescription( BaseTask element ) {
+        public String getGlyphDescription(final BaseTask element) {
             return element.getDescription();
         }
 
         @Override
-        public BPMNPictures getSource( final Class<?> type ) {
-            return PICTURES.get( type );
+        public BPMNPictures getSource(final Class<?> type) {
+            return PICTURES.get(type);
         }
     };
 
@@ -134,32 +134,32 @@ public final class TaskShapeDef
     @Override
     public Map<ShapeDef<BaseTask>, HasChildren.Layout> getChildShapeDefs() {
         return new HashMap<ShapeDef<BaseTask>, HasChildren.Layout>() {{
-            put( new TaskTypeProxy(),
-                 HasChildren.Layout.TOP );
+            put(new TaskTypeProxy(),
+                HasChildren.Layout.TOP);
         }};
     }
 
     @Override
-    public double getWidth( final BaseTask element ) {
+    public double getWidth(final BaseTask element) {
         return element.getDimensionsSet().getWidth().getValue();
     }
 
     @Override
-    public double getHeight( final BaseTask element ) {
+    public double getHeight(final BaseTask element) {
         return element.getDimensionsSet().getHeight().getValue();
     }
 
     @Override
-    public double getCornerRadius( final BaseTask element ) {
+    public double getCornerRadius(final BaseTask element) {
         return 5;
     }
 
     public final class TaskTypeProxy extends AbstractShapeDef<BaseTask> implements PictureShapeDef<BaseTask, BPMNPictures> {
 
         @Override
-        public BPMNPictures getPictureSource( final BaseTask element ) {
+        public BPMNPictures getPictureSource(final BaseTask element) {
             final TaskType taskType = element.getTaskType();
-            switch ( taskType.getValue() ) {
+            switch (taskType.getValue()) {
                 case USER:
                     return BPMNPictures.TASK_USER;
                 case SCRIPT:
@@ -171,12 +171,12 @@ public final class TaskShapeDef
         }
 
         @Override
-        public double getWidth( final BaseTask element ) {
+        public double getWidth(final BaseTask element) {
             return 15d;
         }
 
         @Override
-        public double getHeight( final BaseTask element ) {
+        public double getHeight(final BaseTask element) {
             return 15d;
         }
     }

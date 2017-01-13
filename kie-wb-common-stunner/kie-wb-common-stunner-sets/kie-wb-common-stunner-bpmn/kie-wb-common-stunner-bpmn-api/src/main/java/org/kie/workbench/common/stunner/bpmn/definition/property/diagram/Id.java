@@ -64,7 +64,7 @@ public class Id implements BPMNProperty {
     public Id() {
     }
 
-    public Id( final String value ) {
+    public Id(final String value) {
         this.value = value;
     }
 
@@ -96,7 +96,7 @@ public class Id implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

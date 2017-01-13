@@ -44,7 +44,7 @@ import org.uberfire.commons.validation.PortablePreconditions;
 @Portable
 public final class UpdateElementPositionCommand extends AbstractGraphCommand {
 
-    private static Logger LOGGER = Logger.getLogger( UpdateElementPositionCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(UpdateElementPositionCommand.class.getName());
 
     private final String uuid;
     private final Double x;
@@ -53,83 +53,83 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     private Double oldY;
     private transient Node<?, Edge> node;
 
-    public UpdateElementPositionCommand( final @MapsTo( "uuid" ) String uuid,
-                                         final @MapsTo( "x" ) Double x,
-                                         final @MapsTo( "y" ) Double y ) {
-        this.uuid = PortablePreconditions.checkNotNull( "uuid",
-                                                        uuid );
-        this.x = PortablePreconditions.checkNotNull( "x",
-                                                     x );
-        this.y = PortablePreconditions.checkNotNull( "y",
-                                                     y );
+    public UpdateElementPositionCommand(final @MapsTo("uuid") String uuid,
+                                        final @MapsTo("x") Double x,
+                                        final @MapsTo("y") Double y) {
+        this.uuid = PortablePreconditions.checkNotNull("uuid",
+                                                       uuid);
+        this.x = PortablePreconditions.checkNotNull("x",
+                                                    x);
+        this.y = PortablePreconditions.checkNotNull("y",
+                                                    y);
         this.node = null;
     }
 
-    public UpdateElementPositionCommand( final Node<?, Edge> node,
-                                         final Double x,
-                                         final Double y ) {
-        this( node.getUUID(),
-              x,
-              y );
-        this.node = PortablePreconditions.checkNotNull( "node",
-                                                        node );
+    public UpdateElementPositionCommand(final Node<?, Edge> node,
+                                        final Double x,
+                                        final Double y) {
+        this(node.getUUID(),
+             x,
+             y);
+        this.node = PortablePreconditions.checkNotNull("node",
+                                                       node);
     }
 
     @Override
-    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
-        checkNodeNotNull( context );
+    protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
+        checkNodeNotNull(context);
         return GraphCommandResultBuilder.SUCCESS;
     }
 
-    private Node<?, Edge> checkNodeNotNull( final GraphCommandExecutionContext context ) {
-        if ( null == node ) {
-            node = super.checkNodeNotNull( context,
-                                           uuid );
+    private Node<?, Edge> checkNodeNotNull(final GraphCommandExecutionContext context) {
+        if (null == node) {
+            node = super.checkNodeNotNull(context,
+                                          uuid);
         }
         return node;
     }
 
     @Override
-    public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        final Element<?> element = checkNodeNotNull( context );
-        final Point2D oldPosition = GraphUtils.getPosition( ( View ) element.getContent() );
-        final double[] oldSize = GraphUtils.getSize( ( View ) element.getContent() );
+    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
+        final Element<?> element = checkNodeNotNull(context);
+        final Point2D oldPosition = GraphUtils.getPosition((View) element.getContent());
+        final double[] oldSize = GraphUtils.getSize((View) element.getContent());
         this.oldX = oldPosition.getX();
         this.oldY = oldPosition.getY();
-        final double w = oldSize[ 0 ];
-        final double h = oldSize[ 1 ];
-        final BoundsImpl newBounds = new BoundsImpl( new BoundImpl( x,
-                                                                    y ),
-                                                     new BoundImpl( x + w,
-                                                                    y + h ) );
-        checkBounds( context,
-                     newBounds );
-        ( ( View ) element.getContent() ).setBounds( newBounds );
-        LOGGER.log( Level.FINE,
-                    "Moving element bounds to [" + x + "," + y + "] [" + ( x + w ) + "," + ( y + h ) + "]" );
+        final double w = oldSize[0];
+        final double h = oldSize[1];
+        final BoundsImpl newBounds = new BoundsImpl(new BoundImpl(x,
+                                                                  y),
+                                                    new BoundImpl(x + w,
+                                                                  y + h));
+        checkBounds(context,
+                    newBounds);
+        ((View) element.getContent()).setBounds(newBounds);
+        LOGGER.log(Level.FINE,
+                   "Moving element bounds to [" + x + "," + y + "] [" + (x + w) + "," + (y + h) + "]");
         return GraphCommandResultBuilder.SUCCESS;
     }
 
-    @SuppressWarnings( "unchecked" )
-    private void checkBounds( final GraphCommandExecutionContext context,
-                              final Bounds bounds ) {
-        final Graph<DefinitionSet, Node> graph = ( Graph<DefinitionSet, Node> ) getGraph( context );
-        if ( !GraphUtils.checkBounds( graph,
-                                      bounds ) ) {
+    @SuppressWarnings("unchecked")
+    private void checkBounds(final GraphCommandExecutionContext context,
+                             final Bounds bounds) {
+        final Graph<DefinitionSet, Node> graph = (Graph<DefinitionSet, Node>) getGraph(context);
+        if (!GraphUtils.checkBounds(graph,
+                                    bounds)) {
             final Bounds graphBounds = graph.getContent().getBounds();
-            throw new BoundsExceededException( this,
-                                               bounds,
-                                               graphBounds.getLowerRight().getX(),
-                                               graphBounds.getLowerRight().getY() );
+            throw new BoundsExceededException(this,
+                                              bounds,
+                                              graphBounds.getLowerRight().getX(),
+                                              graphBounds.getLowerRight().getY());
         }
     }
 
     @Override
-    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final UpdateElementPositionCommand undoCommand = new UpdateElementPositionCommand( checkNodeNotNull( context ),
-                                                                                           oldX,
-                                                                                           oldY );
-        return undoCommand.execute( context );
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        final UpdateElementPositionCommand undoCommand = new UpdateElementPositionCommand(checkNodeNotNull(context),
+                                                                                          oldX,
+                                                                                          oldY);
+        return undoCommand.execute(context);
     }
 
     public Double getX() {

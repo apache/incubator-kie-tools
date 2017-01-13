@@ -39,16 +39,16 @@ public class ProjectDiagramFactory
     }
 
     @Override
-    public ProjectDiagram build( final String name,
-                                 final ProjectMetadata metadata,
-                                 final Graph<DefinitionSet, ?> graph ) {
-        return new ProjectDiagramImpl( name,
-                                       graph,
-                                       metadata );
+    public ProjectDiagram build(final String name,
+                                final ProjectMetadata metadata,
+                                final Graph<DefinitionSet, ?> graph) {
+        return new ProjectDiagramImpl(name,
+                                      graph,
+                                      metadata);
     }
 
     @Override
-    public boolean accepts( final String source ) {
+    public boolean accepts(final String source) {
         return true;
     }
 

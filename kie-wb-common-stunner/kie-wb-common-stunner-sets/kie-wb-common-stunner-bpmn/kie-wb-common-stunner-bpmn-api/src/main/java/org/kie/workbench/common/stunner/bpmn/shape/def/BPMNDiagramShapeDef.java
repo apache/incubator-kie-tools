@@ -26,77 +26,77 @@ public final class BPMNDiagramShapeDef
         implements RectangleShapeDef<BPMNDiagram> {
 
     @Override
-    public String getBackgroundColor( final BPMNDiagram element ) {
+    public String getBackgroundColor(final BPMNDiagram element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final BPMNDiagram element ) {
+    public double getBackgroundAlpha(final BPMNDiagram element) {
         return 0.8;
     }
 
     @Override
-    public String getBorderColor( final BPMNDiagram element ) {
+    public String getBorderColor(final BPMNDiagram element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final BPMNDiagram element ) {
+    public double getBorderSize(final BPMNDiagram element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final BPMNDiagram element ) {
+    public double getBorderAlpha(final BPMNDiagram element) {
         return 1;
     }
 
     @Override
-    public String getFontFamily( final BPMNDiagram element ) {
+    public String getFontFamily(final BPMNDiagram element) {
         return element.getFontSet().getFontFamily().getValue();
     }
 
     @Override
-    public String getFontColor( final BPMNDiagram element ) {
+    public String getFontColor(final BPMNDiagram element) {
         return element.getFontSet().getFontColor().getValue();
     }
 
     @Override
-    public double getFontSize( final BPMNDiagram element ) {
+    public double getFontSize(final BPMNDiagram element) {
         return element.getFontSet().getFontSize().getValue();
     }
 
     @Override
-    public String getNamePropertyValue( final BPMNDiagram element ) {
+    public String getNamePropertyValue(final BPMNDiagram element) {
         return element.getDiagramSet().getName().getValue();
     }
 
     @Override
-    public double getFontBorderSize( final BPMNDiagram element ) {
+    public double getFontBorderSize(final BPMNDiagram element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final BPMNDiagram element ) {
+    public HasTitle.Position getFontPosition(final BPMNDiagram element) {
         return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public double getFontRotation( final BPMNDiagram element ) {
+    public double getFontRotation(final BPMNDiagram element) {
         return 0;
     }
 
     @Override
-    public double getWidth( final BPMNDiagram element ) {
+    public double getWidth(final BPMNDiagram element) {
         return element.getDimensionsSet().getWidth().getValue();
     }
 
     @Override
-    public double getHeight( final BPMNDiagram element ) {
+    public double getHeight(final BPMNDiagram element) {
         return element.getDimensionsSet().getHeight().getValue();
     }
 
     @Override
-    public double getCornerRadius( final BPMNDiagram element ) {
+    public double getCornerRadius(final BPMNDiagram element) {
         return 0;
     }
 }

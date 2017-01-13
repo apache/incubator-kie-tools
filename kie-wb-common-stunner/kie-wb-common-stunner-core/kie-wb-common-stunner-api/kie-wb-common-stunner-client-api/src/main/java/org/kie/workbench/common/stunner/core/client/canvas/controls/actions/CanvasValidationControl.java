@@ -27,5 +27,5 @@ public interface CanvasValidationControl<C extends CanvasHandler> extends Canvas
 
     void validate();
 
-    void validate( final CanvasValidatorCallback validatorCallback );
+    void validate(final CanvasValidatorCallback validatorCallback);
 }

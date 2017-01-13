@@ -29,37 +29,37 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 
 public final class DrawCanvasCommand extends AbstractCanvasCommand {
 
-    private static Logger LOGGER = Logger.getLogger( DrawCanvasCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(DrawCanvasCommand.class.getName());
 
     private final TreeWalkTraverseProcessor treeWalkTraverseProcessor;
 
-    public DrawCanvasCommand( final TreeWalkTraverseProcessor treeWalkTraverseProcessor ) {
+    public DrawCanvasCommand(final TreeWalkTraverseProcessor treeWalkTraverseProcessor) {
         this.treeWalkTraverseProcessor = treeWalkTraverseProcessor;
     }
 
     @Override
-    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         final Diagram diagram = context.getDiagram();
-        final String shapeSetId = getShapeSetId( context );
+        final String shapeSetId = getShapeSetId(context);
         final String rootUUID = diagram.getMetadata().getCanvasRootUUID();
         Command<AbstractCanvasHandler, CanvasViolation> command = null;
-        if ( null != rootUUID ) {
-            final Node root = context.getGraphIndex().getNode( rootUUID );
-            command = new AddCanvasNodeCommand( treeWalkTraverseProcessor,
-                                                root,
-                                                shapeSetId );
+        if (null != rootUUID) {
+            final Node root = context.getGraphIndex().getNode(rootUUID);
+            command = new AddCanvasNodeCommand(treeWalkTraverseProcessor,
+                                               root,
+                                               shapeSetId);
         } else {
             command = new CanvasNodesRegistrationCommand();
         }
-        return command.execute( context );
+        return command.execute(context);
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        throw new UnsupportedOperationException( "Undo operation for [" + this.getClass().getName() + "[ is not supported.." );
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+        throw new UnsupportedOperationException("Undo operation for [" + this.getClass().getName() + "[ is not supported..");
     }
 
-    private String getShapeSetId( final AbstractCanvasHandler context ) {
+    private String getShapeSetId(final AbstractCanvasHandler context) {
         return context.getDiagram().getMetadata().getShapeSetId();
     }
 
@@ -69,28 +69,28 @@ public final class DrawCanvasCommand extends AbstractCanvasCommand {
     private final class CanvasNodesRegistrationCommand extends AbstractCanvasNodeRegistrationCommand {
 
         private CanvasNodesRegistrationCommand() {
-            super( treeWalkTraverseProcessor,
-                   null );
+            super(treeWalkTraverseProcessor,
+                  null);
         }
 
         @Override
-        protected String getShapeSetId( final AbstractCanvasHandler context ) {
-            return DrawCanvasCommand.this.getShapeSetId( context );
+        protected String getShapeSetId(final AbstractCanvasHandler context) {
+            return DrawCanvasCommand.this.getShapeSetId(context);
         }
 
         @Override
-        @SuppressWarnings( "unchecked" )
-        protected boolean registerCandidate( final AbstractCanvasHandler context ) {
-            context.register( getShapeSetId( context ),
-                              getCandidate() );
-            context.applyElementMutation( getCandidate(),
-                                          MutationContext.STATIC );
+        @SuppressWarnings("unchecked")
+        protected boolean registerCandidate(final AbstractCanvasHandler context) {
+            context.register(getShapeSetId(context),
+                             getCandidate());
+            context.applyElementMutation(getCandidate(),
+                                         MutationContext.STATIC);
             return true;
         }
 
         @Override
-        public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-            return DrawCanvasCommand.this.undo( context );
+        public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+            return DrawCanvasCommand.this.undo(context);
         }
     }
 }

@@ -36,7 +36,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 public class GraphCommandManagerImpl
         implements GraphCommandManager {
 
-    private static Logger LOGGER = Logger.getLogger( GraphCommandManagerImpl.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(GraphCommandManagerImpl.class.getName());
 
     private final CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager;
     private final Event<IsCommandAllowedEvent> isCommandAllowedEvent;
@@ -44,15 +44,15 @@ public class GraphCommandManagerImpl
     private final Event<CommandUndoExecutedEvent> commandUndoExecutedEvent;
 
     protected GraphCommandManagerImpl() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public GraphCommandManagerImpl( final Event<IsCommandAllowedEvent> isCommandAllowedEvent,
-                                    final Event<CommandExecutedEvent> commandExecutedEvent,
-                                    final Event<CommandUndoExecutedEvent> commandUndoExecutedEvent ) {
+    public GraphCommandManagerImpl(final Event<IsCommandAllowedEvent> isCommandAllowedEvent,
+                                   final Event<CommandExecutedEvent> commandExecutedEvent,
+                                   final Event<CommandUndoExecutedEvent> commandUndoExecutedEvent) {
         this.commandManager = new CommandManagerImpl<GraphCommandExecutionContext, RuleViolation>();
         this.isCommandAllowedEvent = isCommandAllowedEvent;
         this.commandExecutedEvent = commandExecutedEvent;
@@ -60,50 +60,50 @@ public class GraphCommandManagerImpl
     }
 
     @Override
-    public CommandResult<RuleViolation> allow( final GraphCommandExecutionContext context,
-                                               final Command<GraphCommandExecutionContext, RuleViolation> command ) {
+    public CommandResult<RuleViolation> allow(final GraphCommandExecutionContext context,
+                                              final Command<GraphCommandExecutionContext, RuleViolation> command) {
         try {
-            final CommandResult<RuleViolation> result = commandManager.allow( context,
-                                                                              command );
-            if ( null != isCommandAllowedEvent ) {
-                isCommandAllowedEvent.fire( new IsCommandAllowedEvent( command,
-                                                                       result ) );
+            final CommandResult<RuleViolation> result = commandManager.allow(context,
+                                                                             command);
+            if (null != isCommandAllowedEvent) {
+                isCommandAllowedEvent.fire(new IsCommandAllowedEvent(command,
+                                                                     result));
             }
             return result;
-        } catch ( CommandException e ) {
-            LOGGER.log( Level.SEVERE,
-                        "Error while executing graph command. Message [" + e.getMessage() + "]." );
+        } catch (CommandException e) {
+            LOGGER.log(Level.SEVERE,
+                       "Error while executing graph command. Message [" + e.getMessage() + "].");
         }
         return GraphCommandResultBuilder.FAILED;
     }
 
     @Override
-    public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context,
-                                                 final Command<GraphCommandExecutionContext, RuleViolation> command ) {
+    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context,
+                                                final Command<GraphCommandExecutionContext, RuleViolation> command) {
         try {
-            final CommandResult<RuleViolation> result = commandManager.execute( context,
-                                                                                command );
-            if ( null != commandExecutedEvent ) {
-                commandExecutedEvent.fire( new CommandExecutedEvent( command,
-                                                                     result ) );
+            final CommandResult<RuleViolation> result = commandManager.execute(context,
+                                                                               command);
+            if (null != commandExecutedEvent) {
+                commandExecutedEvent.fire(new CommandExecutedEvent(command,
+                                                                   result));
             }
             return result;
-        } catch ( CommandException e ) {
-            LOGGER.log( Level.SEVERE,
-                        "Error while checking allow for graph command. Message [" + e.getMessage() + "]." );
+        } catch (CommandException e) {
+            LOGGER.log(Level.SEVERE,
+                       "Error while checking allow for graph command. Message [" + e.getMessage() + "].");
         }
         return GraphCommandResultBuilder.FAILED;
     }
 
     @Override
-    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context,
-                                              final Command<GraphCommandExecutionContext, RuleViolation> command ) {
-        final CommandResult<RuleViolation> result = commandManager.undo( context,
-                                                                         command );
-        if ( null != commandUndoExecutedEvent ) {
-            final CommandUndoExecutedEvent event = new CommandUndoExecutedEvent( command,
-                                                                                 result );
-            commandUndoExecutedEvent.fire( event );
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context,
+                                             final Command<GraphCommandExecutionContext, RuleViolation> command) {
+        final CommandResult<RuleViolation> result = commandManager.undo(context,
+                                                                        command);
+        if (null != commandUndoExecutedEvent) {
+            final CommandUndoExecutedEvent event = new CommandUndoExecutedEvent(command,
+                                                                                result);
+            commandUndoExecutedEvent.fire(event);
         }
         return result;
     }

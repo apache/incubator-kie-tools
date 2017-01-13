@@ -39,29 +39,29 @@ public class ModelConnectionRuleManagerImpl extends AbstractConnectionRuleManage
     }
 
     @Override
-    public RuleViolations evaluate( final String edgeId,
-                                    final Set<String> outgoingLabels,
-                                    final Set<String> incomingLabels ) {
-        if ( rules.isEmpty() ) {
+    public RuleViolations evaluate(final String edgeId,
+                                   final Set<String> outgoingLabels,
+                                   final Set<String> incomingLabels) {
+        if (rules.isEmpty()) {
             return new DefaultRuleViolations();
         }
         final DefaultRuleViolations results = new DefaultRuleViolations();
         final Set<Pair<String, String>> couples = new HashSet<Pair<String, String>>();
-        for ( ConnectionRule rule : rules ) {
-            if ( edgeId.equals( rule.getId() ) ) {
-                for ( ConnectionRule.PermittedConnection pc : rule.getPermittedConnections() ) {
-                    couples.add( new Pair<String, String>( pc.getStartRole(),
-                                                           pc.getEndRole() ) );
-                    if ( outgoingLabels.contains( pc.getStartRole() ) ) {
-                        if ( incomingLabels.contains( pc.getEndRole() ) ) {
+        for (ConnectionRule rule : rules) {
+            if (edgeId.equals(rule.getId())) {
+                for (ConnectionRule.PermittedConnection pc : rule.getPermittedConnections()) {
+                    couples.add(new Pair<String, String>(pc.getStartRole(),
+                                                         pc.getEndRole()));
+                    if (outgoingLabels.contains(pc.getStartRole())) {
+                        if (incomingLabels.contains(pc.getEndRole())) {
                             return results;
                         }
                     }
                 }
             }
         }
-        results.addViolation( new ConnectionRuleViolation( edgeId,
-                                                           couples ) );
+        results.addViolation(new ConnectionRuleViolation(edgeId,
+                                                         couples));
         return results;
     }
 }

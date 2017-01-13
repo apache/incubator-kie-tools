@@ -27,15 +27,15 @@ import org.kie.workbench.common.stunner.project.client.type.AbstractStunnerClien
 @ApplicationScoped
 public class CaseManagementDiagramResourceType extends AbstractStunnerClientResourceType<CaseManagementDefinitionSetResourceType> {
 
-    private static final Image ICON = new Image( CaseManagementImageResources.INSTANCE.cmicon() );
+    private static final Image ICON = new Image(CaseManagementImageResources.INSTANCE.cmicon());
 
     protected CaseManagementDiagramResourceType() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public CaseManagementDiagramResourceType( final CaseManagementDefinitionSetResourceType definitionSetResourceType ) {
-        super( definitionSetResourceType );
+    public CaseManagementDiagramResourceType(final CaseManagementDefinitionSetResourceType definitionSetResourceType) {
+        super(definitionSetResourceType);
     }
 
     @Override

@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.rule.model.ModelEdgeCardinalityRule
 public class ModelEdgeCardinalityRuleManagerImpl extends AbstractEdgeCardinalityRuleManager
         implements ModelEdgeCardinalityRuleManager {
 
-    private static Logger LOGGER = Logger.getLogger( ModelEdgeCardinalityRuleManagerImpl.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(ModelEdgeCardinalityRuleManagerImpl.class.getName());
 
     private static final String NAME = "Domain Model Edge Cardinality Rule Manager";
 
@@ -43,41 +43,41 @@ public class ModelEdgeCardinalityRuleManagerImpl extends AbstractEdgeCardinality
     }
 
     @Override
-    public RuleViolations evaluate( final String edgeId,
-                                    final Set<String> labels,
-                                    final int count,
-                                    final EdgeCardinalityRule.Type ruleType,
-                                    final Operation operation ) {
-        LOGGER.log( Level.FINE,
-                    "Evaluating edge cardinality rules with arguments "
-                            + "[edgeId=" + edgeId
-                            + ", labels=" + labels
-                            + ", count=" + count
-                            + ", ruleType=" + ruleType
-                            + ", operation=" + operation + "]" );
-        if ( rules.isEmpty() ) {
+    public RuleViolations evaluate(final String edgeId,
+                                   final Set<String> labels,
+                                   final int count,
+                                   final EdgeCardinalityRule.Type ruleType,
+                                   final Operation operation) {
+        LOGGER.log(Level.FINE,
+                   "Evaluating edge cardinality rules with arguments "
+                           + "[edgeId=" + edgeId
+                           + ", labels=" + labels
+                           + ", count=" + count
+                           + ", ruleType=" + ruleType
+                           + ", operation=" + operation + "]");
+        if (rules.isEmpty()) {
             return new DefaultRuleViolations();
         }
         final DefaultRuleViolations results = new DefaultRuleViolations();
-        for ( EdgeCardinalityRule rule : rules ) {
+        for (EdgeCardinalityRule rule : rules) {
             final int minOccurrences = rule.getMinOccurrences();
             final int maxOccurrences = rule.getMaxOccurrences();
             final EdgeCardinalityRule.Type type = rule.getType();
-            if ( ruleType.equals( type ) && labels != null && labels.contains( rule.getRole() ) ) {
-                final int _count = operation.equals( Operation.NONE ) ? count :
-                        ( operation.equals( Operation.ADD ) ? count + 1 :
-                                ( count > 0 ? count - 1 : 0 )
+            if (ruleType.equals(type) && labels != null && labels.contains(rule.getRole())) {
+                final int _count = operation.equals(Operation.NONE) ? count :
+                        (operation.equals(Operation.ADD) ? count + 1 :
+                                (count > 0 ? count - 1 : 0)
                         );
-                if ( _count < minOccurrences ) {
-                    results.addViolation( new CardinalityMinRuleViolation( labels.toString(),
-                                                                           rule.getName(),
-                                                                           minOccurrences,
-                                                                           count ) );
-                } else if ( maxOccurrences > -1 && _count > maxOccurrences ) {
-                    results.addViolation( new CardinalityMaxRuleViolation( labels.toString(),
-                                                                           rule.getName(),
-                                                                           maxOccurrences,
-                                                                           count ) );
+                if (_count < minOccurrences) {
+                    results.addViolation(new CardinalityMinRuleViolation(labels.toString(),
+                                                                         rule.getName(),
+                                                                         minOccurrences,
+                                                                         count));
+                } else if (maxOccurrences > -1 && _count > maxOccurrences) {
+                    results.addViolation(new CardinalityMaxRuleViolation(labels.toString(),
+                                                                         rule.getName(),
+                                                                         maxOccurrences,
+                                                                         count));
                 }
             }
         }

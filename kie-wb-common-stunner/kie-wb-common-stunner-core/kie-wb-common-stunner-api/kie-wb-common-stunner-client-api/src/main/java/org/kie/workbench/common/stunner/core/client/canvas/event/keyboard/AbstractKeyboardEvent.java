@@ -20,7 +20,7 @@ public abstract class AbstractKeyboardEvent implements KeyboardEvent {
 
     private final KeyboardEvent.Key key;
 
-    public AbstractKeyboardEvent( final KeyboardEvent.Key key ) {
+    public AbstractKeyboardEvent(final KeyboardEvent.Key key) {
         this.key = key;
     }
 

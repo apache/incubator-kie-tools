@@ -28,17 +28,17 @@ public abstract class AbstractDefinitionSetService implements DefinitionSetServi
     private final DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> diagramMarshaller;
 
     protected AbstractDefinitionSetService() {
-        this( null );
+        this(null);
     }
 
-    public AbstractDefinitionSetService( final DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> diagramMarshaller ) {
+    public AbstractDefinitionSetService(final DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> diagramMarshaller) {
         this.diagramMarshaller = diagramMarshaller;
     }
 
     @Override
-    public boolean accepts( final String defSetId ) {
-        final String id = BindableAdapterUtils.getDefinitionSetId( getResourceType().getDefinitionSetType() );
-        return defSetId != null && defSetId.equals( id );
+    public boolean accepts(final String defSetId) {
+        final String id = BindableAdapterUtils.getDefinitionSetId(getResourceType().getDefinitionSetType());
+        return defSetId != null && defSetId.equals(id);
     }
 
     @Override

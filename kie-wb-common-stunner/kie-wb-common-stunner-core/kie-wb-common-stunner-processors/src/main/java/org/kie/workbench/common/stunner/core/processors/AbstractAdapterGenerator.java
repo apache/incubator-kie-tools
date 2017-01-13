@@ -41,15 +41,15 @@ public abstract class AbstractAdapterGenerator {
     public AbstractAdapterGenerator() {
         try {
             this.config = new Configuration();
-            this.config.setClassForTemplateLoading( this.getClass(),
-                                                    "templates" );
-            this.config.setObjectWrapper( new DefaultObjectWrapper() );
-        } catch ( NoClassDefFoundError var2 ) {
-            if ( var2.getCause() == null ) {
-                var2.initCause( INITIALIZER_EXCEPTION );
+            this.config.setClassForTemplateLoading(this.getClass(),
+                                                   "templates");
+            this.config.setObjectWrapper(new DefaultObjectWrapper());
+        } catch (NoClassDefFoundError var2) {
+            if (var2.getCause() == null) {
+                var2.initCause(INITIALIZER_EXCEPTION);
             }
             throw var2;
-        } catch ( ExceptionInInitializerError var3 ) {
+        } catch (ExceptionInInitializerError var3) {
             INITIALIZER_EXCEPTION = var3;
             throw var3;
         }
@@ -57,65 +57,65 @@ public abstract class AbstractAdapterGenerator {
 
     protected abstract String getTemplatePath();
 
-    protected StringBuffer writeTemplate( final String packageName,
-                                          final String className,
-                                          final Map<String, Object> ctxt,
-                                          final Messager messager ) throws GenerationException {
+    protected StringBuffer writeTemplate(final String packageName,
+                                         final String className,
+                                         final Map<String, Object> ctxt,
+                                         final Messager messager) throws GenerationException {
         //Generate code
         final StringWriter sw = new StringWriter();
-        final BufferedWriter bw = new BufferedWriter( sw );
+        final BufferedWriter bw = new BufferedWriter(sw);
         try {
-            final Template template = config.getTemplate( getTemplatePath() );
-            template.process( ctxt,
-                              bw );
-        } catch ( IOException ioe ) {
-            throw new GenerationException( ioe );
-        } catch ( TemplateException te ) {
-            throw new GenerationException( te );
+            final Template template = config.getTemplate(getTemplatePath());
+            template.process(ctxt,
+                             bw);
+        } catch (IOException ioe) {
+            throw new GenerationException(ioe);
+        } catch (TemplateException te) {
+            throw new GenerationException(te);
         } finally {
             try {
                 bw.close();
                 sw.close();
-            } catch ( IOException ioe ) {
-                throw new GenerationException( ioe );
+            } catch (IOException ioe) {
+                throw new GenerationException(ioe);
             }
         }
-        messager.printMessage( Diagnostic.Kind.NOTE,
-                               "Successfully generated code for [" + packageName + "." + className + "]" );
+        messager.printMessage(Diagnostic.Kind.NOTE,
+                              "Successfully generated code for [" + packageName + "." + className + "]");
         return sw.getBuffer();
     }
 
-    protected List<ProcessingElement> toElements( final Map<String, String> map ) {
+    protected List<ProcessingElement> toElements(final Map<String, String> map) {
         List<ProcessingElement> result = new LinkedList<>();
-        for ( Map.Entry<String, String> entry : map.entrySet() ) {
-            result.add( new ProcessingElement( entry.getKey(),
-                                               entry.getValue() ) );
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            result.add(new ProcessingElement(entry.getKey(),
+                                             entry.getValue()));
         }
         return result;
     }
 
-    protected List<ProcessingElementSet> toElementSet( final Map<String, Set<String>> map ) {
+    protected List<ProcessingElementSet> toElementSet(final Map<String, Set<String>> map) {
         List<ProcessingElementSet> result = new LinkedList<>();
-        for ( Map.Entry<String, Set<String>> entry : map.entrySet() ) {
-            result.add( new ProcessingElementSet( entry.getKey(),
-                                                  entry.getValue() ) );
+        for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
+            result.add(new ProcessingElementSet(entry.getKey(),
+                                                entry.getValue()));
         }
         return result;
     }
 
-    protected List<ProcessingElementMap> toElementMap( final Map<String, Map<String, String>> map ) {
+    protected List<ProcessingElementMap> toElementMap(final Map<String, Map<String, String>> map) {
         List<ProcessingElementMap> result = new LinkedList<>();
         map.entrySet().stream()
-                .forEach( entry1 -> {
+                .forEach(entry1 -> {
                     final Map<String, String> entryMap = new LinkedHashMap<String, String>();
-                    entry1.getValue().entrySet().stream().forEach( entry2 -> {
-                        entryMap.put( entry2.getKey(),
-                                      entry2.getValue() );
-                    } );
-                    final ProcessingElementMap elementMap = new ProcessingElementMap( entry1.getKey(),
-                                                                                      entryMap );
-                    result.add( elementMap );
-                } );
+                    entry1.getValue().entrySet().stream().forEach(entry2 -> {
+                        entryMap.put(entry2.getKey(),
+                                     entry2.getValue());
+                    });
+                    final ProcessingElementMap elementMap = new ProcessingElementMap(entry1.getKey(),
+                                                                                     entryMap);
+                    result.add(elementMap);
+                });
         return result;
     }
 }

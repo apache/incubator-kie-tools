@@ -28,9 +28,9 @@ public abstract class BindableDiagramFactory<M extends Metadata, D extends Diagr
     protected abstract Class<?> getDefinitionSetType();
 
     @Override
-    public boolean accepts( final String source ) {
+    public boolean accepts(final String source) {
         return null != source &&
-                source.equals( BindableAdapterUtils.getDefinitionSetId( getDefinitionSetType() ) );
+                source.equals(BindableAdapterUtils.getDefinitionSetId(getDefinitionSetType()));
     }
 
     @Override

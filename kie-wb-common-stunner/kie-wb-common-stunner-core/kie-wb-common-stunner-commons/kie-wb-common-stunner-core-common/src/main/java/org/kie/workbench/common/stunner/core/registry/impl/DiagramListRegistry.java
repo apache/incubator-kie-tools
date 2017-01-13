@@ -23,6 +23,6 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 class DiagramListRegistry<D extends Diagram> extends AbstractDiagramListRegistry<D> {
 
     DiagramListRegistry() {
-        super( new LinkedList<>() );
+        super(new LinkedList<>());
     }
 }

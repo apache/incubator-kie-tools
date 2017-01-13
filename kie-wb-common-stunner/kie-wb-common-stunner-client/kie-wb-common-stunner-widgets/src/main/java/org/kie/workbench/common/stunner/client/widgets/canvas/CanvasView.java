@@ -41,84 +41,84 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
 
     @PostConstruct
     public void init() {
-        initWidget( mainPanel );
+        initWidget(mainPanel);
     }
 
     @Override
-    public AbstractCanvas.View show( final com.ait.lienzo.client.widget.LienzoPanel panel,
-                                     final org.kie.workbench.common.stunner.core.client.canvas.Layer layer ) {
+    public AbstractCanvas.View show(final com.ait.lienzo.client.widget.LienzoPanel panel,
+                                    final org.kie.workbench.common.stunner.core.client.canvas.Layer layer) {
         this.panel = panel;
         this.layer = layer;
-        layer.initialize( canvasLayer );
-        panel.getElement().getStyle().setBackgroundColor( Bg_COLOR );
-        mainPanel.add( toolsPanel );
-        mainPanel.add( panel );
-        panel.getScene().add( canvasLayer );
+        layer.initialize(canvasLayer);
+        panel.getElement().getStyle().setBackgroundColor(Bg_COLOR);
+        mainPanel.add(toolsPanel);
+        mainPanel.add(panel);
+        panel.getScene().add(canvasLayer);
         return this;
     }
 
     @Override
-    public AbstractCanvas.View add( final IsWidget widget ) {
-        toolsPanel.add( widget );
+    public AbstractCanvas.View add(final IsWidget widget) {
+        toolsPanel.add(widget);
         return this;
     }
 
     @Override
-    public AbstractCanvas.View remove( final IsWidget widget ) {
-        toolsPanel.remove( widget );
+    public AbstractCanvas.View remove(final IsWidget widget) {
+        toolsPanel.remove(widget);
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public AbstractCanvas.View addShape( final ShapeView<?> shapeView ) {
-        layer.addShape( shapeView );
+    @SuppressWarnings("unchecked")
+    public AbstractCanvas.View addShape(final ShapeView<?> shapeView) {
+        layer.addShape(shapeView);
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public AbstractCanvas.View removeShape( final ShapeView<?> shapeView ) {
-        layer.removeShape( shapeView );
+    @SuppressWarnings("unchecked")
+    public AbstractCanvas.View removeShape(final ShapeView<?> shapeView) {
+        layer.removeShape(shapeView);
         return this;
     }
 
     @Override
-    public AbstractCanvas.View addChildShape( final ShapeView<?> parent,
-                                              final ShapeView<?> child ) {
-        final WiresShape parentShape = ( WiresShape ) parent;
-        final WiresShape childShape = ( WiresShape ) child;
-        parentShape.add( childShape );
+    public AbstractCanvas.View addChildShape(final ShapeView<?> parent,
+                                             final ShapeView<?> child) {
+        final WiresShape parentShape = (WiresShape) parent;
+        final WiresShape childShape = (WiresShape) child;
+        parentShape.add(childShape);
         return this;
     }
 
     @Override
-    public AbstractCanvas.View removeChildShape( final ShapeView<?> parent,
-                                                 final ShapeView<?> child ) {
-        final WiresShape parentShape = ( WiresShape ) parent;
-        final WiresShape childShape = ( WiresShape ) child;
-        parentShape.remove( childShape );
+    public AbstractCanvas.View removeChildShape(final ShapeView<?> parent,
+                                                final ShapeView<?> child) {
+        final WiresShape parentShape = (WiresShape) parent;
+        final WiresShape childShape = (WiresShape) child;
+        parentShape.remove(childShape);
         return this;
     }
 
     @Override
-    public AbstractCanvas.View dock( final ShapeView<?> parent,
-                                     final ShapeView<?> child ) {
-        final WiresShape parentShape = ( WiresShape ) parent;
-        final WiresShape childShape = ( WiresShape ) child;
+    public AbstractCanvas.View dock(final ShapeView<?> parent,
+                                    final ShapeView<?> child) {
+        final WiresShape parentShape = (WiresShape) parent;
+        final WiresShape childShape = (WiresShape) child;
         child.removeFromParent();
-        parentShape.add( childShape );
-        childShape.setDockedTo( parentShape );
+        parentShape.add(childShape);
+        childShape.setDockedTo(parentShape);
         return this;
     }
 
     @Override
-    public AbstractCanvas.View undock( final ShapeView<?> parent,
-                                       final ShapeView<?> child ) {
-        final WiresShape parentShape = ( WiresShape ) parent;
-        final WiresShape childShape = ( WiresShape ) child;
-        parentShape.remove( childShape );
-        childShape.setDockedTo( null );
+    public AbstractCanvas.View undock(final ShapeView<?> parent,
+                                      final ShapeView<?> child) {
+        final WiresShape parentShape = (WiresShape) parent;
+        final WiresShape childShape = (WiresShape) child;
+        parentShape.remove(childShape);
+        childShape.setDockedTo(null);
         return this;
     }
 
@@ -143,59 +143,59 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
     }
 
     @Override
-    public AbstractCanvas.View setGrid( final CanvasGrid grid ) {
-        if ( null != grid ) {
+    public AbstractCanvas.View setGrid(final CanvasGrid grid) {
+        if (null != grid) {
             // Grid.
-            Line line1 = new Line( 0,
-                                   0,
-                                   0,
-                                   0 )
-                    .setStrokeColor( grid.getPrimaryColor() )
-                    .setAlpha( grid.getPrimaryAlpha() );
-            Line line2 = new Line( 0,
-                                   0,
-                                   0,
-                                   0 )
-                    .setStrokeColor( grid.getSecondaryColor() )
-                    .setAlpha( grid.getSecondaryAlpha() );
-            line2.setDashArray( 2,
-                                2 );
-            GridLayer gridLayer = new GridLayer( grid.getPrimarySize(),
-                                                 line1,
-                                                 grid.getSecondarySize(),
-                                                 line2 );
-            panel.setBackgroundLayer( gridLayer );
+            Line line1 = new Line(0,
+                                  0,
+                                  0,
+                                  0)
+                    .setStrokeColor(grid.getPrimaryColor())
+                    .setAlpha(grid.getPrimaryAlpha());
+            Line line2 = new Line(0,
+                                  0,
+                                  0,
+                                  0)
+                    .setStrokeColor(grid.getSecondaryColor())
+                    .setAlpha(grid.getSecondaryAlpha());
+            line2.setDashArray(2,
+                               2);
+            GridLayer gridLayer = new GridLayer(grid.getPrimarySize(),
+                                                line1,
+                                                grid.getSecondarySize(),
+                                                line2);
+            panel.setBackgroundLayer(gridLayer);
         } else {
-            panel.setBackgroundLayer( null );
+            panel.setBackgroundLayer(null);
         }
         return this;
     }
 
     @Override
-    public AbstractCanvas.View setCursor( final AbstractCanvas.Cursors cursor ) {
+    public AbstractCanvas.View setCursor(final AbstractCanvas.Cursors cursor) {
         Style style = panel.getElement().getStyle();
-        switch ( cursor ) {
+        switch (cursor) {
             case AUTO:
-                style.setCursor( Style.Cursor.AUTO );
+                style.setCursor(Style.Cursor.AUTO);
                 break;
             case MOVE:
-                style.setCursor( Style.Cursor.MOVE );
+                style.setCursor(Style.Cursor.MOVE);
                 break;
             case TEXT:
-                style.setCursor( Style.Cursor.TEXT );
+                style.setCursor(Style.Cursor.TEXT);
                 break;
             case POINTER:
-                style.setCursor( Style.Cursor.POINTER );
+                style.setCursor(Style.Cursor.POINTER);
                 break;
             case NOT_ALLOWED:
                 // TODO: Use a good cursor.
-                style.setCursor( Style.Cursor.AUTO );
+                style.setCursor(Style.Cursor.AUTO);
                 break;
             case WAIT:
-                style.setCursor( Style.Cursor.WAIT );
+                style.setCursor(Style.Cursor.WAIT);
                 break;
             case CROSSHAIR:
-                style.setCursor( Style.Cursor.CROSSHAIR );
+                style.setCursor(Style.Cursor.CROSSHAIR);
                 break;
         }
         return this;

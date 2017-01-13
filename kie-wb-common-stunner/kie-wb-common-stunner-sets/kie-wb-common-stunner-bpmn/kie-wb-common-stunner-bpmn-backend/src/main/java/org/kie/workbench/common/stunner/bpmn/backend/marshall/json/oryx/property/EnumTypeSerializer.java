@@ -30,38 +30,38 @@ public class EnumTypeSerializer implements Bpmn2OryxPropertySerializer<Object> {
     DefinitionUtils definitionUtils;
 
     protected EnumTypeSerializer() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public EnumTypeSerializer( DefinitionUtils definitionUtils ) {
+    public EnumTypeSerializer(final DefinitionUtils definitionUtils) {
         this.definitionUtils = definitionUtils;
     }
 
     @Override
-    public boolean accepts( PropertyType type ) {
-        return EnumType.name.equals( type.getName() );
+    public boolean accepts(final PropertyType type) {
+        return EnumType.name.equals(type.getName());
     }
 
     @Override
-    public Object parse( Object property,
-                         String value ) {
-        if ( null == value ) {
+    public Object parse(final Object property,
+                        final String value) {
+        if (null == value) {
             return null;
         } else {
             // Assume that enum names that contains an "_" symbol (underscore) are serialized
             // string by replacing this symbol by a whitespace and vice-versa.
             // Eg: For TaskType.TASK_BUSINESS_RULE -> in oryx the json string value is "Business Rule".
-            final String v = value.toUpperCase().replaceAll( " ",
-                                                             "_" );
-            return definitionUtils.getPropertyAllowedValue( property,
-                                                            v );
+            final String v = value.toUpperCase().replaceAll(" ",
+                                                            "_");
+            return definitionUtils.getPropertyAllowedValue(property,
+                                                           v);
         }
     }
 
     @Override
-    public String serialize( Object property,
-                             Object value ) {
-        return StringUtils.capitalize( value.toString().toLowerCase() );
+    public String serialize(final Object property,
+                            final Object value) {
+        return StringUtils.capitalize(value.toString().toLowerCase());
     }
 }

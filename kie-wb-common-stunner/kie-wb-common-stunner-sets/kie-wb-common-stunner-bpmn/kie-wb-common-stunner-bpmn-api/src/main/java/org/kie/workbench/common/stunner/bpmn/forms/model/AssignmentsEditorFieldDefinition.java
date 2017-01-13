@@ -30,26 +30,26 @@ public class AssignmentsEditorFieldDefinition extends FieldDefinition {
 
     public static final String CODE = "AssignmentsEditor";
 
-    @FieldDef( label = FIELDDEF_DEFAULT_VALUE )
+    @FieldDef(label = FIELDDEF_DEFAULT_VALUE)
     @AssignmentsEditor
     private String defaultValue;
 
     public AssignmentsEditorFieldDefinition() {
-        super( CODE );
+        super(CODE);
     }
 
     public String getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue( String defaultValue ) {
+    public void setDefaultValue(final String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
     @Override
-    protected void doCopyFrom( FieldDefinition other ) {
-        if ( other instanceof AssignmentsEditorFieldDefinition ) {
-            this.setDefaultValue( ( ( AssignmentsEditorFieldDefinition ) other ).getDefaultValue() );
+    protected void doCopyFrom(final FieldDefinition other) {
+        if (other instanceof AssignmentsEditorFieldDefinition) {
+            this.setDefaultValue(((AssignmentsEditorFieldDefinition) other).getDefaultValue());
         }
     }
 }

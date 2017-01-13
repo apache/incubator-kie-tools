@@ -22,7 +22,7 @@ public abstract class AbstractPaletteDefinition<I extends PaletteItem> implement
 
     protected final List<I> items;
 
-    protected AbstractPaletteDefinition( final List<I> groups ) {
+    protected AbstractPaletteDefinition(final List<I> groups) {
         this.items = groups;
     }
 

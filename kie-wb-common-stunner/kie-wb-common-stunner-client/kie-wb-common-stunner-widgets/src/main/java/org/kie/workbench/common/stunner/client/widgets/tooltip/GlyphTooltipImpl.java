@@ -35,18 +35,18 @@ public class GlyphTooltipImpl implements GlyphTooltip<Group>,
 
     public interface View extends UberView<GlyphTooltipImpl> {
 
-        View show( final String text,
-                   final double x,
-                   final double y,
-                   final Direction direction );
+        View show(final String text,
+                  final double x,
+                  final double y,
+                  final Direction direction);
 
-        View show( final IPrimitive<?> glyph,
-                   final String text,
-                   final double x,
-                   final double y,
-                   final double width,
-                   final double height,
-                   final Direction direction );
+        View show(final IPrimitive<?> glyph,
+                  final String text,
+                  final double x,
+                  final double y,
+                  final double width,
+                  final double height,
+                  final Direction direction);
 
         View hide();
 
@@ -56,7 +56,7 @@ public class GlyphTooltipImpl implements GlyphTooltip<Group>,
     View view;
 
     @Inject
-    public GlyphTooltipImpl( final View view ) {
+    public GlyphTooltipImpl(final View view) {
         this.view = view;
     }
 
@@ -67,7 +67,7 @@ public class GlyphTooltipImpl implements GlyphTooltip<Group>,
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @PreDestroy
@@ -76,29 +76,29 @@ public class GlyphTooltipImpl implements GlyphTooltip<Group>,
     }
 
     @Override
-    public void show( final String text,
-                      final double x,
-                      final double y,
-                      final Direction direction ) {
-        view.show( text,
-                   x,
-                   y,
-                   direction );
+    public void show(final String text,
+                     final double x,
+                     final double y,
+                     final Direction direction) {
+        view.show(text,
+                  x,
+                  y,
+                  direction);
     }
 
     @Override
-    public void show( final Glyph<Group> glyph,
-                      final String text,
-                      final double x,
-                      final double y,
-                      final Direction direction ) {
-        view.show( glyph.getGroup(),
-                   text,
-                   x,
-                   y,
-                   glyph.getWidth(),
-                   glyph.getHeight(),
-                   direction );
+    public void show(final Glyph<Group> glyph,
+                     final String text,
+                     final double x,
+                     final double y,
+                     final Direction direction) {
+        view.show(glyph.getGroup(),
+                  text,
+                  x,
+                  y,
+                  glyph.getWidth(),
+                  glyph.getHeight(),
+                  direction);
     }
 
     @Override

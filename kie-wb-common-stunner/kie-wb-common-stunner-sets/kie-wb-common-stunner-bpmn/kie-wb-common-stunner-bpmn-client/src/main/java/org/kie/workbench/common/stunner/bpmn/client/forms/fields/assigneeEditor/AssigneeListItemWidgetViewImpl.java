@@ -49,7 +49,7 @@ import org.uberfire.workbench.events.NotificationEvent;
  * they use a combination of ListBox and TextBox to implement a drop-down combo
  * to hold the values.
  */
-@Templated( "AssigneeEditorWidget.html#assigneeRow" )
+@Templated("AssigneeEditorWidget.html#assigneeRow")
 public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetView,
                                                        ComboBoxView.ModelPresenter {
 
@@ -70,21 +70,21 @@ public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetVie
     private String currentValue;
 
     @DataField
-    protected ValueListBox<String> name = new ValueListBox<String>( new Renderer<String>() {
-        public String render( String object ) {
+    protected ValueListBox<String> name = new ValueListBox<String>(new Renderer<String>() {
+        public String render(final String object) {
             String s = "";
-            if ( object != null ) {
+            if (object != null) {
                 s = object.toString();
             }
             return s;
         }
 
-        public void render( String object,
-                            Appendable appendable ) throws IOException {
-            String s = render( object );
-            appendable.append( s );
+        public void render(final String object,
+                           final Appendable appendable) throws IOException {
+            String s = render(object);
+            appendable.append(s);
         }
-    } );
+    });
 
     @Inject
     @DataField
@@ -105,26 +105,26 @@ public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetVie
      */
     private AssigneeEditorWidgetView.Presenter parentWidget;
 
-    public void setParentWidget( AssigneeEditorWidgetView.Presenter parentWidget ) {
+    public void setParentWidget(final AssigneeEditorWidgetView.Presenter parentWidget) {
         this.parentWidget = parentWidget;
     }
 
     @Override
-    public void setTextBoxModelValue( final TextBox textBox,
-                                      String value ) {
-        setCustomName( value );
+    public void setTextBoxModelValue(final TextBox textBox,
+                                     final String value) {
+        setCustomName(value);
     }
 
     @Override
-    public void setListBoxModelValue( final ValueListBox<String> listBox,
-                                      String value ) {
-        setName( value );
+    public void setListBoxModelValue(final ValueListBox<String> listBox,
+                                     final String value) {
+        setName(value);
     }
 
     @Override
-    public String getModelValue( final ValueListBox<String> listBox ) {
+    public String getModelValue(final ValueListBox<String> listBox) {
         String value = getCustomName();
-        if ( value == null || value.isEmpty() ) {
+        if (value == null || value.isEmpty()) {
             value = getName();
         }
         return value;
@@ -133,23 +133,23 @@ public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetVie
     @PostConstruct
     public void init() {
         // Configure name and customName controls
-        nameComboBox.init( this,
-                           true,
-                           name,
-                           customName,
-                           false,
-                           false,
-                           CUSTOM_PROMPT,
-                           ENTER_TYPE_PROMPT );
-        customName.addKeyDownHandler( new KeyDownHandler() {
+        nameComboBox.init(this,
+                          true,
+                          name,
+                          customName,
+                          false,
+                          false,
+                          CUSTOM_PROMPT,
+                          ENTER_TYPE_PROMPT);
+        customName.addKeyDownHandler(new KeyDownHandler() {
             @Override
-            public void onKeyDown( KeyDownEvent event ) {
+            public void onKeyDown(KeyDownEvent event) {
                 int iChar = event.getNativeKeyCode();
-                if ( iChar == ' ' ) {
+                if (iChar == ' ') {
                     event.preventDefault();
                 }
             }
-        } );
+        });
     }
 
     @Override
@@ -158,8 +158,8 @@ public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetVie
     }
 
     @Override
-    public void setModel( AssigneeRow model ) {
-        assigneeRow.setModel( model );
+    public void setModel(final AssigneeRow model) {
+        assigneeRow.setModel(model);
         initAssigneeControls();
         currentValue = getModel().toString();
     }
@@ -170,8 +170,8 @@ public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetVie
     }
 
     @Override
-    public void setName( String name ) {
-        getModel().setName( name );
+    public void setName(final String name) {
+        getModel().setName(name);
     }
 
     @Override
@@ -180,30 +180,30 @@ public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetVie
     }
 
     @Override
-    public void setCustomName( String customName ) {
-        getModel().setCustomName( customName );
+    public void setCustomName(final String customName) {
+        getModel().setCustomName(customName);
     }
 
     @Override
-    public void setNames( ListBoxValues nameListBoxValues ) {
-        nameComboBox.setCurrentTextValue( "" );
-        nameComboBox.setListBoxValues( nameListBoxValues );
-        nameComboBox.setShowCustomValues( true );
+    public void setNames(final ListBoxValues nameListBoxValues) {
+        nameComboBox.setCurrentTextValue("");
+        nameComboBox.setListBoxValues(nameListBoxValues);
+        nameComboBox.setShowCustomValues(true);
         String cn = getCustomName();
-        if ( cn != null && !cn.isEmpty() ) {
-            nameComboBox.addCustomValueToListBoxValues( cn,
-                                                        "" );
+        if (cn != null && !cn.isEmpty()) {
+            nameComboBox.addCustomValueToListBoxValues(cn,
+                                                       "");
         }
     }
 
     @Override
-    public boolean isDuplicateName( String name ) {
-        return parentWidget.isDuplicateName( name );
+    public boolean isDuplicateName(final String name) {
+        return parentWidget.isDuplicateName(name);
     }
 
-    @EventHandler( "deleteButton" )
-    public void handleDeleteButton( ClickEvent e ) {
-        parentWidget.removeAssignee( getModel() );
+    @EventHandler("deleteButton")
+    public void handleDeleteButton(final ClickEvent e) {
+        parentWidget.removeAssignee(getModel());
     }
 
     /**
@@ -211,13 +211,13 @@ public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetVie
      * corresponding {@link AssigneeRow}.
      */
     private void initAssigneeControls() {
-        deleteButton.setIcon( IconType.TRASH );
+        deleteButton.setIcon(IconType.TRASH);
         String cn = getCustomName();
-        if ( cn != null && !cn.isEmpty() ) {
-            customName.setValue( cn );
-            name.setValue( cn );
-        } else if ( getName() != null ) {
-            name.setValue( getName() );
+        if (cn != null && !cn.isEmpty()) {
+            customName.setValue(cn);
+            name.setValue(cn);
+        } else if (getName() != null) {
+            name.setValue(getName());
         }
     }
 
@@ -225,11 +225,11 @@ public class AssigneeListItemWidgetViewImpl implements AssigneeListItemWidgetVie
     public void notifyModelChanged() {
         String oldValue = currentValue;
         currentValue = getModel().toString();
-        if ( oldValue == null ) {
-            if ( currentValue != null && currentValue.length() > 0 ) {
+        if (oldValue == null) {
+            if (currentValue != null && currentValue.length() > 0) {
                 parentWidget.notifyModelChanged();
             }
-        } else if ( !oldValue.equals( currentValue ) ) {
+        } else if (!oldValue.equals(currentValue)) {
             parentWidget.notifyModelChanged();
         }
     }

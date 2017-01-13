@@ -21,9 +21,9 @@ public abstract class AbstractGlyph<G> implements Glyph<G> {
     protected final double width;
     protected final double height;
 
-    protected AbstractGlyph( final G group,
-                             final double width,
-                             final double height ) {
+    protected AbstractGlyph(final G group,
+                            final double width,
+                            final double height) {
         this.group = group;
         this.width = width;
         this.height = height;

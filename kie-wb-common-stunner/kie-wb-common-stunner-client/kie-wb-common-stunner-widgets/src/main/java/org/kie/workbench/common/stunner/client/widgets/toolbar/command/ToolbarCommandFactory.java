@@ -35,27 +35,27 @@ public class ToolbarCommandFactory {
     private final ManagedInstance<RefreshToolbarCommand> refreshCommand;
 
     protected ToolbarCommandFactory() {
-        this( null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public ToolbarCommandFactory( final ManagedInstance<ClearSelectionToolbarCommand> clearSelectionCommand,
-                                  final ManagedInstance<VisitGraphToolbarCommand> visitGraphCommand,
-                                  final ManagedInstance<SwitchGridToolbarCommand> switchGridCommand,
-                                  final ManagedInstance<ClearToolbarCommand> clearCommand,
-                                  final ManagedInstance<DeleteSelectionToolbarCommand> deleteSelectionCommand,
-                                  final ManagedInstance<UndoToolbarCommand> undoCommand,
-                                  final ManagedInstance<RedoToolbarCommand> redoCommand,
-                                  final ManagedInstance<ValidateToolbarCommand> validateCommand,
-                                  final ManagedInstance<RefreshToolbarCommand> refreshCommand ) {
+    public ToolbarCommandFactory(final ManagedInstance<ClearSelectionToolbarCommand> clearSelectionCommand,
+                                 final ManagedInstance<VisitGraphToolbarCommand> visitGraphCommand,
+                                 final ManagedInstance<SwitchGridToolbarCommand> switchGridCommand,
+                                 final ManagedInstance<ClearToolbarCommand> clearCommand,
+                                 final ManagedInstance<DeleteSelectionToolbarCommand> deleteSelectionCommand,
+                                 final ManagedInstance<UndoToolbarCommand> undoCommand,
+                                 final ManagedInstance<RedoToolbarCommand> redoCommand,
+                                 final ManagedInstance<ValidateToolbarCommand> validateCommand,
+                                 final ManagedInstance<RefreshToolbarCommand> refreshCommand) {
         this.clearSelectionCommand = clearSelectionCommand;
         this.visitGraphCommand = visitGraphCommand;
         this.switchGridCommand = switchGridCommand;

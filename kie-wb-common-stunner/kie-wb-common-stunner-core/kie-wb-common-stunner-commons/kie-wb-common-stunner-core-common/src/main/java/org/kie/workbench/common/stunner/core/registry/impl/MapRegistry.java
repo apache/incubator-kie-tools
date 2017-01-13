@@ -28,25 +28,25 @@ class MapRegistry<T> implements DynamicRegistry<T> {
     private final KeyProvider<T> keyProvider;
     private final java.util.Map<String, T> items;
 
-    MapRegistry( final KeyProvider<T> keyProvider,
-                 final Map<String, T> items ) {
+    MapRegistry(final KeyProvider<T> keyProvider,
+                final Map<String, T> items) {
         this.keyProvider = keyProvider;
         this.items = items;
     }
 
     @Override
-    public void register( final T item ) {
-        items.put( getItemId( item ),
-                   item );
+    public void register(final T item) {
+        items.put(getItemId(item),
+                  item);
     }
 
-    public boolean remove( final T item ) {
-        return null != items.remove( getItemId( item ) );
+    public boolean remove(final T item) {
+        return null != items.remove(getItemId(item));
     }
 
     @Override
-    public boolean contains( final T item ) {
-        return items.containsValue( item );
+    public boolean contains(final T item) {
+        return items.containsValue(item);
     }
 
     @Override
@@ -55,18 +55,18 @@ class MapRegistry<T> implements DynamicRegistry<T> {
     }
 
     public Collection<T> getItems() {
-        return Collections.unmodifiableList( new ArrayList<T>( items.values() ) );
+        return Collections.unmodifiableList(new ArrayList<T>(items.values()));
     }
 
     public void clear() {
         items.clear();
     }
 
-    public T getItemByKey( final String key ) {
-        return items.get( key );
+    public T getItemByKey(final String key) {
+        return items.get(key);
     }
 
-    private String getItemId( final T item ) {
-        return keyProvider.getKey( item );
+    private String getItemId(final T item) {
+        return keyProvider.getKey(item);
     }
 }

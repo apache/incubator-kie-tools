@@ -58,7 +58,7 @@ public class CalledElement implements BPMNProperty {
     public CalledElement() {
     }
 
-    public CalledElement( final String value ) {
+    public CalledElement(final String value) {
         this.value = value;
     }
 
@@ -90,7 +90,7 @@ public class CalledElement implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

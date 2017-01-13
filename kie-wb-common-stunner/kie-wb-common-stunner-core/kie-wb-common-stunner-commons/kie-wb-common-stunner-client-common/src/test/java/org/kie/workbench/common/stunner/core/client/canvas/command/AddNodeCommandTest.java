@@ -25,7 +25,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class AddNodeCommandTest extends AbstractCanvasCommandTest {
 
     @Mock
@@ -36,28 +36,28 @@ public class AddNodeCommandTest extends AbstractCanvasCommandTest {
     @Before
     public void setup() throws Exception {
         super.setup();
-        when( candidate.getUUID() ).thenReturn( "uuid1" );
-        this.tested = new AddNodeCommand( candidate,
-                                          SHAPE_SET_ID );
+        when(candidate.getUUID()).thenReturn("uuid1");
+        this.tested = new AddNodeCommand(candidate,
+                                         SHAPE_SET_ID);
     }
 
     @Test
     public void testGetGraphCommand() {
         final org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand graphCommand =
-                ( org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand ) tested.newGraphCommand( canvasHandler );
-        assertNotNull( graphCommand );
-        assertEquals( candidate,
-                      graphCommand.getCandidate() );
+                (org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand) tested.newGraphCommand(canvasHandler);
+        assertNotNull(graphCommand);
+        assertEquals(candidate,
+                     graphCommand.getCandidate());
     }
 
     @Test
     public void testGetCanvasCommand() {
         final AddCanvasNodeCommand canvasCommand =
-                ( AddCanvasNodeCommand ) tested.newCanvasCommand( canvasHandler );
-        assertNotNull( canvasCommand );
-        assertEquals( candidate,
-                      canvasCommand.getCandidate() );
-        assertEquals( SHAPE_SET_ID,
-                      canvasCommand.getShapeSetId() );
+                (AddCanvasNodeCommand) tested.newCanvasCommand(canvasHandler);
+        assertNotNull(canvasCommand);
+        assertEquals(candidate,
+                     canvasCommand.getCandidate());
+        assertEquals(SHAPE_SET_ID,
+                     canvasCommand.getShapeSetId());
     }
 }

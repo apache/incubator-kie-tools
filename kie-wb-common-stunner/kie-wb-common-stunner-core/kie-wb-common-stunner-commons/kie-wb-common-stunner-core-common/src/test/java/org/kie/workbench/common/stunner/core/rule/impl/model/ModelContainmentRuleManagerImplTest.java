@@ -30,20 +30,20 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ModelContainmentRuleManagerImplTest {
 
     private final static String PARENT_ID = "parentId";
     private final static Set<String> PARENT_ROLES =
-            new HashSet<String>( 2 ) {{
-                add( "role1" );
-                add( "role2" );
+            new HashSet<String>(2) {{
+                add("role1");
+                add("role2");
             }};
     private final static String PARENT_ID2 = "parentId2";
     private final static Set<String> PARENT_ROLES2 =
-            new HashSet<String>( 2 ) {{
-                add( "role3" );
-                add( "role4" );
+            new HashSet<String>(2) {{
+                add("role3");
+                add("role4");
             }};
 
     @Mock
@@ -55,56 +55,56 @@ public class ModelContainmentRuleManagerImplTest {
 
     @Before
     public void setup() throws Exception {
-        when( rule.getId() ).thenReturn( PARENT_ID );
-        when( rule.getPermittedRoles() ).thenReturn( PARENT_ROLES );
-        when( rule2.getId() ).thenReturn( PARENT_ID2 );
-        when( rule2.getPermittedRoles() ).thenReturn( PARENT_ROLES2 );
+        when(rule.getId()).thenReturn(PARENT_ID);
+        when(rule.getPermittedRoles()).thenReturn(PARENT_ROLES);
+        when(rule2.getId()).thenReturn(PARENT_ID2);
+        when(rule2.getPermittedRoles()).thenReturn(PARENT_ROLES2);
         tested = new ModelContainmentRuleManagerImpl();
-        tested.addRule( rule );
-        tested.addRule( rule2 );
+        tested.addRule(rule);
+        tested.addRule(rule2);
     }
 
     @Test
     public void test1Accept() {
-        final Set<String> candidateRoles = new HashSet<String>( 1 ) {{
-            add( "role2" );
+        final Set<String> candidateRoles = new HashSet<String>(1) {{
+            add("role2");
         }};
-        final RuleViolations violations = tested.evaluate( PARENT_ID,
-                                                           candidateRoles );
-        assertNotNull( violations );
-        assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        final RuleViolations violations = tested.evaluate(PARENT_ID,
+                                                          candidateRoles);
+        assertNotNull(violations);
+        assertFalse(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
     public void test1Deny() {
-        final Set<String> candidateRoles = new HashSet<String>( 1 ) {{
-            add( "role5" );
+        final Set<String> candidateRoles = new HashSet<String>(1) {{
+            add("role5");
         }};
-        final RuleViolations violations = tested.evaluate( PARENT_ID,
-                                                           candidateRoles );
-        assertNotNull( violations );
-        assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        final RuleViolations violations = tested.evaluate(PARENT_ID,
+                                                          candidateRoles);
+        assertNotNull(violations);
+        assertTrue(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
     public void test2Accept() {
-        final Set<String> candidateRoles = new HashSet<String>( 1 ) {{
-            add( "role4" );
+        final Set<String> candidateRoles = new HashSet<String>(1) {{
+            add("role4");
         }};
-        final RuleViolations violations = tested.evaluate( PARENT_ID2,
-                                                           candidateRoles );
-        assertNotNull( violations );
-        assertFalse( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        final RuleViolations violations = tested.evaluate(PARENT_ID2,
+                                                          candidateRoles);
+        assertNotNull(violations);
+        assertFalse(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
     public void test2Deny() {
-        final Set<String> candidateRoles = new HashSet<String>( 1 ) {{
-            add( "role1" );
+        final Set<String> candidateRoles = new HashSet<String>(1) {{
+            add("role1");
         }};
-        final RuleViolations violations = tested.evaluate( PARENT_ID2,
-                                                           candidateRoles );
-        assertNotNull( violations );
-        assertTrue( violations.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        final RuleViolations violations = tested.evaluate(PARENT_ID2,
+                                                          candidateRoles);
+        assertNotNull(violations);
+        assertTrue(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 }

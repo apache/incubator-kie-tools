@@ -32,11 +32,11 @@ public class AssigneeEditorFieldProvider extends BasicTypeFieldProvider<Assignee
 
     @Override
     protected void doRegisterFields() {
-        registerPropertyType( String.class );
+        registerPropertyType(String.class);
     }
 
     @Override
-    public AssigneeEditorFieldDefinition createFieldByType( FieldTypeInfo typeInfo ) {
+    public AssigneeEditorFieldDefinition createFieldByType(final FieldTypeInfo typeInfo) {
         return getDefaultField();
     }
 

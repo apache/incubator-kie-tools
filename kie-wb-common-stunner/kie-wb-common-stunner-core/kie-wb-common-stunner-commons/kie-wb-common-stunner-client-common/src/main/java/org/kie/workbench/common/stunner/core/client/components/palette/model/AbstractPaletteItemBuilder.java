@@ -23,7 +23,7 @@ public abstract class AbstractPaletteItemBuilder<B, I> implements PaletteItemBui
     protected String description;
     protected String tooltip;
 
-    public AbstractPaletteItemBuilder( final String id ) {
+    public AbstractPaletteItemBuilder(final String id) {
         this.id = id;
     }
 
@@ -33,36 +33,36 @@ public abstract class AbstractPaletteItemBuilder<B, I> implements PaletteItemBui
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public B title( final String title ) {
+    @SuppressWarnings("unchecked")
+    public B title(final String title) {
         this.title = title;
-        return ( B ) this;
+        return (B) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public B description( final String description ) {
+    @SuppressWarnings("unchecked")
+    public B description(final String description) {
         this.description = description;
-        return ( B ) this;
+        return (B) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public B tooltip( final String tooltip ) {
+    @SuppressWarnings("unchecked")
+    public B tooltip(final String tooltip) {
         this.tooltip = tooltip;
-        return ( B ) this;
+        return (B) this;
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof AbstractPaletteItemBuilder ) ) {
+        if (!(o instanceof AbstractPaletteItemBuilder)) {
             return false;
         }
-        AbstractPaletteItemBuilder that = ( AbstractPaletteItemBuilder ) o;
-        return id != null && id.equals( that.id );
+        AbstractPaletteItemBuilder that = (AbstractPaletteItemBuilder) o;
+        return id != null && id.equals(that.id);
     }
 
     @Override

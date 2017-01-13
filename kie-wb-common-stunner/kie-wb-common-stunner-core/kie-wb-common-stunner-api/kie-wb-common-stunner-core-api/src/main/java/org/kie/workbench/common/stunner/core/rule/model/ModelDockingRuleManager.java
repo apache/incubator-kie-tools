@@ -31,6 +31,6 @@ public interface ModelDockingRuleManager extends DockingRuleManager {
      * @param targetId The parent definition's identifier.
      * @param candidateRoles The roles for the candidate to be dock into parent.
      */
-    RuleViolations evaluate( final String targetId,
-                             final Set<String> candidateRoles );
+    RuleViolations evaluate(final String targetId,
+                            final Set<String> candidateRoles);
 }

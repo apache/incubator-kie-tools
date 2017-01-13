@@ -49,38 +49,38 @@ public class DefaultRouteFormProvider implements SelectorDataProvider {
     }
 
     @Override
-    public SelectorData getSelectorData( FormRenderingContext context ) {
-        List<Edge> outEdges = getGatewayOutEdges( context );
+    public SelectorData getSelectorData(final FormRenderingContext context) {
+        List<Edge> outEdges = getGatewayOutEdges(context);
         Map<String, String> values = new TreeMap<>();
-        if ( outEdges != null ) {
-            for ( Edge edge : outEdges ) {
-                SequenceFlow sequenceFlow = ( SequenceFlow ) ( ( ViewConnector ) edge.getContent() ).getDefinition();
+        if (outEdges != null) {
+            for (Edge edge : outEdges) {
+                SequenceFlow sequenceFlow = (SequenceFlow) ((ViewConnector) edge.getContent()).getDefinition();
                 String name = sequenceFlow.getGeneral().getName().getValue();
                 String id = edge.getUUID();
-                String routeIdentifier = ( name != null && name.length() > 0 ) ? ( name + " : " + id ) : id;
-                values.put( routeIdentifier,
-                            routeIdentifier );
+                String routeIdentifier = (name != null && name.length() > 0) ? (name + " : " + id) : id;
+                values.put(routeIdentifier,
+                           routeIdentifier);
             }
         }
-        return new SelectorData( values,
-                                 null );
+        return new SelectorData(values,
+                                null);
     }
 
-    protected List<Edge> getGatewayOutEdges( FormRenderingContext context ) {
-        Object model = ContextUtils.getModel( context );
-        if ( model instanceof ExclusiveDatabasedGateway ) {
-            ExclusiveDatabasedGateway gateway = ( ExclusiveDatabasedGateway ) model;
+    protected List<Edge> getGatewayOutEdges(final FormRenderingContext context) {
+        Object model = ContextUtils.getModel(context);
+        if (model instanceof ExclusiveDatabasedGateway) {
+            ExclusiveDatabasedGateway gateway = (ExclusiveDatabasedGateway) model;
             Node gatewayNode = null;
             Diagram diagram = canvasSessionManager.getCurrentSession().getCanvasHandler().getDiagram();
             Iterator<Element> it = diagram.getGraph().nodes().iterator();
-            while ( it.hasNext() ) {
+            while (it.hasNext()) {
                 Element element = it.next();
-                if ( element.getContent() instanceof View ) {
-                    Object oDefinition = ( ( View ) element.getContent() ).getDefinition();
-                    if ( oDefinition instanceof ExclusiveDatabasedGateway ) {
-                        ExclusiveDatabasedGateway elementGateway = ( ExclusiveDatabasedGateway ) oDefinition;
-                        if ( elementGateway.getId() == gateway.getId() ) {
-                            gatewayNode = ( Node ) element;
+                if (element.getContent() instanceof View) {
+                    Object oDefinition = ((View) element.getContent()).getDefinition();
+                    if (oDefinition instanceof ExclusiveDatabasedGateway) {
+                        ExclusiveDatabasedGateway elementGateway = (ExclusiveDatabasedGateway) oDefinition;
+                        if (elementGateway.getId() == gateway.getId()) {
+                            gatewayNode = (Node) element;
                             return gatewayNode.getOutEdges();
                         }
                     }

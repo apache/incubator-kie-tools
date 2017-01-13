@@ -32,16 +32,16 @@ public class ClientBindableAdapterFactory implements BindableAdapterFactory {
     DefinitionUtils definitionUtils;
 
     protected ClientBindableAdapterFactory() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public ClientBindableAdapterFactory( final DefinitionUtils definitionUtils ) {
+    public ClientBindableAdapterFactory(final DefinitionUtils definitionUtils) {
         this.definitionUtils = definitionUtils;
     }
 
     public BindableDefinitionAdapter newBindableDefinitionAdapter() {
-        return new ClientBindableDefinitionAdapter( definitionUtils );
+        return new ClientBindableDefinitionAdapter(definitionUtils);
     }
 
     public BindableDefinitionSetAdapter newBindableDefinitionSetAdapter() {

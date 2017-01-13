@@ -21,59 +21,59 @@ public abstract class DelegateCommandManager<C, V> implements CommandManager<C, 
     protected abstract CommandManager<C, V> getDelegate();
 
     @Override
-    public CommandResult<V> allow( final C context,
-                                   final Command<C, V> command ) {
-        if ( null != getDelegate() ) {
-            final CommandResult<V> r = getDelegate().allow( context,
-                                                            command );
-            postAllow( context,
-                       command,
-                       r );
-            return r;
-        }
-        return null;
-    }
-
-    protected void postAllow( final C context,
-                              final Command<C, V> command,
-                              final CommandResult<V> result ) {
-    }
-
-    @Override
-    public CommandResult<V> execute( final C context,
-                                     final Command<C, V> command ) {
-        if ( null != getDelegate() ) {
-            final CommandResult<V> r = getDelegate().execute( context,
-                                                              command );
-            postExecute( context,
-                         command,
-                         r );
-            return r;
-        }
-        return null;
-    }
-
-    protected void postExecute( final C context,
-                                final Command<C, V> command,
-                                final CommandResult<V> result ) {
-    }
-
-    @Override
-    public CommandResult<V> undo( final C context,
-                                  final Command<C, V> command ) {
-        if ( null != getDelegate() ) {
-            final CommandResult<V> r = getDelegate().undo( context,
-                                                           command );
-            postUndo( context,
+    public CommandResult<V> allow(final C context,
+                                  final Command<C, V> command) {
+        if (null != getDelegate()) {
+            final CommandResult<V> r = getDelegate().allow(context,
+                                                           command);
+            postAllow(context,
                       command,
-                      r );
+                      r);
             return r;
         }
         return null;
     }
 
-    protected void postUndo( final C context,
+    protected void postAllow(final C context,
                              final Command<C, V> command,
-                             final CommandResult<V> result ) {
+                             final CommandResult<V> result) {
+    }
+
+    @Override
+    public CommandResult<V> execute(final C context,
+                                    final Command<C, V> command) {
+        if (null != getDelegate()) {
+            final CommandResult<V> r = getDelegate().execute(context,
+                                                             command);
+            postExecute(context,
+                        command,
+                        r);
+            return r;
+        }
+        return null;
+    }
+
+    protected void postExecute(final C context,
+                               final Command<C, V> command,
+                               final CommandResult<V> result) {
+    }
+
+    @Override
+    public CommandResult<V> undo(final C context,
+                                 final Command<C, V> command) {
+        if (null != getDelegate()) {
+            final CommandResult<V> r = getDelegate().undo(context,
+                                                          command);
+            postUndo(context,
+                     command,
+                     r);
+            return r;
+        }
+        return null;
+    }
+
+    protected void postUndo(final C context,
+                            final Command<C, V> command,
+                            final CommandResult<V> result) {
     }
 }

@@ -26,7 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class AddConnectorCommandTest extends AbstractCanvasCommandTest {
 
     private static final String EDGE_ID = "e1";
@@ -43,36 +43,36 @@ public class AddConnectorCommandTest extends AbstractCanvasCommandTest {
     @Before
     public void setup() throws Exception {
         super.setup();
-        when( candidate.getUUID() ).thenReturn( EDGE_ID );
-        when( source.getUUID() ).thenReturn( SOURCE_ID );
-        when( candidate.getSourceNode() ).thenReturn( source );
-        this.tested = new AddConnectorCommand( source,
-                                               candidate,
-                                               MAGNET,
-                                               SHAPE_SET_ID );
+        when(candidate.getUUID()).thenReturn(EDGE_ID);
+        when(source.getUUID()).thenReturn(SOURCE_ID);
+        when(candidate.getSourceNode()).thenReturn(source);
+        this.tested = new AddConnectorCommand(source,
+                                              candidate,
+                                              MAGNET,
+                                              SHAPE_SET_ID);
     }
 
     @Test
     public void testGetGraphCommand() {
         final org.kie.workbench.common.stunner.core.graph.command.impl.AddConnectorCommand graphCommand =
-                ( org.kie.workbench.common.stunner.core.graph.command.impl.AddConnectorCommand ) tested.newGraphCommand( canvasHandler );
-        assertNotNull( graphCommand );
-        assertEquals( candidate,
-                      graphCommand.getEdge() );
-        assertEquals( source,
-                      graphCommand.getSourceNode() );
-        assertEquals( MAGNET,
-                      graphCommand.getMagnetIndex().intValue() );
+                (org.kie.workbench.common.stunner.core.graph.command.impl.AddConnectorCommand) tested.newGraphCommand(canvasHandler);
+        assertNotNull(graphCommand);
+        assertEquals(candidate,
+                     graphCommand.getEdge());
+        assertEquals(source,
+                     graphCommand.getSourceNode());
+        assertEquals(MAGNET,
+                     graphCommand.getMagnetIndex().intValue());
     }
 
     @Test
     public void testGetCanvasCommand() {
         final AddCanvasConnectorCommand canvasCommand =
-                ( AddCanvasConnectorCommand ) tested.newCanvasCommand( canvasHandler );
-        assertNotNull( canvasCommand );
-        assertEquals( candidate,
-                      canvasCommand.getCandidate() );
-        assertEquals( SHAPE_SET_ID,
-                      canvasCommand.getShapeSetId() );
+                (AddCanvasConnectorCommand) tested.newCanvasCommand(canvasHandler);
+        assertNotNull(canvasCommand);
+        assertEquals(candidate,
+                     canvasCommand.getCandidate());
+        assertEquals(SHAPE_SET_ID,
+                     canvasCommand.getShapeSetId());
     }
 }

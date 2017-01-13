@@ -36,7 +36,7 @@ import org.kie.workbench.common.stunner.core.definition.property.type.DoubleType
 
 @Portable
 @Bindable
-@Property( meta = PropertyMetaTypes.HEIGHT )
+@Property(meta = PropertyMetaTypes.HEIGHT)
 public class Height implements BPMNProperty {
 
     @Caption
@@ -58,14 +58,14 @@ public class Height implements BPMNProperty {
     public static final Double defaultValue = 50d;
 
     @Value
-    @Max( 100 )
-    @Min( 40 )
+    @Max(100)
+    @Min(40)
     private Double value = defaultValue;
 
     public Height() {
     }
 
-    public Height( final Double value ) {
+    public Height(final Double value) {
         this.value = value;
     }
 
@@ -97,7 +97,7 @@ public class Height implements BPMNProperty {
         return value;
     }
 
-    public void setValue( Double value ) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 }

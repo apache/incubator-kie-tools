@@ -28,77 +28,77 @@ public final class LaneShapeDef
         implements RectangleShapeDef<Lane> {
 
     @Override
-    public String getBackgroundColor( final Lane element ) {
+    public String getBackgroundColor(final Lane element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final Lane element ) {
+    public double getBackgroundAlpha(final Lane element) {
         return 0.05;
     }
 
     @Override
-    public String getBorderColor( final Lane element ) {
+    public String getBorderColor(final Lane element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final Lane element ) {
+    public double getBorderSize(final Lane element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final Lane element ) {
+    public double getBorderAlpha(final Lane element) {
         return 1;
     }
 
     @Override
-    public String getFontFamily( final Lane element ) {
+    public String getFontFamily(final Lane element) {
         return element.getFontSet().getFontFamily().getValue();
     }
 
     @Override
-    public String getFontColor( final Lane element ) {
+    public String getFontColor(final Lane element) {
         return element.getFontSet().getFontColor().getValue();
     }
 
     @Override
-    public double getFontSize( final Lane element ) {
+    public double getFontSize(final Lane element) {
         return element.getFontSet().getFontSize().getValue();
     }
 
     @Override
-    public String getNamePropertyValue( final Lane element ) {
+    public String getNamePropertyValue(final Lane element) {
         return element.getGeneral().getName().getValue();
     }
 
     @Override
-    public double getFontBorderSize( final Lane element ) {
+    public double getFontBorderSize(final Lane element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final Lane element ) {
+    public HasTitle.Position getFontPosition(final Lane element) {
         return HasTitle.Position.LEFT;
     }
 
     @Override
-    public double getFontRotation( final Lane element ) {
+    public double getFontRotation(final Lane element) {
         return 270;
     }
 
     @Override
-    public double getWidth( final Lane element ) {
+    public double getWidth(final Lane element) {
         return element.getDimensionsSet().getWidth().getValue();
     }
 
     @Override
-    public double getHeight( final Lane element ) {
+    public double getHeight(final Lane element) {
         return element.getDimensionsSet().getHeight().getValue();
     }
 
     @Override
-    public double getCornerRadius( final Lane element ) {
+    public double getCornerRadius(final Lane element) {
         return 0;
     }
 
@@ -106,12 +106,12 @@ public final class LaneShapeDef
             new PictureGlyphDef<Lane, BPMNPictures>() {
 
                 @Override
-                public String getGlyphDescription( Lane element ) {
+                public String getGlyphDescription(final Lane element) {
                     return element.getDescription();
                 }
 
                 @Override
-                public BPMNPictures getSource( final Class<?> type ) {
+                public BPMNPictures getSource(final Class<?> type) {
                     return BPMNPictures.LANE;
                 }
             };

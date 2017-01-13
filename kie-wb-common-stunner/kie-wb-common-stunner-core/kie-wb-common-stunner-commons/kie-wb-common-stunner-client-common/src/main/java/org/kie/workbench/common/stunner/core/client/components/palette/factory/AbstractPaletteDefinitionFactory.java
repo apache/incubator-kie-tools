@@ -25,14 +25,14 @@ public abstract class AbstractPaletteDefinitionFactory<B extends PaletteDefiniti
     protected ShapeManager shapeManager;
     protected B paletteBuilder;
 
-    public AbstractPaletteDefinitionFactory( final ShapeManager shapeManager,
-                                             final B paletteBuilder ) {
+    public AbstractPaletteDefinitionFactory(final ShapeManager shapeManager,
+                                            final B paletteBuilder) {
         this.shapeManager = shapeManager;
         this.paletteBuilder = paletteBuilder;
     }
 
     @Override
-    public B newBuilder( final String defSetId ) {
+    public B newBuilder(final String defSetId) {
         return paletteBuilder;
     }
 }

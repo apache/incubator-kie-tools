@@ -27,7 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DeleteNodeCommandTest extends AbstractCanvasCommandTest {
 
     private static final String ID = "e1";
@@ -40,24 +40,24 @@ public class DeleteNodeCommandTest extends AbstractCanvasCommandTest {
     @Before
     public void setup() throws Exception {
         super.setup();
-        when( candidate.getUUID() ).thenReturn( ID );
-        this.tested = new DeleteNodeCommand( candidate );
+        when(candidate.getUUID()).thenReturn(ID);
+        this.tested = new DeleteNodeCommand(candidate);
     }
 
     @Test
     public void testGetGraphCommand() {
         final org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand graphCommand =
-                ( org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand ) tested.newGraphCommand( canvasHandler );
-        assertNotNull( graphCommand );
-        assertEquals( candidate,
-                      graphCommand.getNode() );
+                (org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand) tested.newGraphCommand(canvasHandler);
+        assertNotNull(graphCommand);
+        assertEquals(candidate,
+                     graphCommand.getNode());
     }
 
     @Test
     public void testGetCanvasCommand() {
         final CompositeCommand canvasCommand =
-                ( CompositeCommand ) tested.newCanvasCommand( canvasHandler );
-        assertNotNull( canvasCommand );
-        assertTrue( canvasCommand instanceof CompositeCommand );
+                (CompositeCommand) tested.newCanvasCommand(canvasHandler);
+        assertNotNull(canvasCommand);
+        assertTrue(canvasCommand instanceof CompositeCommand);
     }
 }

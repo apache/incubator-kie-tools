@@ -37,39 +37,39 @@ public class LienzoToolboxCommandFactory extends ToolboxCommandFactory {
     private final ManagedInstance<MoveShapeDownToolboxCommand> moveShapeDownToolboxCommands;
 
     @Inject
-    public LienzoToolboxCommandFactory( final ManagedInstance<RemoveToolboxCommand> removeToolboxCommands,
-                                        final ManagedInstance<MoveShapeUpToolboxCommand> moveShapeUpToolboxCommands,
-                                        final ManagedInstance<MoveShapeDownToolboxCommand> moveShapeDownToolboxCommands,
-                                        final ManagedInstance<NewNodeCommand> newNodeCommands,
-                                        final ManagedInstance<NewConnectorCommand> newConnectorCommands ) {
-        super( newNodeCommands,
-               newConnectorCommands );
+    public LienzoToolboxCommandFactory(final ManagedInstance<RemoveToolboxCommand> removeToolboxCommands,
+                                       final ManagedInstance<MoveShapeUpToolboxCommand> moveShapeUpToolboxCommands,
+                                       final ManagedInstance<MoveShapeDownToolboxCommand> moveShapeDownToolboxCommands,
+                                       final ManagedInstance<NewNodeCommand> newNodeCommands,
+                                       final ManagedInstance<NewConnectorCommand> newConnectorCommands) {
+        super(newNodeCommands,
+              newConnectorCommands);
         this.removeToolboxCommands = removeToolboxCommands;
         this.moveShapeUpToolboxCommands = moveShapeUpToolboxCommands;
         this.moveShapeDownToolboxCommands = moveShapeDownToolboxCommands;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public RemoveToolboxCommand<?> newRemoveToolboxCommand() {
         final RemoveToolboxCommand<Shape<?>> c = removeToolboxCommands.get();
-        c.setIcon( SVGUtils.createSVGIcon( SVGUtils.getTrashIcon() ) );
+        c.setIcon(SVGUtils.createSVGIcon(SVGUtils.getTrashIcon()));
         return c;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public MoveShapeUpToolboxCommand<?> newMoveShapeUpToolboxCommand() {
         final MoveShapeUpToolboxCommand<Shape<?>> c = moveShapeUpToolboxCommands.get();
-        c.setIcon( SVGUtils.createSVGIcon( SVGUtils.getMoveUpIcon() ) );
+        c.setIcon(SVGUtils.createSVGIcon(SVGUtils.getMoveUpIcon()));
         return c;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public MoveShapeDownToolboxCommand<?> newMoveShapeDownToolboxCommand() {
         final MoveShapeDownToolboxCommand<Shape<?>> c = moveShapeDownToolboxCommands.get();
-        c.setIcon( SVGUtils.createSVGIcon( SVGUtils.getMoveDownIcon() ) );
+        c.setIcon(SVGUtils.createSVGIcon(SVGUtils.getMoveDownIcon()));
         return c;
     }
 }

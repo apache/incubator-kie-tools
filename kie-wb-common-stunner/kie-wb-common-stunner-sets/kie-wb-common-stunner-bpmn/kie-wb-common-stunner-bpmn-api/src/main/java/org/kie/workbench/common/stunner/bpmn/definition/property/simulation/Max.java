@@ -59,7 +59,7 @@ public class Max implements BPMNProperty {
     public Max() {
     }
 
-    public Max( final Double value ) {
+    public Max(final Double value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class Max implements BPMNProperty {
         return value;
     }
 
-    public void setValue( Double value ) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 }

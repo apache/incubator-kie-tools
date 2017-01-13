@@ -33,36 +33,36 @@ public class BindableDefinitionSetAdapterGenerator extends AbstractBindableAdapt
         return "BindableDefinitionSetAdapter.ftl";
     }
 
-    public StringBuffer generate( final String packageName,
-                                  final String className,
-                                  final ProcessingDefinitionSetAnnotations processingDefinitionSetAnnotations,
-                                  final Messager messager ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final String className,
+                                 final ProcessingDefinitionSetAnnotations processingDefinitionSetAnnotations,
+                                 final Messager messager) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "packageName",
-                  packageName );
-        root.put( "className",
-                  className );
-        root.put( "parentAdapterClassName",
-                  BindableDefinitionSetAdapterProxy.class.getName() );
-        root.put( "adapterFactoryClassName",
-                  BindableAdapterFactory.class.getName() );
-        root.put( "generatedByClassName",
-                  BindableDefinitionSetAdapterGenerator.class.getName() );
-        addFields( "graphFactoryTypes",
-                   root,
-                   processingDefinitionSetAnnotations.getGraphFactoryTypes() );
-        addFields( "valuePropNames",
-                   root,
-                   processingDefinitionSetAnnotations.getDescriptionFieldNames() );
-        root.put( "definitionIds",
-                  processingDefinitionSetAnnotations.getDefinitionIds() );
-        root.put( "definitionIdsSize",
-                  processingDefinitionSetAnnotations.getDefinitionIds().size() );
+        root.put("packageName",
+                 packageName);
+        root.put("className",
+                 className);
+        root.put("parentAdapterClassName",
+                 BindableDefinitionSetAdapterProxy.class.getName());
+        root.put("adapterFactoryClassName",
+                 BindableAdapterFactory.class.getName());
+        root.put("generatedByClassName",
+                 BindableDefinitionSetAdapterGenerator.class.getName());
+        addFields("graphFactoryTypes",
+                  root,
+                  processingDefinitionSetAnnotations.getGraphFactoryTypes());
+        addFields("valuePropNames",
+                  root,
+                  processingDefinitionSetAnnotations.getDescriptionFieldNames());
+        root.put("definitionIds",
+                 processingDefinitionSetAnnotations.getDefinitionIds());
+        root.put("definitionIdsSize",
+                 processingDefinitionSetAnnotations.getDefinitionIds().size());
 
         //Generate code
-        return writeTemplate( packageName,
-                              className,
-                              root,
-                              messager );
+        return writeTemplate(packageName,
+                             className,
+                             root,
+                             messager);
     }
 }

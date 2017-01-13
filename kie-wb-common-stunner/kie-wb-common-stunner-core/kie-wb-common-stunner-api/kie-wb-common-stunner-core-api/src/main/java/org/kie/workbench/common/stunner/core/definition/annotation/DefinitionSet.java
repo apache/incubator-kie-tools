@@ -26,8 +26,8 @@ import org.kie.workbench.common.stunner.core.definition.builder.VoidBuilder;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 
 @Inherited
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.TYPE } )
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
 public @interface DefinitionSet {
 
     Class<?>[] definitions();

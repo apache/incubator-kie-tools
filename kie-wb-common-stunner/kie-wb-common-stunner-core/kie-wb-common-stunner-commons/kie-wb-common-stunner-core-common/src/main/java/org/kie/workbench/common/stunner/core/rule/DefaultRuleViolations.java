@@ -26,15 +26,15 @@ public class DefaultRuleViolations implements RuleViolations {
 
     private List<RuleViolation> violations = new LinkedList<RuleViolation>();
 
-    public DefaultRuleViolations addViolations( final RuleViolations violations ) {
-        if ( null != violations ) {
-            violations.violations().forEach( this::addViolation );
+    public DefaultRuleViolations addViolations(final RuleViolations violations) {
+        if (null != violations) {
+            violations.violations().forEach(this::addViolation);
         }
         return this;
     }
 
-    public DefaultRuleViolations addViolation( final RuleViolation violation ) {
-        violations.add( violation );
+    public DefaultRuleViolations addViolation(final RuleViolation violation) {
+        violations.add(violation);
         return this;
     }
 
@@ -49,7 +49,7 @@ public class DefaultRuleViolations implements RuleViolations {
     }
 
     @Override
-    public Iterable<RuleViolation> violations( final RuleViolation.Type violationType ) {
+    public Iterable<RuleViolation> violations(final RuleViolation.Type violationType) {
         return violations;
     }
 }

@@ -29,50 +29,50 @@ public interface DefinitionAdapter<T> extends PriorityAdapter {
     /**
      * Returns the definition's identifier for a given pojo.
      */
-    String getId( final T pojo );
+    String getId(final T pojo);
 
     /**
      * Returns the definition's category for a given pojo.
      */
-    String getCategory( final T pojo );
+    String getCategory(final T pojo);
 
     /**
      * Returns the definition's title for a given pojo.
      */
-    String getTitle( final T pojo );
+    String getTitle(final T pojo);
 
     /**
      * Returns the definition's description for a given pojo.
      */
-    String getDescription( final T pojo );
+    String getDescription(final T pojo);
 
     /**
      * Returns the definition's labels for a given pojo.
      */
-    Set<String> getLabels( final T pojo );
+    Set<String> getLabels(final T pojo);
 
     /**
      * Returns the definition's property sets for a given pojo.
      */
-    Set<?> getPropertySets( final T pojo );
+    Set<?> getPropertySets(final T pojo);
 
     /**
      * Returns all the definition's properties for a given pojo.
      * Must return the properties from the different
      * definition's property sets as well.
      */
-    Set<?> getProperties( final T pojo );
+    Set<?> getProperties(final T pojo);
 
     /**
      * Returns the property bean instance for the given meta-property type..
      * Stunner provides some built-in features that could require model updates,
      * so this meta-properties are used for binding these features with the property beans.
      */
-    Object getMetaProperty( final PropertyMetaTypes metaType,
-                            final T pojo );
+    Object getMetaProperty(final PropertyMetaTypes metaType,
+                           final T pojo);
 
     /**
      * Returns the definition's graph element factory class for a given pojo.
      */
-    Class<? extends ElementFactory> getGraphFactoryType( final T pojo );
+    Class<? extends ElementFactory> getGraphFactoryType(final T pojo);
 }

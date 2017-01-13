@@ -45,15 +45,15 @@ public class MenuDevCommandsBuilder {
     private boolean enabled;
 
     @Inject
-    public MenuDevCommandsBuilder( final ManagedInstance<MenuDevCommand> menuDevCommandManagedInstances ) {
+    public MenuDevCommandsBuilder(final ManagedInstance<MenuDevCommand> menuDevCommandManagedInstances) {
         this.menuDevCommandManagedInstances = menuDevCommandManagedInstances;
         this.enabled = false;
     }
 
     public void enable() {
-        if ( !enabled ) {
+        if (!enabled) {
             this.enabled = true;
-            menuDevCommandManagedInstances.iterator().forEachRemaining( devCommands::add );
+            menuDevCommandManagedInstances.iterator().forEachRemaining(devCommands::add);
         }
     }
 
@@ -67,31 +67,31 @@ public class MenuDevCommandsBuilder {
 
     private MenuItem buildDevMenuItem() {
         final DropDownMenu menu = new DropDownMenu() {{
-            addStyleName( "pull-right" );
+            addStyleName("pull-right");
         }};
-        for ( final MenuDevCommand command : devCommands ) {
-            menu.add( new AnchorListItem( command.getText() ) {{
-                setIcon( command.getIcon() );
-                addClickHandler( event -> command.execute() );
-            }} );
+        for (final MenuDevCommand command : devCommands) {
+            menu.add(new AnchorListItem(command.getText()) {{
+                setIcon(command.getIcon());
+                addClickHandler(event -> command.execute());
+            }});
         }
         final IsWidget group = new ButtonGroup() {{
-            add( new Button() {{
-                setToggleCaret( false );
-                setDataToggle( Toggle.DROPDOWN );
-                setIcon( IconType.COG );
-                setSize( ButtonSize.SMALL );
-                setTitle( "Development" );
-            }} );
-            add( menu );
+            add(new Button() {{
+                setToggleCaret(false);
+                setDataToggle(Toggle.DROPDOWN);
+                setIcon(IconType.COG);
+                setSize(ButtonSize.SMALL);
+                setTitle("Development");
+            }});
+            add(menu);
         }};
-        return buildItem( group );
+        return buildItem(group);
     }
 
-    private MenuItem buildItem( final IsWidget widget ) {
+    private MenuItem buildItem(final IsWidget widget) {
         return new MenuFactory.CustomMenuBuilder() {
             @Override
-            public void push( MenuFactory.CustomMenuBuilder element ) {
+            public void push(MenuFactory.CustomMenuBuilder element) {
             }
 
             @Override

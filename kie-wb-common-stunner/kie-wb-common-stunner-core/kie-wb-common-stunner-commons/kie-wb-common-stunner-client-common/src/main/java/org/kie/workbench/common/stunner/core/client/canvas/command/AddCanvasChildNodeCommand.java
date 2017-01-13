@@ -33,53 +33,53 @@ public final class AddCanvasChildNodeCommand extends AbstractCanvasNodeRegistrat
     private final Node parent;
     private final String shapeSetId;
 
-    public AddCanvasChildNodeCommand( final TreeWalkTraverseProcessor treeWalkTraverseProcessor,
-                                      final Node parent,
-                                      final Node candidate,
-                                      final String shapeSetId ) {
-        super( treeWalkTraverseProcessor,
-               candidate );
+    public AddCanvasChildNodeCommand(final TreeWalkTraverseProcessor treeWalkTraverseProcessor,
+                                     final Node parent,
+                                     final Node candidate,
+                                     final String shapeSetId) {
+        super(treeWalkTraverseProcessor,
+              candidate);
         this.parent = parent;
         this.shapeSetId = shapeSetId;
     }
 
-    AddCanvasChildNodeCommand( final Node parent,
-                               final Node candidate,
-                               final String shapeSetId ) {
-        super( new TreeWalkTraverseProcessorImpl(),
-               candidate );
+    AddCanvasChildNodeCommand(final Node parent,
+                              final Node candidate,
+                              final String shapeSetId) {
+        super(new TreeWalkTraverseProcessorImpl(),
+              candidate);
         this.parent = parent;
         this.shapeSetId = shapeSetId;
     }
 
     @Override
-    protected String getShapeSetId( final AbstractCanvasHandler context ) {
+    protected String getShapeSetId(final AbstractCanvasHandler context) {
         return shapeSetId;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected boolean registerCandidate( final AbstractCanvasHandler context ) {
-        context.register( shapeSetId,
-                          getCandidate() );
-        context.addChild( parent,
-                          getCandidate() );
-        context.applyElementMutation( parent,
-                                      MutationContext.STATIC );
-        context.applyElementMutation( getCandidate(),
-                                      MutationContext.STATIC );
+    @SuppressWarnings("unchecked")
+    protected boolean registerCandidate(final AbstractCanvasHandler context) {
+        context.register(shapeSetId,
+                         getCandidate());
+        context.addChild(parent,
+                         getCandidate());
+        context.applyElementMutation(parent,
+                                     MutationContext.STATIC);
+        context.applyElementMutation(getCandidate(),
+                                     MutationContext.STATIC);
         return true;
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         return new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
-                .addCommand( new RemoveCanvasChildCommand( parent,
-                                                           getCandidate() ) )
-                .addCommand( new DeleteCanvasNodeCommand( getCandidate(),
-                                                          parent ) )
+                .addCommand(new RemoveCanvasChildCommand(parent,
+                                                         getCandidate()))
+                .addCommand(new DeleteCanvasNodeCommand(getCandidate(),
+                                                        parent))
                 .build()
-                .execute( context );
+                .execute(context);
     }
 
     public Node getParent() {

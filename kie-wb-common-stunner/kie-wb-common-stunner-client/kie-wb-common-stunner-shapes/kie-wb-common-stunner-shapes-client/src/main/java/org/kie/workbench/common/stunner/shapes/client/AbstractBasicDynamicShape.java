@@ -27,34 +27,34 @@ public abstract class AbstractBasicDynamicShape<W, V extends BasicShapeView, P e
 
     protected final transient P proxy;
 
-    public AbstractBasicDynamicShape( final V view,
-                                      final P proxy ) {
-        super( view );
+    public AbstractBasicDynamicShape(final V view,
+                                     final P proxy) {
+        super(view);
         this.proxy = proxy;
     }
 
     @Override
-    protected String getBackgroundColor( final Node<View<W>, Edge> element ) {
-        return proxy.getBackgroundColor( getDefinition( element ) );
+    protected String getBackgroundColor(final Node<View<W>, Edge> element) {
+        return proxy.getBackgroundColor(getDefinition(element));
     }
 
     @Override
-    protected Double getBackgroundAlpha( final Node<View<W>, Edge> element ) {
-        return proxy.getBackgroundAlpha( getDefinition( element ) );
+    protected Double getBackgroundAlpha(final Node<View<W>, Edge> element) {
+        return proxy.getBackgroundAlpha(getDefinition(element));
     }
 
     @Override
-    protected String getBorderColor( final Node<View<W>, Edge> element ) {
-        return proxy.getBorderColor( getDefinition( element ) );
+    protected String getBorderColor(final Node<View<W>, Edge> element) {
+        return proxy.getBorderColor(getDefinition(element));
     }
 
     @Override
-    protected Double getBorderSize( final Node<View<W>, Edge> element ) {
-        return proxy.getBorderSize( getDefinition( element ) );
+    protected Double getBorderSize(final Node<View<W>, Edge> element) {
+        return proxy.getBorderSize(getDefinition(element));
     }
 
     @Override
-    protected Double getBorderAlpha( final Node<View<W>, Edge> element ) {
-        return proxy.getBackgroundAlpha( getDefinition( element ) );
+    protected Double getBorderAlpha(final Node<View<W>, Edge> element) {
+        return proxy.getBackgroundAlpha(getDefinition(element));
     }
 }

@@ -57,7 +57,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class ProjectDiagramEditorTest {
 
     @Mock
@@ -131,73 +131,73 @@ public class ProjectDiagramEditorTest {
 
     @Before
     public void setup() throws Exception {
-        when( versionRecordManager.getCurrentPath() ).thenReturn( path );
-        when( sessionCommandFactory.newClearCommand() ).thenReturn( sessionClearCommand );
-        when( sessionCommandFactory.newClearSelectionCommand() ).thenReturn( sessionClearSelectionCommand );
-        when( sessionCommandFactory.newVisitGraphCommand() ).thenReturn( sessionVisitGraphCommand );
-        when( sessionCommandFactory.newSwitchGridCommand() ).thenReturn( sessionSwitchGridCommand );
-        when( sessionCommandFactory.newDeleteSelectedElementsCommand() ).thenReturn( sessionDeleteSelectionCommand );
-        when( sessionCommandFactory.newUndoCommand() ).thenReturn( sessionUndoCommand );
-        when( sessionCommandFactory.newRedoCommand() ).thenReturn( sessionRedoCommand );
-        when( sessionCommandFactory.newValidateCommand() ).thenReturn( sessionValidateCommand );
-        when( sessionCommandFactory.newRefreshSessionCommand() ).thenReturn( sessionRefreshCommand );
-        when( clientSessionManager.newFullSession() ).thenReturn( fullSession );
-        when( clientSessionPresenter.getView() ).thenReturn( clientSessionPresenterView );
-        when( clientSessionPresenter.setDisplayErrors( anyBoolean() ) ).thenReturn( clientSessionPresenter );
-        this.tested = new ProjectDiagramEditorStub( view,
-                                                    placeManager,
-                                                    errorPopupPresenter,
-                                                    changeTitleNotificationEvent,
-                                                    savePopUpPresenter,
-                                                    resourceType,
-                                                    projectDiagramServices,
-                                                    clientSessionManager,
-                                                    clientSessionPresenter,
-                                                    editorErrorView,
-                                                    paletteFactory,
-                                                    sessionUtils,
-                                                    sessionCommandFactory,
-                                                    menuItemsBuilder );
+        when(versionRecordManager.getCurrentPath()).thenReturn(path);
+        when(sessionCommandFactory.newClearCommand()).thenReturn(sessionClearCommand);
+        when(sessionCommandFactory.newClearSelectionCommand()).thenReturn(sessionClearSelectionCommand);
+        when(sessionCommandFactory.newVisitGraphCommand()).thenReturn(sessionVisitGraphCommand);
+        when(sessionCommandFactory.newSwitchGridCommand()).thenReturn(sessionSwitchGridCommand);
+        when(sessionCommandFactory.newDeleteSelectedElementsCommand()).thenReturn(sessionDeleteSelectionCommand);
+        when(sessionCommandFactory.newUndoCommand()).thenReturn(sessionUndoCommand);
+        when(sessionCommandFactory.newRedoCommand()).thenReturn(sessionRedoCommand);
+        when(sessionCommandFactory.newValidateCommand()).thenReturn(sessionValidateCommand);
+        when(sessionCommandFactory.newRefreshSessionCommand()).thenReturn(sessionRefreshCommand);
+        when(clientSessionManager.newFullSession()).thenReturn(fullSession);
+        when(clientSessionPresenter.getView()).thenReturn(clientSessionPresenterView);
+        when(clientSessionPresenter.setDisplayErrors(anyBoolean())).thenReturn(clientSessionPresenter);
+        this.tested = new ProjectDiagramEditorStub(view,
+                                                   placeManager,
+                                                   errorPopupPresenter,
+                                                   changeTitleNotificationEvent,
+                                                   savePopUpPresenter,
+                                                   resourceType,
+                                                   projectDiagramServices,
+                                                   clientSessionManager,
+                                                   clientSessionPresenter,
+                                                   editorErrorView,
+                                                   paletteFactory,
+                                                   sessionUtils,
+                                                   sessionCommandFactory,
+                                                   menuItemsBuilder);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testInit() {
         tested.init();
-        verify( clientSessionPresenter,
-                times( 1 ) ).initialize( eq( fullSession ),
-                                         anyInt(),
-                                         anyInt() );
-        verify( view,
-                times( 1 ) ).init( eq( tested ) );
-        verify( view,
-                times( 1 ) ).setWidget( eq( clientSessionPresenterView ) );
-        verify( sessionClearSelectionCommand,
-                times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionVisitGraphCommand,
-                times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionSwitchGridCommand,
-                times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionClearCommand,
-                times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionDeleteSelectionCommand,
-                times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionUndoCommand,
-                times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionRedoCommand,
-                times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionValidateCommand,
-                times( 1 ) ).bind( eq( fullSession ) );
-        verify( sessionRefreshCommand,
-                times( 1 ) ).bind( eq( fullSession ) );
+        verify(clientSessionPresenter,
+               times(1)).initialize(eq(fullSession),
+                                    anyInt(),
+                                    anyInt());
+        verify(view,
+               times(1)).init(eq(tested));
+        verify(view,
+               times(1)).setWidget(eq(clientSessionPresenterView));
+        verify(sessionClearSelectionCommand,
+               times(1)).bind(eq(fullSession));
+        verify(sessionVisitGraphCommand,
+               times(1)).bind(eq(fullSession));
+        verify(sessionSwitchGridCommand,
+               times(1)).bind(eq(fullSession));
+        verify(sessionClearCommand,
+               times(1)).bind(eq(fullSession));
+        verify(sessionDeleteSelectionCommand,
+               times(1)).bind(eq(fullSession));
+        verify(sessionUndoCommand,
+               times(1)).bind(eq(fullSession));
+        verify(sessionRedoCommand,
+               times(1)).bind(eq(fullSession));
+        verify(sessionValidateCommand,
+               times(1)).bind(eq(fullSession));
+        verify(sessionRefreshCommand,
+               times(1)).bind(eq(fullSession));
     }
 
     // TODO: @Test - versionRecordManager is not being set.
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testLoadContent() {
         tested.loadContent();
-        verify( projectDiagramServices,
-                times( 1 ) ).getByPath( eq( path ),
-                                        any( ServiceCallback.class ) );
+        verify(projectDiagramServices,
+               times(1)).getByPath(eq(path),
+                                   any(ServiceCallback.class));
     }
 }

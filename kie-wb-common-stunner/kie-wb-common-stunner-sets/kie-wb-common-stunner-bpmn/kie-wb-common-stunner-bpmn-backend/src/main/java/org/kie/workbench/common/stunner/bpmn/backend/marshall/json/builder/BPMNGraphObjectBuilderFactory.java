@@ -37,8 +37,8 @@ public class BPMNGraphObjectBuilderFactory implements GraphObjectBuilderFactory 
     OryxManager oryxManager;
 
     @Inject
-    public BPMNGraphObjectBuilderFactory( DefinitionManager definitionManager,
-                                          OryxManager oryxManager ) {
+    public BPMNGraphObjectBuilderFactory(final DefinitionManager definitionManager,
+                                         final OryxManager oryxManager) {
         this.definitionManager = definitionManager;
         this.oryxManager = oryxManager;
     }
@@ -48,54 +48,54 @@ public class BPMNGraphObjectBuilderFactory implements GraphObjectBuilderFactory 
 
     @Override
     public GraphObjectBuilder<?, ?> bootstrapBuilder() {
-        return new BootstrapObjectBuilder( this );
+        return new BootstrapObjectBuilder(this);
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public GraphObjectBuilder<?, ?> builderFor( String oryxId ) {
-        if ( oryxId == null ) {
+    @SuppressWarnings("unchecked")
+    public GraphObjectBuilder<?, ?> builderFor(final String oryxId) {
+        if (oryxId == null) {
             throw new NullPointerException();
         }
-        Class<?> defClass = oryxManager.getMappingsManager().getDefinition( oryxId );
-        if ( null != defClass ) {
-            MorphAdapter<Object> morphAdapter = definitionManager.adapters().registry().getMorphAdapter( defClass );
+        Class<?> defClass = oryxManager.getMappingsManager().getDefinition(oryxId);
+        if (null != defClass) {
+            MorphAdapter<Object> morphAdapter = definitionManager.adapters().registry().getMorphAdapter(defClass);
             BindablePropertyMorphDefinition propertyMorphDefinition = null;
-            if ( morphAdapter != null ) {
+            if (morphAdapter != null) {
                 final Iterable<MorphDefinition> morphDefinitions =
-                        ( ( BindableMorphAdapter<Object> ) morphAdapter ).getMorphDefinitionsForType( defClass );
-                if ( null != morphDefinitions && morphDefinitions.iterator().hasNext() ) {
-                    for ( MorphDefinition morphDefinition : morphDefinitions ) {
-                        if ( morphDefinition instanceof BindablePropertyMorphDefinition ) {
-                            propertyMorphDefinition = ( BindablePropertyMorphDefinition ) morphDefinition;
+                        ((BindableMorphAdapter<Object>) morphAdapter).getMorphDefinitionsForType(defClass);
+                if (null != morphDefinitions && morphDefinitions.iterator().hasNext()) {
+                    for (MorphDefinition morphDefinition : morphDefinitions) {
+                        if (morphDefinition instanceof BindablePropertyMorphDefinition) {
+                            propertyMorphDefinition = (BindablePropertyMorphDefinition) morphDefinition;
                             break;
                         }
                     }
                 }
             }
-            if ( null != propertyMorphDefinition ) {
+            if (null != propertyMorphDefinition) {
                 // Specific handle for morphing based on class inheritance.
-                return new NodePropertyMorphBuilderImpl( defClass,
-                                                         propertyMorphDefinition );
+                return new NodePropertyMorphBuilderImpl(defClass,
+                                                        propertyMorphDefinition);
             } else {
-                Class<? extends ElementFactory> elementFactory = RuntimeDefinitionAdapter.getGraphFactory( defClass );
-                if ( isNodeFactory( elementFactory ) ) {
-                    return new NodeBuilderImpl( defClass );
-                } else if ( isEdgeFactory( elementFactory ) ) {
-                    return new EdgeBuilderImpl( defClass );
+                Class<? extends ElementFactory> elementFactory = RuntimeDefinitionAdapter.getGraphFactory(defClass);
+                if (isNodeFactory(elementFactory)) {
+                    return new NodeBuilderImpl(defClass);
+                } else if (isEdgeFactory(elementFactory)) {
+                    return new EdgeBuilderImpl(defClass);
                 } else {
-                    throw new RuntimeException( "No graph element found for definition with class [" + defClass.getName() + "]" );
+                    throw new RuntimeException("No graph element found for definition with class [" + defClass.getName() + "]");
                 }
             }
         }
-        throw new RuntimeException( "No definition found for oryx stencil with id [" + oryxId + "]" );
+        throw new RuntimeException("No definition found for oryx stencil with id [" + oryxId + "]");
     }
 
-    private static boolean isNodeFactory( Class<? extends ElementFactory> elementFactory ) {
-        return elementFactory.isAssignableFrom( NodeFactory.class );
+    private static boolean isNodeFactory(final Class<? extends ElementFactory> elementFactory) {
+        return elementFactory.isAssignableFrom(NodeFactory.class);
     }
 
-    private static boolean isEdgeFactory( Class<? extends ElementFactory> elementFactory ) {
-        return elementFactory.isAssignableFrom( EdgeFactory.class );
+    private static boolean isEdgeFactory(final Class<? extends ElementFactory> elementFactory) {
+        return elementFactory.isAssignableFrom(EdgeFactory.class);
     }
 }

@@ -36,16 +36,16 @@ public interface ToolboxBuilder<T, G extends ToolboxButtonGrid, V> {
         NORTH_WEST;
     }
 
-    T forLayer( final Layer layer );
+    T forLayer(final Layer layer);
 
-    T forView( final ShapeView<?> view );
+    T forView(final ShapeView<?> view);
 
-    T direction( final Direction on,
-                 final Direction towards );
+    T direction(final Direction on,
+                final Direction towards);
 
-    T grid( final G grid );
+    T grid(final G grid);
 
-    T add( final ToolboxButton<V> button );
+    T add(final ToolboxButton<V> button);
 
     Toolbox build();
 }

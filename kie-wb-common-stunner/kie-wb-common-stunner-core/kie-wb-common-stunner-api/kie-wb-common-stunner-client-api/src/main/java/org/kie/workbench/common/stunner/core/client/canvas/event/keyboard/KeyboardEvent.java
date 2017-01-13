@@ -19,16 +19,16 @@ package org.kie.workbench.common.stunner.core.client.canvas.event.keyboard;
 public interface KeyboardEvent {
 
     enum Key {
-        ESC( 27 ),
-        DELETE( 46 ),
-        ARROW_UP( 24 ),
-        ARROW_DOWN( 25 ),
-        ARROW_LEFT( 27 ),
-        ARROW_RIGHT( 26 );
+        ESC(27),
+        DELETE(46),
+        ARROW_UP(24),
+        ARROW_DOWN(25),
+        ARROW_LEFT(27),
+        ARROW_RIGHT(26);
 
         private final int unicharCode;
 
-        Key( final int unicharCode ) {
+        Key(final int unicharCode) {
             this.unicharCode = unicharCode;
         }
 

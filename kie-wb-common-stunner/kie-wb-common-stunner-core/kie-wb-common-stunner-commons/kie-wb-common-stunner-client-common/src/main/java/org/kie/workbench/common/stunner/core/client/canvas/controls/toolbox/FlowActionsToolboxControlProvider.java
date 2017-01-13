@@ -57,44 +57,44 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 @Dependent
 public class FlowActionsToolboxControlProvider extends AbstractToolboxControlProvider {
 
-    private static Logger LOGGER = Logger.getLogger( FlowActionsToolboxControlProvider.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(FlowActionsToolboxControlProvider.class.getName());
 
     private final DefinitionUtils definitionUtils;
     private final CommonLookups commonLookups;
     private final ToolboxCommandFactory defaultToolboxCommandFactory;
 
     protected FlowActionsToolboxControlProvider() {
-        this( null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public FlowActionsToolboxControlProvider( final ToolboxFactory toolboxFactory,
-                                              final DefinitionUtils definitionUtils,
-                                              final ToolboxCommandFactory defaultToolboxCommandFactory,
-                                              final CommonLookups commonLookups ) {
-        super( toolboxFactory );
+    public FlowActionsToolboxControlProvider(final ToolboxFactory toolboxFactory,
+                                             final DefinitionUtils definitionUtils,
+                                             final ToolboxCommandFactory defaultToolboxCommandFactory,
+                                             final CommonLookups commonLookups) {
+        super(toolboxFactory);
         this.definitionUtils = definitionUtils;
         this.defaultToolboxCommandFactory = defaultToolboxCommandFactory;
         this.commonLookups = commonLookups;
     }
 
     @Override
-    public boolean supports( final Object definition ) {
+    public boolean supports(final Object definition) {
         return true;
     }
 
     @Override
-    public ToolboxButtonGrid getGrid( final AbstractCanvasHandler context,
-                                      final Element item ) {
+    public ToolboxButtonGrid getGrid(final AbstractCanvasHandler context,
+                                     final Element item) {
         final ToolboxButtonGridBuilder buttonGridBuilder = toolboxFactory.toolboxGridBuilder();
         return buttonGridBuilder
-                .setRows( 5 )
-                .setColumns( 2 )
-                .setIconSize( DEFAULT_ICON_SIZE )
-                .setPadding( DEFAULT_PADDING )
+                .setRows(5)
+                .setColumns(2)
+                .setIconSize(DEFAULT_ICON_SIZE)
+                .setPadding(DEFAULT_PADDING)
                 .build();
     }
 
@@ -109,61 +109,61 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public List<ToolboxCommand<AbstractCanvasHandler, ?>> getCommands( final AbstractCanvasHandler context,
-                                                                       final Element item ) {
+    @SuppressWarnings("unchecked")
+    public List<ToolboxCommand<AbstractCanvasHandler, ?>> getCommands(final AbstractCanvasHandler context,
+                                                                      final Element item) {
         try {
-            final Node<Definition<Object>, Edge> node = ( Node<Definition<Object>, Edge> ) item;
+            final Node<Definition<Object>, Edge> node = (Node<Definition<Object>, Edge>) item;
             final Diagram diagram = context.getDiagram();
             final String defSetId = diagram.getMetadata().getDefinitionSetId();
             final List<ToolboxCommand<AbstractCanvasHandler, ?>> commands = new LinkedList<>();
             // Look for the default connector type and create a button for it.
             // TODO: Handle all response pages.
-            final Set<String> allowedConnectorIds = commonLookups.getAllowedConnectors( context.getModelRulesManager(),
-                                                                                        defSetId,
-                                                                                        node,
-                                                                                        0,
-                                                                                        10 );
-            if ( null != allowedConnectorIds && !allowedConnectorIds.isEmpty() ) {
-                for ( final String allowedConnectorId : allowedConnectorIds ) {
+            final Set<String> allowedConnectorIds = commonLookups.getAllowedConnectors(context.getModelRulesManager(),
+                                                                                       defSetId,
+                                                                                       node,
+                                                                                       0,
+                                                                                       10);
+            if (null != allowedConnectorIds && !allowedConnectorIds.isEmpty()) {
+                for (final String allowedConnectorId : allowedConnectorIds) {
                     final NewConnectorCommand<?> newConnectorCommand = defaultToolboxCommandFactory.newConnectorCommand();
-                    newConnectorCommand.setEdgeIdentifier( allowedConnectorId );
-                    commands.add( newConnectorCommand );
+                    newConnectorCommand.setEdgeIdentifier(allowedConnectorId);
+                    commands.add(newConnectorCommand);
                 }
             }
             // If default connector type is provided, new nodes can be created as well, so
             // look for the allowed nodes that can be placed as button but gropuing them by their
             // morph base type ( this avoid having large number of buttons on the toolbox ).
-            final String defaultConnectorId = definitionUtils.getDefaultConnectorId( defSetId );
-            if ( null != defaultConnectorId ) {
+            final String defaultConnectorId = definitionUtils.getDefaultConnectorId(defSetId);
+            if (null != defaultConnectorId) {
                 // TODO: Handle all response pages.
-                final Set<String> allowedMorphDefaultDefinitionIds = commonLookups.getAllowedMorphDefaultDefinitions( context.getModelRulesManager(),
-                                                                                                                      defSetId,
-                                                                                                                      diagram.getGraph(),
-                                                                                                                      ( Node<? extends Definition<Object>, ? extends Edge> ) item,
-                                                                                                                      defaultConnectorId,
-                                                                                                                      0,
-                                                                                                                      10 );
-                if ( null != allowedMorphDefaultDefinitionIds && !allowedMorphDefaultDefinitionIds.isEmpty() ) {
-                    for ( final String allowedDefId : allowedMorphDefaultDefinitionIds ) {
+                final Set<String> allowedMorphDefaultDefinitionIds = commonLookups.getAllowedMorphDefaultDefinitions(context.getModelRulesManager(),
+                                                                                                                     defSetId,
+                                                                                                                     diagram.getGraph(),
+                                                                                                                     (Node<? extends Definition<Object>, ? extends Edge>) item,
+                                                                                                                     defaultConnectorId,
+                                                                                                                     0,
+                                                                                                                     10);
+                if (null != allowedMorphDefaultDefinitionIds && !allowedMorphDefaultDefinitionIds.isEmpty()) {
+                    for (final String allowedDefId : allowedMorphDefaultDefinitionIds) {
                         final NewNodeCommand newNodeCommand = defaultToolboxCommandFactory.newNodeCommand();
-                        newNodeCommand.setDefinitionIdentifier( allowedDefId );
-                        commands.add( newNodeCommand );
+                        newNodeCommand.setDefinitionIdentifier(allowedDefId);
+                        commands.add(newNodeCommand);
                     }
                 }
             }
             return commands;
-        } catch ( final Exception e ) {
-            LOGGER.log( Level.FINEST,
-                        "Discarded item [" + item.getUUID() + "] for flow action toolbox controls as it's not a node." );
+        } catch (final Exception e) {
+            LOGGER.log(Level.FINEST,
+                       "Discarded item [" + item.getUUID() + "] for flow action toolbox controls as it's not a node.");
         }
         return null;
     }
 
-    private void log( final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( Level.SEVERE,
-                        "** FLOW-ACTIONS-TOOLBOX ** " + message );
+    private void log(final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(Level.SEVERE,
+                       "** FLOW-ACTIONS-TOOLBOX ** " + message);
         }
     }
 }

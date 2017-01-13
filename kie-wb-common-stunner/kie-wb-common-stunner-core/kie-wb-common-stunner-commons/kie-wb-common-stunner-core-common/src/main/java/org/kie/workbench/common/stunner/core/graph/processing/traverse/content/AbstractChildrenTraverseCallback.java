@@ -28,8 +28,8 @@ public abstract class AbstractChildrenTraverseCallback<N extends Node<View, Edge
         implements ChildrenTraverseCallback<N, E> {
 
     @Override
-    public boolean startNodeTraversal( final Iterator<N> parents,
-                                       final N node ) {
+    public boolean startNodeTraversal(final Iterator<N> parents,
+                                      final N node) {
         return true;
     }
 }

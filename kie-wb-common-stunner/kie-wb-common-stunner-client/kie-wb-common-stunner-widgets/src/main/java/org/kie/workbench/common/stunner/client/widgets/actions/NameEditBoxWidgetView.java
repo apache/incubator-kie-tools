@@ -31,7 +31,7 @@ public class NameEditBoxWidgetView extends Composite implements NameEditBoxWidge
 
     }
 
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     @UiField
     FlowPanel mainPanel;
@@ -48,32 +48,32 @@ public class NameEditBoxWidgetView extends Composite implements NameEditBoxWidge
     private NameEditBoxWidget presenter;
 
     @Override
-    public void init( final NameEditBoxWidget presenter ) {
+    public void init(final NameEditBoxWidget presenter) {
         this.presenter = presenter;
-        initWidget( uiBinder.createAndBindUi( this ) );
-        nameBox.addValueChangeHandler( event -> {
+        initWidget(uiBinder.createAndBindUi(this));
+        nameBox.addValueChangeHandler(event -> {
             final String name = event.getValue();
-            presenter.onChangeName( name );
-        } );
-        nameBox.addKeyPressHandler( keyPressEvent -> presenter.onKeyPress( keyPressEvent.getUnicodeCharCode(),
-                                                                           nameBox.getValue() ) );
-        nameBox.addKeyDownHandler( keyDownEvent -> presenter.onKeyDown( keyDownEvent.getNativeKeyCode(),
-                                                                        nameBox.getValue() ) );
-        saveButton.addClickHandler( event -> presenter.onSave() );
-        closeButton.addClickHandler( event -> presenter.onClose() );
+            presenter.onChangeName(name);
+        });
+        nameBox.addKeyPressHandler(keyPressEvent -> presenter.onKeyPress(keyPressEvent.getUnicodeCharCode(),
+                                                                         nameBox.getValue()));
+        nameBox.addKeyDownHandler(keyDownEvent -> presenter.onKeyDown(keyDownEvent.getNativeKeyCode(),
+                                                                      nameBox.getValue()));
+        saveButton.addClickHandler(event -> presenter.onSave());
+        closeButton.addClickHandler(event -> presenter.onClose());
     }
 
     @Override
-    public NameEditBoxWidget.View show( final String name ) {
-        nameBox.setValue( name );
-        nameBox.setText( name );
-        mainPanel.setVisible( true );
+    public NameEditBoxWidget.View show(final String name) {
+        nameBox.setValue(name);
+        nameBox.setText(name);
+        mainPanel.setVisible(true);
         return this;
     }
 
     @Override
     public NameEditBoxWidget.View hide() {
-        mainPanel.setVisible( false );
+        mainPanel.setVisible(false);
         return this;
     }
 }

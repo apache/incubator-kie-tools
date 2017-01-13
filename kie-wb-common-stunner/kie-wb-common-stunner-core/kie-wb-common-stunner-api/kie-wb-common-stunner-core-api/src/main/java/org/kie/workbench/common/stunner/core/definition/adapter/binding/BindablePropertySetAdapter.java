@@ -23,6 +23,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapt
 
 public interface BindablePropertySetAdapter<T> extends PropertySetAdapter<T> {
 
-    void setBindings( final Map<Class, String> propertyNameFieldNames,
-                      final Map<Class, Set<String>> propertiesFieldNames );
+    void setBindings(final Map<Class, String> propertyNameFieldNames,
+                     final Map<Class, Set<String>> propertiesFieldNames);
 }

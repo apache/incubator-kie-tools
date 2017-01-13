@@ -28,13 +28,13 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 public final class ClearCommand extends AbstractCanvasGraphCommand {
 
     @Override
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
         final String rootUUID = context.getDiagram().getMetadata().getCanvasRootUUID();
-        return new ClearGraphCommand( rootUUID );
+        return new ClearGraphCommand(rootUUID);
     }
 
     @Override
-    protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
+    protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
         return new ClearCanvasCommand();
     }
 }

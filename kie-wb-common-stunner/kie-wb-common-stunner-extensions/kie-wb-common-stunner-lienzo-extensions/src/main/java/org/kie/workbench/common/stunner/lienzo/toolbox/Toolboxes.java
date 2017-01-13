@@ -22,15 +22,15 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.builder.On;
 
 public class Toolboxes {
 
-    public static On hoverToolBoxFor( final Layer layer,
-                                      final WiresShape shape ) {
-        return new HoverToolbox.HoverToolboxBuilder( layer,
-                                                     shape );
+    public static On hoverToolBoxFor(final Layer layer,
+                                     final WiresShape shape) {
+        return new HoverToolbox.HoverToolboxBuilder(layer,
+                                                    shape);
     }
 
-    public static On staticToolBoxFor( final Layer layer,
-                                       final WiresShape shape ) {
-        return new StaticToolbox.StaticToolboxBuilder( layer,
-                                                       shape );
+    public static On staticToolBoxFor(final Layer layer,
+                                      final WiresShape shape) {
+        return new StaticToolbox.StaticToolboxBuilder(layer,
+                                                      shape);
     }
 }

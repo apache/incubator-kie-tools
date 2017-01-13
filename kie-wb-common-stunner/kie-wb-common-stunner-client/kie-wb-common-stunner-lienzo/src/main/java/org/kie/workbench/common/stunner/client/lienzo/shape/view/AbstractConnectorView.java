@@ -45,40 +45,40 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     private WiresConnectorControl connectorControl;
     private final HandlerRegistrationImpl handlerRegistration = new HandlerRegistrationImpl();
 
-    public AbstractConnectorView( final AbstractDirectionalMultiPointShape<?> line,
-                                  final MultiPathDecorator headDecorator,
-                                  final MultiPathDecorator tailDecorator ) {
-        super( line,
-               headDecorator,
-               tailDecorator );
+    public AbstractConnectorView(final AbstractDirectionalMultiPointShape<?> line,
+                                 final MultiPathDecorator headDecorator,
+                                 final MultiPathDecorator tailDecorator) {
+        super(line,
+              headDecorator,
+              tailDecorator);
         init();
     }
 
-    public AbstractConnectorView( final WiresMagnet headMagnet,
-                                  final WiresMagnet tailMagnet,
-                                  final AbstractDirectionalMultiPointShape<?> line,
-                                  final MultiPathDecorator headDecorator,
-                                  final MultiPathDecorator tailDecorator ) {
-        super( headMagnet,
-               tailMagnet,
-               line,
-               headDecorator,
-               tailDecorator );
+    public AbstractConnectorView(final WiresMagnet headMagnet,
+                                 final WiresMagnet tailMagnet,
+                                 final AbstractDirectionalMultiPointShape<?> line,
+                                 final MultiPathDecorator headDecorator,
+                                 final MultiPathDecorator tailDecorator) {
+        super(headMagnet,
+              tailMagnet,
+              line,
+              headDecorator,
+              tailDecorator);
         init();
     }
 
     protected abstract void doDestroy();
 
     private void init() {
-        getLine().setFillColor( ColorName.WHITE ).setStrokeWidth( 0 );
+        getLine().setFillColor(ColorName.WHITE).setStrokeWidth(0);
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setUUID( final String uuid ) {
+    @SuppressWarnings("unchecked")
+    public T setUUID(final String uuid) {
         this.uuid = uuid;
-        this.getGroup().setUserData( UUID_PREFIX + uuid );
-        return ( T ) this;
+        this.getGroup().setUserData(UUID_PREFIX + uuid);
+        return (T) this;
     }
 
     @Override
@@ -87,10 +87,10 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setZIndex( final int zindez ) {
+    @SuppressWarnings("unchecked")
+    public T setZIndex(final int zindez) {
         this.zindex = zindez;
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
@@ -98,46 +98,46 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
         return zindex;
     }
 
-    @SuppressWarnings( "unchecked" )
-    public T setControl( final WiresConnectorControl connectorControl ) {
+    @SuppressWarnings("unchecked")
+    public T setControl(final WiresConnectorControl connectorControl) {
         this.connectorControl = connectorControl;
-        return ( T ) this;
+        return (T) this;
     }
 
     public WiresConnectorControl getControl() {
         return connectorControl;
     }
 
-    @SuppressWarnings( "unchecked" )
-    public T connect( final ShapeView headShapeView,
-                      final int _headMagnetsIndex,
-                      final ShapeView tailShapeView,
-                      final int _tailMagnetsIndex,
-                      final boolean tailArrow,
-                      final boolean headArrow ) {
-        final WiresShape headWiresShape = ( WiresShape ) headShapeView;
-        final WiresShape tailWiresShape = ( WiresShape ) tailShapeView;
+    @SuppressWarnings("unchecked")
+    public T connect(final ShapeView headShapeView,
+                     final int _headMagnetsIndex,
+                     final ShapeView tailShapeView,
+                     final int _tailMagnetsIndex,
+                     final boolean tailArrow,
+                     final boolean headArrow) {
+        final WiresShape headWiresShape = (WiresShape) headShapeView;
+        final WiresShape tailWiresShape = (WiresShape) tailShapeView;
         final MagnetManager.Magnets headMagnets = headWiresShape.getMagnets();
         final MagnetManager.Magnets tailMagnets = tailWiresShape.getMagnets();
         int headMagnetsIndex = _headMagnetsIndex;
         int tailMagnetsIndex = _tailMagnetsIndex;
-        if ( headMagnetsIndex < 0 ) {
+        if (headMagnetsIndex < 0) {
             headMagnetsIndex = 0;
         }
-        if ( tailMagnetsIndex < 0 ) {
+        if (tailMagnetsIndex < 0) {
             tailMagnetsIndex = 0;
         }
         // Obtain the magnets.
-        WiresMagnet m0_1 = headMagnets.getMagnet( headMagnetsIndex );
-        WiresMagnet m1_1 = tailMagnets.getMagnet( tailMagnetsIndex );
+        WiresMagnet m0_1 = headMagnets.getMagnet(headMagnetsIndex);
+        WiresMagnet m1_1 = tailMagnets.getMagnet(tailMagnetsIndex);
         // Update the magnets.
-        this.setHeadMagnet( m0_1 );
-        this.setTailMagnet( m1_1 );
-        return ( T ) this;
+        this.setHeadMagnet(m0_1);
+        this.setTailMagnet(m1_1);
+        return (T) this;
     }
 
-    private OrthogonalPolyLine createLine( final double... points ) {
-        return new OrthogonalPolyLine( Point2DArray.fromArrayOfDouble( points ) ).setCornerRadius( 5 ).setDraggable( true );
+    private OrthogonalPolyLine createLine(final double... points) {
+        return new OrthogonalPolyLine(Point2DArray.fromArrayOfDouble(points)).setCornerRadius(5).setDraggable(true);
     }
 
     @Override
@@ -157,22 +157,22 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setShapeX( final double x ) {
-        getGroup().setX( x );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setShapeX(final double x) {
+        getGroup().setX(x);
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setShapeY( final double y ) {
-        getGroup().setY( y );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setShapeY(final double y) {
+        getGroup().setY(y);
+        return (T) this;
     }
 
     @Override
     public Point2D getShapeAbsoluteLocation() {
-        return WiresUtils.getAbsolute( getGroup() );
+        return WiresUtils.getAbsolute(getGroup());
     }
 
     @Override
@@ -181,10 +181,10 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setFillColor( final String color ) {
-        getLine().setFillColor( color );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setFillColor(final String color) {
+        getLine().setFillColor(color);
+        return (T) this;
     }
 
     @Override
@@ -193,10 +193,10 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setFillAlpha( final double alpha ) {
-        getLine().setFillAlpha( alpha );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setFillAlpha(final double alpha) {
+        getLine().setFillAlpha(alpha);
+        return (T) this;
     }
 
     @Override
@@ -205,10 +205,10 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setStrokeColor( final String color ) {
-        getLine().setStrokeColor( color );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setStrokeColor(final String color) {
+        getLine().setStrokeColor(color);
+        return (T) this;
     }
 
     @Override
@@ -217,10 +217,10 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setStrokeAlpha( final double alpha ) {
-        getLine().setStrokeAlpha( alpha );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setStrokeAlpha(final double alpha) {
+        getLine().setStrokeAlpha(alpha);
+        return (T) this;
     }
 
     @Override
@@ -229,74 +229,74 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setStrokeWidth( final double width ) {
-        getLine().setStrokeWidth( width );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setStrokeWidth(final double width) {
+        getLine().setStrokeWidth(width);
+        return (T) this;
     }
 
     // TODO: Move this into lienzo WiresShape/WiresConnector?
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setDragBounds( final double x1,
-                            final double y1,
-                            final double x2,
-                            final double y2 ) {
-        getGroup().setDragBounds( new DragBounds( x1,
-                                                  y1,
-                                                  x2,
-                                                  y2 ) );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setDragBounds(final double x1,
+                           final double y1,
+                           final double x2,
+                           final double y2) {
+        getGroup().setDragBounds(new DragBounds(x1,
+                                                y1,
+                                                x2,
+                                                y2));
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T moveToTop() {
         getLine().moveToTop();
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T moveToBottom() {
         getLine().moveToBottom();
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T moveUp() {
         getLine().moveUp();
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T moveDown() {
         getLine().moveDown();
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T showControlPoints( final ControlPointType type ) {
-        if ( null != getControl() ) {
-            if ( ControlPointType.MAGNET.equals( type ) ) {
+    @SuppressWarnings("unchecked")
+    public T showControlPoints(final ControlPointType type) {
+        if (null != getControl()) {
+            if (ControlPointType.MAGNET.equals(type)) {
                 getControl().showControlPoints();
             } else {
-                throw new UnsupportedOperationException( "Control point type [" + type + "] not supported yet" );
+                throw new UnsupportedOperationException("Control point type [" + type + "] not supported yet");
             }
         }
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T hideControlPoints() {
-        if ( null != getControl() ) {
-            setStrokeWidth( getStrokeWidth() / 2 );
+        if (null != getControl()) {
+            setStrokeWidth(getStrokeWidth() / 2);
         }
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
@@ -321,18 +321,18 @@ public abstract class AbstractConnectorView<T> extends WiresConnector
     protected void enableShowControlsOnMouseEnter() {
         // Register a mouse enter handler for the connector's line.
         handlerRegistration.register(
-                getLine().addNodeMouseEnterHandler( nodeMouseEnterEvent -> showControlPoints( ControlPointType.MAGNET ) )
+                getLine().addNodeMouseEnterHandler(nodeMouseEnterEvent -> showControlPoints(ControlPointType.MAGNET))
         );
         // Register a mouse enter handler for the connector's head decorator, if exists.
-        if ( null != getHead() ) {
+        if (null != getHead()) {
             handlerRegistration.register(
-                    getHead().addNodeMouseEnterHandler( nodeMouseEnterEvent -> showControlPoints( ControlPointType.MAGNET ) )
+                    getHead().addNodeMouseEnterHandler(nodeMouseEnterEvent -> showControlPoints(ControlPointType.MAGNET))
             );
         }
         // Register a mouse enter handler for the connector's tail decorator, if exists.
-        if ( null != getTail() ) {
+        if (null != getTail()) {
             handlerRegistration.register(
-                    getTail().addNodeMouseEnterHandler( nodeMouseEnterEvent -> showControlPoints( ControlPointType.MAGNET ) )
+                    getTail().addNodeMouseEnterHandler(nodeMouseEnterEvent -> showControlPoints(ControlPointType.MAGNET))
             );
         }
     }

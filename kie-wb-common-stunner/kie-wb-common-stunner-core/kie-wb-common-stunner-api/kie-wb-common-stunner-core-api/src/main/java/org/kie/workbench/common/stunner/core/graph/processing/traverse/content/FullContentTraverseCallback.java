@@ -23,15 +23,15 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 public interface FullContentTraverseCallback<N extends Node<View, Edge>, E extends Edge<Object, Node>>
         extends ContentTraverseCallback<Object, N, E> {
 
-    void startViewEdgeTraversal( final E edge );
+    void startViewEdgeTraversal(final E edge);
 
-    void endViewEdgeTraversal( final E edge );
+    void endViewEdgeTraversal(final E edge);
 
-    void startChildEdgeTraversal( final E edge );
+    void startChildEdgeTraversal(final E edge);
 
-    void endChildEdgeTraversal( final E edge );
+    void endChildEdgeTraversal(final E edge);
 
-    void startParentEdgeTraversal( final E edge );
+    void startParentEdgeTraversal(final E edge);
 
-    void endParentEdgeTraversal( final E edge );
+    void endParentEdgeTraversal(final E edge);
 }

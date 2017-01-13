@@ -29,7 +29,7 @@ public class ColorPickerFieldRenderer extends FieldRenderer<ColorPickerFieldDefi
     private ColorPickerWidget colorPicker;
 
     @Inject
-    public ColorPickerFieldRenderer( ColorPickerWidget colorPicker ) {
+    public ColorPickerFieldRenderer(final ColorPickerWidget colorPicker) {
         this.colorPicker = colorPicker;
     }
 
@@ -59,7 +59,7 @@ public class ColorPickerFieldRenderer extends FieldRenderer<ColorPickerFieldDefi
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
+    protected void setReadOnly(boolean readOnly) {
 
     }
 }

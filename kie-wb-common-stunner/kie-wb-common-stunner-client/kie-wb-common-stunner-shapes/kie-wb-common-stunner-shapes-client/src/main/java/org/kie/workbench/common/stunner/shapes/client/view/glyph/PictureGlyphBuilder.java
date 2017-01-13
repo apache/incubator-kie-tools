@@ -30,16 +30,16 @@ import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
 @ApplicationScoped
 public class PictureGlyphBuilder extends AbstractGlyphBuilder<Group, PictureGlyphDef<Object, ?>> {
 
-    private static Logger LOGGER = Logger.getLogger( PictureGlyphBuilder.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(PictureGlyphBuilder.class.getName());
 
     private final PictureProvidersManager pictureProvidersManager;
 
     protected PictureGlyphBuilder() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public PictureGlyphBuilder( final PictureProvidersManager pictureProvidersManager ) {
+    public PictureGlyphBuilder(final PictureProvidersManager pictureProvidersManager) {
         this.pictureProvidersManager = pictureProvidersManager;
     }
 
@@ -50,15 +50,15 @@ public class PictureGlyphBuilder extends AbstractGlyphBuilder<Group, PictureGlyp
 
     @Override
     public Glyph<Group> build() {
-        final Object source = glyphDefinition.getSource( type );
-        final SafeUri uri = pictureProvidersManager.getUri( source );
-        if ( null != uri ) {
-            return new PictureGlyph( uri.asString(),
-                                     width,
-                                     height );
+        final Object source = glyphDefinition.getSource(type);
+        final SafeUri uri = pictureProvidersManager.getUri(source);
+        if (null != uri) {
+            return new PictureGlyph(uri.asString(),
+                                    width,
+                                    height);
         }
-        LOGGER.log( Level.WARNING,
-                    "No picture uri resolved for picture source [" + source + "]" );
+        LOGGER.log(Level.WARNING,
+                   "No picture uri resolved for picture source [" + source + "]");
         return null;
     }
 }

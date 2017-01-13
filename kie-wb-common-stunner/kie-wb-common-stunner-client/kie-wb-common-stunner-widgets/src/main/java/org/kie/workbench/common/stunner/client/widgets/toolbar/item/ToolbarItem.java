@@ -29,11 +29,11 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientF
 @Dependent
 public class ToolbarItem extends AbstractToolbarItem<AbstractClientFullSession> {
 
-    private static Logger LOGGER = Logger.getLogger( ToolbarItem.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(ToolbarItem.class.getName());
 
     @Inject
-    public ToolbarItem( final View view ) {
-        super( view );
+    public ToolbarItem(final View view) {
+        super(view);
     }
 
     @PostConstruct
@@ -46,11 +46,11 @@ public class ToolbarItem extends AbstractToolbarItem<AbstractClientFullSession> 
         return view.asWidget();
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

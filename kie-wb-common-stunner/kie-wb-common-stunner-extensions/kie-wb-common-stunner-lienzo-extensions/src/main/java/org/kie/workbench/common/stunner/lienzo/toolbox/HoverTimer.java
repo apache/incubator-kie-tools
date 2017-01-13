@@ -29,7 +29,7 @@ public class HoverTimer implements NodeMouseEnterHandler,
 
     private final Actions actions;
 
-    public HoverTimer( Actions actions ) {
+    public HoverTimer(final Actions actions) {
         this.actions = actions;
     }
 
@@ -49,29 +49,29 @@ public class HoverTimer implements NodeMouseEnterHandler,
     }
 
     @Override
-    public void onNodeMouseEnter( NodeMouseEnterEvent event ) {
+    public void onNodeMouseEnter(final NodeMouseEnterEvent event) {
         cancel();
         actions.onMouseEnter();
     }
 
     private void cancel() {
-        if ( m_timer != null ) {
+        if (m_timer != null) {
             m_timer.cancel();
             m_timer = null;
         }
     }
 
     @Override
-    public void onNodeMouseExit( NodeMouseExitEvent event ) {
-        if ( actions.isReadyToHide() ) {
+    public void onNodeMouseExit(final NodeMouseExitEvent event) {
+        if (actions.isReadyToHide()) {
             createHideTimer();
         }
     }
 
     private void createHideTimer() {
-        if ( m_timer == null ) {
+        if (m_timer == null) {
             m_timer = createTimer();
-            m_timer.schedule( TIMEOUT );
+            m_timer.schedule(TIMEOUT);
         }
     }
 

@@ -63,19 +63,19 @@ public class BPMNGraphFactoryImpl
     private final GraphIndexBuilder<?> indexBuilder;
 
     protected BPMNGraphFactoryImpl() {
-        this( null,
-              null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public BPMNGraphFactoryImpl( final DefinitionManager definitionManager,
-                                 final FactoryManager factoryManager,
-                                 final GraphCommandManager graphCommandManager,
-                                 final GraphCommandFactory graphCommandFactory,
-                                 final GraphIndexBuilder<?> indexBuilder ) {
+    public BPMNGraphFactoryImpl(final DefinitionManager definitionManager,
+                                final FactoryManager factoryManager,
+                                final GraphCommandManager graphCommandManager,
+                                final GraphCommandFactory graphCommandFactory,
+                                final GraphIndexBuilder<?> indexBuilder) {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
         this.graphCommandManager = graphCommandManager;
@@ -89,45 +89,45 @@ public class BPMNGraphFactoryImpl
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public Graph<DefinitionSet, Node> build( final String uuid,
-                                             final String definitionSetId ) {
-        final GraphImpl graph = new GraphImpl<>( uuid,
-                                                 new GraphNodeStoreImpl() );
-        final DefinitionSet content = new DefinitionSetImpl( definitionSetId );
-        graph.setContent( content );
-        if ( null == content.getBounds() ) {
-            content.setBounds( new BoundsImpl(
-                    new BoundImpl( 0d,
-                                   0d ),
-                    new BoundImpl( BPMNGraphFactory.GRAPH_DEFAULT_WIDTH,
-                                   BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT )
-            ) );
+    @SuppressWarnings("unchecked")
+    public Graph<DefinitionSet, Node> build(final String uuid,
+                                            final String definitionSetId) {
+        final GraphImpl graph = new GraphImpl<>(uuid,
+                                                new GraphNodeStoreImpl());
+        final DefinitionSet content = new DefinitionSetImpl(definitionSetId);
+        graph.setContent(content);
+        if (null == content.getBounds()) {
+            content.setBounds(new BoundsImpl(
+                    new BoundImpl(0d,
+                                  0d),
+                    new BoundImpl(BPMNGraphFactory.GRAPH_DEFAULT_WIDTH,
+                                  BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT)
+            ));
         }
         // Add a BPMN diagram and a start event nodes by default.
-        Node<Definition<BPMNDiagram>, Edge> diagramNode = ( Node<Definition<BPMNDiagram>, Edge> ) factoryManager.newElement( UUID.uuid(),
-                                                                                                                             BPMNDiagram.class );
-        Node<Definition<StartNoneEvent>, Edge> startEventNode = ( Node<Definition<StartNoneEvent>, Edge> ) factoryManager.newElement( UUID.uuid(),
-                                                                                                                                      StartNoneEvent.class );
-        graphCommandManager.execute( createGraphContext( graph ),
-                                     new CompositeCommandImpl.CompositeCommandBuilder()
-                                             .addCommand( graphCommandFactory.addNode( diagramNode ) )
-                                             .addCommand( graphCommandFactory.addChildNode( diagramNode,
-                                                                                            startEventNode,
-                                                                                            100d,
-                                                                                            100d ) )
-                                             .build()
+        Node<Definition<BPMNDiagram>, Edge> diagramNode = (Node<Definition<BPMNDiagram>, Edge>) factoryManager.newElement(UUID.uuid(),
+                                                                                                                          BPMNDiagram.class);
+        Node<Definition<StartNoneEvent>, Edge> startEventNode = (Node<Definition<StartNoneEvent>, Edge>) factoryManager.newElement(UUID.uuid(),
+                                                                                                                                   StartNoneEvent.class);
+        graphCommandManager.execute(createGraphContext(graph),
+                                    new CompositeCommandImpl.CompositeCommandBuilder()
+                                            .addCommand(graphCommandFactory.addNode(diagramNode))
+                                            .addCommand(graphCommandFactory.addChildNode(diagramNode,
+                                                                                         startEventNode,
+                                                                                         100d,
+                                                                                         100d))
+                                            .build()
         );
 
         return graph;
     }
 
-    @SuppressWarnings( "unchecked" )
-    private GraphCommandExecutionContext createGraphContext( final GraphImpl graph ) {
-        Index<?, ?> index = indexBuilder.build( graph );
+    @SuppressWarnings("unchecked")
+    private GraphCommandExecutionContext createGraphContext(final GraphImpl graph) {
+        Index<?, ?> index = indexBuilder.build(graph);
         return new EmptyRulesCommandExecutionContext(
                 definitionManager,
                 factoryManager,
-                index );
+                index);
     }
 }

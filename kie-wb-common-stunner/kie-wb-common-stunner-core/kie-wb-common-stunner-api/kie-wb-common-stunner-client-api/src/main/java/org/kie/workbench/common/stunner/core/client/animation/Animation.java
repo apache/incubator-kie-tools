@@ -29,9 +29,9 @@ public interface Animation<S> {
 
     S getSource();
 
-    Animation setCallback( final AnimationCallback callback );
+    Animation setCallback(final AnimationCallback callback);
 
-    Animation setDuration( final long duration );
+    Animation setDuration(final long duration);
 
     void run();
 }

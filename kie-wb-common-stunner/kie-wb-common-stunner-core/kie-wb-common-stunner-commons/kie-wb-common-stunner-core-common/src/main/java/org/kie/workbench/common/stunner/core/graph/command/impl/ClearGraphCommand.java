@@ -36,49 +36,49 @@ public final class ClearGraphCommand extends AbstractGraphCommand {
 
     private final String rootUUID;
 
-    public ClearGraphCommand( final @MapsTo( "rootUUID" ) String rootUUID ) {
+    public ClearGraphCommand(final @MapsTo("rootUUID") String rootUUID) {
         this.rootUUID = rootUUID;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> execute( final GraphCommandExecutionContext context ) {
-        final CommandResult<RuleViolation> results = allow( context );
-        if ( !results.getType().equals( CommandResult.Type.ERROR ) ) {
-            final Graph<?, Node> graph = getGraph( context );
-            if ( hasRootUUID() ) {
+    @SuppressWarnings("unchecked")
+    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
+        final CommandResult<RuleViolation> results = allow(context);
+        if (!results.getType().equals(CommandResult.Type.ERROR)) {
+            final Graph<?, Node> graph = getGraph(context);
+            if (hasRootUUID()) {
                 Iterator<Node> nodes = graph.nodes().iterator();
-                if ( null != nodes ) {
-                    nodes.forEachRemaining( node -> {
-                        if ( !node.getUUID().equals( rootUUID ) ) {
-                            getMutableIndex( context ).removeNode( node );
+                if (null != nodes) {
+                    nodes.forEachRemaining(node -> {
+                        if (!node.getUUID().equals(rootUUID)) {
+                            getMutableIndex(context).removeNode(node);
                             nodes.remove();
                         } else {
                             // Clear outgoing edges for canvas root element.
-                            node.getOutEdges().stream().forEach( edge -> getMutableIndex( context ).removeEdge( ( Edge ) edge ) );
+                            node.getOutEdges().stream().forEach(edge -> getMutableIndex(context).removeEdge((Edge) edge));
                             node.getOutEdges().clear();
                         }
-                    } );
+                    });
                 }
             } else {
                 graph.clear();
-                getMutableIndex( context ).clear();
+                getMutableIndex(context).clear();
             }
         }
         return results;
     }
 
-    protected CommandResult<RuleViolation> check( final GraphCommandExecutionContext context ) {
-        if ( hasRootUUID() ) {
-            checkNodeNotNull( context,
-                              rootUUID );
+    protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
+        if (hasRootUUID()) {
+            checkNodeNotNull(context,
+                             rootUUID);
         }
         return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
-    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        throw new UnsupportedOperationException( "Undo operation for Clear Graph Command is still not supported. " );
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        throw new UnsupportedOperationException("Undo operation for Clear Graph Command is still not supported. ");
     }
 
     public String getRootUUID() {

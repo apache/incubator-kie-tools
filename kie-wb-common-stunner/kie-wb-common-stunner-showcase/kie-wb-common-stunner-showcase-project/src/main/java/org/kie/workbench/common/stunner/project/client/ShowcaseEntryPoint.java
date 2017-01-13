@@ -34,14 +34,14 @@ public class ShowcaseEntryPoint extends DefaultWorkbenchEntryPoint {
     protected DefaultWorkbenchFeaturesMenusHelper menusHelper;
 
     @Inject
-    public ShowcaseEntryPoint( final Caller<AppConfigService> appConfigService,
-                               final Caller<PlaceManagerActivityService> pmas,
-                               final ActivityBeansCache activityBeansCache,
-                               final DefaultWorkbenchFeaturesMenusHelper menusHelper,
-                               final MenuDevCommandsBuilder menuDevCommandsBuilder ) {
-        super( appConfigService,
-               pmas,
-               activityBeansCache );
+    public ShowcaseEntryPoint(final Caller<AppConfigService> appConfigService,
+                              final Caller<PlaceManagerActivityService> pmas,
+                              final ActivityBeansCache activityBeansCache,
+                              final DefaultWorkbenchFeaturesMenusHelper menusHelper,
+                              final MenuDevCommandsBuilder menuDevCommandsBuilder) {
+        super(appConfigService,
+              pmas,
+              activityBeansCache);
         this.menusHelper = menusHelper;
         this.menuDevCommandsBuilder = menuDevCommandsBuilder;
     }

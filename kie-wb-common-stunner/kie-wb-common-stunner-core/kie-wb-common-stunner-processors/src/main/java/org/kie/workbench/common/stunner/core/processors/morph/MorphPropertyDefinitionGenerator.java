@@ -34,36 +34,36 @@ public class MorphPropertyDefinitionGenerator extends AbstractBindableAdapterGen
         return "MorphPropertyDefinition.ftl";
     }
 
-    public StringBuffer generate( final String packageName,
-                                  final String className,
-                                  final String baseMorphType,
-                                  final Collection<ProcessingMorphProperty> morphProperties,
-                                  final String defaultMorphType,
-                                  final Messager messager ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final String className,
+                                 final String baseMorphType,
+                                 final Collection<ProcessingMorphProperty> morphProperties,
+                                 final String defaultMorphType,
+                                 final Messager messager) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "packageName",
-                  packageName );
-        root.put( "className",
-                  className );
-        root.put( "parentClassName",
-                  BindablePropertyMorphDefinition.class.getName() );
-        root.put( "bindableMorphPropertyParentClassName",
-                  BindableMorphProperty.class.getName() );
-        root.put( "generatedByClassName",
-                  MorphPropertyDefinitionGenerator.class.getName() );
-        root.put( "morphBaseClassName",
-                  baseMorphType );
-        root.put( "defaultTypeClassName",
-                  defaultMorphType );
-        root.put( "morphPropertiesSize",
-                  morphProperties.size() );
-        root.put( "morphProperties",
-                  morphProperties );
+        root.put("packageName",
+                 packageName);
+        root.put("className",
+                 className);
+        root.put("parentClassName",
+                 BindablePropertyMorphDefinition.class.getName());
+        root.put("bindableMorphPropertyParentClassName",
+                 BindableMorphProperty.class.getName());
+        root.put("generatedByClassName",
+                 MorphPropertyDefinitionGenerator.class.getName());
+        root.put("morphBaseClassName",
+                 baseMorphType);
+        root.put("defaultTypeClassName",
+                 defaultMorphType);
+        root.put("morphPropertiesSize",
+                 morphProperties.size());
+        root.put("morphProperties",
+                 morphProperties);
 
         //Generate code
-        return writeTemplate( packageName,
-                              className,
-                              root,
-                              messager );
+        return writeTemplate(packageName,
+                             className,
+                             root,
+                             messager);
     }
 }

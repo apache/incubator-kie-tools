@@ -23,18 +23,18 @@ public class ClientRuntimeError {
     private String message;
     private Throwable throwable;
 
-    public ClientRuntimeError( final String message ) {
-        this( message,
-              null );
+    public ClientRuntimeError(final String message) {
+        this(message,
+             null);
     }
 
-    public ClientRuntimeError( final Throwable e ) {
-        this( null,
-              e );
+    public ClientRuntimeError(final Throwable e) {
+        this(null,
+             e);
     }
 
-    public ClientRuntimeError( final String message,
-                               final Throwable e ) {
+    public ClientRuntimeError(final String message,
+                              final Throwable e) {
         this.message = message;
         this.throwable = e;
     }
@@ -44,7 +44,7 @@ public class ClientRuntimeError {
     }
 
     public String getMessage() {
-        if ( null != message && message.trim().length() > 0 ) {
+        if (null != message && message.trim().length() > 0) {
             return message;
         }
         Throwable root = getRootCause();
@@ -53,7 +53,7 @@ public class ClientRuntimeError {
 
     public String getCause() {
         Throwable root = getRootCause();
-        if ( root == null || getMessage().equals( root.toString() ) ) {
+        if (root == null || getMessage().equals(root.toString())) {
             return null;
         } else {
             return root.getMessage();
@@ -62,8 +62,8 @@ public class ClientRuntimeError {
 
     public Throwable getRootCause() {
         Throwable target = throwable;
-        while ( true ) {
-            if ( target == null || target.getCause() == null ) {
+        while (true) {
+            if (target == null || target.getCause() == null) {
                 return target;
             } else {
                 target = target.getCause();
@@ -73,6 +73,6 @@ public class ClientRuntimeError {
 
     public String toString() {
         String cause = getCause();
-        return getMessage() + ( cause != null ? " (cause: " + cause + ")" : "" );
+        return getMessage() + (cause != null ? " (cause: " + cause + ")" : "");
     }
 }

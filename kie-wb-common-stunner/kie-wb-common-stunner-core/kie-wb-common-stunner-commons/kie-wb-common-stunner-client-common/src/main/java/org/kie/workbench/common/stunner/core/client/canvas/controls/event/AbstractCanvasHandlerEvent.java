@@ -23,7 +23,7 @@ public abstract class AbstractCanvasHandlerEvent<H extends CanvasHandler> implem
 
     protected final H canvasHandler;
 
-    public AbstractCanvasHandlerEvent( final H canvasHandler ) {
+    public AbstractCanvasHandlerEvent(final H canvasHandler) {
         this.canvasHandler = canvasHandler;
     }
 

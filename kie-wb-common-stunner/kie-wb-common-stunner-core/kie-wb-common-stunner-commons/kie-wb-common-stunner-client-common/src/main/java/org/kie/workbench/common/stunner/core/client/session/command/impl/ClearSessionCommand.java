@@ -47,86 +47,86 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 @Dependent
 public class ClearSessionCommand extends AbstractClientSessionCommand<AbstractClientFullSession> {
 
-    private static Logger LOGGER = Logger.getLogger( ClearSessionCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(ClearSessionCommand.class.getName());
 
     private final CanvasCommandFactory canvasCommandFactory;
     private final SessionCommandManager sessionCommandManager;
 
     protected ClearSessionCommand() {
-        this( null,
-              null );
+        this(null,
+             null);
     }
 
     @Inject
-    public ClearSessionCommand( final CanvasCommandFactory canvasCommandFactory,
-                                final @Session SessionCommandManager sessionCommandManager ) {
-        super( false );
+    public ClearSessionCommand(final CanvasCommandFactory canvasCommandFactory,
+                               final @Session SessionCommandManager sessionCommandManager) {
+        super(false);
         this.canvasCommandFactory = canvasCommandFactory;
         this.sessionCommandManager = sessionCommandManager;
     }
 
     @Override
-    public AbstractClientSessionCommand<AbstractClientFullSession> bind( final AbstractClientFullSession session ) {
-        super.bind( session );
+    public AbstractClientSessionCommand<AbstractClientFullSession> bind(final AbstractClientFullSession session) {
+        super.bind(session);
         checkState();
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public <T> void execute( final Callback<T> callback ) {
-        checkNotNull( "callback",
-                      callback );
+    @SuppressWarnings("unchecked")
+    public <T> void execute(final Callback<T> callback) {
+        checkNotNull("callback",
+                     callback);
         final CommandResult<CanvasViolation> result = getSession()
                 .getCommandManager()
-                .execute( getSession().getCanvasHandler(),
-                          canvasCommandFactory.clearCanvas() );
-        if ( !CommandUtils.isError( result ) ) {
+                .execute(getSession().getCanvasHandler(),
+                         canvasCommandFactory.clearCanvas());
+        if (!CommandUtils.isError(result)) {
             cleanSessionRegistry();
         }
-        callback.onSuccess( ( T ) result );
+        callback.onSuccess((T) result);
     }
 
     private void cleanSessionRegistry() {
-        LOGGER.log( FINE,
-                    "Clear Session Command executed - Cleaning the session's command registry..." );
+        LOGGER.log(FINE,
+                   "Clear Session Command executed - Cleaning the session's command registry...");
         sessionCommandManager.getRegistry().clear();
     }
 
-    void onCommandExecuted( final @Observes CanvasCommandExecutedEvent commandExecutedEvent ) {
-        checkNotNull( "commandExecutedEvent",
-                      commandExecutedEvent );
+    void onCommandExecuted(final @Observes CanvasCommandExecutedEvent commandExecutedEvent) {
+        checkNotNull("commandExecutedEvent",
+                     commandExecutedEvent);
         checkState();
     }
 
-    void onCommandUndoExecuted( final @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent ) {
-        checkNotNull( "commandUndoExecutedEvent",
-                      commandUndoExecutedEvent );
+    void onCommandUndoExecuted(final @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent) {
+        checkNotNull("commandUndoExecutedEvent",
+                     commandUndoExecutedEvent);
         checkState();
     }
 
     private void checkState() {
-        setEnabled( getState() );
+        setEnabled(getState());
         fire();
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     private boolean getState() {
         boolean doEnable = false;
         final Diagram diagram = null != getSession() ? getSession().getCanvasHandler().getDiagram() : null;
-        if ( null != diagram ) {
+        if (null != diagram) {
             final Graph graph = diagram.getGraph();
-            if ( null != graph ) {
+            if (null != graph) {
                 final String rootUUID = diagram.getMetadata().getCanvasRootUUID();
                 Iterable<Node> nodes = graph.nodes();
                 final boolean hasNodes = null != nodes && nodes.iterator().hasNext();
-                if ( hasNodes ) {
+                if (hasNodes) {
                     final Iterator<Node> nodesIt = nodes.iterator();
                     final Node node = nodesIt.next();
-                    if ( nodesIt.hasNext() ) {
+                    if (nodesIt.hasNext()) {
                         doEnable = true;
                     } else {
-                        doEnable = null == rootUUID || !rootUUID.equals( node.getUUID() );
+                        doEnable = null == rootUUID || !rootUUID.equals(node.getUUID());
                     }
                 }
             }

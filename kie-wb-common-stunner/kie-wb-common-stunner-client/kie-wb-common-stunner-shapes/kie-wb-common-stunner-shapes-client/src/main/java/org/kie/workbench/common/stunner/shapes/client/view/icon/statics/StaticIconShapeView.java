@@ -32,39 +32,39 @@ public class StaticIconShapeView<T extends StaticIconShapeView>
     private double height;
     private Group iconGroup;
 
-    public StaticIconShapeView( final Icons icon ) {
-        super( BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
-               new MultiPath()
-                       .setStrokeWidth( 0 )
-                       .setStrokeAlpha( 0 ) );
-        this.setIcon( icon );
+    public StaticIconShapeView(final Icons icon) {
+        super(BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+              new MultiPath()
+                      .setStrokeWidth(0)
+                      .setStrokeAlpha(0));
+        this.setIcon(icon);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public T setIcon( final Icons icon ) {
+    @SuppressWarnings("unchecked")
+    public T setIcon(final Icons icon) {
         this.icon = icon;
         this.buildIconView();
-        return ( T ) this;
+        return (T) this;
     }
 
     private void buildIconView() {
         getPath().clear();
-        if ( null != iconGroup ) {
-            this.removeChild( iconGroup );
+        if (null != iconGroup) {
+            this.removeChild(iconGroup);
         }
-        iconGroup = StaticIconsBuilder.build( icon );
-        if ( null != iconGroup ) {
+        iconGroup = StaticIconsBuilder.build(icon);
+        if (null != iconGroup) {
             final BoundingBox bb = iconGroup.getBoundingBox();
             final double w = bb.getWidth();
             final double h = bb.getHeight();
             this.width = w;
             this.height = h;
-            getPath().rect( 0,
-                            0,
-                            w,
-                            h );
-            this.addChild( iconGroup,
-                           WiresLayoutContainer.Layout.CENTER );
+            getPath().rect(0,
+                           0,
+                           w,
+                           h);
+            this.addChild(iconGroup,
+                          WiresLayoutContainer.Layout.CENTER);
         }
         refresh();
     }
@@ -72,7 +72,7 @@ public class StaticIconShapeView<T extends StaticIconShapeView>
     @Override
     protected void doDestroy() {
         super.doDestroy();
-        if ( null != iconGroup ) {
+        if (null != iconGroup) {
             iconGroup.removeFromParent();
             iconGroup = null;
         }

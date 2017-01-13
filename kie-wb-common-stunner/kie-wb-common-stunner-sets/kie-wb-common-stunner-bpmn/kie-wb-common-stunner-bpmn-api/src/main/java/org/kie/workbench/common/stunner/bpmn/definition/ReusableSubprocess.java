@@ -43,8 +43,8 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIE
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = ReusableSubprocess.ReusableSubprocessBuilder.class )
-@CanDock( roles = { "IntermediateEventOnActivityBoundary" } )
+@Definition(graphFactory = NodeFactory.class, builder = ReusableSubprocess.ReusableSubprocessBuilder.class)
+@CanDock(roles = {"IntermediateEventOnActivityBoundary"})
 public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
 
     @Title
@@ -54,12 +54,12 @@ public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
     public static final transient String description = "A reusable subprocess. It can be used to invoke another process.";
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
+    @FieldDef(label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1)
     @Valid
     protected ReusableSubprocessTaskExecutionSet executionSet;
 
     @PropertySet
-    @FieldDef( label = FIELDDEF_TASK_DATA, position = 2 )
+    @FieldDef(label = FIELDDEF_TASK_DATA, position = 2)
     @Valid
     protected DataIOSet dataIOSet;
 
@@ -69,16 +69,16 @@ public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
         @Override
         public ReusableSubprocess build() {
             return new ReusableSubprocess(
-                    new BPMNGeneralSet( "Subprocess" ),
+                    new BPMNGeneralSet("Subprocess"),
                     new ReusableSubprocessTaskExecutionSet(),
                     new DataIOSet(),
-                    new BackgroundSet( COLOR,
-                                       BORDER_COLOR,
-                                       BORDER_SIZE ),
+                    new BackgroundSet(COLOR,
+                                      BORDER_COLOR,
+                                      BORDER_SIZE),
                     new FontSet(),
-                    new RectangleDimensionsSet( WIDTH,
-                                                HEIGHT ),
-                    new SimulationSet() );
+                    new RectangleDimensionsSet(WIDTH,
+                                               HEIGHT),
+                    new SimulationSet());
         }
     }
 
@@ -86,18 +86,18 @@ public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
         super();
     }
 
-    public ReusableSubprocess( @MapsTo( "general" ) BPMNGeneralSet general,
-                               @MapsTo( "executionSet" ) ReusableSubprocessTaskExecutionSet executionSet,
-                               @MapsTo( "dataIOSet" ) DataIOSet dataIOSet,
-                               @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                               @MapsTo( "fontSet" ) FontSet fontSet,
-                               @MapsTo( "dimensionsSet" ) RectangleDimensionsSet dimensionsSet,
-                               @MapsTo( "simulationSet" ) SimulationSet simulationSet ) {
-        super( general,
-               backgroundSet,
-               fontSet,
-               dimensionsSet,
-               simulationSet );
+    public ReusableSubprocess(final @MapsTo("general") BPMNGeneralSet general,
+                              final @MapsTo("executionSet") ReusableSubprocessTaskExecutionSet executionSet,
+                              final @MapsTo("dataIOSet") DataIOSet dataIOSet,
+                              final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                              final @MapsTo("fontSet") FontSet fontSet,
+                              final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                              final @MapsTo("simulationSet") SimulationSet simulationSet) {
+        super(general,
+              backgroundSet,
+              fontSet,
+              dimensionsSet,
+              simulationSet);
         this.executionSet = executionSet;
         this.dataIOSet = dataIOSet;
     }
@@ -134,11 +134,11 @@ public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
         return dataIOSet;
     }
 
-    public void setExecutionSet( ReusableSubprocessTaskExecutionSet executionSet ) {
+    public void setExecutionSet(final ReusableSubprocessTaskExecutionSet executionSet) {
         this.executionSet = executionSet;
     }
 
-    public void setDataIOSet( DataIOSet dataIOSet ) {
+    public void setDataIOSet(final DataIOSet dataIOSet) {
         this.dataIOSet = dataIOSet;
     }
 }

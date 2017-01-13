@@ -54,28 +54,28 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
     private ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
     private ElementBuilderControl<AbstractCanvasHandler> builderControl;
 
-    public AbstractClientFullSession( final AbstractCanvas canvas,
-                                      final AbstractCanvasHandler canvasHandler,
-                                      final ResizeControl<AbstractCanvasHandler, Element> resizeControl,
-                                      final CanvasValidationControl<AbstractCanvasHandler> canvasValidationControl,
-                                      final CanvasPaletteControl<AbstractCanvasHandler> canvasPaletteControl,
-                                      final SelectionControl<AbstractCanvasHandler, Element> selectionControl,
-                                      final ZoomControl<AbstractCanvas> zoomControl,
-                                      final PanControl<AbstractCanvas> panControl,
-                                      final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
-                                      final CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry,
-                                      final ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl,
-                                      final ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl,
-                                      final DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl,
-                                      final CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl,
-                                      final DragControl<AbstractCanvasHandler, Element> dragControl,
-                                      final ToolboxControl<AbstractCanvasHandler, Element> toolboxControl,
-                                      final ElementBuilderControl<AbstractCanvasHandler> builderControl ) {
-        super( canvas,
-               canvasHandler,
-               selectionControl,
-               zoomControl,
-               panControl );
+    public AbstractClientFullSession(final AbstractCanvas canvas,
+                                     final AbstractCanvasHandler canvasHandler,
+                                     final ResizeControl<AbstractCanvasHandler, Element> resizeControl,
+                                     final CanvasValidationControl<AbstractCanvasHandler> canvasValidationControl,
+                                     final CanvasPaletteControl<AbstractCanvasHandler> canvasPaletteControl,
+                                     final SelectionControl<AbstractCanvasHandler, Element> selectionControl,
+                                     final ZoomControl<AbstractCanvas> zoomControl,
+                                     final PanControl<AbstractCanvas> panControl,
+                                     final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
+                                     final CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry,
+                                     final ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl,
+                                     final ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl,
+                                     final DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl,
+                                     final CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl,
+                                     final DragControl<AbstractCanvasHandler, Element> dragControl,
+                                     final ToolboxControl<AbstractCanvasHandler, Element> toolboxControl,
+                                     final ElementBuilderControl<AbstractCanvasHandler> builderControl) {
+        super(canvas,
+              canvasHandler,
+              selectionControl,
+              zoomControl,
+              panControl);
         this.resizeControl = resizeControl;
         this.canvasValidationControl = canvasValidationControl;
         this.canvasPaletteControl = canvasPaletteControl;
@@ -153,135 +153,135 @@ public abstract class AbstractClientFullSession extends ClientReadOnlySessionImp
     @Override
     protected void enableControls() {
         super.enableControls();
-        enableControl( getResizeControl(),
-                       getCanvasHandler() );
-        enableControl( getConnectionAcceptorControl(),
-                       getCanvasHandler() );
-        enableControl( getContainmentAcceptorControl(),
-                       getCanvasHandler() );
-        enableControl( getDockingAcceptorControl(),
-                       getCanvasHandler() );
-        enableControl( getDragControl(),
-                       getCanvasHandler() );
-        enableControl( getToolboxControl(),
-                       getCanvasHandler() );
-        enableControl( getBuilderControl(),
-                       getCanvasHandler() );
-        enableControl( getValidationControl(),
-                       getCanvasHandler() );
-        enableControl( getPaletteControl(),
-                       getCanvasHandler() );
-        enableControl( getCanvasNameEditionControl(),
-                       getCanvasHandler() );
+        enableControl(getResizeControl(),
+                      getCanvasHandler());
+        enableControl(getConnectionAcceptorControl(),
+                      getCanvasHandler());
+        enableControl(getContainmentAcceptorControl(),
+                      getCanvasHandler());
+        enableControl(getDockingAcceptorControl(),
+                      getCanvasHandler());
+        enableControl(getDragControl(),
+                      getCanvasHandler());
+        enableControl(getToolboxControl(),
+                      getCanvasHandler());
+        enableControl(getBuilderControl(),
+                      getCanvasHandler());
+        enableControl(getValidationControl(),
+                      getCanvasHandler());
+        enableControl(getPaletteControl(),
+                      getCanvasHandler());
+        enableControl(getCanvasNameEditionControl(),
+                      getCanvasHandler());
     }
 
     @Override
     protected void disableControls() {
         super.disableControls();
-        if ( null != getResizeControl() ) {
+        if (null != getResizeControl()) {
             getResizeControl().disable();
         }
-        if ( null != getValidationControl() ) {
+        if (null != getValidationControl()) {
             getValidationControl().disable();
         }
-        if ( null != getPaletteControl() ) {
+        if (null != getPaletteControl()) {
             getPaletteControl().disable();
         }
-        if ( null != getCommandRegistry() ) {
+        if (null != getCommandRegistry()) {
             getCommandRegistry().clear();
         }
-        if ( null != getConnectionAcceptorControl() ) {
+        if (null != getConnectionAcceptorControl()) {
             getConnectionAcceptorControl().disable();
         }
-        if ( null != getContainmentAcceptorControl() ) {
+        if (null != getContainmentAcceptorControl()) {
             getContainmentAcceptorControl().disable();
         }
-        if ( null != getDockingAcceptorControl() ) {
+        if (null != getDockingAcceptorControl()) {
             getDockingAcceptorControl().disable();
         }
-        if ( null != getCanvasNameEditionControl() ) {
+        if (null != getCanvasNameEditionControl()) {
             getCanvasNameEditionControl().disable();
         }
-        if ( null != getDragControl() ) {
+        if (null != getDragControl()) {
             getDragControl().disable();
         }
-        if ( null != getToolboxControl() ) {
+        if (null != getToolboxControl()) {
             getToolboxControl().disable();
         }
-        if ( null != getBuilderControl() ) {
+        if (null != getBuilderControl()) {
             getBuilderControl().disable();
         }
     }
 
     @Override
-    protected void onElementRegistration( final Element element,
-                                          final boolean add,
-                                          final boolean update ) {
-        super.onElementRegistration( element,
-                                     add,
-                                     update );
-        if ( update ) {
-            fireRegistrationUpdateListeners( getResizeControl(),
-                                             element );
-            fireRegistrationUpdateListeners( getConnectionAcceptorControl(),
-                                             element );
-            fireRegistrationUpdateListeners( getContainmentAcceptorControl(),
-                                             element );
-            fireRegistrationUpdateListeners( getDockingAcceptorControl(),
-                                             element );
-            fireRegistrationUpdateListeners( getDragControl(),
-                                             element );
-            fireRegistrationUpdateListeners( getToolboxControl(),
-                                             element );
-            fireRegistrationUpdateListeners( getBuilderControl(),
-                                             element );
-            fireRegistrationUpdateListeners( getPaletteControl(),
-                                             element );
-            fireRegistrationUpdateListeners( getCanvasNameEditionControl(),
-                                             element );
+    protected void onElementRegistration(final Element element,
+                                         final boolean add,
+                                         final boolean update) {
+        super.onElementRegistration(element,
+                                    add,
+                                    update);
+        if (update) {
+            fireRegistrationUpdateListeners(getResizeControl(),
+                                            element);
+            fireRegistrationUpdateListeners(getConnectionAcceptorControl(),
+                                            element);
+            fireRegistrationUpdateListeners(getContainmentAcceptorControl(),
+                                            element);
+            fireRegistrationUpdateListeners(getDockingAcceptorControl(),
+                                            element);
+            fireRegistrationUpdateListeners(getDragControl(),
+                                            element);
+            fireRegistrationUpdateListeners(getToolboxControl(),
+                                            element);
+            fireRegistrationUpdateListeners(getBuilderControl(),
+                                            element);
+            fireRegistrationUpdateListeners(getPaletteControl(),
+                                            element);
+            fireRegistrationUpdateListeners(getCanvasNameEditionControl(),
+                                            element);
         } else {
-            fireRegistrationListeners( getResizeControl(),
-                                       element,
-                                       add );
-            fireRegistrationListeners( getConnectionAcceptorControl(),
-                                       element,
-                                       add );
-            fireRegistrationListeners( getContainmentAcceptorControl(),
-                                       element,
-                                       add );
-            fireRegistrationListeners( getDockingAcceptorControl(),
-                                       element,
-                                       add );
-            fireRegistrationListeners( getDragControl(),
-                                       element,
-                                       add );
-            fireRegistrationListeners( getToolboxControl(),
-                                       element,
-                                       add );
-            fireRegistrationListeners( getBuilderControl(),
-                                       element,
-                                       add );
-            fireRegistrationListeners( getPaletteControl(),
-                                       element,
-                                       add );
-            fireRegistrationListeners( getCanvasNameEditionControl(),
-                                       element,
-                                       add );
+            fireRegistrationListeners(getResizeControl(),
+                                      element,
+                                      add);
+            fireRegistrationListeners(getConnectionAcceptorControl(),
+                                      element,
+                                      add);
+            fireRegistrationListeners(getContainmentAcceptorControl(),
+                                      element,
+                                      add);
+            fireRegistrationListeners(getDockingAcceptorControl(),
+                                      element,
+                                      add);
+            fireRegistrationListeners(getDragControl(),
+                                      element,
+                                      add);
+            fireRegistrationListeners(getToolboxControl(),
+                                      element,
+                                      add);
+            fireRegistrationListeners(getBuilderControl(),
+                                      element,
+                                      add);
+            fireRegistrationListeners(getPaletteControl(),
+                                      element,
+                                      add);
+            fireRegistrationListeners(getCanvasNameEditionControl(),
+                                      element,
+                                      add);
         }
     }
 
     @Override
     protected void onClear() {
         super.onClear();
-        fireRegistrationClearListeners( getResizeControl() );
-        fireRegistrationClearListeners( getConnectionAcceptorControl() );
-        fireRegistrationClearListeners( getContainmentAcceptorControl() );
-        fireRegistrationClearListeners( getDockingAcceptorControl() );
-        fireRegistrationClearListeners( getDragControl() );
-        fireRegistrationClearListeners( getToolboxControl() );
-        fireRegistrationClearListeners( getBuilderControl() );
-        fireRegistrationClearListeners( getValidationControl() );
-        fireRegistrationClearListeners( getPaletteControl() );
-        fireRegistrationClearListeners( getCanvasNameEditionControl() );
+        fireRegistrationClearListeners(getResizeControl());
+        fireRegistrationClearListeners(getConnectionAcceptorControl());
+        fireRegistrationClearListeners(getContainmentAcceptorControl());
+        fireRegistrationClearListeners(getDockingAcceptorControl());
+        fireRegistrationClearListeners(getDragControl());
+        fireRegistrationClearListeners(getToolboxControl());
+        fireRegistrationClearListeners(getBuilderControl());
+        fireRegistrationClearListeners(getValidationControl());
+        fireRegistrationClearListeners(getPaletteControl());
+        fireRegistrationClearListeners(getCanvasNameEditionControl());
     }
 }

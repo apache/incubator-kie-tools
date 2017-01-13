@@ -37,8 +37,8 @@ public abstract class AbstractShapeDefFactory<W, V extends ShapeView, S extends 
     protected final DefinitionManager definitionManager;
     protected final FactoryManager factoryManager;
 
-    public AbstractShapeDefFactory( final DefinitionManager definitionManager,
-                                    final FactoryManager factoryManager ) {
+    public AbstractShapeDefFactory(final DefinitionManager definitionManager,
+                                   final FactoryManager factoryManager) {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
     }
@@ -48,49 +48,49 @@ public abstract class AbstractShapeDefFactory<W, V extends ShapeView, S extends 
     }
 
     @Override
-    public String getDescription( final String definitionId ) {
-        final P proxy = getShapeDef( definitionId );
+    public String getDescription(final String definitionId) {
+        final P proxy = getShapeDef(definitionId);
         // TODO: Avoid creating domain object instance here.
-        final W tempObject = factoryManager.newDefinition( definitionId );
-        return definitionManager.adapters().forDefinition().getDescription( tempObject );
+        final W tempObject = factoryManager.newDefinition(definitionId);
+        return definitionManager.adapters().forDefinition().getDescription(tempObject);
     }
 
     @Override
-    protected String getDescription( final Class<?> clazz ) {
-        final String id = getDefinitionId( clazz );
-        return getDescription( id );
+    protected String getDescription(final Class<?> clazz) {
+        final String id = getDefinitionId(clazz);
+        return getDescription(id);
     }
 
     @Override
-    public void addShapeDef( final Class<?> clazz,
-                             final P proxy ) {
-        definitions.put( clazz,
-                         proxy );
+    public void addShapeDef(final Class<?> clazz,
+                            final P proxy) {
+        definitions.put(clazz,
+                        proxy);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public P getShapeDef( final Class<?> clazz ) {
-        return definitions.get( clazz );
+    @SuppressWarnings("unchecked")
+    public P getShapeDef(final Class<?> clazz) {
+        return definitions.get(clazz);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public P getShapeDef( final String definitionId ) {
-        for ( final Map.Entry<Class<?>, P> entry : definitions.entrySet() ) {
-            final String id = BindableAdapterUtils.getDefinitionId( entry.getKey() );
-            if ( id.equals( definitionId ) ) {
+    @SuppressWarnings("unchecked")
+    public P getShapeDef(final String definitionId) {
+        for (final Map.Entry<Class<?>, P> entry : definitions.entrySet()) {
+            final String id = BindableAdapterUtils.getDefinitionId(entry.getKey());
+            if (id.equals(definitionId)) {
                 return entry.getValue();
             }
         }
-        throw new RuntimeException( "This factory should provide a def for Definition [" + definitionId + "]" );
+        throw new RuntimeException("This factory should provide a def for Definition [" + definitionId + "]");
     }
 
     @Override
-    public Glyph glyph( final String definitionId,
-                        final double width,
-                        final double height ) {
-        final Class<?> clazz = getDefinitionClass( definitionId );
-        return glyph( clazz,
-                      width,
-                      height );
+    public Glyph glyph(final String definitionId,
+                       final double width,
+                       final double height) {
+        final Class<?> clazz = getDefinitionClass(definitionId);
+        return glyph(clazz,
+                     width,
+                     height);
     }
 }

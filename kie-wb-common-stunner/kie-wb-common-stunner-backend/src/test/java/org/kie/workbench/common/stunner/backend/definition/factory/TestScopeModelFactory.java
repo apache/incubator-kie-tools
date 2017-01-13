@@ -30,43 +30,43 @@ public class TestScopeModelFactory extends AbstractTypeDefinitionFactory<Object>
 
     private final Object definitionSet;
 
-    public TestScopeModelFactory( Object definitionSet ) {
+    public TestScopeModelFactory(Object definitionSet) {
         this.definitionSet = definitionSet;
     }
 
-    private static Set<Class<? extends Object>> getDefinitions( Object defSet ) {
-        return BackendBindableDefinitionUtils.getDefinitions( defSet );
+    private static Set<Class<? extends Object>> getDefinitions(Object defSet) {
+        return BackendBindableDefinitionUtils.getDefinitions(defSet);
     }
 
     @Override
     public Set<Class<? extends Object>> getAcceptedClasses() {
-        return getDefinitions( this.definitionSet );
+        return getDefinitions(this.definitionSet);
     }
 
     @Override
-    public Object build( Class<? extends Object> clazz ) {
-        Builder<?> builder = newDefinitionBuilder( clazz );
+    public Object build(Class<? extends Object> clazz) {
+        Builder<?> builder = newDefinitionBuilder(clazz);
         return builder.build();
     }
 
-    private Builder<?> newDefinitionBuilder( Class<? extends Object> definitionClass ) {
-        Class<? extends Builder<?>> builderClass = getDefinitionBuilderClass( definitionClass );
-        if ( null != builderClass ) {
+    private Builder<?> newDefinitionBuilder(Class<? extends Object> definitionClass) {
+        Class<? extends Builder<?>> builderClass = getDefinitionBuilderClass(definitionClass);
+        if (null != builderClass) {
             try {
                 return builderClass.newInstance();
-            } catch ( InstantiationException e ) {
+            } catch (InstantiationException e) {
                 e.printStackTrace();
-            } catch ( IllegalAccessException e ) {
+            } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
-        throw new RuntimeException( "No annotated builder found for Definition [" + definitionClass.getName() + "]" );
+        throw new RuntimeException("No annotated builder found for Definition [" + definitionClass.getName() + "]");
     }
 
-    private Class<? extends Builder<?>> getDefinitionBuilderClass( Class<? extends Object> definitionClass ) {
-        if ( null != definitionClass ) {
-            Definition annotation = definitionClass.getAnnotation( Definition.class );
-            if ( null != annotation ) {
+    private Class<? extends Builder<?>> getDefinitionBuilderClass(Class<? extends Object> definitionClass) {
+        if (null != definitionClass) {
+            Definition annotation = definitionClass.getAnnotation(Definition.class);
+            if (null != annotation) {
                 return annotation.builder();
             }
         }

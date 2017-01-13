@@ -18,6 +18,6 @@ package org.kie.workbench.common.stunner.core.client.shape.view;
 
 public interface HasSize<T> {
 
-    T setSize( final double width,
-               final double height );
+    T setSize(final double width,
+              final double height);
 }

@@ -59,7 +59,7 @@ public class Currency implements BPMNProperty {
     public Currency() {
     }
 
-    public Currency( final String value ) {
+    public Currency(final String value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class Currency implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

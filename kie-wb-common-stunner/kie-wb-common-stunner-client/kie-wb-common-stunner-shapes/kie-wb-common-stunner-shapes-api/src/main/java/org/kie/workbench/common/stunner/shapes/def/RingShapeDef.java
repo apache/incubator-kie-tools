@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.shapes.def;
 
 public interface RingShapeDef<W> extends BasicShapeWithTitleDef<W> {
 
-    double getInnerRadius( final W element );
+    double getInnerRadius(final W element);
 
-    double getOuterRadius( final W element );
+    double getOuterRadius(final W element);
 }

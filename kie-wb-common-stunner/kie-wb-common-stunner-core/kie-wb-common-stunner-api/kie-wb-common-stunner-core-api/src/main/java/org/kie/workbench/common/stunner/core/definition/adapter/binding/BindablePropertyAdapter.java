@@ -22,12 +22,12 @@ import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 
 public interface BindablePropertyAdapter<T, V> extends PropertyAdapter<T, V> {
 
-    void setBindings( final Map<Class, String> propertyTypeFieldNames,
-                      final Map<Class, String> propertyCaptionFieldNames,
-                      final Map<Class, String> propertyDescriptionFieldNames,
-                      final Map<Class, String> propertyReadOnlyFieldNames,
-                      final Map<Class, String> propertyOptionalFieldNames,
-                      final Map<Class, String> propertyValueFieldNames,
-                      final Map<Class, String> propertyDefaultValueFieldNames,
-                      final Map<Class, String> propertyAllowedValuesFieldNames );
+    void setBindings(final Map<Class, String> propertyTypeFieldNames,
+                     final Map<Class, String> propertyCaptionFieldNames,
+                     final Map<Class, String> propertyDescriptionFieldNames,
+                     final Map<Class, String> propertyReadOnlyFieldNames,
+                     final Map<Class, String> propertyOptionalFieldNames,
+                     final Map<Class, String> propertyValueFieldNames,
+                     final Map<Class, String> propertyDefaultValueFieldNames,
+                     final Map<Class, String> propertyAllowedValuesFieldNames);
 }

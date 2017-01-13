@@ -28,7 +28,7 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class AbstractRegistryWrapperTest {
 
     @Mock
@@ -40,32 +40,32 @@ public class AbstractRegistryWrapperTest {
 
     @Before
     public void setup() throws Exception {
-        when( registry.contains( anyObject() ) ).thenReturn( false );
-        when( registry.contains( eq( s1 ) ) ).thenReturn( true );
-        when( registry.contains( eq( s2 ) ) ).thenReturn( true );
-        when( registry.isEmpty() ).thenReturn( false );
-        tested = new AbstractRegistryWrapper<Object, Registry<Object>>( registry ) {
+        when(registry.contains(anyObject())).thenReturn(false);
+        when(registry.contains(eq(s1))).thenReturn(true);
+        when(registry.contains(eq(s2))).thenReturn(true);
+        when(registry.isEmpty()).thenReturn(false);
+        tested = new AbstractRegistryWrapper<Object, Registry<Object>>(registry) {
         };
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testContains() {
-        assertTrue( tested.contains( s1 ) );
-        assertTrue( tested.contains( s2 ) );
-        assertFalse( tested.contains( "" ) );
+        assertTrue(tested.contains(s1));
+        assertTrue(tested.contains(s2));
+        assertFalse(tested.contains(""));
     }
 
     @Test
     public void testEmpty() {
-        when( registry.isEmpty() ).thenReturn( true );
+        when(registry.isEmpty()).thenReturn(true);
         boolean empty = tested.isEmpty();
-        assertTrue( empty );
+        assertTrue(empty);
     }
 
     @Test
     public void testNotEmpty() {
         boolean empty = registry.isEmpty();
-        assertFalse( empty );
+        assertFalse(empty);
     }
 }

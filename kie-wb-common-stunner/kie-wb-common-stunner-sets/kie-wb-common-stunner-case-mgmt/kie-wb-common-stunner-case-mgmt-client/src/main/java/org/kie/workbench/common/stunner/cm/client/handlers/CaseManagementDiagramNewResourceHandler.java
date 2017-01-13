@@ -30,18 +30,18 @@ import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiag
 public class CaseManagementDiagramNewResourceHandler extends AbstractProjectDiagramNewResourceHandler<CaseManagementDiagramResourceType> {
 
     protected CaseManagementDiagramNewResourceHandler() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public CaseManagementDiagramNewResourceHandler( final DefinitionManager definitionManager,
-                                                    final ClientProjectDiagramService projectDiagramServices,
-                                                    final CaseManagementDiagramResourceType projectDiagramResourceType ) {
-        super( definitionManager,
-               projectDiagramServices,
-               projectDiagramResourceType );
+    public CaseManagementDiagramNewResourceHandler(final DefinitionManager definitionManager,
+                                                   final ClientProjectDiagramService projectDiagramServices,
+                                                   final CaseManagementDiagramResourceType projectDiagramResourceType) {
+        super(definitionManager,
+              projectDiagramServices,
+              projectDiagramResourceType);
     }
 
     @Override
@@ -65,6 +65,6 @@ public class CaseManagementDiagramNewResourceHandler extends AbstractProjectDiag
     }
 
     private CaseManagementDiagramResourceType getCaseManagementDiagramResourceType() {
-        return ( CaseManagementDiagramResourceType ) super.getResourceType();
+        return (CaseManagementDiagramResourceType) super.getResourceType();
     }
 }

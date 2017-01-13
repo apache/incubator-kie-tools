@@ -30,15 +30,15 @@ public class VariablesType implements PropertyType {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof VariablesType ) ) {
+        if (!(o instanceof VariablesType)) {
             return false;
         }
-        VariablesType that = ( VariablesType ) o;
-        if ( !name.equals( that.name ) ) {
+        VariablesType that = (VariablesType) o;
+        if (!name.equals(that.name)) {
             return false;
         }
         return true;

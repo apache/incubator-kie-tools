@@ -26,58 +26,58 @@ public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>
     protected final A adapter;
 
     protected DefinitionAdapterWrapper() {
-        this( null );
+        this(null);
     }
 
-    public DefinitionAdapterWrapper( final A adapter ) {
+    public DefinitionAdapterWrapper(final A adapter) {
         this.adapter = adapter;
     }
 
     @Override
-    public String getId( final T pojo ) {
-        return adapter.getId( pojo );
+    public String getId(final T pojo) {
+        return adapter.getId(pojo);
     }
 
     @Override
-    public String getCategory( final T pojo ) {
-        return adapter.getCategory( pojo );
+    public String getCategory(final T pojo) {
+        return adapter.getCategory(pojo);
     }
 
     @Override
-    public String getTitle( final T pojo ) {
-        return adapter.getTitle( pojo );
+    public String getTitle(final T pojo) {
+        return adapter.getTitle(pojo);
     }
 
     @Override
-    public String getDescription( final T pojo ) {
-        return adapter.getDescription( pojo );
+    public String getDescription(final T pojo) {
+        return adapter.getDescription(pojo);
     }
 
     @Override
-    public Set<String> getLabels( final T pojo ) {
-        return adapter.getLabels( pojo );
+    public Set<String> getLabels(final T pojo) {
+        return adapter.getLabels(pojo);
     }
 
     @Override
-    public Set<?> getPropertySets( final T pojo ) {
-        return adapter.getPropertySets( pojo );
+    public Set<?> getPropertySets(final T pojo) {
+        return adapter.getPropertySets(pojo);
     }
 
     @Override
-    public Set<?> getProperties( final T pojo ) {
-        return adapter.getProperties( pojo );
+    public Set<?> getProperties(final T pojo) {
+        return adapter.getProperties(pojo);
     }
 
     @Override
-    public Class<? extends ElementFactory> getGraphFactoryType( final T pojo ) {
-        return adapter.getGraphFactoryType( pojo );
+    public Class<? extends ElementFactory> getGraphFactoryType(final T pojo) {
+        return adapter.getGraphFactoryType(pojo);
     }
 
     @Override
-    public Object getMetaProperty( final PropertyMetaTypes metaType,
-                                   final T pojo ) {
-        return adapter.getMetaProperty( metaType,
-                                        pojo );
+    public Object getMetaProperty(final PropertyMetaTypes metaType,
+                                  final T pojo) {
+        return adapter.getMetaProperty(metaType,
+                                       pojo);
     }
 
     @Override
@@ -91,7 +91,7 @@ public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>
     }
 
     @Override
-    public boolean accepts( final Class<?> type ) {
-        return adapter.accepts( type );
+    public boolean accepts(final Class<?> type) {
+        return adapter.accepts(type);
     }
 }

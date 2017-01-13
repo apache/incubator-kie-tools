@@ -36,86 +36,86 @@ public class ToolbarFactory {
     private ToolbarImpl toolbar;
 
     protected ToolbarFactory() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public ToolbarFactory( final ToolbarCommandFactory commandFactory,
-                           final ManagedInstance<AbstractToolbarItem<ClientSession>> toolbarItems,
-                           final ManagedInstance<ToolbarView> view ) {
+    public ToolbarFactory(final ToolbarCommandFactory commandFactory,
+                          final ManagedInstance<AbstractToolbarItem<ClientSession>> toolbarItems,
+                          final ManagedInstance<ToolbarView> view) {
         this.toolbarItems = toolbarItems;
         this.view = view;
         this.commandFactory = commandFactory;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public ToolbarFactory withClearSelectionCommand() {
-        getCurrent().addCommand( commandFactory.newClearSelectionCommand() );
+        getCurrent().addCommand(commandFactory.newClearSelectionCommand());
         return this;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public ToolbarFactory withSwitchGridCommand() {
-        getCurrent().addCommand( commandFactory.newSwitchGridCommand() );
+        getCurrent().addCommand(commandFactory.newSwitchGridCommand());
         return this;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public ToolbarFactory withVisitGraphCommand() {
-        getCurrent().addCommand( commandFactory.newVisitGraphCommand() );
+        getCurrent().addCommand(commandFactory.newVisitGraphCommand());
         return this;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public ToolbarFactory withClearCommand() {
-        getCurrent().addCommand( commandFactory.newClearCommand() );
+        getCurrent().addCommand(commandFactory.newClearCommand());
         return this;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public ToolbarFactory withDeleteSelectedElementsCommand() {
-        getCurrent().addCommand( commandFactory.newDeleteSelectedElementsCommand() );
+        getCurrent().addCommand(commandFactory.newDeleteSelectedElementsCommand());
         return this;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public ToolbarFactory withUndoCommand() {
-        getCurrent().addCommand( commandFactory.newUndoCommand() );
+        getCurrent().addCommand(commandFactory.newUndoCommand());
         return this;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public ToolbarFactory withReddoCommand() {
-        getCurrent().addCommand( commandFactory.newRedoCommand() );
+        getCurrent().addCommand(commandFactory.newRedoCommand());
         return this;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public ToolbarFactory withValidateCommand() {
-        getCurrent().addCommand( commandFactory.newValidateCommand() );
+        getCurrent().addCommand(commandFactory.newValidateCommand());
         return this;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public ToolbarFactory withRefreshCommand() {
-        getCurrent().addCommand( commandFactory.newRefreshCommand() );
+        getCurrent().addCommand(commandFactory.newRefreshCommand());
         return this;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public <S extends ClientSession> Toolbar<S> build() {
-        final Toolbar<S> result = ( Toolbar<S> ) getCurrent();
+        final Toolbar<S> result = (Toolbar<S>) getCurrent();
         this.toolbar = null;
         return result;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     private Toolbar getCurrent() {
-        if ( null == toolbar ) {
-            toolbar = new ToolbarImpl( toolbarItems,
-                                       view.get() );
+        if (null == toolbar) {
+            toolbar = new ToolbarImpl(toolbarItems,
+                                      view.get());
         }
         return toolbar;
     }

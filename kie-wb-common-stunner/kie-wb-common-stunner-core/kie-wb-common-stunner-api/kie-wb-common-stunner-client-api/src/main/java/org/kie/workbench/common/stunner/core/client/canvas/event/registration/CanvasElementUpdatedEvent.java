@@ -23,9 +23,9 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 @NonPortable
 public final class CanvasElementUpdatedEvent extends AbstractCanvasHandlerElementEvent {
 
-    public CanvasElementUpdatedEvent( final CanvasHandler canvasHandler,
-                                      final Element<?> element ) {
-        super( canvasHandler,
-               element );
+    public CanvasElementUpdatedEvent(final CanvasHandler canvasHandler,
+                                     final Element<?> element) {
+        super(canvasHandler,
+              element);
     }
 }

@@ -37,7 +37,7 @@ import org.uberfire.mvp.Command;
 public abstract class AbstractToolbar<S extends ClientSession> implements Toolbar<S>,
                                                                           IsWidget {
 
-    private static Logger LOGGER = Logger.getLogger( AbstractToolbar.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(AbstractToolbar.class.getName());
 
     private final List<ToolbarCommand<S>> commands = new LinkedList<>();
     private final List<AbstractToolbarItem<S>> items = new LinkedList<>();
@@ -46,41 +46,41 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
     private ManagedInstance<AbstractToolbarItem<S>> toolbarItems;
     private ToolbarView view;
 
-    public AbstractToolbar( final ManagedInstance<AbstractToolbarItem<S>> toolbarItems,
-                            final ToolbarView view ) {
+    public AbstractToolbar(final ManagedInstance<AbstractToolbarItem<S>> toolbarItems,
+                           final ToolbarView view) {
         this.toolbarItems = toolbarItems;
         this.view = view;
     }
 
     public void doInit() {
-        view.init( this );
+        view.init(this);
     }
 
-    public void addCommand( final ToolbarCommand<S> item ) {
-        commands.add( item );
+    public void addCommand(final ToolbarCommand<S> item) {
+        commands.add(item);
     }
 
-    public void initialize( final S session,
-                            final ToolbarCommandCallback<?> callback ) {
+    public void initialize(final S session,
+                           final ToolbarCommandCallback<?> callback) {
         this.session = session;
-        for ( final ToolbarCommand<S> command : commands ) {
-            final Command clickHandler = () -> command.execute( callback );
+        for (final ToolbarCommand<S> command : commands) {
+            final Command clickHandler = () -> command.execute(callback);
             final AbstractToolbarItem<S> toolbarItem = toolbarItems.get();
-            toolbarItem.setUUID( ( ( AbstractToolbarSessionCommand ) command ).getUuid() );
-            view.addItem( toolbarItem.asWidget() );
-            items.add( toolbarItem );
-            toolbarItem.show( this,
-                              session,
-                              command,
-                              clickHandler );
+            toolbarItem.setUUID(((AbstractToolbarSessionCommand) command).getUuid());
+            view.addItem(toolbarItem.asWidget());
+            items.add(toolbarItem);
+            toolbarItem.show(this,
+                             session,
+                             command,
+                             clickHandler);
         }
         afterDraw();
         show();
     }
 
     private void afterDraw() {
-        for ( final ToolbarCommand<S> command : commands ) {
-            ( ( AbstractToolbarSessionCommand ) command ).afterDraw();
+        for (final ToolbarCommand<S> command : commands) {
+            ((AbstractToolbarSessionCommand) command).afterDraw();
         }
     }
 
@@ -93,11 +93,11 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
     }
 
     public void destroy() {
-        for ( final ToolbarCommand<S> c : commands ) {
+        for (final ToolbarCommand<S> c : commands) {
             c.destroy();
         }
         commands.clear();
-        for ( final AbstractToolbarItem<S> item : items ) {
+        for (final AbstractToolbarItem<S> item : items) {
             item.destroy();
         }
         items.clear();
@@ -116,35 +116,35 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
         return view.asWidget();
     }
 
-    public void disable( final ToolbarCommand<S> command ) {
-        final AbstractToolbarItem<S> item = getItem( command );
-        if ( null != item ) {
+    public void disable(final ToolbarCommand<S> command) {
+        final AbstractToolbarItem<S> item = getItem(command);
+        if (null != item) {
             item.disable();
         }
     }
 
-    public void enable( final ToolbarCommand<S> command ) {
-        final AbstractToolbarItem<S> item = getItem( command );
-        if ( null != item ) {
+    public void enable(final ToolbarCommand<S> command) {
+        final AbstractToolbarItem<S> item = getItem(command);
+        if (null != item) {
             item.enable();
         }
     }
 
-    protected AbstractToolbarItem<S> getItem( final ToolbarCommand<?> command ) {
-        final String uuid = ( ( AbstractToolbarSessionCommand ) command ).getUuid();
-        for ( final AbstractToolbarItem<S> item : items ) {
-            if ( uuid.equals( item.getUUID() ) ) {
+    protected AbstractToolbarItem<S> getItem(final ToolbarCommand<?> command) {
+        final String uuid = ((AbstractToolbarSessionCommand) command).getUuid();
+        for (final AbstractToolbarItem<S> item : items) {
+            if (uuid.equals(item.getUUID())) {
                 return item;
             }
         }
         return null;
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

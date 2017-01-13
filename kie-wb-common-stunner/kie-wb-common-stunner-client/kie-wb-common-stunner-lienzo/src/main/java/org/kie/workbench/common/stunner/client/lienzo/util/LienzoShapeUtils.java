@@ -26,18 +26,18 @@ import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 
 public class LienzoShapeUtils {
 
-    public static LinearGradient getLinearGradient( final String startColor,
-                                                    final String endColor,
-                                                    final Double width,
-                                                    final Double height ) {
-        final LinearGradient linearGradient = new LinearGradient( 0,
-                                                                  width,
-                                                                  0,
-                                                                  -height / 2 );
-        linearGradient.addColorStop( 1,
-                                     endColor );
-        linearGradient.addColorStop( 0,
-                                     startColor );
+    public static LinearGradient getLinearGradient(final String startColor,
+                                                   final String endColor,
+                                                   final Double width,
+                                                   final Double height) {
+        final LinearGradient linearGradient = new LinearGradient(0,
+                                                                 width,
+                                                                 0,
+                                                                 -height / 2);
+        linearGradient.addColorStop(1,
+                                    endColor);
+        linearGradient.addColorStop(0,
+                                    startColor);
         return linearGradient;
     }
 
@@ -52,28 +52,28 @@ public class LienzoShapeUtils {
      * TODO: This is enough for the current line/arc support in stunner's shapes, but consider
      * improving this behavior on the future.
      */
-    public static int[] getDefaultMagnetsIndex( final WiresShape sourceShape,
-                                                final WiresShape targetShape ) {
+    public static int[] getDefaultMagnetsIndex(final WiresShape sourceShape,
+                                               final WiresShape targetShape) {
         final MagnetManager.Magnets sourceMagnets = sourceShape.getMagnets();
         final MagnetManager.Magnets targetMagnets = targetShape.getMagnets();
         int sMagnet = 0;
         int tMagnet = 0;
         double dist = Double.MAX_VALUE;
-        for ( int x = 0; x < sourceMagnets.size(); x++ ) {
-            if ( isOddNumber( x ) ) {
-                final IPrimitive<?> sourceControl = sourceMagnets.getMagnet( x ).getControl();
+        for (int x = 0; x < sourceMagnets.size(); x++) {
+            if (isOddNumber(x)) {
+                final IPrimitive<?> sourceControl = sourceMagnets.getMagnet(x).getControl();
                 final double sX = sourceControl.getX();
                 final double sY = sourceControl.getY();
-                for ( int y = 0; y < targetMagnets.size(); y++ ) {
-                    if ( isOddNumber( y ) ) {
-                        final IPrimitive<?> targetControl = targetMagnets.getMagnet( y ).getControl();
+                for (int y = 0; y < targetMagnets.size(); y++) {
+                    if (isOddNumber(y)) {
+                        final IPrimitive<?> targetControl = targetMagnets.getMagnet(y).getControl();
                         final double tX = targetControl.getX();
                         final double tY = targetControl.getY();
-                        final double _d = ShapeUtils.dist( sX,
-                                                           sY,
-                                                           tX,
-                                                           tY );
-                        if ( _d < dist ) {
+                        final double _d = ShapeUtils.dist(sX,
+                                                          sY,
+                                                          tX,
+                                                          tY);
+                        if (_d < dist) {
                             dist = _d;
                             sMagnet = x;
                             tMagnet = y;
@@ -82,21 +82,21 @@ public class LienzoShapeUtils {
                 }
             }
         }
-        return new int[]{ sMagnet, tMagnet };
+        return new int[]{sMagnet, tMagnet};
     }
 
-    public static int[] getDefaultMagnetsIndex( final Shape sourceShape,
-                                                final Shape targetShape ) {
+    public static int[] getDefaultMagnetsIndex(final Shape sourceShape,
+                                               final Shape targetShape) {
         final ShapeView<?> sourceView = sourceShape.getShapeView();
         final ShapeView<?> targetView = targetShape.getShapeView();
-        if ( sourceView instanceof WiresShape && targetView instanceof WiresShape ) {
-            return getDefaultMagnetsIndex( ( WiresShape ) sourceView,
-                                           ( WiresShape ) targetView );
+        if (sourceView instanceof WiresShape && targetView instanceof WiresShape) {
+            return getDefaultMagnetsIndex((WiresShape) sourceView,
+                                          (WiresShape) targetView);
         }
-        return new int[]{ 0, 0 };
+        return new int[]{0, 0};
     }
 
-    private static boolean isOddNumber( final int i ) {
+    private static boolean isOddNumber(final int i) {
         return i % 2 > 0;
     }
 }

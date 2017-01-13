@@ -43,10 +43,10 @@ public class GraphCardinalityRuleManagerImpl extends AbstractGraphRuleManager<Ca
     private GraphUtils graphUtils;
 
     @Inject
-    public GraphCardinalityRuleManagerImpl( final DefinitionManager definitionManager,
-                                            final GraphUtils graphUtils,
-                                            final ModelCardinalityRuleManager modelCardinalityRuleManager ) {
-        super( definitionManager );
+    public GraphCardinalityRuleManagerImpl(final DefinitionManager definitionManager,
+                                           final GraphUtils graphUtils,
+                                           final ModelCardinalityRuleManager modelCardinalityRuleManager) {
+        super(definitionManager);
         this.modelCardinalityRuleManager = modelCardinalityRuleManager;
         this.graphUtils = graphUtils;
     }
@@ -62,21 +62,21 @@ public class GraphCardinalityRuleManagerImpl extends AbstractGraphRuleManager<Ca
     }
 
     @Override
-    public RuleViolations evaluate( final Graph<?, ? extends Node> target,
-                                    final Node<? extends View<?>, ? extends Edge> candidate,
-                                    final Operation operation ) {
+    public RuleViolations evaluate(final Graph<?, ? extends Node> target,
+                                   final Node<? extends View<?>, ? extends Edge> candidate,
+                                   final Operation operation) {
         final Set<String> labels = candidate.getLabels();
-        final Map<String, Integer> graphLabelCount = GraphUtils.getLabelsCount( target,
-                                                                                labels );
+        final Map<String, Integer> graphLabelCount = GraphUtils.getLabelsCount(target,
+                                                                               labels);
         final DefaultRuleViolations results = new DefaultRuleViolations();
-        labels.stream().forEach( role -> {
-            final Integer i = graphLabelCount.get( role );
+        labels.stream().forEach(role -> {
+            final Integer i = graphLabelCount.get(role);
             final RuleViolations violations =
-                    modelCardinalityRuleManager.evaluate( role,
-                                                          null != i ? i : 0,
-                                                          operation );
-            results.addViolations( violations );
-        } );
+                    modelCardinalityRuleManager.evaluate(role,
+                                                         null != i ? i : 0,
+                                                         operation);
+            results.addViolations(violations);
+        });
         return results;
     }
 }

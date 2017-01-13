@@ -59,7 +59,7 @@ public class UnitCost implements BPMNProperty {
     public UnitCost() {
     }
 
-    public UnitCost( final Double value ) {
+    public UnitCost(final Double value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class UnitCost implements BPMNProperty {
         return value;
     }
 
-    public void setValue( Double value ) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 }

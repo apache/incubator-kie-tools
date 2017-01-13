@@ -27,8 +27,8 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientF
 public class RefreshToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientFullSession, RefreshSessionCommand> {
 
     @Inject
-    public RefreshToolbarCommand( final SessionCommandFactory sessionCommandFactory ) {
-        super( sessionCommandFactory.newRefreshSessionCommand() );
+    public RefreshToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
+        super(sessionCommandFactory.newRefreshSessionCommand());
     }
 
     @Override

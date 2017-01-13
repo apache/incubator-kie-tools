@@ -41,27 +41,27 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<AbstractCli
     private final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler;
 
     protected RedoSessionCommand() {
-        this( null,
-              null );
+        this(null,
+             null);
     }
 
     @Inject
-    public RedoSessionCommand( final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                               final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler ) {
-        super( false );
+    public RedoSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                              final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler) {
+        super(false);
         this.redoCommandHandler = redoCommandHandler;
         this.sessionCommandManager = sessionCommandManager;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public <T> void execute( final Callback<T> callback ) {
-        checkNotNull( "callback",
-                      callback );
-        final CommandResult<?> result = redoCommandHandler.execute( getSession().getCanvasHandler(),
-                                                                    sessionCommandManager );
+    @SuppressWarnings("unchecked")
+    public <T> void execute(final Callback<T> callback) {
+        checkNotNull("callback",
+                     callback);
+        final CommandResult<?> result = redoCommandHandler.execute(getSession().getCanvasHandler(),
+                                                                   sessionCommandManager);
         checkState();
-        callback.onSuccess( ( T ) result );
+        callback.onSuccess((T) result);
     }
 
     @Override
@@ -70,28 +70,28 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<AbstractCli
         redoCommandHandler.clear();
     }
 
-    @SuppressWarnings( "unchecked" )
-    void onCommandExecuted( final @Observes CanvasCommandExecutedEvent commandExecutedEvent ) {
-        checkNotNull( "commandExecutedEvent",
-                      commandExecutedEvent );
-        if ( null != commandExecutedEvent.getCommand() ) {
-            redoCommandHandler.onCommandExecuted( commandExecutedEvent.getCommand() );
+    @SuppressWarnings("unchecked")
+    void onCommandExecuted(final @Observes CanvasCommandExecutedEvent commandExecutedEvent) {
+        checkNotNull("commandExecutedEvent",
+                     commandExecutedEvent);
+        if (null != commandExecutedEvent.getCommand()) {
+            redoCommandHandler.onCommandExecuted(commandExecutedEvent.getCommand());
         }
         checkState();
     }
 
-    @SuppressWarnings( "unchecked" )
-    void onCommandUndoExecuted( final @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent ) {
-        checkNotNull( "commandUndoExecutedEvent",
-                      commandUndoExecutedEvent );
-        if ( null != commandUndoExecutedEvent.getCommand() ) {
-            redoCommandHandler.onUndoCommandExecuted( commandUndoExecutedEvent.getCommand() );
+    @SuppressWarnings("unchecked")
+    void onCommandUndoExecuted(final @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent) {
+        checkNotNull("commandUndoExecutedEvent",
+                     commandUndoExecutedEvent);
+        if (null != commandUndoExecutedEvent.getCommand()) {
+            redoCommandHandler.onUndoCommandExecuted(commandUndoExecutedEvent.getCommand());
         }
         checkState();
     }
 
     private void checkState() {
-        setEnabled( null != getSession() && redoCommandHandler.isEnabled() );
+        setEnabled(null != getSession() && redoCommandHandler.isEnabled());
         fire();
     }
 }

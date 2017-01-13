@@ -27,35 +27,35 @@ public abstract class BindablePropertyMorphDefinition extends BindableMorphDefin
     protected abstract Map<Class<?>, Collection<MorphProperty>> getBindableMorphProperties();
 
     @Override
-    public Iterable<MorphProperty> getMorphProperties( String definitionId ) {
-        final Class<?> type = getSourceType( definitionId );
-        return getMorphPropertiesForType( type );
+    public Iterable<MorphProperty> getMorphProperties(String definitionId) {
+        final Class<?> type = getSourceType(definitionId);
+        return getMorphPropertiesForType(type);
     }
 
-    public Iterable<MorphProperty> getMorphPropertiesForType( Class<?> type ) {
-        if ( null != type ) {
-            return getBindableMorphProperties().get( type );
+    public Iterable<MorphProperty> getMorphPropertiesForType(Class<?> type) {
+        if (null != type) {
+            return getBindableMorphProperties().get(type);
         }
         return null;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     protected Map<Class<?>, Collection<Class<?>>> getDomainMorphs() {
-        if ( null != getBindableMorphProperties() && !getBindableMorphProperties().isEmpty() ) {
+        if (null != getBindableMorphProperties() && !getBindableMorphProperties().isEmpty()) {
             final Map<Class<?>, Collection<Class<?>>> result = new LinkedHashMap<>();
-            for ( final Map.Entry<Class<?>, Collection<MorphProperty>> entry : getBindableMorphProperties().entrySet() ) {
+            for (final Map.Entry<Class<?>, Collection<MorphProperty>> entry : getBindableMorphProperties().entrySet()) {
                 final Class<?> sourceType = entry.getKey();
                 final Collection<MorphProperty> pms = entry.getValue();
-                for ( final MorphProperty pm : pms ) {
-                    final BindableMorphProperty<?, ?> morphProperty = ( BindableMorphProperty<?, ?> ) pm;
-                    Collection<Class<?>> targets = result.get( sourceType );
-                    if ( null == targets ) {
+                for (final MorphProperty pm : pms) {
+                    final BindableMorphProperty<?, ?> morphProperty = (BindableMorphProperty<?, ?>) pm;
+                    Collection<Class<?>> targets = result.get(sourceType);
+                    if (null == targets) {
                         targets = new LinkedList<>();
-                        result.put( sourceType,
-                                    targets );
+                        result.put(sourceType,
+                                   targets);
                     }
-                    targets.addAll( morphProperty.getMorphTargetClasses().values() );
+                    targets.addAll(morphProperty.getMorphTargetClasses().values());
                 }
             }
             return result;

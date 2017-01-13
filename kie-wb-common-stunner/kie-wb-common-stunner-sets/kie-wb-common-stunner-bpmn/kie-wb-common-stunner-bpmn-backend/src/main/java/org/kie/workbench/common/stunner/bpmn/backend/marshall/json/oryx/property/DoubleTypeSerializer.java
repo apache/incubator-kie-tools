@@ -25,19 +25,19 @@ import org.kie.workbench.common.stunner.core.definition.property.type.DoubleType
 public class DoubleTypeSerializer implements Bpmn2OryxPropertySerializer<Double> {
 
     @Override
-    public boolean accepts( PropertyType type ) {
-        return DoubleType.name.equals( type.getName() );
+    public boolean accepts(final PropertyType type) {
+        return DoubleType.name.equals(type.getName());
     }
 
     @Override
-    public Double parse( Object property,
-                         String value ) {
-        return Double.parseDouble( value );
+    public Double parse(final Object property,
+                        final String value) {
+        return Double.parseDouble(value);
     }
 
     @Override
-    public String serialize( Object property,
-                             Double value ) {
-        return Double.toString( value );
+    public String serialize(final Object property,
+                            final Double value) {
+        return Double.toString(value);
     }
 }

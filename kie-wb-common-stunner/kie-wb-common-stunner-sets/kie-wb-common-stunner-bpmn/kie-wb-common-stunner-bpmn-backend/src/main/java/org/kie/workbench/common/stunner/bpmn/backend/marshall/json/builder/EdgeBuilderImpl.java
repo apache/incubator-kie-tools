@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public final class EdgeBuilderImpl extends AbstractEdgeBuilder<BPMNDefinition, Edge<View<BPMNDefinition>, Node>> {
 
-    public EdgeBuilderImpl( Class<?> definitionClass ) {
-        super( definitionClass );
+    public EdgeBuilderImpl(final Class<?> definitionClass) {
+        super(definitionClass);
     }
 }

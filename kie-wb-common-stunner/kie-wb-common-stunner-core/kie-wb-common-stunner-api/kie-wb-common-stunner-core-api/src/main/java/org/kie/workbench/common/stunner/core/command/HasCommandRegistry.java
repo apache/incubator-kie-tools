@@ -33,5 +33,5 @@ public interface HasCommandRegistry<T, V> {
     /**
      * Undo latest command present in the registry.
      */
-    CommandResult<V> undo( final T context );
+    CommandResult<V> undo(final T context);
 }

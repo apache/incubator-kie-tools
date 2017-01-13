@@ -32,8 +32,8 @@ public final class MetadataImpl extends AbstractMetadata {
     public MetadataImpl() {
     }
 
-    private MetadataImpl( final @MapsTo( "definitionSetId" ) String definitionSetId ) {
-        super( definitionSetId );
+    private MetadataImpl(final @MapsTo("definitionSetId") String definitionSetId) {
+        super(definitionSetId);
     }
 
     @Override
@@ -51,52 +51,52 @@ public final class MetadataImpl extends AbstractMetadata {
         private String ssid;
         private Path path;
 
-        public MetadataImplBuilder( final String defSetId ) {
-            this( defSetId,
-                  null );
+        public MetadataImplBuilder(final String defSetId) {
+            this(defSetId,
+                 null);
         }
 
-        public MetadataImplBuilder( final String defSetId,
-                                    final DefinitionManager definitionManager ) {
-            this( defSetId,
-                  definitionManager,
-                  null );
+        public MetadataImplBuilder(final String defSetId,
+                                   final DefinitionManager definitionManager) {
+            this(defSetId,
+                 definitionManager,
+                 null);
         }
 
-        public MetadataImplBuilder( final String defSetId,
-                                    final DefinitionManager definitionManager,
-                                    final ShapeManager shapeManager ) {
+        public MetadataImplBuilder(final String defSetId,
+                                   final DefinitionManager definitionManager,
+                                   final ShapeManager shapeManager) {
             this.defSetId = defSetId;
             this.definitionManager = definitionManager;
             this.shapeManager = shapeManager;
         }
 
-        public MetadataImplBuilder setPath( final Path path ) {
+        public MetadataImplBuilder setPath(final Path path) {
             this.path = path;
             return this;
         }
 
-        public MetadataImplBuilder setTitle( final String t ) {
+        public MetadataImplBuilder setTitle(final String t) {
             this.title = t;
             return this;
         }
 
-        public MetadataImplBuilder setShapeSetId( final String id ) {
+        public MetadataImplBuilder setShapeSetId(final String id) {
             this.ssid = id;
             return this;
         }
 
         public MetadataImpl build() {
-            final MetadataImpl result = new MetadataImpl( defSetId );
-            result.setPath( path );
-            if ( null != definitionManager ) {
-                final Object defSet = definitionManager.definitionSets().getDefinitionSetById( defSetId );
-                if ( null != defSet ) {
-                    result.setTitle( null != title ? title :
-                                             definitionManager.adapters().forDefinitionSet().getDescription( defSet ) );
-                    final String s = null != ssid ? ssid : ( null != getShapeSet() ? getShapeSet().getId() : null );
-                    if ( null != s ) {
-                        result.setShapeSetId( s );
+            final MetadataImpl result = new MetadataImpl(defSetId);
+            result.setPath(path);
+            if (null != definitionManager) {
+                final Object defSet = definitionManager.definitionSets().getDefinitionSetById(defSetId);
+                if (null != defSet) {
+                    result.setTitle(null != title ? title :
+                                            definitionManager.adapters().forDefinitionSet().getDescription(defSet));
+                    final String s = null != ssid ? ssid : (null != getShapeSet() ? getShapeSet().getId() : null);
+                    if (null != s) {
+                        result.setShapeSetId(s);
                     }
                 }
             }
@@ -104,11 +104,11 @@ public final class MetadataImpl extends AbstractMetadata {
         }
 
         private ShapeSet<?> getShapeSet() {
-            if ( null != shapeManager ) {
+            if (null != shapeManager) {
                 final Collection<ShapeSet<?>> sets = shapeManager.getShapeSets();
-                if ( null != sets && !sets.isEmpty() ) {
-                    for ( final ShapeSet<?> set : sets ) {
-                        if ( set.getDefinitionSetId().equals( defSetId ) ) {
+                if (null != sets && !sets.isEmpty()) {
+                    for (final ShapeSet<?> set : sets) {
+                        if (set.getDefinitionSetId().equals(defSetId)) {
                             return set;
                         }
                     }

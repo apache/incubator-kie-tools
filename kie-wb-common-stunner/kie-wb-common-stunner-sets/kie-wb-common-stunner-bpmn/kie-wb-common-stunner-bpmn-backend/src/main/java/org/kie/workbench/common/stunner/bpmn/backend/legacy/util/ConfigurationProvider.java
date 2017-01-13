@@ -30,24 +30,24 @@ public class ConfigurationProvider {
 
     private ConfigurationProvider() {
         try {
-            InputStream input = this.getClass().getResourceAsStream( CONFIG_FILE );
-            if ( input != null ) {
-                configurationProps.load( input );
+            InputStream input = this.getClass().getResourceAsStream(CONFIG_FILE);
+            if (input != null) {
+                configurationProps.load(input);
             }
-        } catch ( IOException e ) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static ConfigurationProvider getInstance() {
-        if ( instance == null ) {
+        if (instance == null) {
             instance = new ConfigurationProvider();
         }
         return instance;
     }
 
     public String getDesignerContext() {
-        return configurationProps.getProperty( "application.context",
-                                               "/org.jbpm.designer.jBPMDesigner/" );
+        return configurationProps.getProperty("application.context",
+                                              "/org.jbpm.designer.jBPMDesigner/");
     }
 }

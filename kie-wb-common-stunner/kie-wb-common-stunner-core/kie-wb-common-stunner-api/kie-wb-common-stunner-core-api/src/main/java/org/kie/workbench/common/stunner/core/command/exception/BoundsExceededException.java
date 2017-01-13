@@ -29,14 +29,14 @@ public final class BoundsExceededException extends CommandException {
     private final double maxX;
     private final double maxY;
 
-    public BoundsExceededException( final Command<?, ?> command,
-                                    final Bounds candidate,
-                                    final double maxX,
-                                    final double maxY ) {
-        super( "Bounds exceeded [candidate=" + candidate.toString()
-                       + ", maxX=" + maxX
-                       + ", maxY=" + maxY + "]",
-               command );
+    public BoundsExceededException(final Command<?, ?> command,
+                                   final Bounds candidate,
+                                   final double maxX,
+                                   final double maxY) {
+        super("Bounds exceeded [candidate=" + candidate.toString()
+                      + ", maxX=" + maxX
+                      + ", maxY=" + maxY + "]",
+              command);
         this.candidate = candidate;
         this.maxX = maxX;
         this.maxY = maxY;

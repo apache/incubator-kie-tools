@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.definition.property.type.DoubleType
 
 @Portable
 @Bindable
-@Property( meta = PropertyMetaTypes.RADIUS )
+@Property(meta = PropertyMetaTypes.RADIUS)
 public class Radius {
 
     @Caption
@@ -59,7 +59,7 @@ public class Radius {
     public Radius() {
     }
 
-    public Radius( final Double radius ) {
+    public Radius(final Double radius) {
         this.value = radius;
     }
 
@@ -91,7 +91,7 @@ public class Radius {
         return value;
     }
 
-    public void setValue( Double value ) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 }

@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class GraphDockingRuleManagerImplTest extends AbstractGraphRuleManagerTest {
 
     @Mock
@@ -39,31 +39,31 @@ public class GraphDockingRuleManagerImplTest extends AbstractGraphRuleManagerTes
     @Before
     public void setup() {
         super.setup();
-        this.tested = new GraphDockingRuleManagerImpl( definitionManager,
-                                                       modelDockingRuleManager );
+        this.tested = new GraphDockingRuleManagerImpl(definitionManager,
+                                                      modelDockingRuleManager);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testEvaluateAccept() {
         RuleViolations violations = mockNoViolations();
-        when( modelDockingRuleManager.evaluate( eq( DEFINITION_ID ),
-                                                eq( CANDIDATE_LABELS ) ) ).thenReturn( violations );
-        final RuleViolations result = tested.evaluate( element,
-                                                       candidate );
-        assertNotNull( result );
-        assertFalse( result.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        when(modelDockingRuleManager.evaluate(eq(DEFINITION_ID),
+                                              eq(CANDIDATE_LABELS))).thenReturn(violations);
+        final RuleViolations result = tested.evaluate(element,
+                                                      candidate);
+        assertNotNull(result);
+        assertFalse(result.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testEvaluateDeny() {
         RuleViolations violations = mockWithViolations();
-        when( modelDockingRuleManager.evaluate( eq( DEFINITION_ID ),
-                                                eq( CANDIDATE_LABELS ) ) ).thenReturn( violations );
-        final RuleViolations result = tested.evaluate( element,
-                                                       candidate );
-        assertNotNull( result );
-        assertTrue( result.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        when(modelDockingRuleManager.evaluate(eq(DEFINITION_ID),
+                                              eq(CANDIDATE_LABELS))).thenReturn(violations);
+        final RuleViolations result = tested.evaluate(element,
+                                                      candidate);
+        assertNotNull(result);
+        assertTrue(result.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 }

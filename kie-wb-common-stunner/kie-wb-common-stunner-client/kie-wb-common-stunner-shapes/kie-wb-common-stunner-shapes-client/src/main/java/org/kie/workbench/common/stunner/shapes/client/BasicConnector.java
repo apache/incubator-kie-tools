@@ -35,44 +35,44 @@ public abstract class BasicConnector<W, V extends BasicConnectorView>
     private Double _strokeAlpha = null;
     private String _strokeColor = null;
 
-    public BasicConnector( final V view ) {
-        super( view );
+    public BasicConnector(final V view) {
+        super(view);
     }
 
-    protected abstract String getBackgroundColor( final Edge<ViewConnector<W>, Node> element );
+    protected abstract String getBackgroundColor(final Edge<ViewConnector<W>, Node> element);
 
-    protected abstract Double getBackgroundAlpha( final Edge<ViewConnector<W>, Node> element );
+    protected abstract Double getBackgroundAlpha(final Edge<ViewConnector<W>, Node> element);
 
-    protected abstract String getBorderColor( final Edge<ViewConnector<W>, Node> element );
+    protected abstract String getBorderColor(final Edge<ViewConnector<W>, Node> element);
 
-    protected abstract Double getBorderSize( final Edge<ViewConnector<W>, Node> element );
+    protected abstract Double getBorderSize(final Edge<ViewConnector<W>, Node> element);
 
-    protected abstract Double getBorderAlpha( final Edge<ViewConnector<W>, Node> element );
+    protected abstract Double getBorderAlpha(final Edge<ViewConnector<W>, Node> element);
 
     @Override
-    public void applyProperties( final Edge<ViewConnector<W>, Node> element,
-                                 final MutationContext mutationContext ) {
-        super.applyProperties( element,
-                               mutationContext );
+    public void applyProperties(final Edge<ViewConnector<W>, Node> element,
+                                final MutationContext mutationContext) {
+        super.applyProperties(element,
+                              mutationContext);
         // Fill color.
-        _applyFillColor( element,
-                         mutationContext );
+        _applyFillColor(element,
+                        mutationContext);
         // Fill alpha.
-        _applyFillApha( element,
-                        mutationContext );
+        _applyFillApha(element,
+                       mutationContext);
         // Apply border styles.
-        _applyBorders( element,
-                       mutationContext );
+        _applyBorders(element,
+                      mutationContext);
         // Apply border alpha.
-        _applyBorderApha( element,
-                          mutationContext );
+        _applyBorderApha(element,
+                         mutationContext);
     }
 
     @Override
     public void beforeDraw() {
         super.beforeDraw();
-        if ( hasAnimation() ) {
-            getAnimation().setCallback( new Animation.AnimationCallback() {
+        if (hasAnimation()) {
+            getAnimation().setCallback(new Animation.AnimationCallback() {
                 @Override
                 public void onStart() {
                 }
@@ -85,20 +85,20 @@ public abstract class BasicConnector<W, V extends BasicConnectorView>
                 public void onComplete() {
                     BasicConnector.this.animation = null;
                 }
-            } );
+            });
             getAnimation().run();
         }
     }
 
     @Override
-    public void applyState( final ShapeState shapeState ) {
-        if ( !this.state.equals( shapeState ) ) {
+    public void applyState(final ShapeState shapeState) {
+        if (!this.state.equals(shapeState)) {
             this.state = shapeState;
-            if ( ShapeState.SELECTED.equals( shapeState ) ) {
+            if (ShapeState.SELECTED.equals(shapeState)) {
                 applySelectedState();
-            } else if ( ShapeState.HIGHLIGHT.equals( shapeState ) ) {
+            } else if (ShapeState.HIGHLIGHT.equals(shapeState)) {
                 applyHighlightState();
-            } else if ( ShapeState.INVALID.equals( shapeState ) ) {
+            } else if (ShapeState.INVALID.equals(shapeState)) {
                 applyInvalidState();
             } else {
                 applyNoneState();
@@ -107,109 +107,109 @@ public abstract class BasicConnector<W, V extends BasicConnectorView>
     }
 
     private void applySelectedState() {
-        applyActiveState( ShapeState.SELECTED.getColor() );
+        applyActiveState(ShapeState.SELECTED.getColor());
         getShapeView().getControl().showControlPoints();
     }
 
     private void applyInvalidState() {
-        applyActiveState( ShapeState.INVALID.getColor() );
+        applyActiveState(ShapeState.INVALID.getColor());
     }
 
     private void applyHighlightState() {
-        applyActiveState( ShapeState.HIGHLIGHT.getColor() );
+        applyActiveState(ShapeState.HIGHLIGHT.getColor());
     }
 
     // TODO Use of animations here? ( BasicShapeAnimation ).
-    private void applyActiveState( final String color ) {
-        if ( null == this._strokeWidth ) {
+    private void applyActiveState(final String color) {
+        if (null == this._strokeWidth) {
             this._strokeWidth = getShapeView().getLine().getStrokeWidth();
         }
-        if ( null == this._strokeColor ) {
+        if (null == this._strokeColor) {
             this._strokeColor = getShapeView().getLine().getStrokeColor();
         }
-        if ( null == this._strokeAlpha ) {
+        if (null == this._strokeAlpha) {
             this._strokeAlpha = getShapeView().getLine().getStrokeAlpha();
         }
-        getShapeView().getLine().setStrokeWidth( 5 );
-        getShapeView().getLine().setStrokeAlpha( 1 );
-        getShapeView().getLine().setStrokeColor( color );
+        getShapeView().getLine().setStrokeWidth(5);
+        getShapeView().getLine().setStrokeAlpha(1);
+        getShapeView().getLine().setStrokeColor(color);
     }
 
     // TODO Use of animations here? ( BasicShapeAnimation ).
     private void applyNoneState() {
-        if ( null != this._strokeWidth ) {
-            getShapeView().getLine().setStrokeWidth( this._strokeWidth );
+        if (null != this._strokeWidth) {
+            getShapeView().getLine().setStrokeWidth(this._strokeWidth);
             this._strokeWidth = null;
         }
-        if ( null != this._strokeColor ) {
-            getShapeView().getLine().setStrokeColor( this._strokeColor );
+        if (null != this._strokeColor) {
+            getShapeView().getLine().setStrokeColor(this._strokeColor);
             this._strokeColor = null;
         }
-        getShapeView().getLine().setStrokeAlpha( null != this._strokeAlpha ? this._strokeAlpha : 1 );
+        getShapeView().getLine().setStrokeAlpha(null != this._strokeAlpha ? this._strokeAlpha : 1);
         this._strokeAlpha = null;
     }
 
-    protected BasicConnector<W, V> _applyFillColor( final Edge<ViewConnector<W>, Node> element,
-                                                    final MutationContext mutationContext ) {
-        final String color = getBackgroundColor( element );
-        if ( color != null && color.trim().length() > 0 ) {
-            if ( isAnimationMutation( mutationContext ) ) {
-                getAnimation().animateFillColor( color );
+    protected BasicConnector<W, V> _applyFillColor(final Edge<ViewConnector<W>, Node> element,
+                                                   final MutationContext mutationContext) {
+        final String color = getBackgroundColor(element);
+        if (color != null && color.trim().length() > 0) {
+            if (isAnimationMutation(mutationContext)) {
+                getAnimation().animateFillColor(color);
             } else {
-                super._applyFillColor( color,
-                                       mutationContext );
+                super._applyFillColor(color,
+                                      mutationContext);
             }
         }
         return this;
     }
 
-    protected BasicConnector<W, V> _applyFillApha( final Edge<ViewConnector<W>, Node> element,
-                                                   final MutationContext mutationContext ) {
-        final Double alpha = getBackgroundAlpha( element );
-        super._applyFillAlpha( alpha,
-                               mutationContext );
+    protected BasicConnector<W, V> _applyFillApha(final Edge<ViewConnector<W>, Node> element,
+                                                  final MutationContext mutationContext) {
+        final Double alpha = getBackgroundAlpha(element);
+        super._applyFillAlpha(alpha,
+                              mutationContext);
         return this;
     }
 
-    protected BasicConnector<W, V> _applyBorders( final Edge<ViewConnector<W>, Node> element,
-                                                  final MutationContext mutationContext ) {
-        final String color = getBorderColor( element );
-        final Double width = getBorderSize( element );
-        super._applyBorders( color,
-                             width,
-                             mutationContext );
+    protected BasicConnector<W, V> _applyBorders(final Edge<ViewConnector<W>, Node> element,
+                                                 final MutationContext mutationContext) {
+        final String color = getBorderColor(element);
+        final Double width = getBorderSize(element);
+        super._applyBorders(color,
+                            width,
+                            mutationContext);
         return this;
     }
 
     @Override
-    protected void _applyBorderColor( final String color,
-                                      final MutationContext mutationContext ) {
-        final boolean isAnimation = isAnimationMutation( mutationContext );
-        if ( isAnimation ) {
-            getAnimation().animateStrokeColor( color );
+    protected void _applyBorderColor(final String color,
+                                     final MutationContext mutationContext) {
+        final boolean isAnimation = isAnimationMutation(mutationContext);
+        if (isAnimation) {
+            getAnimation().animateStrokeColor(color);
         } else {
-            super._applyBorderColor( color,
-                                     mutationContext );
+            super._applyBorderColor(color,
+                                    mutationContext);
         }
     }
 
     @Override
-    protected void _applyBorderWidth( final double width,
-                                      final MutationContext mutationContext ) {
-        final boolean isAnimation = isAnimationMutation( mutationContext );
-        if ( isAnimation ) {
-            getAnimation().animateStrokeWidth( width );
+    protected void _applyBorderWidth(final double width,
+                                     final MutationContext mutationContext) {
+        final boolean isAnimation = isAnimationMutation(mutationContext);
+        if (isAnimation) {
+            getAnimation().animateStrokeWidth(width);
         } else {
-            super._applyBorderWidth( width,
-                                     mutationContext );
+            super._applyBorderWidth(width,
+                                    mutationContext);
         }
     }
 
-    protected BasicConnector<W, V> _applyBorderApha( final Edge<ViewConnector<W>, Node> element,
-                                                     final MutationContext mutationContext ) {
-        final Double alpha = getBorderAlpha( element );
-        super._applyBorderAlpha( alpha,
-                                 mutationContext );
+    protected BasicConnector<W, V> _applyBorderApha(final Edge<ViewConnector<W>, Node> element,
+                                                    final MutationContext mutationContext) {
+        final Double alpha = getBorderAlpha(element);
+        super._applyBorderAlpha(alpha,
+                                mutationContext);
         return this;
     }
 
@@ -218,9 +218,9 @@ public abstract class BasicConnector<W, V extends BasicConnectorView>
     }
 
     private BasicConnectorAnimation getAnimation() {
-        if ( !hasAnimation() ) {
+        if (!hasAnimation()) {
             this.animation = new BasicConnectorAnimation();
-            this.animation.forShape( this );
+            this.animation.forShape(this);
         }
         return animation;
     }

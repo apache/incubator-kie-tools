@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class GraphContainmentRuleManagerImplTest extends AbstractGraphRuleManagerTest {
 
     @Mock
@@ -39,31 +39,31 @@ public class GraphContainmentRuleManagerImplTest extends AbstractGraphRuleManage
     @Before
     public void setup() {
         super.setup();
-        this.tested = new GraphContainmentRuleManagerImpl( definitionManager,
-                                                           modelContainmentRuleManager );
+        this.tested = new GraphContainmentRuleManagerImpl(definitionManager,
+                                                          modelContainmentRuleManager);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testEvaluateAccept() {
         RuleViolations violations = mockNoViolations();
-        when( modelContainmentRuleManager.evaluate( eq( DEFINITION_ID ),
-                                                    eq( CANDIDATE_LABELS ) ) ).thenReturn( violations );
-        final RuleViolations result = tested.evaluate( element,
-                                                       candidate );
-        assertNotNull( result );
-        assertFalse( result.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        when(modelContainmentRuleManager.evaluate(eq(DEFINITION_ID),
+                                                  eq(CANDIDATE_LABELS))).thenReturn(violations);
+        final RuleViolations result = tested.evaluate(element,
+                                                      candidate);
+        assertNotNull(result);
+        assertFalse(result.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testEvaluateDeny() {
         RuleViolations violations = mockWithViolations();
-        when( modelContainmentRuleManager.evaluate( eq( DEFINITION_ID ),
-                                                    eq( CANDIDATE_LABELS ) ) ).thenReturn( violations );
-        final RuleViolations result = tested.evaluate( element,
-                                                       candidate );
-        assertNotNull( result );
-        assertTrue( result.violations( RuleViolation.Type.ERROR ).iterator().hasNext() );
+        when(modelContainmentRuleManager.evaluate(eq(DEFINITION_ID),
+                                                  eq(CANDIDATE_LABELS))).thenReturn(violations);
+        final RuleViolations result = tested.evaluate(element,
+                                                      candidate);
+        assertNotNull(result);
+        assertTrue(result.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 }

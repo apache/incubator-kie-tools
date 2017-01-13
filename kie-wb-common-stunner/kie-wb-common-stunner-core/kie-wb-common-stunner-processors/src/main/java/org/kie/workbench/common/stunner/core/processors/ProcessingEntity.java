@@ -21,8 +21,8 @@ public class ProcessingEntity {
     private final String className;
     private final String id;
 
-    public ProcessingEntity( final String className,
-                             final String id ) {
+    public ProcessingEntity(final String className,
+                            final String id) {
         this.className = className;
         this.id = id;
     }

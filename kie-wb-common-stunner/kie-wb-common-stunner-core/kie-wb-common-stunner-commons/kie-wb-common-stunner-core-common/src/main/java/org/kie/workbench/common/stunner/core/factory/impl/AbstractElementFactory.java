@@ -27,7 +27,7 @@ public abstract class AbstractElementFactory<C, D extends Definition<C>, T exten
     }
 
     @Override
-    public boolean accepts( final Object definition ) {
+    public boolean accepts(final Object definition) {
         return true;
     }
 }

@@ -29,9 +29,9 @@ public final class CommandResultImpl<V> implements CommandResult<V> {
     private final String message;
     private final Collection<V> violations;
 
-    public CommandResultImpl( final @MapsTo( "type" ) Type type,
-                              final @MapsTo( "message" ) String message,
-                              final @MapsTo( "violations" ) Collection<V> violations ) {
+    public CommandResultImpl(final @MapsTo("type") Type type,
+                             final @MapsTo("message") String message,
+                             final @MapsTo("violations") Collection<V> violations) {
         this.violations = violations;
         this.type = type;
         this.message = message;

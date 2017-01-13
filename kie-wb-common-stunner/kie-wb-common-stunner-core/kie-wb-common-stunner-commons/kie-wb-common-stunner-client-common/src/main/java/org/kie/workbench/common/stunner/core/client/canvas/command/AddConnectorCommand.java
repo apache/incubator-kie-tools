@@ -32,10 +32,10 @@ public final class AddConnectorCommand extends AbstractCanvasGraphCommand {
     private final int magnetIndex;
     private final String shapeSetId;
 
-    public AddConnectorCommand( final Node source,
-                                final Edge candidate,
-                                final int magnetIndex,
-                                final String shapeSetId ) {
+    public AddConnectorCommand(final Node source,
+                               final Edge candidate,
+                               final int magnetIndex,
+                               final String shapeSetId) {
         this.source = source;
         this.candidate = candidate;
         this.magnetIndex = magnetIndex;
@@ -43,15 +43,15 @@ public final class AddConnectorCommand extends AbstractCanvasGraphCommand {
     }
 
     @Override
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand( final AbstractCanvasHandler context ) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.AddConnectorCommand( source,
-                                                                                                 candidate,
-                                                                                                 magnetIndex );
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.AddConnectorCommand(source,
+                                                                                                candidate,
+                                                                                                magnetIndex);
     }
 
     @Override
-    protected AbstractCanvasCommand newCanvasCommand( final AbstractCanvasHandler context ) {
-        return new AddCanvasConnectorCommand( candidate,
-                                              shapeSetId );
+    protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
+        return new AddCanvasConnectorCommand(candidate,
+                                             shapeSetId);
     }
 }

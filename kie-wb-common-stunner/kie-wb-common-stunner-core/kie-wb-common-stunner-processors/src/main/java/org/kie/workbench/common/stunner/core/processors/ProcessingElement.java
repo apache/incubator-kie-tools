@@ -21,8 +21,8 @@ public class ProcessingElement {
     private final String className;
     private final String methodName;
 
-    public ProcessingElement( final String className,
-                              final String methodName ) {
+    public ProcessingElement(final String className,
+                             final String methodName) {
         this.className = className;
         this.methodName = methodName;
     }

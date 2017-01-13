@@ -22,9 +22,9 @@ public abstract class AbstractLookupRequest implements LookupManager.LookupReque
     private final int page;
     private final int pageSize;
 
-    public AbstractLookupRequest( final String criteria,
-                                  final int page,
-                                  final int pageSize ) {
+    public AbstractLookupRequest(final String criteria,
+                                 final int page,
+                                 final int pageSize) {
         this.criteria = criteria;
         this.page = page;
         this.pageSize = pageSize;

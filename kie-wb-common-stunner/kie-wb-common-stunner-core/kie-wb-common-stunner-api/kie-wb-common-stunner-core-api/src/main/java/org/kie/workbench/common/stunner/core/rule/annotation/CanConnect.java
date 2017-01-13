@@ -28,8 +28,8 @@ import java.lang.annotation.RetentionPolicy;
  * It's only allowed to use on Definitions of type Edge
  */
 @Inherited
-@Retention( RetentionPolicy.RUNTIME )
-@Repeatable( AllowedConnections.class )
+@Retention(RetentionPolicy.RUNTIME)
+@Repeatable(AllowedConnections.class)
 public @interface CanConnect {
 
     String startRole();

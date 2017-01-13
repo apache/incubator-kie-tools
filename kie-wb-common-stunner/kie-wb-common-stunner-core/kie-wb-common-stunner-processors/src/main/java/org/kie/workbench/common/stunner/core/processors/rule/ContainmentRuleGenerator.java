@@ -45,62 +45,62 @@ public class ContainmentRuleGenerator extends AbstractGenerator {
     private final ProcessingContext processingContext = ProcessingContext.getInstance();
 
     @Override
-    public StringBuffer generate( final String packageName,
-                                  final PackageElement packageElement,
-                                  final String className,
-                                  final Element element,
-                                  final ProcessingEnvironment processingEnvironment ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final PackageElement packageElement,
+                                 final String className,
+                                 final Element element,
+                                 final ProcessingEnvironment processingEnvironment) throws GenerationException {
         final Messager messager = processingEnvironment.getMessager();
-        messager.printMessage( Diagnostic.Kind.NOTE,
-                               "Starting code generation for [" + className + "]" );
+        messager.printMessage(Diagnostic.Kind.NOTE,
+                              "Starting code generation for [" + className + "]");
         //Extract required information
-        final TypeElement classElement = ( TypeElement ) element;
+        final TypeElement classElement = (TypeElement) element;
         final String annotationName = MainProcessor.ANNOTATION_RULE_CAN_CONTAIN;
-        final String ruleId = MainProcessor.toValidId( className );
-        final String ruleDefinitionId = ( ( TypeElement ) element ).getQualifiedName().toString();
+        final String ruleId = MainProcessor.toValidId(className);
+        final String ruleDefinitionId = ((TypeElement) element).getQualifiedName().toString();
         List<String> roles = null;
-        for ( final AnnotationMirror am : classElement.getAnnotationMirrors() ) {
-            if ( annotationName.equals( am.getAnnotationType().toString() ) ) {
-                for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : am.getElementValues().entrySet() ) {
+        for (final AnnotationMirror am : classElement.getAnnotationMirrors()) {
+            if (annotationName.equals(am.getAnnotationType().toString())) {
+                for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : am.getElementValues().entrySet()) {
                     AnnotationValue aval = entry.getValue();
-                    if ( "roles".equals( entry.getKey().getSimpleName().toString() ) ) {
-                        roles = ( List<String> ) aval.getValue();
+                    if ("roles".equals(entry.getKey().getSimpleName().toString())) {
+                        roles = (List<String>) aval.getValue();
                     }
                 }
                 break;
             }
         }
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "ruleId",
-                  ruleId );
-        root.put( "ruleDefinitionId",
-                  ruleDefinitionId );
-        root.put( "roles",
-                  roles );
+        root.put("ruleId",
+                 ruleId);
+        root.put("ruleDefinitionId",
+                 ruleDefinitionId);
+        root.put("roles",
+                 roles);
         //Generate code
         final StringWriter sw = new StringWriter();
-        final BufferedWriter bw = new BufferedWriter( sw );
+        final BufferedWriter bw = new BufferedWriter(sw);
         try {
-            final Template template = config.getTemplate( "ContainmentRule.ftl" );
-            template.process( root,
-                              bw );
-        } catch ( IOException ioe ) {
-            throw new GenerationException( ioe );
-        } catch ( TemplateException te ) {
-            throw new GenerationException( te );
+            final Template template = config.getTemplate("ContainmentRule.ftl");
+            template.process(root,
+                             bw);
+        } catch (IOException ioe) {
+            throw new GenerationException(ioe);
+        } catch (TemplateException te) {
+            throw new GenerationException(te);
         } finally {
             try {
                 bw.close();
                 sw.close();
-            } catch ( IOException ioe ) {
-                throw new GenerationException( ioe );
+            } catch (IOException ioe) {
+                throw new GenerationException(ioe);
             }
         }
-        messager.printMessage( Diagnostic.Kind.NOTE,
-                               "Successfully generated code for [" + className + "]" );
-        processingContext.addRule( ruleId,
-                                   ProcessingRule.TYPE.CONTAINMENT,
-                                   sw.getBuffer() );
+        messager.printMessage(Diagnostic.Kind.NOTE,
+                              "Successfully generated code for [" + className + "]");
+        processingContext.addRule(ruleId,
+                                  ProcessingRule.TYPE.CONTAINMENT,
+                                  sw.getBuffer());
         return null;
     }
 }

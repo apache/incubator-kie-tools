@@ -29,14 +29,14 @@ public class GraphCommandExecutionContextImpl extends AbstractGraphCommandExecut
     private final transient GraphRulesManager rulesManager;
     private final transient GraphUtils graphUtils;
 
-    public GraphCommandExecutionContextImpl( final DefinitionManager definitionManager,
-                                             final FactoryManager factoryManager,
-                                             final GraphRulesManager rulesManager,
-                                             final Index<?, ?> graphIndex,
-                                             final GraphUtils graphUtils ) {
-        super( definitionManager,
-               factoryManager,
-               graphIndex );
+    public GraphCommandExecutionContextImpl(final DefinitionManager definitionManager,
+                                            final FactoryManager factoryManager,
+                                            final GraphRulesManager rulesManager,
+                                            final Index<?, ?> graphIndex,
+                                            final GraphUtils graphUtils) {
+        super(definitionManager,
+              factoryManager,
+              graphIndex);
         this.rulesManager = rulesManager;
         this.graphUtils = graphUtils;
     }

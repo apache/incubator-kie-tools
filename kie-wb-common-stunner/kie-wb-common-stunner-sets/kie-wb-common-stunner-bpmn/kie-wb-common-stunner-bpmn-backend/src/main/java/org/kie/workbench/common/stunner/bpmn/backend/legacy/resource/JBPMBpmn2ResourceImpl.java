@@ -36,43 +36,43 @@ public class JBPMBpmn2ResourceImpl extends Bpmn2ResourceImpl {
 
     public HashMap xmlNameToFeatureMap = new HashMap();
 
-    public JBPMBpmn2ResourceImpl( URI uri ) {
-        super( uri );
-        this.getDefaultLoadOptions().put( XMLResource.OPTION_DEFER_IDREF_RESOLUTION,
-                                          true );
-        this.getDefaultLoadOptions().put( XMLResource.OPTION_DISABLE_NOTIFY,
-                                          true );
-        this.getDefaultLoadOptions().put( XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP,
-                                          xmlNameToFeatureMap );
+    public JBPMBpmn2ResourceImpl(URI uri) {
+        super(uri);
+        this.getDefaultLoadOptions().put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION,
+                                         true);
+        this.getDefaultLoadOptions().put(XMLResource.OPTION_DISABLE_NOTIFY,
+                                         true);
+        this.getDefaultLoadOptions().put(XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP,
+                                         xmlNameToFeatureMap);
         // Switch off DTD external entity processing
         Map parserFeatures = new HashMap();
-        parserFeatures.put( "http://xml.org/sax/features/external-general-entities",
-                            false );
-        parserFeatures.put( "http://xml.org/sax/features/external-parameter-entities",
-                            false );
-        this.getDefaultLoadOptions().put( XMLResource.OPTION_PARSER_FEATURES,
-                                          parserFeatures );
-        this.getDefaultSaveOptions().put( XMLResource.OPTION_ENCODING,
-                                          "UTF-8" );
-        this.getDefaultSaveOptions().put( XMLResource.OPTION_PROCESS_DANGLING_HREF,
-                                          XMLResource.OPTION_PROCESS_DANGLING_HREF_DISCARD );
+        parserFeatures.put("http://xml.org/sax/features/external-general-entities",
+                           false);
+        parserFeatures.put("http://xml.org/sax/features/external-parameter-entities",
+                           false);
+        this.getDefaultLoadOptions().put(XMLResource.OPTION_PARSER_FEATURES,
+                                         parserFeatures);
+        this.getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING,
+                                         "UTF-8");
+        this.getDefaultSaveOptions().put(XMLResource.OPTION_PROCESS_DANGLING_HREF,
+                                         XMLResource.OPTION_PROCESS_DANGLING_HREF_DISCARD);
     }
 
     @Override
     protected XMLSave createXMLSave() {
         prepareSave();
-        return new JBPMXMLSaveImpl( createXMLHelper() ) {
+        return new JBPMXMLSaveImpl(createXMLHelper()) {
             @Override
-            protected boolean shouldSaveFeature( EObject o,
-                                                 EStructuralFeature f ) {
-                if ( Bpmn2Package.eINSTANCE.getDocumentation_Text().equals( f ) ) {
+            protected boolean shouldSaveFeature(EObject o,
+                                                EStructuralFeature f) {
+                if (Bpmn2Package.eINSTANCE.getDocumentation_Text().equals(f)) {
                     return false;
                 }
-                if ( Bpmn2Package.eINSTANCE.getFormalExpression_Body().equals( f ) ) {
+                if (Bpmn2Package.eINSTANCE.getFormalExpression_Body().equals(f)) {
                     return false;
                 }
-                return super.shouldSaveFeature( o,
-                                                f );
+                return super.shouldSaveFeature(o,
+                                               f);
             }
         };
     }
@@ -81,19 +81,19 @@ public class JBPMBpmn2ResourceImpl extends Bpmn2ResourceImpl {
     protected XMLLoad createXMLLoad() {
 //        DroolsPackageImpl.init();
 //        BpsimPackageImpl.init();
-        return new XMLLoadImpl( createXMLHelper() ) {
+        return new XMLLoadImpl(createXMLHelper()) {
 
             @Override
-            public void load( XMLResource resource,
-                              InputStream inputStream,
-                              Map<?, ?> options ) throws IOException {
+            public void load(XMLResource resource,
+                             InputStream inputStream,
+                             Map<?, ?> options) throws IOException {
                 try {
-                    super.load( resource,
-                                inputStream,
-                                options );
-                } catch ( Exception e ) {
-                    DiagnosticWrappedException error = new DiagnosticWrappedException( e );
-                    resource.getErrors().add( error );
+                    super.load(resource,
+                               inputStream,
+                               options);
+                } catch (Exception e) {
+                    DiagnosticWrappedException error = new DiagnosticWrappedException(e);
+                    resource.getErrors().add(error);
                 }
             }
         };
@@ -106,11 +106,11 @@ public class JBPMBpmn2ResourceImpl extends Bpmn2ResourceImpl {
         private int column;
         private int line;
 
-        public DiagnosticWrappedException( Exception exception ) {
-            super( exception );
+        public DiagnosticWrappedException(Exception exception) {
+            super(exception);
         }
 
-        public void setLocation( String location ) {
+        public void setLocation(String location) {
             this.location = location;
         }
 
@@ -118,7 +118,7 @@ public class JBPMBpmn2ResourceImpl extends Bpmn2ResourceImpl {
             return location;
         }
 
-        public void setColumn( int column ) {
+        public void setColumn(int column) {
             this.column = column;
             ;
         }
@@ -127,7 +127,7 @@ public class JBPMBpmn2ResourceImpl extends Bpmn2ResourceImpl {
             return column;
         }
 
-        public void setLine( int line ) {
+        public void setLine(int line) {
             this.line = line;
         }
 

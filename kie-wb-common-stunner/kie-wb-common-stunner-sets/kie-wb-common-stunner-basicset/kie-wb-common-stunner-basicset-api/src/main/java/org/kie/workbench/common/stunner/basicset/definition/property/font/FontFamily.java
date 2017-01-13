@@ -58,7 +58,7 @@ public class FontFamily {
     public FontFamily() {
     }
 
-    public FontFamily( final String value ) {
+    public FontFamily(final String value) {
         this.value = value;
     }
 
@@ -90,7 +90,7 @@ public class FontFamily {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

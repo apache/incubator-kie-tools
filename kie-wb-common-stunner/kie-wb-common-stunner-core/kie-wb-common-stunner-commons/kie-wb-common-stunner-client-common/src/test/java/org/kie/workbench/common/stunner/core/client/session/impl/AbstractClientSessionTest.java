@@ -26,7 +26,7 @@ import org.mockito.Mock;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class AbstractClientSessionTest {
 
     @Mock
@@ -38,41 +38,41 @@ public class AbstractClientSessionTest {
 
     @Before
     public void setup() throws Exception {
-        when( canvasHandler.getCanvas() ).thenReturn( canvas );
-        this.tested = spy( new AbstractClientSessionStub( canvas,
-                                                          canvasHandler ) );
+        when(canvasHandler.getCanvas()).thenReturn(canvas);
+        this.tested = spy(new AbstractClientSessionStub(canvas,
+                                                        canvasHandler));
     }
 
     @Test
     public void testOpen() {
         tested.open();
-        assertTrue( tested.isOpened() );
-        verify( tested,
-                times( 1 ) ).doOpen();
-        verify( tested,
-                times( 0 ) ).doPause();
-        verify( tested,
-                times( 0 ) ).doResume();
-        verify( tested,
-                times( 0 ) ).doDispose();
+        assertTrue(tested.isOpened());
+        verify(tested,
+               times(1)).doOpen();
+        verify(tested,
+               times(0)).doPause();
+        verify(tested,
+               times(0)).doResume();
+        verify(tested,
+               times(0)).doDispose();
     }
 
     @Test
     public void testPause() {
         tested.isOpened = true;
         tested.pause();
-        assertTrue( tested.isOpened() );
-        verify( tested,
-                times( 0 ) ).doOpen();
-        verify( tested,
-                times( 1 ) ).doPause();
-        verify( tested,
-                times( 0 ) ).doResume();
-        verify( tested,
-                times( 0 ) ).doDispose();
+        assertTrue(tested.isOpened());
+        verify(tested,
+               times(0)).doOpen();
+        verify(tested,
+               times(1)).doPause();
+        verify(tested,
+               times(0)).doResume();
+        verify(tested,
+               times(0)).doDispose();
     }
 
-    @Test( expected = java.lang.IllegalStateException.class )
+    @Test(expected = java.lang.IllegalStateException.class)
     public void testCannotPause() {
         tested.isOpened = false;
         tested.pause();
@@ -82,18 +82,18 @@ public class AbstractClientSessionTest {
     public void testResume() {
         tested.isOpened = true;
         tested.resume();
-        assertTrue( tested.isOpened() );
-        verify( tested,
-                times( 0 ) ).doOpen();
-        verify( tested,
-                times( 0 ) ).doPause();
-        verify( tested,
-                times( 1 ) ).doResume();
-        verify( tested,
-                times( 0 ) ).doDispose();
+        assertTrue(tested.isOpened());
+        verify(tested,
+               times(0)).doOpen();
+        verify(tested,
+               times(0)).doPause();
+        verify(tested,
+               times(1)).doResume();
+        verify(tested,
+               times(0)).doDispose();
     }
 
-    @Test( expected = java.lang.IllegalStateException.class )
+    @Test(expected = java.lang.IllegalStateException.class)
     public void testCannotResume() {
         tested.isOpened = false;
         tested.resume();
@@ -103,20 +103,20 @@ public class AbstractClientSessionTest {
     public void testDispose() {
         tested.isOpened = true;
         tested.dispose();
-        assertFalse( tested.isOpened() );
-        verify( tested,
-                times( 0 ) ).doOpen();
-        verify( tested,
-                times( 0 ) ).doPause();
-        verify( tested,
-                times( 0 ) ).doResume();
-        verify( tested,
-                times( 1 ) ).doDispose();
-        verify( canvasHandler,
-                times( 1 ) ).destroy();
+        assertFalse(tested.isOpened());
+        verify(tested,
+               times(0)).doOpen();
+        verify(tested,
+               times(0)).doPause();
+        verify(tested,
+               times(0)).doResume();
+        verify(tested,
+               times(1)).doDispose();
+        verify(canvasHandler,
+               times(1)).destroy();
     }
 
-    @Test( expected = java.lang.IllegalStateException.class )
+    @Test(expected = java.lang.IllegalStateException.class)
     public void testCannotDispose() {
         tested.isOpened = false;
         tested.dispose();
@@ -124,10 +124,10 @@ public class AbstractClientSessionTest {
 
     private class AbstractClientSessionStub extends AbstractClientSession {
 
-        AbstractClientSessionStub( AbstractCanvas canvas,
-                                   AbstractCanvasHandler canvasHandler ) {
-            super( canvas,
-                   canvasHandler );
+        AbstractClientSessionStub(AbstractCanvas canvas,
+                                  AbstractCanvasHandler canvasHandler) {
+            super(canvas,
+                  canvasHandler);
         }
 
         @Override

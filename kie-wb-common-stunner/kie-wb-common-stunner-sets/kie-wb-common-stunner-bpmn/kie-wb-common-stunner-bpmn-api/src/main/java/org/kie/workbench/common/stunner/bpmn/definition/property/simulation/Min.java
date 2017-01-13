@@ -59,7 +59,7 @@ public class Min implements BPMNProperty {
     public Min() {
     }
 
-    public Min( final Double value ) {
+    public Min(final Double value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class Min implements BPMNProperty {
         return value;
     }
 
-    public void setValue( Double value ) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 }

@@ -26,8 +26,8 @@ public class IntegerFieldParser extends AbstractParser {
     private final String name;
     private final int value;
 
-    public IntegerFieldParser( String name,
-                               int value ) {
+    public IntegerFieldParser(final String name,
+                              final int value) {
         this.name = name;
         this.value = value;
     }
@@ -44,7 +44,7 @@ public class IntegerFieldParser extends AbstractParser {
 
     @Override
     public String getText() throws IOException, JsonParseException {
-        throw new RuntimeException( "Should not be called!" );
+        throw new RuntimeException("Should not be called!");
     }
 
     @Override

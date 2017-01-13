@@ -23,7 +23,7 @@ public abstract class AbstractSessionEvent implements UberFireEvent {
 
     protected final ClientSession session;
 
-    public AbstractSessionEvent( final ClientSession session ) {
+    public AbstractSessionEvent(final ClientSession session) {
         this.session = session;
     }
 

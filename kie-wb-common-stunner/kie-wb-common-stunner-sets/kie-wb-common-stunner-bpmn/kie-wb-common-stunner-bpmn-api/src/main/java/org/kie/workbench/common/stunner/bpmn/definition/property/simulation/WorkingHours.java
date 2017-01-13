@@ -59,7 +59,7 @@ public class WorkingHours implements BPMNProperty {
     public WorkingHours() {
     }
 
-    public WorkingHours( final Double value ) {
+    public WorkingHours(final Double value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class WorkingHours implements BPMNProperty {
         return value;
     }
 
-    public void setValue( Double value ) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 }

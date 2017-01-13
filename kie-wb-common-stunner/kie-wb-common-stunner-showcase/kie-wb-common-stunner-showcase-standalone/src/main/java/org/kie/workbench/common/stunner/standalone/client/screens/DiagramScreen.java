@@ -77,10 +77,10 @@ import static java.util.logging.Level.FINE;
 
 // TODO: i18n.
 @Dependent
-@WorkbenchScreen( identifier = DiagramScreen.SCREEN_ID )
+@WorkbenchScreen(identifier = DiagramScreen.SCREEN_ID)
 public class DiagramScreen {
 
-    private static Logger LOGGER = Logger.getLogger( DiagramScreen.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(DiagramScreen.class.getName());
 
     public static final String SCREEN_ID = "DiagramScreen";
 
@@ -104,18 +104,18 @@ public class DiagramScreen {
     private Menus menu = null;
 
     @Inject
-    public DiagramScreen( final DefinitionManager definitionManager,
-                          final ClientFactoryService clientFactoryServices,
-                          final ClientDiagramService clientDiagramServices,
-                          final AbstractClientSessionManager canvasSessionManager,
-                          final AbstractClientSessionPresenter clientSessionPresenter,
-                          final PlaceManager placeManager,
-                          final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
-                          final ToolbarFactory toolbars,
-                          final ClientSessionUtils sessionUtils,
-                          final MenuDevCommandsBuilder menuDevCommandsBuilder,
-                          final ScreenPanelView screenPanelView,
-                          final ScreenErrorView screenErrorView ) {
+    public DiagramScreen(final DefinitionManager definitionManager,
+                         final ClientFactoryService clientFactoryServices,
+                         final ClientDiagramService clientDiagramServices,
+                         final AbstractClientSessionManager canvasSessionManager,
+                         final AbstractClientSessionPresenter clientSessionPresenter,
+                         final PlaceManager placeManager,
+                         final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
+                         final ToolbarFactory toolbars,
+                         final ClientSessionUtils sessionUtils,
+                         final MenuDevCommandsBuilder menuDevCommandsBuilder,
+                         final ScreenPanelView screenPanelView,
+                         final ScreenErrorView screenErrorView) {
         this.definitionManager = definitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.clientDiagramServices = clientDiagramServices;
@@ -131,31 +131,31 @@ public class DiagramScreen {
     }
 
     @PostConstruct
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void init() {
         // Create a new full control session.
-        session = ( AbstractClientFullSession ) canvasSessionManager.newFullSession();
+        session = (AbstractClientFullSession) canvasSessionManager.newFullSession();
         // Initialize the session presenter.
         clientSessionPresenter
-                .setDisplayErrors( true )
-                .initialize( session,
-                             1400,
-                             650 );
+                .setDisplayErrors(true)
+                .initialize(session,
+                            1400,
+                            650);
         // Configure toolbar.
         this.toolbar = buildToolbar();
-        screenPanelView.setWidget( clientSessionPresenter.getView() );
-        clientSessionPresenter.getView().setToolbar( toolbar.getView() );
-        toolbar.initialize( session,
-                            new ToolbarCommandCallback<Object>() {
-                                @Override
-                                public void onCommandExecuted( final Object result ) {
-                                }
+        screenPanelView.setWidget(clientSessionPresenter.getView());
+        clientSessionPresenter.getView().setToolbar(toolbar.getView());
+        toolbar.initialize(session,
+                           new ToolbarCommandCallback<Object>() {
+                               @Override
+                               public void onCommandExecuted(final Object result) {
+                               }
 
-                                @Override
-                                public void onError( final ClientRuntimeError error ) {
-                                    showError( error );
-                                }
-                            } );
+                               @Override
+                               public void onError(final ClientRuntimeError error) {
+                                   showError(error);
+                               }
+                           });
     }
 
     private Toolbar<AbstractClientFullSession> buildToolbar() {
@@ -173,47 +173,47 @@ public class DiagramScreen {
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
+    public void onStartup(final PlaceRequest placeRequest) {
         this.placeRequest = placeRequest;
         this.menu = makeMenuBar();
-        final String name = placeRequest.getParameter( "name",
-                                                       "" );
+        final String name = placeRequest.getParameter("name",
+                                                      "");
         final boolean isCreate = name == null || name.trim().length() == 0;
         final Command callback = () -> {
             final Diagram diagram = clientSessionPresenter.getCanvasHandler().getDiagram();
-            if ( null != diagram ) {
+            if (null != diagram) {
                 // Update screen title.
-                updateTitle( diagram.getMetadata().getTitle() );
+                updateTitle(diagram.getMetadata().getTitle());
             }
         };
-        if ( isCreate ) {
-            final String defSetId = placeRequest.getParameter( "defSetId",
-                                                               "" );
-            final String shapeSetd = placeRequest.getParameter( "shapeSetId",
-                                                                "" );
-            final String title = placeRequest.getParameter( "title",
-                                                            "" );
+        if (isCreate) {
+            final String defSetId = placeRequest.getParameter("defSetId",
+                                                              "");
+            final String shapeSetd = placeRequest.getParameter("shapeSetId",
+                                                               "");
+            final String title = placeRequest.getParameter("title",
+                                                           "");
             // Create a new diagram.
-            newDiagram( UUID.uuid(),
-                        title,
-                        defSetId,
-                        shapeSetd,
-                        callback );
+            newDiagram(UUID.uuid(),
+                       title,
+                       defSetId,
+                       shapeSetd,
+                       callback);
         } else {
             // Load an existing diagram.
-            load( name,
-                  callback );
+            load(name,
+                 callback);
         }
     }
 
     private Menus makeMenuBar() {
         final MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> m =
                 MenuFactory
-                        .newTopLevelMenu( "Save" )
-                        .respondsWith( getSaveCommand() )
+                        .newTopLevelMenu("Save")
+                        .respondsWith(getSaveCommand())
                         .endMenu();
-        if ( menuDevCommandsBuilder.isEnabled() ) {
-            m.newTopLevelMenu( menuDevCommandsBuilder.build() ).endMenu();
+        if (menuDevCommandsBuilder.isEnabled()) {
+            m.newTopLevelMenu(menuDevCommandsBuilder.build()).endMenu();
         }
         return m.build();
     }
@@ -231,134 +231,134 @@ public class DiagramScreen {
     }
 
     private void save() {
-        session.getValidationControl().validate( new CanvasValidatorCallback() {
+        session.getValidationControl().validate(new CanvasValidatorCallback() {
             @Override
             public void onSuccess() {
-                doSave( new ServiceCallback<Diagram<Graph, Metadata>>() {
+                doSave(new ServiceCallback<Diagram<Graph, Metadata>>() {
                     @Override
-                    public void onSuccess( Diagram<Graph, Metadata> item ) {
-                        log( Level.INFO,
-                             "Save operation finished for diagram [" + item.getName() + "]." );
+                    public void onSuccess(Diagram<Graph, Metadata> item) {
+                        log(Level.INFO,
+                            "Save operation finished for diagram [" + item.getName() + "].");
                     }
 
                     @Override
-                    public void onError( ClientRuntimeError error ) {
-                        showError( error );
+                    public void onError(ClientRuntimeError error) {
+                        showError(error);
                     }
-                } );
+                });
             }
 
             @Override
-            public void onFail( Iterable<CanvasValidationViolation> violations ) {
-                log( Level.WARNING,
-                     "Validation failed [violations=" + violations.toString() + "]." );
+            public void onFail(Iterable<CanvasValidationViolation> violations) {
+                log(Level.WARNING,
+                    "Validation failed [violations=" + violations.toString() + "].");
             }
-        } );
+        });
     }
 
-    @SuppressWarnings( "unchecked" )
-    private void doSave( final ServiceCallback<Diagram<Graph, Metadata>> diagramServiceCallback ) {
+    @SuppressWarnings("unchecked")
+    private void doSave(final ServiceCallback<Diagram<Graph, Metadata>> diagramServiceCallback) {
         // Update diagram's image data as thumbnail.
-        final String thumbData = sessionUtils.canvasToImageData( session );
+        final String thumbData = sessionUtils.canvasToImageData(session);
         final CanvasHandler canvasHandler = session.getCanvasHandler();
         final Diagram diagram = canvasHandler.getDiagram();
-        diagram.getMetadata().setThumbData( thumbData );
+        diagram.getMetadata().setThumbData(thumbData);
         // Perform update operation remote call.
-        clientDiagramServices.saveOrUpdate( diagram,
-                                            diagramServiceCallback );
+        clientDiagramServices.saveOrUpdate(diagram,
+                                           diagramServiceCallback);
     }
 
-    private void newDiagram( final String uuid,
-                             final String title,
-                             final String definitionSetId,
-                             final String shapeSetId,
-                             final Command callback ) {
-        final Metadata metadata = buildMetadata( definitionSetId,
-                                                 shapeSetId,
-                                                 title );
-        clientFactoryServices.newDiagram( uuid,
-                                          definitionSetId,
-                                          metadata,
-                                          new ServiceCallback<Diagram>() {
-                                              @Override
-                                              public void onSuccess( final Diagram diagram ) {
-                                                  final Metadata metadata = diagram.getMetadata();
-                                                  metadata.setShapeSetId( shapeSetId );
-                                                  metadata.setTitle( title );
-                                                  open( diagram,
-                                                        callback );
-                                              }
+    private void newDiagram(final String uuid,
+                            final String title,
+                            final String definitionSetId,
+                            final String shapeSetId,
+                            final Command callback) {
+        final Metadata metadata = buildMetadata(definitionSetId,
+                                                shapeSetId,
+                                                title);
+        clientFactoryServices.newDiagram(uuid,
+                                         definitionSetId,
+                                         metadata,
+                                         new ServiceCallback<Diagram>() {
+                                             @Override
+                                             public void onSuccess(final Diagram diagram) {
+                                                 final Metadata metadata = diagram.getMetadata();
+                                                 metadata.setShapeSetId(shapeSetId);
+                                                 metadata.setTitle(title);
+                                                 open(diagram,
+                                                      callback);
+                                             }
 
-                                              @Override
-                                              public void onError( final ClientRuntimeError error ) {
-                                                  showError( error );
-                                                  callback.execute();
-                                              }
-                                          } );
+                                             @Override
+                                             public void onError(final ClientRuntimeError error) {
+                                                 showError(error);
+                                                 callback.execute();
+                                             }
+                                         });
     }
 
-    private Metadata buildMetadata( final String defSetId,
-                                    final String shapeSetId,
-                                    final String title ) {
-        return new MetadataImpl.MetadataImplBuilder( defSetId,
-                                                     definitionManager )
-                .setTitle( title )
-                .setShapeSetId( shapeSetId )
+    private Metadata buildMetadata(final String defSetId,
+                                   final String shapeSetId,
+                                   final String title) {
+        return new MetadataImpl.MetadataImplBuilder(defSetId,
+                                                    definitionManager)
+                .setTitle(title)
+                .setShapeSetId(shapeSetId)
                 .build();
     }
 
-    private void load( final String name,
-                       final Command callback ) {
-        final DiagramLookupRequest request = new DiagramLookupRequestImpl.Builder().withName( name ).build();
-        clientDiagramServices.lookup( request,
-                                      new ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>>() {
-                                          @Override
-                                          public void onSuccess( LookupManager.LookupResponse<DiagramRepresentation> diagramRepresentations ) {
-                                              if ( null != diagramRepresentations && !diagramRepresentations.getResults().isEmpty() ) {
-                                                  final Path path = diagramRepresentations.getResults().get( 0 ).getPath();
-                                                  loadByPath( path,
-                                                              callback );
-                                              }
-                                          }
-
-                                          @Override
-                                          public void onError( ClientRuntimeError error ) {
-                                              showError( error );
-                                              callback.execute();
-                                          }
-                                      } );
-    }
-
-    private void loadByPath( final Path path,
-                             final Command callback ) {
-        clientDiagramServices.getByPath( path,
-                                         new ServiceCallback<Diagram<Graph, Metadata>>() {
-                                             @Override
-                                             public void onSuccess( final Diagram<Graph, Metadata> diagram ) {
-                                                 open( diagram,
-                                                       callback );
+    private void load(final String name,
+                      final Command callback) {
+        final DiagramLookupRequest request = new DiagramLookupRequestImpl.Builder().withName(name).build();
+        clientDiagramServices.lookup(request,
+                                     new ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>>() {
+                                         @Override
+                                         public void onSuccess(LookupManager.LookupResponse<DiagramRepresentation> diagramRepresentations) {
+                                             if (null != diagramRepresentations && !diagramRepresentations.getResults().isEmpty()) {
+                                                 final Path path = diagramRepresentations.getResults().get(0).getPath();
+                                                 loadByPath(path,
+                                                            callback);
                                              }
+                                         }
 
-                                             @Override
-                                             public void onError( final ClientRuntimeError error ) {
-                                                 showError( error );
-                                                 callback.execute();
-                                             }
-                                         } );
+                                         @Override
+                                         public void onError(ClientRuntimeError error) {
+                                             showError(error);
+                                             callback.execute();
+                                         }
+                                     });
     }
 
-    private void open( final Diagram diagram,
-                       final Command callback ) {
-        screenPanelView.setWidget( clientSessionPresenter.getView() );
-        clientSessionPresenter.open( diagram,
-                                     callback );
+    private void loadByPath(final Path path,
+                            final Command callback) {
+        clientDiagramServices.getByPath(path,
+                                        new ServiceCallback<Diagram<Graph, Metadata>>() {
+                                            @Override
+                                            public void onSuccess(final Diagram<Graph, Metadata> diagram) {
+                                                open(diagram,
+                                                     callback);
+                                            }
+
+                                            @Override
+                                            public void onError(final ClientRuntimeError error) {
+                                                showError(error);
+                                                callback.execute();
+                                            }
+                                        });
     }
 
-    private void updateTitle( final String title ) {
+    private void open(final Diagram diagram,
+                      final Command callback) {
+        screenPanelView.setWidget(clientSessionPresenter.getView());
+        clientSessionPresenter.open(diagram,
+                                    callback);
+    }
+
+    private void updateTitle(final String title) {
         // Change screen title.
         DiagramScreen.this.title = title;
-        changeTitleNotificationEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
-                                                                       this.title ) );
+        changeTitleNotificationEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
+                                                                     this.title));
     }
 
     @OnOpen
@@ -368,16 +368,16 @@ public class DiagramScreen {
 
     @OnFocus
     public void onFocus() {
-        if ( !isSameSession( canvasSessionManager.getCurrentSession() ) ) {
-            canvasSessionManager.open( session );
+        if (!isSameSession(canvasSessionManager.getCurrentSession())) {
+            canvasSessionManager.open(session);
         } else {
-            log( FINE,
-                 "Session already active, no action." );
+            log(FINE,
+                "Session already active, no action.");
         }
     }
 
-    private boolean isSameSession( final ClientSession other ) {
-        return null != other && null != session && other.equals( session );
+    private boolean isSameSession(final ClientSession other) {
+        return null != other && null != session && other.equals(session);
     }
 
     @OnLostFocus
@@ -396,14 +396,14 @@ public class DiagramScreen {
     }
 
     private void resume() {
-        if ( null != session && session.isOpened() ) {
-            canvasSessionManager.resume( session );
+        if (null != session && session.isOpened()) {
+            canvasSessionManager.resume(session);
         }
     }
 
     private void disposeSession() {
         canvasSessionManager.dispose();
-        if ( null != toolbar ) {
+        if (null != toolbar) {
             toolbar.destroy();
         }
         this.toolbar = null;
@@ -425,26 +425,26 @@ public class DiagramScreen {
         return "stunnerDiagramScreenContext";
     }
 
-    private void showError( final ClientRuntimeError error ) {
-        screenErrorView.showError( error );
-        screenPanelView.setWidget( screenErrorView.asWidget() );
-        log( Level.SEVERE,
-             error.toString() );
+    private void showError(final ClientRuntimeError error) {
+        screenErrorView.showError(error);
+        screenPanelView.setWidget(screenErrorView.asWidget());
+        log(Level.SEVERE,
+            error.toString());
     }
 
-    void onSessionErrorEvent( @Observes OnSessionErrorEvent errorEvent ) {
-        if ( isSameSession( errorEvent.getSession() ) ) {
-            showError( errorEvent.getError() );
+    void onSessionErrorEvent(final @Observes OnSessionErrorEvent errorEvent) {
+        if (isSameSession(errorEvent.getSession())) {
+            showError(errorEvent.getError());
             // TODO executeWithConfirm( "An error happened [" + errorEvent.getError() + "]. Do you want" +
             //         "to refresh the diagram (Last changes can be lost)? ", this::menu_refresh );
         }
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

@@ -51,28 +51,28 @@ public abstract class AbstractPaletteMorphCommand<I> extends AbstractPaletteComm
 
     protected final Map<String, MorphDefinition> morphDefinitions = new HashMap<>();
 
-    public AbstractPaletteMorphCommand( final DefinitionUtils definitionUtils,
-                                        final CanvasCommandFactory commandFactory,
-                                        final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
-                                        final ClientFactoryService clientFactoryServices,
-                                        final CommonLookups commonLookups,
-                                        final ShapeManager shapeManager,
-                                        final DefinitionsPaletteBuilder definitionsPaletteBuilder,
-                                        final Palette<HasPaletteItems<? extends GlyphPaletteItem>> palette,
-                                        final NodeDragProxy<AbstractCanvasHandler> nodeDragProxyFactory,
-                                        final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl,
-                                        final GraphBoundsIndexer graphBoundsIndexer,
-                                        final I icon,
-                                        final Event<CanvasElementSelectedEvent> elementSelectedEvent ) {
-        super( clientFactoryServices,
-               commonLookups,
-               shapeManager,
-               definitionsPaletteBuilder,
-               palette,
-               nodeDragProxyFactory,
-               nodeBuilderControl,
-               graphBoundsIndexer,
-               icon );
+    public AbstractPaletteMorphCommand(final DefinitionUtils definitionUtils,
+                                       final CanvasCommandFactory commandFactory,
+                                       final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
+                                       final ClientFactoryService clientFactoryServices,
+                                       final CommonLookups commonLookups,
+                                       final ShapeManager shapeManager,
+                                       final DefinitionsPaletteBuilder definitionsPaletteBuilder,
+                                       final Palette<HasPaletteItems<? extends GlyphPaletteItem>> palette,
+                                       final NodeDragProxy<AbstractCanvasHandler> nodeDragProxyFactory,
+                                       final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl,
+                                       final GraphBoundsIndexer graphBoundsIndexer,
+                                       final I icon,
+                                       final Event<CanvasElementSelectedEvent> elementSelectedEvent) {
+        super(clientFactoryServices,
+              commonLookups,
+              shapeManager,
+              definitionsPaletteBuilder,
+              palette,
+              nodeDragProxyFactory,
+              nodeBuilderControl,
+              graphBoundsIndexer,
+              icon);
         this.definitionUtils = definitionUtils;
         this.commandFactory = commandFactory;
         this.canvasCommandManager = canvasCommandManager;
@@ -80,51 +80,51 @@ public abstract class AbstractPaletteMorphCommand<I> extends AbstractPaletteComm
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     protected Set<String> getDefinitions() {
         this.morphDefinitions.clear();
         final Object source = this.sourceNode.getContent().getDefinition();
-        final String id = getDefinitionManager().adapters().forDefinition().getId( source );
-        final MorphAdapter<Object> morphAdapter = getDefinitionManager().adapters().registry().getMorphAdapter( source.getClass() );
-        final Iterable<MorphDefinition> morphDefinitions = morphAdapter.getMorphDefinitions( source );
-        if ( null != morphDefinitions && morphDefinitions.iterator().hasNext() ) {
-            for ( final MorphDefinition morphDefinition : morphDefinitions ) {
-                final Iterable<String> morphTargets = morphAdapter.getTargets( source,
-                                                                               morphDefinition );
-                if ( null != morphTargets && morphTargets.iterator().hasNext() ) {
-                    for ( final String morphTarget : morphTargets ) {
-                        if ( !id.equals( morphTarget ) ) {
-                            this.morphDefinitions.put( morphTarget,
-                                                       morphDefinition );
+        final String id = getDefinitionManager().adapters().forDefinition().getId(source);
+        final MorphAdapter<Object> morphAdapter = getDefinitionManager().adapters().registry().getMorphAdapter(source.getClass());
+        final Iterable<MorphDefinition> morphDefinitions = morphAdapter.getMorphDefinitions(source);
+        if (null != morphDefinitions && morphDefinitions.iterator().hasNext()) {
+            for (final MorphDefinition morphDefinition : morphDefinitions) {
+                final Iterable<String> morphTargets = morphAdapter.getTargets(source,
+                                                                              morphDefinition);
+                if (null != morphTargets && morphTargets.iterator().hasNext()) {
+                    for (final String morphTarget : morphTargets) {
+                        if (!id.equals(morphTarget)) {
+                            this.morphDefinitions.put(morphTarget,
+                                                      morphDefinition);
                         }
                     }
                 }
             }
         }
-        if ( !this.morphDefinitions.isEmpty() ) {
-            return new HashSet<>( this.morphDefinitions.keySet() );
+        if (!this.morphDefinitions.isEmpty()) {
+            return new HashSet<>(this.morphDefinitions.keySet());
         }
         return null;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected void onItemSelected( final String definitionId,
-                                   final double x,
-                                   final double y ) {
-        final MorphDefinition morphDefinition = morphDefinitions.get( definitionId );
-        final Node node = ( Node ) sourceNode;
+    @SuppressWarnings("unchecked")
+    protected void onItemSelected(final String definitionId,
+                                  final double x,
+                                  final double y) {
+        final MorphDefinition morphDefinition = morphDefinitions.get(definitionId);
+        final Node node = (Node) sourceNode;
         final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
-        canvasCommandManager.execute( canvasHandler,
-                                      commandFactory.morphNode( node,
-                                                                morphDefinition,
-                                                                definitionId,
-                                                                ssid ) );
+        canvasCommandManager.execute(canvasHandler,
+                                     commandFactory.morphNode(node,
+                                                              morphDefinition,
+                                                              definitionId,
+                                                              ssid));
         this.morphDefinitions.clear();
         clear();
-        fireElementSelectedEvent( elementSelectedEvent,
-                                  canvasHandler,
-                                  node.getUUID() );
+        fireElementSelectedEvent(elementSelectedEvent,
+                                 canvasHandler,
+                                 node.getUUID());
     }
 
     protected DefinitionManager getDefinitionManager() {

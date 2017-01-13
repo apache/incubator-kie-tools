@@ -34,35 +34,35 @@ public class ProjectScreenViewImpl implements ProjectScreenView,
     private FlowPanel widgetPanel;
 
     @Inject
-    public ProjectScreenViewImpl( @DataField FlowPanel loadingPanel,
-                                  @DataField FlowPanel widgetPanel ) {
+    public ProjectScreenViewImpl(final @DataField FlowPanel loadingPanel,
+                                 final @DataField FlowPanel widgetPanel) {
         this.loadingPanel = loadingPanel;
         this.widgetPanel = widgetPanel;
     }
 
     @Override
-    public ProjectScreenView setWidget( final IsWidget widget ) {
+    public ProjectScreenView setWidget(final IsWidget widget) {
         widgetPanel.clear();
-        widgetPanel.add( widget );
+        widgetPanel.add(widget);
         return this;
     }
 
     @Override
     public ProjectScreenView showLoading() {
-        widgetPanel.setVisible( false );
-        loadingPanel.setVisible( true );
+        widgetPanel.setVisible(false);
+        loadingPanel.setVisible(true);
         return this;
     }
 
     @Override
     public ProjectScreenView hideLoading() {
-        loadingPanel.setVisible( false );
-        widgetPanel.setVisible( true );
+        loadingPanel.setVisible(false);
+        widgetPanel.setVisible(true);
         return this;
     }
 
     @Override
     public IsWidget asWidget() {
-        return ElementWrapperWidget.getWidget( this.getElement() );
+        return ElementWrapperWidget.getWidget(this.getElement());
     }
 }

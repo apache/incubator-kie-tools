@@ -40,57 +40,57 @@ public abstract class AbstractValidatingTextBox extends TextBox {
     protected void setup() {
         final TextBox me = this;
         //Validate value as it is entered
-        this.addKeyPressHandler( new KeyPressHandler() {
+        this.addKeyPressHandler(new KeyPressHandler() {
 
-            public void onKeyPress( KeyPressEvent event ) {
+            public void onKeyPress(final KeyPressEvent event) {
                 // Permit navigation
-                int keyCode = getKeyCodeFromKeyPressEvent( event );
-                if ( event.isControlKeyDown() ) {
+                int keyCode = getKeyCodeFromKeyPressEvent(event);
+                if (event.isControlKeyDown()) {
                     return;
                 }
-                if ( !event.isShiftKeyDown() ) {
-                    if ( keyCode == KeyCodes.KEY_BACKSPACE
+                if (!event.isShiftKeyDown()) {
+                    if (keyCode == KeyCodes.KEY_BACKSPACE
                             || keyCode == KeyCodes.KEY_DELETE
                             || keyCode == KeyCodes.KEY_LEFT
                             || keyCode == KeyCodes.KEY_RIGHT
                             || keyCode == KeyCodes.KEY_TAB
                             || keyCode == KeyCodes.KEY_HOME
-                            || keyCode == KeyCodes.KEY_END ) {
+                            || keyCode == KeyCodes.KEY_END) {
                         return;
                     }
                 }
                 // Get new value and validate
                 int charCode = event.getCharCode();
                 String oldValue = me.getValue();
-                String newValue = oldValue.substring( 0,
-                                                      me.getCursorPos() );
-                newValue = newValue + ( ( char ) charCode );
-                newValue = newValue + oldValue.substring( me.getCursorPos() + me.getSelectionLength() );
-                String validationError = isValidValue( newValue,
-                                                       false );
-                if ( validationError != null ) {
+                String newValue = oldValue.substring(0,
+                                                     me.getCursorPos());
+                newValue = newValue + ((char) charCode);
+                newValue = newValue + oldValue.substring(me.getCursorPos() + me.getSelectionLength());
+                String validationError = isValidValue(newValue,
+                                                      false);
+                if (validationError != null) {
                     event.preventDefault();
-                    fireValidationError( validationError );
+                    fireValidationError(validationError);
                 }
             }
-        } );
+        });
         //Add validation when loses focus (for when values are pasted in by user)
-        this.addBlurHandler( new BlurHandler() {
+        this.addBlurHandler(new BlurHandler() {
 
             @Override
-            public void onBlur( BlurEvent event ) {
+            public void onBlur(final BlurEvent event) {
                 String value = me.getText();
-                String validationError = isValidValue( value,
-                                                       true );
-                if ( validationError != null ) {
-                    fireValidationError( validationError );
-                    String validValue = makeValidValue( value );
-                    me.setValue( validValue );
-                    ValueChangeEvent.fire( AbstractValidatingTextBox.this,
-                                           validValue );
+                String validationError = isValidValue(value,
+                                                      true);
+                if (validationError != null) {
+                    fireValidationError(validationError);
+                    String validValue = makeValidValue(value);
+                    me.setValue(validValue);
+                    ValueChangeEvent.fire(AbstractValidatingTextBox.this,
+                                          validValue);
                 }
             }
-        } );
+        });
     }
 
     /**
@@ -99,8 +99,8 @@ public abstract class AbstractValidatingTextBox extends TextBox {
      * @param isOnFocusLost
      * @return an error message to be reported
      */
-    public abstract String isValidValue( final String value,
-                                         final boolean isOnFocusLost );
+    public abstract String isValidValue(final String value,
+                                        final boolean isOnFocusLost);
 
     /**
      * If validation fails (e.g. as a result of a user pasting a value) when the
@@ -109,14 +109,14 @@ public abstract class AbstractValidatingTextBox extends TextBox {
      * @param value Current value
      * @return A valid value
      */
-    protected abstract String makeValidValue( final String value );
+    protected abstract String makeValidValue(final String value);
 
-    protected void fireValidationError( String validationError ) {
-        notification.fire( new NotificationEvent( validationError,
-                                                  NotificationEvent.NotificationType.ERROR ) );
+    protected void fireValidationError(final String validationError) {
+        notification.fire(new NotificationEvent(validationError,
+                                                NotificationEvent.NotificationType.ERROR));
     }
 
-    protected int getKeyCodeFromKeyPressEvent( KeyPressEvent event ) {
+    protected int getKeyCodeFromKeyPressEvent(final KeyPressEvent event) {
         return event.getNativeEvent().getKeyCode();
     }
 }

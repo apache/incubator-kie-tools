@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 @NonPortable
 public final class CanvasFocusedEvent extends AbstractCanvasEvent {
 
-    public CanvasFocusedEvent( final Canvas canvas ) {
-        super( canvas );
+    public CanvasFocusedEvent(final Canvas canvas) {
+        super(canvas);
     }
 }

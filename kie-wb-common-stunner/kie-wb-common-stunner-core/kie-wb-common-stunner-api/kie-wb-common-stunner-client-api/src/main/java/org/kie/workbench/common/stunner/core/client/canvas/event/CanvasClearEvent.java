@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 @NonPortable
 public final class CanvasClearEvent extends AbstractCanvasEvent {
 
-    public CanvasClearEvent( final Canvas canvas ) {
-        super( canvas );
+    public CanvasClearEvent(final Canvas canvas) {
+        super(canvas);
     }
 }

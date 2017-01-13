@@ -37,118 +37,118 @@ public class CanvasCommandFactory {
     }
 
     @Inject
-    public CanvasCommandFactory( final TreeWalkTraverseProcessor treeWalkTraverseProcessor ) {
+    public CanvasCommandFactory(final TreeWalkTraverseProcessor treeWalkTraverseProcessor) {
         this.treeWalkTraverseProcessor = treeWalkTraverseProcessor;
     }
 
-    public AddNodeCommand addNode( final Node candidate,
-                                   final String shapeSetId ) {
-        return new AddNodeCommand( candidate,
-                                   shapeSetId );
+    public AddNodeCommand addNode(final Node candidate,
+                                  final String shapeSetId) {
+        return new AddNodeCommand(candidate,
+                                  shapeSetId);
     }
 
-    public AddChildNodeCommand addChildNode( final Node parent,
-                                             final Node candidate,
-                                             final String shapeSetId ) {
-        return new AddChildNodeCommand( parent,
+    public AddChildNodeCommand addChildNode(final Node parent,
+                                            final Node candidate,
+                                            final String shapeSetId) {
+        return new AddChildNodeCommand(parent,
+                                       candidate,
+                                       shapeSetId);
+    }
+
+    public AddDockedNodeCommand addDockedNode(final Node parent,
+                                              final Node candidate,
+                                              final String shapeSetId) {
+        return new AddDockedNodeCommand(parent,
                                         candidate,
-                                        shapeSetId );
+                                        shapeSetId);
     }
 
-    public AddDockedNodeCommand addDockedNode( final Node parent,
-                                               final Node candidate,
-                                               final String shapeSetId ) {
-        return new AddDockedNodeCommand( parent,
-                                         candidate,
-                                         shapeSetId );
+    public AddConnectorCommand addConnector(final Node sourceNode,
+                                            final Edge candidate,
+                                            final int magnetIndex,
+                                            final String shapeSetId) {
+        return new AddConnectorCommand(sourceNode,
+                                       candidate,
+                                       magnetIndex,
+                                       shapeSetId);
     }
 
-    public AddConnectorCommand addConnector( final Node sourceNode,
-                                             final Edge candidate,
-                                             final int magnetIndex,
-                                             final String shapeSetId ) {
-        return new AddConnectorCommand( sourceNode,
-                                        candidate,
-                                        magnetIndex,
-                                        shapeSetId );
+    public SetChildNodeCommand setChildNode(final Node parent,
+                                            final Node candidate) {
+        return new SetChildNodeCommand(parent,
+                                       candidate);
     }
 
-    public SetChildNodeCommand setChildNode( final Node parent,
-                                             final Node candidate ) {
-        return new SetChildNodeCommand( parent,
-                                        candidate );
+    public DockNodeCommand dockNode(final Node parent,
+                                    final Node candidate) {
+        return new DockNodeCommand(parent,
+                                   candidate);
     }
 
-    public DockNodeCommand dockNode( final Node parent,
-                                     final Node candidate ) {
-        return new DockNodeCommand( parent,
-                                    candidate );
+    public DeleteNodeCommand deleteNode(final Node candidate) {
+        return new DeleteNodeCommand(candidate);
     }
 
-    public DeleteNodeCommand deleteNode( final Node candidate ) {
-        return new DeleteNodeCommand( candidate );
+    public RemoveChildCommand removeChild(final Node parent,
+                                          final Node candidate) {
+        return new RemoveChildCommand(parent,
+                                      candidate);
     }
 
-    public RemoveChildCommand removeChild( final Node parent,
-                                           final Node candidate ) {
-        return new RemoveChildCommand( parent,
-                                       candidate );
+    public UnDockNodeCommand unDockNode(final Node parent,
+                                        final Node candidate) {
+        return new UnDockNodeCommand(parent,
+                                     candidate);
     }
 
-    public UnDockNodeCommand unDockNode( final Node parent,
-                                         final Node candidate ) {
-        return new UnDockNodeCommand( parent,
-                                      candidate );
-    }
-
-    public DeleteConnectorCommand deleteConnector( final Edge candidate ) {
-        return new DeleteConnectorCommand( candidate );
+    public DeleteConnectorCommand deleteConnector(final Edge candidate) {
+        return new DeleteConnectorCommand(candidate);
     }
 
     public DrawCanvasCommand draw() {
-        return new DrawCanvasCommand( treeWalkTraverseProcessor );
+        return new DrawCanvasCommand(treeWalkTraverseProcessor);
     }
 
-    public MorphNodeCommand morphNode( final Node<? extends Definition<?>, Edge> candidate,
-                                       final MorphDefinition morphDefinition,
-                                       final String morphTarget,
-                                       final String shapeSetId ) {
-        return new MorphNodeCommand( candidate,
-                                     morphDefinition,
-                                     morphTarget,
-                                     shapeSetId );
+    public MorphNodeCommand morphNode(final Node<? extends Definition<?>, Edge> candidate,
+                                      final MorphDefinition morphDefinition,
+                                      final String morphTarget,
+                                      final String shapeSetId) {
+        return new MorphNodeCommand(candidate,
+                                    morphDefinition,
+                                    morphTarget,
+                                    shapeSetId);
     }
 
-    public SetConnectionSourceNodeCommand setSourceNode( final Node<? extends View<?>, Edge> node,
-                                                         final Edge<? extends View<?>, Node> edge,
-                                                         final int magnetIndex ) {
-        return new SetConnectionSourceNodeCommand( node,
-                                                   edge,
-                                                   magnetIndex );
+    public SetConnectionSourceNodeCommand setSourceNode(final Node<? extends View<?>, Edge> node,
+                                                        final Edge<? extends View<?>, Node> edge,
+                                                        final int magnetIndex) {
+        return new SetConnectionSourceNodeCommand(node,
+                                                  edge,
+                                                  magnetIndex);
     }
 
-    public SetConnectionTargetNodeCommand setTargetNode( final Node<? extends View<?>, Edge> node,
-                                                         final Edge<? extends View<?>, Node> edge,
-                                                         final int magnetIndex ) {
-        return new SetConnectionTargetNodeCommand( node,
-                                                   edge,
-                                                   magnetIndex );
+    public SetConnectionTargetNodeCommand setTargetNode(final Node<? extends View<?>, Edge> node,
+                                                        final Edge<? extends View<?>, Node> edge,
+                                                        final int magnetIndex) {
+        return new SetConnectionTargetNodeCommand(node,
+                                                  edge,
+                                                  magnetIndex);
     }
 
-    public UpdateElementPositionCommand updatePosition( final Node<View<?>, Edge> element,
-                                                        final Double x,
-                                                        final Double y ) {
-        return new UpdateElementPositionCommand( element,
-                                                 x,
-                                                 y );
+    public UpdateElementPositionCommand updatePosition(final Node<View<?>, Edge> element,
+                                                       final Double x,
+                                                       final Double y) {
+        return new UpdateElementPositionCommand(element,
+                                                x,
+                                                y);
     }
 
-    public UpdateElementPropertyCommand updatePropertyValue( final Element element,
-                                                             final String propertyId,
-                                                             final Object value ) {
-        return new UpdateElementPropertyCommand( element,
-                                                 propertyId,
-                                                 value );
+    public UpdateElementPropertyCommand updatePropertyValue(final Element element,
+                                                            final String propertyId,
+                                                            final Object value) {
+        return new UpdateElementPropertyCommand(element,
+                                                propertyId,
+                                                value);
     }
 
     public ClearCommand clearCanvas() {

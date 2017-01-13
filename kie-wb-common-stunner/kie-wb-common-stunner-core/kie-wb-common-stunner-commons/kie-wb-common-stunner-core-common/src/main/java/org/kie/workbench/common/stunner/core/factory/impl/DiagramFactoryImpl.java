@@ -39,17 +39,17 @@ public class DiagramFactoryImpl
     }
 
     @Override
-    public Diagram<Graph, Metadata> build( final String name,
-                                           final Metadata metadata,
-                                           final Graph<DefinitionSet, ?> graph ) {
-        final AbstractDiagram<Graph, Metadata> result = new DiagramImpl( name,
-                                                                         metadata );
-        result.setGraph( graph );
+    public Diagram<Graph, Metadata> build(final String name,
+                                          final Metadata metadata,
+                                          final Graph<DefinitionSet, ?> graph) {
+        final AbstractDiagram<Graph, Metadata> result = new DiagramImpl(name,
+                                                                        metadata);
+        result.setGraph(graph);
         return result;
     }
 
     @Override
-    public boolean accepts( final String source ) {
+    public boolean accepts(final String source) {
         return true;
     }
 

@@ -58,7 +58,7 @@ public class TimeDate implements BPMNProperty {
     public TimeDate() {
     }
 
-    public TimeDate( final String value ) {
+    public TimeDate(final String value) {
         this.value = value;
     }
 
@@ -90,7 +90,7 @@ public class TimeDate implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

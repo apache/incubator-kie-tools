@@ -47,7 +47,7 @@ import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
 
 public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I> {
 
-    private static Logger LOGGER = Logger.getLogger( AbstractPaletteCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(AbstractPaletteCommand.class.getName());
 
     private final I icon;
 
@@ -66,15 +66,15 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
     protected boolean paletteVisible;
     protected String elementUUID;
 
-    public AbstractPaletteCommand( final ClientFactoryService clientFactoryServices,
-                                   final CommonLookups commonLookups,
-                                   final ShapeManager shapeManager,
-                                   final DefinitionsPaletteBuilder definitionsPaletteBuilder,
-                                   final Palette<HasPaletteItems<? extends GlyphPaletteItem>> palette,
-                                   final NodeDragProxy<AbstractCanvasHandler> nodeDragProxyFactory,
-                                   final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl,
-                                   final GraphBoundsIndexer graphBoundsIndexer,
-                                   final I icon ) {
+    public AbstractPaletteCommand(final ClientFactoryService clientFactoryServices,
+                                  final CommonLookups commonLookups,
+                                  final ShapeManager shapeManager,
+                                  final DefinitionsPaletteBuilder definitionsPaletteBuilder,
+                                  final Palette<HasPaletteItems<? extends GlyphPaletteItem>> palette,
+                                  final NodeDragProxy<AbstractCanvasHandler> nodeDragProxyFactory,
+                                  final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl,
+                                  final GraphBoundsIndexer graphBoundsIndexer,
+                                  final I icon) {
         this.clientFactoryServices = clientFactoryServices;
         this.commonLookups = commonLookups;
         this.shapeManager = shapeManager;
@@ -89,14 +89,14 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
 
     protected abstract Set<String> getDefinitions();
 
-    protected abstract void onItemSelected( final String definitionId,
-                                            final double x,
-                                            final double y );
+    protected abstract void onItemSelected(final String definitionId,
+                                           final double x,
+                                           final double y);
 
     @Override
-    public I getIcon( final AbstractCanvasHandler context,
-                      final double width,
-                      final double height ) {
+    public I getIcon(final AbstractCanvasHandler context,
+                     final double width,
+                     final double height) {
         return icon;
     }
 
@@ -107,84 +107,84 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public void mouseEnter( final Context<AbstractCanvasHandler> context,
-                            final Element element ) {
-        super.mouseEnter( context,
-                          element );
-        showPalette( context,
-                     element );
+    @SuppressWarnings("unchecked")
+    public void mouseEnter(final Context<AbstractCanvasHandler> context,
+                           final Element element) {
+        super.mouseEnter(context,
+                         element);
+        showPalette(context,
+                    element);
     }
 
     @Override
-    public void click( final Context<AbstractCanvasHandler> context,
-                       final Element element ) {
-        super.click( context,
-                     element );
-        if ( paletteVisible ) {
+    public void click(final Context<AbstractCanvasHandler> context,
+                      final Element element) {
+        super.click(context,
+                    element);
+        if (paletteVisible) {
             clear();
         } else {
-            showPalette( context,
-                         element );
+            showPalette(context,
+                        element);
         }
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected void showPalette( final Context<AbstractCanvasHandler> context,
-                                final Element element ) {
+    @SuppressWarnings("unchecked")
+    protected void showPalette(final Context<AbstractCanvasHandler> context,
+                               final Element element) {
         this.elementUUID = element.getUUID();
         this.paletteVisible = true;
         this.canvasHandler = context.getCanvasHandler();
-        this.sourceNode = ( Node<? extends Definition<Object>, ? extends Edge> ) element;
-        this.graphBoundsIndexer.setRootUUID( canvasHandler.getDiagram().getMetadata().getCanvasRootUUID() );
+        this.sourceNode = (Node<? extends Definition<Object>, ? extends Edge>) element;
+        this.graphBoundsIndexer.setRootUUID(canvasHandler.getDiagram().getMetadata().getCanvasRootUUID());
         final Set<String> allowedDefinitions = getDefinitions();
-        log( Level.FINE,
-             "Allowed Definitions -> " + allowedDefinitions );
-        if ( null != allowedDefinitions && !allowedDefinitions.isEmpty() ) {
-            definitionsPaletteBuilder.build( allowedDefinitions,
-                                             new PaletteDefinitionBuilder.Callback<DefinitionsPalette, ClientRuntimeError>() {
+        log(Level.FINE,
+            "Allowed Definitions -> " + allowedDefinitions);
+        if (null != allowedDefinitions && !allowedDefinitions.isEmpty()) {
+            definitionsPaletteBuilder.build(allowedDefinitions,
+                                            new PaletteDefinitionBuilder.Callback<DefinitionsPalette, ClientRuntimeError>() {
 
-                                                 @Override
-                                                 public void onSuccess( final DefinitionsPalette paletteDefinition ) {
-                                                     initializeView( paletteDefinition,
-                                                                     context );
-                                                 }
+                                                @Override
+                                                public void onSuccess(final DefinitionsPalette paletteDefinition) {
+                                                    initializeView(paletteDefinition,
+                                                                   context);
+                                                }
 
-                                                 @Override
-                                                 public void onError( final ClientRuntimeError error ) {
-                                                     log( Level.SEVERE,
-                                                          error.toString() );
-                                                 }
-                                             } );
+                                                @Override
+                                                public void onError(final ClientRuntimeError error) {
+                                                    log(Level.SEVERE,
+                                                        error.toString());
+                                                }
+                                            });
         }
     }
 
     protected abstract void attachPaletteView();
 
-    @SuppressWarnings( "unchecked" )
-    private void initializeView( final DefinitionsPalette paletteDefinition,
-                                 final Context<AbstractCanvasHandler> context ) {
-        beforeBindPalette( paletteDefinition,
-                           context );
-        palette.bind( paletteDefinition )
-                .onItemHover( AbstractPaletteCommand.this::_onItemHover )
-                .onItemOut( AbstractPaletteCommand.this::_onItemOut )
-                .onItemClick( AbstractPaletteCommand.this::_onItemClick )
-                .onItemMouseDown( AbstractPaletteCommand.this::_onItemMouseDown );
+    @SuppressWarnings("unchecked")
+    private void initializeView(final DefinitionsPalette paletteDefinition,
+                                final Context<AbstractCanvasHandler> context) {
+        beforeBindPalette(paletteDefinition,
+                          context);
+        palette.bind(paletteDefinition)
+                .onItemHover(AbstractPaletteCommand.this::_onItemHover)
+                .onItemOut(AbstractPaletteCommand.this::_onItemOut)
+                .onItemClick(AbstractPaletteCommand.this::_onItemClick)
+                .onItemMouseDown(AbstractPaletteCommand.this::_onItemMouseDown);
         // Use the relative coordinates (x/y) as palette gets added into same canvas' layer as the toolbox.
-        showPaletteViewAt( context.getX(),
-                           context.getY() );
+        showPaletteViewAt(context.getX(),
+                          context.getY());
     }
 
-    protected void beforeBindPalette( final DefinitionsPalette paletteDefinition,
-                                      final Context<AbstractCanvasHandler> context ) {
+    protected void beforeBindPalette(final DefinitionsPalette paletteDefinition,
+                                     final Context<AbstractCanvasHandler> context) {
         // Nothing to do by default.
     }
 
-    protected void showPaletteViewAt( final double x,
-                                      final double y ) {
-        getPaletteView().setX( x );
-        getPaletteView().setY( y );
+    protected void showPaletteViewAt(final double x,
+                                     final double y) {
+        getPaletteView().setX(x);
+        getPaletteView().setY(y);
         attachPaletteView();
         getPaletteView().show();
     }
@@ -195,38 +195,38 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
         getPaletteView().clear();
     }
 
-    private boolean _onItemClick( final String id,
-                                  final double mouseX,
-                                  final double mouseY,
-                                  final double itemX,
-                                  final double itemY ) {
+    private boolean _onItemClick(final String id,
+                                 final double mouseX,
+                                 final double mouseY,
+                                 final double itemX,
+                                 final double itemY) {
         // TODO
         return true;
     }
 
-    private boolean _onItemHover( final String id,
-                                  final double mouseX,
-                                  final double mouseY,
-                                  final double itemX,
-                                  final double itemY ) {
-        canvasHandler.getCanvas().getView().setCursor( AbstractCanvas.Cursors.POINTER );
+    private boolean _onItemHover(final String id,
+                                 final double mouseX,
+                                 final double mouseY,
+                                 final double itemX,
+                                 final double itemY) {
+        canvasHandler.getCanvas().getView().setCursor(AbstractCanvas.Cursors.POINTER);
         return true;
     }
 
-    private boolean _onItemOut( final String id ) {
-        canvasHandler.getCanvas().getView().setCursor( AbstractCanvas.Cursors.AUTO );
+    private boolean _onItemOut(final String id) {
+        canvasHandler.getCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
         return true;
     }
 
-    @SuppressWarnings( "unchecked" )
-    private boolean _onItemMouseDown( final String id,
-                                      final double mouseX,
-                                      final double mouseY,
-                                      final double itemX,
-                                      final double itemY ) {
-        onItemSelected( id,
-                        mouseX,
-                        mouseY );
+    @SuppressWarnings("unchecked")
+    private boolean _onItemMouseDown(final String id,
+                                     final double mouseX,
+                                     final double mouseY,
+                                     final double itemX,
+                                     final double itemY) {
+        onItemSelected(id,
+                       mouseX,
+                       mouseY);
         return true;
     }
 
@@ -244,11 +244,11 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
 
     protected abstract PaletteView getPaletteView();
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

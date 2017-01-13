@@ -37,9 +37,9 @@ public interface ModelEdgeCardinalityRuleManager
      * @param operation Can be adding a new connector, removing an existing one, or NONE, eg: just to validate rules
      * against current structure.
      */
-    RuleViolations evaluate( final String edgeId,
-                             final Set<String> labels,
-                             final int count,
-                             final EdgeCardinalityRule.Type ruleType,
-                             final Operation operation );
+    RuleViolations evaluate(final String edgeId,
+                            final Set<String> labels,
+                            final int count,
+                            final EdgeCardinalityRule.Type ruleType,
+                            final Operation operation);
 }

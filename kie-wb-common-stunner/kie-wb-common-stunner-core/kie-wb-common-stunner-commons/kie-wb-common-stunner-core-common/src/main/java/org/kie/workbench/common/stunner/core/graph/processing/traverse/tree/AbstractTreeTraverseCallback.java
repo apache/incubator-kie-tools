@@ -24,25 +24,25 @@ public abstract class AbstractTreeTraverseCallback<G extends Graph, N extends No
         implements TreeTraverseCallback<G, N, E> {
 
     @Override
-    public void startGraphTraversal( final G graph ) {
+    public void startGraphTraversal(final G graph) {
     }
 
     @Override
-    public boolean startNodeTraversal( final N node ) {
+    public boolean startNodeTraversal(final N node) {
         return false;
     }
 
     @Override
-    public boolean startEdgeTraversal( final E edge ) {
+    public boolean startEdgeTraversal(final E edge) {
         return false;
     }
 
     @Override
-    public void endNodeTraversal( final N node ) {
+    public void endNodeTraversal(final N node) {
     }
 
     @Override
-    public void endEdgeTraversal( final E edge ) {
+    public void endEdgeTraversal(final E edge) {
     }
 
     @Override

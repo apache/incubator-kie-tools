@@ -58,7 +58,7 @@ public class ConditionExpression implements BPMNProperty {
     public ConditionExpression() {
     }
 
-    public ConditionExpression( final String value ) {
+    public ConditionExpression(final String value) {
         this.value = value;
     }
 
@@ -90,7 +90,7 @@ public class ConditionExpression implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

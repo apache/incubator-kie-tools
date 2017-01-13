@@ -24,9 +24,9 @@ public abstract class AbstractCanvasShapeEvent extends AbstractCanvasEvent {
 
     protected final Shape shape;
 
-    public AbstractCanvasShapeEvent( final Canvas canvas,
-                                     final Shape shape ) {
-        super( canvas );
+    public AbstractCanvasShapeEvent(final Canvas canvas,
+                                    final Shape shape) {
+        super(canvas);
         this.shape = shape;
     }
 

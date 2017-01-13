@@ -32,7 +32,7 @@ import java.lang.annotation.RetentionPolicy;
  * For example, a mouse down event starts a new request and it ends once mouse up event if captured.
  */
 @java.lang.annotation.Documented
-@java.lang.annotation.Retention( RetentionPolicy.RUNTIME )
+@java.lang.annotation.Retention(RetentionPolicy.RUNTIME)
 @javax.inject.Qualifier
 public @interface Request {
 

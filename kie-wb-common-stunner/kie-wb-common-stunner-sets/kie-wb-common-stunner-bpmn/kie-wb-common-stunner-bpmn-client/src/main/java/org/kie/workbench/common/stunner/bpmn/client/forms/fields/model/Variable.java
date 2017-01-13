@@ -35,32 +35,32 @@ public class Variable {
 
     private String customDataType;
 
-    public Variable( VariableType variableType ) {
+    public Variable(VariableType variableType) {
         this.variableType = variableType;
     }
 
-    public Variable( String name,
-                     VariableType variableType ) {
+    public Variable(final String name,
+                    final VariableType variableType) {
         this.name = name;
         this.variableType = variableType;
     }
 
-    public Variable( String name,
-                     VariableType variableType,
-                     String dataType,
-                     String customDataType ) {
+    public Variable(final String name,
+                    final VariableType variableType,
+                    final String dataType,
+                    final String customDataType) {
         this.name = name;
         this.variableType = variableType;
         this.dataType = dataType;
         this.customDataType = customDataType;
     }
 
-    public Variable( VariableRow row,
-                     Map<String, String> mapDataTypeDisplayNamesToNames ) {
+    public Variable(final VariableRow row,
+                    final Map<String, String> mapDataTypeDisplayNamesToNames) {
         this.name = row.getName();
         this.variableType = row.getVariableType();
-        if ( row.getDataTypeDisplayName() != null && mapDataTypeDisplayNamesToNames.containsKey( row.getDataTypeDisplayName() ) ) {
-            this.dataType = mapDataTypeDisplayNamesToNames.get( row.getDataTypeDisplayName() );
+        if (row.getDataTypeDisplayName() != null && mapDataTypeDisplayNamesToNames.containsKey(row.getDataTypeDisplayName())) {
+            this.dataType = mapDataTypeDisplayNamesToNames.get(row.getDataTypeDisplayName());
         } else {
             this.dataType = row.getDataTypeDisplayName();
         }
@@ -71,7 +71,7 @@ public class Variable {
         return variableType;
     }
 
-    public void setVariableType( VariableType variableType ) {
+    public void setVariableType(final VariableType variableType) {
         this.variableType = variableType;
     }
 
@@ -79,7 +79,7 @@ public class Variable {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -87,7 +87,7 @@ public class Variable {
         return dataType;
     }
 
-    public void setDataType( String dataType ) {
+    public void setDataType(final String dataType) {
         this.dataType = dataType;
     }
 
@@ -95,17 +95,17 @@ public class Variable {
         return customDataType;
     }
 
-    public void setCustomDataType( String customDataType ) {
+    public void setCustomDataType(final String customDataType) {
         this.customDataType = customDataType;
     }
 
     public String toString() {
-        if ( name != null && !name.isEmpty() ) {
-            StringBuilder sb = new StringBuilder().append( name );
-            if ( customDataType != null && !customDataType.isEmpty() ) {
-                sb.append( ':' ).append( customDataType );
-            } else if ( dataType != null && !dataType.isEmpty() ) {
-                sb.append( ':' ).append( dataType );
+        if (name != null && !name.isEmpty()) {
+            StringBuilder sb = new StringBuilder().append(name);
+            if (customDataType != null && !customDataType.isEmpty()) {
+                sb.append(':').append(customDataType);
+            } else if (dataType != null && !dataType.isEmpty()) {
+                sb.append(':').append(dataType);
             }
             return sb.toString();
         }
@@ -119,22 +119,22 @@ public class Variable {
      * @param dataTypes
      * @return
      */
-    public static Variable deserialize( String s,
-                                        VariableType variableType,
-                                        List<String> dataTypes ) {
-        Variable var = new Variable( variableType );
-        String[] varParts = s.split( ":" );
-        if ( varParts.length > 0 ) {
-            String name = varParts[ 0 ];
-            if ( !name.isEmpty() ) {
-                var.setName( name );
-                if ( varParts.length == 2 ) {
-                    String dataType = varParts[ 1 ];
-                    if ( !dataType.isEmpty() ) {
-                        if ( dataTypes != null && dataTypes.contains( dataType ) ) {
-                            var.setDataType( dataType );
+    public static Variable deserialize(final String s,
+                                       final VariableType variableType,
+                                       final List<String> dataTypes) {
+        Variable var = new Variable(variableType);
+        String[] varParts = s.split(":");
+        if (varParts.length > 0) {
+            String name = varParts[0];
+            if (!name.isEmpty()) {
+                var.setName(name);
+                if (varParts.length == 2) {
+                    String dataType = varParts[1];
+                    if (!dataType.isEmpty()) {
+                        if (dataTypes != null && dataTypes.contains(dataType)) {
+                            var.setDataType(dataType);
                         } else {
-                            var.setCustomDataType( dataType );
+                            var.setCustomDataType(dataType);
                         }
                     }
                 }
@@ -149,40 +149,40 @@ public class Variable {
      * @param variableType
      * @return
      */
-    public static Variable deserialize( String s,
-                                        VariableType variableType ) {
-        return deserialize( s,
-                            variableType,
-                            null );
+    public static Variable deserialize(final String s,
+                                       final VariableType variableType) {
+        return deserialize(s,
+                           variableType,
+                           null);
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof Variable ) ) {
+        if (!(o instanceof Variable)) {
             return false;
         }
-        Variable variable = ( Variable ) o;
-        if ( getVariableType() != variable.getVariableType() ) {
+        Variable variable = (Variable) o;
+        if (getVariableType() != variable.getVariableType()) {
             return false;
         }
-        if ( getName() != null ? !getName().equals( variable.getName() ) : variable.getName() != null ) {
+        if (getName() != null ? !getName().equals(variable.getName()) : variable.getName() != null) {
             return false;
         }
-        if ( getDataType() != null ? !getDataType().equals( variable.getDataType() ) : variable.getDataType() != null ) {
+        if (getDataType() != null ? !getDataType().equals(variable.getDataType()) : variable.getDataType() != null) {
             return false;
         }
-        return getCustomDataType() != null ? getCustomDataType().equals( variable.getCustomDataType() ) : variable.getCustomDataType() == null;
+        return getCustomDataType() != null ? getCustomDataType().equals(variable.getCustomDataType()) : variable.getCustomDataType() == null;
     }
 
     @Override
     public int hashCode() {
         int result = getVariableType() != null ? getVariableType().hashCode() : 0;
-        result = 31 * result + ( getName() != null ? getName().hashCode() : 0 );
-        result = 31 * result + ( getDataType() != null ? getDataType().hashCode() : 0 );
-        result = 31 * result + ( getCustomDataType() != null ? getCustomDataType().hashCode() : 0 );
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + (getDataType() != null ? getDataType().hashCode() : 0);
+        result = 31 * result + (getCustomDataType() != null ? getCustomDataType().hashCode() : 0);
         return result;
     }
 }

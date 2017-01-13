@@ -32,20 +32,20 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 @Portable
 public final class DeleteNodeCommand extends DeregisterNodeCommand {
 
-    private static Logger LOGGER = Logger.getLogger( DeleteNodeCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(DeleteNodeCommand.class.getName());
 
-    public DeleteNodeCommand( final @MapsTo( "uuid" ) String uuid ) {
-        super( uuid );
+    public DeleteNodeCommand(final @MapsTo("uuid") String uuid) {
+        super(uuid);
     }
 
-    public DeleteNodeCommand( final Node<?, Edge> node ) {
-        super( node );
+    public DeleteNodeCommand(final Node<?, Edge> node) {
+        super(node);
     }
 
     @Override
-    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        final AddNodeCommand undoCommand = new AddNodeCommand( getRemoved() );
-        return undoCommand.execute( context );
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        final AddNodeCommand undoCommand = new AddNodeCommand(getRemoved());
+        return undoCommand.execute(context);
     }
 
     @Override

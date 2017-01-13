@@ -48,7 +48,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class AssignmentListItemWidgetViewImplTest {
 
     private static final String VARIABLE_NAME = "variableName";
@@ -80,7 +80,7 @@ public class AssignmentListItemWidgetViewImplTest {
     @GwtMock
     private KeyDownEvent keyDownEvent;
 
-    private Event<NotificationEvent> notification = mock( EventSourceMock.class );
+    private Event<NotificationEvent> notification = mock(EventSourceMock.class);
 
     @Captor
     private ArgumentCaptor<KeyDownHandler> keyDownHandlerCaptor;
@@ -92,14 +92,14 @@ public class AssignmentListItemWidgetViewImplTest {
 
     @Before
     public void setUp() throws Exception {
-        GwtMockito.initMocks( this );
-        customDataType = mock( TextBox.class );
-        constant = mock( TextBox.class );
-        dataType = mock( ValueListBox.class );
-        processVar = mock( ValueListBox.class );
-        dataTypeComboBox = mock( ComboBox.class );
-        processVarComboBox = mock( ComboBox.class );
-        view = mock( AssignmentListItemWidgetViewImpl.class );
+        GwtMockito.initMocks(this);
+        customDataType = mock(TextBox.class);
+        constant = mock(TextBox.class);
+        dataType = mock(ValueListBox.class);
+        processVar = mock(ValueListBox.class);
+        dataTypeComboBox = mock(ComboBox.class);
+        processVarComboBox = mock(ComboBox.class);
+        view = mock(AssignmentListItemWidgetViewImpl.class);
         view.assignment = assignment;
         view.name = name;
         view.deleteButton = deleteButton;
@@ -110,213 +110,213 @@ public class AssignmentListItemWidgetViewImplTest {
         view.dataTypeComboBox = dataTypeComboBox;
         view.processVarComboBox = processVarComboBox;
         view.notification = notification;
-        doCallRealMethod().when( view ).init();
-        doCallRealMethod().when( view ).getConstant();
-        doCallRealMethod().when( view ).setConstant( anyString() );
-        doCallRealMethod().when( view ).getCustomDataType();
-        doCallRealMethod().when( view ).setCustomDataType( anyString() );
-        doCallRealMethod().when( view ).getModel();
-        doCallRealMethod().when( view ).setModel( any( AssignmentRow.class ) );
-        doCallRealMethod().when( view ).getModelValue( any( ValueListBox.class ) );
-        doCallRealMethod().when( view ).setTextBoxModelValue( any( TextBox.class ),
-                                                              anyString() );
-        doCallRealMethod().when( view ).setListBoxModelValue( any( ValueListBox.class ),
-                                                              anyString() );
-        doCallRealMethod().when( view ).getDataType();
-        doCallRealMethod().when( view ).setDataType( anyString() );
-        doCallRealMethod().when( view ).getProcessVar();
-        doCallRealMethod().when( view ).setProcessVar( anyString() );
-        doCallRealMethod().when( view ).getVariableType();
-        doCallRealMethod().when( view ).setAllowDuplicateNames( anyBoolean(),
-                                                                anyString() );
-        doCallRealMethod().when( view ).setParentWidget( any( ActivityDataIOEditorWidget.class ) );
-        doCallRealMethod().when( view ).isDuplicateName( anyString() );
-        doCallRealMethod().when( view ).setShowConstants( anyBoolean() );
-        doCallRealMethod().when( view ).setDisallowedNames( anySet(),
-                                                            anyString() );
-        doCallRealMethod().when( view ).handleDeleteButton( any( ClickEvent.class ) );
+        doCallRealMethod().when(view).init();
+        doCallRealMethod().when(view).getConstant();
+        doCallRealMethod().when(view).setConstant(anyString());
+        doCallRealMethod().when(view).getCustomDataType();
+        doCallRealMethod().when(view).setCustomDataType(anyString());
+        doCallRealMethod().when(view).getModel();
+        doCallRealMethod().when(view).setModel(any(AssignmentRow.class));
+        doCallRealMethod().when(view).getModelValue(any(ValueListBox.class));
+        doCallRealMethod().when(view).setTextBoxModelValue(any(TextBox.class),
+                                                           anyString());
+        doCallRealMethod().when(view).setListBoxModelValue(any(ValueListBox.class),
+                                                           anyString());
+        doCallRealMethod().when(view).getDataType();
+        doCallRealMethod().when(view).setDataType(anyString());
+        doCallRealMethod().when(view).getProcessVar();
+        doCallRealMethod().when(view).setProcessVar(anyString());
+        doCallRealMethod().when(view).getVariableType();
+        doCallRealMethod().when(view).setAllowDuplicateNames(anyBoolean(),
+                                                             anyString());
+        doCallRealMethod().when(view).setParentWidget(any(ActivityDataIOEditorWidget.class));
+        doCallRealMethod().when(view).isDuplicateName(anyString());
+        doCallRealMethod().when(view).setShowConstants(anyBoolean());
+        doCallRealMethod().when(view).setDisallowedNames(anySet(),
+                                                         anyString());
+        doCallRealMethod().when(view).handleDeleteButton(any(ClickEvent.class));
         AssignmentRow row = new AssignmentRow();
-        doReturn( row ).when( assignment ).getModel();
+        doReturn(row).when(assignment).getModel();
     }
 
     @Test
     public void testSetModelInputCustomProcessVar() {
         AssignmentRow row = new AssignmentRow();
-        row.setProcessVar( VARIABLE_NAME );
-        row.setConstant( null );
-        row.setName( VARIABLE_NAME );
-        row.setCustomDataType( CUST_DATA_TYPE_NAME );
-        row.setDataType( null );
-        row.setVariableType( Variable.VariableType.INPUT );
-        doReturn( row ).when( assignment ).getModel();
-        view.setModel( row );
-        verify( assignment,
-                times( 1 ) ).setModel( row );
-        verify( deleteButton,
-                times( 1 ) ).setIcon( IconType.TRASH );
-        verify( constant,
-                never() ).setVisible( false );
-        verify( customDataType,
-                times( 1 ) ).setValue( CUST_DATA_TYPE_NAME );
-        verify( dataType,
-                times( 1 ) ).setValue( CUST_DATA_TYPE_NAME );
-        verify( processVar,
-                times( 1 ) ).setValue( VARIABLE_NAME );
-        verify( constant,
-                never() ).setValue( anyString() );
+        row.setProcessVar(VARIABLE_NAME);
+        row.setConstant(null);
+        row.setName(VARIABLE_NAME);
+        row.setCustomDataType(CUST_DATA_TYPE_NAME);
+        row.setDataType(null);
+        row.setVariableType(Variable.VariableType.INPUT);
+        doReturn(row).when(assignment).getModel();
+        view.setModel(row);
+        verify(assignment,
+               times(1)).setModel(row);
+        verify(deleteButton,
+               times(1)).setIcon(IconType.TRASH);
+        verify(constant,
+               never()).setVisible(false);
+        verify(customDataType,
+               times(1)).setValue(CUST_DATA_TYPE_NAME);
+        verify(dataType,
+               times(1)).setValue(CUST_DATA_TYPE_NAME);
+        verify(processVar,
+               times(1)).setValue(VARIABLE_NAME);
+        verify(constant,
+               never()).setValue(anyString());
     }
 
     @Test
     public void testSetModelOutputNormalConstant() {
         AssignmentRow row = new AssignmentRow();
-        row.setProcessVar( null );
-        row.setConstant( CONSTANT_NAME );
-        row.setName( VARIABLE_NAME );
-        row.setCustomDataType( null );
-        row.setDataType( DATA_TYPE_NAME );
-        row.setVariableType( Variable.VariableType.OUTPUT );
-        doReturn( row ).when( assignment ).getModel();
-        view.setModel( row );
-        verify( assignment,
-                times( 1 ) ).setModel( row );
-        verify( deleteButton,
-                times( 1 ) ).setIcon( IconType.TRASH );
-        verify( constant,
-                times( 1 ) ).setVisible( false );
-        verify( customDataType,
-                never() ).setValue( DATA_TYPE_NAME );
-        verify( dataType,
-                times( 1 ) ).setValue( DATA_TYPE_NAME );
-        verify( constant,
-                times( 1 ) ).setValue( CONSTANT_NAME );
+        row.setProcessVar(null);
+        row.setConstant(CONSTANT_NAME);
+        row.setName(VARIABLE_NAME);
+        row.setCustomDataType(null);
+        row.setDataType(DATA_TYPE_NAME);
+        row.setVariableType(Variable.VariableType.OUTPUT);
+        doReturn(row).when(assignment).getModel();
+        view.setModel(row);
+        verify(assignment,
+               times(1)).setModel(row);
+        verify(deleteButton,
+               times(1)).setIcon(IconType.TRASH);
+        verify(constant,
+               times(1)).setVisible(false);
+        verify(customDataType,
+               never()).setValue(DATA_TYPE_NAME);
+        verify(dataType,
+               times(1)).setValue(DATA_TYPE_NAME);
+        verify(constant,
+               times(1)).setValue(CONSTANT_NAME);
     }
 
     @Test
     public void testSetTextBoxModelValueCustomDataType() {
-        assertNull( view.getModel().getCustomDataType() );
-        view.setTextBoxModelValue( customDataType,
-                                   "abc" );
-        assertEquals( "abc",
-                      view.getModel().getCustomDataType() );
-        assertNull( view.getModel().getConstant() );
-        assertEquals( "abc",
-                      view.getModelValue( dataType ) );
+        assertNull(view.getModel().getCustomDataType());
+        view.setTextBoxModelValue(customDataType,
+                                  "abc");
+        assertEquals("abc",
+                     view.getModel().getCustomDataType());
+        assertNull(view.getModel().getConstant());
+        assertEquals("abc",
+                     view.getModelValue(dataType));
     }
 
     @Test
     public void testSetTextBoxModelValueConstant() {
-        assertNull( view.getModel().getConstant() );
-        view.setTextBoxModelValue( constant,
-                                   "abc" );
-        assertEquals( "abc",
-                      view.getModel().getConstant() );
-        assertNull( view.getModel().getCustomDataType() );
-        assertEquals( "abc",
-                      view.getModelValue( processVar ) );
+        assertNull(view.getModel().getConstant());
+        view.setTextBoxModelValue(constant,
+                                  "abc");
+        assertEquals("abc",
+                     view.getModel().getConstant());
+        assertNull(view.getModel().getCustomDataType());
+        assertEquals("abc",
+                     view.getModelValue(processVar));
     }
 
     @Test
     public void testSetListBoxModelValueDataType() {
-        assertNull( view.getModel().getDataType() );
-        view.setListBoxModelValue( dataType,
-                                   "abc" );
-        assertEquals( "abc",
-                      view.getModel().getDataType() );
-        assertNull( view.getModel().getCustomDataType() );
-        assertNull( view.getModel().getProcessVar() );
-        assertEquals( "abc",
-                      view.getModelValue( dataType ) );
+        assertNull(view.getModel().getDataType());
+        view.setListBoxModelValue(dataType,
+                                  "abc");
+        assertEquals("abc",
+                     view.getModel().getDataType());
+        assertNull(view.getModel().getCustomDataType());
+        assertNull(view.getModel().getProcessVar());
+        assertEquals("abc",
+                     view.getModelValue(dataType));
     }
 
     @Test
     public void testSetListBoxModelValueProcessVar() {
-        assertNull( view.getModel().getProcessVar() );
-        view.setListBoxModelValue( processVar,
-                                   "abc" );
-        assertEquals( "abc",
-                      view.getModel().getProcessVar() );
-        assertNull( view.getModel().getConstant() );
-        assertNull( view.getModel().getDataType() );
-        assertEquals( "abc",
-                      view.getModelValue( processVar ) );
+        assertNull(view.getModel().getProcessVar());
+        view.setListBoxModelValue(processVar,
+                                  "abc");
+        assertEquals("abc",
+                     view.getModel().getProcessVar());
+        assertNull(view.getModel().getConstant());
+        assertNull(view.getModel().getDataType());
+        assertEquals("abc",
+                     view.getModelValue(processVar));
     }
 
     @Test
     public void testDataTypeHandlerSpace() {
         view.init();
-        verify( customDataType,
-                times( 1 ) ).addKeyDownHandler( keyDownHandlerCaptor.capture() );
+        verify(customDataType,
+               times(1)).addKeyDownHandler(keyDownHandlerCaptor.capture());
         KeyDownHandler handler = keyDownHandlerCaptor.getValue();
-        doReturn( Integer.valueOf( ' ' ) ).when( keyDownEvent ).getNativeKeyCode();
-        handler.onKeyDown( keyDownEvent );
-        verify( keyDownEvent,
-                times( 1 ) ).preventDefault();
+        doReturn(Integer.valueOf(' ')).when(keyDownEvent).getNativeKeyCode();
+        handler.onKeyDown(keyDownEvent);
+        verify(keyDownEvent,
+               times(1)).preventDefault();
     }
 
     @Test
     public void testDataTypeHandlerAlphabetical() {
         view.init();
-        verify( customDataType,
-                times( 1 ) ).addKeyDownHandler( keyDownHandlerCaptor.capture() );
+        verify(customDataType,
+               times(1)).addKeyDownHandler(keyDownHandlerCaptor.capture());
         KeyDownHandler handler = keyDownHandlerCaptor.getValue();
-        doReturn( Integer.valueOf( 'a' ) ).when( keyDownEvent ).getNativeKeyCode();
-        handler.onKeyDown( keyDownEvent );
-        verify( keyDownEvent,
-                never() ).preventDefault();
+        doReturn(Integer.valueOf('a')).when(keyDownEvent).getNativeKeyCode();
+        handler.onKeyDown(keyDownEvent);
+        verify(keyDownEvent,
+               never()).preventDefault();
     }
 
     @Test
     public void testNameBlurHandler() {
-        ActivityDataIOEditorWidget parent = mock( ActivityDataIOEditorWidget.class );
-        when( parent.isDuplicateName( anyString() ) ).thenReturn( true );
-        doReturn( "anyName" ).when( name ).getText();
-        view.setAllowDuplicateNames( false,
-                                     "ErrorMessage" );
-        view.setParentWidget( parent );
+        ActivityDataIOEditorWidget parent = mock(ActivityDataIOEditorWidget.class);
+        when(parent.isDuplicateName(anyString())).thenReturn(true);
+        doReturn("anyName").when(name).getText();
+        view.setAllowDuplicateNames(false,
+                                    "ErrorMessage");
+        view.setParentWidget(parent);
         view.init();
-        verify( name,
-                times( 1 ) ).addBlurHandler( blurHandlerCaptor.capture() );
+        verify(name,
+               times(1)).addBlurHandler(blurHandlerCaptor.capture());
         BlurHandler handler = blurHandlerCaptor.getValue();
-        handler.onBlur( mock( BlurEvent.class ) );
-        verify( parent,
-                times( 1 ) ).isDuplicateName( "anyName" );
-        verify( notification,
-                times( 1 ) ).fire( new NotificationEvent( "ErrorMessage",
-                                                          NotificationEvent.NotificationType.ERROR ) );
-        verify( name,
-                times( 1 ) ).setValue( "" );
+        handler.onBlur(mock(BlurEvent.class));
+        verify(parent,
+               times(1)).isDuplicateName("anyName");
+        verify(notification,
+               times(1)).fire(new NotificationEvent("ErrorMessage",
+                                                    NotificationEvent.NotificationType.ERROR));
+        verify(name,
+               times(1)).setValue("");
     }
 
     @Test
     public void testSetShowConstantsTrue() {
-        view.setShowConstants( true );
-        verify( processVarComboBox ).setShowCustomValues( true );
+        view.setShowConstants(true);
+        verify(processVarComboBox).setShowCustomValues(true);
     }
 
     @Test
     public void testSetShowConstantsFalse() {
-        view.setShowConstants( false );
-        verify( processVarComboBox ).setShowCustomValues( false );
+        view.setShowConstants(false);
+        verify(processVarComboBox).setShowCustomValues(false);
     }
 
     @Test
     public void testSetDisallowedNames() {
         Set<String> disallowedNames = new HashSet<String>();
         String disallowedNameErrorMessage = "error value";
-        view.setDisallowedNames( disallowedNames,
-                                 disallowedNameErrorMessage );
-        verify( name ).setInvalidValues( disallowedNames,
-                                         false,
-                                         disallowedNameErrorMessage );
+        view.setDisallowedNames(disallowedNames,
+                                disallowedNameErrorMessage);
+        verify(name).setInvalidValues(disallowedNames,
+                                      false,
+                                      disallowedNameErrorMessage);
     }
 
     @Test
     public void testHandleDeleteButton() {
-        ActivityDataIOEditorWidget widget = mock( ActivityDataIOEditorWidget.class );
-        AssignmentRow model = mock( AssignmentRow.class );
-        when( view.getModel() ).thenReturn( model );
-        view.setParentWidget( widget );
-        view.handleDeleteButton( null );
-        verify( widget ).removeAssignment( model );
+        ActivityDataIOEditorWidget widget = mock(ActivityDataIOEditorWidget.class);
+        AssignmentRow model = mock(AssignmentRow.class);
+        when(view.getModel()).thenReturn(model);
+        view.setParentWidget(widget);
+        view.handleDeleteButton(null);
+        verify(widget).removeAssignment(model);
     }
 }

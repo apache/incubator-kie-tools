@@ -29,19 +29,19 @@ public class GraphNodeStoreImpl implements GraphNodeStore<Node> {
     protected Map<String, Node> nodes = new HashMap<String, Node>();
 
     @Override
-    public Node add( final Node node ) {
-        return nodes.put( node.getUUID(),
-                          node );
+    public Node add(final Node node) {
+        return nodes.put(node.getUUID(),
+                         node);
     }
 
     @Override
-    public Node remove( final String uuid ) {
-        return nodes.remove( uuid );
+    public Node remove(final String uuid) {
+        return nodes.remove(uuid);
     }
 
     @Override
-    public Node get( final String uuid ) {
-        return nodes.get( uuid );
+    public Node get(final String uuid) {
+        return nodes.get(uuid);
     }
 
     @Override

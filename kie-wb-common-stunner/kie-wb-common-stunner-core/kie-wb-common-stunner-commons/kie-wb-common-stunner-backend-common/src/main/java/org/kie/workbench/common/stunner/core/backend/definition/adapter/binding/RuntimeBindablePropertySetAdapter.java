@@ -27,50 +27,50 @@ import org.slf4j.LoggerFactory;
 class RuntimeBindablePropertySetAdapter<T> extends AbstractRuntimeAdapter<T>
         implements BindablePropertySetAdapter<T> {
 
-    private static final Logger LOG = LoggerFactory.getLogger( RuntimeBindablePropertySetAdapter.class );
+    private static final Logger LOG = LoggerFactory.getLogger(RuntimeBindablePropertySetAdapter.class);
 
     private Map<Class, String> propertyNameFieldNames;
     private Map<Class, Set<String>> propertiesFieldNames;
 
     @Override
-    public void setBindings( final Map<Class, String> propertyNameFieldNames,
-                             final Map<Class, Set<String>> propertiesFieldNames ) {
+    public void setBindings(final Map<Class, String> propertyNameFieldNames,
+                            final Map<Class, Set<String>> propertiesFieldNames) {
         this.propertyNameFieldNames = propertyNameFieldNames;
         this.propertiesFieldNames = propertiesFieldNames;
     }
 
     @Override
-    public String getId( final T propertySet ) {
-        return BindableAdapterUtils.getPropertySetId( propertySet.getClass() );
+    public String getId(final T propertySet) {
+        return BindableAdapterUtils.getPropertySetId(propertySet.getClass());
     }
 
     @Override
-    public String getName( final T propertySet ) {
+    public String getName(final T propertySet) {
         Class<?> type = propertySet.getClass();
         try {
-            return getFieldValue( propertySet,
-                                  propertyNameFieldNames.get( type ) );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining name for Property Set with id " + getId( propertySet ) );
+            return getFieldValue(propertySet,
+                                 propertyNameFieldNames.get(type));
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining name for Property Set with id " + getId(propertySet));
         }
         return null;
     }
 
     @Override
-    public Set<?> getProperties( final T propertySet ) {
+    public Set<?> getProperties(final T propertySet) {
         Class<?> type = propertySet.getClass();
-        Set<String> fields = propertiesFieldNames.get( type );
+        Set<String> fields = propertiesFieldNames.get(type);
         try {
-            return getFieldValues( propertySet,
-                                   fields );
-        } catch ( IllegalAccessException e ) {
-            LOG.error( "Error obtaining properties for Property Set with id " + getId( propertySet ) );
+            return getFieldValues(propertySet,
+                                  fields);
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining properties for Property Set with id " + getId(propertySet));
         }
         return null;
     }
 
     @Override
-    public boolean accepts( final Class<?> type ) {
-        return null != propertyNameFieldNames && propertyNameFieldNames.containsKey( type );
+    public boolean accepts(final Class<?> type) {
+        return null != propertyNameFieldNames && propertyNameFieldNames.containsKey(type);
     }
 }

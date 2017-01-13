@@ -39,21 +39,21 @@ public class ProcessData implements BPMNPropertySet {
     public static final transient String propertySetName = "Process Data";
 
     @Property
-    @FieldDef( label = FIELDDEF_PROCESS_VARIABLES, property = "value" )
+    @FieldDef(label = FIELDDEF_PROCESS_VARIABLES, property = "value")
     @VariablesEditor
     @Valid
     private ProcessVariables processVariables;
 
     public ProcessData() {
-        this( new ProcessVariables() );
+        this(new ProcessVariables());
     }
 
-    public ProcessData( @MapsTo( "processVariables" ) ProcessVariables processVariables ) {
+    public ProcessData(final @MapsTo("processVariables") ProcessVariables processVariables) {
         this.processVariables = processVariables;
     }
 
-    public ProcessData( String processVariables ) {
-        this.processVariables = new ProcessVariables( processVariables );
+    public ProcessData(final String processVariables) {
+        this.processVariables = new ProcessVariables(processVariables);
     }
 
     public String getPropertySetName() {
@@ -64,7 +64,7 @@ public class ProcessData implements BPMNPropertySet {
         return processVariables;
     }
 
-    public void setProcessVariables( ProcessVariables processVariables ) {
+    public void setProcessVariables(final ProcessVariables processVariables) {
         this.processVariables = processVariables;
     }
 }

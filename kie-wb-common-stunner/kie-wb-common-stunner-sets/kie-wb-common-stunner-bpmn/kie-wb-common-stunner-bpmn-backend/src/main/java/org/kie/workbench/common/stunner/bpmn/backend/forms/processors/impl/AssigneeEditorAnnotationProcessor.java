@@ -32,17 +32,17 @@ import org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders.Assign
 public class AssigneeEditorAnnotationProcessor extends AbstractFieldAnnotationProcessor<AssigneeEditorFieldDefinition, AssigneeEditorFieldProvider> {
 
     @Inject
-    public AssigneeEditorAnnotationProcessor( AssigneeEditorFieldProvider fieldProvider ) {
-        super( fieldProvider );
+    public AssigneeEditorAnnotationProcessor(final AssigneeEditorFieldProvider fieldProvider) {
+        super(fieldProvider);
     }
 
     @Override
-    protected void initField( AssigneeEditorFieldDefinition field,
-                              Annotation annotation,
-                              FieldSetting fieldSetting,
-                              TransformerContext context ) {
-        field.setDefaultValue( ( String ) annotation.getParameters().get( "defaultValue" ) );
-        field.setType( AssigneeType.valueOf( ( String ) annotation.getParameters().get( "type" ) ) );
+    protected void initField(final AssigneeEditorFieldDefinition field,
+                             final Annotation annotation,
+                             final FieldSetting fieldSetting,
+                             final TransformerContext context) {
+        field.setDefaultValue((String) annotation.getParameters().get("defaultValue"));
+        field.setType(AssigneeType.valueOf((String) annotation.getParameters().get("type")));
     }
 
     @Override

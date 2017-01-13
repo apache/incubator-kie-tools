@@ -22,8 +22,8 @@ public final class GestureEventImpl extends AbstractViewEvent
     private final double scale;
     private final double rotation;
 
-    public GestureEventImpl( final double scale,
-                             final double rotation ) {
+    public GestureEventImpl(final double scale,
+                            final double rotation) {
         this.scale = scale;
         this.rotation = rotation;
     }

@@ -27,7 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class CommandRegistryListenerTest {
 
     private class CommandRegistryListenerStub extends CommandRegistryListener {
@@ -38,9 +38,9 @@ public class CommandRegistryListenerTest {
         }
 
         @Override
-        public void onAllow( Object context,
-                             Command command,
-                             CommandResult result ) {
+        public void onAllow(Object context,
+                            Command command,
+                            CommandResult result) {
         }
     }
 
@@ -54,74 +54,74 @@ public class CommandRegistryListenerTest {
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecuteSuccess() {
-        Object context = mock( Object.class );
-        Command command = mock( Command.class );
-        CommandResult result = mock( CommandResult.class );
-        when( result.getType() ).thenReturn( CommandResult.Type.INFO );
-        tested.onExecute( context,
-                          command,
-                          result );
-        verify( commandRegistry,
-                times( 1 ) ).register( eq( command ) );
-        verify( commandRegistry,
-                times( 0 ) ).pop();
-        verify( commandRegistry,
-                times( 0 ) ).peek();
+        Object context = mock(Object.class);
+        Command command = mock(Command.class);
+        CommandResult result = mock(CommandResult.class);
+        when(result.getType()).thenReturn(CommandResult.Type.INFO);
+        tested.onExecute(context,
+                         command,
+                         result);
+        verify(commandRegistry,
+               times(1)).register(eq(command));
+        verify(commandRegistry,
+               times(0)).pop();
+        verify(commandRegistry,
+               times(0)).peek();
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecuteFailed() {
-        Object context = mock( Object.class );
-        Command command = mock( Command.class );
-        CommandResult result = mock( CommandResult.class );
-        when( result.getType() ).thenReturn( CommandResult.Type.ERROR );
-        tested.onExecute( context,
-                          command,
-                          result );
-        verify( commandRegistry,
-                times( 0 ) ).register( eq( command ) );
-        verify( commandRegistry,
-                times( 0 ) ).pop();
-        verify( commandRegistry,
-                times( 0 ) ).peek();
+        Object context = mock(Object.class);
+        Command command = mock(Command.class);
+        CommandResult result = mock(CommandResult.class);
+        when(result.getType()).thenReturn(CommandResult.Type.ERROR);
+        tested.onExecute(context,
+                         command,
+                         result);
+        verify(commandRegistry,
+               times(0)).register(eq(command));
+        verify(commandRegistry,
+               times(0)).pop();
+        verify(commandRegistry,
+               times(0)).peek();
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testUndoSuccess() {
-        Object context = mock( Object.class );
-        Command command = mock( Command.class );
-        CommandResult result = mock( CommandResult.class );
-        when( result.getType() ).thenReturn( CommandResult.Type.INFO );
-        tested.onUndo( context,
-                       command,
-                       result );
-        verify( commandRegistry,
-                times( 1 ) ).pop();
-        verify( commandRegistry,
-                times( 0 ) ).peek();
-        verify( commandRegistry,
-                times( 0 ) ).register( any( Command.class ) );
+        Object context = mock(Object.class);
+        Command command = mock(Command.class);
+        CommandResult result = mock(CommandResult.class);
+        when(result.getType()).thenReturn(CommandResult.Type.INFO);
+        tested.onUndo(context,
+                      command,
+                      result);
+        verify(commandRegistry,
+               times(1)).pop();
+        verify(commandRegistry,
+               times(0)).peek();
+        verify(commandRegistry,
+               times(0)).register(any(Command.class));
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testUndoFailed() {
-        Object context = mock( Object.class );
-        Command command = mock( Command.class );
-        CommandResult result = mock( CommandResult.class );
-        when( result.getType() ).thenReturn( CommandResult.Type.ERROR );
-        tested.onUndo( context,
-                       command,
-                       result );
-        verify( commandRegistry,
-                times( 0 ) ).pop();
-        verify( commandRegistry,
-                times( 0 ) ).peek();
-        verify( commandRegistry,
-                times( 0 ) ).register( any( Command.class ) );
+        Object context = mock(Object.class);
+        Command command = mock(Command.class);
+        CommandResult result = mock(CommandResult.class);
+        when(result.getType()).thenReturn(CommandResult.Type.ERROR);
+        tested.onUndo(context,
+                      command,
+                      result);
+        verify(commandRegistry,
+               times(0)).pop();
+        verify(commandRegistry,
+               times(0)).peek();
+        verify(commandRegistry,
+               times(0)).register(any(Command.class));
     }
 }

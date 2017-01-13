@@ -30,14 +30,14 @@ public class CaseManagementBackendService extends AbstractDefinitionSetService {
     private CaseManagementDefinitionSetResourceType cmResourceType;
 
     protected CaseManagementBackendService() {
-        this( null,
-              null );
+        this(null,
+             null);
     }
 
     @Inject
-    public CaseManagementBackendService( final @CaseManagement CaseManagementDiagramMarshaller cmDiagramMarshaller,
-                                         final CaseManagementDefinitionSetResourceType cmResourceType ) {
-        super( cmDiagramMarshaller );
+    public CaseManagementBackendService(final @CaseManagement CaseManagementDiagramMarshaller cmDiagramMarshaller,
+                                        final CaseManagementDefinitionSetResourceType cmResourceType) {
+        super(cmDiagramMarshaller);
         this.cmResourceType = cmResourceType;
     }
 

@@ -30,7 +30,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DeleteCanvasNodeCommandTest extends AbstractCanvasCommandTest {
 
     private static final String C_ID = "c1";
@@ -46,25 +46,25 @@ public class DeleteCanvasNodeCommandTest extends AbstractCanvasCommandTest {
     @Before
     public void setup() throws Exception {
         super.setup();
-        when( candidate.getUUID() ).thenReturn( C_ID );
-        when( parent.getUUID() ).thenReturn( P_ID );
-        this.tested = new DeleteCanvasNodeCommand( candidate,
-                                                   parent );
+        when(candidate.getUUID()).thenReturn(C_ID);
+        when(parent.getUUID()).thenReturn(P_ID);
+        this.tested = new DeleteCanvasNodeCommand(candidate,
+                                                  parent);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecute() {
-        final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR,
-                         result.getType() );
-        verify( canvasHandler,
-                times( 1 ) ).removeChild( eq( P_ID ),
-                                          eq( C_ID ) );
-        verify( canvasHandler,
-                times( 1 ) ).deregister( eq( candidate ) );
-        verify( canvasHandler,
-                times( 1 ) ).applyElementMutation( eq( parent ),
-                                                   any( MutationContext.class ) );
+        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertNotEquals(CommandResult.Type.ERROR,
+                        result.getType());
+        verify(canvasHandler,
+               times(1)).removeChild(eq(P_ID),
+                                     eq(C_ID));
+        verify(canvasHandler,
+               times(1)).deregister(eq(candidate));
+        verify(canvasHandler,
+               times(1)).applyElementMutation(eq(parent),
+                                              any(MutationContext.class));
     }
 }

@@ -34,10 +34,10 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 public final class SelectionControlImpl extends AbstractSelectionControl {
 
     @Inject
-    public SelectionControlImpl( final Event<CanvasElementSelectedEvent> elementSelectedEventEvent,
-                                 final Event<CanvasClearSelectionEvent> clearSelectionEventEvent ) {
-        super( elementSelectedEventEvent,
-               clearSelectionEventEvent );
+    public SelectionControlImpl(final Event<CanvasElementSelectedEvent> elementSelectedEventEvent,
+                                final Event<CanvasClearSelectionEvent> clearSelectionEventEvent) {
+        super(elementSelectedEventEvent,
+              clearSelectionEventEvent);
     }
 
     /*
@@ -47,26 +47,26 @@ public final class SelectionControlImpl extends AbstractSelectionControl {
      */
 
     @Override
-    protected void register( final Element element,
-                             final Shape<?> shape ) {
+    protected void register(final Element element,
+                            final Shape<?> shape) {
         final ShapeView shapeView = shape.getShapeView();
-        if ( shapeView instanceof HasEventHandlers ) {
-            final HasEventHandlers hasEventHandlers = ( HasEventHandlers ) shapeView;
-            if ( hasEventHandlers.supports( ViewEventType.MOUSE_CLICK ) ) {
+        if (shapeView instanceof HasEventHandlers) {
+            final HasEventHandlers hasEventHandlers = (HasEventHandlers) shapeView;
+            if (hasEventHandlers.supports(ViewEventType.MOUSE_CLICK)) {
                 // Click event.
                 final MouseClickHandler clickHandler = new MouseClickHandler() {
                     @Override
-                    public void handle( final MouseClickEvent event ) {
-                        final boolean isSelected = isSelected( element );
-                        SelectionControlImpl.super.handleElementSelection( element,
-                                                                           isSelected,
-                                                                           !event.isShiftKeyDown() );
+                    public void handle(final MouseClickEvent event) {
+                        final boolean isSelected = isSelected(element);
+                        SelectionControlImpl.super.handleElementSelection(element,
+                                                                          isSelected,
+                                                                          !event.isShiftKeyDown());
                     }
                 };
-                hasEventHandlers.addHandler( ViewEventType.MOUSE_CLICK,
-                                             clickHandler );
-                registerHandler( shape.getUUID(),
-                                 clickHandler );
+                hasEventHandlers.addHandler(ViewEventType.MOUSE_CLICK,
+                                            clickHandler);
+                registerHandler(shape.getUUID(),
+                                clickHandler);
             }
         }
     }

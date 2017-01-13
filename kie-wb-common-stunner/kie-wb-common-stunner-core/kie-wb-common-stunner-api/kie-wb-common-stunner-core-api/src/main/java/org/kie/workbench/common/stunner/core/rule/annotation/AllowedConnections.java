@@ -27,8 +27,8 @@ import java.lang.annotation.Target;
  * @See org.kie.workbench.common.stunner.core.rule.annotation.CanConnect
  */
 @Inherited
-@Target( ElementType.TYPE )
-@Retention( RetentionPolicy.RUNTIME )
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface AllowedConnections {
 
     String id() default "";

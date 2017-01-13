@@ -20,15 +20,15 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAda
 
 public abstract class BindableDefinitionSetAdapterProxy<T> extends DefinitionSetAdapterWrapper<T, BindableDefinitionSetAdapter<T>> {
 
-    protected abstract void setBindings( BindableDefinitionSetAdapter<T> adapter );
+    protected abstract void setBindings(BindableDefinitionSetAdapter<T> adapter);
 
     protected BindableDefinitionSetAdapterProxy() {
     }
 
-    @SuppressWarnings( "unchecked" )
-    public BindableDefinitionSetAdapterProxy( final BindableAdapterFactory adapterFactory ) {
-        super( adapterFactory.newBindableDefinitionSetAdapter() );
-        setBindings( adapter );
+    @SuppressWarnings("unchecked")
+    public BindableDefinitionSetAdapterProxy(final BindableAdapterFactory adapterFactory) {
+        super(adapterFactory.newBindableDefinitionSetAdapter());
+        setBindings(adapter);
     }
 
     @Override

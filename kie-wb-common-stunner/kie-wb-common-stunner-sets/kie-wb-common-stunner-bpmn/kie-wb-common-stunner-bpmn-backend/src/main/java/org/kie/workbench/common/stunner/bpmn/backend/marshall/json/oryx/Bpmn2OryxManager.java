@@ -32,10 +32,10 @@ public class Bpmn2OryxManager extends BaseOryxManager {
     }
 
     @Inject
-    public Bpmn2OryxManager( final OryxIdMappings oryxIdMappings,
-                             final Bpmn2OryxPropertyManager oryxPropertyManager ) {
-        super( oryxIdMappings,
-               oryxPropertyManager );
+    public Bpmn2OryxManager(final OryxIdMappings oryxIdMappings,
+                            final Bpmn2OryxPropertyManager oryxPropertyManager) {
+        super(oryxIdMappings,
+              oryxPropertyManager);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class Bpmn2OryxManager extends BaseOryxManager {
     @Override
     public Set<Class<?>> getDefinitionClasses() {
         final BPMNDefinitionSet set = new BPMNDefinitionSet.BPMNDefinitionSetBuilder().build();
-        final Set<Class<?>> defClasses = BackendBindableDefinitionUtils.getDefinitions( set );
+        final Set<Class<?>> defClasses = BackendBindableDefinitionUtils.getDefinitions(set);
         return defClasses;
     }
 }

@@ -32,7 +32,7 @@ public interface CommandRegistry<C extends Command> extends DynamicRegistry<C>,
     /**
      * Registers a single or more than one command/s.
      */
-    void register( final C command );
+    void register(final C command);
 
     /**
      * Peek the command from the registry.

@@ -26,8 +26,8 @@ public abstract class AbstractDefinitionSetResourceType implements DefinitionSet
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( "." + getSuffix() );
+    public boolean accept(final Path path) {
+        return path.getFileName().endsWith("." + getSuffix());
     }
 
     @Override

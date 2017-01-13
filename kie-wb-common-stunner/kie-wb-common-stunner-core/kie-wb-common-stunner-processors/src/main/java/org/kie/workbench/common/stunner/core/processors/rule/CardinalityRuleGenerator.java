@@ -44,73 +44,73 @@ public class CardinalityRuleGenerator extends AbstractGenerator {
     private final ProcessingContext processingContext = ProcessingContext.getInstance();
 
     @Override
-    public StringBuffer generate( final String packageName,
-                                  final PackageElement packageElement,
-                                  final String className,
-                                  final Element element,
-                                  final ProcessingEnvironment processingEnvironment ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final PackageElement packageElement,
+                                 final String className,
+                                 final Element element,
+                                 final ProcessingEnvironment processingEnvironment) throws GenerationException {
         final Messager messager = processingEnvironment.getMessager();
-        messager.printMessage( Diagnostic.Kind.NOTE,
-                               "Starting code generation for [" + className + "]" );
+        messager.printMessage(Diagnostic.Kind.NOTE,
+                              "Starting code generation for [" + className + "]");
         final Elements elementUtils = processingEnvironment.getElementUtils();
         //Extract required information
-        final TypeElement classElement = ( TypeElement ) element;
+        final TypeElement classElement = (TypeElement) element;
         final boolean isInterface = classElement.getKind().isInterface();
-        AllowedOccurrences occs = classElement.getAnnotation( AllowedOccurrences.class );
-        if ( null != occs ) {
-            for ( Occurrences occurrence : occs.value() ) {
+        AllowedOccurrences occs = classElement.getAnnotation(AllowedOccurrences.class);
+        if (null != occs) {
+            for (Occurrences occurrence : occs.value()) {
                 String role = occurrence.role();
-                final String ruleNAme = MainProcessor.toValidId( className ) + "_" + role + "_" + MainProcessor.RULE_CARDINALITY_SUFFIX_CLASSNAME;
+                final String ruleNAme = MainProcessor.toValidId(className) + "_" + role + "_" + MainProcessor.RULE_CARDINALITY_SUFFIX_CLASSNAME;
                 long min = occurrence.min();
                 long max = occurrence.max();
-                StringBuffer ruleSourceCode = generateRule( messager,
-                                                            ruleNAme,
-                                                            role,
-                                                            min,
-                                                            max );
-                processingContext.addRule( ruleNAme,
-                                           ProcessingRule.TYPE.CARDINALITY,
-                                           ruleSourceCode );
+                StringBuffer ruleSourceCode = generateRule(messager,
+                                                           ruleNAme,
+                                                           role,
+                                                           min,
+                                                           max);
+                processingContext.addRule(ruleNAme,
+                                          ProcessingRule.TYPE.CARDINALITY,
+                                          ruleSourceCode);
             }
         }
         return null;
     }
 
-    private StringBuffer generateRule( final Messager messager,
-                                       final String ruleName,
-                                       final String ruleRoleId,
-                                       final long min,
-                                       final long max ) throws GenerationException {
+    private StringBuffer generateRule(final Messager messager,
+                                      final String ruleName,
+                                      final String ruleRoleId,
+                                      final long min,
+                                      final long max) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "ruleName",
-                  ruleName );
-        root.put( "ruleRoleId",
-                  ruleRoleId );
-        root.put( "min",
-                  min );
-        root.put( "max",
-                  max );
+        root.put("ruleName",
+                 ruleName);
+        root.put("ruleRoleId",
+                 ruleRoleId);
+        root.put("min",
+                 min);
+        root.put("max",
+                 max);
         //Generate code
         final StringWriter sw = new StringWriter();
-        final BufferedWriter bw = new BufferedWriter( sw );
+        final BufferedWriter bw = new BufferedWriter(sw);
         try {
-            final Template template = config.getTemplate( "CardinalityRule.ftl" );
-            template.process( root,
-                              bw );
-        } catch ( IOException ioe ) {
-            throw new GenerationException( ioe );
-        } catch ( TemplateException te ) {
-            throw new GenerationException( te );
+            final Template template = config.getTemplate("CardinalityRule.ftl");
+            template.process(root,
+                             bw);
+        } catch (IOException ioe) {
+            throw new GenerationException(ioe);
+        } catch (TemplateException te) {
+            throw new GenerationException(te);
         } finally {
             try {
                 bw.close();
                 sw.close();
-            } catch ( IOException ioe ) {
-                throw new GenerationException( ioe );
+            } catch (IOException ioe) {
+                throw new GenerationException(ioe);
             }
         }
-        messager.printMessage( Diagnostic.Kind.NOTE,
-                               "Successfully generated code for [" + ruleName + "]" );
+        messager.printMessage(Diagnostic.Kind.NOTE,
+                              "Successfully generated code for [" + ruleName + "]");
         return sw.getBuffer();
     }
 }

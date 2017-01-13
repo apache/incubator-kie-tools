@@ -28,9 +28,9 @@ public final class DefinitionRepresentationImpl implements DefinitionRepresentat
     private final boolean isNode;
     private final Set<String> labels;
 
-    public DefinitionRepresentationImpl( final @MapsTo( "id" ) String id,
-                                         final @MapsTo( "isNode" ) boolean isNode,
-                                         final @MapsTo( "labels" ) Set<String> labels ) {
+    public DefinitionRepresentationImpl(final @MapsTo("id") String id,
+                                        final @MapsTo("isNode") boolean isNode,
+                                        final @MapsTo("labels") Set<String> labels) {
         this.id = id;
         this.isNode = isNode;
         this.labels = labels;

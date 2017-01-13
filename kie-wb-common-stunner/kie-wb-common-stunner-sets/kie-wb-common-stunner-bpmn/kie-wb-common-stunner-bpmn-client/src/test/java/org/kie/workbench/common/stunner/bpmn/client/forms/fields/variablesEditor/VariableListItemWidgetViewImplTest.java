@@ -46,7 +46,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class VariableListItemWidgetViewImplTest {
 
     private static final String VARIABLE_NAME = "variableName";
@@ -73,7 +73,7 @@ public class VariableListItemWidgetViewImplTest {
     @GwtMock
     private KeyDownEvent keyDownEvent;
 
-    private Event<NotificationEvent> notification = mock( EventSourceMock.class );
+    private Event<NotificationEvent> notification = mock(EventSourceMock.class);
 
     @Captor
     private ArgumentCaptor<KeyDownHandler> keyDownHandlerCaptor;
@@ -85,12 +85,12 @@ public class VariableListItemWidgetViewImplTest {
 
     @Before
     public void setUp() throws Exception {
-        GwtMockito.initMocks( this );
-        customDataType = mock( TextBox.class );
-        dataType = mock( ValueListBox.class );
-        dataTypeComboBox = mock( ComboBox.class );
-        processVarComboBox = mock( ComboBox.class );
-        view = mock( VariableListItemWidgetViewImpl.class );
+        GwtMockito.initMocks(this);
+        customDataType = mock(TextBox.class);
+        dataType = mock(ValueListBox.class);
+        dataTypeComboBox = mock(ComboBox.class);
+        processVarComboBox = mock(ComboBox.class);
+        view = mock(VariableListItemWidgetViewImpl.class);
         view.variableRow = variableRow;
         view.name = name;
         view.deleteButton = deleteButton;
@@ -98,138 +98,138 @@ public class VariableListItemWidgetViewImplTest {
         view.dataType = dataType;
         view.dataTypeComboBox = dataTypeComboBox;
         view.notification = notification;
-        doCallRealMethod().when( view ).init();
-        doCallRealMethod().when( view ).getCustomDataType();
-        doCallRealMethod().when( view ).setCustomDataType( anyString() );
-        doCallRealMethod().when( view ).getModel();
-        doCallRealMethod().when( view ).setModel( any( VariableRow.class ) );
-        doCallRealMethod().when( view ).getModelValue( any( ValueListBox.class ) );
-        doCallRealMethod().when( view ).setTextBoxModelValue( any( TextBox.class ),
-                                                              anyString() );
-        doCallRealMethod().when( view ).setListBoxModelValue( any( ValueListBox.class ),
-                                                              anyString() );
-        doCallRealMethod().when( view ).getDataTypeDisplayName();
-        doCallRealMethod().when( view ).setDataTypeDisplayName( anyString() );
-        doCallRealMethod().when( view ).getVariableType();
-        doCallRealMethod().when( view ).setParentWidget( any( VariablesEditorWidgetView.Presenter.class ) );
-        doCallRealMethod().when( view ).isDuplicateName( anyString() );
-        doCallRealMethod().when( view ).handleDeleteButton( any( ClickEvent.class ) );
+        doCallRealMethod().when(view).init();
+        doCallRealMethod().when(view).getCustomDataType();
+        doCallRealMethod().when(view).setCustomDataType(anyString());
+        doCallRealMethod().when(view).getModel();
+        doCallRealMethod().when(view).setModel(any(VariableRow.class));
+        doCallRealMethod().when(view).getModelValue(any(ValueListBox.class));
+        doCallRealMethod().when(view).setTextBoxModelValue(any(TextBox.class),
+                                                           anyString());
+        doCallRealMethod().when(view).setListBoxModelValue(any(ValueListBox.class),
+                                                           anyString());
+        doCallRealMethod().when(view).getDataTypeDisplayName();
+        doCallRealMethod().when(view).setDataTypeDisplayName(anyString());
+        doCallRealMethod().when(view).getVariableType();
+        doCallRealMethod().when(view).setParentWidget(any(VariablesEditorWidgetView.Presenter.class));
+        doCallRealMethod().when(view).isDuplicateName(anyString());
+        doCallRealMethod().when(view).handleDeleteButton(any(ClickEvent.class));
         VariableRow row = new VariableRow();
-        doReturn( row ).when( variableRow ).getModel();
+        doReturn(row).when(variableRow).getModel();
     }
 
     @Test
     public void testSetProcessVarCustomDataType() {
         VariableRow row = new VariableRow();
-        row.setName( VARIABLE_NAME );
-        row.setCustomDataType( CUST_DATA_TYPE_NAME );
-        row.setDataTypeDisplayName( null );
-        row.setVariableType( Variable.VariableType.PROCESS );
-        doReturn( row ).when( variableRow ).getModel();
-        view.setModel( row );
-        verify( variableRow,
-                times( 1 ) ).setModel( row );
-        verify( deleteButton,
-                times( 1 ) ).setIcon( IconType.TRASH );
-        verify( customDataType,
-                times( 1 ) ).setValue( CUST_DATA_TYPE_NAME );
-        verify( dataType,
-                times( 1 ) ).setValue( CUST_DATA_TYPE_NAME );
+        row.setName(VARIABLE_NAME);
+        row.setCustomDataType(CUST_DATA_TYPE_NAME);
+        row.setDataTypeDisplayName(null);
+        row.setVariableType(Variable.VariableType.PROCESS);
+        doReturn(row).when(variableRow).getModel();
+        view.setModel(row);
+        verify(variableRow,
+               times(1)).setModel(row);
+        verify(deleteButton,
+               times(1)).setIcon(IconType.TRASH);
+        verify(customDataType,
+               times(1)).setValue(CUST_DATA_TYPE_NAME);
+        verify(dataType,
+               times(1)).setValue(CUST_DATA_TYPE_NAME);
     }
 
     @Test
     public void testSetProcessVarDataType() {
         VariableRow row = new VariableRow();
-        row.setName( VARIABLE_NAME );
-        row.setCustomDataType( null );
-        row.setDataTypeDisplayName( DATA_TYPE_NAME );
-        row.setVariableType( Variable.VariableType.PROCESS );
-        doReturn( row ).when( variableRow ).getModel();
-        view.setModel( row );
-        verify( variableRow,
-                times( 1 ) ).setModel( row );
-        verify( deleteButton,
-                times( 1 ) ).setIcon( IconType.TRASH );
-        verify( customDataType,
-                never() ).setValue( DATA_TYPE_NAME );
-        verify( dataType,
-                times( 1 ) ).setValue( DATA_TYPE_NAME );
+        row.setName(VARIABLE_NAME);
+        row.setCustomDataType(null);
+        row.setDataTypeDisplayName(DATA_TYPE_NAME);
+        row.setVariableType(Variable.VariableType.PROCESS);
+        doReturn(row).when(variableRow).getModel();
+        view.setModel(row);
+        verify(variableRow,
+               times(1)).setModel(row);
+        verify(deleteButton,
+               times(1)).setIcon(IconType.TRASH);
+        verify(customDataType,
+               never()).setValue(DATA_TYPE_NAME);
+        verify(dataType,
+               times(1)).setValue(DATA_TYPE_NAME);
     }
 
     @Test
     public void testSetTextBoxModelValueCustomDataType() {
-        assertNull( view.getModel().getCustomDataType() );
-        view.setTextBoxModelValue( customDataType,
-                                   "abc" );
-        assertEquals( "abc",
-                      view.getModel().getCustomDataType() );
-        assertEquals( "abc",
-                      view.getModelValue( dataType ) );
+        assertNull(view.getModel().getCustomDataType());
+        view.setTextBoxModelValue(customDataType,
+                                  "abc");
+        assertEquals("abc",
+                     view.getModel().getCustomDataType());
+        assertEquals("abc",
+                     view.getModelValue(dataType));
     }
 
     @Test
     public void testSetListBoxModelValueDataType() {
-        assertNull( view.getModel().getDataTypeDisplayName() );
-        view.setListBoxModelValue( dataType,
-                                   "abc" );
-        assertEquals( "abc",
-                      view.getModel().getDataTypeDisplayName() );
-        assertNull( view.getModel().getCustomDataType() );
-        assertEquals( "abc",
-                      view.getModelValue( dataType ) );
+        assertNull(view.getModel().getDataTypeDisplayName());
+        view.setListBoxModelValue(dataType,
+                                  "abc");
+        assertEquals("abc",
+                     view.getModel().getDataTypeDisplayName());
+        assertNull(view.getModel().getCustomDataType());
+        assertEquals("abc",
+                     view.getModelValue(dataType));
     }
 
     @Test
     public void testDataTypeHandlerSpace() {
         view.init();
-        verify( customDataType,
-                times( 1 ) ).addKeyDownHandler( keyDownHandlerCaptor.capture() );
+        verify(customDataType,
+               times(1)).addKeyDownHandler(keyDownHandlerCaptor.capture());
         KeyDownHandler handler = keyDownHandlerCaptor.getValue();
-        doReturn( Integer.valueOf( ' ' ) ).when( keyDownEvent ).getNativeKeyCode();
-        handler.onKeyDown( keyDownEvent );
-        verify( keyDownEvent,
-                times( 1 ) ).preventDefault();
+        doReturn(Integer.valueOf(' ')).when(keyDownEvent).getNativeKeyCode();
+        handler.onKeyDown(keyDownEvent);
+        verify(keyDownEvent,
+               times(1)).preventDefault();
     }
 
     @Test
     public void testDataTypeHandlerAlphabetical() {
         view.init();
-        verify( customDataType,
-                times( 1 ) ).addKeyDownHandler( keyDownHandlerCaptor.capture() );
+        verify(customDataType,
+               times(1)).addKeyDownHandler(keyDownHandlerCaptor.capture());
         KeyDownHandler handler = keyDownHandlerCaptor.getValue();
-        doReturn( Integer.valueOf( 'a' ) ).when( keyDownEvent ).getNativeKeyCode();
-        handler.onKeyDown( keyDownEvent );
-        verify( keyDownEvent,
-                never() ).preventDefault();
+        doReturn(Integer.valueOf('a')).when(keyDownEvent).getNativeKeyCode();
+        handler.onKeyDown(keyDownEvent);
+        verify(keyDownEvent,
+               never()).preventDefault();
     }
 
     @Test
     public void testNameBlurHandler() {
-        VariablesEditorWidgetView.Presenter parent = mock( VariablesEditorWidgetView.Presenter.class );
-        when( parent.isDuplicateName( anyString() ) ).thenReturn( true );
-        doReturn( "anyName" ).when( name ).getText();
-        view.setParentWidget( parent );
+        VariablesEditorWidgetView.Presenter parent = mock(VariablesEditorWidgetView.Presenter.class);
+        when(parent.isDuplicateName(anyString())).thenReturn(true);
+        doReturn("anyName").when(name).getText();
+        view.setParentWidget(parent);
         view.init();
-        verify( name,
-                times( 1 ) ).addBlurHandler( blurHandlerCaptor.capture() );
+        verify(name,
+               times(1)).addBlurHandler(blurHandlerCaptor.capture());
         BlurHandler handler = blurHandlerCaptor.getValue();
-        handler.onBlur( mock( BlurEvent.class ) );
-        verify( parent,
-                times( 1 ) ).isDuplicateName( "anyName" );
-        verify( notification,
-                times( 1 ) ).fire( new NotificationEvent( null,
-                                                          NotificationEvent.NotificationType.ERROR ) );
-        verify( name,
-                times( 1 ) ).setValue( "" );
+        handler.onBlur(mock(BlurEvent.class));
+        verify(parent,
+               times(1)).isDuplicateName("anyName");
+        verify(notification,
+               times(1)).fire(new NotificationEvent(null,
+                                                    NotificationEvent.NotificationType.ERROR));
+        verify(name,
+               times(1)).setValue("");
     }
 
     @Test
     public void testHandleDeleteButton() {
-        VariablesEditorWidgetView.Presenter widget = mock( VariablesEditorWidgetView.Presenter.class );
-        VariableRow model = mock( VariableRow.class );
-        when( view.getModel() ).thenReturn( model );
-        view.setParentWidget( widget );
-        view.handleDeleteButton( null );
-        verify( widget ).removeVariable( model );
+        VariablesEditorWidgetView.Presenter widget = mock(VariablesEditorWidgetView.Presenter.class);
+        VariableRow model = mock(VariableRow.class);
+        when(view.getModel()).thenReturn(model);
+        view.setParentWidget(widget);
+        view.handleDeleteButton(null);
+        verify(widget).removeVariable(model);
     }
 }

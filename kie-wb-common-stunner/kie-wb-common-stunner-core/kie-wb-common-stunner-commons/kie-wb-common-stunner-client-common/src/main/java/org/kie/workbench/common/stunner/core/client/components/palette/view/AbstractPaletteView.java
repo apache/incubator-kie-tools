@@ -28,17 +28,17 @@ public abstract class AbstractPaletteView<T, L, I extends PaletteElementView> im
     protected abstract void doClear();
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setX( final double x ) {
+    @SuppressWarnings("unchecked")
+    public T setX(final double x) {
         this.x = x;
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setY( final double y ) {
+    @SuppressWarnings("unchecked")
+    public T setY(final double y) {
         this.y = y;
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
@@ -52,33 +52,33 @@ public abstract class AbstractPaletteView<T, L, I extends PaletteElementView> im
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T add( final I item ) {
-        items.add( item );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T add(final I item) {
+        items.add(item);
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T set( final int pos,
-                  final I item ) {
-        items.set( pos,
-                   item );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T set(final int pos,
+                 final I item) {
+        items.set(pos,
+                  item);
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T remove( final int pos ) {
-        items.remove( pos );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T remove(final int pos) {
+        items.remove(pos);
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T clear() {
         doClear();
         items.clear();
-        return ( T ) this;
+        return (T) this;
     }
 }

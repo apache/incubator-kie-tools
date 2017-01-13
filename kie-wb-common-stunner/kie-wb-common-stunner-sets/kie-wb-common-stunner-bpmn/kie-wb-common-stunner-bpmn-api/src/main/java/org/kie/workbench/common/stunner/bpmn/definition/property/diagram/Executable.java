@@ -59,7 +59,7 @@ public class Executable implements BPMNProperty {
     public Executable() {
     }
 
-    public Executable( final Boolean value ) {
+    public Executable(final Boolean value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class Executable implements BPMNProperty {
         return value;
     }
 
-    public void setValue( Boolean value ) {
+    public void setValue(final Boolean value) {
         this.value = value;
     }
 }

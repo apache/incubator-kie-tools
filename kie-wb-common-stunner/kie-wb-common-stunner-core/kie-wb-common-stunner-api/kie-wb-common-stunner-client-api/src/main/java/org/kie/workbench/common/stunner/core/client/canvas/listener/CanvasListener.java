@@ -24,12 +24,12 @@ public interface CanvasListener<C, E> {
     /**
      * An item is registered on the canvas.
      */
-    void register( final E item );
+    void register(final E item);
 
     /**
      * An item is de-registered from the canvas.
      */
-    void deregister( final E item );
+    void deregister(final E item);
 
     /**
      * All items removed from canvas.

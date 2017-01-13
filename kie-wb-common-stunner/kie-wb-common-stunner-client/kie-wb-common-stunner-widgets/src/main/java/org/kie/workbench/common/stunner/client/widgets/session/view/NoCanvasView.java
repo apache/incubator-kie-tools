@@ -30,8 +30,8 @@ public class NoCanvasView implements IsWidget {
     private final FlowPanel mainPanel = new FlowPanel();
 
     public void show() {
-        mainPanel.add( new Heading( HeadingSize.H6,
-                                    "No diagram in use" ) );
+        mainPanel.add(new Heading(HeadingSize.H6,
+                                  "No diagram in use"));
     }
 
     public void clear() {

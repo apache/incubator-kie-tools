@@ -45,25 +45,25 @@ public class DefaultLuceneConfigProducer {
     public void setup() {
         final Map<String, Analyzer> analyzers = getAnalyzers();
         this.config = new LuceneConfigBuilder().withInMemoryMetaModelStore()
-                .usingAnalyzers( analyzers )
-                .usingAnalyzerWrapperFactory( ImpactAnalysisAnalyzerWrapperFactory.getInstance() )
+                .usingAnalyzers(analyzers)
+                .usingAnalyzerWrapperFactory(ImpactAnalysisAnalyzerWrapperFactory.getInstance())
                 .useDirectoryBasedIndex()
                 .useNIODirectory()
                 .build();
     }
 
     @Produces
-    @Named( "luceneConfig" )
+    @Named("luceneConfig")
     public LuceneConfig configProducer() {
         return this.config;
     }
 
     private Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
-            put( ProjectRootPathIndexTerm.TERM,
-                 new FilenameAnalyzer() );
-            put( PackageNameIndexTerm.TERM,
-                 new LowerCaseOnlyAnalyzer() );
+            put(ProjectRootPathIndexTerm.TERM,
+                new FilenameAnalyzer());
+            put(PackageNameIndexTerm.TERM,
+                new LowerCaseOnlyAnalyzer());
         }};
     }
 }

@@ -24,77 +24,77 @@ public abstract class BindableDefSetPaletteDefinitionFactory
         extends BindablePaletteDefinitionFactory<DefinitionSetPaletteBuilder>
         implements DefSetPaletteDefinitionFactory {
 
-    public BindableDefSetPaletteDefinitionFactory( final ShapeManager shapeManager,
-                                                   final DefinitionSetPaletteBuilder paletteBuilder ) {
-        super( shapeManager,
-               paletteBuilder );
+    public BindableDefSetPaletteDefinitionFactory(final ShapeManager shapeManager,
+                                                  final DefinitionSetPaletteBuilder paletteBuilder) {
+        super(shapeManager,
+              paletteBuilder);
     }
 
     /**
      * Returns the title to show for the category with the given id.
      */
-    protected abstract String getCategoryTitle( final String id );
+    protected abstract String getCategoryTitle(final String id);
 
     /**
      * Returns the Definition type that will be created as by this category.
      * Return <code>null</code> if no definition associated with this category.
      */
-    protected abstract Class<?> getCategoryTargetDefinitionId( final String id );
+    protected abstract Class<?> getCategoryTargetDefinitionId(final String id);
 
     /**
      * Returns the description to show for the category with the given id.
      */
-    protected abstract String getCategoryDescription( final String id );
+    protected abstract String getCategoryDescription(final String id);
 
     /**
      * Returns the title to show for the morph group with the given id.
      */
-    protected abstract String getMorphGroupTitle( final String morphBaseId,
-                                                  final Object definition );
+    protected abstract String getMorphGroupTitle(final String morphBaseId,
+                                                 final Object definition);
 
     /**
      * Returns the description to show for the morph group with the given id.
      */
-    protected abstract String getMorphGroupDescription( final String morphBaseId,
-                                                        final Object definition );
+    protected abstract String getMorphGroupDescription(final String morphBaseId,
+                                                       final Object definition);
 
     @Override
     protected DefinitionSetPaletteBuilder newBuilder() {
-        paletteBuilder.setCategoryProvider( new DefinitionSetPaletteBuilder.PaletteCategoryProvider() {
+        paletteBuilder.setCategoryProvider(new DefinitionSetPaletteBuilder.PaletteCategoryProvider() {
 
             @Override
-            public String getTitle( final String id ) {
-                return getCategoryTitle( id );
+            public String getTitle(final String id) {
+                return getCategoryTitle(id);
             }
 
             @Override
-            public String getDescription( final String id ) {
-                return getCategoryDescription( id );
+            public String getDescription(final String id) {
+                return getCategoryDescription(id);
             }
 
             @Override
-            public String getDefinitionId( final String id ) {
-                final Class<?> type = getCategoryTargetDefinitionId( id );
-                return null != type ? BindableAdapterUtils.getDefinitionId( type ) : null;
+            public String getDefinitionId(final String id) {
+                final Class<?> type = getCategoryTargetDefinitionId(id);
+                return null != type ? BindableAdapterUtils.getDefinitionId(type) : null;
             }
-        } );
+        });
 
-        paletteBuilder.setMorphGroupProvider( new DefinitionSetPaletteBuilder.PaletteMorphGroupProvider() {
-
-            @Override
-            public String getTitle( final String morphBaseId,
-                                    final Object definition ) {
-                return getMorphGroupTitle( morphBaseId,
-                                           definition );
-            }
+        paletteBuilder.setMorphGroupProvider(new DefinitionSetPaletteBuilder.PaletteMorphGroupProvider() {
 
             @Override
-            public String getDescription( final String morphBaseId,
-                                          final Object definition ) {
-                return getMorphGroupDescription( morphBaseId,
-                                                 definition );
+            public String getTitle(final String morphBaseId,
+                                   final Object definition) {
+                return getMorphGroupTitle(morphBaseId,
+                                          definition);
             }
-        } );
+
+            @Override
+            public String getDescription(final String morphBaseId,
+                                         final Object definition) {
+                return getMorphGroupDescription(morphBaseId,
+                                                definition);
+            }
+        });
 
         configureBuilder();
         return paletteBuilder;
@@ -103,12 +103,12 @@ public abstract class BindableDefSetPaletteDefinitionFactory
     protected void configureBuilder() {
     }
 
-    protected void excludeDefinition( final Class<?> type ) {
-        final String id = BindableAdapterUtils.getDefinitionId( type );
-        paletteBuilder.excludeDefinition( id );
+    protected void excludeDefinition(final Class<?> type) {
+        final String id = BindableAdapterUtils.getDefinitionId(type);
+        paletteBuilder.excludeDefinition(id);
     }
 
-    protected void excludeCategory( final String id ) {
-        paletteBuilder.excludeCategory( id );
+    protected void excludeCategory(final String id) {
+        paletteBuilder.excludeCategory(id);
     }
 }

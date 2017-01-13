@@ -26,12 +26,12 @@ import org.kie.workbench.common.stunner.core.client.util.StunnerClientLogger;
 public class LogSessionDevCommand extends AbstractMenuDevCommand {
 
     protected LogSessionDevCommand() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public LogSessionDevCommand( final AbstractClientSessionManager sessionManager ) {
-        super( sessionManager );
+    public LogSessionDevCommand(final AbstractClientSessionManager sessionManager) {
+        super(sessionManager);
     }
 
     @Override
@@ -41,6 +41,6 @@ public class LogSessionDevCommand extends AbstractMenuDevCommand {
 
     @Override
     public void execute() {
-        StunnerClientLogger.logSessionInfo( getSession() );
+        StunnerClientLogger.logSessionInfo(getSession());
     }
 }

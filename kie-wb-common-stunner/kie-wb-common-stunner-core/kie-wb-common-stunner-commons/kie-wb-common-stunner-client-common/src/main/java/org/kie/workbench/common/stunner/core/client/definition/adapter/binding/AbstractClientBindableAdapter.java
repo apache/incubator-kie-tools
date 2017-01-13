@@ -24,31 +24,31 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.Bindable
 
 public abstract class AbstractClientBindableAdapter<T> implements PriorityAdapter {
 
-    @SuppressWarnings( "unchecked" )
-    protected <R> R getProxiedValue( final T pojo,
-                                     final String fieldName ) {
-        return ClientBindingUtils.getProxiedValue( pojo,
-                                                   fieldName );
+    @SuppressWarnings("unchecked")
+    protected <R> R getProxiedValue(final T pojo,
+                                    final String fieldName) {
+        return ClientBindingUtils.getProxiedValue(pojo,
+                                                  fieldName);
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected <R> Set<R> getProxiedSet( final T pojo,
-                                        final Collection<String> fieldNames ) {
-        return ClientBindingUtils.getProxiedSet( pojo,
-                                                 fieldNames );
+    @SuppressWarnings("unchecked")
+    protected <R> Set<R> getProxiedSet(final T pojo,
+                                       final Collection<String> fieldNames) {
+        return ClientBindingUtils.getProxiedSet(pojo,
+                                                fieldNames);
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected <V> void setProxiedValue( final T pojo,
-                                        final String fieldName,
-                                        final V value ) {
-        ClientBindingUtils.setProxiedValue( pojo,
-                                            fieldName,
-                                            value );
+    @SuppressWarnings("unchecked")
+    protected <V> void setProxiedValue(final T pojo,
+                                       final String fieldName,
+                                       final V value) {
+        ClientBindingUtils.setProxiedValue(pojo,
+                                           fieldName,
+                                           value);
     }
 
-    protected String getDefinitionId( final Class<?> type ) {
-        return BindableAdapterUtils.getDefinitionId( type );
+    protected String getDefinitionId(final Class<?> type) {
+        return BindableAdapterUtils.getDefinitionId(type);
     }
 
     @Override

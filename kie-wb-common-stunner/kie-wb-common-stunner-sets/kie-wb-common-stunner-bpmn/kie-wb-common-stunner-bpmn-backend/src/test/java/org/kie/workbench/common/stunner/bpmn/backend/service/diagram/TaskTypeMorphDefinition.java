@@ -34,11 +34,11 @@ import org.kie.workbench.common.stunner.core.definition.morph.MorphProperty;
 public class TaskTypeMorphDefinition extends BindablePropertyMorphDefinition {
 
     private static final Map<Class<?>, Collection<MorphProperty>> PROPERTY_MORPH_DEFINITIONS =
-            new HashMap<Class<?>, Collection<MorphProperty>>( 1 ) {{
-                put( BaseTask.class,
-                     new ArrayList<MorphProperty>( 1 ) {{
-                         add( new TaskTypeMorphProperty() );
-                     }} );
+            new HashMap<Class<?>, Collection<MorphProperty>>(1) {{
+                put(BaseTask.class,
+                    new ArrayList<MorphProperty>(1) {{
+                        add(new TaskTypeMorphProperty());
+                    }});
             }};
 
     @Override
@@ -66,8 +66,8 @@ public class TaskTypeMorphDefinition extends BindablePropertyMorphDefinition {
         }
 
         @Override
-        public Object getValue( final TaskType property ) {
-            return BINDER.getValue( property );
+        public Object getValue(final TaskType property) {
+            return BINDER.getValue(property);
         }
     }
 }

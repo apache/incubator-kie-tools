@@ -33,17 +33,17 @@ public class DynamicIconShapeView<T extends DynamicIconShapeView>
     private double width;
     private double height;
 
-    public DynamicIconShapeView( final Icons icon,
-                                 final double width,
-                                 final double height ) {
-        super( BasicShapesSupportedEvents.ALL_DESKTOP_EVENT_TYPES,
-               buildIcon( new MultiPath(),
-                          icon,
-                          width,
-                          height,
-                          BLACK,
-                          BLACK,
-                          STROKE_WIDTH ) );
+    public DynamicIconShapeView(final Icons icon,
+                                final double width,
+                                final double height) {
+        super(BasicShapesSupportedEvents.ALL_DESKTOP_EVENT_TYPES,
+              buildIcon(new MultiPath(),
+                        icon,
+                        width,
+                        height,
+                        BLACK,
+                        BLACK,
+                        STROKE_WIDTH));
         this.icon = icon;
         this.width = width;
         this.height = height;
@@ -57,46 +57,46 @@ public class DynamicIconShapeView<T extends DynamicIconShapeView>
         height = 0;
     }
 
-    @SuppressWarnings( "unchecked" )
-    public T setIcon( final Icons icon ) {
+    @SuppressWarnings("unchecked")
+    public T setIcon(final Icons icon) {
         this.icon = icon;
         updateIcon();
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setSize( final double width,
-                      final double height ) {
+    @SuppressWarnings("unchecked")
+    public T setSize(final double width,
+                     final double height) {
         this.width = width;
         this.height = height;
         updateIcon();
-        return ( T ) this;
+        return (T) this;
     }
 
     private void updateIcon() {
-        buildIcon( getPath(),
-                   icon,
-                   width,
-                   height,
-                   getFillColor(),
-                   getStrokeColor(),
-                   getStrokeWidth() );
+        buildIcon(getPath(),
+                  icon,
+                  width,
+                  height,
+                  getFillColor(),
+                  getStrokeColor(),
+                  getStrokeWidth());
     }
 
-    private static MultiPath buildIcon( final MultiPath path,
-                                        final Icons icon,
-                                        final double w,
-                                        final double h,
-                                        final String fillColor,
-                                        final String strokeColor,
-                                        final double strokeWidth ) {
-        return DynamicIconsBuilder.build( path,
-                                          icon,
-                                          w,
-                                          h )
-                .setFillColor( fillColor )
-                .setStrokeColor( strokeColor )
-                .setStrokeWidth( strokeWidth );
+    private static MultiPath buildIcon(final MultiPath path,
+                                       final Icons icon,
+                                       final double w,
+                                       final double h,
+                                       final String fillColor,
+                                       final String strokeColor,
+                                       final double strokeWidth) {
+        return DynamicIconsBuilder.build(path,
+                                         icon,
+                                         w,
+                                         h)
+                .setFillColor(fillColor)
+                .setStrokeColor(strokeColor)
+                .setStrokeWidth(strokeWidth);
     }
 }

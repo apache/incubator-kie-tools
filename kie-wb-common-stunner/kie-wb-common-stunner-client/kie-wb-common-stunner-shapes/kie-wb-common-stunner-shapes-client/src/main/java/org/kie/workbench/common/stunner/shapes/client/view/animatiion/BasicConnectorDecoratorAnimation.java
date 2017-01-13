@@ -22,12 +22,12 @@ import org.kie.workbench.common.stunner.shapes.client.view.BasicConnectorView;
 
 public final class BasicConnectorDecoratorAnimation extends BasicDecoratorAnimation<BasicConnector> {
 
-    public BasicConnectorDecoratorAnimation( final String color,
-                                             final double strokeWidth,
-                                             final double strokeAlpha ) {
-        super( color,
-               strokeWidth,
-               strokeAlpha );
+    public BasicConnectorDecoratorAnimation(final String color,
+                                            final double strokeWidth,
+                                            final double strokeAlpha) {
+        super(color,
+              strokeWidth,
+              strokeAlpha);
     }
 
     @Override
@@ -36,6 +36,6 @@ public final class BasicConnectorDecoratorAnimation extends BasicDecoratorAnimat
     }
 
     private BasicConnectorView<?> getView() {
-        return ( BasicConnectorView<?> ) getSource().getShapeView();
+        return (BasicConnectorView<?>) getSource().getShapeView();
     }
 }

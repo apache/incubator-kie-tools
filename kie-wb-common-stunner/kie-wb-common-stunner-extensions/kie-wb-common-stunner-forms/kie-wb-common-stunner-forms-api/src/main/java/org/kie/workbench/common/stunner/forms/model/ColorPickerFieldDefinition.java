@@ -30,27 +30,27 @@ public class ColorPickerFieldDefinition extends FieldDefinition {
 
     public static final String CODE = "ColorPicker";
 
-    @FieldDef( label = "Default value" )
+    @FieldDef(label = "Default value")
     @ColorPicker
-    @Pattern( regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message = "Invalid color code" )
+    @Pattern(regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message = "Invalid color code")
     private String defaultValue;
 
     public ColorPickerFieldDefinition() {
-        super( CODE );
+        super(CODE);
     }
 
     public String getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue( String defaultValue ) {
+    public void setDefaultValue(final String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
     @Override
-    protected void doCopyFrom( FieldDefinition other ) {
-        if ( other instanceof ColorPickerFieldDefinition ) {
-            this.setDefaultValue( ( ( ColorPickerFieldDefinition ) other ).getDefaultValue() );
+    protected void doCopyFrom(final FieldDefinition other) {
+        if (other instanceof ColorPickerFieldDefinition) {
+            this.setDefaultValue(((ColorPickerFieldDefinition) other).getDefaultValue());
         }
     }
 }

@@ -33,9 +33,9 @@ public class ElementImpl<C> implements Element<C> {
     private final Set<String> labels = new LinkedHashSet<>();
     private C content;
 
-    public ElementImpl( final @MapsTo( "uuid" ) String uuid ) {
-        this.uuid = PortablePreconditions.checkNotNull( "uuid",
-                                                        uuid );
+    public ElementImpl(final @MapsTo("uuid") String uuid) {
+        this.uuid = PortablePreconditions.checkNotNull("uuid",
+                                                       uuid);
     }
 
     @Override
@@ -54,32 +54,32 @@ public class ElementImpl<C> implements Element<C> {
     }
 
     @Override
-    public void setContent( final C content ) {
+    public void setContent(final C content) {
         this.content = content;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public Node<C, Edge> asNode() {
-        return ( Node<C, Edge> ) this;
+        return (Node<C, Edge>) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public Edge<C, Node> asEdge() {
-        return ( Edge<C, Node> ) this;
+        return (Edge<C, Node>) this;
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ElementImpl ) ) {
+        if (!(o instanceof ElementImpl)) {
             return false;
         }
-        ElementImpl that = ( ElementImpl ) o;
-        return uuid.equals( that.uuid );
+        ElementImpl that = (ElementImpl) o;
+        return uuid.equals(that.uuid);
     }
 
     @Override

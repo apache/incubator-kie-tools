@@ -44,26 +44,26 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class VariablesEditorWidgetViewImplTest {
 
     protected static final String VARIABLES = "employee:java.lang.String,reason:java.lang.String,performance:java.lang.String";
 
-    protected static final List<String> DATATYPES = Arrays.asList( "Boolean",
-                                                                   "Float",
-                                                                   "Integer",
-                                                                   "Object",
-                                                                   "String",
-                                                                   "org.test.Itinerary",
-                                                                   "org.test.Journey" );
+    protected static final List<String> DATATYPES = Arrays.asList("Boolean",
+                                                                  "Float",
+                                                                  "Integer",
+                                                                  "Object",
+                                                                  "String",
+                                                                  "org.test.Itinerary",
+                                                                  "org.test.Journey");
 
-    protected static final List<String> DATATYPE_DISPLAYNAMES = Arrays.asList( "Boolean",
-                                                                               "Float",
-                                                                               "Integer",
-                                                                               "Object",
-                                                                               "String",
-                                                                               "Itinerary [org.test]",
-                                                                               "Journey [org.test]" );
+    protected static final List<String> DATATYPE_DISPLAYNAMES = Arrays.asList("Boolean",
+                                                                              "Float",
+                                                                              "Integer",
+                                                                              "Object",
+                                                                              "String",
+                                                                              "Itinerary [org.test]",
+                                                                              "Journey [org.test]");
 
     @Mock
     VariablesEditorWidgetView.Presenter presenter;
@@ -90,115 +90,115 @@ public class VariablesEditorWidgetViewImplTest {
 
     private List<VariableRow> rows;
 
-    protected Event<NotificationEvent> notification = mock( EventSourceMock.class );
+    protected Event<NotificationEvent> notification = mock(EventSourceMock.class);
 
     @Before
     public void setUp() {
-        GwtMockito.initMocks( this );
-        view = GWT.create( VariablesEditorWidgetViewImpl.class );
+        GwtMockito.initMocks(this);
+        view = GWT.create(VariablesEditorWidgetViewImpl.class);
         view.variableRows = variableRows;
         view.addVarButton = button;
         view.nameth = nameth;
         view.datatypeth = datatypeth;
         view.notification = notification;
-        doCallRealMethod().when( view ).setVariableRows( any( List.class ) );
-        doCallRealMethod().when( view ).init( any( VariablesEditorWidgetView.Presenter.class ) );
-        doCallRealMethod().when( view ).handleAddVarButton( any( ClickEvent.class ) );
-        doCallRealMethod().when( view ).getVariableRows();
-        doCallRealMethod().when( view ).getVariableWidget( anyInt() );
-        doCallRealMethod().when( view ).getVariableRowsCount();
-        doCallRealMethod().when( view ).setValue( anyString(),
-                                                  anyBoolean() );
-        doCallRealMethod().when( view ).doSetValue( anyString(),
-                                                    anyBoolean(),
-                                                    anyBoolean() );
-        doCallRealMethod().when( view ).setDataTypes( anyListOf( String.class ),
-                                                      anyListOf( String.class ) );
+        doCallRealMethod().when(view).setVariableRows(any(List.class));
+        doCallRealMethod().when(view).init(any(VariablesEditorWidgetView.Presenter.class));
+        doCallRealMethod().when(view).handleAddVarButton(any(ClickEvent.class));
+        doCallRealMethod().when(view).getVariableRows();
+        doCallRealMethod().when(view).getVariableWidget(anyInt());
+        doCallRealMethod().when(view).getVariableRowsCount();
+        doCallRealMethod().when(view).setValue(anyString(),
+                                               anyBoolean());
+        doCallRealMethod().when(view).doSetValue(anyString(),
+                                                 anyBoolean(),
+                                                 anyBoolean());
+        doCallRealMethod().when(view).setDataTypes(anyListOf(String.class),
+                                                   anyListOf(String.class));
         rows = new ArrayList<VariableRow>();
-        rows.add( new VariableRow( Variable.VariableType.PROCESS,
-                                   "varName",
-                                   null,
-                                   null ) );
-        rows.add( new VariableRow( Variable.VariableType.PROCESS,
-                                   "varName2",
-                                   null,
-                                   null ) );
+        rows.add(new VariableRow(Variable.VariableType.PROCESS,
+                                 "varName",
+                                 null,
+                                 null));
+        rows.add(new VariableRow(Variable.VariableType.PROCESS,
+                                 "varName2",
+                                 null,
+                                 null));
     }
 
     @Test
     public void testInit() {
-        view.init( presenter );
-        verify( button,
-                times( 1 ) ).setIcon( IconType.PLUS );
+        view.init(presenter);
+        verify(button,
+               times(1)).setIcon(IconType.PLUS);
     }
 
     @Test
     public void testHandleAddVarButton() {
-        view.init( presenter );
-        view.handleAddVarButton( mock( ClickEvent.class ) );
-        verify( presenter,
-                times( 1 ) ).addVariable();
+        view.init(presenter);
+        view.handleAddVarButton(mock(ClickEvent.class));
+        verify(presenter,
+               times(1)).addVariable();
     }
 
     @Test
     public void testGetVariableRows() {
-        when( variableRows.getValue() ).thenReturn( rows );
-        assertEquals( rows,
-                      view.getVariableRows() );
+        when(variableRows.getValue()).thenReturn(rows);
+        assertEquals(rows,
+                     view.getVariableRows());
     }
 
     @Test
     public void testGetVariablesCountEmpty() {
-        when( variableRows.getValue() ).thenReturn( new ArrayList<VariableRow>() );
-        assertEquals( 0,
-                      view.getVariableRowsCount() );
+        when(variableRows.getValue()).thenReturn(new ArrayList<VariableRow>());
+        assertEquals(0,
+                     view.getVariableRowsCount());
     }
 
     @Test
     public void testGetVariablesCount() {
-        when( variableRows.getValue() ).thenReturn( rows );
-        assertEquals( 2,
-                      view.getVariableRowsCount() );
+        when(variableRows.getValue()).thenReturn(rows);
+        assertEquals(2,
+                     view.getVariableRowsCount());
     }
 
     @Test
     public void testGetVariableWidget() {
-        view.getVariableWidget( 0 );
-        verify( variableRows ).getComponent( 0 );
+        view.getVariableWidget(0);
+        verify(variableRows).getComponent(0);
     }
 
     @Test
     public void testGetVariableWidget2() {
-        view.getVariableWidget( 123 );
-        verify( variableRows ).getComponent( 123 );
+        view.getVariableWidget(123);
+        verify(variableRows).getComponent(123);
     }
 
     @Test
     public void testSetValue() {
-        view.init( presenter );
-        view.setDataTypes( DATATYPES,
-                           DATATYPE_DISPLAYNAMES );
+        view.init(presenter);
+        view.setDataTypes(DATATYPES,
+                          DATATYPE_DISPLAYNAMES);
 
-        view.setValue( VARIABLES,
-                       true );
-        verify( view,
-                times( 1 ) ).doSetValue( VARIABLES,
-                                         true,
-                                         false );
+        view.setValue(VARIABLES,
+                      true);
+        verify(view,
+               times(1)).doSetValue(VARIABLES,
+                                    true,
+                                    false);
     }
 
     @Test
     public void testDoSetValue() {
-        view.doSetValue( VARIABLES,
-                         true,
-                         false );
-        verify( view,
-                times( 0 ) ).initView();
+        view.doSetValue(VARIABLES,
+                        true,
+                        false);
+        verify(view,
+               times(0)).initView();
 
-        view.doSetValue( VARIABLES,
-                         true,
-                         true );
-        verify( view,
-                times( 1 ) ).initView();
+        view.doSetValue(VARIABLES,
+                        true,
+                        true);
+        verify(view,
+               times(1)).initView();
     }
 }

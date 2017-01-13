@@ -31,10 +31,10 @@ public interface LabeledIndex<N extends Node, E extends Edge> extends Index<N, E
     /**
      * Returns the nodes with the given labels.
      */
-    Collection<N> findNodes( final List<String> labels );
+    Collection<N> findNodes(final List<String> labels);
 
     /**
      * Returns the edges with the given labels.
      */
-    Collection<E> findEdges( final List<String> labels );
+    Collection<E> findEdges(final List<String> labels);
 }

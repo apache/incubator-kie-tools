@@ -59,7 +59,7 @@ public class BorderColor implements BPMNProperty {
     public BorderColor() {
     }
 
-    public BorderColor( final String value ) {
+    public BorderColor(final String value) {
         this.value = value;
     }
 
@@ -91,7 +91,7 @@ public class BorderColor implements BPMNProperty {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

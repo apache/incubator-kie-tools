@@ -26,9 +26,9 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 @NonPortable
 public final class IsCommandAllowedEvent extends AbstractGraphCommandEvent {
 
-    public IsCommandAllowedEvent( final Command<GraphCommandExecutionContext, RuleViolation> command,
-                                  final CommandResult<RuleViolation> result ) {
-        super( command,
-               result );
+    public IsCommandAllowedEvent(final Command<GraphCommandExecutionContext, RuleViolation> command,
+                                 final CommandResult<RuleViolation> result) {
+        super(command,
+              result);
     }
 }

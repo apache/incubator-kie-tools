@@ -21,9 +21,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasContro
 
 public interface ZoomControl<C extends Canvas> extends CanvasControl<C> {
 
-    ZoomControl<C> setMinScale( final double minScale );
+    ZoomControl<C> setMinScale(final double minScale);
 
-    ZoomControl<C> setMaxScale( final double maxScale );
+    ZoomControl<C> setMaxScale(final double maxScale);
 
-    ZoomControl<C> setZoomFactory( final double factor );
+    ZoomControl<C> setZoomFactory(final double factor);
 }

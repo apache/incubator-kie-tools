@@ -43,41 +43,41 @@ public abstract class BasicConnectorView<T> extends AbstractConnectorView<T>
     private Double strokeWidth;
     private String color;
 
-    public BasicConnectorView( final ViewEventType[] supportedEventTypes,
-                               final AbstractDirectionalMultiPointShape<?> line,
-                               final MultiPathDecorator headDecorator,
-                               final MultiPathDecorator tailDecorator ) {
-        super( line,
-               headDecorator,
-               tailDecorator );
-        init( supportedEventTypes );
+    public BasicConnectorView(final ViewEventType[] supportedEventTypes,
+                              final AbstractDirectionalMultiPointShape<?> line,
+                              final MultiPathDecorator headDecorator,
+                              final MultiPathDecorator tailDecorator) {
+        super(line,
+              headDecorator,
+              tailDecorator);
+        init(supportedEventTypes);
     }
 
-    public BasicConnectorView( final ViewEventType[] supportedEventTypes,
-                               final WiresMagnet headMagnet,
-                               final WiresMagnet tailMagnet,
-                               final AbstractDirectionalMultiPointShape<?> line,
-                               final MultiPathDecorator headDecorator,
-                               final MultiPathDecorator tailDecorator ) {
-        super( headMagnet,
-               tailMagnet,
-               line,
-               headDecorator,
-               tailDecorator );
-        init( supportedEventTypes );
+    public BasicConnectorView(final ViewEventType[] supportedEventTypes,
+                              final WiresMagnet headMagnet,
+                              final WiresMagnet tailMagnet,
+                              final AbstractDirectionalMultiPointShape<?> line,
+                              final MultiPathDecorator headDecorator,
+                              final MultiPathDecorator tailDecorator) {
+        super(headMagnet,
+              tailMagnet,
+              line,
+              headDecorator,
+              tailDecorator);
+        init(supportedEventTypes);
     }
 
-    protected void init( final ViewEventType[] supportedEventTypes ) {
+    protected void init(final ViewEventType[] supportedEventTypes) {
         this.textPosition = WiresLayoutContainer.Layout.CENTER;
         this.textRotationDegrees = 0;
-        this.eventHandlerManager = new ViewEventHandlerManager( getLine(),
-                                                                supportedEventTypes );
+        this.eventHandlerManager = new ViewEventHandlerManager(getLine(),
+                                                               supportedEventTypes);
         enableShowControlsOnMouseEnter();
     }
 
     @Override
-    public boolean supports( final ViewEventType type ) {
-        return eventHandlerManager.supports( type );
+    public boolean supports(final ViewEventType type) {
+        return eventHandlerManager.supports(type);
     }
 
     @Override
@@ -86,122 +86,122 @@ public abstract class BasicConnectorView<T> extends AbstractConnectorView<T>
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T addHandler( final ViewEventType type,
-                         final ViewHandler<? extends ViewEvent> eventHandler ) {
-        eventHandlerManager.addHandler( type,
-                                        eventHandler );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T addHandler(final ViewEventType type,
+                        final ViewHandler<? extends ViewEvent> eventHandler) {
+        eventHandlerManager.addHandler(type,
+                                       eventHandler);
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T removeHandler( final ViewHandler<? extends ViewEvent> eventHandler ) {
-        eventHandlerManager.removeHandler( eventHandler );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T removeHandler(final ViewHandler<? extends ViewEvent> eventHandler) {
+        eventHandlerManager.removeHandler(eventHandler);
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T disableHandlers() {
         eventHandlerManager.disable();
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T enableHandlers() {
         eventHandlerManager.enable();
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setTitle( final String title ) {
-        if ( null != text ) {
+    @SuppressWarnings("unchecked")
+    public T setTitle(final String title) {
+        if (null != text) {
             text.removeFromParent();
         }
-        if ( null != title ) {
+        if (null != title) {
             // TODO
         }
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setTitlePosition( final Position position ) {
-        if ( Position.BOTTOM.equals( position ) ) {
+    @SuppressWarnings("unchecked")
+    public T setTitlePosition(final Position position) {
+        if (Position.BOTTOM.equals(position)) {
             this.textPosition = LayoutContainer.Layout.BOTTOM;
-        } else if ( Position.TOP.equals( position ) ) {
+        } else if (Position.TOP.equals(position)) {
             this.textPosition = LayoutContainer.Layout.TOP;
-        } else if ( Position.LEFT.equals( position ) ) {
+        } else if (Position.LEFT.equals(position)) {
             this.textPosition = LayoutContainer.Layout.LEFT;
-        } else if ( Position.RIGHT.equals( position ) ) {
+        } else if (Position.RIGHT.equals(position)) {
             this.textPosition = LayoutContainer.Layout.RIGHT;
-        } else if ( Position.CENTER.equals( position ) ) {
+        } else if (Position.CENTER.equals(position)) {
             this.textPosition = LayoutContainer.Layout.CENTER;
         }
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setTitleRotation( double degrees ) {
+    @SuppressWarnings("unchecked")
+    public T setTitleRotation(double degrees) {
         this.textRotationDegrees = degrees;
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    public T setTitleStrokeColor( final String color ) {
-        text.setStrokeColor( color );
-        return ( T ) this;
+    public T setTitleStrokeColor(final String color) {
+        text.setStrokeColor(color);
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setTitleFontFamily( final String fontFamily ) {
-        text.setFontFamily( fontFamily );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setTitleFontFamily(final String fontFamily) {
+        text.setFontFamily(fontFamily);
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setTitleFontSize( final double fontSize ) {
-        text.setFontSize( fontSize );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setTitleFontSize(final double fontSize) {
+        text.setFontSize(fontSize);
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setTitleStrokeWidth( final double strokeWidth ) {
-        text.setStrokeWidth( strokeWidth );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setTitleStrokeWidth(final double strokeWidth) {
+        text.setStrokeWidth(strokeWidth);
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T moveTitleToTop() {
         text.moveToTop();
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public T setTitleAlpha( final double alpha ) {
-        text.setAlpha( alpha );
-        return ( T ) this;
+    @SuppressWarnings("unchecked")
+    public T setTitleAlpha(final double alpha) {
+        text.setAlpha(alpha);
+        return (T) this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public T refreshTitle() {
-        return ( T ) this;
+        return (T) this;
     }
 
     @Override
     protected void doDestroy() {
         // Clear registered event handlers.
-        if ( null != eventHandlerManager ) {
+        if (null != eventHandlerManager) {
             eventHandlerManager.destroy();
             eventHandlerManager = null;
         }

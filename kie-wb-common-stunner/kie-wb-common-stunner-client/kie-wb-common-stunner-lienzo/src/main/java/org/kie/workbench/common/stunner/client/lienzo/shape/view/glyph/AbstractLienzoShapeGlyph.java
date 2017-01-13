@@ -21,11 +21,11 @@ import org.kie.workbench.common.stunner.core.client.shape.view.glyph.AbstractGly
 
 public abstract class AbstractLienzoShapeGlyph extends AbstractGlyph<Group> {
 
-    public AbstractLienzoShapeGlyph( final Group group,
-                                     final double width,
-                                     final double height ) {
-        super( group,
-               width,
-               height );
+    public AbstractLienzoShapeGlyph(final Group group,
+                                    final double width,
+                                    final double height) {
+        super(group,
+              width,
+              height);
     }
 }

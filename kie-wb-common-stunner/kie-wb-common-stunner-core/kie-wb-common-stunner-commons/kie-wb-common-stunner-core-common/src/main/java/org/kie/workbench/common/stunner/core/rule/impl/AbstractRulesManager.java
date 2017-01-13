@@ -42,11 +42,11 @@ public abstract class AbstractRulesManager<C extends ContainmentRuleManager,
     protected final E edgeCardinalityRuleManager;
     protected final D dockingRuleManager;
 
-    public AbstractRulesManager( final C containmentRuleManager,
-                                 final L connectionRuleManager,
-                                 final K cardinalityRuleManager,
-                                 final E edgeCardinalityRuleManager,
-                                 final D dockingRuleManager ) {
+    public AbstractRulesManager(final C containmentRuleManager,
+                                final L connectionRuleManager,
+                                final K cardinalityRuleManager,
+                                final E edgeCardinalityRuleManager,
+                                final D dockingRuleManager) {
         this.containmentRuleManager = containmentRuleManager;
         this.connectionRuleManager = connectionRuleManager;
         this.cardinalityRuleManager = cardinalityRuleManager;
@@ -55,27 +55,27 @@ public abstract class AbstractRulesManager<C extends ContainmentRuleManager,
     }
 
     @Override
-    public boolean supports( final Rule rule ) {
-        return connectionRuleManager.supports( rule ) ||
-                containmentRuleManager.supports( rule ) ||
-                cardinalityRuleManager.supports( rule ) ||
-                edgeCardinalityRuleManager.supports( rule ) ||
-                dockingRuleManager.supports( rule );
+    public boolean supports(final Rule rule) {
+        return connectionRuleManager.supports(rule) ||
+                containmentRuleManager.supports(rule) ||
+                cardinalityRuleManager.supports(rule) ||
+                edgeCardinalityRuleManager.supports(rule) ||
+                dockingRuleManager.supports(rule);
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public RuleManager addRule( final Rule rule ) {
-        if ( connectionRuleManager.supports( rule ) ) {
-            connectionRuleManager.addRule( ( ConnectionRule ) rule );
-        } else if ( containmentRuleManager.supports( rule ) ) {
-            containmentRuleManager.addRule( ( ContainmentRule ) rule );
-        } else if ( cardinalityRuleManager.supports( rule ) ) {
-            cardinalityRuleManager.addRule( ( CardinalityRule ) rule );
-        } else if ( edgeCardinalityRuleManager.supports( rule ) ) {
-            edgeCardinalityRuleManager.addRule( ( EdgeCardinalityRule ) rule );
-        } else if ( dockingRuleManager.supports( rule ) ) {
-            dockingRuleManager.addRule( ( DockingRule ) rule );
+    @SuppressWarnings("unchecked")
+    public RuleManager addRule(final Rule rule) {
+        if (connectionRuleManager.supports(rule)) {
+            connectionRuleManager.addRule((ConnectionRule) rule);
+        } else if (containmentRuleManager.supports(rule)) {
+            containmentRuleManager.addRule((ContainmentRule) rule);
+        } else if (cardinalityRuleManager.supports(rule)) {
+            cardinalityRuleManager.addRule((CardinalityRule) rule);
+        } else if (edgeCardinalityRuleManager.supports(rule)) {
+            edgeCardinalityRuleManager.addRule((EdgeCardinalityRule) rule);
+        } else if (dockingRuleManager.supports(rule)) {
+            dockingRuleManager.addRule((DockingRule) rule);
         }
         return this;
     }

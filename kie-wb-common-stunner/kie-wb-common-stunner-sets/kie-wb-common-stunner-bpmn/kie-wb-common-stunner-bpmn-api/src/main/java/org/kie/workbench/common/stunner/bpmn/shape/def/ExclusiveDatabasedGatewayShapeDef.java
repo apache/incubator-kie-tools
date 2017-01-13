@@ -38,67 +38,67 @@ public final class ExclusiveDatabasedGatewayShapeDef
         HasChildShapeDefs<ExclusiveDatabasedGateway> {
 
     @Override
-    public double getRadius( final ExclusiveDatabasedGateway element ) {
+    public double getRadius(final ExclusiveDatabasedGateway element) {
         return element.getDimensionsSet().getRadius().getValue();
     }
 
     @Override
-    public String getBackgroundColor( final ExclusiveDatabasedGateway element ) {
+    public String getBackgroundColor(final ExclusiveDatabasedGateway element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha( final ExclusiveDatabasedGateway element ) {
+    public double getBackgroundAlpha(final ExclusiveDatabasedGateway element) {
         return 1;
     }
 
     @Override
-    public String getBorderColor( final ExclusiveDatabasedGateway element ) {
+    public String getBorderColor(final ExclusiveDatabasedGateway element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize( final ExclusiveDatabasedGateway element ) {
+    public double getBorderSize(final ExclusiveDatabasedGateway element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha( final ExclusiveDatabasedGateway element ) {
+    public double getBorderAlpha(final ExclusiveDatabasedGateway element) {
         return 1;
     }
 
     @Override
-    public String getFontFamily( final ExclusiveDatabasedGateway element ) {
+    public String getFontFamily(final ExclusiveDatabasedGateway element) {
         return element.getFontSet().getFontFamily().getValue();
     }
 
     @Override
-    public String getFontColor( final ExclusiveDatabasedGateway element ) {
+    public String getFontColor(final ExclusiveDatabasedGateway element) {
         return element.getFontSet().getFontColor().getValue();
     }
 
     @Override
-    public double getFontSize( final ExclusiveDatabasedGateway element ) {
+    public double getFontSize(final ExclusiveDatabasedGateway element) {
         return element.getFontSet().getFontSize().getValue();
     }
 
     @Override
-    public String getNamePropertyValue( final ExclusiveDatabasedGateway element ) {
+    public String getNamePropertyValue(final ExclusiveDatabasedGateway element) {
         return element.getGeneral().getName().getValue();
     }
 
     @Override
-    public double getFontBorderSize( final ExclusiveDatabasedGateway element ) {
+    public double getFontBorderSize(final ExclusiveDatabasedGateway element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
 
     @Override
-    public HasTitle.Position getFontPosition( final ExclusiveDatabasedGateway element ) {
+    public HasTitle.Position getFontPosition(final ExclusiveDatabasedGateway element) {
         return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public double getFontRotation( final ExclusiveDatabasedGateway element ) {
+    public double getFontRotation(final ExclusiveDatabasedGateway element) {
         return 0;
     }
 
@@ -106,12 +106,12 @@ public final class ExclusiveDatabasedGatewayShapeDef
             new PictureGlyphDef<ExclusiveDatabasedGateway, BPMNPictures>() {
 
                 @Override
-                public String getGlyphDescription( ExclusiveDatabasedGateway element ) {
+                public String getGlyphDescription(final ExclusiveDatabasedGateway element) {
                     return element.getDescription();
                 }
 
                 @Override
-                public BPMNPictures getSource( final Class<?> type ) {
+                public BPMNPictures getSource(final Class<?> type) {
                     return BPMNPictures.CANCEL;
                 }
             };
@@ -124,8 +124,8 @@ public final class ExclusiveDatabasedGatewayShapeDef
     @Override
     public Map<ShapeDef<ExclusiveDatabasedGateway>, HasChildren.Layout> getChildShapeDefs() {
         return new LinkedHashMap<ShapeDef<ExclusiveDatabasedGateway>, HasChildren.Layout>() {{
-            put( new IconProxy(),
-                 HasChildren.Layout.CENTER );
+            put(new IconProxy(),
+                HasChildren.Layout.CENTER);
         }};
     }
 
@@ -134,42 +134,42 @@ public final class ExclusiveDatabasedGatewayShapeDef
             implements DynamicIconShapeDef<ExclusiveDatabasedGateway> {
 
         @Override
-        public Icons getIcon( final ExclusiveDatabasedGateway definition ) {
+        public Icons getIcon(final ExclusiveDatabasedGateway definition) {
             return Icons.XOR;
         }
 
         @Override
-        public double getWidth( final ExclusiveDatabasedGateway element ) {
+        public double getWidth(final ExclusiveDatabasedGateway element) {
             return element.getDimensionsSet().getRadius().getValue() / 2;
         }
 
         @Override
-        public double getHeight( final ExclusiveDatabasedGateway element ) {
+        public double getHeight(final ExclusiveDatabasedGateway element) {
             return element.getDimensionsSet().getRadius().getValue() / 2;
         }
 
         @Override
-        public String getBackgroundColor( final ExclusiveDatabasedGateway element ) {
+        public String getBackgroundColor(final ExclusiveDatabasedGateway element) {
             return ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder.ICON_COLOR;
         }
 
         @Override
-        public double getBackgroundAlpha( final ExclusiveDatabasedGateway element ) {
+        public double getBackgroundAlpha(final ExclusiveDatabasedGateway element) {
             return 1;
         }
 
         @Override
-        public String getBorderColor( final ExclusiveDatabasedGateway element ) {
+        public String getBorderColor(final ExclusiveDatabasedGateway element) {
             return ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder.ICON_COLOR;
         }
 
         @Override
-        public double getBorderSize( final ExclusiveDatabasedGateway element ) {
+        public double getBorderSize(final ExclusiveDatabasedGateway element) {
             return 2;
         }
 
         @Override
-        public double getBorderAlpha( final ExclusiveDatabasedGateway element ) {
+        public double getBorderAlpha(final ExclusiveDatabasedGateway element) {
             return 1;
         }
     }

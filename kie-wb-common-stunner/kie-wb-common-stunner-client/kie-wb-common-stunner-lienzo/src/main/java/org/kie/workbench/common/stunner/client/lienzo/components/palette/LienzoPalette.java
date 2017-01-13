@@ -27,13 +27,13 @@ public interface LienzoPalette<D extends HasPaletteItems, V extends LienzoPalett
         VERTICAL;
     }
 
-    void setLayout( final Layout layout );
+    void setLayout(final Layout layout);
 
-    LienzoPalette<D, V> setIconSize( final int iconSize );
+    LienzoPalette<D, V> setIconSize(final int iconSize);
 
-    LienzoPalette<D, V> setPadding( final int padding );
+    LienzoPalette<D, V> setPadding(final int padding);
 
-    LienzoPalette<D, V> setExpandable( final boolean canExpand );
+    LienzoPalette<D, V> setExpandable(final boolean canExpand);
 
     LienzoPalette<D, V> expand();
 

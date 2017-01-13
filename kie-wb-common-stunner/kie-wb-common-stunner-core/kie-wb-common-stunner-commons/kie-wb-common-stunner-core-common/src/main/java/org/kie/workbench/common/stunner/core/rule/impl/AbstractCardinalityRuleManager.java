@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.rule.Rule;
 public abstract class AbstractCardinalityRuleManager extends AbstractRuleManager<CardinalityRule> implements CardinalityRuleManager {
 
     @Override
-    public boolean supports( final Rule rule ) {
+    public boolean supports(final Rule rule) {
         return rule instanceof CardinalityRule;
     }
 }

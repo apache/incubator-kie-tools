@@ -26,8 +26,8 @@ public class StringFieldParser extends AbstractParser {
     private final String name;
     private final String value;
 
-    public StringFieldParser( String name,
-                              String value ) {
+    public StringFieldParser(final String name,
+                             final String value) {
         this.name = name;
         this.value = value;
     }
@@ -49,7 +49,7 @@ public class StringFieldParser extends AbstractParser {
 
     @Override
     public int getIntValue() throws IOException, JsonParseException {
-        throw new RuntimeException( "Should not be called!" );
+        throw new RuntimeException("Should not be called!");
     }
 
     @Override

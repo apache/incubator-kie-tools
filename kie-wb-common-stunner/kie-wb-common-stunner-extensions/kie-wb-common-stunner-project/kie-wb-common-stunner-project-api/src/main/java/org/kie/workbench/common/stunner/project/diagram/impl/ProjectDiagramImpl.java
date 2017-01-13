@@ -27,12 +27,12 @@ import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 @Portable
 public class ProjectDiagramImpl extends AbstractDiagram<Graph, ProjectMetadata> implements ProjectDiagram {
 
-    public ProjectDiagramImpl( @MapsTo( "name" ) String name,
-                               @MapsTo( "graph" ) Graph<DefinitionSet, ?> graph,
-                               @MapsTo( "metadata" ) ProjectMetadata metadata ) {
-        super( name,
-               graph,
-               metadata );
+    public ProjectDiagramImpl(final @MapsTo("name") String name,
+                              final @MapsTo("graph") Graph<DefinitionSet, ?> graph,
+                              final @MapsTo("metadata") ProjectMetadata metadata) {
+        super(name,
+              graph,
+              metadata);
     }
 
     /**

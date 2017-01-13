@@ -31,32 +31,32 @@ public final class AddCanvasConnectorCommand extends AbstractCanvasCommand {
     private final Edge candidate;
     private final String shapeSetId;
 
-    public AddCanvasConnectorCommand( final Edge candidate,
-                                      final String shapeSetId ) {
+    public AddCanvasConnectorCommand(final Edge candidate,
+                                     final String shapeSetId) {
         this.candidate = candidate;
         this.shapeSetId = shapeSetId;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
-        context.register( shapeSetId,
-                          candidate );
-        context.applyElementMutation( candidate,
-                                      MutationContext.STATIC );
-        ShapeUtils.applyConnections( candidate,
-                                     context,
-                                     MutationContext.STATIC );
+    @SuppressWarnings("unchecked")
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+        context.register(shapeSetId,
+                         candidate);
+        context.applyElementMutation(candidate,
+                                     MutationContext.STATIC);
+        ShapeUtils.applyConnections(candidate,
+                                    context,
+                                    MutationContext.STATIC);
         final Node source = candidate.getSourceNode();
-        if ( null != source ) {
-            context.fireCanvasElementUpdated( source );
+        if (null != source) {
+            context.fireCanvasElementUpdated(source);
         }
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        return new DeleteCanvasConnectorCommand( candidate ).execute( context );
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+        return new DeleteCanvasConnectorCommand(candidate).execute(context);
     }
 
     public Edge getCandidate() {

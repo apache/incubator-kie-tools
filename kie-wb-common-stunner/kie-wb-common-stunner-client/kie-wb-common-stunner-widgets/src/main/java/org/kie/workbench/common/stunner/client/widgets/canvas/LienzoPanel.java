@@ -48,11 +48,11 @@ public class LienzoPanel implements IsWidget {
     private boolean listening;
 
     @Inject
-    public LienzoPanel( final Event<KeyPressEvent> keyPressEvent,
-                        final Event<KeyDownEvent> keyDownEvent,
-                        final Event<KeyUpEvent> keyUpEvent,
-                        final Event<CanvasMouseDownEvent> mouseDownEvent,
-                        final Event<CanvasMouseUpEvent> mouseUpEvent ) {
+    public LienzoPanel(final Event<KeyPressEvent> keyPressEvent,
+                       final Event<KeyDownEvent> keyDownEvent,
+                       final Event<KeyUpEvent> keyUpEvent,
+                       final Event<CanvasMouseDownEvent> mouseDownEvent,
+                       final Event<CanvasMouseUpEvent> mouseUpEvent) {
         this.keyPressEvent = keyPressEvent;
         this.keyDownEvent = keyDownEvent;
         this.keyUpEvent = keyUpEvent;
@@ -66,12 +66,12 @@ public class LienzoPanel implements IsWidget {
         return view.asWidget();
     }
 
-    public void show( final int width,
-                      final int height,
-                      final int padding ) {
-        view = new LienzoPanelView( width + padding,
-                                    height + padding );
-        view.init( this );
+    public void show(final int width,
+                     final int height,
+                     final int padding) {
+        view = new LienzoPanelView(width + padding,
+                                   height + padding);
+        view.init(this);
     }
 
     public void destroy() {
@@ -80,14 +80,14 @@ public class LienzoPanel implements IsWidget {
     }
 
     void onMouseDown() {
-        if ( listening ) {
-            mouseDownEvent.fire( new CanvasMouseDownEvent() );
+        if (listening) {
+            mouseDownEvent.fire(new CanvasMouseDownEvent());
         }
     }
 
     void onMouseUp() {
-        if ( listening ) {
-            mouseUpEvent.fire( new CanvasMouseUpEvent() );
+        if (listening) {
+            mouseUpEvent.fire(new CanvasMouseUpEvent());
         }
     }
 
@@ -99,38 +99,38 @@ public class LienzoPanel implements IsWidget {
         this.listening = false;
     }
 
-    void onKeyPress( final int unicodeChar ) {
-        if ( listening ) {
-            final KeyboardEvent.Key key = getKey( unicodeChar );
-            if ( null != key ) {
-                keyPressEvent.fire( new KeyPressEvent( key ) );
+    void onKeyPress(final int unicodeChar) {
+        if (listening) {
+            final KeyboardEvent.Key key = getKey(unicodeChar);
+            if (null != key) {
+                keyPressEvent.fire(new KeyPressEvent(key));
             }
         }
     }
 
-    void onKeyDown( final int unicodeChar ) {
-        if ( listening ) {
-            final KeyboardEvent.Key key = getKey( unicodeChar );
-            if ( null != key ) {
-                keyDownEvent.fire( new KeyDownEvent( key ) );
+    void onKeyDown(final int unicodeChar) {
+        if (listening) {
+            final KeyboardEvent.Key key = getKey(unicodeChar);
+            if (null != key) {
+                keyDownEvent.fire(new KeyDownEvent(key));
             }
         }
     }
 
-    void onKeyUp( final int unicodeChar ) {
-        if ( listening ) {
-            final KeyboardEvent.Key key = getKey( unicodeChar );
-            if ( null != key ) {
-                keyUpEvent.fire( new KeyUpEvent( key ) );
+    void onKeyUp(final int unicodeChar) {
+        if (listening) {
+            final KeyboardEvent.Key key = getKey(unicodeChar);
+            if (null != key) {
+                keyUpEvent.fire(new KeyUpEvent(key));
             }
         }
     }
 
-    private KeyboardEvent.Key getKey( final int unicodeChar ) {
+    private KeyboardEvent.Key getKey(final int unicodeChar) {
         final KeyboardEvent.Key[] keys = KeyboardEvent.Key.values();
-        for ( final KeyboardEvent.Key key : keys ) {
+        for (final KeyboardEvent.Key key : keys) {
             final int c = key.getUnicharCode();
-            if ( c == unicodeChar ) {
+            if (c == unicodeChar) {
                 return key;
             }
         }

@@ -21,12 +21,12 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.Bindable
 public abstract class AbstractGlyphShapeDef<W>
         extends GlyphShapeDef<W> {
 
-    public String getGlyphDefinitionId( final Class<?> clazz ) {
-        return getGlyphDefinitionId( BindableAdapterUtils.getDefinitionId( clazz ) );
+    public String getGlyphDefinitionId(final Class<?> clazz) {
+        return getGlyphDefinitionId(BindableAdapterUtils.getDefinitionId(clazz));
     }
 
     @Override
-    public String getGlyphDefinitionId( final String definitionId ) {
+    public String getGlyphDefinitionId(final String definitionId) {
         return definitionId;
     }
 }

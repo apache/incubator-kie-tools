@@ -29,15 +29,15 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 @Dependent
 public class LogBoundsDevCommand extends AbstractSelectionDevCommand {
 
-    private static Logger LOGGER = Logger.getLogger( LogBoundsDevCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(LogBoundsDevCommand.class.getName());
 
     protected LogBoundsDevCommand() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public LogBoundsDevCommand( final AbstractClientSessionManager sessionManager ) {
-        super( sessionManager );
+    public LogBoundsDevCommand(final AbstractClientSessionManager sessionManager) {
+        super(sessionManager);
     }
 
     @Override
@@ -46,13 +46,13 @@ public class LogBoundsDevCommand extends AbstractSelectionDevCommand {
     }
 
     @Override
-    protected void execute( final Element<View<?>> item ) {
+    protected void execute(final Element<View<?>> item) {
         final Bounds bounds = item.getContent().getBounds();
         final Bounds.Bound ul = bounds.getUpperLeft();
         final Bounds.Bound lr = bounds.getLowerRight();
-        LOGGER.log( Level.FINE,
-                    "Bounds for [" + item.getUUID() + "] ARE " +
-                            "{ UL=[" + ul.getX() + ", " + ul.getY() + "] " +
-                            "LR=[ " + lr.getX() + ", " + lr.getY() + "] }" );
+        LOGGER.log(Level.FINE,
+                   "Bounds for [" + item.getUUID() + "] ARE " +
+                           "{ UL=[" + ul.getX() + ", " + ul.getY() + "] " +
+                           "LR=[ " + lr.getX() + ", " + lr.getY() + "] }");
     }
 }

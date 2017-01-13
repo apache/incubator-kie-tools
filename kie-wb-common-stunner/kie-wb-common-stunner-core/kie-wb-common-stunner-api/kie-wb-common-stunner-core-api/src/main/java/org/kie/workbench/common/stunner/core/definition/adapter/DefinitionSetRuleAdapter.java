@@ -28,5 +28,5 @@ public interface DefinitionSetRuleAdapter<T> extends PriorityAdapter {
     /**
      * Returns the definition set's rules for a given pojo.
      */
-    Collection<Rule> getRules( final T pojo );
+    Collection<Rule> getRules(final T pojo);
 }

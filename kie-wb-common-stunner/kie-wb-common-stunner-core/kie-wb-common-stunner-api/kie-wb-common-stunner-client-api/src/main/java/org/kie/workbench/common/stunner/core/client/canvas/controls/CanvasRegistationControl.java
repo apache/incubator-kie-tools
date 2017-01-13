@@ -25,10 +25,10 @@ public interface CanvasRegistationControl<C, E> extends CanvasControl<C> {
     /**
      * An element is registered on the canvas.
      */
-    void register( final E element );
+    void register(final E element);
 
     /**
      * An element is de-registered from the canvas.
      */
-    void deregister( final E element );
+    void deregister(final E element);
 }

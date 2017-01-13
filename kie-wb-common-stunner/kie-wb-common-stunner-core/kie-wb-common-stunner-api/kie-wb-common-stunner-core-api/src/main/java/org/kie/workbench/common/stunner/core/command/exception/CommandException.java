@@ -25,18 +25,18 @@ public class CommandException extends RuntimeException {
 
     private final Command<?, ?> command;
 
-    public CommandException( final Command<?, ?> command ) {
+    public CommandException(final Command<?, ?> command) {
         this.command = command;
     }
 
-    public CommandException( final String message,
-                             final Command<?, ?> command ) {
-        super( message );
+    public CommandException(final String message,
+                            final Command<?, ?> command) {
+        super(message);
         this.command = command;
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     protected <T> T cast() {
-        return ( T ) command;
+        return (T) command;
     }
 }

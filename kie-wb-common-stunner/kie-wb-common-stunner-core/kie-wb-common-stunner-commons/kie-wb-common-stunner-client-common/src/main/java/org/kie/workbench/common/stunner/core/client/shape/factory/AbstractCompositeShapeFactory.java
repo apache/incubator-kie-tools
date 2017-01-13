@@ -35,18 +35,18 @@ public abstract class AbstractCompositeShapeFactory<W, S extends Shape>
     private AbstractCompositeShapeFactory() {
     }
 
-    public AbstractCompositeShapeFactory( final DefinitionManager definitionManager ) {
+    public AbstractCompositeShapeFactory(final DefinitionManager definitionManager) {
         this.definitionManager = definitionManager;
     }
 
-    public void addFactory( final ShapeFactory<W, AbstractCanvasHandler, S> factory ) {
-        factories.add( factory );
+    public void addFactory(final ShapeFactory<W, AbstractCanvasHandler, S> factory) {
+        factories.add(factory);
     }
 
     @Override
-    public boolean accepts( final String definitionId ) {
-        for ( final ShapeFactory<W, AbstractCanvasHandler, S> factory : factories ) {
-            if ( factory.accepts( definitionId ) ) {
+    public boolean accepts(final String definitionId) {
+        for (final ShapeFactory<W, AbstractCanvasHandler, S> factory : factories) {
+            if (factory.accepts(definitionId)) {
                 return true;
             }
         }
@@ -54,39 +54,39 @@ public abstract class AbstractCompositeShapeFactory<W, S extends Shape>
     }
 
     @Override
-    public String getDescription( final String definitionId ) {
-        for ( final ShapeFactory<W, AbstractCanvasHandler, S> factory : factories ) {
-            if ( factory.accepts( definitionId ) ) {
-                return factory.getDescription( definitionId );
+    public String getDescription(final String definitionId) {
+        for (final ShapeFactory<W, AbstractCanvasHandler, S> factory : factories) {
+            if (factory.accepts(definitionId)) {
+                return factory.getDescription(definitionId);
             }
         }
-        throw new RuntimeException( "This factory supports Definition [" + definitionId + "] but cannot obtain the description for it." );
+        throw new RuntimeException("This factory supports Definition [" + definitionId + "] but cannot obtain the description for it.");
     }
 
     @Override
-    public S build( final W definition,
-                    final AbstractCanvasHandler context ) {
-        final String id = definitionManager.adapters().forDefinition().getId( definition );
-        for ( final ShapeFactory<W, AbstractCanvasHandler, S> factory : factories ) {
-            if ( factory.accepts( id ) ) {
-                return factory.build( definition,
-                                      context );
+    public S build(final W definition,
+                   final AbstractCanvasHandler context) {
+        final String id = definitionManager.adapters().forDefinition().getId(definition);
+        for (final ShapeFactory<W, AbstractCanvasHandler, S> factory : factories) {
+            if (factory.accepts(id)) {
+                return factory.build(definition,
+                                     context);
             }
         }
-        throw new RuntimeException( "This factory supports Definition [" + id + "] but cannot build the sthape for it." );
+        throw new RuntimeException("This factory supports Definition [" + id + "] but cannot build the sthape for it.");
     }
 
     @Override
-    public Glyph glyph( final String definitionId,
-                        final double width,
-                        final double height ) {
-        for ( final ShapeFactory<W, AbstractCanvasHandler, S> factory : factories ) {
-            if ( factory.accepts( definitionId ) ) {
-                return factory.glyph( definitionId,
-                                      width,
-                                      height );
+    public Glyph glyph(final String definitionId,
+                       final double width,
+                       final double height) {
+        for (final ShapeFactory<W, AbstractCanvasHandler, S> factory : factories) {
+            if (factory.accepts(definitionId)) {
+                return factory.glyph(definitionId,
+                                     width,
+                                     height);
             }
         }
-        throw new RuntimeException( "This factory supports Definition [" + definitionId + "] but cannot obtain the description for it." );
+        throw new RuntimeException("This factory supports Definition [" + definitionId + "] but cannot obtain the description for it.");
     }
 }

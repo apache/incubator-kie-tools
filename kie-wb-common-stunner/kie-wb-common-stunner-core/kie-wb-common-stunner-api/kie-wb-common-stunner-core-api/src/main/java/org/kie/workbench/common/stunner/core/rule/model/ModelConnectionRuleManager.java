@@ -33,7 +33,7 @@ public interface ModelConnectionRuleManager extends ConnectionRuleManager {
      * @param outgoingLabels The roles/labels for the outgoing node.
      * @param incomingLabels The roles/labels for the incoming node.
      */
-    RuleViolations evaluate( final String edgeId,
-                             final Set<String> outgoingLabels,
-                             final Set<String> incomingLabels );
+    RuleViolations evaluate(final String edgeId,
+                            final Set<String> outgoingLabels,
+                            final Set<String> incomingLabels);
 }

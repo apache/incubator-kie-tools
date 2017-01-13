@@ -26,11 +26,11 @@ public final class BadCommandArgumentsException extends CommandException {
 
     private final Object argument;
 
-    public BadCommandArgumentsException( final Command<?, ?> command,
-                                         final Object argument,
-                                         final String message ) {
-        super( "Bad argument: " + message,
-               command );
+    public BadCommandArgumentsException(final Command<?, ?> command,
+                                        final Object argument,
+                                        final String message) {
+        super("Bad argument: " + message,
+              command);
         this.argument = argument;
     }
 

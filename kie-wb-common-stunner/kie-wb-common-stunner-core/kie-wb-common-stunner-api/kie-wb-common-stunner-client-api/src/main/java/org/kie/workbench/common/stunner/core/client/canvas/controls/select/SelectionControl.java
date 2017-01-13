@@ -27,11 +27,11 @@ import org.kie.workbench.common.stunner.core.graph.Element;
  */
 public interface SelectionControl<C extends CanvasHandler, E extends Element> extends CanvasRegistationControl<C, E> {
 
-    SelectionControl<C, E> select( final E item );
+    SelectionControl<C, E> select(final E item);
 
-    SelectionControl<C, E> deselect( final E item );
+    SelectionControl<C, E> deselect(final E item);
 
-    boolean isSelected( final E item );
+    boolean isSelected(final E item);
 
     Collection<String> getSelectedItems();
 

@@ -27,64 +27,64 @@ import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 public class HasValuePropertyAdapter implements PropertyAdapter<PropertyImpl, Object> {
 
     @Override
-    public String getId( final PropertyImpl pojo ) {
+    public String getId(final PropertyImpl pojo) {
         return pojo.getId();
     }
 
     @Override
-    public PropertyType getType( final PropertyImpl pojo ) {
+    public PropertyType getType(final PropertyImpl pojo) {
         return pojo.getType();
     }
 
     @Override
-    public String getCaption( final PropertyImpl pojo ) {
+    public String getCaption(final PropertyImpl pojo) {
         return pojo.getCaption();
     }
 
     @Override
-    public String getDescription( final PropertyImpl pojo ) {
+    public String getDescription(final PropertyImpl pojo) {
         return pojo.getDescription();
     }
 
     @Override
-    public boolean isReadOnly( final PropertyImpl pojo ) {
+    public boolean isReadOnly(final PropertyImpl pojo) {
         return pojo.isReadOnly();
     }
 
     @Override
-    public boolean isOptional( final PropertyImpl pojo ) {
+    public boolean isOptional(final PropertyImpl pojo) {
         return pojo.isOptional();
     }
 
     @Override
-    public Object getValue( final PropertyImpl pojo ) {
+    public Object getValue(final PropertyImpl pojo) {
         return pojo.getValue();
     }
 
     @Override
-    public Object getDefaultValue( final PropertyImpl pojo ) {
+    public Object getDefaultValue(final PropertyImpl pojo) {
         return pojo.getDefaultValue();
     }
 
     @Override
-    public Map<Object, String> getAllowedValues( final PropertyImpl pojo ) {
+    public Map<Object, String> getAllowedValues(final PropertyImpl pojo) {
         // TODO
         return null;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public void setValue( final PropertyImpl pojo,
-                          final Object value ) {
-        if ( pojo.isReadOnly() ) {
-            throw new RuntimeException( "Cannot set new value for property [" + pojo.getId() + "] as it is read only! " );
+    @SuppressWarnings("unchecked")
+    public void setValue(final PropertyImpl pojo,
+                         final Object value) {
+        if (pojo.isReadOnly()) {
+            throw new RuntimeException("Cannot set new value for property [" + pojo.getId() + "] as it is read only! ");
         }
-        pojo.setValue( value );
+        pojo.setValue(value);
     }
 
     @Override
-    public boolean accepts( final Class<?> pojo ) {
-        return PropertyImpl.class.getName().equals( pojo.getName() );
+    public boolean accepts(final Class<?> pojo) {
+        return PropertyImpl.class.getName().equals(pojo.getName());
     }
 
     @Override

@@ -30,33 +30,33 @@ public final class AddCanvasDockedNodeCommand extends AbstractCanvasCommand {
     private final Node candidate;
     private final String ssid;
 
-    public AddCanvasDockedNodeCommand( final Node parent,
-                                       final Node candidate,
-                                       final String ssid ) {
+    public AddCanvasDockedNodeCommand(final Node parent,
+                                      final Node candidate,
+                                      final String ssid) {
         this.parent = parent;
         this.candidate = candidate;
         this.ssid = ssid;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
-        context.register( ssid,
-                          candidate );
-        context.addChild( parent,
-                          candidate );
-        context.dock( parent,
-                      candidate );
-        context.applyElementMutation( candidate,
-                                      MutationContext.STATIC );
-        context.applyElementMutation( parent,
-                                      MutationContext.STATIC );
+    @SuppressWarnings("unchecked")
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+        context.register(ssid,
+                         candidate);
+        context.addChild(parent,
+                         candidate);
+        context.dock(parent,
+                     candidate);
+        context.applyElementMutation(candidate,
+                                     MutationContext.STATIC);
+        context.applyElementMutation(parent,
+                                     MutationContext.STATIC);
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        return new DeleteCanvasNodeCommand( candidate,
-                                            parent ).execute( context );
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+        return new DeleteCanvasNodeCommand(candidate,
+                                           parent).execute(context);
     }
 }

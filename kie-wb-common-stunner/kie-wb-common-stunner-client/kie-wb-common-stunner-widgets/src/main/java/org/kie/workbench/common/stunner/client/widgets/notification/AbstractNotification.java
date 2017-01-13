@@ -23,10 +23,10 @@ public abstract class AbstractNotification<S, C> implements Notification<S, C> {
     private final S source;
     private final C context;
 
-    public AbstractNotification( final String uuid,
-                                 final Type type,
-                                 final S source,
-                                 final C context ) {
+    public AbstractNotification(final String uuid,
+                                final Type type,
+                                final S source,
+                                final C context) {
         this.uuid = uuid;
         this.type = type;
         this.source = source;

@@ -41,39 +41,39 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 @Dependent
 public class MorphToolboxControlProvider extends AbstractToolboxControlProvider {
 
-    private static Logger LOGGER = Logger.getLogger( MorphToolboxControlProvider.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(MorphToolboxControlProvider.class.getName());
 
     private final AbstractPaletteMorphCommand morphCommand;
     private final DefinitionUtils definitionUtils;
 
     protected MorphToolboxControlProvider() {
-        this( null,
-              null,
-              null );
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public MorphToolboxControlProvider( final ToolboxFactory toolboxFactory,
-                                        final AbstractPaletteMorphCommand morphCommand,
-                                        final DefinitionUtils definitionUtils ) {
-        super( toolboxFactory );
+    public MorphToolboxControlProvider(final ToolboxFactory toolboxFactory,
+                                       final AbstractPaletteMorphCommand morphCommand,
+                                       final DefinitionUtils definitionUtils) {
+        super(toolboxFactory);
         this.morphCommand = morphCommand;
         this.definitionUtils = definitionUtils;
     }
 
     @Override
-    public boolean supports( final Object definition ) {
+    public boolean supports(final Object definition) {
         return true;
     }
 
     @Override
-    public ToolboxButtonGrid getGrid( final AbstractCanvasHandler context,
-                                      final Element item ) {
+    public ToolboxButtonGrid getGrid(final AbstractCanvasHandler context,
+                                     final Element item) {
         final ToolboxButtonGridBuilder buttonGridBuilder = toolboxFactory.toolboxGridBuilder();
         return buttonGridBuilder
-                .setRows( 1 )
-                .setColumns( 1 )
-                .setPadding( DEFAULT_PADDING )
+                .setRows(1)
+                .setColumns(1)
+                .setPadding(DEFAULT_PADDING)
                 .build();
     }
 
@@ -88,24 +88,24 @@ public class MorphToolboxControlProvider extends AbstractToolboxControlProvider 
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public List<ToolboxCommand<AbstractCanvasHandler, ?>> getCommands( final AbstractCanvasHandler context,
-                                                                       final Element item ) {
-        return !hasMorphTargets( item ) ? null :
-                new ArrayList<ToolboxCommand<AbstractCanvasHandler, ?>>( 1 ) {{
-                    add( morphCommand );
+    @SuppressWarnings("unchecked")
+    public List<ToolboxCommand<AbstractCanvasHandler, ?>> getCommands(final AbstractCanvasHandler context,
+                                                                      final Element item) {
+        return !hasMorphTargets(item) ? null :
+                new ArrayList<ToolboxCommand<AbstractCanvasHandler, ?>>(1) {{
+                    add(morphCommand);
                 }};
     }
 
-    private boolean hasMorphTargets( final Element item ) {
+    private boolean hasMorphTargets(final Element item) {
         try {
-            final Object def = ( ( Definition<?> ) item.getContent() ).getDefinition();
-            return definitionUtils.hasMorphTargets( def );
-        } catch ( final ClassCastException e ) {
-            LOGGER.log( Level.SEVERE,
-                        "Only contents for type Definition are expected on the toolbox " +
-                                "morphing control provider.",
-                        e );
+            final Object def = ((Definition<?>) item.getContent()).getDefinition();
+            return definitionUtils.hasMorphTargets(def);
+        } catch (final ClassCastException e) {
+            LOGGER.log(Level.SEVERE,
+                       "Only contents for type Definition are expected on the toolbox " +
+                               "morphing control provider.",
+                       e);
             return false;
         }
     }

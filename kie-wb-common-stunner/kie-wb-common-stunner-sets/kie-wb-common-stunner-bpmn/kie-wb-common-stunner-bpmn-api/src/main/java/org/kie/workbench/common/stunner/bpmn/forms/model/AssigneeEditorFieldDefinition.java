@@ -31,23 +31,23 @@ public class AssigneeEditorFieldDefinition extends FieldDefinition {
 
     public static final String CODE = "AssigneeEditor";
 
-    @FieldDef( label = FIELDDEF_DEFAULT_VALUE )
+    @FieldDef(label = FIELDDEF_DEFAULT_VALUE)
     @AssigneeEditor
     private String defaultValue;
 
-    @FieldDef( label = FIELDDEF_TYPE )
+    @FieldDef(label = FIELDDEF_TYPE)
     @AssigneeEditor
     private AssigneeType type;
 
     public AssigneeEditorFieldDefinition() {
-        super( CODE );
+        super(CODE);
     }
 
     public String getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue( String defaultValue ) {
+    public void setDefaultValue(final String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
@@ -55,15 +55,15 @@ public class AssigneeEditorFieldDefinition extends FieldDefinition {
         return type;
     }
 
-    public void setType( AssigneeType type ) {
+    public void setType(final AssigneeType type) {
         this.type = type;
     }
 
     @Override
-    protected void doCopyFrom( FieldDefinition other ) {
-        if ( other instanceof AssigneeEditorFieldDefinition ) {
-            this.setDefaultValue( ( ( AssigneeEditorFieldDefinition ) other ).getDefaultValue() );
-            this.setType( ( ( AssigneeEditorFieldDefinition ) other ).getType() );
+    protected void doCopyFrom(final FieldDefinition other) {
+        if (other instanceof AssigneeEditorFieldDefinition) {
+            this.setDefaultValue(((AssigneeEditorFieldDefinition) other).getDefaultValue());
+            this.setType(((AssigneeEditorFieldDefinition) other).getType());
         }
     }
 }

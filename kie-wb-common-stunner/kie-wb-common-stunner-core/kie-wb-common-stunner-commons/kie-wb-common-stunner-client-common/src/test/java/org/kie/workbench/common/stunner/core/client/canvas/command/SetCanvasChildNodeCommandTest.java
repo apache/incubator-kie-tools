@@ -30,7 +30,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class SetCanvasChildNodeCommandTest extends AbstractCanvasCommandTest {
 
     @Mock
@@ -43,27 +43,27 @@ public class SetCanvasChildNodeCommandTest extends AbstractCanvasCommandTest {
     @Before
     public void setup() throws Exception {
         super.setup();
-        this.tested = new SetCanvasChildNodeCommand( parent,
-                                                     candidate );
+        this.tested = new SetCanvasChildNodeCommand(parent,
+                                                    candidate);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecute() {
-        final CommandResult<CanvasViolation> result = tested.execute( canvasHandler );
-        assertNotEquals( CommandResult.Type.ERROR,
-                         result.getType() );
-        verify( canvasHandler,
-                times( 1 ) ).addChild( eq( parent ),
-                                       eq( candidate ) );
-        verify( canvasHandler,
-                times( 1 ) ).applyElementMutation( eq( candidate ),
-                                                   any( MutationContext.class ) );
-        verify( canvasHandler,
-                times( 1 ) ).applyElementMutation( eq( parent ),
-                                                   any( MutationContext.class ) );
-        verify( canvasHandler,
-                times( 0 ) ).dock( any( Node.class ),
-                                   any( Node.class ) );
+        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertNotEquals(CommandResult.Type.ERROR,
+                        result.getType());
+        verify(canvasHandler,
+               times(1)).addChild(eq(parent),
+                                  eq(candidate));
+        verify(canvasHandler,
+               times(1)).applyElementMutation(eq(candidate),
+                                              any(MutationContext.class));
+        verify(canvasHandler,
+               times(1)).applyElementMutation(eq(parent),
+                                              any(MutationContext.class));
+        verify(canvasHandler,
+               times(0)).dock(any(Node.class),
+                              any(Node.class));
     }
 }

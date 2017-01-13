@@ -31,9 +31,9 @@ public class DeleteSelectionToolbarCommand extends AbstractToolbarSessionCommand
     private CanvasCommandFactory canvasCommandFactory;
 
     @Inject
-    public DeleteSelectionToolbarCommand( final SessionCommandFactory sessionCommandFactory,
-                                          final CanvasCommandFactory canvasCommandFactory ) {
-        super( sessionCommandFactory.newDeleteSelectedElementsCommand() );
+    public DeleteSelectionToolbarCommand(final SessionCommandFactory sessionCommandFactory,
+                                         final CanvasCommandFactory canvasCommandFactory) {
+        super(sessionCommandFactory.newDeleteSelectedElementsCommand());
         this.canvasCommandFactory = canvasCommandFactory;
     }
 

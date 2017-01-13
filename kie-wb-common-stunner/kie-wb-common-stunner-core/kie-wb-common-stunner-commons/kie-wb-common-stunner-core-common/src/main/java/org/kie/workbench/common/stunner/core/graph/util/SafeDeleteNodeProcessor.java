@@ -31,54 +31,54 @@ public class SafeDeleteNodeProcessor {
 
     public interface Callback {
 
-        void deleteChildNode( final Node<Definition<?>, Edge> node );
+        void deleteChildNode(final Node<Definition<?>, Edge> node);
 
-        void deleteInViewEdge( final Edge<View<?>, Node> edge );
+        void deleteInViewEdge(final Edge<View<?>, Node> edge);
 
-        void deleteInChildEdge( final Edge<Child, Node> edge );
+        void deleteInChildEdge(final Edge<Child, Node> edge);
 
-        void deleteInDockEdge( final Edge<Dock, Node> edge );
+        void deleteInDockEdge(final Edge<Dock, Node> edge);
 
-        void deleteOutViewEdge( final Edge<? extends View<?>, Node> edge );
+        void deleteOutViewEdge(final Edge<? extends View<?>, Node> edge);
 
-        void deleteNode( final Node<Definition<?>, Edge> node );
+        void deleteNode(final Node<Definition<?>, Edge> node);
     }
 
     private final Node<Definition<?>, Edge> candidate;
 
-    public SafeDeleteNodeProcessor( final Node<Definition<?>, Edge> candidate ) {
+    public SafeDeleteNodeProcessor(final Node<Definition<?>, Edge> candidate) {
         this.candidate = candidate;
     }
 
-    @SuppressWarnings( "unchecked" )
-    public void run( final Callback callback ) {
+    @SuppressWarnings("unchecked")
+    public void run(final Callback callback) {
         // Check outgoing edges.
         final List<Edge> outEdges = candidate.getOutEdges();
-        if ( null != outEdges && !outEdges.isEmpty() ) {
-            for ( final Edge outEdge : outEdges ) {
-                if ( outEdge.getContent() instanceof View ) {
-                    callback.deleteOutViewEdge( outEdge );
-                } else if ( outEdge.getContent() instanceof Child ) {
+        if (null != outEdges && !outEdges.isEmpty()) {
+            for (final Edge outEdge : outEdges) {
+                if (outEdge.getContent() instanceof View) {
+                    callback.deleteOutViewEdge(outEdge);
+                } else if (outEdge.getContent() instanceof Child) {
                     final Node target = outEdge.getTargetNode();
-                    callback.deleteChildNode( target );
+                    callback.deleteChildNode(target);
                 }
             }
         }
         // Check incoming edges.
         final List<Edge> inEdges = candidate.getInEdges();
-        if ( null != inEdges && !inEdges.isEmpty() ) {
-            for ( final Edge inEdge : inEdges ) {
-                if ( inEdge.getContent() instanceof Child ) {
-                    callback.deleteInChildEdge( inEdge );
+        if (null != inEdges && !inEdges.isEmpty()) {
+            for (final Edge inEdge : inEdges) {
+                if (inEdge.getContent() instanceof Child) {
+                    callback.deleteInChildEdge(inEdge);
                 }
-                if ( inEdge.getContent() instanceof Dock ) {
-                    callback.deleteInDockEdge( inEdge );
-                } else if ( inEdge.getContent() instanceof View ) {
-                    callback.deleteInViewEdge( inEdge );
+                if (inEdge.getContent() instanceof Dock) {
+                    callback.deleteInDockEdge(inEdge);
+                } else if (inEdge.getContent() instanceof View) {
+                    callback.deleteInViewEdge(inEdge);
                 }
             }
         }
         // Finally delete this node in a safe way.
-        callback.deleteNode( candidate );
+        callback.deleteNode(candidate);
     }
 }

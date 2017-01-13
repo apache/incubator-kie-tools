@@ -44,36 +44,36 @@ import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 @Dependent
 public class RedoCommandHandler<C extends Command> {
 
-    private static Logger LOGGER = Logger.getLogger( RedoCommandHandler.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(RedoCommandHandler.class.getName());
 
     private final CommandRegistry<C> registry;
 
     protected RedoCommandHandler() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public RedoCommandHandler( final RegistryFactory registryFactory ) {
+    public RedoCommandHandler(final RegistryFactory registryFactory) {
         this.registry = registryFactory.newCommandRegistry();
     }
 
-    public boolean onUndoCommandExecuted( final C command ) {
-        registry.register( command );
+    public boolean onUndoCommandExecuted(final C command) {
+        registry.register(command);
         return isEnabled();
     }
 
-    @SuppressWarnings( "unchecked" )
-    public boolean onCommandExecuted( final C command ) {
-        return _onCommandExecuted( command );
+    @SuppressWarnings("unchecked")
+    public boolean onCommandExecuted(final C command) {
+        return _onCommandExecuted(command);
     }
 
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<?> execute( final Object context,
-                                     final CommandManager commandManager ) {
-        if ( !registry.isEmpty() ) {
+    @SuppressWarnings("unchecked")
+    public CommandResult<?> execute(final Object context,
+                                    final CommandManager commandManager) {
+        if (!registry.isEmpty()) {
             final C last = registry.peek();
-            return commandManager.execute( context,
-                                           last );
+            return commandManager.execute(context,
+                                          last);
         }
         return null;
     }
@@ -86,10 +86,10 @@ public class RedoCommandHandler<C extends Command> {
         registry.clear();
     }
 
-    private boolean _onCommandExecuted( final C command ) {
-        if ( !registry.isEmpty() ) {
+    private boolean _onCommandExecuted(final C command) {
+        if (!registry.isEmpty()) {
             final C last = registry.peek();
-            if ( null != last && last.equals( command ) ) {
+            if (null != last && last.equals(command)) {
                 // If the recently executed command is the same in this handler' registry, means it has been
                 // executed by this handler so it can be removed from the registry.
                 registry.pop();

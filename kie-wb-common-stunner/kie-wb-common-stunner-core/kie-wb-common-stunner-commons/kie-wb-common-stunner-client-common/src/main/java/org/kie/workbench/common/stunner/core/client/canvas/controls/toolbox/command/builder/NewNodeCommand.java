@@ -57,7 +57,7 @@ import org.uberfire.mvp.Command;
 @Dependent
 public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
 
-    private static Logger LOGGER = Logger.getLogger( NewNodeCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(NewNodeCommand.class.getName());
 
     private final NodeDragProxy<AbstractCanvasHandler> nodeDragProxyFactory;
     private final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl;
@@ -71,31 +71,31 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
     private HasEventHandlers<?, ?> layerEventHandlers;
 
     protected NewNodeCommand() {
-        this( null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public NewNodeCommand( final ClientFactoryService clientFactoryServices,
-                           final ShapeManager shapeManager,
-                           final DefinitionGlyphTooltip<?> glyphTooltip,
-                           final GraphBoundsIndexer graphBoundsIndexer,
-                           final NodeDragProxy<AbstractCanvasHandler> nodeDragProxyFactory,
-                           final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl,
-                           final DefinitionUtils definitionUtils,
-                           final CanvasLayoutUtils canvasLayoutUtils,
-                           final Event<CanvasElementSelectedEvent> elementSelectedEvent ) {
-        super( clientFactoryServices,
-               shapeManager,
-               glyphTooltip,
-               graphBoundsIndexer );
+    public NewNodeCommand(final ClientFactoryService clientFactoryServices,
+                          final ShapeManager shapeManager,
+                          final DefinitionGlyphTooltip<?> glyphTooltip,
+                          final GraphBoundsIndexer graphBoundsIndexer,
+                          final NodeDragProxy<AbstractCanvasHandler> nodeDragProxyFactory,
+                          final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl,
+                          final DefinitionUtils definitionUtils,
+                          final CanvasLayoutUtils canvasLayoutUtils,
+                          final Event<CanvasElementSelectedEvent> elementSelectedEvent) {
+        super(clientFactoryServices,
+              shapeManager,
+              glyphTooltip,
+              graphBoundsIndexer);
         this.nodeDragProxyFactory = nodeDragProxyFactory;
         this.nodeBuilderControl = nodeBuilderControl;
         this.definitionUtils = definitionUtils;
@@ -107,21 +107,21 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
     // TODO: i18n.
     @PostConstruct
     public void init() {
-        getGlyphTooltip().setPrefix( "Click to create a " );
+        getGlyphTooltip().setPrefix("Click to create a ");
     }
 
-    public void setDefinitionIdentifier( final String definitionId ) {
+    public void setDefinitionIdentifier(final String definitionId) {
         this.definitionId = definitionId;
     }
 
-    private String getEdgeIdentifier( final Context<AbstractCanvasHandler> context ) {
+    private String getEdgeIdentifier(final Context<AbstractCanvasHandler> context) {
         final String defSetId = context.getCanvasHandler().getDiagram().getMetadata().getDefinitionSetId();
-        return definitionUtils.getDefaultConnectorId( defSetId );
+        return definitionUtils.getDefaultConnectorId(defSetId);
     }
 
     @Override
-    protected String getDefinitionIdentifier( final Context<AbstractCanvasHandler> context ) {
-        return getEdgeIdentifier( context );
+    protected String getDefinitionIdentifier(final Context<AbstractCanvasHandler> context) {
+        return getEdgeIdentifier(context);
     }
 
     @Override
@@ -136,62 +136,62 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
     }
 
     @Override
-    public void click( final Context<AbstractCanvasHandler> context,
-                       final Element element ) {
-        super.click( context,
-                     element );
-        log( Level.INFO,
-             "Click - Start adding a new node..." );
-        addOnNextLayoutPosition( context,
-                                 element );
+    public void click(final Context<AbstractCanvasHandler> context,
+                      final Element element) {
+        super.click(context,
+                    element);
+        log(Level.INFO,
+            "Click - Start adding a new node...");
+        addOnNextLayoutPosition(context,
+                                element);
     }
 
     // TODO: Move all these stuff to canvas builder controls?
-    @SuppressWarnings( "unchecked" )
-    private void addOnNextLayoutPosition( final Context<AbstractCanvasHandler> context,
-                                          final Element element ) {
-        fireLoadingStarted( context );
+    @SuppressWarnings("unchecked")
+    private void addOnNextLayoutPosition(final Context<AbstractCanvasHandler> context,
+                                         final Element element) {
+        fireLoadingStarted(context);
         final AbstractCanvasHandler canvasHandler = context.getCanvasHandler();
-        getGraphBoundsIndexer().setRootUUID( canvasHandler.getDiagram().getMetadata().getCanvasRootUUID() );
-        getGraphBoundsIndexer().build( canvasHandler.getDiagram().getGraph() );
-        getClientFactoryServices().newElement( UUID.uuid(),
-                                               getDefinitionIdentifier( context ),
-                                               new ServiceCallback<Element>() {
+        getGraphBoundsIndexer().setRootUUID(canvasHandler.getDiagram().getMetadata().getCanvasRootUUID());
+        getGraphBoundsIndexer().build(canvasHandler.getDiagram().getGraph());
+        getClientFactoryServices().newElement(UUID.uuid(),
+                                              getDefinitionIdentifier(context),
+                                              new ServiceCallback<Element>() {
 
-                                                   @Override
-                                                   public void onSuccess( final Element newEdgeElement ) {
-                                                       onDefinitionInstanceBuilt( context,
-                                                                                  element,
-                                                                                  newEdgeElement,
-                                                                                  new Command() {
+                                                  @Override
+                                                  public void onSuccess(final Element newEdgeElement) {
+                                                      onDefinitionInstanceBuilt(context,
+                                                                                element,
+                                                                                newEdgeElement,
+                                                                                new Command() {
 
-                                                                                      @Override
-                                                                                      public void execute() {
-                                                                                          getBuilderControl().enable( canvasHandler );
-                                                                                          getGraphBoundsIndexer().build( canvasHandler.getDiagram().getGraph() );
-                                                                                          // TODO: Use right magnets.
-                                                                                          NewNodeCommand.this.sourceMagnet = 3;
-                                                                                          NewNodeCommand.this.targetMagnet = 7;
-                                                                                          final double[] next = canvasLayoutUtils.getNext( canvasHandler,
-                                                                                                                                           ( Node<View<?>, Edge> ) element );
-                                                                                          log( Level.INFO,
-                                                                                               "New edge request complete - [UUID=" + newEdgeElement.getUUID()
-                                                                                                       + ", x=" + next[ 0 ] + ", y=" + next[ 1 ] + "]" );
-                                                                                          NewNodeCommand.this.onComplete( context,
-                                                                                                                          element,
-                                                                                                                          newEdgeElement,
-                                                                                                                          ( int ) next[ 0 ],
-                                                                                                                          ( int ) next[ 1 ] );
-                                                                                      }
-                                                                                  } );
-                                                   }
+                                                                                    @Override
+                                                                                    public void execute() {
+                                                                                        getBuilderControl().enable(canvasHandler);
+                                                                                        getGraphBoundsIndexer().build(canvasHandler.getDiagram().getGraph());
+                                                                                        // TODO: Use right magnets.
+                                                                                        NewNodeCommand.this.sourceMagnet = 3;
+                                                                                        NewNodeCommand.this.targetMagnet = 7;
+                                                                                        final double[] next = canvasLayoutUtils.getNext(canvasHandler,
+                                                                                                                                        (Node<View<?>, Edge>) element);
+                                                                                        log(Level.INFO,
+                                                                                            "New edge request complete - [UUID=" + newEdgeElement.getUUID()
+                                                                                                    + ", x=" + next[0] + ", y=" + next[1] + "]");
+                                                                                        NewNodeCommand.this.onComplete(context,
+                                                                                                                       element,
+                                                                                                                       newEdgeElement,
+                                                                                                                       (int) next[0],
+                                                                                                                       (int) next[1]);
+                                                                                    }
+                                                                                });
+                                                  }
 
-                                                   @Override
-                                                   public void onError( final ClientRuntimeError error ) {
-                                                       NewNodeCommand.this.onError( context,
-                                                                                    error );
-                                                   }
-                                               } );
+                                                  @Override
+                                                  public void onError(final ClientRuntimeError error) {
+                                                      NewNodeCommand.this.onError(context,
+                                                                                  error);
+                                                  }
+                                              });
     }
 
     @Override
@@ -205,132 +205,132 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
     }
 
     @Override
-    protected DragProxyCallback getDragProxyCallback( final Context<AbstractCanvasHandler> context,
-                                                      final Element element,
-                                                      final Element item ) {
+    protected DragProxyCallback getDragProxyCallback(final Context<AbstractCanvasHandler> context,
+                                                     final Element element,
+                                                     final Element item) {
         return new NodeDragProxyCallback() {
 
             @Override
-            public void onStart( final int x,
-                                 final int y ) {
-                NewNodeCommand.this.onStart( context,
-                                             element,
-                                             item,
-                                             x,
-                                             y );
-            }
-
-            @Override
-            public void onMove( final int x,
-                                final int y ) {
-                NewNodeCommand.this.onMove( context,
+            public void onStart(final int x,
+                                final int y) {
+                NewNodeCommand.this.onStart(context,
                                             element,
                                             item,
                                             x,
-                                            y );
+                                            y);
             }
 
             @Override
-            public void onComplete( final int x,
-                                    final int y ) {
+            public void onMove(final int x,
+                               final int y) {
+                NewNodeCommand.this.onMove(context,
+                                           element,
+                                           item,
+                                           x,
+                                           y);
             }
 
             @Override
-            public void onComplete( final int x,
-                                    final int y,
-                                    final int sourceMagnet,
-                                    final int targetMagnet ) {
+            public void onComplete(final int x,
+                                   final int y) {
+            }
+
+            @Override
+            public void onComplete(final int x,
+                                   final int y,
+                                   final int sourceMagnet,
+                                   final int targetMagnet) {
                 NewNodeCommand.this.sourceMagnet = sourceMagnet;
                 NewNodeCommand.this.targetMagnet = targetMagnet;
-                NewNodeCommand.this.onComplete( context,
-                                                element,
-                                                item,
-                                                x,
-                                                y );
+                NewNodeCommand.this.onComplete(context,
+                                               element,
+                                               item,
+                                               x,
+                                               y);
             }
         };
     }
 
     @Override
-    protected void onStart( final Context<AbstractCanvasHandler> context,
-                            final Element element,
-                            final Element item,
-                            final int x1,
-                            final int y1 ) {
-        super.onStart( context,
-                       element,
-                       item,
-                       x1,
-                       y1 );
+    protected void onStart(final Context<AbstractCanvasHandler> context,
+                           final Element element,
+                           final Element item,
+                           final int x1,
+                           final int y1) {
+        super.onStart(context,
+                      element,
+                      item,
+                      x1,
+                      y1);
         // Disable layer events handlers in order to avoid layer events while using the drag def.
-        this.layerEventHandlers = getLayer( context );
+        this.layerEventHandlers = getLayer(context);
         disableHandlers();
     }
 
     @Override
-    protected void onItemBuilt( final Context<AbstractCanvasHandler> context,
-                                final String uuid ) {
-        super.onItemBuilt( context,
-                           uuid );
-        fireElementSelectedEvent( elementSelectedEvent,
-                                  context.getCanvasHandler(),
-                                  uuid );
+    protected void onItemBuilt(final Context<AbstractCanvasHandler> context,
+                               final String uuid) {
+        super.onItemBuilt(context,
+                          uuid);
+        fireElementSelectedEvent(elementSelectedEvent,
+                                 context.getCanvasHandler(),
+                                 uuid);
     }
 
     @Override
-    protected void onError( final Context<AbstractCanvasHandler> context,
-                            final ClientRuntimeError error ) {
-        super.onError( context,
-                       error );
+    protected void onError(final Context<AbstractCanvasHandler> context,
+                           final ClientRuntimeError error) {
+        super.onError(context,
+                      error);
         // Enable layer events handlers again.
         enableHandlers();
     }
 
-    protected Layer getLayer( final Context<AbstractCanvasHandler> context ) {
+    protected Layer getLayer(final Context<AbstractCanvasHandler> context) {
         return context.getCanvasHandler().getCanvas().getLayer();
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected void onDefinitionInstanceBuilt( final Context<AbstractCanvasHandler> context,
-                                              final Element source,
-                                              final Element newElement,
-                                              final Command callback ) {
-        final Node<View<?>, Edge> sourceNode = ( Node<View<?>, Edge> ) source;
-        final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) newElement;
+    @SuppressWarnings("unchecked")
+    protected void onDefinitionInstanceBuilt(final Context<AbstractCanvasHandler> context,
+                                             final Element source,
+                                             final Element newElement,
+                                             final Command callback) {
+        final Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) source;
+        final Edge<View<?>, Node> edge = (Edge<View<?>, Node>) newElement;
         // Create the new node.
-        getClientFactoryServices().newElement( UUID.uuid(),
-                                               definitionId,
-                                               new ServiceCallback<Element>() {
+        getClientFactoryServices().newElement(UUID.uuid(),
+                                              definitionId,
+                                              new ServiceCallback<Element>() {
 
-                                                   @Override
-                                                   public void onSuccess( final Element item ) {
-                                                       final Node<View<?>, Edge> node = ( Node<View<?>, Edge> ) item.asNode();
-                                                       // Perform the temporal def connections.
-                                                       edge.setSourceNode( sourceNode );
-                                                       edge.setTargetNode( node );
-                                                       NewNodeCommand.super.onDefinitionInstanceBuilt( context,
-                                                                                                       source,
-                                                                                                       newElement,
-                                                                                                       callback );
-                                                   }
+                                                  @Override
+                                                  public void onSuccess(final Element item) {
+                                                      final Node<View<?>, Edge> node = (Node<View<?>, Edge>) item.asNode();
+                                                      // Perform the temporal def connections.
+                                                      edge.setSourceNode(sourceNode);
+                                                      edge.setTargetNode(node);
+                                                      NewNodeCommand.super.onDefinitionInstanceBuilt(context,
+                                                                                                     source,
+                                                                                                     newElement,
+                                                                                                     callback);
+                                                  }
 
-                                                   @Override
-                                                   public void onError( final ClientRuntimeError error ) {
-                                                       NewNodeCommand.this.onError( context,
-                                                                                    error );
-                                                   }
-                                               } );
+                                                  @Override
+                                                  public void onError(final ClientRuntimeError error) {
+                                                      NewNodeCommand.this.onError(context,
+                                                                                  error);
+                                                  }
+                                              });
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected Object createtBuilderControlItem( final Context<AbstractCanvasHandler> context,
-                                                final Element source,
-                                                final Element newElement ) {
-        final Node<View<?>, Edge> sourceNode = ( Node<View<?>, Edge> ) source;
-        final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) newElement;
-        final ShapeFactory<?, AbstractCanvasHandler, ?> shapeFactory = getFactory( context.getCanvasHandler() );
+    @SuppressWarnings("unchecked")
+    protected Object createtBuilderControlItem(final Context<AbstractCanvasHandler> context,
+                                               final Element source,
+                                               final Element newElement) {
+        final Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) source;
+        final Edge<View<?>, Node> edge = (Edge<View<?>, Node>) newElement;
+        final ShapeFactory<?, AbstractCanvasHandler, ?> shapeFactory = getFactory(context.getCanvasHandler());
         return new NodeDragProxy.Item<AbstractCanvasHandler>() {
             @Override
             public Node<View<?>, Edge> getNode() {
@@ -360,21 +360,21 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected boolean onDragProxyMove( final int x,
-                                       final int y,
-                                       final Element source,
-                                       final Element newElement,
-                                       final Node parent ) {
-        final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) newElement;
-        final Node<View<?>, Edge> node = ( Node<View<?>, Edge> ) edge.getTargetNode();
-        final NodeBuildRequest request = new NodeBuildRequestImpl( x,
-                                                                   y,
-                                                                   node,
-                                                                   edge );
-        final boolean accepts = nodeBuilderControl.allows( request );
-        if ( accepts ) {
-            if ( null != parent ) {
+    @SuppressWarnings("unchecked")
+    protected boolean onDragProxyMove(final int x,
+                                      final int y,
+                                      final Element source,
+                                      final Element newElement,
+                                      final Node parent) {
+        final Edge<View<?>, Node> edge = (Edge<View<?>, Node>) newElement;
+        final Node<View<?>, Edge> node = (Node<View<?>, Edge>) edge.getTargetNode();
+        final NodeBuildRequest request = new NodeBuildRequestImpl(x,
+                                                                  y,
+                                                                  node,
+                                                                  edge);
+        final boolean accepts = nodeBuilderControl.allows(request);
+        if (accepts) {
+            if (null != parent) {
                 return true;
             }
         }
@@ -382,20 +382,20 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected BuildRequest createBuildRequest( final int x,
-                                               final int y,
-                                               final Element source,
-                                               final Element newElement,
-                                               final Node targetNode ) {
-        final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) newElement;
-        final Node<View<?>, Edge> node = ( Node<View<?>, Edge> ) edge.getTargetNode();
-        return new NodeBuildRequestImpl( x,
-                                         y,
-                                         node,
-                                         edge,
-                                         this.sourceMagnet,
-                                         this.targetMagnet );
+    @SuppressWarnings("unchecked")
+    protected BuildRequest createBuildRequest(final int x,
+                                              final int y,
+                                              final Element source,
+                                              final Element newElement,
+                                              final Node targetNode) {
+        final Edge<View<?>, Node> edge = (Edge<View<?>, Node>) newElement;
+        final Node<View<?>, Edge> node = (Node<View<?>, Edge>) edge.getTargetNode();
+        return new NodeBuildRequestImpl(x,
+                                        y,
+                                        node,
+                                        edge,
+                                        this.sourceMagnet,
+                                        this.targetMagnet);
     }
 
     @Override
@@ -406,13 +406,13 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
     }
 
     private void disableHandlers() {
-        if ( null != this.layerEventHandlers ) {
+        if (null != this.layerEventHandlers) {
             this.layerEventHandlers.disableHandlers();
         }
     }
 
     private void enableHandlers() {
-        if ( null != this.layerEventHandlers ) {
+        if (null != this.layerEventHandlers) {
             this.layerEventHandlers.enableHandlers();
         }
     }
@@ -423,15 +423,15 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
         this.layerEventHandlers = null;
     }
 
-    protected String getDefinitionId( final Object def ) {
-        return definitionUtils.getDefinitionManager().adapters().forDefinition().getId( def );
+    protected String getDefinitionId(final Object def) {
+        return definitionUtils.getDefinitionManager().adapters().forDefinition().getId(def);
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

@@ -24,5 +24,5 @@ import org.kie.workbench.common.stunner.core.validation.Validator;
 
 public interface GraphValidator extends Validator<Graph<?, Node<?, Edge>>, GraphValidatorCallback> {
 
-    GraphValidator withRulesManager( final GraphRulesManager rulesManager );
+    GraphValidator withRulesManager(final GraphRulesManager rulesManager);
 }

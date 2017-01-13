@@ -48,102 +48,102 @@ public class EdgeCardinalityRuleGenerator extends AbstractGenerator {
     private final ProcessingContext processingContext = ProcessingContext.getInstance();
 
     @Override
-    public StringBuffer generate( final String packageName,
-                                  final PackageElement packageElement,
-                                  final String className,
-                                  final Element element,
-                                  final ProcessingEnvironment processingEnvironment ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final PackageElement packageElement,
+                                 final String className,
+                                 final Element element,
+                                 final ProcessingEnvironment processingEnvironment) throws GenerationException {
         final Messager messager = processingEnvironment.getMessager();
-        messager.printMessage( Diagnostic.Kind.NOTE,
-                               "Starting code generation for [" + className + "]" );
+        messager.printMessage(Diagnostic.Kind.NOTE,
+                              "Starting code generation for [" + className + "]");
         final Elements elementUtils = processingEnvironment.getElementUtils();
         //Extract required information
-        final TypeElement classElement = ( TypeElement ) element;
+        final TypeElement classElement = (TypeElement) element;
         final boolean isInterface = classElement.getKind().isInterface();
-        AllowedEdgeOccurrences occs = classElement.getAnnotation( AllowedEdgeOccurrences.class );
-        if ( null != occs ) {
+        AllowedEdgeOccurrences occs = classElement.getAnnotation(AllowedEdgeOccurrences.class);
+        if (null != occs) {
             List<EdgeCardinalityRule> edgeRules = new ArrayList<>();
-            for ( EdgeOccurrences occurrence : occs.value() ) {
+            for (EdgeOccurrences occurrence : occs.value()) {
                 String role = occurrence.role();
                 String ruleById = classElement.getQualifiedName().toString();
-                String shortId = ruleById.substring( ruleById.lastIndexOf( "." ) + 1,
-                                                     ruleById.length() );
+                String shortId = ruleById.substring(ruleById.lastIndexOf(".") + 1,
+                                                    ruleById.length());
                 String name = shortId + "_" + role + "_" + MainProcessor.RULE_EDGE_CARDINALITY_SUFFIX_CLASSNAME;
                 EdgeOccurrences.EdgeType _type = occurrence.type();
-                EdgeCardinalityRule.Type type = EdgeOccurrences.EdgeType.INCOMING.equals( _type ) ? EdgeCardinalityRule.Type.INCOMING : EdgeCardinalityRule.Type.OUTGOING;
+                EdgeCardinalityRule.Type type = EdgeOccurrences.EdgeType.INCOMING.equals(_type) ? EdgeCardinalityRule.Type.INCOMING : EdgeCardinalityRule.Type.OUTGOING;
                 int min = occurrence.min();
                 int max = occurrence.max();
-                if ( EdgeCardinalityRule.Type.INCOMING.equals( type ) ) {
-                    edgeRules.add( new EdgeCardinalityRuleImpl( ruleById,
-                                                                "incoming" + name,
-                                                                role,
-                                                                type,
-                                                                min,
-                                                                max ) );
+                if (EdgeCardinalityRule.Type.INCOMING.equals(type)) {
+                    edgeRules.add(new EdgeCardinalityRuleImpl(ruleById,
+                                                              "incoming" + name,
+                                                              role,
+                                                              type,
+                                                              min,
+                                                              max));
                 } else {
-                    edgeRules.add( new EdgeCardinalityRuleImpl( ruleById,
-                                                                "outgoing" + name,
-                                                                role,
-                                                                type,
-                                                                min,
-                                                                max ) );
+                    edgeRules.add(new EdgeCardinalityRuleImpl(ruleById,
+                                                              "outgoing" + name,
+                                                              role,
+                                                              type,
+                                                              min,
+                                                              max));
                 }
-                StringBuffer ruleSourceCode = generateRule( messager,
-                                                            ruleById,
-                                                            name,
-                                                            role,
-                                                            "EdgeCardinalityRule.Type." + type.name(),
-                                                            min,
-                                                            max );
-                processingContext.addRule( name,
-                                           ProcessingRule.TYPE.EDGE_CARDINALITY,
-                                           ruleSourceCode );
+                StringBuffer ruleSourceCode = generateRule(messager,
+                                                           ruleById,
+                                                           name,
+                                                           role,
+                                                           "EdgeCardinalityRule.Type." + type.name(),
+                                                           min,
+                                                           max);
+                processingContext.addRule(name,
+                                          ProcessingRule.TYPE.EDGE_CARDINALITY,
+                                          ruleSourceCode);
             }
         }
         return null;
     }
 
-    private StringBuffer generateRule( final Messager messager,
-                                       final String ruleId,
-                                       final String ruleName,
-                                       final String ruleRoleId,
-                                       final String type,
-                                       final long min,
-                                       final long max ) throws GenerationException {
+    private StringBuffer generateRule(final Messager messager,
+                                      final String ruleId,
+                                      final String ruleName,
+                                      final String ruleRoleId,
+                                      final String type,
+                                      final long min,
+                                      final long max) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "ruleName",
-                  ruleName );
-        root.put( "ruleId",
-                  ruleId );
-        root.put( "ruleRoleId",
-                  ruleRoleId );
-        root.put( "ruleRoleType",
-                  type );
-        root.put( "min",
-                  min );
-        root.put( "max",
-                  max );
+        root.put("ruleName",
+                 ruleName);
+        root.put("ruleId",
+                 ruleId);
+        root.put("ruleRoleId",
+                 ruleRoleId);
+        root.put("ruleRoleType",
+                 type);
+        root.put("min",
+                 min);
+        root.put("max",
+                 max);
         //Generate code
         final StringWriter sw = new StringWriter();
-        final BufferedWriter bw = new BufferedWriter( sw );
+        final BufferedWriter bw = new BufferedWriter(sw);
         try {
-            final Template template = config.getTemplate( "EdgeCardinalityRule.ftl" );
-            template.process( root,
-                              bw );
-        } catch ( IOException ioe ) {
-            throw new GenerationException( ioe );
-        } catch ( TemplateException te ) {
-            throw new GenerationException( te );
+            final Template template = config.getTemplate("EdgeCardinalityRule.ftl");
+            template.process(root,
+                             bw);
+        } catch (IOException ioe) {
+            throw new GenerationException(ioe);
+        } catch (TemplateException te) {
+            throw new GenerationException(te);
         } finally {
             try {
                 bw.close();
                 sw.close();
-            } catch ( IOException ioe ) {
-                throw new GenerationException( ioe );
+            } catch (IOException ioe) {
+                throw new GenerationException(ioe);
             }
         }
-        messager.printMessage( Diagnostic.Kind.NOTE,
-                               "Successfully generated code for [" + ruleId + "]" );
+        messager.printMessage(Diagnostic.Kind.NOTE,
+                              "Successfully generated code for [" + ruleId + "]");
         return sw.getBuffer();
     }
 }

@@ -33,7 +33,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 @Dependent
 public class ProjectDiagramWorkbenchDocks {
 
-    private static Logger LOGGER = Logger.getLogger( ProjectDiagramWorkbenchDocks.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(ProjectDiagramWorkbenchDocks.class.getName());
     private final static UberfireDockPosition POSITION = UberfireDockPosition.EAST;
 
     private final UberfireDocks uberfireDocks;
@@ -44,37 +44,37 @@ public class ProjectDiagramWorkbenchDocks {
     private UberfireDock explorerDock;
 
     protected ProjectDiagramWorkbenchDocks() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public ProjectDiagramWorkbenchDocks( final UberfireDocks uberfireDocks ) {
+    public ProjectDiagramWorkbenchDocks(final UberfireDocks uberfireDocks) {
         this.uberfireDocks = uberfireDocks;
         this.attached = false;
         this.enabled = false;
     }
 
-    public void setup( final String perspectiveId ) {
+    public void setup(final String perspectiveId) {
         this.perspectiveId = perspectiveId;
     }
 
     public void enableDocks() {
-        if ( !isEnabled() ) {
-            log( Level.INFO,
-                 "Enabling docks" );
-            uberfireDocks.enable( POSITION,
-                                  perspectiveId );
+        if (!isEnabled()) {
+            log(Level.INFO,
+                "Enabling docks");
+            uberfireDocks.enable(POSITION,
+                                 perspectiveId);
             this.enabled = true;
         }
     }
 
     public void disableDocks() {
-        if ( isEnabled() ) {
-            log( Level.INFO,
-                 "Disabling docks" );
+        if (isEnabled()) {
+            log(Level.INFO,
+                "Disabling docks");
             // TODO: Ask to walter - uberfireDocks.disable( POSITION, perspectiveId );
-            uberfireDocks.disable( POSITION,
-                                   perspectiveId );
+            uberfireDocks.disable(POSITION,
+                                  perspectiveId);
             this.enabled = false;
         }
     }
@@ -84,67 +84,67 @@ public class ProjectDiagramWorkbenchDocks {
     }
 
     private void attachDocks() {
-        if ( null == propertiesDock ) {
-            propertiesDock = createPropertiesDock( perspectiveId );
+        if (null == propertiesDock) {
+            propertiesDock = createPropertiesDock(perspectiveId);
         }
-        if ( null == explorerDock ) {
-            explorerDock = createExplorerDock( perspectiveId );
+        if (null == explorerDock) {
+            explorerDock = createExplorerDock(perspectiveId);
         }
-        if ( !attached ) {
-            log( Level.INFO,
-                 "Attaching docks" );
-            uberfireDocks.add( propertiesDock );
-            uberfireDocks.add( explorerDock );
+        if (!attached) {
+            log(Level.INFO,
+                "Attaching docks");
+            uberfireDocks.add(propertiesDock);
+            uberfireDocks.add(explorerDock);
             attached = true;
         }
     }
 
     private void detachDocks() {
-        if ( attached ) {
-            log( Level.INFO,
-                 "Detaching docks" );
-            if ( null != propertiesDock ) {
-                uberfireDocks.remove( propertiesDock );
+        if (attached) {
+            log(Level.INFO,
+                "Detaching docks");
+            if (null != propertiesDock) {
+                uberfireDocks.remove(propertiesDock);
             }
-            if ( null != explorerDock ) {
-                uberfireDocks.remove( explorerDock );
+            if (null != explorerDock) {
+                uberfireDocks.remove(explorerDock);
             }
             attached = false;
         }
     }
 
-    void onDockReadyEvent( @Observes UberfireDockReadyEvent dockReadyEvent ) {
+    void onDockReadyEvent(final @Observes UberfireDockReadyEvent dockReadyEvent) {
         final String currentPerspectiveId = dockReadyEvent.getCurrentPerspective();
-        if ( null != currentPerspectiveId && currentPerspectiveId.equals( this.perspectiveId ) ) {
+        if (null != currentPerspectiveId && currentPerspectiveId.equals(this.perspectiveId)) {
             attachDocks();
         } else {
             detachDocks();
         }
     }
 
-    private UberfireDock createPropertiesDock( final String perspectiveId ) {
-        return new UberfireDock( POSITION,
-                                 "PENCIL_SQUARE_O",
-                                 new DefaultPlaceRequest( ProjectDiagramPropertiesScreen.SCREEN_ID ),
-                                 perspectiveId )
-                .withSize( 450 )
-                .withLabel( "Properties" );
+    private UberfireDock createPropertiesDock(final String perspectiveId) {
+        return new UberfireDock(POSITION,
+                                "PENCIL_SQUARE_O",
+                                new DefaultPlaceRequest(ProjectDiagramPropertiesScreen.SCREEN_ID),
+                                perspectiveId)
+                .withSize(450)
+                .withLabel("Properties");
     }
 
-    private UberfireDock createExplorerDock( final String perspectiveId ) {
-        return new UberfireDock( POSITION,
-                                 "LIST_UL",
-                                 new DefaultPlaceRequest( ProjectDiagramExplorerScreen.SCREEN_ID ),
-                                 perspectiveId )
-                .withSize( 450 )
-                .withLabel( "Explorer" );
+    private UberfireDock createExplorerDock(final String perspectiveId) {
+        return new UberfireDock(POSITION,
+                                "LIST_UL",
+                                new DefaultPlaceRequest(ProjectDiagramExplorerScreen.SCREEN_ID),
+                                perspectiveId)
+                .withSize(450)
+                .withLabel("Explorer");
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

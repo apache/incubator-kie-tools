@@ -33,7 +33,7 @@ public interface FactoryManager {
      * @param <T> The definition instance type ( Eg. Task )
      * @return A new definition instance.
      */
-    <T> T newDefinition( final String id );
+    <T> T newDefinition(final String id);
 
     /**
      * Creates a new Definition by a given type, if the domain model is based on java POJO classes.
@@ -41,7 +41,7 @@ public interface FactoryManager {
      * @param <T> The definition instance type ( Eg. Task )
      * @return A new definition instance.
      */
-    <T> T newDefinition( final Class<T> type );
+    <T> T newDefinition(final Class<T> type);
 
     /**
      * Creates a new graph element for the given Definition identifier.
@@ -49,8 +49,8 @@ public interface FactoryManager {
      * @param id The definition identifier.
      * @return A new graph, node or edge which content is based on the a Definition.
      */
-    Element<?> newElement( final String uuid,
-                           final String id );
+    Element<?> newElement(final String uuid,
+                          final String id);
 
     /**
      * Creates a new graph element for the given Definition type.
@@ -58,8 +58,8 @@ public interface FactoryManager {
      * @param type The definition type.
      * @return A new graph, node or edge which content is based on the a Definition.
      */
-    Element<?> newElement( final String uuid,
-                           final Class<?> type );
+    Element<?> newElement(final String uuid,
+                          final Class<?> type);
 
     /**
      * Creates a new diagram for the given Definition Set identifier.
@@ -69,9 +69,9 @@ public interface FactoryManager {
      * @param <D> The diagram type.
      * @return A new diagram instance.
      */
-    <M extends Metadata, D extends Diagram> D newDiagram( final String name,
-                                                          final String id,
-                                                          final M metadata );
+    <M extends Metadata, D extends Diagram> D newDiagram(final String name,
+                                                         final String id,
+                                                         final M metadata);
 
     /**
      * Creates a new diagram for the given Definition Set type.
@@ -81,9 +81,9 @@ public interface FactoryManager {
      * @param <D> The diagram type.
      * @return A new diagram instance.
      */
-    <M extends Metadata, D extends Diagram> D newDiagram( final String name,
-                                                          final Class<?> type,
-                                                          final M metadata );
+    <M extends Metadata, D extends Diagram> D newDiagram(final String name,
+                                                         final Class<?> type,
+                                                         final M metadata);
 
     /**
      * The registry that handles all different factories.

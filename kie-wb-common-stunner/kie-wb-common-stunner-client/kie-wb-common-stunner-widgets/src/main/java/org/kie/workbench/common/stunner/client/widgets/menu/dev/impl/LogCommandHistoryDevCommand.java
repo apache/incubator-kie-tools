@@ -28,15 +28,15 @@ import org.kie.workbench.common.stunner.core.client.util.StunnerClientLogger;
 @Dependent
 public class LogCommandHistoryDevCommand extends AbstractMenuDevCommand {
 
-    private static Logger LOGGER = Logger.getLogger( LogCommandHistoryDevCommand.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(LogCommandHistoryDevCommand.class.getName());
 
     protected LogCommandHistoryDevCommand() {
-        this( null );
+        this(null);
     }
 
     @Inject
-    public LogCommandHistoryDevCommand( final AbstractClientSessionManager sessionManager ) {
-        super( sessionManager );
+    public LogCommandHistoryDevCommand(final AbstractClientSessionManager sessionManager) {
+        super(sessionManager);
     }
 
     @Override
@@ -47,10 +47,10 @@ public class LogCommandHistoryDevCommand extends AbstractMenuDevCommand {
     @Override
     public void execute() {
         try {
-            StunnerClientLogger.logCommandHistory( ( ClientFullSession ) getSession() );
-        } catch ( ClassCastException e ) {
-            LOGGER.log( Level.WARNING,
-                        "Session is not an instance of ClientFullSession" );
+            StunnerClientLogger.logCommandHistory((ClientFullSession) getSession());
+        } catch (ClassCastException e) {
+            LOGGER.log(Level.WARNING,
+                       "Session is not an instance of ClientFullSession");
         }
     }
 }

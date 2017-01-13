@@ -31,7 +31,7 @@ public interface ModelCardinalityRuleManager extends CardinalityRuleManager {
      * @param count The count value for this roles.
      * @param operation Add or remove
      */
-    RuleViolations evaluate( final String label,
-                             final int count,
-                             final Operation operation );
+    RuleViolations evaluate(final String label,
+                            final int count,
+                            final Operation operation);
 }

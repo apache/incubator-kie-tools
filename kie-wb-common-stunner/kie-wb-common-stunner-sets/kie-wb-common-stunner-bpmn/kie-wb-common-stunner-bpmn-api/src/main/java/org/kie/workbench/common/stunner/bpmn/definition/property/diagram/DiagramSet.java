@@ -43,28 +43,28 @@ public class DiagramSet {
     public static final transient String propertySetName = "BPMN Process";
 
     @Property
-    @FieldDef( label = FIELDDEF_NAME, property = "value", position = 0 )
+    @FieldDef(label = FIELDDEF_NAME, property = "value", position = 0)
     @Valid
     private Name name;
 
     @Property
-    @FieldDef( label = FIELDDEF_DOCUMENTATION, property = "value", position = 1 )
-    @TextArea( rows = 3 )
+    @FieldDef(label = FIELDDEF_DOCUMENTATION, property = "value", position = 1)
+    @TextArea(rows = 3)
     @Valid
     private Documentation documentation;
 
     @Property
-    @FieldDef( label = FIELDDEF_ID, property = "value", position = 2 )
+    @FieldDef(label = FIELDDEF_ID, property = "value", position = 2)
     @Valid
     private Id id;
 
     @Property
-    @FieldDef( label = FIELDDEF_PACKAGE, property = "value", position = 3 )
+    @FieldDef(label = FIELDDEF_PACKAGE, property = "value", position = 3)
     @Valid
     private Package packageProperty;
 
     @Property
-    @FieldDef( label = FIELDDEF_VERSION, property = "value", position = 4 )
+    @FieldDef(label = FIELDDEF_VERSION, property = "value", position = 4)
     @Valid
     private Version version;
 
@@ -72,20 +72,20 @@ public class DiagramSet {
     private Executable executable;
 
     public DiagramSet() {
-        this( new Name( "" ),
-              new Documentation(),
-              new Id( "" ),
-              new Package( "" ),
-              new Version( Version.defaultValue ),
-              new Executable() );
+        this(new Name(""),
+             new Documentation(),
+             new Id(""),
+             new Package(""),
+             new Version(Version.defaultValue),
+             new Executable());
     }
 
-    public DiagramSet( @MapsTo( "name" ) Name name,
-                       @MapsTo( "documentation" ) Documentation documentation,
-                       @MapsTo( "id" ) Id id,
-                       @MapsTo( "packageProperty" ) Package packageProperty,
-                       @MapsTo( "version" ) Version version,
-                       @MapsTo( "executable" ) Executable executable ) {
+    public DiagramSet(final @MapsTo("name") Name name,
+                      final @MapsTo("documentation") Documentation documentation,
+                      final @MapsTo("id") Id id,
+                      final @MapsTo("packageProperty") Package packageProperty,
+                      final @MapsTo("version") Version version,
+                      final @MapsTo("executable") Executable executable) {
         this.name = name;
         this.documentation = documentation;
         this.id = id;
@@ -94,13 +94,13 @@ public class DiagramSet {
         this.executable = executable;
     }
 
-    public DiagramSet( String name ) {
-        this( new Name( name ),
-              new Documentation(),
-              new Id( "" ),
-              new Package( "" ),
-              new Version( Version.defaultValue ),
-              new Executable() );
+    public DiagramSet(final String name) {
+        this(new Name(name),
+             new Documentation(),
+             new Id(""),
+             new Package(""),
+             new Version(Version.defaultValue),
+             new Executable());
     }
 
     public String getPropertySetName() {
@@ -131,27 +131,27 @@ public class DiagramSet {
         return executable;
     }
 
-    public void setName( Name name ) {
+    public void setName(final Name name) {
         this.name = name;
     }
 
-    public void setDocumentation( Documentation documentation ) {
+    public void setDocumentation(final Documentation documentation) {
         this.documentation = documentation;
     }
 
-    public void setId( Id id ) {
+    public void setId(Id id) {
         this.id = id;
     }
 
-    public void setPackageProperty( Package packageProperty ) {
+    public void setPackageProperty(final Package packageProperty) {
         this.packageProperty = packageProperty;
     }
 
-    public void setVersion( Version version ) {
+    public void setVersion(final Version version) {
         this.version = version;
     }
 
-    public void setExecutable( Executable executable ) {
+    public void setExecutable(final Executable executable) {
         this.executable = executable;
     }
 }

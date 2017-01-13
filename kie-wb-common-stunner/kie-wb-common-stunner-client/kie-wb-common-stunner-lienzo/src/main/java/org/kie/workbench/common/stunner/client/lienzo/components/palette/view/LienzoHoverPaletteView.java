@@ -28,38 +28,38 @@ public class LienzoHoverPaletteView
 
     @Override
     protected HoverPalette buildPalette() {
-        return new HoverPalette().setTimeout( 1500 );
+        return new HoverPalette().setTimeout(1500);
     }
 
     @Override
     protected void initPaletteCallbacks() {
         super.initPaletteCallbacks();
-        if ( null != getHoverPalette() ) {
-            getHoverPalette().setCloseCallback( () -> presenter.onClose() );
+        if (null != getHoverPalette()) {
+            getHoverPalette().setCloseCallback(() -> presenter.onClose());
         }
     }
 
     @Override
     public void destroy() {
-        if ( null != getHoverPalette() ) {
-            getHoverPalette().setCloseCallback( null );
+        if (null != getHoverPalette()) {
+            getHoverPalette().setCloseCallback(null);
         }
         super.destroy();
     }
 
     public void startTimeOut() {
-        if ( null != getHoverPalette() ) {
+        if (null != getHoverPalette()) {
             getHoverPalette().startTimeout();
         }
     }
 
     public void clearTimeOut() {
-        if ( null != getHoverPalette() ) {
+        if (null != getHoverPalette()) {
             getHoverPalette().stopTimeout();
         }
     }
 
     private HoverPalette getHoverPalette() {
-        return null != getPalette() ? ( HoverPalette ) getPalette() : null;
+        return null != getPalette() ? (HoverPalette) getPalette() : null;
     }
 }

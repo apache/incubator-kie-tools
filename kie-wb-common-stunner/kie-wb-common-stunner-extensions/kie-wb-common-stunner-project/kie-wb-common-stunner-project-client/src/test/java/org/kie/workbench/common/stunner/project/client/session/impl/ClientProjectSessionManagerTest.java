@@ -32,7 +32,7 @@ import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class ClientProjectSessionManagerTest {
 
     @Mock
@@ -56,39 +56,39 @@ public class ClientProjectSessionManagerTest {
 
     @Before
     public void setup() throws Exception {
-        this.tested = new ClientProjectSessionManager( editorDocks,
-                                                       platformManager,
-                                                       sessionOpenedEvent,
-                                                       sessionDisposedEvent,
-                                                       sessionPausedEvent,
-                                                       sessionResumedEvent,
-                                                       sessionErrorEvent );
+        this.tested = new ClientProjectSessionManager(editorDocks,
+                                                      platformManager,
+                                                      sessionOpenedEvent,
+                                                      sessionDisposedEvent,
+                                                      sessionPausedEvent,
+                                                      sessionResumedEvent,
+                                                      sessionErrorEvent);
     }
 
     @Test
     public void testOpen() {
-        tested.open( session );
-        verify( editorDocks,
-                times( 1 ) ).enableDocks();
-        verify( editorDocks,
-                times( 0 ) ).disableDocks();
+        tested.open(session);
+        verify(editorDocks,
+               times(1)).enableDocks();
+        verify(editorDocks,
+               times(0)).disableDocks();
     }
 
     @Test
     public void testResume() {
-        tested.resume( session );
-        verify( editorDocks,
-                times( 1 ) ).enableDocks();
-        verify( editorDocks,
-                times( 0 ) ).disableDocks();
+        tested.resume(session);
+        verify(editorDocks,
+               times(1)).enableDocks();
+        verify(editorDocks,
+               times(0)).disableDocks();
     }
 
     @Test
     public void testDispose() {
         tested.postDispose();
-        verify( editorDocks,
-                times( 0 ) ).enableDocks();
-        verify( editorDocks,
-                times( 1 ) ).disableDocks();
+        verify(editorDocks,
+               times(0)).enableDocks();
+        verify(editorDocks,
+               times(1)).disableDocks();
     }
 }

@@ -28,43 +28,43 @@ public class SessionScreenViewImpl extends FlowPanel implements SessionScreenVie
         init();
     }
 
-    public SessionScreenViewImpl( final String tag ) {
-        super( tag );
+    public SessionScreenViewImpl(final String tag) {
+        super(tag);
         init();
     }
 
     @Override
     public void showEmptySession() {
-        emptyViewPanel.setVisible( true );
-        screenViewPanel.setVisible( false );
+        emptyViewPanel.setVisible(true);
+        screenViewPanel.setVisible(false);
     }
 
     @Override
-    public void showScreenView( final IsWidget viewWidget ) {
-        emptyViewPanel.setVisible( false );
-        setScreenView( viewWidget );
-        screenViewPanel.setVisible( true );
+    public void showScreenView(final IsWidget viewWidget) {
+        emptyViewPanel.setVisible(false);
+        setScreenView(viewWidget);
+        screenViewPanel.setVisible(true);
     }
 
     @Override
-    public void setScreenViewBgColor( final String color ) {
-        screenViewPanel.getElement().getStyle().setBackgroundColor( color );
+    public void setScreenViewBgColor(final String color) {
+        screenViewPanel.getElement().getStyle().setBackgroundColor(color);
     }
 
     @Override
-    public void setMarginTop( final int px ) {
-        this.emptyViewPanel.getElement().getStyle().setMarginTop( px,
-                                                                  Style.Unit.PX );
-        this.screenViewPanel.getElement().getStyle().setMarginTop( px,
-                                                                   Style.Unit.PX );
+    public void setMarginTop(final int px) {
+        this.emptyViewPanel.getElement().getStyle().setMarginTop(px,
+                                                                 Style.Unit.PX);
+        this.screenViewPanel.getElement().getStyle().setMarginTop(px,
+                                                                  Style.Unit.PX);
     }
 
     @Override
-    public void setPaddingTop( final int px ) {
-        this.emptyViewPanel.getElement().getStyle().setPaddingTop( px,
-                                                                   Style.Unit.PX );
-        this.screenViewPanel.getElement().getStyle().setPaddingTop( px,
-                                                                    Style.Unit.PX );
+    public void setPaddingTop(final int px) {
+        this.emptyViewPanel.getElement().getStyle().setPaddingTop(px,
+                                                                  Style.Unit.PX);
+        this.screenViewPanel.getElement().getStyle().setPaddingTop(px,
+                                                                   Style.Unit.PX);
     }
 
     @Override
@@ -73,17 +73,17 @@ public class SessionScreenViewImpl extends FlowPanel implements SessionScreenVie
     }
 
     private void init() {
-        this.add( emptyViewPanel );
-        this.add( screenViewPanel );
-        this.setHeight( "100%" );
-        this.emptyViewPanel.setHeight( "100%" );
-        this.screenViewPanel.setHeight( "100%" );
+        this.add(emptyViewPanel);
+        this.add(screenViewPanel);
+        this.setHeight("100%");
+        this.emptyViewPanel.setHeight("100%");
+        this.screenViewPanel.setHeight("100%");
         showEmptySession();
     }
 
-    private SessionScreenView setScreenView( final IsWidget view ) {
+    private SessionScreenView setScreenView(final IsWidget view) {
         this.screenViewPanel.clear();
-        this.screenViewPanel.add( view );
+        this.screenViewPanel.add(view);
         return this;
     }
 }

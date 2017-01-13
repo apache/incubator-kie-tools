@@ -31,34 +31,34 @@ public class LienzoToolboxButtonGridBuilder implements ToolboxButtonGridBuilder 
     private int cols;
 
     @Override
-    public ToolboxButtonGridBuilder setPadding( final int padding ) {
+    public ToolboxButtonGridBuilder setPadding(final int padding) {
         this.padding = padding;
         return this;
     }
 
     @Override
-    public ToolboxButtonGridBuilder setIconSize( final int iconSize ) {
+    public ToolboxButtonGridBuilder setIconSize(final int iconSize) {
         this.iconSize = iconSize;
         return this;
     }
 
     @Override
-    public ToolboxButtonGridBuilder setRows( final int rows ) {
+    public ToolboxButtonGridBuilder setRows(final int rows) {
         this.rows = rows;
         return this;
     }
 
     @Override
-    public ToolboxButtonGridBuilder setColumns( final int cols ) {
+    public ToolboxButtonGridBuilder setColumns(final int cols) {
         this.cols = cols;
         return this;
     }
 
     @Override
     public ToolboxButtonGrid build() {
-        return new LienzoToolboxButtonGrid( padding,
-                                            iconSize,
-                                            rows,
-                                            cols );
+        return new LienzoToolboxButtonGrid(padding,
+                                           iconSize,
+                                           rows,
+                                           cols);
     }
 }

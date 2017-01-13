@@ -36,9 +36,9 @@ import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 @Portable
 @Bindable
-@Definition( graphFactory = NodeFactory.class, builder = ParallelGateway.ParallelGatewayBuilder.class )
-@Shape( factory = BasicShapesFactory.class, def = ParallelGatewayShapeDef.class )
-@Morph( base = BaseGateway.class )
+@Definition(graphFactory = NodeFactory.class, builder = ParallelGateway.ParallelGatewayBuilder.class)
+@Shape(factory = BasicShapesFactory.class, def = ParallelGatewayShapeDef.class)
+@Morph(base = BaseGateway.class)
 public class ParallelGateway extends BaseGateway {
 
     @Title
@@ -52,26 +52,26 @@ public class ParallelGateway extends BaseGateway {
 
         @Override
         public ParallelGateway build() {
-            return new ParallelGateway( new BPMNGeneralSet( "Gateway" ),
-                                        new BackgroundSet( COLOR,
-                                                           BORDER_COLOR,
-                                                           BORDER_SIZE ),
-                                        new FontSet(),
-                                        new CircleDimensionSet( new Radius( RADIUS ) ) );
+            return new ParallelGateway(new BPMNGeneralSet("Gateway"),
+                                       new BackgroundSet(COLOR,
+                                                         BORDER_COLOR,
+                                                         BORDER_SIZE),
+                                       new FontSet(),
+                                       new CircleDimensionSet(new Radius(RADIUS)));
         }
     }
 
     public ParallelGateway() {
     }
 
-    public ParallelGateway( @MapsTo( "general" ) BPMNGeneralSet general,
-                            @MapsTo( "backgroundSet" ) BackgroundSet backgroundSet,
-                            @MapsTo( "fontSet" ) FontSet fontSet,
-                            @MapsTo( "dimensionsSet" ) CircleDimensionSet dimensionsSet ) {
-        super( general,
-               backgroundSet,
-               fontSet,
-               dimensionsSet );
+    public ParallelGateway(final @MapsTo("general") BPMNGeneralSet general,
+                           final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                           final @MapsTo("fontSet") FontSet fontSet,
+                           final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
+        super(general,
+              backgroundSet,
+              fontSet,
+              dimensionsSet);
     }
 
     public String getTitle() {

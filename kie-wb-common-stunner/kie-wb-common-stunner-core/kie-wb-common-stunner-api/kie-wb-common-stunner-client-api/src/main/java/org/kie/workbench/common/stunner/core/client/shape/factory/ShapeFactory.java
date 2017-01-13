@@ -26,23 +26,23 @@ public interface ShapeFactory<W, C, S extends Shape> {
     /**
      * Does the Factory builds the given definition identifier.
      */
-    boolean accepts( final String definitionId );
+    boolean accepts(final String definitionId);
 
     /**
      * Get description of Shape.
      */
-    String getDescription( final String definitionId );
+    String getDescription(final String definitionId);
 
     /**
      * Builds a new Shape instance for the given context.
      */
-    S build( final W definition,
-             final C context );
+    S build(final W definition,
+            final C context);
 
     /**
      * Builds a new shape glyph instance with the given size.
      */
-    Glyph glyph( final String definitionId,
-                 final double width,
-                 final double height );
+    Glyph glyph(final String definitionId,
+                final double width,
+                final double height);
 }

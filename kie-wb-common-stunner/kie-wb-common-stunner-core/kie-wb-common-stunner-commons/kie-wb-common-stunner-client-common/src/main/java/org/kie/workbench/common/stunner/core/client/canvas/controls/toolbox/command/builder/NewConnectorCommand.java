@@ -49,25 +49,25 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
     private String edgeId;
 
     protected NewConnectorCommand() {
-        this( null,
-              null,
-              null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public NewConnectorCommand( final ClientFactoryService clientFactoryServices,
-                                final ShapeManager shapeManager,
-                                final DefinitionGlyphTooltip<?> glyphTooltip,
-                                final GraphBoundsIndexer graphBoundsIndexer,
-                                final ConnectorDragProxy<AbstractCanvasHandler> connectorDragProxyFactory,
-                                final EdgeBuilderControl<AbstractCanvasHandler> edgeBuilderControl ) {
-        super( clientFactoryServices,
-               shapeManager,
-               glyphTooltip,
-               graphBoundsIndexer );
+    public NewConnectorCommand(final ClientFactoryService clientFactoryServices,
+                               final ShapeManager shapeManager,
+                               final DefinitionGlyphTooltip<?> glyphTooltip,
+                               final GraphBoundsIndexer graphBoundsIndexer,
+                               final ConnectorDragProxy<AbstractCanvasHandler> connectorDragProxyFactory,
+                               final EdgeBuilderControl<AbstractCanvasHandler> edgeBuilderControl) {
+        super(clientFactoryServices,
+              shapeManager,
+              glyphTooltip,
+              graphBoundsIndexer);
         this.connectorDragProxyFactory = connectorDragProxyFactory;
         this.edgeBuilderControl = edgeBuilderControl;
     }
@@ -75,15 +75,15 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
     // TODO: i18n.
     @PostConstruct
     public void init() {
-        getGlyphTooltip().setPrefix( "Click and move to connect using a " );
+        getGlyphTooltip().setPrefix("Click and move to connect using a ");
     }
 
-    public void setEdgeIdentifier( final String edgeId ) {
+    public void setEdgeIdentifier(final String edgeId) {
         this.edgeId = edgeId;
     }
 
     @Override
-    protected String getDefinitionIdentifier( final Context<AbstractCanvasHandler> context ) {
+    protected String getDefinitionIdentifier(final Context<AbstractCanvasHandler> context) {
         return edgeId;
     }
 
@@ -99,13 +99,13 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
     }
 
     @Override
-    public void click( final Context<AbstractCanvasHandler> context,
-                       Element element ) {
-        super.click( context,
-                     element );
+    public void click(final Context<AbstractCanvasHandler> context,
+                      Element element) {
+        super.click(context,
+                    element);
         // Same behavior as when mouse down, so use of the drag handler.
-        this.mouseDown( context,
-                        element );
+        this.mouseDown(context,
+                       element);
     }
 
     @Override
@@ -119,13 +119,13 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected Object createtBuilderControlItem( final Context<AbstractCanvasHandler> context,
-                                                final Element source,
-                                                final Element newElement ) {
-        final Node<View<?>, Edge> sourceNode = ( Node<View<?>, Edge> ) source;
-        final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) newElement;
-        final ShapeFactory<?, ?, ?> edgeFactory = getFactory( context.getCanvasHandler() );
+    @SuppressWarnings("unchecked")
+    protected Object createtBuilderControlItem(final Context<AbstractCanvasHandler> context,
+                                               final Element source,
+                                               final Element newElement) {
+        final Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) source;
+        final Edge<View<?>, Node> edge = (Edge<View<?>, Node>) newElement;
+        final ShapeFactory<?, ?, ?> edgeFactory = getFactory(context.getCanvasHandler());
         return new ConnectorDragProxy.Item() {
             @Override
             public Edge<View<?>, Node> getEdge() {
@@ -149,54 +149,54 @@ public class NewConnectorCommand<I> extends AbstractElementBuilderCommand<I> {
      * element for the shape's toolbox, so further rules can be evaluated for all commands.
      */
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected void onDefinitionInstanceBuilt( final Context<AbstractCanvasHandler> context,
-                                              final Element source,
-                                              final Element newElement,
-                                              final Command callback ) {
-        final Node<View<?>, Edge> sourceNode = ( Node<View<?>, Edge> ) source;
-        final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) newElement;
-        edge.setSourceNode( sourceNode );
-        NewConnectorCommand.super.onDefinitionInstanceBuilt( context,
-                                                             source,
-                                                             newElement,
-                                                             callback );
+    @SuppressWarnings("unchecked")
+    protected void onDefinitionInstanceBuilt(final Context<AbstractCanvasHandler> context,
+                                             final Element source,
+                                             final Element newElement,
+                                             final Command callback) {
+        final Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) source;
+        final Edge<View<?>, Node> edge = (Edge<View<?>, Node>) newElement;
+        edge.setSourceNode(sourceNode);
+        NewConnectorCommand.super.onDefinitionInstanceBuilt(context,
+                                                            source,
+                                                            newElement,
+                                                            callback);
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected boolean onDragProxyMove( final int x,
-                                       final int y,
-                                       final Element source,
-                                       final Element newElement,
-                                       final Node targetNode ) {
-        final Node<View<?>, Edge> sourceNode = ( Node<View<?>, Edge> ) source;
-        final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) newElement;
-        if ( null != targetNode ) {
-            final EdgeBuildRequest request = new EdgeBuildRequestImpl( x,
-                                                                       y,
-                                                                       edge,
-                                                                       sourceNode,
-                                                                       targetNode );
-            return edgeBuilderControl.allows( request );
+    @SuppressWarnings("unchecked")
+    protected boolean onDragProxyMove(final int x,
+                                      final int y,
+                                      final Element source,
+                                      final Element newElement,
+                                      final Node targetNode) {
+        final Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) source;
+        final Edge<View<?>, Node> edge = (Edge<View<?>, Node>) newElement;
+        if (null != targetNode) {
+            final EdgeBuildRequest request = new EdgeBuildRequestImpl(x,
+                                                                      y,
+                                                                      edge,
+                                                                      sourceNode,
+                                                                      targetNode);
+            return edgeBuilderControl.allows(request);
         }
         return false;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected BuildRequest createBuildRequest( final int x,
-                                               final int y,
-                                               final Element source,
-                                               final Element newElement,
-                                               final Node targetNode ) {
-        final Node<View<?>, Edge> sourceNode = ( Node<View<?>, Edge> ) source;
-        final Edge<View<?>, Node> edge = ( Edge<View<?>, Node> ) newElement;
-        return new EdgeBuildRequestImpl( x,
-                                         y,
-                                         edge,
-                                         sourceNode,
-                                         targetNode );
+    @SuppressWarnings("unchecked")
+    protected BuildRequest createBuildRequest(final int x,
+                                              final int y,
+                                              final Element source,
+                                              final Element newElement,
+                                              final Node targetNode) {
+        final Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) source;
+        final Edge<View<?>, Node> edge = (Edge<View<?>, Node>) newElement;
+        return new EdgeBuildRequestImpl(x,
+                                        y,
+                                        edge,
+                                        sourceNode,
+                                        targetNode);
     }
 
     @Override

@@ -26,13 +26,13 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 public final class ClearCanvasCommand extends AbstractCanvasCommand {
 
     @Override
-    public CommandResult<CanvasViolation> execute( final AbstractCanvasHandler context ) {
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         context.clearCanvas();
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo( final AbstractCanvasHandler context ) {
-        throw new UnsupportedOperationException( "Undo operation for Clear Canvas Command is still not supported." );
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+        throw new UnsupportedOperationException("Undo operation for Clear Canvas Command is still not supported.");
     }
 }

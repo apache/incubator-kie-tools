@@ -40,10 +40,10 @@ public class GraphEdgeCardinalityRuleManagerImpl extends AbstractGraphRuleManage
     private GraphUtils graphUtils;
 
     @Inject
-    public GraphEdgeCardinalityRuleManagerImpl( final DefinitionManager definitionManager,
-                                                final GraphUtils graphUtils,
-                                                final ModelEdgeCardinalityRuleManager modelEdgeCardinalityRuleManager ) {
-        super( definitionManager );
+    public GraphEdgeCardinalityRuleManagerImpl(final DefinitionManager definitionManager,
+                                               final GraphUtils graphUtils,
+                                               final ModelEdgeCardinalityRuleManager modelEdgeCardinalityRuleManager) {
+        super(definitionManager);
         this.modelEdgeCardinalityRuleManager = modelEdgeCardinalityRuleManager;
         this.graphUtils = graphUtils;
     }
@@ -59,21 +59,21 @@ public class GraphEdgeCardinalityRuleManagerImpl extends AbstractGraphRuleManage
     }
 
     @Override
-    public RuleViolations evaluate( final Edge<? extends View<?>, Node> edge,
-                                    final Node<? extends View<?>, Edge> node,
-                                    final List<? extends Edge> edges,
-                                    final EdgeCardinalityRule.Type ruleType,
-                                    final Operation operation ) {
+    public RuleViolations evaluate(final Edge<? extends View<?>, Node> edge,
+                                   final Node<? extends View<?>, Edge> node,
+                                   final List<? extends Edge> edges,
+                                   final EdgeCardinalityRule.Type ruleType,
+                                   final Operation operation) {
         // The edge defintiion's identifier.
-        final String edgeId = getElementDefinitionId( edge );
+        final String edgeId = getElementDefinitionId(edge);
         // Edge count.
-        final int count = graphUtils.countEdges( edgeId,
-                                                 edges );
+        final int count = graphUtils.countEdges(edgeId,
+                                                edges);
         // Delegate to the domain model cardinality rule manager.
-        return modelEdgeCardinalityRuleManager.evaluate( edgeId,
-                                                         getLabels( node ),
-                                                         count,
-                                                         ruleType,
-                                                         operation );
+        return modelEdgeCardinalityRuleManager.evaluate(edgeId,
+                                                        getLabels(node),
+                                                        count,
+                                                        ruleType,
+                                                        operation);
     }
 }

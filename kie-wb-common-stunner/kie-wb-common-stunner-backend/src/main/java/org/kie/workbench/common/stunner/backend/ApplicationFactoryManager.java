@@ -45,25 +45,25 @@ public class ApplicationFactoryManager extends AbstractFactoryManager implements
     private Instance<DiagramFactory<?, ?>> diagramFactoryInstances;
 
     protected ApplicationFactoryManager() {
-        this( null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null );
+        this(null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null);
     }
 
     @Inject
-    public ApplicationFactoryManager( final RegistryFactory registryFactory,
-                                      final DefinitionManager definitionManager,
-                                      final Instance<DefinitionFactory<?>> definitionFactoryInstances,
-                                      final Instance<GraphFactory> graphFactoryInstances,
-                                      final Instance<NodeFactory<?>> nodeFactoryInstances,
-                                      final Instance<EdgeFactory<?>> edgeFactoryInstances,
-                                      final Instance<DiagramFactory<?, ?>> diagramFactoryInstances ) {
-        super( registryFactory,
-               definitionManager );
+    public ApplicationFactoryManager(final RegistryFactory registryFactory,
+                                     final DefinitionManager definitionManager,
+                                     final Instance<DefinitionFactory<?>> definitionFactoryInstances,
+                                     final Instance<GraphFactory> graphFactoryInstances,
+                                     final Instance<NodeFactory<?>> nodeFactoryInstances,
+                                     final Instance<EdgeFactory<?>> edgeFactoryInstances,
+                                     final Instance<DiagramFactory<?, ?>> diagramFactoryInstances) {
+        super(registryFactory,
+              definitionManager);
         this.definitionFactoryInstances = definitionFactoryInstances;
         this.graphFactoryInstances = graphFactoryInstances;
         this.nodeFactoryInstances = nodeFactoryInstances;
@@ -72,15 +72,15 @@ public class ApplicationFactoryManager extends AbstractFactoryManager implements
     }
 
     @PostConstruct
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void init() {
         // Definition factories.
-        definitionFactoryInstances.forEach( registry()::register );
+        definitionFactoryInstances.forEach(registry()::register);
         // Graph factories.
-        graphFactoryInstances.forEach( registry()::register );
-        nodeFactoryInstances.forEach( registry()::register );
-        edgeFactoryInstances.forEach( registry()::register );
+        graphFactoryInstances.forEach(registry()::register);
+        nodeFactoryInstances.forEach(registry()::register);
+        edgeFactoryInstances.forEach(registry()::register);
         // Diagram factories.
-        diagramFactoryInstances.forEach( registry()::register );
+        diagramFactoryInstances.forEach(registry()::register);
     }
 }

@@ -36,29 +36,29 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public interface GraphObjectBuilder<W, T extends Element<View<W>>> {
 
-    GraphObjectBuilder<W, T> nodeId( String nodeId );
+    GraphObjectBuilder<W, T> nodeId(final String nodeId);
 
-    GraphObjectBuilder<W, T> stencil( String stencilId );
+    GraphObjectBuilder<W, T> stencil(final String stencilId);
 
-    GraphObjectBuilder<W, T> property( String key,
-                                       String value );
+    GraphObjectBuilder<W, T> property(final String key,
+                                      final String value);
 
-    GraphObjectBuilder<W, T> out( String nodeId );
+    GraphObjectBuilder<W, T> out(final String nodeId);
 
-    GraphObjectBuilder<W, T> boundUL( Double x,
-                                      Double y );
+    GraphObjectBuilder<W, T> boundUL(final Double x,
+                                     final Double y);
 
-    GraphObjectBuilder<W, T> boundLR( Double x,
-                                      Double y );
+    GraphObjectBuilder<W, T> boundLR(final Double x,
+                                     final Double y);
 
-    GraphObjectBuilder<W, T> docker( Double x,
-                                     Double y );
+    GraphObjectBuilder<W, T> docker(final Double x,
+                                    final Double y);
 
-    T build( BuilderContext context );
+    T build(final BuilderContext context);
 
     interface BuilderContext {
 
-        BuilderContext init( Graph<DefinitionSet, Node> graph );
+        BuilderContext init(final Graph<DefinitionSet, Node> graph);
 
         Index<?, ?> getIndex();
 
@@ -74,6 +74,6 @@ public interface GraphObjectBuilder<W, T extends Element<View<W>>> {
 
         GraphCommandFactory getCommandFactory();
 
-        CommandResult<RuleViolation> execute( Command<GraphCommandExecutionContext, RuleViolation> command );
+        CommandResult<RuleViolation> execute(final Command<GraphCommandExecutionContext, RuleViolation> command);
     }
 }

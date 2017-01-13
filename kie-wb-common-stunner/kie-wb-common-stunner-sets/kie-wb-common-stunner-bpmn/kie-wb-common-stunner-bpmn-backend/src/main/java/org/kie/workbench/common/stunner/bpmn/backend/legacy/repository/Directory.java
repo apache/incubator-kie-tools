@@ -22,9 +22,9 @@ public class Directory {
     private String name;
     private String location;
 
-    public Directory( String uniqueId,
-                      String name,
-                      String location ) {
+    public Directory(String uniqueId,
+                     String name,
+                     String location) {
         this.uniqueId = uniqueId;
         this.name = name;
         this.location = location;
@@ -34,7 +34,7 @@ public class Directory {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -42,7 +42,7 @@ public class Directory {
         return location;
     }
 
-    public void setLocation( String location ) {
+    public void setLocation(String location) {
         this.location = location;
     }
 
@@ -50,7 +50,7 @@ public class Directory {
         return uniqueId;
     }
 
-    public void setUniqueId( String uniqueId ) {
+    public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
     }
 }

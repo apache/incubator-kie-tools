@@ -40,17 +40,17 @@ public abstract class AbstractGraphRuleManagerTest {
     protected static final String DEFINITION_ID = "defId1";
     protected static final String DEFINITION_ROLE1 = "defId1Role1";
     protected static final String DEFINITION_ROLE2 = "defId1Role2";
-    protected static final Set<String> DEFINITION_LABELS = new HashSet<String>( 2 ) {{
-        add( DEFINITION_ROLE1 );
-        add( DEFINITION_ROLE2 );
+    protected static final Set<String> DEFINITION_LABELS = new HashSet<String>(2) {{
+        add(DEFINITION_ROLE1);
+        add(DEFINITION_ROLE2);
     }};
 
     protected static final String CANDIDATE_ID = "cId1";
     protected static final String CANDIDATE_ROLE1 = "cId1Role1";
     protected static final String CANDIDATE_ROLE2 = "cId1Role2";
-    protected static final Set<String> CANDIDATE_LABELS = new HashSet<String>( 2 ) {{
-        add( CANDIDATE_ROLE1 );
-        add( CANDIDATE_ROLE2 );
+    protected static final Set<String> CANDIDATE_LABELS = new HashSet<String>(2) {{
+        add(CANDIDATE_ROLE1);
+        add(CANDIDATE_ROLE2);
     }};
 
     @Mock
@@ -74,79 +74,79 @@ public abstract class AbstractGraphRuleManagerTest {
     protected Object candidateDefinition;
 
     public void setup() {
-        MockitoAnnotations.initMocks( this );
-        when( definitionManager.adapters() ).thenReturn( adapterManager );
-        when( adapterManager.forDefinition() ).thenReturn( definitionAdapter );
-        when( element.getContent() ).thenReturn( elementContent );
-        when( element.getLabels() ).thenReturn( DEFINITION_LABELS );
-        when( elementContent.getDefinition() ).thenReturn( elementDefinition );
-        when( definitionAdapter.getId( eq( elementDefinition ) ) ).thenReturn( DEFINITION_ID );
-        when( definitionAdapter.getLabels( eq( elementDefinition ) ) ).thenReturn( DEFINITION_LABELS );
-        when( candidate.getContent() ).thenReturn( candidateContent );
-        when( candidate.getLabels() ).thenReturn( CANDIDATE_LABELS );
-        when( candidateContent.getDefinition() ).thenReturn( candidateDefinition );
-        when( definitionAdapter.getId( eq( candidateDefinition ) ) ).thenReturn( CANDIDATE_ID );
-        when( definitionAdapter.getLabels( eq( candidateDefinition ) ) ).thenReturn( CANDIDATE_LABELS );
+        MockitoAnnotations.initMocks(this);
+        when(definitionManager.adapters()).thenReturn(adapterManager);
+        when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
+        when(element.getContent()).thenReturn(elementContent);
+        when(element.getLabels()).thenReturn(DEFINITION_LABELS);
+        when(elementContent.getDefinition()).thenReturn(elementDefinition);
+        when(definitionAdapter.getId(eq(elementDefinition))).thenReturn(DEFINITION_ID);
+        when(definitionAdapter.getLabels(eq(elementDefinition))).thenReturn(DEFINITION_LABELS);
+        when(candidate.getContent()).thenReturn(candidateContent);
+        when(candidate.getLabels()).thenReturn(CANDIDATE_LABELS);
+        when(candidateContent.getDefinition()).thenReturn(candidateDefinition);
+        when(definitionAdapter.getId(eq(candidateDefinition))).thenReturn(CANDIDATE_ID);
+        when(definitionAdapter.getLabels(eq(candidateDefinition))).thenReturn(CANDIDATE_LABELS);
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected Element<View<?>> mockElement( String id,
-                                            Set<String> labels ) {
-        Element<View<?>> e = mock( Element.class );
-        View v = mock( View.class );
-        Object d = mock( Object.class );
-        when( e.getContent() ).thenReturn( v );
-        when( v.getDefinition() ).thenReturn( d );
-        when( definitionAdapter.getId( eq( d ) ) ).thenReturn( id );
-        when( definitionAdapter.getLabels( eq( d ) ) ).thenReturn( labels );
-        when( e.getLabels() ).thenReturn( labels );
+    @SuppressWarnings("unchecked")
+    protected Element<View<?>> mockElement(String id,
+                                           Set<String> labels) {
+        Element<View<?>> e = mock(Element.class);
+        View v = mock(View.class);
+        Object d = mock(Object.class);
+        when(e.getContent()).thenReturn(v);
+        when(v.getDefinition()).thenReturn(d);
+        when(definitionAdapter.getId(eq(d))).thenReturn(id);
+        when(definitionAdapter.getLabels(eq(d))).thenReturn(labels);
+        when(e.getLabels()).thenReturn(labels);
         return e;
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected Node mockNode( String id,
-                             Set<String> labels ) {
-        Node e = mock( Node.class );
-        View v = mock( View.class );
-        Object d = mock( Object.class );
-        when( e.getContent() ).thenReturn( v );
-        when( v.getDefinition() ).thenReturn( d );
-        when( definitionAdapter.getId( eq( d ) ) ).thenReturn( id );
-        when( definitionAdapter.getLabels( eq( d ) ) ).thenReturn( labels );
-        when( e.getLabels() ).thenReturn( labels );
+    @SuppressWarnings("unchecked")
+    protected Node mockNode(String id,
+                            Set<String> labels) {
+        Node e = mock(Node.class);
+        View v = mock(View.class);
+        Object d = mock(Object.class);
+        when(e.getContent()).thenReturn(v);
+        when(v.getDefinition()).thenReturn(d);
+        when(definitionAdapter.getId(eq(d))).thenReturn(id);
+        when(definitionAdapter.getLabels(eq(d))).thenReturn(labels);
+        when(e.getLabels()).thenReturn(labels);
         return e;
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected Edge mockEdge( String id,
-                             Set<String> labels ) {
-        Edge e = mock( Edge.class );
-        View v = mock( View.class );
-        Object d = mock( Object.class );
-        when( e.getContent() ).thenReturn( v );
-        when( v.getDefinition() ).thenReturn( d );
-        when( definitionAdapter.getId( eq( d ) ) ).thenReturn( id );
-        when( definitionAdapter.getLabels( eq( d ) ) ).thenReturn( labels );
-        when( e.getLabels() ).thenReturn( labels );
+    @SuppressWarnings("unchecked")
+    protected Edge mockEdge(String id,
+                            Set<String> labels) {
+        Edge e = mock(Edge.class);
+        View v = mock(View.class);
+        Object d = mock(Object.class);
+        when(e.getContent()).thenReturn(v);
+        when(v.getDefinition()).thenReturn(d);
+        when(definitionAdapter.getId(eq(d))).thenReturn(id);
+        when(definitionAdapter.getLabels(eq(d))).thenReturn(labels);
+        when(e.getLabels()).thenReturn(labels);
         return e;
     }
 
     protected RuleViolations mockNoViolations() {
-        RuleViolations violations = mock( RuleViolations.class );
-        List<RuleViolation> result = new ArrayList<>( 0 );
-        when( violations.violations( eq( RuleViolation.Type.ERROR ) ) ).thenReturn( result );
+        RuleViolations violations = mock(RuleViolations.class);
+        List<RuleViolation> result = new ArrayList<>(0);
+        when(violations.violations(eq(RuleViolation.Type.ERROR))).thenReturn(result);
         return violations;
     }
 
     protected RuleViolations mockWithViolations() {
-        RuleViolation v1 = mock( RuleViolation.class );
-        when( v1.getViolationType() ).thenReturn( RuleViolation.Type.ERROR );
-        when( v1.getMessage() ).thenReturn( "error" );
-        RuleViolations violations = mock( RuleViolations.class );
-        List<RuleViolation> result = new ArrayList<RuleViolation>( 1 ) {{
-            add( v1 );
+        RuleViolation v1 = mock(RuleViolation.class);
+        when(v1.getViolationType()).thenReturn(RuleViolation.Type.ERROR);
+        when(v1.getMessage()).thenReturn("error");
+        RuleViolations violations = mock(RuleViolations.class);
+        List<RuleViolation> result = new ArrayList<RuleViolation>(1) {{
+            add(v1);
         }};
-        when( violations.violations( eq( RuleViolation.Type.ERROR ) ) ).thenReturn( result );
+        when(violations.violations(eq(RuleViolation.Type.ERROR))).thenReturn(result);
         return violations;
     }
 }

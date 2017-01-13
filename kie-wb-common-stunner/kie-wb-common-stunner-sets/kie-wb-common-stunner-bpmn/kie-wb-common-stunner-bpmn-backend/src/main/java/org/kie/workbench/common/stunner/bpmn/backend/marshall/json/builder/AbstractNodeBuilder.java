@@ -47,7 +47,7 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
     protected final Class<?> definitionClass;
     protected Set<String> childNodeIds;
 
-    public AbstractNodeBuilder( Class<?> definitionClass ) {
+    public AbstractNodeBuilder(final Class<?> definitionClass) {
         this.definitionClass = definitionClass;
         this.childNodeIds = new LinkedHashSet<String>();
     }
@@ -58,93 +58,93 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
     }
 
     @Override
-    public AbstractNodeBuilder<W, T> child( String nodeId ) {
-        childNodeIds.add( nodeId );
+    public AbstractNodeBuilder<W, T> child(final String nodeId) {
+        childNodeIds.add(nodeId);
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected T doBuild( BuilderContext context ) {
+    @SuppressWarnings("unchecked")
+    protected T doBuild(final BuilderContext context) {
         FactoryManager factoryManager = context.getFactoryManager();
         // Build the graph node for the definition.
-        String definitionId = getDefinitionToBuild( context );
-        T result = ( T ) factoryManager.newElement( this.nodeId,
-                                                    definitionId );
+        String definitionId = getDefinitionToBuild(context);
+        T result = (T) factoryManager.newElement(this.nodeId,
+                                                 definitionId);
         // Set the def properties.
-        setProperties( context,
-                       ( BPMNDefinition ) result.getContent().getDefinition() );
+        setProperties(context,
+                      (BPMNDefinition) result.getContent().getDefinition());
         // View Bounds.
-        setBounds( context,
-                   result );
-        AddNodeCommand addNodeCommand = context.getCommandFactory().addNode( result );
-        if ( doExecuteCommand( context,
-                               addNodeCommand ) ) {
+        setBounds(context,
+                  result);
+        AddNodeCommand addNodeCommand = context.getCommandFactory().addNode(result);
+        if (doExecuteCommand(context,
+                             addNodeCommand)) {
             // Post processing.
-            afterNodeBuild( context,
-                            result );
+            afterNodeBuild(context,
+                           result);
         } else {
             // TODO: throw an exception and handle the error.
         }
         return result;
     }
 
-    protected String getDefinitionToBuild( BuilderContext context ) {
-        return context.getOryxManager().getMappingsManager().getDefinitionId( definitionClass );
+    protected String getDefinitionToBuild(final BuilderContext context) {
+        return context.getOryxManager().getMappingsManager().getDefinitionId(definitionClass);
     }
 
-    protected void setBounds( BuilderContext context,
-                              T node ) {
-        if ( null != boundUL && null != boundLR ) {
+    protected void setBounds(BuilderContext context,
+                             T node) {
+        if (null != boundUL && null != boundLR) {
             Bounds bounds = new BoundsImpl(
-                    new BoundImpl( boundUL[ 0 ],
-                                   boundUL[ 1 ] ),
-                    new BoundImpl( boundLR[ 0 ],
-                                   boundLR[ 1 ] ) );
-            node.getContent().setBounds( bounds );
-            setSize( context,
-                     node );
+                    new BoundImpl(boundUL[0],
+                                  boundUL[1]),
+                    new BoundImpl(boundLR[0],
+                                  boundLR[1]));
+            node.getContent().setBounds(bounds);
+            setSize(context,
+                    node);
         }
     }
 
-    protected void setSize( BuilderContext context,
-                            T node ) {
-        final double[] size = GraphUtils.getSize( node.getContent() );
-        setSize( context,
-                 node,
-                 size[ 0 ],
-                 size[ 1 ] );
+    protected void setSize(final BuilderContext context,
+                           final T node) {
+        final double[] size = GraphUtils.getSize(node.getContent());
+        setSize(context,
+                node,
+                size[0],
+                size[1]);
     }
 
-    protected void setSize( BuilderContext context,
-                            T node,
-                            double width,
-                            double height ) {
+    protected void setSize(final BuilderContext context,
+                           final T node,
+                           final double width,
+                           final double height) {
         Object definition = node.getContent().getDefinition();
         Width w = null;
         Height h = null;
-        Set<?> properties = context.getDefinitionManager().adapters().forDefinition().getProperties( definition );
-        if ( null != properties ) {
+        Set<?> properties = context.getDefinitionManager().adapters().forDefinition().getProperties(definition);
+        if (null != properties) {
             // Look for w/h or radius and set the values.
-            for ( Object property : properties ) {
-                if ( property instanceof Radius ) {
-                    Radius radius = ( Radius ) property;
-                    double r = getRadius( width,
-                                          height );
-                    radius.setValue( r );
+            for (Object property : properties) {
+                if (property instanceof Radius) {
+                    Radius radius = (Radius) property;
+                    double r = getRadius(width,
+                                         height);
+                    radius.setValue(r);
                     break;
                 }
-                if ( property instanceof Width ) {
-                    w = ( Width ) property;
-                    w.setValue( width );
-                    if ( h != null ) {
+                if (property instanceof Width) {
+                    w = (Width) property;
+                    w.setValue(width);
+                    if (h != null) {
                         break;
                     }
                 }
-                if ( property instanceof Height ) {
-                    h = ( Height ) property;
-                    h.setValue( height );
-                    if ( w != null ) {
+                if (property instanceof Height) {
+                    h = (Height) property;
+                    h.setValue(height);
+                    if (w != null) {
                         break;
                     }
                 }
@@ -152,103 +152,103 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
         }
     }
 
-    private double getRadius( double width,
-                              double height ) {
+    private double getRadius(final double width,
+                             final double height) {
         return width / 2;
     }
 
-    @SuppressWarnings( "unchecked" )
-    protected void afterNodeBuild( BuilderContext context,
-                                   T node ) {
+    @SuppressWarnings("unchecked")
+    protected void afterNodeBuild(final BuilderContext context,
+                                  final T node) {
         // Outgoing connections.
-        if ( outgoingResourceIds != null && !outgoingResourceIds.isEmpty() ) {
-            for ( String outgoingNodeId : outgoingResourceIds ) {
-                GraphObjectBuilder<?, ?> outgoingBuilder = getBuilder( context,
-                                                                       outgoingNodeId );
-                if ( outgoingBuilder == null ) {
-                    throw new RuntimeException( "No outgoing edge builder for " + outgoingNodeId );
+        if (outgoingResourceIds != null && !outgoingResourceIds.isEmpty()) {
+            for (String outgoingNodeId : outgoingResourceIds) {
+                GraphObjectBuilder<?, ?> outgoingBuilder = getBuilder(context,
+                                                                      outgoingNodeId);
+                if (outgoingBuilder == null) {
+                    throw new RuntimeException("No outgoing edge builder for " + outgoingNodeId);
                 }
                 final List<Command<GraphCommandExecutionContext, RuleViolation>> commands = new LinkedList<>();
                 // If outgoing element it's a node means that it's docked.
-                if ( outgoingBuilder instanceof AbstractNodeBuilder ) {
+                if (outgoingBuilder instanceof AbstractNodeBuilder) {
                     // Command - Create the docked node.
-                    Node docked = ( Node ) outgoingBuilder.build( context );
-                    commands.add( context.getCommandFactory().addDockedNode( node,
-                                                                             docked ) );
+                    Node docked = (Node) outgoingBuilder.build(context);
+                    commands.add(context.getCommandFactory().addDockedNode(node,
+                                                                           docked));
                     // Obtain docked position and use those for the docked node.
-                    final List<Double[]> dockers = ( ( AbstractNodeBuilder ) outgoingBuilder ).dockers;
-                    if ( !dockers.isEmpty() ) {
+                    final List<Double[]> dockers = ((AbstractNodeBuilder) outgoingBuilder).dockers;
+                    if (!dockers.isEmpty()) {
                         // TODO: Use not only first docker coordinates?
-                        Double[] dCoords = dockers.get( 0 );
-                        double x = dCoords[ 0 ];
-                        double y = dCoords[ 1 ];
-                        commands.add( context.getCommandFactory().updatePosition( docked,
-                                                                                  x,
-                                                                                  y ) );
+                        Double[] dCoords = dockers.get(0);
+                        double x = dCoords[0];
+                        double y = dCoords[1];
+                        commands.add(context.getCommandFactory().updatePosition(docked,
+                                                                                x,
+                                                                                y));
                     }
                 } else {
                     // Create the outgoing edge.
-                    Edge edge = ( Edge ) outgoingBuilder.build( context );
+                    Edge edge = (Edge) outgoingBuilder.build(context);
                     // Command - Execute the graph command to set the node as the edge connection's source..
-                    int magnetIdx = getSourceConnectionMagnetIndex( context,
-                                                                    node,
-                                                                    edge );
-                    commands.add( context.getCommandFactory().setSourceNode( node,
-                                                                             edge,
-                                                                             magnetIdx ) );
+                    int magnetIdx = getSourceConnectionMagnetIndex(context,
+                                                                   node,
+                                                                   edge);
+                    commands.add(context.getCommandFactory().setSourceNode(node,
+                                                                           edge,
+                                                                           magnetIdx));
                     ;
                 }
-                if ( !commands.isEmpty() ) {
-                    for ( Command<GraphCommandExecutionContext, RuleViolation> command : commands ) {
-                        doExecuteCommand( context,
-                                          command );
+                if (!commands.isEmpty()) {
+                    for (Command<GraphCommandExecutionContext, RuleViolation> command : commands) {
+                        doExecuteCommand(context,
+                                         command);
                     }
                 }
             }
         }
         // Children connections.
-        if ( childNodeIds != null && !childNodeIds.isEmpty() ) {
-            for ( String childNodeId : childNodeIds ) {
-                GraphObjectBuilder<?, ?> childNodeBuilder = getBuilder( context,
-                                                                        childNodeId );
-                if ( childNodeBuilder == null ) {
-                    throw new RuntimeException( "No child node builder for " + childNodeId );
+        if (childNodeIds != null && !childNodeIds.isEmpty()) {
+            for (String childNodeId : childNodeIds) {
+                GraphObjectBuilder<?, ?> childNodeBuilder = getBuilder(context,
+                                                                       childNodeId);
+                if (childNodeBuilder == null) {
+                    throw new RuntimeException("No child node builder for " + childNodeId);
                 }
                 Command<GraphCommandExecutionContext, RuleViolation> command = null;
-                if ( childNodeBuilder instanceof NodeObjectBuilder ) {
+                if (childNodeBuilder instanceof NodeObjectBuilder) {
                     // Command - Create the child node and the parent-child relationship.
-                    Node childNode = ( Node ) childNodeBuilder.build( context );
-                    command = context.getCommandFactory().addChildNode( node,
-                                                                        childNode );
+                    Node childNode = (Node) childNodeBuilder.build(context);
+                    command = context.getCommandFactory().addChildNode(node,
+                                                                       childNode);
                 }
-                if ( null != command ) {
-                    doExecuteCommand( context,
-                                      command );
+                if (null != command) {
+                    doExecuteCommand(context,
+                                     command);
                 }
             }
         }
     }
 
-    private boolean doExecuteCommand( BuilderContext context,
-                                      Command<GraphCommandExecutionContext, RuleViolation> command ) {
-        CommandResult<RuleViolation> results = context.execute( command );
-        if ( hasErrors( results ) ) {
-            throw new RuntimeException( "Error building BPMN graph. " +
-                                                "Command = [" + command.toString() + "] " +
-                                                " Resutls = [" + results.toString() + "]" );
+    private boolean doExecuteCommand(final BuilderContext context,
+                                     final Command<GraphCommandExecutionContext, RuleViolation> command) {
+        CommandResult<RuleViolation> results = context.execute(command);
+        if (hasErrors(results)) {
+            throw new RuntimeException("Error building BPMN graph. " +
+                                               "Command = [" + command.toString() + "] " +
+                                               " Resutls = [" + results.toString() + "]");
         }
         return true;
     }
 
-    public int getSourceConnectionMagnetIndex( BuilderContext context,
-                                               T node,
-                                               Edge<ViewConnector<W>, Node> edge ) {
+    public int getSourceConnectionMagnetIndex(final BuilderContext context,
+                                              final T node,
+                                              final Edge<ViewConnector<W>, Node> edge) {
         return 3;
     }
 
-    public int getTargetConnectionMagnetIndex( BuilderContext context,
-                                               T node,
-                                               Edge<ViewConnector<W>, Node> edge ) {
+    public int getTargetConnectionMagnetIndex(final BuilderContext context,
+                                              final T node,
+                                              final Edge<ViewConnector<W>, Node> edge) {
         return 7;
     }
 

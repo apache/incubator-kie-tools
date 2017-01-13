@@ -21,16 +21,16 @@ public interface Command<T, V> {
      * Check whether the command operation is allowed.
      * Does not perform any update or mutation.
      */
-    CommandResult<V> allow( final T context );
+    CommandResult<V> allow(final T context);
 
     /**
      * Executes the command operation.
      * Does perform some update or mutation.
      */
-    CommandResult<V> execute( final T context );
+    CommandResult<V> execute(final T context);
 
     /**
      * Undo the changes done by this command execution.
      */
-    CommandResult<V> undo( final T context );
+    CommandResult<V> undo(final T context);
 }

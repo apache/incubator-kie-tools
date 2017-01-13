@@ -29,7 +29,7 @@ import org.omg.CORBA.Object;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class CommandManagerImplTest {
 
     @Mock
@@ -50,109 +50,109 @@ public class CommandManagerImplTest {
 
     @Test
     public void testAllow() {
-        when( command.allow( context ) ).thenReturn( commandResult );
-        CommandResult<Object> result = tested.allow( context,
-                                                     command );
-        verify( command,
-                times( 1 ) ).allow( eq( context ) );
-        verify( command,
-                times( 0 ) ).execute( anyObject() );
-        verify( command,
-                times( 0 ) ).undo( anyObject() );
-        assertNotNull( result );
-        assertEquals( commandResult,
-                      result );
+        when(command.allow(context)).thenReturn(commandResult);
+        CommandResult<Object> result = tested.allow(context,
+                                                    command);
+        verify(command,
+               times(1)).allow(eq(context));
+        verify(command,
+               times(0)).execute(anyObject());
+        verify(command,
+               times(0)).undo(anyObject());
+        assertNotNull(result);
+        assertEquals(commandResult,
+                     result);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testAllowWithListener() {
-        CommandListener<Object, Object> listener = mock( CommandListener.class );
-        tested.setCommandListener( listener );
+        CommandListener<Object, Object> listener = mock(CommandListener.class);
+        tested.setCommandListener(listener);
         testAllow();
-        verify( listener,
-                times( 1 ) ).onAllow( eq( context ),
-                                      eq( command ),
-                                      eq( commandResult ) );
-        verify( listener,
-                times( 0 ) ).onExecute( anyObject(),
-                                        anyObject(),
-                                        anyObject() );
-        verify( listener,
-                times( 0 ) ).onUndo( anyObject(),
-                                     anyObject(),
-                                     anyObject() );
+        verify(listener,
+               times(1)).onAllow(eq(context),
+                                 eq(command),
+                                 eq(commandResult));
+        verify(listener,
+               times(0)).onExecute(anyObject(),
+                                   anyObject(),
+                                   anyObject());
+        verify(listener,
+               times(0)).onUndo(anyObject(),
+                                anyObject(),
+                                anyObject());
     }
 
     @Test
     public void testExecute() {
-        when( command.execute( context ) ).thenReturn( commandResult );
-        CommandResult<Object> result = tested.execute( context,
-                                                       command );
-        verify( command,
-                times( 1 ) ).execute( eq( context ) );
-        verify( command,
-                times( 0 ) ).allow( anyObject() );
-        verify( command,
-                times( 0 ) ).undo( anyObject() );
-        assertNotNull( result );
-        assertEquals( commandResult,
-                      result );
+        when(command.execute(context)).thenReturn(commandResult);
+        CommandResult<Object> result = tested.execute(context,
+                                                      command);
+        verify(command,
+               times(1)).execute(eq(context));
+        verify(command,
+               times(0)).allow(anyObject());
+        verify(command,
+               times(0)).undo(anyObject());
+        assertNotNull(result);
+        assertEquals(commandResult,
+                     result);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testExecuteWithListener() {
-        CommandListener<Object, Object> listener = mock( CommandListener.class );
-        tested.setCommandListener( listener );
+        CommandListener<Object, Object> listener = mock(CommandListener.class);
+        tested.setCommandListener(listener);
         testExecute();
-        verify( listener,
-                times( 0 ) ).onAllow( anyObject(),
-                                      anyObject(),
-                                      anyObject() );
-        verify( listener,
-                times( 1 ) ).onExecute( eq( context ),
-                                        eq( command ),
-                                        eq( commandResult ) );
-        verify( listener,
-                times( 0 ) ).onUndo( anyObject(),
-                                     anyObject(),
-                                     anyObject() );
+        verify(listener,
+               times(0)).onAllow(anyObject(),
+                                 anyObject(),
+                                 anyObject());
+        verify(listener,
+               times(1)).onExecute(eq(context),
+                                   eq(command),
+                                   eq(commandResult));
+        verify(listener,
+               times(0)).onUndo(anyObject(),
+                                anyObject(),
+                                anyObject());
     }
 
     @Test
     public void testUndo() {
-        when( command.undo( context ) ).thenReturn( commandResult );
-        CommandResult<Object> result = tested.undo( context,
-                                                    command );
-        verify( command,
-                times( 1 ) ).undo( eq( context ) );
-        verify( command,
-                times( 0 ) ).execute( anyObject() );
-        verify( command,
-                times( 0 ) ).allow( anyObject() );
-        assertNotNull( result );
-        assertEquals( commandResult,
-                      result );
+        when(command.undo(context)).thenReturn(commandResult);
+        CommandResult<Object> result = tested.undo(context,
+                                                   command);
+        verify(command,
+               times(1)).undo(eq(context));
+        verify(command,
+               times(0)).execute(anyObject());
+        verify(command,
+               times(0)).allow(anyObject());
+        assertNotNull(result);
+        assertEquals(commandResult,
+                     result);
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings("unchecked")
     public void testUndoWithListener() {
-        CommandListener<Object, Object> listener = mock( CommandListener.class );
-        tested.setCommandListener( listener );
+        CommandListener<Object, Object> listener = mock(CommandListener.class);
+        tested.setCommandListener(listener);
         testUndo();
-        verify( listener,
-                times( 0 ) ).onAllow( anyObject(),
-                                      anyObject(),
-                                      anyObject() );
-        verify( listener,
-                times( 0 ) ).onExecute( anyObject(),
-                                        anyObject(),
-                                        anyObject() );
-        verify( listener,
-                times( 1 ) ).onUndo( eq( context ),
-                                     eq( command ),
-                                     eq( commandResult ) );
+        verify(listener,
+               times(0)).onAllow(anyObject(),
+                                 anyObject(),
+                                 anyObject());
+        verify(listener,
+               times(0)).onExecute(anyObject(),
+                                   anyObject(),
+                                   anyObject());
+        verify(listener,
+               times(1)).onUndo(eq(context),
+                                eq(command),
+                                eq(commandResult));
     }
 }

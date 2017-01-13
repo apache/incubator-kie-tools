@@ -41,7 +41,7 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
     ListBoxValues nameListBoxValues;
 
     @Inject
-    public AssigneeEditorFieldRenderer( AssigneeEditorWidgetView assigneeEditor ) {
+    public AssigneeEditorFieldRenderer(final AssigneeEditorWidgetView assigneeEditor) {
         this.view = assigneeEditor;
     }
 
@@ -57,12 +57,12 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
 
     @Override
     public void initInputWidget() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
     public IsWidget getInputWidget() {
-        return ( AssigneeEditorWidgetViewImpl ) view;
+        return (AssigneeEditorWidgetViewImpl) view;
     }
 
     @Override
@@ -77,7 +77,7 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
+    protected void setReadOnly(boolean readOnly) {
 
     }
 
@@ -89,24 +89,24 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
     @Override
     public void addAssignee() {
         List<AssigneeRow> as = view.getAssigneeRows();
-        if ( as.isEmpty() ) {
+        if (as.isEmpty()) {
             view.setTableDisplayStyle();
         }
         AssigneeRow newAssignee = new AssigneeRow();
-        as.add( newAssignee );
-        AssigneeListItemWidgetView widget = view.getAssigneeWidget( view.getAssigneeRowsCount() - 1 );
-        widget.setNames( nameListBoxValues );
-        widget.setParentWidget( this );
+        as.add(newAssignee);
+        AssigneeListItemWidgetView widget = view.getAssigneeWidget(view.getAssigneeRowsCount() - 1);
+        widget.setNames(nameListBoxValues);
+        widget.setParentWidget(this);
     }
 
     @Override
-    public void setNames( List<String> names ) {
+    public void setNames(final List<String> names) {
         this.names = names;
-        nameListBoxValues = new ListBoxValues( AssigneeListItemWidgetView.CUSTOM_PROMPT,
-                                               "Edit" + " ",
-                                               namesTester() );
-        nameListBoxValues.addValues( names );
-        view.setAssigneesNames( nameListBoxValues );
+        nameListBoxValues = new ListBoxValues(AssigneeListItemWidgetView.CUSTOM_PROMPT,
+                                              "Edit" + " ",
+                                              namesTester());
+        nameListBoxValues.addValues(names);
+        view.setAssigneesNames(nameListBoxValues);
     }
 
     @Override
@@ -115,16 +115,16 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
     }
 
     @Override
-    public List<AssigneeRow> deserializeAssignees( String s ) {
+    public List<AssigneeRow> deserializeAssignees(final String s) {
         List<AssigneeRow> assigneeRows = new ArrayList<AssigneeRow>();
-        if ( s != null && !s.isEmpty() ) {
-            String[] as = s.split( "," );
-            for ( String a : as ) {
-                if ( !a.isEmpty() ) {
-                    Assignee assignee = Assignee.deserialize( a,
-                                                              names );
-                    if ( assignee != null ) {
-                        assigneeRows.add( new AssigneeRow( assignee ) );
+        if (s != null && !s.isEmpty()) {
+            String[] as = s.split(",");
+            for (String a : as) {
+                if (!a.isEmpty()) {
+                    Assignee assignee = Assignee.deserialize(a,
+                                                             names);
+                    if (assignee != null) {
+                        assigneeRows.add(new AssigneeRow(assignee));
                     }
                 }
             }
@@ -133,14 +133,14 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
     }
 
     @Override
-    public String serializeAssignees( List<AssigneeRow> assigneeRows ) {
+    public String serializeAssignees(final List<AssigneeRow> assigneeRows) {
         List<Assignee> assignees = new ArrayList<Assignee>();
-        for ( AssigneeRow row : assigneeRows ) {
-            if ( !row.isEmpty() ) {
-                assignees.add( new Assignee( row ) );
+        for (AssigneeRow row : assigneeRows) {
+            if (!row.isEmpty()) {
+                assignees.add(new Assignee(row));
             }
         }
-        return StringUtils.getStringForList( assignees );
+        return StringUtils.getStringForList(assignees);
     }
 
     /**
@@ -148,17 +148,17 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
      * @param name
      * @return
      */
-    public boolean isDuplicateName( String name ) {
-        if ( name == null || name.trim().isEmpty() ) {
+    public boolean isDuplicateName(final String name) {
+        if (name == null || name.trim().isEmpty()) {
             return false;
         }
         List<AssigneeRow> as = view.getAssigneeRows();
-        if ( as != null && !as.isEmpty() ) {
+        if (as != null && !as.isEmpty()) {
             int nameCount = 0;
-            for ( AssigneeRow row : as ) {
-                if ( name.trim().compareTo( row.getName() ) == 0 ) {
+            for (AssigneeRow row : as) {
+                if (name.trim().compareTo(row.getName()) == 0) {
                     nameCount++;
-                    if ( nameCount > 1 ) {
+                    if (nameCount > 1) {
                         return true;
                     }
                 }
@@ -167,15 +167,15 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
         return false;
     }
 
-    public void removeAssignee( AssigneeRow assigneeRow ) {
-        view.getAssigneeRows().remove( assigneeRow );
+    public void removeAssignee(final AssigneeRow assigneeRow) {
+        view.getAssigneeRows().remove(assigneeRow);
         doSave();
     }
 
     @Override
     public ListBoxValues.ValueTester namesTester() {
         return new ListBoxValues.ValueTester() {
-            public String getNonCustomValueForUserString( String userValue ) {
+            public String getNonCustomValueForUserString(String userValue) {
                 return null;
             }
         };

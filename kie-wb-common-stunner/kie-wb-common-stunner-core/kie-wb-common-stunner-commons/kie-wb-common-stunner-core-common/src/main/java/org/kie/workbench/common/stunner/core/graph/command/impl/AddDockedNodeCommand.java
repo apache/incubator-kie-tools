@@ -36,40 +36,40 @@ public class AddDockedNodeCommand extends AbstractGraphCompositeCommand {
     private final Node candidate;
     private transient Node parent;
 
-    public AddDockedNodeCommand( final @MapsTo( "parentUUID" ) String parentUUID,
-                                 final @MapsTo( "candidate" ) Node candidate ) {
-        this.parentUUID = PortablePreconditions.checkNotNull( "parentUUID",
-                                                              parentUUID );
-        this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                                                             candidate );
+    public AddDockedNodeCommand(final @MapsTo("parentUUID") String parentUUID,
+                                final @MapsTo("candidate") Node candidate) {
+        this.parentUUID = PortablePreconditions.checkNotNull("parentUUID",
+                                                             parentUUID);
+        this.candidate = PortablePreconditions.checkNotNull("candidate",
+                                                            candidate);
     }
 
-    public AddDockedNodeCommand( final Node parent,
-                                 final Node candidate ) {
-        this( parent.getUUID(),
-              candidate );
+    public AddDockedNodeCommand(final Node parent,
+                                final Node candidate) {
+        this(parent.getUUID(),
+             candidate);
         this.parent = parent;
     }
 
-    protected AddDockedNodeCommand initialize( final GraphCommandExecutionContext context ) {
-        super.initialize( context );
-        this.addCommand( new RegisterNodeCommand( candidate ) )
-                .addCommand( new DockNodeCommand( getParent( context ),
-                                                  candidate ) );
+    protected AddDockedNodeCommand initialize(final GraphCommandExecutionContext context) {
+        super.initialize(context);
+        this.addCommand(new RegisterNodeCommand(candidate))
+                .addCommand(new DockNodeCommand(getParent(context),
+                                                candidate));
         return this;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public CommandResult<RuleViolation> undo( final GraphCommandExecutionContext context ) {
-        return new SafeDeleteNodeCommand( getCandidate() ).execute( context );
+    @SuppressWarnings("unchecked")
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        return new SafeDeleteNodeCommand(getCandidate()).execute(context);
     }
 
-    @SuppressWarnings( "unchecked" )
-    private Node<?, Edge> getParent( final GraphCommandExecutionContext context ) {
-        if ( null == parent ) {
-            parent = checkNodeNotNull( context,
-                                       parentUUID );
+    @SuppressWarnings("unchecked")
+    private Node<?, Edge> getParent(final GraphCommandExecutionContext context) {
+        if (null == parent) {
+            parent = checkNodeNotNull(context,
+                                      parentUUID);
         }
         return parent;
     }

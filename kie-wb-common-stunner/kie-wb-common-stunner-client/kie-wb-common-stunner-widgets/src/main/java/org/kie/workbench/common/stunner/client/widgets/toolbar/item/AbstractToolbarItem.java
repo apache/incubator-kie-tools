@@ -34,23 +34,23 @@ import org.uberfire.mvp.Command;
 
 public abstract class AbstractToolbarItem<S extends ClientSession> implements IsWidget {
 
-    private static Logger LOGGER = Logger.getLogger( AbstractToolbarItem.class.getName() );
+    private static Logger LOGGER = Logger.getLogger(AbstractToolbarItem.class.getName());
 
     public interface View extends UberView<AbstractToolbarItem> {
 
-        View setIcon( final IconType icon );
+        View setIcon(final IconType icon);
 
-        View setIconRotate( final IconRotate rotate );
+        View setIconRotate(final IconRotate rotate);
 
-        View setIconSize( final IconSize size );
+        View setIconSize(final IconSize size);
 
-        View setCaption( final String caption );
+        View setCaption(final String caption);
 
-        View setTooltip( final String tooltip );
+        View setTooltip(final String tooltip);
 
-        View setClickHandler( final Command command );
+        View setClickHandler(final Command command);
 
-        View setEnabled( final boolean enabled );
+        View setEnabled(final boolean enabled);
 
         void destroy();
     }
@@ -60,12 +60,12 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
     private String uuid;
 
     @Inject
-    public AbstractToolbarItem( final View view ) {
+    public AbstractToolbarItem(final View view) {
         this.view = view;
     }
 
     public void doInit() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
@@ -73,7 +73,7 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
         return view.asWidget();
     }
 
-    public void setUUID( final String uuid ) {
+    public void setUUID(final String uuid) {
         this.uuid = uuid;
     }
 
@@ -81,46 +81,46 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
         return uuid;
     }
 
-    public void show( final Toolbar<S> toolbar,
-                      final S session,
-                      final ToolbarCommand<S> command,
-                      final Command clickHandler ) {
+    public void show(final Toolbar<S> toolbar,
+                     final S session,
+                     final ToolbarCommand<S> command,
+                     final Command clickHandler) {
         // Initialize the command with the current session.
-        command.initialize( toolbar,
-                            session );
+        command.initialize(toolbar,
+                           session);
         final IconType icon = command.getIcon();
         final String caption = command.getCaption();
-        if ( icon != null ) {
-            view.setIcon( command.getIcon() );
-            view.setIconRotate( command.getIconRotate() );
+        if (icon != null) {
+            view.setIcon(command.getIcon());
+            view.setIconRotate(command.getIconRotate());
         } else {
-            view.setCaption( caption );
+            view.setCaption(caption);
         }
-        view.setTooltip( command.getTooltip() );
-        view.setClickHandler( clickHandler );
+        view.setTooltip(command.getTooltip());
+        view.setClickHandler(clickHandler);
     }
 
-    public void setIconSize( final IconSize size ) {
-        view.setIconSize( size );
+    public void setIconSize(final IconSize size) {
+        view.setIconSize(size);
     }
 
     public void enable() {
-        view.setEnabled( true );
+        view.setEnabled(true);
     }
 
     public void disable() {
-        view.setEnabled( false );
+        view.setEnabled(false);
     }
 
     public void destroy() {
         view.destroy();
     }
 
-    private void log( final Level level,
-                      final String message ) {
-        if ( LogConfiguration.loggingIsEnabled() ) {
-            LOGGER.log( level,
-                        message );
+    private void log(final Level level,
+                     final String message) {
+        if (LogConfiguration.loggingIsEnabled()) {
+            LOGGER.log(level,
+                       message);
         }
     }
 }

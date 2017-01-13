@@ -28,10 +28,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanContr
 @Dependent
 public class PanControlImpl extends AbstractMediatorControl<MousePanMediator> implements PanControl<AbstractCanvas> {
 
-    private final IEventFilter[] filters = new IEventFilter[]{ EventFilter.ALT };
+    private final IEventFilter[] filters = new IEventFilter[]{EventFilter.ALT};
 
     @Override
     protected MousePanMediator buildMediator() {
-        return new MousePanMediator( filters );
+        return new MousePanMediator(filters);
     }
 }

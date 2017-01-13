@@ -40,15 +40,15 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 public class CaseManagementOryxIdMappings extends BaseOryxIdMappings {
 
     @Inject
-    public CaseManagementOryxIdMappings( final DefinitionManager definitionManager ) {
-        super( definitionManager );
+    public CaseManagementOryxIdMappings(final DefinitionManager definitionManager) {
+        super(definitionManager);
     }
 
     @Override
     public Map<Class<?>, String> getCustomMappings() {
         final Map<Class<?>, String> customMappings = new HashMap<Class<?>, String>() {{
-            put( CaseManagementDiagram.class,
-                 "BPMNDiagram" );
+            put(CaseManagementDiagram.class,
+                "BPMNDiagram");
         }};
 
         return customMappings;
@@ -57,10 +57,10 @@ public class CaseManagementOryxIdMappings extends BaseOryxIdMappings {
     @Override
     public Map<Class<?>, Set<String>> getSkippedProperties() {
         final Map<Class<?>, Set<String>> skippedProperties = new HashMap<Class<?>, Set<String>>() {{
-            put( CaseManagementDiagram.class,
-                 new HashSet<String>() {{
-                     add( "name" );
-                 }} );
+            put(CaseManagementDiagram.class,
+                new HashSet<String>() {{
+                    add("name");
+                }});
         }};
 
         return skippedProperties;
@@ -70,26 +70,26 @@ public class CaseManagementOryxIdMappings extends BaseOryxIdMappings {
     public Map<Class<?>, Map<Class<?>, String>> getDefinitionMappings() {
         final Map<Class<?>, Map<Class<?>, String>> definitionMappings = new HashMap<Class<?>, Map<Class<?>, String>>() {{
             final Map<Class<?>, String> diagramPropertiesMap = new HashMap<>();
-            put( CaseManagementDiagram.class,
-                 diagramPropertiesMap );
-            diagramPropertiesMap.put( Name.class,
-                                      "processn" );
-            diagramPropertiesMap.put( ProcessVariables.class,
-                                      "vardefs" );
+            put(CaseManagementDiagram.class,
+                diagramPropertiesMap);
+            diagramPropertiesMap.put(Name.class,
+                                     "processn");
+            diagramPropertiesMap.put(ProcessVariables.class,
+                                     "vardefs");
 
             final Map<Class<?>, String> userTaskPropertiesMap = new HashMap<>();
-            put( UserTask.class,
-                 userTaskPropertiesMap );
-            userTaskPropertiesMap.put( AssignmentsInfo.class,
-                                       "assignmentsinfo" );
-            userTaskPropertiesMap.put( TaskName.class,
-                                       "taskname" );
+            put(UserTask.class,
+                userTaskPropertiesMap);
+            userTaskPropertiesMap.put(AssignmentsInfo.class,
+                                      "assignmentsinfo");
+            userTaskPropertiesMap.put(TaskName.class,
+                                      "taskname");
 
             final Map<Class<?>, String> exclusiveDatabasedGatewayPropertiesMap = new HashMap<>();
-            put( ExclusiveDatabasedGateway.class,
-                 exclusiveDatabasedGatewayPropertiesMap );
-            exclusiveDatabasedGatewayPropertiesMap.put( DefaultRoute.class,
-                                                        "defaultgate" );
+            put(ExclusiveDatabasedGateway.class,
+                exclusiveDatabasedGatewayPropertiesMap);
+            exclusiveDatabasedGatewayPropertiesMap.put(DefaultRoute.class,
+                                                       "defaultgate");
         }};
 
         return definitionMappings;
