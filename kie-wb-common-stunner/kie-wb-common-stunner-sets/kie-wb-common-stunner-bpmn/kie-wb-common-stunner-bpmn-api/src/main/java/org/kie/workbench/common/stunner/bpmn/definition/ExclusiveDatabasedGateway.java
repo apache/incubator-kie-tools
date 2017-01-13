@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
@@ -38,6 +39,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
+import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_IMPLEMENTATION_EXECUTION;
+
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder.class)
@@ -52,7 +55,7 @@ public class ExclusiveDatabasedGateway extends BaseGateway {
     public static final transient String description = "Exclusive Data-based Gateway";
 
     @PropertySet
-    //   @FieldDef( label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1 )
+    @FieldDef(label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1)
     @Valid
     ExclusiveGatewayExecutionSet executionSet;
 
@@ -65,12 +68,12 @@ public class ExclusiveDatabasedGateway extends BaseGateway {
         @Override
         public ExclusiveDatabasedGateway build() {
             return new ExclusiveDatabasedGateway(new BPMNGeneralSet("Gateway"),
-                                                 new ExclusiveGatewayExecutionSet(),
-                                                 new BackgroundSet(COLOR,
-                                                                   BORDER_COLOR,
-                                                                   BORDER_SIZE),
-                                                 new FontSet(),
-                                                 new CircleDimensionSet(new Radius(RADIUS)));
+                    new ExclusiveGatewayExecutionSet(),
+                    new BackgroundSet(COLOR,
+                            BORDER_COLOR,
+                            BORDER_SIZE),
+                    new FontSet(),
+                    new CircleDimensionSet(new Radius(RADIUS)));
         }
     }
 
@@ -84,9 +87,9 @@ public class ExclusiveDatabasedGateway extends BaseGateway {
                                      final @MapsTo("fontSet") FontSet fontSet,
                                      final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
         super(general,
-              backgroundSet,
-              fontSet,
-              dimensionsSet);
+                backgroundSet,
+                fontSet,
+                dimensionsSet);
         this.executionSet = executionSet;
         this.Id = nextID++;
     }

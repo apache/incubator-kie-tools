@@ -44,7 +44,8 @@ public class ExclusiveGatewayExecutionSet implements BPMNPropertySet {
     @ListBox
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.CLIENT,
-            className = "org.kie.workbench.common.stunner.bpmn.client.forms.fields.exclusiveGateway.DefaultRouteFormProvider")
+            className = "org.kie.workbench.common.stunner.bpmn.client.forms.fields.gateway.DefaultRouteFormProvider")
+
     @Valid
     protected DefaultRoute defaultRoute;
 
