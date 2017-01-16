@@ -16,9 +16,13 @@
 
 package org.uberfire.ext.layout.editor.client.infra;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Modal;
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.Document;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
@@ -34,6 +38,9 @@ public class DragHelperComponentColumn {
 
     @Inject
     LayoutDragComponentHelper helper;
+
+    @Inject
+    Document document;
 
     private LayoutDragComponent layoutDragComponent;
 
@@ -55,8 +62,13 @@ public class DragHelperComponentColumn {
         this.layoutComponent = layoutComponent;
     }
 
-    public IsWidget getPreviewWidget( Widget context ) {
-        return getLayoutDragComponent().getPreviewWidget( new RenderingContext( layoutComponent, context ) );
+    public HTMLElement getPreviewElement( Widget context ) {
+        HTMLElement div = document.createElement( "div" );
+        FlowPanel gwtDivWrapper = GWT.create( FlowPanel.class );
+        gwtDivWrapper.add( getLayoutDragComponent()
+                                   .getPreviewWidget( new RenderingContext( layoutComponent, context ) ).asWidget() );
+        DOMUtil.appendWidgetToElement( div, gwtDivWrapper );
+        return div;
     }
 
     public void showConfigModal( Command configurationFinish, Command configurationCanceled ) {

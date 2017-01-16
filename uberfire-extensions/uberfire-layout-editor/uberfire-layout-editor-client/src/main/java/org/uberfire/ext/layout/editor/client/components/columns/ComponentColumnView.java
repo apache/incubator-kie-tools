@@ -413,9 +413,7 @@ public class ComponentColumnView
     public void setContent() {
         Scheduler.get().scheduleDeferred( () -> {
             removeAllChildren( content );
-            HTMLElement previewWidget = getPreviewWidget();
-            previewWidget.getStyle().setProperty( "cursor", "default" );
-            previewWidget.setClassName( "le-widget" );
+            HTMLElement previewWidget = getPreviewElement();
             content.appendChild( kebabWidget.getElement() );
             content.appendChild( previewWidget );
         } );
@@ -438,10 +436,11 @@ public class ComponentColumnView
     }
 
 
-    private HTMLElement getPreviewWidget() {
-        HTMLElement cast = ( HTMLElement ) helper.getPreviewWidget( ElementWrapperWidget.getWidget( content ) )
-                .asWidget().getElement().cast();
-        return cast;
+    private HTMLElement getPreviewElement() {
+        HTMLElement previewElement = helper.getPreviewElement( ElementWrapperWidget.getWidget( content ) );
+        previewElement.getStyle().setProperty( "cursor", "default" );
+        previewElement.setClassName( "le-widget" );
+        return previewElement;
     }
 
 
