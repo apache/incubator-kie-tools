@@ -33,7 +33,6 @@ public class Events {
 
     private Set<HandlerRegistration> eventBusHandlerRegistrations = new HashSet<>();
 
-
     public Events( final EventBus eventBus,
                    final AnalyzerControllerImpl analyzerController ) {
         this.eventBus = PortablePreconditions.checkNotNull( "eventBus",
@@ -43,21 +42,22 @@ public class Events {
     }
 
     public void setup() {
-
-        eventBusHandlerRegistrations.add( eventBus.addHandler( ValidateEvent.TYPE,
-                                                               analyzerController ) );
-        eventBusHandlerRegistrations.add( eventBus.addHandler( DeleteRowEvent.TYPE,
-                                                               analyzerController ) );
-        eventBusHandlerRegistrations.add( eventBus.addHandler( AfterColumnDeleted.TYPE,
-                                                               analyzerController ) );
-        eventBusHandlerRegistrations.add( eventBus.addHandler( UpdateColumnDataEvent.TYPE,
-                                                               analyzerController ) );
-        eventBusHandlerRegistrations.add( eventBus.addHandler( AppendRowEvent.TYPE,
-                                                               analyzerController ) );
-        eventBusHandlerRegistrations.add( eventBus.addHandler( InsertRowEvent.TYPE,
-                                                               analyzerController ) );
-        eventBusHandlerRegistrations.add( eventBus.addHandler( AfterColumnInserted.TYPE,
-                                                               analyzerController ) );
+        if ( eventBusHandlerRegistrations.isEmpty() ) {
+            eventBusHandlerRegistrations.add( eventBus.addHandler( ValidateEvent.TYPE,
+                                                                   analyzerController ) );
+            eventBusHandlerRegistrations.add( eventBus.addHandler( DeleteRowEvent.TYPE,
+                                                                   analyzerController ) );
+            eventBusHandlerRegistrations.add( eventBus.addHandler( AfterColumnDeleted.TYPE,
+                                                                   analyzerController ) );
+            eventBusHandlerRegistrations.add( eventBus.addHandler( UpdateColumnDataEvent.TYPE,
+                                                                   analyzerController ) );
+            eventBusHandlerRegistrations.add( eventBus.addHandler( AppendRowEvent.TYPE,
+                                                                   analyzerController ) );
+            eventBusHandlerRegistrations.add( eventBus.addHandler( InsertRowEvent.TYPE,
+                                                                   analyzerController ) );
+            eventBusHandlerRegistrations.add( eventBus.addHandler( AfterColumnInserted.TYPE,
+                                                                   analyzerController ) );
+        }
     }
 
     public void teardown() {
