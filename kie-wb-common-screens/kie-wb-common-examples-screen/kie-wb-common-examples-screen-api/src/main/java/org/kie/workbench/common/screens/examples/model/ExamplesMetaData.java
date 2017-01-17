@@ -24,17 +24,17 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class ExamplesMetaData {
 
-    private Set<ExampleRepository> repositories;
+    private ExampleRepository repository;
     private Set<ExampleOrganizationalUnit> organizationalUnits;
 
-    public ExamplesMetaData( final @MapsTo("repositories") Set<ExampleRepository> repositories,
+    public ExamplesMetaData( final @MapsTo("repository") ExampleRepository repository,
                              final @MapsTo("organizationalUnits") Set<ExampleOrganizationalUnit> organizationalUnits ) {
-        this.repositories = repositories;
+        this.repository = repository;
         this.organizationalUnits = organizationalUnits;
     }
 
-    public Set<ExampleRepository> getRepositories() {
-        return repositories;
+    public ExampleRepository getRepository() {
+        return repository;
     }
 
     public Set<ExampleOrganizationalUnit> getOrganizationalUnits() {

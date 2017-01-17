@@ -56,7 +56,6 @@ import static org.mockito.Mockito.*;
 public class ExamplesWizardTest {
 
     private static final String EXAMPLE_REPOSITORY1 = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
-    private static final String EXAMPLE_REPOSITORY2 = "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground-kjar.git";
     private static final String EXAMPLE_ORGANIZATIONAL_UNIT1 = "ou1";
     private static final String EXAMPLE_ORGANIZATIONAL_UNIT2 = "ou2";
 
@@ -87,7 +86,7 @@ public class ExamplesWizardTest {
     private TranslationService translator;
 
     @Captor
-    private ArgumentCaptor<Set<ExampleRepository>> repositoriesArgumentCaptor;
+    private ArgumentCaptor<ExampleRepository> repositoryArgumentCaptor;
 
     @Captor
     private ArgumentCaptor<Set<ExampleOrganizationalUnit>> organizationalUnitsArgumentCaptor;
@@ -97,15 +96,13 @@ public class ExamplesWizardTest {
 
     private final WizardView mockView = mock( WizardView.class );
 
-    private final Set<ExampleRepository> repositories = new HashSet<ExampleRepository>() {{
-        add( new ExampleRepository( EXAMPLE_REPOSITORY1 ) );
-        add( new ExampleRepository( EXAMPLE_REPOSITORY2 ) );
-    }};
+    private final ExampleRepository repository = new ExampleRepository( EXAMPLE_REPOSITORY1 );
+
     private final Set<ExampleOrganizationalUnit> organizationalUnits = new HashSet<ExampleOrganizationalUnit>() {{
         add( new ExampleOrganizationalUnit( EXAMPLE_ORGANIZATIONAL_UNIT1 ) );
         add( new ExampleOrganizationalUnit( EXAMPLE_ORGANIZATIONAL_UNIT2 ) );
     }};
-    private ExamplesMetaData metaData = new ExamplesMetaData( repositories,
+    private ExamplesMetaData metaData = new ExamplesMetaData( repository,
                                                               organizationalUnits );
 
     private ExamplesWizard wizard;
@@ -144,12 +141,12 @@ public class ExamplesWizardTest {
         verify( organizationalUnitPage,
                 times( 1 ) ).setModel( modelArgumentCaptor.getValue() );
         verify( repositoryPage,
-                times( 1 ) ).setRepositories( repositoriesArgumentCaptor.capture() );
+                times( 1 ) ).setPlaygroundRepository( repositoryArgumentCaptor.capture() );
         verify( organizationalUnitPage,
                 times( 1 ) ).setOrganizationalUnits( organizationalUnitsArgumentCaptor.capture() );
 
-        assertEquals( repositories,
-                      repositoriesArgumentCaptor.getValue() );
+        assertEquals( repository,
+                      repositoryArgumentCaptor.getValue() );
         assertEquals( organizationalUnits,
                       organizationalUnitsArgumentCaptor.getValue() );
     }

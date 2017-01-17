@@ -16,21 +16,26 @@
 
 package org.kie.workbench.common.screens.examples.client.wizard.pages.project;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
-import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.TextInput;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
 
@@ -44,10 +49,28 @@ public class ProjectPageViewImpl extends Composite implements ProjectPageView {
     @DataField("project-description")
     Element projectDescription = DOM.createDiv();
 
-    private ProjectPage presenter;
+    @Inject
+    @DataField("tagInput")
+    TextInput tagInput;
 
-    //Keep a record of ProjectItems created so they can be destroyed
-    private Set<ProjectItemView> projectItemViews = new HashSet<ProjectItemView>();
+    @Inject
+    @DataField("searchButton")
+    Button searchButton;
+
+    @DataField("tagList")
+    Element tagList = DOM.createElement( "ul" );
+
+    @Inject
+    @DataField("clear")
+    Anchor clear;
+
+    @Inject
+    private ManagedInstance<ProjectItemView> projectItemViewInstance;
+
+    @Inject
+    private ManagedInstance<TagItemView> tagItemViewInstance;
+
+    private ProjectPage presenter;
 
     @Override
     public void init( final ProjectPage presenter ) {
@@ -61,26 +84,23 @@ public class ProjectPageViewImpl extends Composite implements ProjectPageView {
 
     @Override
     public void setProjectsInRepository( final List<ExampleProject> projects ) {
-        destroy();
+        this.projects.removeAllChildren();
         for ( ExampleProject project : projects ) {
             final ProjectItemView w = makeProjectWidget( project );
             this.projects.appendChild( w.asWidget().getElement() );
-            this.projectItemViews.add( w );
         }
     }
 
     @Override
     public void destroy() {
-        for ( ProjectItemView piw : projectItemViews ) {
-            IOC.getBeanManager().destroyBean( piw );
-        }
-        projectItemViews.clear();
         projects.removeAllChildren();
+        tagInput.setValue( "" );
+        tagList.removeAllChildren();
     }
 
     private ProjectItemView makeProjectWidget( final ExampleProject project ) {
-        final ProjectItemView projectItemView = IOC.getBeanManager().lookupBean( ProjectItemView.class ).getInstance();
-        projectItemView.setProject( project );
+        final ProjectItemView projectItemView = projectItemViewInstance.get();
+        projectItemView.setProject( project, presenter.isProjectSelected( project ) );
         projectItemView.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange( final ValueChangeEvent<Boolean> event ) {
@@ -92,15 +112,53 @@ public class ProjectPageViewImpl extends Composite implements ProjectPageView {
                 }
             }
         } );
-        projectItemView.addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick( final ClickEvent event ) {
-                final SafeHtmlBuilder shb = new SafeHtmlBuilder();
-                shb.appendEscaped( project.getDescription() );
-                projectDescription.setInnerSafeHtml( shb.toSafeHtml() );
-            }
+
+        projectItemView.addMouseOverHandler( h -> {
+            final SafeHtmlBuilder shb = new SafeHtmlBuilder();
+            shb.appendEscaped( project.getDescription() );
+            projectDescription.setInnerSafeHtml( shb.toSafeHtml() );
+        } );
+
+        projectItemView.addMouseOutHandler( h -> {
+            projectDescription.setInnerSafeHtml( new SafeHtmlBuilder().toSafeHtml() );
         } );
         return projectItemView;
+    }
+
+    @EventHandler("searchButton")
+    private void onSearchButtonClicked( ClickEvent event ) {
+        createAndAddTag( false );
+    }
+
+    @EventHandler("tagInput")
+    private void onTagInputEnterPressed( KeyDownEvent event ) {
+        if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
+            createAndAddTag( true );
+        }
+    }
+
+    private void createAndAddTag( boolean setTagInputFocus ) {
+        if ( tagInput.getValue() != null && !tagInput.getValue().isEmpty() ) {
+            TagItemView tag = tagItemViewInstance.get();
+            tag.setName( tagInput.getValue() );
+            Node tagNode = tag.asWidget().getElement();
+            tag.addClickHandler( c -> {
+                tagList.removeChild( tagNode );
+                presenter.removeTag( tag.getName() );
+            } );
+            tagList.appendChild( tagNode );
+            presenter.addTag( tagInput.getValue() );
+            tagInput.setValue( "" );
+            if ( setTagInputFocus ) {
+                tagInput.focus();
+            }
+        }
+    }
+
+    @EventHandler("clear")
+    private void onClearClicked( ClickEvent event ) {
+        tagList.removeAllChildren();
+        presenter.removeAllTags();
     }
 
 }

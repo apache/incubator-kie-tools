@@ -15,14 +15,24 @@
   ~ limitations under the License.
   -->
 <div class="container-fluid">
-  <div class="row">
-    <form>
-      <div id="repository-form" class="form-group">
-        <label class="control-label" data-i18n-key="SelectRepository"></label>
-
-        <div id="repositoryDropdown"></div>
+  <form>
+    <div id="repository-type" class="form-group row">
+      <label class="control-label col-md-3" data-i18n-key="RepositoryType"></label>
+      <div class="col-md-9">
+        <input id="stockRadio" type="radio" name="repositoryType" value="stock" checked>
+          <span data-i18n-key="StockExamples"></span>
+        </input>
+        <input id="customRadio" type="radio" name="repositoryType" value="custom">
+          <span data-i18n-key="Custom"></span>
+        </input>
+      </div>
+    </div>
+    <div id="repository-form" class="form-group row">
+      <label for="repositoryUrlInput" class="control-label col-md-3" data-i18n-key="RepositoryURL"></label>
+      <div class="col-md-9">
+        <input id="repositoryUrlInput" class="form-control" type="text"/>
         <span id="repository-help" class="help-block" style="visibility: hidden;"></span>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
 </div>

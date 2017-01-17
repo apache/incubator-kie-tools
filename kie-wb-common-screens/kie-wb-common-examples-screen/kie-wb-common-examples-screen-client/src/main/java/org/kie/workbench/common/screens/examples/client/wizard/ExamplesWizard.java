@@ -95,9 +95,9 @@ public class ExamplesWizard extends AbstractWizard {
         examplesService.call( new RemoteCallback<ExamplesMetaData>() {
             @Override
             public void callback( final ExamplesMetaData metaData ) {
-                final Set<ExampleRepository> repositories = metaData.getRepositories();
+                final ExampleRepository repository = metaData.getRepository();
+                repositoryPage.setPlaygroundRepository( repository );
                 final Set<ExampleOrganizationalUnit> organizationalUnits = metaData.getOrganizationalUnits();
-                repositoryPage.setRepositories( repositories );
                 organizationalUnitPage.setOrganizationalUnits( organizationalUnits );
                 ExamplesWizard.super.start();
             }

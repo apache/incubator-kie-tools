@@ -16,11 +16,6 @@
 
 package org.kie.workbench.common.screens.examples.client.wizard.pages.repository;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -42,6 +37,8 @@ import org.uberfire.util.URIUtil;
 public class RepositoryPage extends BaseExamplesWizardPage implements RepositoryPageView.Presenter {
 
     private RepositoryPageView view;
+
+    private ExampleRepository stockRepository;
 
     public RepositoryPage() {
         //Zero-argument constructor for CDI proxies
@@ -91,35 +88,37 @@ public class RepositoryPage extends BaseExamplesWizardPage implements Repository
     }
 
     @Override
-    public void setRepositories( final Set<ExampleRepository> repositories ) {
-        if ( repositories == null ) {
-            view.setRepositories( Collections.<ExampleRepository>emptyList() );
-            return;
+    public void setPlaygroundRepository( ExampleRepository stockRepository ) {
+        this.stockRepository = stockRepository;
+        if ( stockRepository == null ) {
+            view.showRepositoryUrlInputForm();
+            view.setCustomRepositoryOption();
+            view.disableStockRepositoryOption();
+            model.setSelectedRepository( null );
+        } else {
+            view.hideRepositoryUrlInputForm();
+            view.setStockRepositoryOption();
+            model.setSelectedRepository( stockRepository );
         }
-        final List<ExampleRepository> sortedRepositories = sort( repositories );
-        view.setRepositories( sortedRepositories );
-        if ( sortedRepositories.size() > 0 ) {
-            model.setSelectedRepository( sortedRepositories.get( 0 ) );
-            view.setRepository( sortedRepositories.get( 0 ) );
-        }
-    }
-
-    private List<ExampleRepository> sort( final Set<ExampleRepository> repositories ) {
-        final List<ExampleRepository> sortedRepositories = new ArrayList<ExampleRepository>( repositories );
-        Collections.sort( sortedRepositories,
-                          new Comparator<ExampleRepository>() {
-                              @Override
-                              public int compare( final ExampleRepository o1,
-                                                  final ExampleRepository o2 ) {
-                                  return o1.getUrl().compareTo( o2.getUrl() );
-                              }
-                          } );
-        return sortedRepositories;
     }
 
     @Override
-    public void setSelectedRepository( final ExampleRepository selectedRepository ) {
-        model.setSelectedRepository( selectedRepository );
+    public void playgroundRepositorySelected() {
+        model.setSelectedRepository( stockRepository );
+        view.hideRepositoryUrlInputForm();
+        view.setCustomRepositoryValue( null );
+        pageStatusChangedEvent.fire( new WizardPageStatusChangeEvent( this ) );
+    }
+
+    @Override
+    public void customRepositorySelected() {
+        view.showRepositoryUrlInputForm();
+        pageStatusChangedEvent.fire( new WizardPageStatusChangeEvent( this ) );
+    }
+
+    @Override
+    public void customRepositoryValueChanged() {
+        model.setSelectedRepository( new ExampleRepository( view.getCustomRepositoryValue() ) );
         pageStatusChangedEvent.fire( new WizardPageStatusChangeEvent( this ) );
     }
 

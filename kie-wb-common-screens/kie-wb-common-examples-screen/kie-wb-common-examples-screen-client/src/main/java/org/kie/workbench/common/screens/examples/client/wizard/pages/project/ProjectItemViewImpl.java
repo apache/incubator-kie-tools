@@ -17,18 +17,25 @@
 package org.kie.workbench.common.screens.examples.client.wizard.pages.project;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -47,10 +54,22 @@ public class ProjectItemViewImpl extends Composite implements ProjectItemView {
     @DataField("project-name")
     SpanElement projectName = DOM.createSpan().cast();
 
+    @DataField("tagList")
+    Element tagList = DOM.createElement( "ul" );
+
+    @Inject
+    private ManagedInstance<TagItemView> tagItemViewInstance;
+
     @Override
-    public HandlerRegistration addClickHandler( final ClickHandler handler ) {
-        return addHandler( handler,
-                           ClickEvent.getType() );
+    public HandlerRegistration addMouseOutHandler( MouseOutHandler mouseOutHandler ) {
+        return addHandler( mouseOutHandler,
+                           MouseOutEvent.getType() );
+    }
+
+    @Override
+    public HandlerRegistration addMouseOverHandler( MouseOverHandler mouseOverHandler ) {
+        return addHandler( mouseOverHandler,
+                           MouseOverEvent.getType() );
     }
 
     @Override
@@ -60,14 +79,32 @@ public class ProjectItemViewImpl extends Composite implements ProjectItemView {
     }
 
     @Override
-    public void setProject( final ExampleProject project ) {
+    public void setProject( final ExampleProject project, boolean selected ) {
         final SafeHtmlBuilder shb = new SafeHtmlBuilder();
         shb.appendEscaped( project.getName() );
         projectName.setInnerSafeHtml( shb.toSafeHtml() );
+
+        projectSelected.setChecked( selected );
+
+        if ( project.getTags() != null ) {
+            for ( String tagName : project.getTags() ) {
+                TagItemView tagItemView = tagItemViewInstance.get();
+                tagItemView.setName( tagName );
+                tagItemView.hideCloseIcon();
+
+                Node tagNode = tagItemView.asWidget().getElement();
+                tagList.appendChild( tagNode );
+            }
+        }
     }
 
     @EventHandler("project")
-    public void onClick( final ClickEvent event ) {
+    public void onProjectMouseOver( final MouseOverEvent event ) {
+        fireEvent( event );
+    }
+
+    @EventHandler("project")
+    public void onProjectMouseOut( final MouseOutEvent event ) {
         fireEvent( event );
     }
 

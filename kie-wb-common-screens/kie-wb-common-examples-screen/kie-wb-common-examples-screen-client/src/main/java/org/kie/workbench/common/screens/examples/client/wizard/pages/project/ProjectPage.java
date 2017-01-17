@@ -17,10 +17,13 @@
 package org.kie.workbench.common.screens.examples.client.wizard.pages.project;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -50,6 +53,9 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
     private NoRepositoryURLView noRepositoryURLView;
     private FetchRepositoryView fetchingRepositoryView;
     private Event<WizardPageSelectedEvent> pageSelectedEvent;
+
+    private List<ExampleProject> exampleProjects;
+    private Set<String> tags = new HashSet<>();
 
     public ProjectPage() {
         //Zero-argument constructor for CDI proxies
@@ -86,6 +92,9 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
     @Override
     public void destroy() {
         projectsView.destroy();
+
+        exampleProjects = null;
+        tags.clear();
     }
 
     @Override
@@ -128,7 +137,9 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
                                       model.setSourceRepository( selectedRepository );
 
                                       final List<ExampleProject> sortedProjects = sort( projects );
+
                                       projectsView.setProjectsInRepository( sortedProjects );
+                                      exampleProjects = sortedProjects;
 
                                       pageSelectedEvent.fire( new WizardPageSelectedEvent( ProjectPage.this ) );
                                   }
@@ -178,6 +189,42 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
     public void removeProject( final ExampleProject project ) {
         model.removeProject( project );
         pageStatusChangedEvent.fire( new WizardPageStatusChangeEvent( this ) );
+    }
+
+    @Override
+    public boolean isProjectSelected( ExampleProject project ) {
+        return model.getProjects().contains( project );
+    }
+
+    @Override
+    public void addTag( String tag ) {
+        tags.add( tag );
+
+        updateProjectsInRepository();
+    }
+
+    @Override
+    public void removeTag( String tag ) {
+        tags.remove( tag );
+
+        updateProjectsInRepository();
+    }
+
+    private void updateProjectsInRepository() {
+        List<ExampleProject> resultList = exampleProjects.stream()
+                .filter( p -> tags.stream().allMatch( userTag -> p.getTags().stream().anyMatch( projectTag -> projectTag.toLowerCase().contains( userTag.toLowerCase() ) ) ) )
+                .sorted( (o1, o2) -> o1.getName().compareTo( o2.getName() ) )
+                .collect( Collectors.toList() );
+
+        projectsView.setProjectsInRepository( resultList );
+        pageSelectedEvent.fire( new WizardPageSelectedEvent( ProjectPage.this ) );
+    }
+
+    @Override
+    public void removeAllTags() {
+        tags.clear();
+        projectsView.setProjectsInRepository( exampleProjects );
+        pageSelectedEvent.fire( new WizardPageSelectedEvent( ProjectPage.this ) );
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,15 @@
 
 package org.kie.workbench.common.screens.examples.client.wizard.pages.project;
 
-import com.google.gwt.event.dom.client.HasMouseOutHandlers;
-import com.google.gwt.event.dom.client.HasMouseOverHandlers;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
 
-public interface ProjectItemView extends IsWidget,
-                                         HasMouseOverHandlers,
-                                         HasMouseOutHandlers,
-                                         HasValueChangeHandlers<Boolean> {
+public interface TagItemView extends IsWidget, HasClickHandlers {
 
-    void setProject( final ExampleProject project, boolean selected );
+    String getName();
+
+    void setName( final String name );
+
+    void hideCloseIcon();
 
 }

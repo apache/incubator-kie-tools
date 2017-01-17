@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~ Copyright 2017 Red Hat, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -14,14 +14,9 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div class="container-fluid">
-  <div id="project" class="row">
-    <div class="col-md-5">
-      <input id="project-selected" type="checkbox">
-      <span id="project-name"></span>
-    </div>
-    <div class="col-md-7">
-      <ul id="tagList" class="list-inline"></ul>
-    </div>
-  </div>
-</div>
+<li style="padding-right: 3px;">
+  <span class="label label-info">
+    <span id="name"></span>
+    <span id="closeIcon" class="pficon pficon-close" style="cursor: pointer;"></span>
+  </span>
+</li>

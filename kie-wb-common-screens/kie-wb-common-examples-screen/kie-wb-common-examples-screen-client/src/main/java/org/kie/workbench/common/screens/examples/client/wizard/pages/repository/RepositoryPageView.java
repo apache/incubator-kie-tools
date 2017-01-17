@@ -16,9 +16,6 @@
 
 package org.kie.workbench.common.screens.examples.client.wizard.pages.repository;
 
-import java.util.List;
-import java.util.Set;
-
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.uberfire.client.mvp.UberView;
@@ -27,9 +24,13 @@ public interface RepositoryPageView extends UberView<RepositoryPage> {
 
     interface Presenter {
 
-        void setRepositories( final Set<ExampleRepository> repositories );
+        void setPlaygroundRepository( final ExampleRepository repository );
 
-        void setSelectedRepository( final ExampleRepository selectedRepository );
+        void playgroundRepositorySelected();
+
+        void customRepositorySelected();
+
+        void customRepositoryValueChanged();
 
     }
 
@@ -37,14 +38,24 @@ public interface RepositoryPageView extends UberView<RepositoryPage> {
 
     void setPlaceHolder( final String placeHolder );
 
-    void setRepositories( final List<ExampleRepository> repositories );
-
-    void setRepository( final ExampleRepository repository );
-
     void setUrlGroupType( final ValidationState state );
 
     void showUrlHelpMessage( final String message );
 
     void hideUrlHelpMessage();
+
+    void setStockRepositoryOption();
+
+    void setCustomRepositoryOption();
+
+    void disableStockRepositoryOption();
+
+    void showRepositoryUrlInputForm();
+
+    void hideRepositoryUrlInputForm();
+
+    String getCustomRepositoryValue();
+
+    void setCustomRepositoryValue( final String value );
 
 }

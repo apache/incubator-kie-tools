@@ -19,9 +19,6 @@ package org.kie.workbench.common.screens.examples.client.wizard.pages.repository
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import javax.enterprise.event.Event;
 
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
@@ -69,7 +66,7 @@ public class RepositoryPageTest {
     };
 
     @Captor
-    private ArgumentCaptor<List<ExampleRepository>> repositoriesArgumentCaptor;
+    private ArgumentCaptor<ExampleRepository> repositoryArgumentCaptor;
 
     private RepositoryPage page;
 
@@ -122,42 +119,48 @@ public class RepositoryPageTest {
     }
 
     @Test
-    public void testSetRepositories_Null() {
-        page.setRepositories( null );
+    public void testSetPlaygroundRepository_Null() {
+        page.setPlaygroundRepository( null );
         verify( view,
-                times( 1 ) ).setRepositories( eq( Collections.<ExampleRepository>emptyList() ) );
+                times( 1 ) ).showRepositoryUrlInputForm();
+        verify( view,
+                times( 1 ) ).setCustomRepositoryOption();
+        verify( view,
+                times( 1 ) ).disableStockRepositoryOption();
     }
 
     @Test
-    public void testSetRepositories_Empty() {
-        page.setRepositories( Collections.<ExampleRepository>emptySet() );
+    public void testSetPlaygroundRepository() {
+        ExampleRepository repository = new ExampleRepository( EXAMPLE_REPOSITORY );
+        page.setPlaygroundRepository( repository );
+
         verify( view,
-                times( 1 ) ).setRepositories( eq( Collections.<ExampleRepository>emptyList() ) );
+                times( 1 ) ).hideRepositoryUrlInputForm();
+        verify( view,
+                times( 1 ) ).setStockRepositoryOption();
     }
 
     @Test
-    public void testSetRepositories() {
-        final Set<ExampleRepository> repositories = new HashSet<ExampleRepository>() {{
-            add( new ExampleRepository( "b" ) );
-            add( new ExampleRepository( "a" ) );
-        }};
-        page.setRepositories( repositories );
+    public void testPlaygroundRepositorySelected() {
+        page.playgroundRepositorySelected();
         verify( view,
-                times( 1 ) ).setRepositories( repositoriesArgumentCaptor.capture() );
-
-        final List<ExampleRepository> sortedRepositories = repositoriesArgumentCaptor.getValue();
-        assertNotNull( sortedRepositories );
-        assertEquals( 2,
-                      sortedRepositories.size() );
-        assertEquals( "a",
-                      sortedRepositories.get( 0 ).getUrl() );
-        assertEquals( "b",
-                      sortedRepositories.get( 1 ).getUrl() );
+                times( 1 ) ).hideRepositoryUrlInputForm();
+        verify( view,
+                times( 1 ) ).setCustomRepositoryValue( null );
+        verify( pageStatusChangedEvent,
+                times( 1 ) ).fire( any( WizardPageStatusChangeEvent.class ) );
     }
 
     @Test
-    public void testSetSelectedRepository() {
-        page.setSelectedRepository( new ExampleRepository( "" ) );
+    public void testCustomRepositorySelected() {
+        page.customRepositorySelected();
+        verify( view,
+                times( 1 ) ).showRepositoryUrlInputForm();
+    }
+
+    @Test
+    public void testCustomRepositoryValueChanged() {
+        page.customRepositoryValueChanged();
         verify( pageStatusChangedEvent,
                 times( 1 ) ).fire( any( WizardPageStatusChangeEvent.class ) );
     }

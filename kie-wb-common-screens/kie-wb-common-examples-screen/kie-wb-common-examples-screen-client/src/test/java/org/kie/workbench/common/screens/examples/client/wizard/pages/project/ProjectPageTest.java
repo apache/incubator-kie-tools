@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.examples.client.wizard.pages.project;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import javax.enterprise.event.Event;
@@ -34,6 +36,7 @@ import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
@@ -99,10 +102,12 @@ public class ProjectPageTest {
 
     private ExampleProject project1 = new ExampleProject( mock( Path.class ),
                                                           "project1",
-                                                          "" );
+                                                          "",
+                                                          Arrays.asList( "tag1", "tag2" ) );
     private ExampleProject project2 = new ExampleProject( mock( Path.class ),
                                                           "project2",
-                                                          "" );
+                                                          "",
+                                                          Arrays.asList( "tag2", "tag3" ) );
 
     @Before
     public void setup() {
@@ -221,7 +226,8 @@ public class ProjectPageTest {
     public void testIsComplete_SelectedProjects() {
         model.addProject( new ExampleProject( mock( Path.class ),
                                               "",
-                                              "" ) );
+                                              "",
+                                              Collections.EMPTY_LIST) );
         final Callback<Boolean> callback = mock( Callback.class );
         page.isComplete( callback );
 
@@ -247,6 +253,136 @@ public class ProjectPageTest {
                       model.getProjects().size() );
         verify( pageStatusChangedEvent,
                 times( 1 ) ).fire( any( WizardPageStatusChangeEvent.class ) );
+    }
+
+    @Test
+    public void testIsProjectSelected_Selected() {
+        final ExampleProject project = mock( ExampleProject.class );
+        model.addProject( project );
+
+        assertTrue( page.isProjectSelected( project ) );
+    }
+
+    @Test
+    public void testIsProjectSelected_NotSelected() {
+        final ExampleProject project = mock( ExampleProject.class );
+
+        assertFalse( page.isProjectSelected( project ) );
+    }
+
+    @Test
+    public void testAddTag_SingleTag() {
+        initExampleProjects();
+
+        page.addTag( "tag1" );
+
+        verify( projectsView,
+                times( 1 ) ).setProjectsInRepository( Arrays.asList( project1 ) );
+        verify( pageSelectedEvent,
+                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
+    }
+
+    private void initExampleProjects() {
+        when( examplesService.getProjects( any( ExampleRepository.class ) ) ).thenReturn( new HashSet<ExampleProject>() {{
+            add( project1 );
+            add( project2 );
+        }} );
+
+        final ExampleRepository repository = new ExampleRepository( EXAMPLE_REPOSITORY );
+        model.setSelectedRepository( repository );
+        page.prepareView();
+
+        Mockito.reset( projectsView, pageSelectedEvent );
+    }
+
+    @Test
+    public void testAddTag_MultipleTags() {
+        initExampleProjects();
+
+        page.addTag( "tag1" );
+
+        Mockito.reset( projectsView, pageSelectedEvent );
+
+        page.addTag( "tag2" );
+
+        verify( projectsView,
+                times( 1 ) ).setProjectsInRepository( Arrays.asList( project1 ) );
+        verify( pageSelectedEvent,
+                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
+    }
+
+    @Test
+    public void testAddTag_NoProjectMatches() {
+        initExampleProjects();
+
+        page.addTag( "nonMatchingTag" );
+
+        verify( projectsView,
+                times( 1 ) ).setProjectsInRepository( Collections.emptyList() );
+        verify( pageSelectedEvent,
+                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
+    }
+
+    @Test
+    public void testAddTag_AllProjectsMatch() {
+        initExampleProjects();
+
+        page.addTag( "tag2" );
+
+        verify( projectsView,
+                times( 1 ) ).setProjectsInRepository( Arrays.asList( project1, project2 ) );
+        verify( pageSelectedEvent,
+                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
+    }
+
+    @Test
+    public void testRemoveTag_NonMatchingTag() {
+        initExampleProjects();
+
+        page.addTag( "nonMatchingTag" );
+
+        verify( projectsView,
+                times( 1 ) ).setProjectsInRepository( Collections.emptyList() );
+
+        Mockito.reset( projectsView, pageSelectedEvent );
+
+        page.removeTag( "nonMatchingTag" );
+
+        verify( projectsView,
+                times( 1 ) ).setProjectsInRepository( Arrays.asList( project1, project2 ) );
+        verify( pageSelectedEvent,
+                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
+    }
+
+    @Test
+    public void testRemoveTag_MatchingTag() {
+        initExampleProjects();
+
+        page.addTag( "tag1" );
+
+        verify( projectsView,
+                times( 1 ) ).setProjectsInRepository( Arrays.asList( project1 ) );
+
+        Mockito.reset( projectsView, pageSelectedEvent );
+
+        page.removeTag( "tag1" );
+
+        verify( projectsView,
+                times( 1 ) ).setProjectsInRepository( Arrays.asList( project1, project2 ) );
+        verify( pageSelectedEvent,
+                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
+    }
+
+    @Test
+    public void testRemoveAllTags() {
+        initExampleProjects();
+
+        page.removeAllTags();
+
+        verify( projectsView,
+                times( 1 ) ).setProjectsInRepository( Arrays.asList( project1, project2 ) );
+        verify( pageSelectedEvent,
+                times( 1 ) ).fire( any( WizardPageSelectedEvent.class ) );
     }
 
 }

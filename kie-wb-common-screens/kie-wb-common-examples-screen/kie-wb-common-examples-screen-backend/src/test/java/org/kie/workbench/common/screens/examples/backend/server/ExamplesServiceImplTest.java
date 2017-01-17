@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.examples.backend.server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,7 @@ import javax.enterprise.event.Event;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -83,6 +85,9 @@ public class ExamplesServiceImplTest {
     @Mock
     private OrganizationalUnitService ouService;
 
+    @Mock
+    private MetadataService metadataService;
+
     @Spy
     private Event<NewProjectEvent> newProjectEvent = new EventSourceMock<NewProjectEvent>() {
         @Override
@@ -107,6 +112,7 @@ public class ExamplesServiceImplTest {
                                            projectService,
                                            repositoryService,
                                            ouService,
+                                           metadataService,
                                            newProjectEvent,
                                            sessionInfo );
         when( ouService.getOrganizationalUnits() ).thenReturn( new HashSet<OrganizationalUnit>() {{
@@ -137,38 +143,29 @@ public class ExamplesServiceImplTest {
     }
 
     @Test
-    public void testLoadExampleRepositoryDetails() {
+    public void initPlaygroundRepository() {
         //Emulate @PostConstruct mechanism
-        ( (ExamplesServiceImpl) service ).loadExampleRepositoryDetails();
+        ( (ExamplesServiceImpl) service ).initPlaygroundRepository();
 
-        final Set<ExampleRepository> exampleRepositories = ( (ExamplesServiceImpl) service ).getExampleRepositories();
+        final ExampleRepository exampleRepository = ( (ExamplesServiceImpl) service ).getPlaygroundRepository();
 
-        assertNotNull( exampleRepositories );
-        assertEquals( 2,
-                      exampleRepositories.size() );
-
-        assertTrue( exampleRepositories.contains( new ExampleRepository( "https://github.com/guvnorngtestuser1/guvnorng-playground.git" ) ) );
-        assertTrue( exampleRepositories.contains( new ExampleRepository( "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground-kjar.git" ) ) );
+        assertNotNull( exampleRepository );
     }
 
     @Test
     public void testGetMetaData() {
         //Emulate @PostConstruct mechanism
-        ( (ExamplesServiceImpl) service ).loadExampleRepositoryDetails();
+        ( (ExamplesServiceImpl) service ).initPlaygroundRepository();
 
         final ExamplesMetaData metaData = service.getMetaData();
 
         assertNotNull( metaData );
-        assertNotNull( metaData.getRepositories() );
+        assertNotNull( metaData.getRepository() );
         assertNotNull( metaData.getOrganizationalUnits() );
-        assertEquals( 2,
-                      metaData.getRepositories().size() );
         assertEquals( 2,
                       metaData.getOrganizationalUnits().size() );
 
-        final Set<ExampleRepository> exampleRepositories = metaData.getRepositories();
-        assertTrue( exampleRepositories.contains( new ExampleRepository( "https://github.com/guvnorngtestuser1/guvnorng-playground.git" ) ) );
-        assertTrue( exampleRepositories.contains( new ExampleRepository( "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground-kjar.git" ) ) );
+        assertNotNull( metaData.getRepository().getUrl() );
 
         final Set<ExampleOrganizationalUnit> exampleOrganizationalUnits = metaData.getOrganizationalUnits();
         assertTrue( exampleOrganizationalUnits.contains( new ExampleOrganizationalUnit( "ou1Name" ) ) );
@@ -214,6 +211,7 @@ public class ExamplesServiceImplTest {
         when( project.getRootPath() ).thenReturn( projectRoot );
         when( project.getProjectName() ).thenReturn( "project1" );
         when( projectRoot.toURI() ).thenReturn( "default:///project1" );
+        when( metadataService.getTags( any( Path.class ) ) ).thenReturn( Arrays.asList( "tag1", "tag2" ) );
 
         final GitRepository repository = new GitRepository( "guvnorng-playground" );
         when( repositoryFactory.newRepository( any( ConfigGroup.class ) ) ).thenReturn( repository );
@@ -222,13 +220,16 @@ public class ExamplesServiceImplTest {
             add( project );
         }} );
 
+
+
         final Set<ExampleProject> projects = service.getProjects( new ExampleRepository( "https://github.com/guvnorngtestuser1/guvnorng-playground.git" ) );
         assertNotNull( projects );
         assertEquals( 1,
                       projects.size() );
         assertTrue( projects.contains( new ExampleProject( projectRoot,
                                                            "project1",
-                                                           "Example 'project1' project" ) ) );
+                                                           "Example 'project1' project",
+                                                           Arrays.asList( "tag1", "tag2" ) ) ) );
     }
 
     @Test
@@ -240,6 +241,7 @@ public class ExamplesServiceImplTest {
         when( projectRoot.toURI() ).thenReturn( "default:///project1" );
         when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( true );
         when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( "custom description" );
+        when( metadataService.getTags( any( Path.class ) ) ).thenReturn( Arrays.asList( "tag1", "tag2" ) );
 
         final GitRepository repository = new GitRepository( "guvnorng-playground" );
         when( repositoryFactory.newRepository( any( ConfigGroup.class ) ) ).thenReturn( repository );
@@ -254,7 +256,8 @@ public class ExamplesServiceImplTest {
                       projects.size() );
         assertTrue( projects.contains( new ExampleProject( projectRoot,
                                                            "project1",
-                                                           "custom description" ) ) );
+                                                           "custom description",
+                                                           Arrays.asList( "tag1", "tag2" ) ) ) );
     }
 
     @Test

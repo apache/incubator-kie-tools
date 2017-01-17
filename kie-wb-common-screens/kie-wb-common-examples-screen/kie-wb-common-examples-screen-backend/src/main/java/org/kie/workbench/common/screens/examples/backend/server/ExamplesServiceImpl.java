@@ -16,24 +16,33 @@
 
 package org.kie.workbench.common.screens.examples.backend.server;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.net.URL;
+import java.nio.file.SimpleFileVisitor;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
@@ -65,6 +74,7 @@ import org.uberfire.java.nio.file.FileVisitor;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardCopyOption;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
+import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.guvnor.structure.repositories.EnvironmentParameters.*;
@@ -78,6 +88,8 @@ public class ExamplesServiceImpl implements ExamplesService {
 
     private static final String PROJECT_DESCRIPTON = "project.description";
 
+    private static final String KIE_WB_PLAYGROUND_ZIP = "org/kie/kie-wb-playground/kie-wb-playground.zip";
+
     private IOService ioService;
     private ConfigurationFactory configurationFactory;
     private RepositoryFactory repositoryFactory;
@@ -86,9 +98,10 @@ public class ExamplesServiceImpl implements ExamplesService {
     private OrganizationalUnitService ouService;
     private Event<NewProjectEvent> newProjectEvent;
     private SafeSessionInfo sessionInfo;
+    private MetadataService metadataService;
 
     private final Set<Repository> clonedRepositories = new HashSet<Repository>();
-    private final Set<ExampleRepository> exampleRepositories = new HashSet<ExampleRepository>();
+    private ExampleRepository playgroundRepository;
 
     public ExamplesServiceImpl() {
         //Zero-parameter Constructor for CDI proxies
@@ -101,6 +114,7 @@ public class ExamplesServiceImpl implements ExamplesService {
                                 final KieProjectService projectService,
                                 final RepositoryService repositoryService,
                                 final OrganizationalUnitService ouService,
+                                final MetadataService metadataService,
                                 final Event<NewProjectEvent> newProjectEvent,
                                 final SessionInfo sessionInfo ) {
         this.ioService = ioService;
@@ -109,33 +123,80 @@ public class ExamplesServiceImpl implements ExamplesService {
         this.projectService = projectService;
         this.repositoryService = repositoryService;
         this.ouService = ouService;
+        this.metadataService = metadataService;
         this.newProjectEvent = newProjectEvent;
         this.sessionInfo = new SafeSessionInfo( sessionInfo );
     }
 
     @PostConstruct
-    public void loadExampleRepositoryDetails() {
+    public void initPlaygroundRepository() {
         try {
-            final Properties repositoryProperties = new Properties();
-            repositoryProperties.load( getClass().getResourceAsStream( "/example-repositories.properties" ) );
-            for ( String key : repositoryProperties.stringPropertyNames() ) {
-                exampleRepositories.add( new ExampleRepository( repositoryProperties.getProperty( key ) ) );
+            String userDir = System.getProperty( "user.dir" );
+
+            File playgroundDirectory = new File( userDir, ".kie-wb-playground" );
+            if ( playgroundDirectory.exists() ) {
+                cleanPlaygroundDirectory( playgroundDirectory.toPath() );
+            }
+            playgroundDirectory.mkdirs();
+
+            URL resource = getClass().getClassLoader().getResource( KIE_WB_PLAYGROUND_ZIP );
+            if ( resource == null ) {
+                logger.warn( "Playground repository jar not found on classpath." );
+                return;
             }
 
-        } catch ( java.io.IOException e ) {
-            logger.error( "Unable to load details of Example Repositories. None will be available in the Workbench.",
-                          e );
+            try ( ZipInputStream inputStream = new ZipInputStream( resource.openStream() ) ) {
+                ZipEntry zipEntry = null;
+                while ( ( zipEntry = inputStream.getNextEntry() ) != null ) {
+                    byte[] buffer = new byte[1024];
+                    File file = new File( playgroundDirectory, zipEntry.getName() );
+                    if ( zipEntry.isDirectory() ) {
+                        file.mkdirs();
+                    } else {
+                        try ( FileOutputStream fos = new FileOutputStream( file ) ) {
+                            int read = -1;
+                            while ( ( read = inputStream.read( buffer ) ) != -1 ) {
+                                fos.write( buffer, 0, read );
+                            }
+                        }
+                    }
+                }
+
+                Git git = JGitUtil.newRepository( playgroundDirectory, false );
+                git.add().addFilepattern( "." ).call();
+                git.commit().setMessage( "Initial commit" ).call();
+                playgroundRepository = new ExampleRepository( "file://" + playgroundDirectory.getAbsolutePath() );
+            }
+        } catch ( java.io.IOException | GitAPIException e ) {
+            logger.error( "Unable to initialize playground git repository. Only custom repository definition will be available in the Workbench.",
+                    e );
         }
+    }
+
+    private void cleanPlaygroundDirectory( java.nio.file.Path playgroundDirectoryPath ) throws java.io.IOException {
+        java.nio.file.Files.walkFileTree( playgroundDirectoryPath, new SimpleFileVisitor<java.nio.file.Path>() {
+            @Override
+            public java.nio.file.FileVisitResult visitFile( java.nio.file.Path file, java.nio.file.attribute.BasicFileAttributes attrs ) throws java.io.IOException {
+                java.nio.file.Files.delete( file );
+                return java.nio.file.FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public java.nio.file.FileVisitResult postVisitDirectory( java.nio.file.Path dir, java.io.IOException exc ) throws java.io.IOException {
+                java.nio.file.Files.delete( dir );
+                return java.nio.file.FileVisitResult.CONTINUE;
+            }
+        } );
     }
 
     @Override
     public ExamplesMetaData getMetaData() {
-        return new ExamplesMetaData( getExampleRepositories(),
+        return new ExamplesMetaData( getPlaygroundRepository(),
                                      getExampleOrganizationalUnits() );
     }
 
-    Set<ExampleRepository> getExampleRepositories() {
-        return exampleRepositories;
+    ExampleRepository getPlaygroundRepository() {
+        return playgroundRepository;
     }
 
     Set<ExampleOrganizationalUnit> getExampleOrganizationalUnits() {
@@ -175,6 +236,8 @@ public class ExamplesServiceImpl implements ExamplesService {
                      repositoryURL );
                 put( SCHEME,
                      "git" );
+                put( "replaceIfExists",
+                     true );
             }};
 
             final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( REPOSITORY,
@@ -185,10 +248,10 @@ public class ExamplesServiceImpl implements ExamplesService {
                                                                                     entry.getValue() ) );
             }
 
+
             repository = repositoryFactory.newRepository( repositoryConfig );
             clonedRepositories.add( repository );
             return repository;
-
         } catch ( final Exception e ) {
             logger.error( "Error during create repository",
                           e );
@@ -208,13 +271,12 @@ public class ExamplesServiceImpl implements ExamplesService {
     }
 
     private Set<ExampleProject> convert( final Set<Project> projects ) {
-        final Set<ExampleProject> exampleProjects = new HashSet<ExampleProject>();
-        for ( Project project : projects ) {
-            exampleProjects.add( new ExampleProject( project.getRootPath(),
-                                                     project.getProjectName(),
-                                                     readDescription( project ) ) );
-        }
-        return exampleProjects;
+        return projects.stream()
+                .map( p -> new ExampleProject( p.getRootPath(),
+                        p.getProjectName(),
+                        readDescription( p ),
+                        getTags( p ) ) )
+                .collect( Collectors.toSet() );
     }
 
     private String readDescription( final Project project ) {
@@ -226,6 +288,12 @@ public class ExamplesServiceImpl implements ExamplesService {
             description = ioService.readAllString( nioDescription );
         }
         return description;
+    }
+
+    private List<String> getTags( final Project project ) {
+        List<String> tags = metadataService.getTags( project.getPomXMLPath() );
+        tags.sort( ( t1, t2 ) -> t1.compareTo( t2 ) );
+        return tags;
     }
 
     @Override
@@ -289,7 +357,6 @@ public class ExamplesServiceImpl implements ExamplesService {
                 if ( firstExampleProject == null ) {
                     firstExampleProject = project;
                 }
-
             }
         } catch ( IOException ioe ) {
             logger.error( "Unable to create Example(s).",

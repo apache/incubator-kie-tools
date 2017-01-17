@@ -16,48 +16,49 @@
 
 package org.kie.workbench.common.screens.examples.client.wizard.pages.repository;
 
-import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.jboss.errai.common.client.dom.RadioInput;
+import org.jboss.errai.common.client.dom.TextInput;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.screens.examples.client.wizard.widgets.ComboBox;
-import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.uberfire.ext.widgets.common.client.common.StyleHelper;
 
 @Dependent
 @Templated
 public class RepositoryPageViewImpl extends Composite implements RepositoryPageView {
 
+    @DataField("repository-type")
+    Element repositoryType = DOM.createDiv();
+
+    @Inject
+    @DataField("stockRadio")
+    RadioInput stockRadio;
+
+    @Inject
+    @DataField("customRadio")
+    RadioInput customRadio;
+
     @DataField("repository-form")
     Element repositoryGroup = DOM.createDiv();
 
-    @DataField
-    ComboBox repositoryDropdown = GWT.create( ComboBox.class );
+    @Inject
+    @DataField("repositoryUrlInput")
+    TextInput repositoryUrlInput;
 
     @DataField("repository-help")
     Element repositoryHelp = DOM.createSpan();
 
     private RepositoryPage presenter;
-
-    @PostConstruct
-    public void setup() {
-        repositoryDropdown.addValueChangeHandler( new ValueChangeHandler<String>() {
-            @Override
-            public void onValueChange( final ValueChangeEvent<String> event ) {
-                presenter.setSelectedRepository( new ExampleRepository( event.getValue() ) );
-            }
-        } );
-    }
 
     @Override
     public void init( final RepositoryPage presenter ) {
@@ -66,25 +67,12 @@ public class RepositoryPageViewImpl extends Composite implements RepositoryPageV
 
     @Override
     public void initialise() {
-        repositoryDropdown.setText( "" );
+        repositoryUrlInput.setValue( "" );
     }
 
     @Override
     public void setPlaceHolder( final String placeHolder ) {
-        repositoryDropdown.setPlaceholder( placeHolder );
-    }
-
-    @Override
-    public void setRepositories( final List<ExampleRepository> repositories ) {
-        this.repositoryDropdown.clear();
-        for ( ExampleRepository repository : repositories ) {
-            this.repositoryDropdown.addItem( repository.getUrl() );
-        }
-    }
-
-    @Override
-    public void setRepository( final ExampleRepository repository ) {
-        this.repositoryDropdown.setText( repository.getUrl() );
+        repositoryUrlInput.setAttribute( "placeholder", placeHolder );
     }
 
     @Override
@@ -104,5 +92,57 @@ public class RepositoryPageViewImpl extends Composite implements RepositoryPageV
     public void hideUrlHelpMessage() {
         repositoryHelp.getStyle().setVisibility( Style.Visibility.HIDDEN );
         repositoryHelp.setInnerText( "" );
+    }
+
+    @Override
+    public void setStockRepositoryOption() {
+        stockRadio.setChecked( true );
+        customRadio.setChecked( false );
+    }
+
+    @Override
+    public void disableStockRepositoryOption() {
+        stockRadio.setDisabled( true );
+    }
+
+    @Override
+    public void setCustomRepositoryOption() {
+        customRadio.setChecked( true );
+        stockRadio.setChecked( false );
+    }
+
+    @Override
+    public void showRepositoryUrlInputForm() {
+        repositoryGroup.getStyle().setVisibility( Style.Visibility.VISIBLE );
+    }
+
+    @Override
+    public void hideRepositoryUrlInputForm() {
+        repositoryGroup.getStyle().setVisibility( Style.Visibility.HIDDEN );
+    }
+
+    @Override
+    public String getCustomRepositoryValue() {
+        return repositoryUrlInput.getValue();
+    }
+
+    @Override
+    public void setCustomRepositoryValue( final String value ) {
+        repositoryUrlInput.setValue( value );
+    }
+
+    @EventHandler("stockRadio")
+    public void handleStockRadioClick( ClickEvent event ) {
+        presenter.playgroundRepositorySelected();
+    }
+
+    @EventHandler("customRadio")
+    public void handleCustomRadioClick( ClickEvent event ) {
+        presenter.customRepositorySelected();
+    }
+
+    @EventHandler("repositoryUrlInput")
+    public void handleRepositoryUrlInputValueChange( ChangeEvent event ) {
+        presenter.customRepositoryValueChanged();
     }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.examples.client.wizard.pages.project;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
@@ -28,6 +29,14 @@ public interface ProjectPageView extends UberView<ProjectPage> {
         void addProject( final ExampleProject project );
 
         void removeProject( final ExampleProject project );
+
+        boolean isProjectSelected( final ExampleProject project );
+
+        void addTag( final String tag );
+
+        void removeTag( final String tag );
+
+        void removeAllTags();
 
     }
 

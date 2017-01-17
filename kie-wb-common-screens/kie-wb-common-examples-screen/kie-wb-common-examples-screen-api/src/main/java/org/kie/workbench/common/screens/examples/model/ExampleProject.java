@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.examples.model;
 
+import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
@@ -26,13 +28,16 @@ public class ExampleProject {
     private Path root;
     private String name;
     private String description;
+    private List<String> tags;
 
     public ExampleProject( final @MapsTo("root") Path root,
                            final @MapsTo("name") String name,
-                           final @MapsTo("description") String description ) {
+                           final @MapsTo("description") String description,
+                           final @MapsTo("tags") List<String> tags ) {
         this.root = root;
         this.name = name;
         this.description = description;
+        this.tags = tags;
     }
 
     public Path getRoot() {
@@ -45,6 +50,10 @@ public class ExampleProject {
 
     public String getDescription() {
         return description;
+    }
+
+    public List<String> getTags() {
+        return tags;
     }
 
     @Override
@@ -64,7 +73,10 @@ public class ExampleProject {
         if ( !name.equals( that.name ) ) {
             return false;
         }
-        return !( description != null ? !description.equals( that.description ) : that.description != null );
+        if ( !description.equals( that.description ) ) {
+            return false;
+        }
+        return !( tags != null ? !tags.equals( that.tags ) : that.tags != null );
 
     }
 
@@ -72,6 +84,8 @@ public class ExampleProject {
     public int hashCode() {
         int result = root.hashCode();
         result = 31 * result + name.hashCode();
+        result = ~~result;
+        result = 31 * result + ( tags != null ? tags.hashCode() : 0 );
         result = ~~result;
         result = 31 * result + ( description != null ? description.hashCode() : 0 );
         result = ~~result;
