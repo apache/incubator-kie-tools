@@ -553,6 +553,12 @@
       <artifactId>kie-wb-common-workbench-backend</artifactId>
     </dependency>
 
+    <!-- KIE Workbench Playground Repository -->
+    <dependency>
+      <groupId>org.kie.workbench.playground</groupId>
+      <artifactId>playground-parent</artifactId>
+    </dependency>
+
     <!-- Drools Workbench REST -->
     <dependency>
       <groupId>org.guvnor</groupId>
