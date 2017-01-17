@@ -22,25 +22,16 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
-import org.drools.workbench.models.datamodel.rule.HasCEPWindow;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -51,54 +42,26 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
-import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
-import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
 import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.widgets.common.client.common.ImageButton;
-import org.uberfire.ext.widgets.common.client.common.InfoPopup;
-import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 /**
  * This is a configuration editor for a column in a the guided decision table.
  */
-public class ConditionPopup extends FormStylePopup {
+public class ConditionPopup {
 
-    private SmallLabel patternLabel = new SmallLabel();
-    private TextBox fieldLabel = getFieldLabel();
-    private TextBox binding = new BindingTextBox();
-    private SmallLabel operatorLabel = new SmallLabel();
-    private SimplePanel limitedEntryValueWidgetContainer = new SimplePanel();
-    private int limitedEntryValueAttributeIndex = -1;
-    private TextBox valueListWidget = null;
-    private SimplePanel defaultValueWidgetContainer = new SimplePanel();
-    private int defaultValueWidgetContainerIndex = -1;
-    private ImageButton editField;
-    private ImageButton editOp;
-
-    private InlineRadio literal = new InlineRadio( "constraintValueType",
-                                                   GuidedDecisionTableConstants.INSTANCE.LiteralValue() );
-    private InlineRadio formula = new InlineRadio( "constraintValueType",
-                                                   GuidedDecisionTableConstants.INSTANCE.Formula() );
-    private InlineRadio predicate = new InlineRadio( "constraintValueType",
-                                                     GuidedDecisionTableConstants.INSTANCE.Predicate() );
-
-    private CEPWindowOperatorsDropdown cwo;
-    private TextBox entryPointName;
-    private int cepWindowRowIndex;
+    protected ConditionPopupView view;
 
     private final AsyncPackageDataModelOracle oracle;
     private final GuidedDecisionTableView.Presenter presenter;
@@ -117,23 +80,6 @@ public class ConditionPopup extends FormStylePopup {
     private final ConditionCol52 originalCol;
     private final boolean isNew;
     private final boolean isReadOnly;
-
-    private InfoPopup fieldLabelInterpolationInfo = getPredicateHint();
-
-    private final Command cmdOK = new Command() {
-        @Override
-        public void execute() {
-            applyChanges();
-        }
-    };
-    private final Command cmdCancel = new Command() {
-        @Override
-        public void execute() {
-            hide();
-        }
-    };
-    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( cmdOK,
-                                                                                      cmdCancel );
 
     public ConditionPopup( final GuidedDecisionTable52 model,
                            final AsyncPackageDataModelOracle oracle,
@@ -160,7 +106,7 @@ public class ConditionPopup extends FormStylePopup {
                            final ConditionCol52 column,
                            final boolean isNew,
                            final boolean isReadOnly ) {
-        super( GuidedDecisionTableConstants.INSTANCE.ConditionColumnConfiguration() );
+
         this.rm = new BRLRuleModel( model );
         this.editingPattern = pattern != null ? pattern.clonePattern() : null;
         this.editingCol = cloneConditionColumn( column );
@@ -182,239 +128,15 @@ public class ConditionPopup extends FormStylePopup {
                                                         isReadOnly,
                                                         allowEmptyValues() );
 
-        HorizontalPanel patternWidget = new HorizontalPanel();
-        patternWidget.add( patternLabel );
-        doPatternLabel();
-
-        //Pattern selector
-        ImageButton changePattern = new ImageButton( GuidedDecisionTableImageResources508.INSTANCE.Edit(),
-                                                     GuidedDecisionTableImageResources508.INSTANCE.EditDisabled(),
-                                                     GuidedDecisionTableConstants.INSTANCE.ChooseAnExistingPatternThatThisColumnAddsTo(),
-                                                     new ClickHandler() {
-                                                         public void onClick( ClickEvent w ) {
-                                                             showChangePattern( w );
-                                                         }
-                                                     } );
-        changePattern.setEnabled( !isReadOnly );
-        patternWidget.add( changePattern );
-
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.Pattern(),
-                      patternWidget );
-
-        //Radio buttons for Calculation Type
-        switch ( model.getTableFormat() ) {
-            case EXTENDED_ENTRY:
-                HorizontalPanel valueTypes = new HorizontalPanel();
-                valueTypes.add( literal );
-                valueTypes.add( formula );
-                valueTypes.add( predicate );
-                addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.CalculationType() ).append( GuidedDecisionTableConstants.COLON ).toString(),
-                              valueTypes );
-
-                switch ( editingCol.getConstraintValueType() ) {
-                    case BaseSingleFieldConstraint.TYPE_LITERAL:
-                        literal.setValue( true );
-                        break;
-                    case BaseSingleFieldConstraint.TYPE_RET_VALUE:
-                        formula.setValue( true );
-                        break;
-                    case BaseSingleFieldConstraint.TYPE_PREDICATE:
-                        predicate.setValue( true );
-                }
-
-                if ( !isReadOnly ) {
-                    literal.addClickHandler( new ClickHandler() {
-                        public void onClick( ClickEvent w ) {
-                            editingCol.setFactField( null );
-                            applyConsTypeChange( BaseSingleFieldConstraint.TYPE_LITERAL );
-                        }
-                    } );
-                }
-
-                if ( !isReadOnly ) {
-                    formula.addClickHandler( new ClickHandler() {
-                        public void onClick( ClickEvent w ) {
-                            editingCol.setFactField( null );
-                            applyConsTypeChange( BaseSingleFieldConstraint.TYPE_RET_VALUE );
-                        }
-                    } );
-                }
-
-                if ( !isReadOnly ) {
-                    predicate.addClickHandler( new ClickHandler() {
-                        public void onClick( ClickEvent w ) {
-                            editingCol.setFactField( null );
-                            applyConsTypeChange( BaseSingleFieldConstraint.TYPE_PREDICATE );
-                        }
-                    } );
-                }
-
-                break;
-
-            case LIMITED_ENTRY:
-                binding.setEnabled( !isReadOnly );
-        }
-
-        //Fact field
-        HorizontalPanel field = new HorizontalPanel();
-        fieldLabel.setEnabled( !isReadOnly );
-        field.add( fieldLabel );
-        field.add( fieldLabelInterpolationInfo );
-        this.editField = new ImageButton( GuidedDecisionTableImageResources508.INSTANCE.Edit(),
-                                          GuidedDecisionTableImageResources508.INSTANCE.EditDisabled(),
-                                          GuidedDecisionTableConstants.INSTANCE.EditTheFieldThatThisColumnOperatesOn(),
-                                          new ClickHandler() {
-                                              public void onClick( ClickEvent w ) {
-                                                  showFieldChange();
-                                              }
-                                          } );
-        editField.setEnabled( !isReadOnly );
-        field.add( editField );
-        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Field() ).append( GuidedDecisionTableConstants.COLON ).toString(),
-                      field );
-        doFieldLabel();
-
-        //Operator
-        HorizontalPanel operator = new HorizontalPanel();
-        operator.add( operatorLabel );
-        this.editOp = new ImageButton( GuidedDecisionTableImageResources508.INSTANCE.Edit(),
-                                       GuidedDecisionTableImageResources508.INSTANCE.EditDisabled(),
-                                       GuidedDecisionTableConstants.INSTANCE.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
-                                       new ClickHandler() {
-                                           public void onClick( ClickEvent w ) {
-                                               showOperatorChange();
-                                           }
-                                       } );
-        editOp.setEnabled( !isReadOnly );
-        operator.add( editOp );
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.Operator(),
-                      operator );
-        doOperatorLabel();
-        doImageButtons();
-
-        //Add CEP fields for patterns containing Facts declared as Events
-        cepWindowRowIndex = addAttribute( GuidedDecisionTableConstants.INSTANCE.DTLabelOverCEPWindow(),
-                                          createCEPWindowWidget( editingPattern ) ).getIndex();
-        displayCEPOperators();
-
-        //Entry point
-        entryPointName = new TextBox();
-        entryPointName.setText( editingPattern.getEntryPointName() );
-        entryPointName.setEnabled( !isReadOnly );
-        if ( !isReadOnly ) {
-            entryPointName.addChangeHandler( new ChangeHandler() {
-                public void onChange( ChangeEvent event ) {
-                    editingPattern.setEntryPointName( entryPointName.getText() );
-                }
-            } );
-        }
-        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.DTLabelFromEntryPoint() ).append( GuidedDecisionTableConstants.COLON ).toString(),
-                      entryPointName );
-
-        //Column header
-        final TextBox header = new TextBox();
-        header.setText( column.getHeader() );
-        header.setEnabled( !isReadOnly );
-        if ( !isReadOnly ) {
-            header.addChangeHandler( new ChangeHandler() {
-                public void onChange( ChangeEvent event ) {
-                    editingCol.setHeader( header.getText() );
-                }
-            } );
-        }
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.ColumnHeaderDescription(),
-                      header );
-
-        //Optional value list
-        if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            valueListWidget = new TextBox();
-            valueListWidget.setText( editingCol.getValueList() );
-            valueListWidget.setEnabled( !isReadOnly );
-            if ( !isReadOnly ) {
-
-                //Copy value back to model
-                valueListWidget.addChangeHandler( new ChangeHandler() {
-                    public void onChange( ChangeEvent event ) {
-                        editingCol.setValueList( valueListWidget.getText() );
-                    }
-                } );
-
-                //Update Default Value widget if necessary
-                valueListWidget.addBlurHandler( new BlurHandler() {
-                    public void onBlur( BlurEvent event ) {
-                        assertDefaultValue();
-                        makeDefaultValueWidget();
-                    }
-
-                    private void assertDefaultValue() {
-                        final List<String> valueList = Arrays.asList( columnUtilities.getValueList( editingCol ) );
-                        if ( valueList.size() > 0 ) {
-                            final String defaultValue = cellUtilities.asString( editingCol.getDefaultValue() );
-                            if ( !valueList.contains( defaultValue ) ) {
-                                editingCol.getDefaultValue().clearValues();
-                            }
-                        } else {
-                            //Ensure the Default Value has been updated to represent the column's data-type.
-                            final DTCellValue52 defaultValue = editingCol.getDefaultValue();
-                            final DataType.DataTypes dataType = columnUtilities.getDataType( editingPattern,
-                                                                                             editingCol );
-                            cellUtilities.convertDTCellValueType( dataType,
-                                                                  defaultValue );
-                        }
-                    }
-
-                } );
-
-            }
-            HorizontalPanel vl = new HorizontalPanel();
-            vl.add( valueListWidget );
-            vl.add( new InfoPopup( GuidedDecisionTableConstants.INSTANCE.ValueList(),
-                                   GuidedDecisionTableConstants.INSTANCE.ValueListsExplanation() ) );
-            addAttribute( GuidedDecisionTableConstants.INSTANCE.optionalValueList(),
-                          vl );
-        }
-
-        //Default value
-        if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            defaultValueWidgetContainerIndex = addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.DefaultValue() ).append( GuidedDecisionTableConstants.COLON ).toString(),
-                                                             defaultValueWidgetContainer ).getIndex();
-            makeDefaultValueWidget();
-        }
-
-        //Limited entry value widget
-        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
-            limitedEntryValueAttributeIndex = addAttribute( GuidedDecisionTableConstants.INSTANCE.LimitedEntryValue(),
-                                                            limitedEntryValueWidgetContainer ).getIndex();
-            makeLimitedValueWidget();
-        }
-
-        //Field Binding
-        binding.setText( column.getBinding() );
-        if ( !isReadOnly ) {
-            binding.addChangeHandler( new ChangeHandler() {
-                public void onChange( ChangeEvent event ) {
-                    editingCol.setBinding( binding.getText() );
-                }
-            } );
-        }
-        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Binding() ).append( GuidedDecisionTableConstants.COLON ).toString(),
-                      binding );
-
-        //Hide column tick-box
-        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.HideThisColumn() ).append( GuidedDecisionTableConstants.COLON ).toString(),
-                      DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
-
-        //Initialise view
-        doValueList();
-        doCalculationType();
-        initialiseViewForConstraintValueType( editingCol.getConstraintValueType() );
-
-        //Apply button
-        footer.enableOkButton( !isReadOnly );
-        add( footer );
+        view = new ConditionPopupView( this );
+        view.initializeView();
     }
 
-    private void applyChanges() {
+    public void show() {
+        view.show();
+    }
+
+    public void applyChanges() {
         if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
             Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
             return;
@@ -479,7 +201,7 @@ public class ConditionPopup extends FormStylePopup {
         // Pass new\modified column back for handling
         refreshGrid.execute( editingPattern,
                              editingCol );
-        hide();
+        view.hide();
 
     }
 
@@ -518,79 +240,82 @@ public class ConditionPopup extends FormStylePopup {
         return clone;
     }
 
-    private void makeLimitedValueWidget() {
-        if ( !( editingCol instanceof LimitedEntryConditionCol52 ) ) {
-            return;
-        }
-        LimitedEntryConditionCol52 lec = (LimitedEntryConditionCol52) editingCol;
-        boolean doesOperatorNeedValue = validator.doesOperatorNeedValue( editingCol );
-        if ( !doesOperatorNeedValue ) {
-            setAttributeVisibility( limitedEntryValueAttributeIndex,
-                                    false );
-            lec.setValue( null );
-            return;
-        }
-        setAttributeVisibility( limitedEntryValueAttributeIndex,
-                                true );
-        if ( lec.getValue() == null ) {
-            lec.setValue( factory.makeNewValue( editingPattern,
-                                                editingCol ) );
-        }
-        limitedEntryValueWidgetContainer.setWidget( factory.getWidget( editingPattern,
-                                                                       editingCol,
-                                                                       lec.getValue() ) );
-    }
+    public void makeLimitedValueWidget() {
 
-    private void makeDefaultValueWidget() {
         if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
-            return;
+            view.addLimitedEntryValue();
+            if ( !( editingCol instanceof LimitedEntryConditionCol52 ) ) {
+                return;
+            }
+            LimitedEntryConditionCol52 lec = (LimitedEntryConditionCol52) editingCol;
+            boolean doesOperatorNeedValue = validator.doesOperatorNeedValue( editingCol );
+            if ( !doesOperatorNeedValue ) {
+                view.setLimitedEntryVisibility( false );
+                lec.setValue( null );
+                return;
+            }
+            view.setLimitedEntryVisibility( true );
+            if ( lec.getValue() == null ) {
+                lec.setValue( factory.makeNewValue( editingPattern,
+                        editingCol ) );
+            }
+            view.setLimitedEntryWidget( factory.getWidget( editingPattern,
+                    editingCol,
+                    lec.getValue() ) );
         }
-        if ( nil( editingCol.getFactField() ) ) {
-            setAttributeVisibility( defaultValueWidgetContainerIndex,
-                                    false );
-            return;
-        }
-
-        //Don't show Default Value if operator does not require a value
-        if ( !validator.doesOperatorNeedValue( editingCol ) ) {
-            setAttributeVisibility( defaultValueWidgetContainerIndex,
-                                    false );
-            return;
-        }
-
-        setAttributeVisibility( defaultValueWidgetContainerIndex,
-                                true );
-        if ( editingCol.getDefaultValue() == null ) {
-            editingCol.setDefaultValue( factory.makeNewValue( editingPattern,
-                                                              editingCol ) );
-        }
-
-        //Ensure the Default Value has been updated to represent the column's 
-        //data-type. Legacy Default Values are all String-based and need to be 
-        //coerced to the correct type
-        final DTCellValue52 defaultValue = editingCol.getDefaultValue();
-        final DataType.DataTypes dataType = columnUtilities.getDataType( editingPattern,
-                                                                         editingCol );
-        cellUtilities.convertDTCellValueType( dataType,
-                                              defaultValue );
-
-        //Correct comma-separated Default Value if operator does not support it
-        if ( !validator.doesOperatorAcceptCommaSeparatedValues( editingCol ) ) {
-            cellUtilities.removeCommaSeparatedValue( defaultValue );
-        }
-
-        defaultValueWidgetContainer.setWidget( factory.getWidget( editingPattern,
-                                                                  editingCol,
-                                                                  defaultValue ) );
     }
 
-    private void applyConsTypeChange( int newConstraintValueType ) {
+    public void makeDefaultValueWidget() {
+        //Default value
+        if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
+            view.addDefaultValue();
+            if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
+                return;
+            }
+            if ( nil( editingCol.getFactField() ) ) {
+                view.setDefaultValueVisibility( false );
+                return;
+            }
+
+            //Don't show Default Value if operator does not require a value
+            if ( !validator.doesOperatorNeedValue( editingCol ) ) {
+                view.setDefaultValueVisibility( false );
+                return;
+            }
+
+            view.setDefaultValueVisibility( true );
+            if ( editingCol.getDefaultValue() == null ) {
+                editingCol.setDefaultValue( factory.makeNewValue( editingPattern,
+                        editingCol ) );
+            }
+
+            //Ensure the Default Value has been updated to represent the column's
+            //data-type. Legacy Default Values are all String-based and need to be
+            //coerced to the correct type
+            final DTCellValue52 defaultValue = editingCol.getDefaultValue();
+            final DataType.DataTypes dataType = columnUtilities.getDataType( editingPattern,
+                    editingCol );
+            cellUtilities.convertDTCellValueType( dataType,
+                    defaultValue );
+
+            //Correct comma-separated Default Value if operator does not support it
+            if ( !validator.doesOperatorAcceptCommaSeparatedValues( editingCol ) ) {
+                cellUtilities.removeCommaSeparatedValue( defaultValue );
+            }
+
+            view.setDefaultValueWidget( factory.getWidget( editingPattern,
+                    editingCol,
+                    defaultValue ) );
+        }
+    }
+
+    public void applyConsTypeChange( int newConstraintValueType ) {
         editingCol.setConstraintValueType( newConstraintValueType );
-        initialiseViewForConstraintValueType( newConstraintValueType );
+        initialiseViewForConstraintValueType();
     }
 
-    private void initialiseViewForConstraintValueType( int constraintValueType ) {
-        binding.setEnabled( constraintValueType == BaseSingleFieldConstraint.TYPE_LITERAL && !isReadOnly );
+    public void initialiseViewForConstraintValueType() {
+        view.enableBinding( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL && !isReadOnly );
         doFieldLabel();
         doValueList();
         doOperatorLabel();
@@ -598,52 +323,52 @@ public class ConditionPopup extends FormStylePopup {
         makeDefaultValueWidget();
     }
 
-    private void doImageButtons() {
+    public void doImageButtons() {
         int constraintType = editingCol.getConstraintValueType();
         boolean enableField = !( nil( editingPattern.getFactType() ) || constraintType == BaseSingleFieldConstraint.TYPE_PREDICATE || isReadOnly );
         boolean enableOp = !( nil( editingCol.getFactField() ) || constraintType == BaseSingleFieldConstraint.TYPE_PREDICATE || isReadOnly );
-        this.editField.setEnabled( enableField );
-        this.editOp.setEnabled( enableOp );
+        view.enableEditField( enableField );
+        view.enableEditOperator( enableOp );
     }
 
     private boolean isBindingUnique( String binding ) {
         return !rm.isVariableNameUsed( binding );
     }
 
-    private void doFieldLabel() {
+    public void doFieldLabel() {
         if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
             if ( this.editingCol.getFactField() == null || this.editingCol.getFactField().equals( "" ) ) {
-                fieldLabel.setText( GuidedDecisionTableConstants.INSTANCE.notNeededForPredicate() );
+                view.setFieldLabelText( GuidedDecisionTableConstants.INSTANCE.notNeededForPredicate() );
             } else {
-                fieldLabel.setText( this.editingCol.getFactField() );
+                view.setFieldLabelText( this.editingCol.getFactField() );
             }
-            fieldLabelInterpolationInfo.getWidget().getElement().getStyle().setDisplay( Style.Display.INLINE );
+            view.setFieldLabelDisplayStyle( Style.Display.INLINE );
         } else if ( nil( editingPattern.getFactType() ) ) {
-            fieldLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAPatternFirst() );
-            fieldLabelInterpolationInfo.getWidget().getElement().getStyle().setDisplay( Style.Display.NONE );
+            view.setFieldLabelText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAPatternFirst() );
+            view.setFieldLabelDisplayStyle( Style.Display.NONE );
         } else if ( nil( editingCol.getFactField() ) ) {
-            fieldLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAField() );
-            fieldLabelInterpolationInfo.getWidget().getElement().getStyle().setDisplay( Style.Display.NONE );
+            view.setFieldLabelText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAField() );
+            view.setFieldLabelDisplayStyle( Style.Display.NONE );
         } else {
-            fieldLabel.setText( this.editingCol.getFactField() );
+            view.setFieldLabelText( this.editingCol.getFactField() );
         }
     }
 
-    private void doOperatorLabel() {
+    public void doOperatorLabel() {
         if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.notNeededForPredicate() );
+            view.setOperatorLabelText( GuidedDecisionTableConstants.INSTANCE.notNeededForPredicate() );
         } else if ( nil( editingPattern.getFactType() ) ) {
-            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAPatternFirst() );
+            view.setOperatorLabelText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAPatternFirst() );
         } else if ( nil( editingCol.getFactField() ) ) {
-            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseChooseAFieldFirst() );
+            view.setOperatorLabelText( GuidedDecisionTableConstants.INSTANCE.pleaseChooseAFieldFirst() );
         } else if ( nil( editingCol.getOperator() ) ) {
-            operatorLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAnOperator() );
+            view.setOperatorLabelText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAnOperator() );
         } else {
-            operatorLabel.setText( HumanReadable.getOperatorDisplayName( editingCol.getOperator() ) );
+            view.setOperatorLabelText( HumanReadable.getOperatorDisplayName( editingCol.getOperator() ) );
         }
     }
 
-    private void doPatternLabel() {
+    public void doPatternLabel() {
         if ( editingPattern.getFactType() != null ) {
             StringBuilder patternLabel = new StringBuilder();
             String factType = editingPattern.getFactType();
@@ -655,28 +380,13 @@ public class ConditionPopup extends FormStylePopup {
                     patternLabel.append( factType ).append( " [" ).append( boundName ).append( "]" );
                 }
             }
-            this.patternLabel.setText( patternLabel.toString() );
+            view.setPatternLabelText( patternLabel.toString() );
         }
         doFieldLabel();
         doOperatorLabel();
     }
 
-    private TextBox getFieldLabel() {
-        final TextBox box = new TextBox();
-        box.addChangeHandler( new ChangeHandler() {
-            public void onChange( ChangeEvent event ) {
-                editingCol.setFactField( box.getText() );
-            }
-        } );
-        return box;
-    }
-
-    private InfoPopup getPredicateHint() {
-        return new InfoPopup( GuidedDecisionTableConstants.INSTANCE.Predicates(),
-                              GuidedDecisionTableConstants.INSTANCE.PredicatesInfo() );
-    }
-
-    private void doValueList() {
+    public void doValueList() {
         if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
             return;
         }
@@ -696,15 +406,15 @@ public class ConditionPopup extends FormStylePopup {
             enableValueList = !oracle.hasEnums( factType,
                                                 factField );
         }
-        valueListWidget.setEnabled( enableValueList );
+        view.enableValueListWidget( enableValueList );
         if ( !enableValueList ) {
-            valueListWidget.setText( "" );
+            view.setValueListWidgetText( "" );
         } else {
-            valueListWidget.setText( editingCol.getValueList() );
+            view.setValueListWidgetText( editingCol.getValueList() );
         }
     }
 
-    private void doCalculationType() {
+    public void doCalculationType() {
         if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
             return;
         }
@@ -714,9 +424,9 @@ public class ConditionPopup extends FormStylePopup {
         final String factField = editingCol.getFactField();
         final boolean hasEnums = oracle.hasEnums( factType,
                                                   factField );
-        this.literal.setEnabled( hasEnums || !isReadOnly );
-        this.formula.setEnabled( !( hasEnums || isReadOnly ) );
-        this.predicate.setEnabled( !( hasEnums || isReadOnly ) );
+        view.enableLiteral( hasEnums || !isReadOnly );
+        view.enableFormula( !( hasEnums || isReadOnly ) );
+        view.enablePredicate( !( hasEnums || isReadOnly ) );
 
         //If Fact\Field has enums the Value Type has to be a literal
         if ( hasEnums ) {
@@ -765,7 +475,7 @@ public class ConditionPopup extends FormStylePopup {
         return s == null || s.equals( "" );
     }
 
-    private void showOperatorChange() {
+    public void showOperatorChange() {
         final String factType = editingPattern.getFactType();
         final String factField = editingCol.getFactField();
         this.oracle.getOperatorCompletions( factType,
@@ -816,18 +526,18 @@ public class ConditionPopup extends FormStylePopup {
                 doOperatorLabel();
                 doValueList();
                 pop.hide();
-                enableFooter( true );
+                view.enableFooter( true );
             }
         }, new Command() {
             @Override
             public void execute() {
                 pop.hide();
-                enableFooter( true );
+                view.enableFooter( true );
             }
         }
         ) );
 
-        enableFooter( false );
+        view.enableFooter( false );
         pop.show();
     }
 
@@ -842,7 +552,7 @@ public class ConditionPopup extends FormStylePopup {
         return true;
     }
 
-    protected void showChangePattern( ClickEvent w ) {
+    public void showChangePattern( ClickEvent w ) {
         final ListBox pats = this.loadPatterns();
         if ( pats.getItemCount() == 0 ) {
             showNewPatternDialog();
@@ -864,8 +574,8 @@ public class ConditionPopup extends FormStylePopup {
                 editingCol.setOperator( null );
 
                 //Set-up UI
-                entryPointName.setText( editingPattern.getEntryPointName() );
-                cwo.selectItem( editingPattern.getWindow().getOperator() );
+                view.setEntryPointName( editingPattern.getEntryPointName() );
+                view.selectOperator( editingPattern.getWindow().getOperator() );
                 makeLimitedValueWidget();
                 makeDefaultValueWidget();
                 displayCEPOperators();
@@ -875,7 +585,7 @@ public class ConditionPopup extends FormStylePopup {
                 doImageButtons();
 
                 pop.hide();
-                enableFooter( true );
+                view.enableFooter( true );
             }
         }, new Command() {
             @Override
@@ -887,51 +597,18 @@ public class ConditionPopup extends FormStylePopup {
             @Override
             public void execute() {
                 pop.hide();
-                enableFooter( true );
+                view.enableFooter( true );
             }
         }
         ) );
 
-        enableFooter( false );
+        view.enableFooter( false );
         pop.show();
     }
 
-    protected void showFieldChange() {
-        final FormStylePopup pop = new FormStylePopup( GuidedDecisionTableConstants.INSTANCE.Field() );
-        final ListBox box = loadFields();
-
-        pop.addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Field() ).append( GuidedDecisionTableConstants.COLON ).toString(),
-                          box );
-
-        pop.add( new ModalFooterOKCancelButtons(
-                () -> {
-                    editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
-                    editingCol.setFieldType( oracle.getFieldType( editingPattern.getFactType(),
-                                                                  editingCol.getFactField() ) );
-
-                    //Clear Operator when field changes
-                    editingCol.setOperator( null );
-                    editingCol.setValueList( null );
-
-                    //Setup UI
-                    doFieldLabel();
-                    doValueList();
-                    doCalculationType();
-                    makeLimitedValueWidget();
-                    makeDefaultValueWidget();
-                    doOperatorLabel();
-                    doImageButtons();
-
-                    pop.hide();
-                    enableFooter( true );
-                },
-                () -> {
-                    pop.hide();
-                    enableFooter( true );
-                } ) );
-
-        enableFooter( false );
-        pop.show();
+    public void showFieldChange() {
+        view.enableFooter( false );
+        view.showFieldChangePopUp();
     }
 
     ListBox loadFields() {
@@ -1039,8 +716,8 @@ public class ConditionPopup extends FormStylePopup {
                 editingCol.setOperator( null );
 
                 //Set-up UI
-                entryPointName.setText( editingPattern.getEntryPointName() );
-                cwo.selectItem( editingPattern.getWindow().getOperator() );
+                view.setEntryPointName( editingPattern.getEntryPointName() );
+                view.selectOperator( editingPattern.getWindow().getOperator() );
                 makeLimitedValueWidget();
                 makeDefaultValueWidget();
                 displayCEPOperators();
@@ -1051,62 +728,130 @@ public class ConditionPopup extends FormStylePopup {
                 doImageButtons();
 
                 pop.hide();
-                enableFooter( true );
+                view.enableFooter( true );
             }
         }, new Command() {
             @Override
             public void execute() {
                 pop.hide();
-                enableFooter( true );
+                view.enableFooter( true );
             }
         }
         ) );
 
-        enableFooter( false );
+        view.enableFooter( false );
         pop.show();
     }
 
-    //Widget for CEP 'windows'
-    private IsWidget createCEPWindowWidget( final HasCEPWindow c ) {
-        HorizontalPanel hp = new HorizontalPanel();
-        Label lbl = new Label( GuidedDecisionTableConstants.INSTANCE.OverCEPWindow() );
-        lbl.setStyleName( "paddedLabel" );
-        hp.add( lbl );
-
-        cwo = new CEPWindowOperatorsDropdown( c,
-                                              isReadOnly );
-        if ( !isReadOnly ) {
-            cwo.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
-
-                public void onValueChange( ValueChangeEvent<OperatorSelection> event ) {
-                    OperatorSelection selection = event.getValue();
-                    String selected = selection.getValue();
-                    c.getWindow().setOperator( selected );
-                }
-            } );
-        }
-
-        hp.add( cwo );
-        return hp;
-    }
-
-    private void displayCEPOperators() {
+    public void displayCEPOperators() {
         oracle.isFactTypeAnEvent( editingPattern.getFactType(),
                                   new Callback<Boolean>() {
                                       @Override
                                       public void callback( final Boolean result ) {
-                                          setAttributeVisibility( cepWindowRowIndex,
-                                                                  Boolean.TRUE.equals( result ) );
+                                          view.setCepWindowVisibility( Boolean.TRUE.equals( result ) );
                                       }
                                   } );
     }
 
-    private void enableFooter( final boolean enabled ) {
-        if ( footer == null ) {
-            return;
+    public boolean isReadOnly() {
+        return isReadOnly;
+    }
+
+    public TableFormat getTableFormat() {
+        return model.getTableFormat();
+    }
+
+    public int getConstraintValueType() {
+        return editingCol.getConstraintValueType();
+    }
+
+    public void setFactField( String factField ) {
+        editingCol.setFactField( factField );
+    }
+
+    public Pattern52 getEditingPattern() {
+        return editingPattern;
+    }
+
+    public String getHeader() {
+        return editingCol.getHeader();
+    }
+
+    public void setHeader( String header ) {
+        editingCol.setHeader( header );
+    }
+
+    public String getValueList() {
+        return editingCol.getValueList();
+    }
+
+    public void setValueList( String valueList ) {
+        editingCol.setValueList( valueList );
+    }
+
+    public ConditionCol52 getEditingCol() {
+        return editingCol;
+    }
+
+    public void assertDefaultValue() {
+        final List<String> valueList = Arrays.asList( columnUtilities.getValueList( editingCol ) );
+        if ( valueList.size() > 0 ) {
+            final String defaultValue = cellUtilities.asString( editingCol.getDefaultValue() );
+            if ( !valueList.contains( defaultValue ) ) {
+                editingCol.getDefaultValue().clearValues();
+            }
+        } else {
+            //Ensure the Default Value has been updated to represent the column's data-type.
+            final DTCellValue52 defaultValue = editingCol.getDefaultValue();
+            final DataType.DataTypes dataType = columnUtilities.getDataType( editingPattern,
+                    editingCol );
+            cellUtilities.convertDTCellValueType( dataType,
+                    defaultValue );
         }
-        footer.enableOkButton( enabled );
-        footer.enableCancelButton( enabled );
+    }
+
+    public String getBinding() {
+        return editingCol.getBinding();
+    }
+
+    public void setBinding( String binding ) {
+        editingCol.setBinding( binding );
+    }
+
+    public void confirmFieldChangePopUp( FormStylePopup popUp, String newSelectedField ) {
+        boolean fieldChanged = true;
+        if ( editingCol.getFactField() != null ) {
+            fieldChanged = editingCol.getFactField().compareTo( newSelectedField ) != 0;
+        }
+
+        editingCol.setFactField( newSelectedField );
+        editingCol.setFieldType( oracle.getFieldType( editingPattern.getFactType(),
+                                                      editingCol.getFactField()
+                                                    )
+                               );
+
+        //Clear Operator when field changes
+        if( fieldChanged ) {
+            editingCol.setOperator(null);
+            editingCol.setValueList(null);
+        }
+
+        //Setup UI
+        doFieldLabel();
+        doValueList();
+        doCalculationType();
+        makeLimitedValueWidget();
+        makeDefaultValueWidget();
+        doOperatorLabel();
+        doImageButtons();
+
+        popUp.hide();
+        view.enableFooter( true );
+    }
+
+    public void cancelFieldChangePopUp( FormStylePopup popUp ) {
+        popUp.hide();
+        view.enableFooter( true );
     }
 
 }
