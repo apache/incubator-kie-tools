@@ -34,7 +34,7 @@ public class ClassVerifier {
     private static final Logger logger = LoggerFactory.getLogger( ClassVerifier.class );
 
     private final static String ERROR_EXTERNAL_CLASS_VERIFICATION = "Verification of class {0} failed and will not be available for authoring.\n" +
-            "Please check the necessary external dependencies for this project are configured correctly.";
+            "Underlying system error is: {1}. Please check the necessary external dependencies for this project are configured correctly.";
 
     private final TypeSourceResolver typeSourceResolver;
     private final KieModuleMetaData kieModuleMetaData;
@@ -77,8 +77,11 @@ public class ClassVerifier {
 
         } catch (Throwable e) {
             final String msg = MessageFormat.format( ERROR_EXTERNAL_CLASS_VERIFICATION,
-                                                     toFQCN( packageName, className ) );
+                                                     toFQCN( packageName, className ),
+                                                     e.getMessage() );
+            		
             logger.warn( msg );
+            logger.debug( "This state is usually encountered when the Project references a class not on the classpath; e.g. in a Maven 'provided' scope or 'optional' dependency.", e);
             buildMessages.add( makeWarningMessage( msg ) );
         }
     }
