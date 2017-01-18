@@ -145,17 +145,17 @@ public class ConditionPopupViewTest {
 
         verify( literal ).addClickHandler( clickHandlerCaptor.capture() );
         clickHandlerCaptor.getValue().onClick( event );
-        verify( presenter ).setFactField( null );
+        verify( presenter, never() ).setFactField( null );
         verify( presenter ).applyConsTypeChange( BaseSingleFieldConstraint.TYPE_LITERAL );
 
         verify( formula ).addClickHandler( clickHandlerCaptor.capture() );
         clickHandlerCaptor.getValue().onClick( event );
-        verify( presenter, times( 2 ) ).setFactField( null );
+        verify( presenter, never() ).setFactField( null );
         verify( presenter ).applyConsTypeChange( BaseSingleFieldConstraint.TYPE_RET_VALUE );
 
         verify( predicate ).addClickHandler( clickHandlerCaptor.capture() );
         clickHandlerCaptor.getValue().onClick( event );
-        verify( presenter, times( 3 ) ).setFactField( null );
+        verify( presenter, times( 1 ) ).setFactField( null );
         verify( presenter ).applyConsTypeChange( BaseSingleFieldConstraint.TYPE_PREDICATE );
     }
 

@@ -177,14 +177,12 @@ public class ConditionPopupView extends FormStylePopup {
                 if ( !this.presenter.isReadOnly() ) {
                     literal.addClickHandler( new ClickHandler() {
                         public void onClick( ClickEvent w ) {
-                            presenter.setFactField( null );
                             presenter.applyConsTypeChange( BaseSingleFieldConstraint.TYPE_LITERAL );
                         }
                     } );
 
                     formula.addClickHandler( new ClickHandler() {
                         public void onClick( ClickEvent w ) {
-                            presenter.setFactField( null );
                             presenter.applyConsTypeChange( BaseSingleFieldConstraint.TYPE_RET_VALUE );
                         }
                     } );
