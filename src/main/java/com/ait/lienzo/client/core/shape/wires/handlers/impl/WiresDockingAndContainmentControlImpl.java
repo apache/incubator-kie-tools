@@ -255,6 +255,11 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
                 ((WiresShape) m_parent).getPath().setFillGradient((RadialGradient) m_priorFillGradient);
             }
             ((WiresShape) m_parent).getPath().setFillAlpha(m_priorAlpha);
+
+            m_priorFillChanged = false;
+            m_priorFill = null;
+            m_priorFillGradient = null;
+            m_priorAlpha = 0.0;
         }
     }
 
