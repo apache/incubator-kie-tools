@@ -24,20 +24,27 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.ColorKeyRotor;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.util.ScratchPad;
+import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
 public class ColorMapBackedPicker
 {
-    public static final ColorKeyRotor        m_colorKeyRotor = new ColorKeyRotor();
+    public static final ColorKeyRotor          m_colorKeyRotor = new ColorKeyRotor();
 
-    private final NFastStringMap<PickerPart> m_colorMap = new NFastStringMap<>();
+    protected final Context2D                  m_ctx;
 
-    private ImageData                        m_imageData;
+    protected final ScratchPad                 m_scratchPad;
 
-    private boolean                          m_addHotspots;
+    protected final NFastStringMap<PickerPart> m_colorMap = new NFastStringMap<>();
 
-    private double                           m_borderWidth;
+    protected final NFastArrayList<WiresShape> m_shapesToSkip = new NFastArrayList<>();
+
+    protected ImageData                        m_imageData;
+
+    protected boolean                          m_addHotspots;
+
+    protected double                           m_borderWidth;
 
     public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, WiresShape shapeToSkip)
     {
@@ -46,68 +53,80 @@ public class ColorMapBackedPicker
 
     public ColorMapBackedPicker( NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, final WiresShape shapeToSkip, boolean addHotspots, double borderWidth )
     {
-        final NFastArrayList<WiresShape> shapesToSkip = new NFastArrayList<>(  );
-        shapesToSkip.add( shapeToSkip );
+        m_scratchPad = scratchPad;
+        m_ctx = scratchPad.getContext();
+        m_shapesToSkip.add(shapeToSkip);
         init( shapes,
-              scratchPad,
-              shapesToSkip,
               addHotspots,
               borderWidth);
     }
 
     public ColorMapBackedPicker(NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, NFastArrayList<WiresShape> shapesToSkip, boolean addHotspots, double borderWidth)
     {
+        m_scratchPad = scratchPad;
+        m_ctx = scratchPad.getContext();
+        for(int j = 0; j < shapesToSkip.size(); j++) {
+            m_shapesToSkip.add(shapesToSkip.get(j));
+        }
         init( shapes,
-              scratchPad,
-              shapesToSkip,
               addHotspots,
               borderWidth);
     }
 
-    private void init(NFastArrayList<WiresShape> shapes, ScratchPad scratchPad, NFastArrayList<WiresShape> shapesToSkip, boolean addHotspots, double borderWidth) {
+    private void init(NFastArrayList<WiresShape> shapes, boolean addHotspots, double borderWidth) {
         this.m_addHotspots = addHotspots;
         this.m_borderWidth = borderWidth;
-        scratchPad.clear();
+        this.m_scratchPad.clear();
 
-        Context2D ctx = scratchPad.getContext();
+        addShapes(shapes);
 
-        addShapes(ctx, shapes, shapesToSkip);
-
-        this.m_imageData = ctx.getImageData(0, 0, scratchPad.getWidth(), scratchPad.getHeight());
+        this.m_imageData = m_ctx.getImageData(0, 0, m_scratchPad.getWidth(), m_scratchPad.getHeight());
     }
 
-    private void addShapes(Context2D ctx, NFastArrayList<WiresShape> shapes, NFastArrayList<WiresShape> shapesToSkip)
+    protected void addShapes(NFastArrayList<WiresShape> shapes)
     {
         for (int j = 0; j < shapes.size(); j++)
         {
             WiresShape prim = shapes.get(j);
-            if ( shapesToSkip.contains( prim ) )
+            if ( m_shapesToSkip.contains( prim ) )
             {
                 continue;
             }
 
             MultiPath multiPath = prim.getPath();
-            drawShape(ctx, m_colorKeyRotor.next(), multiPath.getStrokeWidth(), new PickerPart(prim, PickerPart.ShapePart.BODY), true);
+            drawShape(m_colorKeyRotor.next(), multiPath.getStrokeWidth(), new PickerPart(prim, PickerPart.ShapePart.BODY), true);
+            addSupplementaryPaths(prim);
 
             if (m_addHotspots)
             {
-                drawShape(ctx, m_colorKeyRotor.next(), m_borderWidth, new PickerPart(prim, PickerPart.ShapePart.BORDER_HOTSPOT), false);
+                drawShape(m_colorKeyRotor.next(), m_borderWidth, new PickerPart(prim, PickerPart.ShapePart.BORDER_HOTSPOT), false);
 
-                // need to be able to detect the difference betwen the actual border selection and the border hotspot
-                drawShape(ctx, m_colorKeyRotor.next(), multiPath.getStrokeWidth(), new PickerPart(prim, PickerPart.ShapePart.BORDER), false);
+                // need to be able to detect the difference between the actual border selection and the border hotspot
+                drawShape(m_colorKeyRotor.next(), multiPath.getStrokeWidth(), new PickerPart(prim, PickerPart.ShapePart.BORDER), false);
             }
 
             if (prim.getChildShapes() != null && !prim.getChildShapes().isEmpty())
             {
-                addShapes(ctx, prim.getChildShapes(), shapesToSkip);
+                addShapes(prim.getChildShapes());
             }
         }
     }
 
-    private void drawShape(Context2D ctx, String color, double strokeWidth, PickerPart pickerPart, boolean fill) {
+    @SuppressWarnings("unused")
+    protected void addSupplementaryPaths(WiresShape prim) {
+        //No supplementary paths for a WiresShape by default
+    }
+
+    protected void drawShape(String color, double strokeWidth, PickerPart pickerPart, boolean fill) {
         m_colorMap.put(color, pickerPart);
 
-        BackingColorMapUtils.drawShapeToBacking(ctx, pickerPart.getShape(), color, strokeWidth, fill);
+        BackingColorMapUtils.drawShapeToBacking(m_ctx, pickerPart.getShape(), color, strokeWidth, fill);
+    }
+
+    protected void drawShape(String color, double strokeWidth, MultiPath multiPath, PickerPart pickerPart, boolean fill) {
+        m_colorMap.put(color, pickerPart);
+
+        BackingColorMapUtils.drawShapeToBacking(m_ctx, multiPath, color, strokeWidth, fill);
     }
 
     public PickerPart findShapeAt(int x, int y)
@@ -123,4 +142,5 @@ public class ColorMapBackedPicker
         }
         return null;
     }
+
 }

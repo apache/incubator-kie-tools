@@ -73,7 +73,11 @@ public class BackingColorMapUtils
 
     public static void drawShapeToBacking(Context2D ctx, WiresShape shape, String color, double strokeWidth, boolean fill)
     {
-        MultiPath multiPath = shape.getPath();
+        drawShapeToBacking(ctx, shape.getPath(), color, strokeWidth, fill);
+    }
+
+    public static void drawShapeToBacking(Context2D ctx, MultiPath multiPath, String color, double strokeWidth, boolean fill)
+    {
         NFastArrayList<PathPartList> listOfPaths = multiPath.getPathPartListArray();
 
         for (int k = 0; k < listOfPaths.size(); k++)
