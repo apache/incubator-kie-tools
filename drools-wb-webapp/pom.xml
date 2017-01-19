@@ -511,8 +511,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-social-activities-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-social-activities-api</artifactId>
     </dependency>
 
     <dependency>
@@ -1077,8 +1077,8 @@
             <compileSourcesArtifact>org.drools:drools-wb-workitems-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-workitems-editor-client</compileSourcesArtifact>
 
-            <!-- KIE UberFire extensions -->
-            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-social-activities-api</compileSourcesArtifact>
+            <!-- UberFire extensions -->
+            <compileSourcesArtifact>org.uberfire:uberfire-social-activities-api</compileSourcesArtifact>
 
             <!-- UberFire Extensions -->
             <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-api</compileSourcesArtifact>
