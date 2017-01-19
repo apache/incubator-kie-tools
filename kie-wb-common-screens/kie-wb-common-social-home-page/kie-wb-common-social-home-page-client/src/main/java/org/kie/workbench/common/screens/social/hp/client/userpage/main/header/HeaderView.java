@@ -26,8 +26,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.html.Paragraph;
-import org.kie.uberfire.social.activities.client.widgets.userbox.UserBoxView;
-import org.kie.uberfire.social.activities.model.SocialUser;
+import org.ext.uberfire.social.activities.client.widgets.userbox.UserBoxView;
+import org.ext.uberfire.social.activities.model.SocialUser;
 import org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants;
 import org.uberfire.mvp.ParameterizedCommand;
 

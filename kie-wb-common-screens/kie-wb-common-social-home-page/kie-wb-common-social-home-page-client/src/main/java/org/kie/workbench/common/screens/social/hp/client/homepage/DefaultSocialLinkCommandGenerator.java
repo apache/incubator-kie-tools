@@ -18,8 +18,8 @@ package org.kie.workbench.common.screens.social.hp.client.homepage;
 
 import org.guvnor.common.services.project.social.ProjectEventType;
 import org.guvnor.structure.social.OrganizationalUnitEventType;
-import org.kie.uberfire.social.activities.client.widgets.item.model.LinkCommandParams;
-import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
+import org.ext.uberfire.social.activities.client.widgets.item.model.LinkCommandParams;
+import org.ext.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.uberfire.client.mvp.PlaceManager;

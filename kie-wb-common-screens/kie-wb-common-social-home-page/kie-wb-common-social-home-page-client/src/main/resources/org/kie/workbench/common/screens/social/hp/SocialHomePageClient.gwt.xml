@@ -14,6 +14,6 @@
     <inherits name="org.gwtbootstrap3.extras.typeahead.Typeahead"/>
     <inherits name="org.gwtbootstrap3.extras.select.Select"/>
 
-    <inherits name="org.kie.uberfire.social.activities.SocialActivitiesAPI"/>
-    <inherits name="org.kie.uberfire.social.activities.SocialActivitiesClient"/>
+    <inherits name="org.ext.uberfire.social.activities.SocialActivitiesAPI"/>
+    <inherits name="org.ext.uberfire.social.activities.SocialActivitiesClient"/>
 </module>

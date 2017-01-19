@@ -17,8 +17,8 @@ package org.kie.workbench.common.screens.social.hp.security;
 
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.social.ProjectEventType;
-import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.kie.uberfire.social.activities.service.SocialSecurityConstraint;
+import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.ext.uberfire.social.activities.service.SocialSecurityConstraint;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.file.Path;

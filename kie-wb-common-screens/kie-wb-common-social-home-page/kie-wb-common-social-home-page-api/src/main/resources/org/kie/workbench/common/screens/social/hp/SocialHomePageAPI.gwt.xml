@@ -4,7 +4,7 @@
 
 <module>
   <inherits name="org.jboss.errai.bus.ErraiBus"/>
-  <inherits name="org.kie.uberfire.social.activities.SocialActivitiesAPI"/>
+  <inherits name="org.ext.uberfire.social.activities.SocialActivitiesAPI"/>
 
   <source path='predicate'/>
   <source path='model'/>

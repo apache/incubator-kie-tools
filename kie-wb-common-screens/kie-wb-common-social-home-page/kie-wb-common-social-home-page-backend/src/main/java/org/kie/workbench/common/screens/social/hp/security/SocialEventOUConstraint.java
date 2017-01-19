@@ -19,8 +19,8 @@ import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.social.OrganizationalUnitEventType;
-import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.kie.uberfire.social.activities.service.SocialSecurityConstraint;
+import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.ext.uberfire.social.activities.service.SocialSecurityConstraint;
 import org.uberfire.security.authz.AuthorizationManager;
 
 import javax.enterprise.context.ApplicationScoped;

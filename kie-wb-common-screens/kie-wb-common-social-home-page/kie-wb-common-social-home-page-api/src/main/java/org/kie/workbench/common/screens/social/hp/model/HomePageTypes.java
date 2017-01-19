@@ -16,7 +16,7 @@
 package org.kie.workbench.common.screens.social.hp.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.uberfire.social.activities.model.SocialEventType;
+import org.ext.uberfire.social.activities.model.SocialEventType;
 
 @Portable
 public enum HomePageTypes implements SocialEventType {

@@ -16,9 +16,9 @@
 package org.kie.workbench.common.screens.social.hp.predicate;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.kie.uberfire.social.activities.model.SocialUser;
-import org.kie.uberfire.social.activities.service.SocialPredicate;
+import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.ext.uberfire.social.activities.model.SocialUser;
+import org.ext.uberfire.social.activities.service.SocialPredicate;
 
 @Portable
 public class UserTimeLineOnlyUserActivityPredicate implements SocialPredicate<SocialActivitiesEvent> {

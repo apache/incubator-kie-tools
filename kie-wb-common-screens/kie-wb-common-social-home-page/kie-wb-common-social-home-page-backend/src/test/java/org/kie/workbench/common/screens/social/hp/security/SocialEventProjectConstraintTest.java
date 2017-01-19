@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.screens.social.hp.security;
 
-import org.drools.core.spi.Restriction;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.backend.repositories.RepositoryServiceImpl;
@@ -30,8 +29,8 @@ import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.kie.uberfire.social.activities.model.SocialUser;
+import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.ext.uberfire.social.activities.model.SocialUser;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;

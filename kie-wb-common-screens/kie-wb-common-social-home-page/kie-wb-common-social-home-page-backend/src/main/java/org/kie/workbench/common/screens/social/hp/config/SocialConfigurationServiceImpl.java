@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.uberfire.social.activities.server.SocialConfiguration;
+import org.ext.uberfire.social.activities.server.SocialConfiguration;
 
 @ApplicationScoped
 @Service

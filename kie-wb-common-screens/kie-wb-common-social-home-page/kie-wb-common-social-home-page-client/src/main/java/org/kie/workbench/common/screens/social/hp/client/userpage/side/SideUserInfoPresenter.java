@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Button;
-import org.kie.uberfire.social.activities.model.SocialUser;
+import org.ext.uberfire.social.activities.model.SocialUser;
 
 @Dependent
 public class SideUserInfoPresenter {

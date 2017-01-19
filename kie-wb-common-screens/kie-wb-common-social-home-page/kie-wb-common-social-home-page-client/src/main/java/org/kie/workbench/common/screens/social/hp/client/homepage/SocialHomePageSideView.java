@@ -25,8 +25,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Column;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.kie.uberfire.social.activities.client.widgets.timeline.simple.SimpleSocialTimelineWidget;
-import org.kie.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
+import org.ext.uberfire.social.activities.client.widgets.timeline.simple.SimpleSocialTimelineWidget;
+import org.ext.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
 import org.uberfire.client.mvp.PlaceManager;
 
 @Dependent

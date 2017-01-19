@@ -21,8 +21,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.uberfire.social.activities.client.widgets.userbox.UserBoxView;
-import org.kie.uberfire.social.activities.model.SocialUser;
+import org.ext.uberfire.social.activities.client.widgets.userbox.UserBoxView;
+import org.ext.uberfire.social.activities.model.SocialUser;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent

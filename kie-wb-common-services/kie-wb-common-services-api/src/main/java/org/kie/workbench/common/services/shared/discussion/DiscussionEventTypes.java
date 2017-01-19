@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.services.shared.discussion;
 
-import org.kie.uberfire.social.activities.model.SocialEventType;
+import org.ext.uberfire.social.activities.model.SocialEventType;
 
 public enum DiscussionEventTypes
         implements SocialEventType {

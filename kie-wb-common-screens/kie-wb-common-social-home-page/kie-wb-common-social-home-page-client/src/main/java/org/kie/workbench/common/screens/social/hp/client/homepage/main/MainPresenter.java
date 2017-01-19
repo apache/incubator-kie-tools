@@ -20,7 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.uberfire.social.activities.client.widgets.timeline.regular.SocialTimelineWidget;
+import org.ext.uberfire.social.activities.client.widgets.timeline.regular.SocialTimelineWidget;
 
 @Dependent
 public class MainPresenter {

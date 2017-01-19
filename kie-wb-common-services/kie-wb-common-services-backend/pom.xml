@@ -164,13 +164,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-social-activities-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-social-activities-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-social-activities-backend</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-social-activities-backend</artifactId>
     </dependency>
 
     <dependency>

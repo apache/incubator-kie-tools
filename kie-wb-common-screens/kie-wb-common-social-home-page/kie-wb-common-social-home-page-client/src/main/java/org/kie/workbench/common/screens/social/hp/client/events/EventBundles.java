@@ -18,7 +18,7 @@ package org.kie.workbench.common.screens.social.hp.client.events;
 
 import javax.enterprise.context.Dependent;
 
-import org.kie.uberfire.social.activities.client.widgets.item.bundle.SocialBundleService;
+import org.ext.uberfire.social.activities.client.widgets.item.bundle.SocialBundleService;
 import org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants;
 
 @Dependent

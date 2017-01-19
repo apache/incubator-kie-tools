@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.DescriptionData;
-import org.kie.uberfire.social.activities.model.SocialUser;
+import org.ext.uberfire.social.activities.model.SocialUser;
 
 @Dependent
 public class SideUserInfoView extends Composite
