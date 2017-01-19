@@ -84,4 +84,11 @@ public class NamedPosition implements Position {
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "NamedPosition{" +
+                "fieldName='" + fieldName + '\'' +
+                '}';
+    }
 }

@@ -24,6 +24,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.gwt.core.client.GWT;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
@@ -112,6 +113,7 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
         HTMLElement panelContainer = activity.resolvePosition( position );
 
         if ( panelContainer.hasChildNodes() )  {
+            GWT.log("----> "  + panelContainer.getInnerHTML());
             throw new IllegalStateException( "Child position " + position + " is already occupied" );
         }
 

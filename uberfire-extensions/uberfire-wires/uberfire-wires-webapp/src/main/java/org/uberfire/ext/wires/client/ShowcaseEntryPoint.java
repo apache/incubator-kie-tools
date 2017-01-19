@@ -123,7 +123,13 @@ public class ShowcaseEntryPoint {
             public void execute() {
                 placeManager.goTo( new DefaultPlaceRequest( "AppsPerspective" ) );
             }
-        } ).endMenu().newTopLevelMenu( "Widgets" ).respondsWith( new Command() {
+        } ).endMenu().newTopLevelMenu( "Social" ).respondsWith( new Command() {
+            @Override
+            public void execute() {
+                placeManager.goTo( new ConditionalPlaceRequest( "SocialPerspective" ));
+            }
+        } ).endMenu()
+                .newTopLevelMenu( "Widgets" ).respondsWith( new Command() {
             @Override
             public void execute() {
                 placeManager.goTo( new ConditionalPlaceRequest( "UFWidgets" ).when( p -> true ).orElse( new DefaultPlaceRequest( "AppsPerspective" ) ) );

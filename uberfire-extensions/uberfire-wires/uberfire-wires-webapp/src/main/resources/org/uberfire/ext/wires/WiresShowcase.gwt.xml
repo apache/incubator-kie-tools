@@ -49,6 +49,10 @@
   <inherits name="org.uberfire.ext.wires.bpmn.WiresBpmnApi"/>
   <inherits name="org.uberfire.ext.wires.bpmn.WiresBpmnClient"/>
 
+  <!-- Social dependencies -->
+  <inherits name="org.ext.uberfire.social.activities.SocialActivitiesAPI"/>
+  <inherits name="org.ext.uberfire.social.activities.SocialActivitiesClient"/>
+
   <!-- Specify the application specific style sheet. -->
   <set-property name="user.agent" value="safari"/>
   <stylesheet src='css/uberfire-showcase.css'/>
