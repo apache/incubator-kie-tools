@@ -114,6 +114,10 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals( 3,
                       uiModel.getColumns().size() );
         assertTrue( uiModel.getColumns().get( 2 ) instanceof IntegerUiColumn );
+        assertEquals( 2,
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().size() );
+        assertEquals( "$age",
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 1 ).getTitle() );
     }
 
     @Test
@@ -145,6 +149,16 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().size() );
         assertTrue( uiModel.getColumns().get( 2 ) instanceof IntegerUiColumn );
         assertTrue( uiModel.getColumns().get( 3 ) instanceof StringUiColumn );
+
+        assertEquals( 2,
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().size() );
+        assertEquals( "$age",
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 1 ).getTitle() );
+
+        assertEquals( 2,
+                uiModel.getColumns().get( 3 ).getHeaderMetaData().size() );
+        assertEquals( "$name",
+                      uiModel.getColumns().get( 3 ).getHeaderMetaData().get( 1 ).getTitle() );
     }
 
     @Test
@@ -169,6 +183,11 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals( 3,
                       uiModel.getColumns().size() );
         assertTrue( uiModel.getColumns().get( 2 ) instanceof IntegerUiColumn );
+
+        assertEquals( 2,
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().size() );
+        assertEquals( "$age",
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 1 ).getTitle() );
 
         final BRLConditionColumn edited = new BRLConditionColumn();
         final BRLConditionVariableColumn editedColumnV0 = new BRLConditionVariableColumn( "$name",
@@ -198,6 +217,10 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 0 ).getTitle() );
         assertEquals( false,
                       uiModel.getColumns().get( 2 ).isVisible() );
+        assertEquals( 2,
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().size() );
+        assertEquals( "$name",
+                       uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 1 ).getTitle() );
     }
 
     @Test
@@ -258,6 +281,8 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 0 ).getTitle() );
         assertEquals( false,
                       uiModel.getColumns().get( 2 ).isVisible() );
+        assertEquals( "$name",
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 1 ).getTitle() );
     }
 
     @Test
@@ -290,6 +315,9 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue( uiModel.getColumns().get( 2 ) instanceof IntegerUiColumn );
         assertTrue( uiModel.getColumns().get( 3 ) instanceof StringUiColumn );
 
+        assertEquals( "$age",
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 1 ).getTitle() );
+
         final BRLConditionColumn edited = new BRLConditionColumn();
         final BRLConditionVariableColumn editedColumnV0 = new BRLConditionVariableColumn( "$s",
                                                                                           DataType.TYPE_NUMERIC_LONG,
@@ -318,6 +346,8 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 0 ).getTitle() );
         assertEquals( false,
                       uiModel.getColumns().get( 2 ).isVisible() );
+        assertEquals( "$s",
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 1 ).getTitle() );
     }
 
     @Test

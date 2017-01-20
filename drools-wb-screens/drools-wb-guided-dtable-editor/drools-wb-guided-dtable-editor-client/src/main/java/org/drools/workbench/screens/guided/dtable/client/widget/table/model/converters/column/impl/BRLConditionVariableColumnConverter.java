@@ -87,6 +87,16 @@ public class BRLConditionVariableColumnConverter extends BaseColumnConverterImpl
         return new ArrayList<GridColumn.HeaderMetaData>() {{
             add( new BaseHeaderMetaData( column.getHeader(),
                                          ConditionCol52.class.getName() + ":" + model.getExpandedColumns().indexOf( column ) ) );
+            if ( column instanceof BRLConditionVariableColumn ) {
+                BRLConditionVariableColumn brlConditionColumn = ( BRLConditionVariableColumn ) column;
+                if ( brlConditionColumn.getVarName() != null && ! brlConditionColumn.getVarName().isEmpty() ) {
+                    add( new BaseHeaderMetaData(
+                             brlConditionColumn.getVarName(),
+                             ConditionCol52.class.getName() + ":" + model.getExpandedColumns().indexOf( column )
+                        )
+                    );
+                }
+            }
         }};
     }
 
