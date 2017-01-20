@@ -32,7 +32,10 @@ import org.uberfire.security.client.authz.tree.PermissionTreeProvider;
 import org.uberfire.security.client.authz.tree.impl.PermissionGroupNode;
 import org.uberfire.security.client.authz.tree.impl.PermissionLeafNode;
 
-import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.*;
+import static org.guvnor.m2repo.security.MavenRepositoryPagedJarTableFeatures.JAR_DOWNLOAD;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_SOURCES;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.MANAGE_DASHBOARDS;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.PLANNER_AVAILABLE;
 
 /**
  * A tree permission provider which add general workbench permissions non tied to any specific resource.
@@ -69,36 +72,57 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
         rootNode.setPositionInTree(rootNodePosition);
         rootNode.setNodeName(i18n.WorkbenchRootNodeName());
         rootNode.setNodeFullName(i18n.WorkbenchRootNodeHelp());
-        rootNode.setProperty(NODE_TYPE, NODE_ROOT);
+        rootNode.setProperty(NODE_TYPE,
+                             NODE_ROOT);
         return rootNode;
     }
 
     @Override
-    public void loadChildren(PermissionNode parent, LoadOptions options, LoadCallback callback) {
+    public void loadChildren(PermissionNode parent,
+                             LoadOptions options,
+                             LoadCallback callback) {
 
-        if (parent.propertyEquals(NODE_TYPE, NODE_ROOT)) {
+        if (parent.propertyEquals(NODE_TYPE,
+                                  NODE_ROOT)) {
             List<PermissionNode> result = new ArrayList<>();
 
-            PermissionLeafNode node1 = createPermissionLeafNode(RepositoryFeatures.CONFIGURE_REPOSITORY, i18n.ConfigureRepositories(), i18n.ConfigureRepositoriesHelp());
-            PermissionLeafNode node2 = createPermissionLeafNode(EDIT_SOURCES, i18n.DataModelerEditSources(), i18n.DataModelerEditSourcesHelp());
-            PermissionLeafNode node3 = createPermissionLeafNode(MANAGE_DASHBOARDS, i18n.ManageDashboards(), i18n.ManageDashboardsHelp());
-            PermissionLeafNode node4 = createPermissionLeafNode(PLANNER_AVAILABLE, i18n.ResourcePlanner(), i18n.ResourcePlannerHelp());
+            PermissionLeafNode node1 = createPermissionLeafNode(RepositoryFeatures.CONFIGURE_REPOSITORY,
+                                                                i18n.ConfigureRepositories(),
+                                                                i18n.ConfigureRepositoriesHelp());
+            PermissionLeafNode node2 = createPermissionLeafNode(EDIT_SOURCES,
+                                                                i18n.DataModelerEditSources(),
+                                                                i18n.DataModelerEditSourcesHelp());
+            PermissionLeafNode node3 = createPermissionLeafNode(MANAGE_DASHBOARDS,
+                                                                i18n.ManageDashboards(),
+                                                                i18n.ManageDashboardsHelp());
+            PermissionLeafNode node4 = createPermissionLeafNode(PLANNER_AVAILABLE,
+                                                                i18n.ResourcePlanner(),
+                                                                i18n.ResourcePlannerHelp());
+            PermissionLeafNode node5 = createPermissionLeafNode(JAR_DOWNLOAD,
+                                                                i18n.MavenRepositoryPagedJarTableDownloadJar(),
+                                                                i18n.MavenRepositoryPagedJarTableDownloadJarHelp());
 
             result.add(node1);
             result.add(node2);
             result.add(node3);
             result.add(node4);
+            result.add(node5);
 
             callback.afterLoad(result);
         }
     }
 
-    private PermissionLeafNode createPermissionLeafNode(String permissionName, String nodeName, String nodeHelp) {
-        Permission permission = permissionManager.createPermission(permissionName, true);
+    private PermissionLeafNode createPermissionLeafNode(String permissionName,
+                                                        String nodeName,
+                                                        String nodeHelp) {
+        Permission permission = permissionManager.createPermission(permissionName,
+                                                                   true);
         PermissionLeafNode node = new PermissionLeafNode();
         node.setNodeName(nodeName);
         node.setNodeFullName(nodeHelp);
-        node.addPermission(permission, i18n.PermissionAllow(), i18n.PermissionDeny());
+        node.addPermission(permission,
+                           i18n.PermissionAllow(),
+                           i18n.PermissionDeny());
         return node;
     }
 }

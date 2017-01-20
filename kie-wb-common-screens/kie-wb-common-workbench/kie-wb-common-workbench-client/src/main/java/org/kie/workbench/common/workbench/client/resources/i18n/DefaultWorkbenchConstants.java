@@ -126,4 +126,9 @@ public interface DefaultWorkbenchConstants
     String Users();
 
     String Library();
+
+    String MavenRepositoryPagedJarTableDownloadJar();
+
+    String MavenRepositoryPagedJarTableDownloadJarHelp();
+
 }

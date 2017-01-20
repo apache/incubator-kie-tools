@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.workbench.client.authz;
 
+import java.util.List;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.structure.security.RepositoryFeatures;
 import org.junit.Assert;
@@ -26,9 +28,10 @@ import org.uberfire.security.client.authz.tree.PermissionNode;
 import org.uberfire.security.client.authz.tree.impl.DefaultLoadOptions;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
 
-import java.util.List;
-
-import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.*;
+import static org.guvnor.m2repo.security.MavenRepositoryPagedJarTableFeatures.JAR_DOWNLOAD;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_SOURCES;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.MANAGE_DASHBOARDS;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.PLANNER_AVAILABLE;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -39,7 +42,8 @@ public class WorkbenchTreeProviderTest {
             RepositoryFeatures.CONFIGURE_REPOSITORY,
             EDIT_SOURCES,
             MANAGE_DASHBOARDS,
-            PLANNER_AVAILABLE
+            PLANNER_AVAILABLE,
+            JAR_DOWNLOAD
     };
 
     private DefaultPermissionManager permissionManager;
@@ -51,20 +55,25 @@ public class WorkbenchTreeProviderTest {
         permissionNode = mock(PermissionNode.class);
         permissionManager = new DefaultPermissionManager();
 
-        when(permissionNode.propertyEquals(anyString(), anyObject())).thenReturn(true);
+        when(permissionNode.propertyEquals(anyString(),
+                                           anyObject())).thenReturn(true);
     }
 
     @Test
     public void testWorkbenchPermissionsNames() {
         WorkbenchTreeProvider workbenchTreeProvider = new WorkbenchTreeProvider(permissionManager);
         Callback callback = new Callback();
-        workbenchTreeProvider.loadChildren(permissionNode, new DefaultLoadOptions(), callback);
+        workbenchTreeProvider.loadChildren(permissionNode,
+                                           new DefaultLoadOptions(),
+                                           callback);
         List<PermissionNode> permissionNodeList = callback.getList();
 
-        Assert.assertEquals(FEATURES_NAMES.length, permissionNodeList.size());
+        Assert.assertEquals(FEATURES_NAMES.length,
+                            permissionNodeList.size());
 
         for (int i = 0; i < permissionNodeList.size(); i++) {
-            Assert.assertEquals(permissionNodeList.get(i).getPermissionList().get(0).getName(), FEATURES_NAMES[i]);
+            Assert.assertEquals(permissionNodeList.get(i).getPermissionList().get(0).getName(),
+                                FEATURES_NAMES[i]);
         }
     }
 
