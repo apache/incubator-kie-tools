@@ -17,8 +17,10 @@
 package org.kie.workbench.common.screens.datasource.management.backend.integration.wildfly;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.regexp.RE;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 
@@ -118,6 +120,46 @@ public class WildflyDeploymentClient
         } finally {
             safeClose( client );
             checkResponse( response );
+        }
+    }
+
+    /**
+     *
+     * @return The list of deployment names.
+     *
+     * @throws Exception
+     */
+    public List<String> getDeployments() throws Exception {
+
+        ModelControllerClient client = null;
+        ModelNode response;
+        List<String> result = new ArrayList<>( );
+
+        try {
+            client = createControllerClient( );
+            ModelNode operation = new ModelNode( );
+            if ( serverGroup != null ) {
+                operation.get( OP_ADDR ).add( SERVER_GROUP, serverGroup );
+            }
+            operation.get( OP_ADDR ).add( DEPLOYMENT, "*" );
+            operation.get( OP ).set( READ_ATTRIBUTE_OPERATION );
+            operation.get( NAME ).set( "name" );
+
+            response = createControllerClient().execute( operation );
+
+            if ( !isFailure( response ) ) {
+                if ( response.hasDefined( RESULT ) ) {
+                    List< ModelNode > nodes = response.get( RESULT ).asList( );
+                    for ( ModelNode node : nodes ) {
+                        result.add( node.get( RESULT ).asString() );
+                    }
+                }
+            } else {
+                checkResponse( response );
+            }
+            return result;
+        } finally {
+            safeClose( client );
         }
     }
 

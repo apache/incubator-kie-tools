@@ -48,16 +48,21 @@ public abstract class WildflyBaseClient {
 
     private static final String PREFIX = "datasource.management.wildfly";
 
-    private static final String HOST = PREFIX + ".host";
-    private static final String PORT = PREFIX + ".port";
-    private static final String ADMIN = PREFIX + ".admin";
-    private static final String PASSWORD = PREFIX + ".password";
-    private static final String REALM = PREFIX + ".realm";
-    private static final String PROFILE = PREFIX + ".profile";
-    private static final String SERVER_GROUP = PREFIX + ".serverGroup";
-    private static final String REFERENCE_SERVER_HOST = PREFIX + ".referenceServerHost";
-    private static final String REFERENCE_SERVER_NAME = PREFIX + ".referenceServerName";
-    private static final String JBOSS_SERVER_NAME = "jboss.server.name";
+    public static final String HTTP_REMOTING_PROTOCOL = "http-remoting";
+
+    public static final String HTTPS_REMOTING_PROTOCOL = "https-remoting";
+
+    public static final String PROTOCOL = PREFIX + ".protocol";
+    public static final String HOST = PREFIX + ".host";
+    public static final String PORT = PREFIX + ".port";
+    public static final String ADMIN = PREFIX + ".admin";
+    public static final String PASSWORD = PREFIX + ".password";
+    public static final String REALM = PREFIX + ".realm";
+    public static final String PROFILE = PREFIX + ".profile";
+    public static final String SERVER_GROUP = PREFIX + ".serverGroup";
+    public static final String REFERENCE_SERVER_HOST = PREFIX + ".referenceServerHost";
+    public static final String REFERENCE_SERVER_NAME = PREFIX + ".referenceServerName";
+    public static final String JBOSS_SERVER_NAME = "jboss.server.name";
 
     protected static final String DEFAULT_HOST = "localhost";
     protected static final int DEFAULT_PORT = 9990;
@@ -65,6 +70,7 @@ public abstract class WildflyBaseClient {
     protected static final String DEFAULT_ADMIN_PASSWORD = null;
     protected static final String DEFAULT_REALM = "ApplicationRealm";
 
+    protected String protocol;
     protected String host;
     protected int port;
     protected String admin;
@@ -76,6 +82,7 @@ public abstract class WildflyBaseClient {
     protected String referenceServerName;
 
     public void loadConfig( Properties properties ) {
+        protocol = getManagedProperty( properties, PROTOCOL, HTTP_REMOTING_PROTOCOL );
         host = getManagedProperty( properties, HOST, DEFAULT_HOST );
         String currentPort = null;
         try {
@@ -101,8 +108,8 @@ public abstract class WildflyBaseClient {
 
     public ModelControllerClient createControllerClient( boolean checkConnection ) throws Exception {
 
-        ModelControllerClient client = ModelControllerClient.Factory.create( InetAddress.getByName( host ), port,
-                new CallbackHandler() {
+        ModelControllerClient client = ModelControllerClient.Factory.create( protocol, InetAddress.getByName( host ), port,
+                new CallbackHandler( ) {
                     public void handle( Callback[] callbacks )
                             throws IOException, UnsupportedCallbackException {
                         for ( Callback current : callbacks ) {
@@ -111,7 +118,7 @@ public abstract class WildflyBaseClient {
                                 ncb.setName( admin );
                             } else if ( current instanceof PasswordCallback ) {
                                 PasswordCallback pcb = ( PasswordCallback ) current;
-                                pcb.setPassword( password.toCharArray() );
+                                pcb.setPassword( password.toCharArray( ) );
                             } else if ( current instanceof RealmCallback ) {
                                 RealmCallback rcb = ( RealmCallback ) current;
                                 rcb.setText( realm );
@@ -123,21 +130,44 @@ public abstract class WildflyBaseClient {
                 } );
 
         if ( checkConnection ) {
-            try {
-                //dummy operation to check if the connection was properly established, since the create operation
-                //don't warranty the connection has been established.
-                ModelNode op = new ModelNode();
-                op.get( ClientConstants.OP ).set("read-resource");
-
-                ModelNode returnVal = client.execute( new OperationBuilder( op ).build() );
-                String releaseVersion = returnVal.get("result").get("release-version").asString();
-                String releaseCodeName = returnVal.get("result").get("release-codename").asString();
-            } catch ( Exception e ) {
-                logger.error( "It was not possible to open connection to Wildfly/EAP server.", e );
-                throw new Exception( "It was not possible to open connection to server. " + e.getMessage() );
-            }
+            testConnection( client );
         }
         return client;
+    }
+
+    /**
+     * Tests the connection with the server.
+     * @return If the connection was successfully established returns a String with the server version information.
+     * @throws Exception If it was not possible to connect to server.
+     */
+    public String testConnection( ) throws Exception {
+        ModelControllerClient client = null;
+        try {
+            client = createControllerClient( false );
+            return testConnection( client );
+        } finally {
+            safeClose( client );
+        }
+    }
+
+    private String testConnection( final ModelControllerClient client ) throws Exception {
+        try {
+            final ModelNode op = new ModelNode( );
+            op.get( ClientConstants.OP ).set( "read-resource" );
+
+            final ModelNode returnVal = client.execute( new OperationBuilder( op ).build( ) );
+            final String productName = returnVal.get( "result" ).get( "product-name" ).asString( );
+            final String productVersion = returnVal.get( "result" ).get( "product-version" ).asString( );
+            final String releaseVersion = returnVal.get( "result" ).get( "release-version" ).asString( );
+            final String releaseCodeName = returnVal.get( "result" ).get( "release-codename" ).asString( );
+            final StringBuilder stringBuilder = new StringBuilder( );
+            stringBuilder.append( productName + ", " + productVersion );
+            stringBuilder.append( " (" + releaseCodeName + ", " + releaseVersion + ")" );
+            return stringBuilder.toString( );
+        } catch ( Exception e ) {
+            logger.error( "It was not possible to open connection to Wildfly/EAP server.", e );
+            throw new Exception( "It was not possible to open connection to server. " + e.getMessage( ) );
+        }
     }
 
     /**
