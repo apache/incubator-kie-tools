@@ -321,6 +321,11 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-ui-client</artifactId>
+      <!--<scope>provided</scope>-->
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-preferences-client</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -480,6 +485,7 @@
             <!-- UF-ext -->
             <compileSourcesArtifact>org.uberfire:uberfire-preferences-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-preferences-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-preferences-ui-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-apps-api</compileSourcesArtifact>
@@ -574,7 +580,7 @@
                 <include>src/main/webapp/org.uberfire.ext.wires.WiresShowcase</include>
                 <include>src/main/webapp/WEB-INF/deploy/</include>
                 <include>src/main/webapp/WEB-INF/classes/</include>
-                <include>src/main/webapp/WEB-INF/lib/</include>                
+                <include>src/main/webapp/WEB-INF/lib/</include>
                 <include>.errai/</include>
                 <include>.niogit/**</include>
               </includes>
@@ -622,7 +628,7 @@
         <property>
           <name>full</name>
         </property>
-      </activation>      
+      </activation>
 
       <build>
         <plugins>

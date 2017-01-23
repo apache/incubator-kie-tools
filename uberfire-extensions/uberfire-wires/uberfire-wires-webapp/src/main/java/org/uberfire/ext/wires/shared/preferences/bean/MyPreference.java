@@ -16,10 +16,10 @@
 
 package org.uberfire.ext.wires.shared.preferences.bean;
 
-import org.uberfire.ext.preferences.shared.PropertyFormType;
-import org.uberfire.ext.preferences.shared.annotations.Property;
-import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
-import org.uberfire.ext.preferences.shared.bean.BasePreference;
+import org.uberfire.preferences.shared.PropertyFormType;
+import org.uberfire.preferences.shared.annotations.Property;
+import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
+import org.uberfire.preferences.shared.bean.BasePreference;
 
 @WorkbenchPreference(identifier = "MyPreference",
         bundleKey = "MyPreference.Label")
