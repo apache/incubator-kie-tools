@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.ext.preferences.shared.PreferenceScope;
-import org.uberfire.ext.preferences.shared.PreferenceScopeResolver;
-import org.uberfire.ext.preferences.shared.impl.exception.InvalidPreferenceScopeException;
+import org.uberfire.preferences.shared.PreferenceScope;
+import org.uberfire.preferences.shared.PreferenceScopeResolver;
+import org.uberfire.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 
 @Portable
 public class WorkbenchPreferenceScopeResolver implements PreferenceScopeResolver {

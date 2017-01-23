@@ -18,8 +18,8 @@ package org.kie.workbench.common.services.shared.preferences.config;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.ext.preferences.shared.UsernameProvider;
-import org.uberfire.ext.preferences.shared.impl.exception.InvalidPreferenceScopeException;
+import org.uberfire.preferences.shared.UsernameProvider;
+import org.uberfire.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.rpc.SessionInfo;
 

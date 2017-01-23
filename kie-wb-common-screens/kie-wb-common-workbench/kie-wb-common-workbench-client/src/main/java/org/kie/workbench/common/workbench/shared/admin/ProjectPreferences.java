@@ -17,9 +17,9 @@
 package org.kie.workbench.common.workbench.shared.admin;
 
 import org.guvnor.common.services.project.preferences.GeneralPreferences;
-import org.uberfire.ext.preferences.shared.annotations.Property;
-import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
-import org.uberfire.ext.preferences.shared.bean.BasePreference;
+import org.uberfire.preferences.shared.annotations.Property;
+import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
+import org.uberfire.preferences.shared.bean.BasePreference;
 
 @WorkbenchPreference(identifier = "ProjectPreferences",
         bundleKey = "ProjectPreferences.Label")

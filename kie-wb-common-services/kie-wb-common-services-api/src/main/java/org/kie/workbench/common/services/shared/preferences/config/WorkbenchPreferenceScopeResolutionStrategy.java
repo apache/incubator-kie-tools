@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.ext.preferences.shared.PreferenceScope;
-import org.uberfire.ext.preferences.shared.PreferenceScopeFactory;
-import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
-import org.uberfire.ext.preferences.shared.PreferenceScopeResolver;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
+import org.uberfire.preferences.shared.PreferenceScope;
+import org.uberfire.preferences.shared.PreferenceScopeFactory;
+import org.uberfire.preferences.shared.PreferenceScopeResolutionStrategy;
+import org.uberfire.preferences.shared.PreferenceScopeResolver;
+import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 /**
  * The Workbench scope resolution strategy can be composed by a sequence of two (user and global) or three

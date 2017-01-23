@@ -20,12 +20,11 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.ext.preferences.shared.PreferenceScope;
-import org.uberfire.ext.preferences.shared.PreferenceScopeFactory;
-import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
-import org.uberfire.ext.preferences.shared.UsernameProvider;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopeFactoryImpl;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopeImpl;
+import org.uberfire.preferences.shared.PreferenceScope;
+import org.uberfire.preferences.shared.PreferenceScopeFactory;
+import org.uberfire.preferences.shared.PreferenceScopeTypes;
+import org.uberfire.preferences.shared.UsernameProvider;
+import org.uberfire.preferences.shared.impl.PreferenceScopeFactoryImpl;
 import org.uberfire.mocks.SessionInfoMock;
 
 import static org.junit.Assert.*;

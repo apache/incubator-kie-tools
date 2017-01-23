@@ -17,9 +17,9 @@
 package org.kie.workbench.common.screens.library.api;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.ext.preferences.shared.annotations.Property;
-import org.uberfire.ext.preferences.shared.annotations.WorkbenchPreference;
-import org.uberfire.ext.preferences.shared.bean.BasePreference;
+import org.uberfire.preferences.shared.annotations.Property;
+import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
+import org.uberfire.preferences.shared.bean.BasePreference;
 
 @WorkbenchPreference( identifier = "LibraryPreferences",
         bundleKey = "LibraryPreferences.Label" )

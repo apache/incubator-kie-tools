@@ -21,9 +21,9 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.ext.preferences.shared.PreferenceScope;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopeImpl;
-import org.uberfire.ext.preferences.shared.impl.exception.InvalidPreferenceScopeException;
+import org.uberfire.preferences.shared.PreferenceScope;
+import org.uberfire.preferences.shared.impl.PreferenceScopeImpl;
+import org.uberfire.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 
 import static org.junit.Assert.assertEquals;
 

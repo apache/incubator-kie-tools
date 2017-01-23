@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 
-import org.uberfire.ext.preferences.shared.PreferenceScopeTypes;
-import org.uberfire.ext.preferences.shared.UsernameProvider;
-import org.uberfire.ext.preferences.shared.impl.exception.InvalidPreferenceScopeException;
+import org.uberfire.preferences.shared.PreferenceScopeTypes;
+import org.uberfire.preferences.shared.UsernameProvider;
+import org.uberfire.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 
 /**
  * Default implementation for {@link PreferenceScopeTypes}. To override it, just provide a default

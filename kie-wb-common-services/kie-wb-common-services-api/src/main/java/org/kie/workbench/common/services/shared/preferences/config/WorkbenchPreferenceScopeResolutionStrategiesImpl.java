@@ -20,10 +20,10 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.shared.preferences.WorkbenchPreferenceScopeResolutionStrategies;
-import org.uberfire.ext.preferences.shared.PreferenceScope;
-import org.uberfire.ext.preferences.shared.PreferenceScopeFactory;
-import org.uberfire.ext.preferences.shared.PreferenceScopeResolutionStrategy;
-import org.uberfire.ext.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
+import org.uberfire.preferences.shared.PreferenceScope;
+import org.uberfire.preferences.shared.PreferenceScopeFactory;
+import org.uberfire.preferences.shared.PreferenceScopeResolutionStrategy;
+import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 @Dependent
 public class WorkbenchPreferenceScopeResolutionStrategiesImpl implements WorkbenchPreferenceScopeResolutionStrategies {
