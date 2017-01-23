@@ -185,7 +185,7 @@ public class BPMNDiagramMarshallerTest {
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.registry()).thenReturn(adapterRegistry);
         definitionUtils = new DefinitionUtils(definitionManager,
-                                              applicationFactoryManager);
+                applicationFactoryManager);
         graphUtils = new GraphUtils(definitionManager);
         testScopeModelFactory = new TestScopeModelFactory(new BPMNDefinitionSet.BPMNDefinitionSetBuilder().build());
         // Definition manager.
@@ -202,8 +202,8 @@ public class BPMNDiagramMarshallerTest {
         when(adapterRegistry.getPropertySetAdapter(any(Class.class))).thenReturn(propertySetAdapter);
         when(adapterRegistry.getPropertyAdapter(any(Class.class))).thenReturn(propertyAdapter);
         commandManager = new GraphCommandManagerImpl(null,
-                                                     null,
-                                                     null);
+                null,
+                null);
         commandFactory = new GraphCommandFactory();
         connectionEdgeFactory = new EdgeFactoryImpl(definitionManager);
         viewNodeFactory = new NodeFactoryImpl(definitionUtils);
@@ -217,7 +217,7 @@ public class BPMNDiagramMarshallerTest {
             String id = (String) invocationOnMock.getArguments()[1];
             if (BPMNDefinitionSet.class.getName().equals(id)) {
                 Graph graph = (Graph) bpmnGraphFactory.build(uuid,
-                                                             BPMN_DEF_SET_ID);
+                        BPMN_DEF_SET_ID);
                 return graph;
             }
             Object model = testScopeModelFactory.accepts(id) ? testScopeModelFactory.build(id) : null;
@@ -225,24 +225,24 @@ public class BPMNDiagramMarshallerTest {
                 Class<? extends ElementFactory> element = RuntimeDefinitionAdapter.getGraphFactory(model.getClass());
                 if (element.isAssignableFrom(NodeFactory.class)) {
                     Node node = viewNodeFactory.build(uuid,
-                                                      model);
+                            model);
                     return node;
                 } else if (element.isAssignableFrom(EdgeFactory.class)) {
                     Edge edge = connectionEdgeFactory.build(uuid,
-                                                            model);
+                            model);
                     return edge;
                 }
             }
             return null;
         }).when(applicationFactoryManager).newElement(anyString(),
-                                                      anyString());
+                anyString());
         doAnswer(invocationOnMock -> {
             String uuid = (String) invocationOnMock.getArguments()[0];
             Class type = (Class) invocationOnMock.getArguments()[1];
             String id = BindableAdapterUtils.getGenericClassName(type);
             if (BPMNDefinitionSet.class.equals(type)) {
                 Graph graph = (Graph) bpmnGraphFactory.build(uuid,
-                                                             BPMN_DEF_SET_ID);
+                        BPMN_DEF_SET_ID);
                 return graph;
             }
             Object model = testScopeModelFactory.accepts(id) ? testScopeModelFactory.build(id) : null;
@@ -250,29 +250,29 @@ public class BPMNDiagramMarshallerTest {
                 Class<? extends ElementFactory> element = RuntimeDefinitionAdapter.getGraphFactory(model.getClass());
                 if (element.isAssignableFrom(NodeFactory.class)) {
                     Node node = viewNodeFactory.build(uuid,
-                                                      model);
+                            model);
                     return node;
                 } else if (element.isAssignableFrom(EdgeFactory.class)) {
                     Edge edge = connectionEdgeFactory.build(uuid,
-                                                            model);
+                            model);
                     return edge;
                 }
             }
             return null;
         }).when(applicationFactoryManager).newElement(anyString(),
-                                                      any(Class.class));
+                any(Class.class));
         doAnswer(invocationOnMock -> {
             String uuid = (String) invocationOnMock.getArguments()[0];
             String defSetId = (String) invocationOnMock.getArguments()[1];
             final Graph graph = (Graph) applicationFactoryManager.newElement(uuid,
-                                                                             defSetId);
+                    defSetId);
             final DiagramImpl result = new DiagramImpl(uuid,
-                                                       new MetadataImpl.MetadataImplBuilder(defSetId).build());
+                    new MetadataImpl.MetadataImplBuilder(defSetId).build());
             result.setGraph(graph);
             return result;
         }).when(applicationFactoryManager).newDiagram(anyString(),
-                                                      anyString(),
-                                                      any(Metadata.class));
+                anyString(),
+                any(Metadata.class));
         // Bpmn 2 oryx stuff.
         oryxIdMappings = new Bpmn2OryxIdMappings(definitionManager);
         StringTypeSerializer stringTypeSerializer = new StringTypeSerializer();
@@ -294,19 +294,19 @@ public class BPMNDiagramMarshallerTest {
         propertySerializers.add(variablesTypeSerializer);
         oryxPropertyManager = new Bpmn2OryxPropertyManager(propertySerializers);
         oryxManager = new Bpmn2OryxManager(oryxIdMappings,
-                                           oryxPropertyManager);
+                oryxPropertyManager);
         oryxManager.init();
         // Marshalling factories.
         objectBuilderFactory = new BPMNGraphObjectBuilderFactory(definitionManager,
-                                                                 oryxManager);
+                oryxManager);
         taskMorphDefinition = new TaskTypeMorphDefinition();
         Collection<MorphDefinition> morphDefinitions = new ArrayList<MorphDefinition>() {{
             add(taskMorphDefinition);
         }};
         RuntimeBindableMorphAdapter<Object> morphAdapter =
                 new RuntimeBindableMorphAdapter(definitionUtils,
-                                                applicationFactoryManager,
-                                                morphDefinitions);
+                        applicationFactoryManager,
+                        morphDefinitions);
         when(adapterRegistry.getMorphAdapter(eq(UserTask.class))).thenReturn(morphAdapter);
         when(adapterRegistry.getMorphAdapter(eq(NoneTask.class))).thenReturn(morphAdapter);
         when(adapterRegistry.getMorphAdapter(eq(ScriptTask.class))).thenReturn(morphAdapter);
@@ -314,14 +314,14 @@ public class BPMNDiagramMarshallerTest {
         GraphIndexBuilder<?> indexBuilder = new MapIndexBuilder();
         // The tested BPMN marshaller.
         tested = new BPMNDiagramMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
-                                           objectBuilderFactory,
-                                           definitionManager,
-                                           graphUtils,
-                                           indexBuilder,
-                                           oryxManager,
-                                           applicationFactoryManager,
-                                           commandManager,
-                                           commandFactory);
+                objectBuilderFactory,
+                definitionManager,
+                graphUtils,
+                indexBuilder,
+                oryxManager,
+                applicationFactoryManager,
+                commandManager,
+                commandFactory);
     }
 
     // 4 nodes expected: BPMNDiagram, StartNode, Task and EndNode
@@ -330,9 +330,9 @@ public class BPMNDiagramMarshallerTest {
     public void testUnmarshallBasic() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_BASIC);
         assertDiagram(diagram,
-                      4);
+                4);
         assertEquals("Basic process",
-                     diagram.getMetadata().getTitle());
+                diagram.getMetadata().getTitle());
         Node<? extends Definition, ?> task1 = diagram.getGraph().getNode("810797AB-7D09-4E1F-8A5B-96C424E4B031");
         assertTrue(task1.getContent().getDefinition() instanceof NoneTask);
     }
@@ -342,9 +342,9 @@ public class BPMNDiagramMarshallerTest {
     public void testUnmarshallEvaluation() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EVALUATION);
         assertDiagram(diagram,
-                      8);
+                8);
         assertEquals("Evaluation",
-                     diagram.getMetadata().getTitle());
+                diagram.getMetadata().getTitle());
         Node<? extends View, ?> task1 = diagram.getGraph().getNode("_88233779-B395-4B8C-A086-9EF43698426C");
         Node<? extends View, ?> task2 = diagram.getGraph().getNode("_AE5BF0DC-B720-4FDE-9499-5ED89D41FB1A");
         Node<? extends View, ?> task3 = diagram.getGraph().getNode("_6063D302-9D81-4C86-920B-E808A45377C2");
@@ -356,17 +356,17 @@ public class BPMNDiagramMarshallerTest {
         Bounds.Bound task1ULBound = task1Bounds.getUpperLeft();
         Bounds.Bound task1LRBound = task1Bounds.getLowerRight();
         assertEquals(648d,
-                     task1ULBound.getX(),
-                     0);
+                task1ULBound.getX(),
+                0);
         assertEquals(149d,
-                     task1ULBound.getY(),
-                     0);
+                task1ULBound.getY(),
+                0);
         assertEquals(784d,
-                     task1LRBound.getX(),
-                     0);
+                task1LRBound.getX(),
+                0);
         assertEquals(197d,
-                     task1LRBound.getY(),
-                     0);
+                task1LRBound.getY(),
+                0);
     }
 
     @Test
@@ -374,9 +374,9 @@ public class BPMNDiagramMarshallerTest {
     public void testUnmarshallProcessVariables() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_PROCESSVARIABLES);
         assertDiagram(diagram,
-                      8);
+                8);
         assertEquals("ProcessVariables",
-                     diagram.getMetadata().getTitle());
+                diagram.getMetadata().getTitle());
         ProcessVariables variables = null;
         Iterator<Element> it = nodesIterator(diagram);
         while (it.hasNext()) {
@@ -391,7 +391,7 @@ public class BPMNDiagramMarshallerTest {
             }
         }
         assertEquals(variables.getValue(),
-                     "employee:java.lang.String,reason:java.lang.String,performance:java.lang.String");
+                "employee:java.lang.String,reason:java.lang.String,performance:java.lang.String");
         Node<? extends Definition, ?> diagramNode = diagram.getGraph().getNode("_luRBMdEjEeWXpsZ1tNStKQ");
         assertTrue(diagramNode.getContent().getDefinition() instanceof BPMNDiagram);
         BPMNDiagram bpmnDiagram = (BPMNDiagram) diagramNode.getContent().getDefinition();
@@ -399,7 +399,7 @@ public class BPMNDiagramMarshallerTest {
         assertTrue(bpmnDiagram.getProcessData().getProcessVariables() != null);
         variables = bpmnDiagram.getProcessData().getProcessVariables();
         assertEquals(variables.getValue(),
-                     "employee:java.lang.String,reason:java.lang.String,performance:java.lang.String");
+                "employee:java.lang.String,reason:java.lang.String,performance:java.lang.String");
     }
 
     @Test
@@ -407,9 +407,9 @@ public class BPMNDiagramMarshallerTest {
     public void testUnmarshallProcessProperties() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_PROCESSPROPERTIES);
         assertDiagram(diagram,
-                      4);
+                4);
         assertEquals("BPSimple",
-                     diagram.getMetadata().getTitle());
+                diagram.getMetadata().getTitle());
         DiagramSet diagramProperties = null;
         Iterator<Element> it = nodesIterator(diagram);
         while (it.hasNext()) {
@@ -424,17 +424,17 @@ public class BPMNDiagramMarshallerTest {
             }
         }
         assertEquals("BPSimple",
-                     diagramProperties.getName().getValue());
+                diagramProperties.getName().getValue());
         assertEquals("\n" +
-                             "        This is a simple process\n" +
-                             "    ",
-                     diagramProperties.getDocumentation().getValue());
+                        "        This is a simple process\n" +
+                        "    ",
+                diagramProperties.getDocumentation().getValue());
         assertEquals("JDLProj.BPSimple",
-                     diagramProperties.getId().getValue());
+                diagramProperties.getId().getValue());
         assertEquals("org.jbpm",
-                     diagramProperties.getPackageProperty().getValue());
+                diagramProperties.getPackageProperty().getValue());
         assertEquals(Boolean.valueOf(true),
-                     diagramProperties.getExecutable().getValue());
+                diagramProperties.getExecutable().getValue());
     }
 
     @Test
@@ -442,17 +442,17 @@ public class BPMNDiagramMarshallerTest {
     public void testUnmarshallUserTaskAssignments() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_USERTASKASSIGNMENTS);
         assertDiagram(diagram,
-                      8);
+                8);
         assertEquals("UserTaskAssignments",
-                     diagram.getMetadata().getTitle());
+                diagram.getMetadata().getTitle());
         Node<? extends Definition, ?> selfEvaluationNode = diagram.getGraph().getNode("_6063D302-9D81-4C86-920B-E808A45377C2");
         UserTask selfEvaluationTask = (UserTask) selfEvaluationNode.getContent().getDefinition();
         assertEquals(selfEvaluationTask.getTaskType().getValue(),
-                     TaskTypes.USER);
+                TaskTypes.USER);
         DataIOSet dataIOSet = selfEvaluationTask.getDataIOSet();
         AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
         assertEquals(assignmentsinfo.getValue(),
-                     "|reason:com.test.Reason,Comment:Object,Skippable:Object||performance:Object|[din]reason->reason,[dout]performance->performance");
+                "|reason:com.test.Reason,Comment:Object,Skippable:Object||performance:Object|[din]reason->reason,[dout]performance->performance");
     }
 
     @Test
@@ -460,17 +460,17 @@ public class BPMNDiagramMarshallerTest {
     public void testUnmarshallBusinessRuleTaskAssignments() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_BUSINESSRULETASKASSIGNMENTS);
         assertDiagram(diagram,
-                      4);
+                4);
         assertEquals("BusinessRuleTaskAssignments",
-                     diagram.getMetadata().getTitle());
+                diagram.getMetadata().getTitle());
         Node<? extends Definition, ?> businessRuleNode = diagram.getGraph().getNode("_45C2C340-D1D0-4D63-8419-EF38F9E73507");
         BusinessRuleTask businessRuleTask = (BusinessRuleTask) businessRuleNode.getContent().getDefinition();
         assertEquals(businessRuleTask.getTaskType().getValue(),
-                     TaskTypes.BUSINESS_RULE);
+                TaskTypes.BUSINESS_RULE);
         DataIOSet dataIOSet = businessRuleTask.getDataIOSet();
         AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
         assertEquals(assignmentsinfo.getValue(),
-                     "|input1:String,input2:String||output1:String,output2:String|[din]pv1->input1,[din]pv2->input2,[dout]output1->pv2,[dout]output2->pv2");
+                "|input1:String,input2:String||output1:String,output2:String|[din]pv1->input1,[din]pv2->input2,[dout]output1->pv2,[dout]output2->pv2");
     }
 
     @Test
@@ -478,15 +478,15 @@ public class BPMNDiagramMarshallerTest {
     public void testUnmarshallStartEventAssignments() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTEVENTASSIGNMENTS);
         assertDiagram(diagram,
-                      8);
+                8);
         assertEquals("StartEventAssignments",
-                     diagram.getMetadata().getTitle());
+                diagram.getMetadata().getTitle());
         Node<? extends Definition, ?> startEventNode = diagram.getGraph().getNode("_106AADA7-E381-4736-8BD6-7EB47A1D096B");
         StartNoneEvent startNoneEvent = (StartNoneEvent) startEventNode.getContent().getDefinition();
         DataIOSet dataIOSet = startNoneEvent.getDataIOSet();
         AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
         assertEquals("||StartEventOutput1:String||[dout]StartEventOutput1->employee",
-                     assignmentsinfo.getValue());
+                assignmentsinfo.getValue());
     }
 
     @Test
@@ -494,23 +494,23 @@ public class BPMNDiagramMarshallerTest {
     public void testUnmarshallEndEventAssignments() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDEVENTASSIGNMENTS);
         assertDiagram(diagram,
-                      8);
+                8);
         assertEquals("EndEventAssignments",
-                     diagram.getMetadata().getTitle());
+                diagram.getMetadata().getTitle());
 
         Node<? extends Definition, ?> endTerminateEventNode = diagram.getGraph().getNode("_0493ECBF-3C0F-4086-9979-2391CE740AA8");
         EndTerminateEvent endTerminateEvent = (EndTerminateEvent) endTerminateEventNode.getContent().getDefinition();
         DataIOSet dataIOSet = endTerminateEvent.getDataIOSet();
         AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
         assertEquals("EndTermEventInput1:String||||[din]employee->EndTermEventInput1",
-                     assignmentsinfo.getValue());
+                assignmentsinfo.getValue());
 
         Node<? extends Definition, ?> endNoneEventNode = diagram.getGraph().getNode("_4824B9FD-6097-4E06-9E7E-2CE5E7601BC5");
         EndNoneEvent endNoneEvent = (EndNoneEvent) endNoneEventNode.getContent().getDefinition();
         DataIOSet dataIOSet2 = endNoneEvent.getDataIOSet();
         AssignmentsInfo assignmentsinfo2 = dataIOSet2.getAssignmentsinfo();
         assertEquals("EndNoneEventInput1:String||||[din]reason->EndNoneEventInput1",
-                     assignmentsinfo2.getValue());
+                assignmentsinfo2.getValue());
     }
 
     @Test
@@ -518,9 +518,9 @@ public class BPMNDiagramMarshallerTest {
     public void testUnmarshallUserTaskAssignees() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_USERTASKASSIGNEES);
         assertDiagram(diagram,
-                      6);
+                6);
         assertEquals("UserGroups",
-                     diagram.getMetadata().getTitle());
+                diagram.getMetadata().getTitle());
         AssigneeSet assigneeSet = null;
         Iterator<Element> it = nodesIterator(diagram);
         while (it.hasNext()) {
@@ -535,9 +535,9 @@ public class BPMNDiagramMarshallerTest {
             }
         }
         assertEquals("user,user1",
-                     assigneeSet.getActors().getValue());
+                assigneeSet.getActors().getValue());
         assertEquals("admin,kiemgmt",
-                     assigneeSet.getGroupid().getValue());
+                assigneeSet.getGroupid().getValue());
     }
 
     @Test
@@ -545,9 +545,9 @@ public class BPMNDiagramMarshallerTest {
     public void testUnmarshallUserTaskProperties() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_USERTASKPROPERTIES);
         assertDiagram(diagram,
-                      4);
+                4);
         assertEquals("MyBP",
-                     diagram.getMetadata().getTitle());
+                diagram.getMetadata().getTitle());
         UserTaskExecutionSet userTaskExecutionSet = null;
         Iterator<Element> it = nodesIterator(diagram);
         while (it.hasNext()) {
@@ -562,7 +562,7 @@ public class BPMNDiagramMarshallerTest {
             }
         }
         assertEquals("MyUserTask",
-                     userTaskExecutionSet.getTaskName().getValue());
+                userTaskExecutionSet.getTaskName().getValue());
     }
 
     @Test
@@ -570,9 +570,9 @@ public class BPMNDiagramMarshallerTest {
     public void testUnmarshallSimulationProperties() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SIMULATIONPROPERTIES);
         assertDiagram(diagram,
-                      4);
+                4);
         assertEquals("SimulationProperties",
-                     diagram.getMetadata().getTitle());
+                diagram.getMetadata().getTitle());
 
         SimulationSet simulationSet = null;
         Iterator<Element> it = nodesIterator(diagram);
@@ -589,15 +589,15 @@ public class BPMNDiagramMarshallerTest {
         }
 
         assertEquals(Double.valueOf(111),
-                     simulationSet.getQuantity().getValue());
+                simulationSet.getQuantity().getValue());
         assertEquals("poisson",
-                     simulationSet.getDistributionType().getValue());
+                simulationSet.getDistributionType().getValue());
         assertEquals(Double.valueOf(123),
-                     simulationSet.getUnitCost().getValue());
+                simulationSet.getUnitCost().getValue());
         assertEquals(Double.valueOf(999),
-                     simulationSet.getWorkingHours().getValue());
+                simulationSet.getWorkingHours().getValue());
         assertEquals(Double.valueOf(321),
-                     simulationSet.getMean().getValue());
+                simulationSet.getMean().getValue());
     }
 
     // TODO: Disabled @Test - As intermediate events has been disabled for M1
@@ -606,9 +606,9 @@ public class BPMNDiagramMarshallerTest {
     public void testUnmarshallNotBoundaryEvents() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_NOT_BOUNDARY_EVENTS);
         assertEquals("Not Boundary Event",
-                     diagram.getMetadata().getTitle());
+                diagram.getMetadata().getTitle());
         assertDiagram(diagram,
-                      6);
+                6);
         // Assert than the intermediate event is connected using a view connector,
         // so not boundary to the task ( not docked ).
         Node event = diagram.getGraph().getNode("_CB178D55-8DC2-4CAA-8C42-4F5028D4A1F6");
@@ -625,17 +625,17 @@ public class BPMNDiagramMarshallerTest {
         Bounds.Bound ul = bounds.getUpperLeft();
         Bounds.Bound lr = bounds.getLowerRight();
         assertEquals(305,
-                     ul.getX(),
-                     0);
+                ul.getX(),
+                0);
         assertEquals(300,
-                     ul.getY(),
-                     0);
+                ul.getY(),
+                0);
         assertEquals(335,
-                     lr.getX(),
-                     0);
+                lr.getX(),
+                0);
         assertEquals(330,
-                     lr.getY(),
-                     0);
+                lr.getY(),
+                0);
     }
 
     // TODO: Disabled @Test - As intermediate events has been disabled for M1
@@ -645,9 +645,9 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_BOUNDARY_EVENTS);
         // Basic assertions.
         assertEquals("Boundary Event",
-                     diagram.getMetadata().getTitle());
+                diagram.getMetadata().getTitle());
         assertDiagram(diagram,
-                      6);
+                6);
         // Assert than the intermediate event is connected using a dock connector,
         // so boundary to the task.
         Node event = diagram.getGraph().getNode("_CB178D55-8DC2-4CAA-8C42-4F5028D4A1F6");
@@ -664,17 +664,17 @@ public class BPMNDiagramMarshallerTest {
         Bounds.Bound ul = bounds.getUpperLeft();
         Bounds.Bound lr = bounds.getLowerRight();
         assertEquals(57,
-                     ul.getX(),
-                     0);
+                ul.getX(),
+                0);
         assertEquals(70,
-                     ul.getY(),
-                     0);
+                ul.getY(),
+                0);
         assertEquals(87,
-                     lr.getX(),
-                     0);
+                lr.getX(),
+                0);
         assertEquals(100,
-                     lr.getY(),
-                     0);
+                lr.getY(),
+                0);
     }
 
     @Test
@@ -698,11 +698,11 @@ public class BPMNDiagramMarshallerTest {
         assertNotNull(businessRuleTask.getGeneral());
         assertNotNull(businessRuleTask.getGeneral().getName());
         assertEquals(businessRuleTask.getTaskType().getValue(),
-                     TaskTypes.BUSINESS_RULE);
+                TaskTypes.BUSINESS_RULE);
         assertEquals("my business rule task",
-                     businessRuleTask.getGeneral().getName().getValue());
+                businessRuleTask.getGeneral().getName().getValue());
         assertEquals("my-ruleflow-group",
-                     businessRuleTask.getExecutionSet().getRuleFlowGroup().getValue());
+                businessRuleTask.getExecutionSet().getRuleFlowGroup().getValue());
     }
 
     @Test
@@ -710,16 +710,16 @@ public class BPMNDiagramMarshallerTest {
     public void testUnmarshallXorGateway() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_XORGATEWAY);
         assertDiagram(diagram,
-                      7);
+                7);
         assertEquals(diagram.getMetadata().getTitle(),
-                     "XORGateway");
+                "XORGateway");
         Graph graph = diagram.getGraph();
         Node<? extends Definition, ?> gatewayNode = graph.getNode("_877EA035-1A14-42E9-8CAA-43E9BF908C70");
         ExclusiveDatabasedGateway xorGateway = (ExclusiveDatabasedGateway) gatewayNode.getContent().getDefinition();
         assertEquals("AgeSplit",
-                     xorGateway.getGeneral().getName().getValue());
+                xorGateway.getGeneral().getName().getValue());
         assertEquals("under 10 : _5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD",
-                     xorGateway.getExecutionSet().getDefaultRoute().getValue());
+                xorGateway.getExecutionSet().getDefaultRoute().getValue());
         SequenceFlow sequenceFlow1 = null;
         SequenceFlow sequenceFlow2 = null;
         List<Edge> outEdges = (List<Edge>) gatewayNode.getOutEdges();
@@ -735,10 +735,10 @@ public class BPMNDiagramMarshallerTest {
         Node<? extends Definition, ?> sequenceFlowNode1 = graph.getNode("_C72E00C3-70DC-4BC9-A08E-761B4263A239");
         assertNotNull(sequenceFlow1);
         assertEquals("10 and over",
-                     sequenceFlow1.getGeneral().getName().getValue());
+                sequenceFlow1.getGeneral().getName().getValue());
         assertNotNull(sequenceFlow2);
         assertEquals("under 10",
-                     sequenceFlow2.getGeneral().getName().getValue());
+                sequenceFlow2.getGeneral().getName().getValue());
     }
 
     @Test
@@ -762,27 +762,27 @@ public class BPMNDiagramMarshallerTest {
         assertNotNull(reusableSubprocess.getGeneral());
         assertNotNull(reusableSubprocess.getGeneral().getName());
         assertEquals("my subprocess",
-                     reusableSubprocess.getGeneral().getName().getValue());
+                reusableSubprocess.getGeneral().getName().getValue());
         assertEquals("my-called-element",
-                     reusableSubprocess.getExecutionSet().getCalledElement().getValue());
+                reusableSubprocess.getExecutionSet().getCalledElement().getValue());
 
         String assignmentsInfo = reusableSubprocess.getDataIOSet().getAssignmentsinfo().getValue();
         assertEquals("|input1:String,input2:Float||output1:String,output2:Float|[din]pv1->input1,[din]pv2->input2,[dout]output1->pv1,[dout]output2->pv2",
-                     assignmentsInfo);
+                assignmentsInfo);
     }
 
     @Test
     public void testUnmarshallSeveralDiagrams() throws Exception {
         Diagram<Graph, Metadata> diagram1 = unmarshall(BPMN_EVALUATION);
         assertDiagram(diagram1,
-                      8);
+                8);
         assertEquals("Evaluation",
-                     diagram1.getMetadata().getTitle());
+                diagram1.getMetadata().getTitle());
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_LANES);
         assertDiagram(diagram,
-                      7);
+                7);
         assertEquals("Lanes test",
-                     diagram.getMetadata().getTitle());
+                diagram.getMetadata().getTitle());
     }
 
     @Test
@@ -790,9 +790,9 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_BASIC);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      3,
-                      2);
+                1,
+                3,
+                2);
     }
 
     @Test
@@ -800,9 +800,9 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EVALUATION);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      7,
-                      7);
+                1,
+                7,
+                7);
     }
 
     // TODO: Disabled @Test - As intermediate events has been disabled for M1
@@ -811,9 +811,9 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_NOT_BOUNDARY_EVENTS);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      5,
-                      4);
+                1,
+                5,
+                4);
     }
 
     // TODO: Disabled @Test - As intermediate events has been disabled for M1
@@ -822,9 +822,9 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_BOUNDARY_EVENTS);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      5,
-                      3);
+                1,
+                5,
+                3);
     }
 
     @Test
@@ -832,9 +832,9 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_PROCESSVARIABLES);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      7,
-                      7);
+                1,
+                7,
+                7);
         assertTrue(result.contains("<bpmn2:itemDefinition id=\"_employeeItem\" structureRef=\"java.lang.String\"/>"));
         assertTrue(result.contains("<bpmn2:itemDefinition id=\"_reasonItem\" structureRef=\"java.lang.String\"/>"));
         assertTrue(result.contains("<bpmn2:itemDefinition id=\"_performanceItem\" structureRef=\"java.lang.String\"/>"));
@@ -848,9 +848,9 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_PROCESSPROPERTIES);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      3,
-                      2);
+                1,
+                3,
+                2);
         assertTrue(result.contains("bpmn2:process id=\"JDLProj.BPSimple\" drools:packageName=\"org.jbpm\" drools:version=\"1.0\" name=\"BPSimple\" isExecutable=\"true\""));
     }
 
@@ -859,9 +859,9 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_USERTASKASSIGNMENTS);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      7,
-                      7);
+                1,
+                7,
+                7);
         assertTrue(result.contains("<bpmn2:dataInput id=\"_6063D302-9D81-4C86-920B-E808A45377C2_reasonInputX\" drools:dtype=\"com.test.Reason\" itemSubjectRef=\"__6063D302-9D81-4C86-920B-E808A45377C2_reasonInputXItem\" name=\"reason\"/>"));
         assertTrue(result.contains("<bpmn2:dataOutput id=\"_6063D302-9D81-4C86-920B-E808A45377C2_performanceOutputX\" drools:dtype=\"Object\" itemSubjectRef=\"__6063D302-9D81-4C86-920B-E808A45377C2_performanceOutputXItem\" name=\"performance\"/>"));
         assertTrue(result.contains("<bpmn2:dataOutput id=\"_6063D302-9D81-4C86-920B-E808A45377C2_performanceOutputX\" drools:dtype=\"Object\" itemSubjectRef=\"__6063D302-9D81-4C86-920B-E808A45377C2_performanceOutputXItem\" name=\"performance\"/>"));
@@ -876,9 +876,9 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_BUSINESSRULETASKASSIGNMENTS);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      3,
-                      2);
+                1,
+                3,
+                2);
         assertTrue(result.contains("<bpmn2:dataInput id=\"_45C2C340-D1D0-4D63-8419-EF38F9E73507_input1InputX\" drools:dtype=\"String\" itemSubjectRef=\"__45C2C340-D1D0-4D63-8419-EF38F9E73507_input1InputXItem\" name=\"input1\"/>"));
         assertTrue(result.contains("<bpmn2:dataInput id=\"_45C2C340-D1D0-4D63-8419-EF38F9E73507_input2InputX\" drools:dtype=\"String\" itemSubjectRef=\"__45C2C340-D1D0-4D63-8419-EF38F9E73507_input2InputXItem\" name=\"input2\"/>"));
         assertTrue(result.contains("<bpmn2:dataOutput id=\"_45C2C340-D1D0-4D63-8419-EF38F9E73507_output1OutputX\" drools:dtype=\"String\" itemSubjectRef=\"__45C2C340-D1D0-4D63-8419-EF38F9E73507_output1OutputXItem\" name=\"output1\"/>"));
@@ -894,9 +894,9 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTEVENTASSIGNMENTS);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      7,
-                      7);
+                1,
+                7,
+                7);
         assertTrue(result.contains("<bpmn2:dataOutput id=\"_106AADA7-E381-4736-8BD6-7EB47A1D096B_StartEventOutput1\" drools:dtype=\"String\" name=\"StartEventOutput1\"/>"));
         assertTrue(result.contains("<bpmn2:sourceRef>_106AADA7-E381-4736-8BD6-7EB47A1D096B_StartEventOutput1</bpmn2:sourceRef>"));
         assertTrue(result.contains("<bpmn2:targetRef>employee</bpmn2:targetRef>"));
@@ -908,9 +908,9 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDEVENTASSIGNMENTS);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      7,
-                      6);
+                1,
+                7,
+                6);
         assertTrue(result.contains("<bpmn2:dataInput id=\"_0493ECBF-3C0F-4086-9979-2391CE740AA8_EndTermEventInput1InputX\" drools:dtype=\"String\" name=\"EndTermEventInput1\"/>"));
         assertTrue(result.contains("<bpmn2:sourceRef>employee</bpmn2:sourceRef>"));
         assertTrue(result.contains("<bpmn2:targetRef>_0493ECBF-3C0F-4086-9979-2391CE740AA8_EndTermEventInput1InputX</bpmn2:targetRef>"));
@@ -926,12 +926,14 @@ public class BPMNDiagramMarshallerTest {
     public void testMarshallReusableSubprocess() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_REUSABLE_SUBPROCESS);
         assertDiagram(diagram,
-                      4);
+                4);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      3,
-                      2);
+                1,
+                3,
+                2);
+
+        assertTrue(result.contains("<bpmn2:callActivity id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB\" name=\"my subprocess\" calledElement=\"my-called-element\">"));
 
         assertTrue(result.contains("<bpmn2:dataInput id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB_input1InputX\" drools:dtype=\"String\" itemSubjectRef=\"__FC6D8570-8C67-40C2-8B7B-953DE15765FB_input1InputXItem\" name=\"input1\"/>"));
         assertTrue(result.contains("<bpmn2:dataOutput id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB_output2OutputX\" drools:dtype=\"Float\" itemSubjectRef=\"__FC6D8570-8C67-40C2-8B7B-953DE15765FB_output2OutputXItem\" name=\"output2\"/>"));
@@ -946,12 +948,12 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_USERTASKASSIGNEES);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      5,
-                      4);
+                1,
+                5,
+                4);
         assertTrue(result.contains("<![CDATA[admin,kiemgmt]]>"));
         result = result.replace('\n',
-                                ' ');
+                ' ');
         assertTrue(result.matches("(.*)<bpmn2:resourceAssignmentExpression(.*)>user</bpmn2:formalExpression>(.*)"));
         assertTrue(result.matches("(.*)<bpmn2:resourceAssignmentExpression(.*)>user1</bpmn2:formalExpression>(.*)"));
     }
@@ -961,9 +963,9 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_USERTASKPROPERTIES);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      3,
-                      2);
+                1,
+                3,
+                2);
         assertTrue(result.contains("MyUserTask</bpmn2:from>"));
     }
 
@@ -972,14 +974,14 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SIMULATIONPROPERTIES);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      3,
-                      2);
+                1,
+                3,
+                2);
 
         result = result.replaceAll("\\s+",
-                                   " ");
+                " ");
         result = result.replaceAll("> <",
-                                   "><");
+                "><");
         assertTrue(result.contains("<bpsim:TimeParameters xsi:type=\"bpsim:TimeParameters\"><bpsim:ProcessingTime xsi:type=\"bpsim:Parameter\"><bpsim:PoissonDistribution mean=\"321.0\"/>"));
         assertTrue(result.contains("<bpsim:ResourceParameters xsi:type=\"bpsim:ResourceParameters\"><bpsim:Availability xsi:type=\"bpsim:Parameter\"><bpsim:FloatingParameter value=\"999.0\"/>"));
         assertTrue(result.contains("<bpsim:Quantity xsi:type=\"bpsim:Parameter\"><bpsim:FloatingParameter value=\"111.0\"/></bpsim:Quantity>"));
@@ -992,15 +994,15 @@ public class BPMNDiagramMarshallerTest {
         Diagram diagram = unmarshall(BPMN_EVALUATION);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      7,
-                      7);
+                1,
+                7,
+                7);
         Diagram diagram2 = unmarshall(BPMN_EVALUATION);
         String result2 = tested.marshall(diagram2);
         assertDiagram(result2,
-                      1,
-                      7,
-                      7);
+                1,
+                7,
+                7);
     }
 
     @Test
@@ -1025,13 +1027,13 @@ public class BPMNDiagramMarshallerTest {
         assertNotNull(scriptTask.getGeneral());
         assertNotNull(scriptTask.getGeneral().getName());
         assertEquals(scriptTask.getTaskType().getValue(),
-                     TaskTypes.SCRIPT);
+                TaskTypes.SCRIPT);
         assertEquals("my script task",
-                     scriptTask.getGeneral().getName().getValue());
+                scriptTask.getGeneral().getName().getValue());
         assertEquals("System.out.println(\"hello\");",
-                     scriptTask.getExecutionSet().getScript().getValue());
+                scriptTask.getExecutionSet().getScript().getValue());
         assertEquals("java",
-                     scriptTask.getExecutionSet().getScriptLanguage().getValue());
+                scriptTask.getExecutionSet().getScriptLanguage().getValue());
     }
 
     @Test
@@ -1057,13 +1059,13 @@ public class BPMNDiagramMarshallerTest {
         assertNotNull(sequenceFlow.getGeneral());
         assertNotNull(sequenceFlow.getGeneral().getName());
         assertEquals("my sequence flow",
-                     sequenceFlow.getGeneral().getName().getValue());
+                sequenceFlow.getGeneral().getName().getValue());
         assertEquals("System.out.println(\"hello\");",
-                     sequenceFlow.getExecutionSet().getConditionExpression().getValue());
+                sequenceFlow.getExecutionSet().getConditionExpression().getValue());
         assertEquals("java",
-                     sequenceFlow.getExecutionSet().getConditionExpressionLanguage().getValue());
+                sequenceFlow.getExecutionSet().getConditionExpressionLanguage().getValue());
         assertEquals("1",
-                     sequenceFlow.getExecutionSet().getPriority().getValue());
+                sequenceFlow.getExecutionSet().getPriority().getValue());
     }
 
     @Test
@@ -1072,7 +1074,7 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_BUSINESSRULETASKRULEFLOWGROUP);
         String result = tested.marshall(diagram);
         assertDiagram(diagram,
-                      2);
+                2);
 
         assertTrue(result.contains("<bpmn2:businessRuleTask id=\"_16D006B5-3703-4A67-AE44-6483338E86C2\" drools:ruleFlowGroup=\"my-ruleflow-group\" name=\"my business rule task\">"));
     }
@@ -1082,9 +1084,9 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_XORGATEWAY);
         String result = tested.marshall(diagram);
         assertDiagram(result,
-                      1,
-                      6,
-                      5);
+                1,
+                6,
+                5);
         assertTrue(result.contains("<bpmn2:exclusiveGateway id=\"_877EA035-1A14-42E9-8CAA-43E9BF908C70\" drools:dg=\"under 10 : _5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD\" name=\"AgeSplit\" gatewayDirection=\"Diverging\" default=\"_5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD\">"));
     }
 
@@ -1109,13 +1111,13 @@ public class BPMNDiagramMarshallerTest {
         assertNotNull(timerEvent.getExecutionSet());
 
         assertEquals("myTimeDateValue",
-                     timerEvent.getExecutionSet().getTimeDate().getValue());
+                timerEvent.getExecutionSet().getTimeDate().getValue());
         assertEquals("MyTimeDurationValue",
-                     timerEvent.getExecutionSet().getTimeDuration().getValue());
+                timerEvent.getExecutionSet().getTimeDuration().getValue());
         assertEquals("myTimeCycleValue",
-                     timerEvent.getExecutionSet().getTimeCycle().getValue());
+                timerEvent.getExecutionSet().getTimeCycle().getValue());
         assertEquals("cron",
-                     timerEvent.getExecutionSet().getTimeCycleLanguage().getValue());
+                timerEvent.getExecutionSet().getTimeCycleLanguage().getValue());
     }
 
     private void assertDiagram(String result,
@@ -1123,17 +1125,17 @@ public class BPMNDiagramMarshallerTest {
                                int nodeCount,
                                int edgeCount) {
         int d = count(result,
-                      "<bpmndi:BPMNDiagram");
+                "<bpmndi:BPMNDiagram");
         int n = count(result,
-                      "<bpmndi:BPMNShape");
+                "<bpmndi:BPMNShape");
         int e = count(result,
-                      "<bpmndi:BPMNEdge");
+                "<bpmndi:BPMNEdge");
         assertEquals(diagramCount,
-                     d);
+                d);
         assertEquals(nodeCount,
-                     n);
+                n);
         assertEquals(edgeCount,
-                     e);
+                e);
     }
 
     private void assertDiagram(Diagram<Graph, Metadata> diagram,
@@ -1144,7 +1146,7 @@ public class BPMNDiagramMarshallerTest {
         List<Node> nodes = new ArrayList<>();
         nodesIterable.forEachRemaining(nodes::add);
         assertEquals(nodesSize,
-                     nodes.size());
+                nodes.size());
     }
 
     private Diagram<Graph, Metadata> unmarshall(String fileName) throws Exception {
@@ -1152,15 +1154,15 @@ public class BPMNDiagramMarshallerTest {
         Metadata metadata =
                 new MetadataImpl.MetadataImplBuilder(BindableAdapterUtils.getDefinitionSetId(BPMNDefinitionSet.class)).build();
         DiagramImpl result = new DiagramImpl(org.kie.workbench.common.stunner.core.util.UUID.uuid(),
-                                             metadata);
+                metadata);
         Graph graph = tested.unmarshall(metadata,
-                                        is);
+                is);
         result.setGraph(graph);
         // Update diagram's  metadata.
         tested.updateRootUUID(result.getMetadata(),
-                              graph);
+                graph);
         updateTitle(result.getMetadata(),
-                    graph);
+                graph);
         return result;
     }
 
@@ -1185,7 +1187,7 @@ public class BPMNDiagramMarshallerTest {
         int count = 0;
         int idx = 0;
         while ((idx = string.indexOf(substring,
-                                     idx)) != -1) {
+                idx)) != -1) {
             idx++;
             count++;
         }

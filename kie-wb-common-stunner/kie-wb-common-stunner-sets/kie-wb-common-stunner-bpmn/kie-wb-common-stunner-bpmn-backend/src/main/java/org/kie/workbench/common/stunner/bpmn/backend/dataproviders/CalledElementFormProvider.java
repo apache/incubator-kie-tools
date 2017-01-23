@@ -15,33 +15,60 @@
  */
 package org.kie.workbench.common.stunner.bpmn.backend.dataproviders;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueResourceIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
+import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
+import org.kie.workbench.common.stunner.bpmn.backend.query.FindBpmnProcessIdsQuery;
+import org.uberfire.backend.vfs.Path;
 
 public class CalledElementFormProvider implements SelectorDataProvider {
-    // NOTE - this provides dummy data for now until integration with
-    // workbench is complete
+
+    @Inject
+    protected RefactoringQueryService queryService;
 
     @Override
     public String getProviderName() {
         return getClass().getSimpleName();
     }
 
+    public void setQueryService(RefactoringQueryService queryService) {
+        this.queryService = queryService;
+    }
+
     @Override
-    @SuppressWarnings("unchecked")
-    public SelectorData getSelectorData(final FormRenderingContext context) {
-        Map<Object, String> values = new TreeMap<>();
-        values.put("/my/samples/businessprocess1.bpmn2",
-                   "/my/samples/businessprocess1.bpmn2");
-        values.put("/my/samples/businessprocess2.bpmn2",
-                   "/my/samples/businessprocess2.bpmn2");
-        values.put("/my/samples/businessprocess3.bpmn2",
-                   "/my/samples/businessprocess3.bpmn2");
-        return new SelectorData(values,
-                                null);
+    public SelectorData getSelectorData(FormRenderingContext context) {
+        return new SelectorData(getBusinessProcessIDs(), null);
+    }
+
+    public Map<Object, String> getBusinessProcessIDs() {
+        final Set<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>() {{
+            add(new ValueResourceIndexTerm("*", ResourceType.BPMN2, ValueIndexTerm.TermSearchType.WILDCARD));
+        }};
+        List<RefactoringPageRow> results = queryService.query(
+                FindBpmnProcessIdsQuery.NAME,
+                queryTerms);
+
+        Map<Object, String> businessProcessIDs = new TreeMap<Object, String>();
+
+        for (RefactoringPageRow row : results) {
+            Map<String, Path> mapRow = (Map<String, Path>) row.getValue();
+            for (String rKey : mapRow.keySet()) {
+                businessProcessIDs.put(rKey, rKey);
+            }
+        }
+
+        return businessProcessIDs;
     }
 }

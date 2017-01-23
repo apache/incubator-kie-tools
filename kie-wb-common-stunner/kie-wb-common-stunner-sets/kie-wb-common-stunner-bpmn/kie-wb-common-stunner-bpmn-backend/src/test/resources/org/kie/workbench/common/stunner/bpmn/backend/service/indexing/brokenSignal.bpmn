@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace=""
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <process processType="Private" isExecutable="true" id="org.jbpm.broken" name="Default Process" tns:packageName="defaultPackage" tns:version="1" >
+
+    <extensionElements>
+      <tns:global identifier="person" type="org.kie.test.objects.Person" />
+      <tns:global identifier="name" type="String" />
+    </extensionElements>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    
+    <intermediateCatchEvent id="_2" name="Catch" >
+      <signalEventDefinition signalRef="BrokenSignal"/>
+    </intermediateCatchEvent>
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    
+    <scriptTask id="_3" name="Script Task" >
+      <script>BAD SCRIPT</script>
+    </scriptTask>
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
+    
+    <task id="_4" name="Task" tns:taskName="MyTask" >
+      <extensionElements>
+        <tns:onEntry-script scriptFormat="http://www.java.com/java">
+          <tns:script>MORE BAD SCRIPTING!</tns:script>
+        </tns:onEntry-script>
+      </extensionElements>
+    </task>
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+    
+    <endEvent id="_5" name="End" />
+
+  </process>
+
+</definitions>
