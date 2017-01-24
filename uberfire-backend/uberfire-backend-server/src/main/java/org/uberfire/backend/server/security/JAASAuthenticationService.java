@@ -23,6 +23,10 @@ import java.util.*;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.security.auth.Subject;
+import java.util.Collection;
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
@@ -48,7 +52,8 @@ import org.uberfire.backend.server.security.adapter.GroupAdapterAuthorizationSou
  * authenticated user. This association is only undone upon a call to {@link #logout()}. This is appropriate for use
  * with the Git SSH daemon, but would cause serious security issues if used for authenticating HTTP requests.
  */
-@ApplicationScoped @Alternative
+@ApplicationScoped
+@Alternative
 public class JAASAuthenticationService extends GroupAdapterAuthorizationSource implements AuthenticationService {
 
     public static final String DEFAULT_DOMAIN = "ApplicationRealm";
@@ -65,19 +70,47 @@ public class JAASAuthenticationService extends GroupAdapterAuthorizationSource i
     }
 
     @Override
-    public User login( String username, String password ) {
-        try {
-            final LoginContext loginContext = createLoginContext( username, password );
-            loginContext.login();
-            List<String> principals = loadEntitiesFromSubjectAndAdapters( username, loginContext.getSubject(), new String[] { rolePrincipleName } );
-            Collection<Role> roles = getRoles( principals );
-            Collection<org.jboss.errai.security.shared.api.Group> groups = getGroups( principals );
-            UserImpl user = new UserImpl( username, roles, groups );
-            userOnThisThread.set( user );
-            return user;
-        } catch ( final LoginException ex ) {
-            throw new FailedAuthenticationException("Failed to authenticate user " + username, ex);
+    public User login( final String username,
+                       final String password ) {
+        final SecurityManager jsm = System.getSecurityManager();
+
+        if ( jsm != null ) {
+            final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            final ClassLoader cl = this.getClass().getClassLoader();
+            try {
+                // RHBPMS-473 - TCCL used in javax.security.auth.login.LoginContext
+                // is not the application CL if JSM is enabled.
+                // Setting TCCL to application CL as workaround
+                Thread.currentThread().setContextClassLoader( cl );
+
+                return executeLogin( username, password );
+            } catch ( final LoginException ex ) {
+                throw new FailedAuthenticationException();
+            } finally {
+                // RHBPMS-473 - Restore original TCCL
+                if ( tccl != null ) {
+                    Thread.currentThread().setContextClassLoader( tccl );
+                }
+            }
+        } else {
+            try {
+                return executeLogin( username, password );
+            } catch ( final LoginException ex ) {
+                throw new FailedAuthenticationException();
+            }
         }
+    }
+
+    private User executeLogin( final String username,
+                               final String password ) throws LoginException {
+        final LoginContext loginContext = createLoginContext( username, password );
+        loginContext.login();
+        List<String> principals = loadEntitiesFromSubjectAndAdapters( username, loginContext.getSubject(), new String[] { rolePrincipleName } );
+        Collection<Role> roles = getRoles( principals );
+        Collection<org.jboss.errai.security.shared.api.Group> groups = getGroups( principals );
+        UserImpl user = new UserImpl( username, roles, groups );
+        userOnThisThread.set( user );
+        return user;
     }
 
     @Override
