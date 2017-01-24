@@ -25,7 +25,7 @@ import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Legend;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.resources.i18n.FormRenderingConstants;
-import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 
 @Dependent
 public class MultipleSubFormFieldRenderer extends FieldRenderer<MultipleSubFormFieldDefinition> {
@@ -77,7 +77,7 @@ public class MultipleSubFormFieldRenderer extends FieldRenderer<MultipleSubFormF
 
     @Override
     public String getSupportedCode() {
-        return MultipleSubFormFieldDefinition.CODE;
+        return MultipleSubFormFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

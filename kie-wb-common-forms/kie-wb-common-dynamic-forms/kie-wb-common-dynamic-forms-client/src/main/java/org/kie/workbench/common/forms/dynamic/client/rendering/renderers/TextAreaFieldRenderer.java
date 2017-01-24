@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
-import org.kie.workbench.common.forms.model.impl.basic.textArea.TextAreaFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
 
 @Dependent
 public class TextAreaFieldRenderer extends FieldRenderer<TextAreaFieldDefinition> {
@@ -39,7 +39,7 @@ public class TextAreaFieldRenderer extends FieldRenderer<TextAreaFieldDefinition
         textArea = new TextArea();
         textArea.setPlaceholder( field.getPlaceHolder() );
         textArea.setVisibleLines( field.getRows() );
-        textArea.setEnabled( !field.getReadonly() );
+        textArea.setEnabled( !field.getReadOnly() );
         textArea.setVisibleLines( field.getRows() );
     }
 
@@ -55,7 +55,7 @@ public class TextAreaFieldRenderer extends FieldRenderer<TextAreaFieldDefinition
 
     @Override
     public String getSupportedCode() {
-        return TextAreaFieldDefinition.CODE;
+        return TextAreaFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

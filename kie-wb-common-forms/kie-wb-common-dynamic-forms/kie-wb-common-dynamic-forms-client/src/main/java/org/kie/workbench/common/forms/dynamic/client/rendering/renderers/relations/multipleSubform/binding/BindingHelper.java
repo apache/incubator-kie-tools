@@ -18,7 +18,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relati
 
 import org.jboss.errai.databinding.client.BindableProxy;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
-import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 
 public interface BindingHelper<C extends FormRenderingContext, P extends BindableProxy, M> {
 

@@ -21,6 +21,9 @@ import javax.validation.constraints.Min;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -37,6 +40,7 @@ import org.kie.workbench.common.stunner.core.definition.property.type.DoubleType
 @Portable
 @Bindable
 @Property(meta = PropertyMetaTypes.WIDTH)
+@FieldDefinition
 public class Width implements BPMNProperty {
 
     @Caption
@@ -49,7 +53,8 @@ public class Width implements BPMNProperty {
     public static final PropertyType type = new DoubleType();
 
     @ReadOnly
-    public static final Boolean readOnly = false;
+    @FieldReadOnly
+    private Boolean readOnly = false;
 
     @Optional
     public static final Boolean optional = false;
@@ -60,6 +65,7 @@ public class Width implements BPMNProperty {
     @Value
     @Max(300)
     @Min(100)
+    @FieldValue
     private Double value = defaultValue;
 
     public Width() {

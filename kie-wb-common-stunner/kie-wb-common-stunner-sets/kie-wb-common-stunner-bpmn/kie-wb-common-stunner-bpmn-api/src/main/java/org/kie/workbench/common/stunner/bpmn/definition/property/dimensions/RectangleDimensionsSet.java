@@ -20,33 +20,54 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
-import org.kie.workbench.common.forms.metaModel.Slider;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_HEIGHT;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_WIDTH;
-
 @Portable
 @Bindable
 @PropertySet
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "width"
+)
 public class RectangleDimensionsSet implements BPMNPropertySet {
 
     @Name
     public static final transient String propertySetName = "Shape Dimensions";
 
     @Property
-    @FieldDef(label = FIELDDEF_WIDTH, property = "value")
-    @Slider(min = 100.0, max = 300.0, step = 10.0, precision = 0.0)
+    @FormField(
+            type = SliderFieldType.class,
+            labelKey = "width",
+            settings = {
+                    @FieldParam(name = "min", value = "100.0"),
+                    @FieldParam(name = "max", value = "300.0"),
+                    @FieldParam(name = "step", value = "10.0"),
+                    @FieldParam(name = "precision", value = "0.0")
+            }
+    )
     @Valid
     protected Width width;
 
     @Property
-    @FieldDef(label = FIELDDEF_HEIGHT, property = "value")
-    @Slider(min = 40.0, max = 100.0, step = 5.0, precision = 0.0)
+    @FormField(
+            type = SliderFieldType.class,
+            labelKey = "height",
+            afterElement = "width",
+            settings = {
+                    @FieldParam(name = "min", value = "40.0"),
+                    @FieldParam(name = "max", value = "100.0"),
+                    @FieldParam(name = "step", value = "5.0"),
+                    @FieldParam(name = "precision", value = "0.0")
+            }
+    )
     @Valid
     protected Height height;
 

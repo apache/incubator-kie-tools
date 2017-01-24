@@ -21,26 +21,32 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
-import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.AssignmentsEditor;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_ASSIGNMENTS;
-
 @Portable
 @Bindable
 @PropertySet
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "assignmentsinfo"
+)
 public class DataIOSet implements BPMNPropertySet {
 
     @Name
     public static final transient String propertySetName = "Task Data";
 
     @Property
-    @FieldDef(label = FIELDDEF_ASSIGNMENTS, property = "value")
-    @AssignmentsEditor
+    @FormField(
+            type = AssignmentsEditorFieldType.class,
+            labelKey = "assignmentsinfo"
+    )
     @Valid
     private AssignmentsInfo assignmentsinfo;
 

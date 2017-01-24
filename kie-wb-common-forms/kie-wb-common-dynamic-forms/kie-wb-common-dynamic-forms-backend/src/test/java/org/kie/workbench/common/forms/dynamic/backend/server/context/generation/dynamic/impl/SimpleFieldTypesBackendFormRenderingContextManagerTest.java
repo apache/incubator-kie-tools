@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.model.DefaultFieldTypeInfo;
+import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -87,28 +87,28 @@ public class SimpleFieldTypesBackendFormRenderingContextManagerTest extends Abst
     @Override
     protected FormDefinition getRootForm() {
         FormDefinition form = new FormDefinition();
-        FieldDefinition field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( String.class.getName() ) );
+        FieldDefinition field = fieldManager.getDefinitionByDataType( new FieldDataType( String.class.getName() ) );
 
         field.setName( "string" );
         field.setBinding( "string" );
 
         form.getFields().add( field );
 
-        field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Integer.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType( new FieldDataType( Integer.class.getName() ) );
 
         field.setName( "integer" );
         field.setBinding( "integer" );
 
         form.getFields().add( field );
 
-        field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Date.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType( new FieldDataType( Date.class.getName() ) );
 
         field.setName( "date" );
         field.setBinding( "date" );
 
         form.getFields().add( field );
 
-        field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Boolean.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType( new FieldDataType( Boolean.class.getName() ) );
 
         field.setName( "boolean" );
         field.setBinding( "boolean" );

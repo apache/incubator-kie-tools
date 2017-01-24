@@ -18,12 +18,23 @@ package org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders;
 
 import javax.enterprise.inject.Model;
 
-import org.kie.workbench.common.forms.model.FieldTypeInfo;
-import org.kie.workbench.common.forms.service.impl.fieldProviders.BasicTypeFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
+import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 
 @Model
-public class VariablesEditorFieldProvider extends BasicTypeFieldProvider<VariablesEditorFieldDefinition> {
+public class VariablesEditorFieldProvider extends BasicTypeFieldProvider<VariablesEditorFieldType, VariablesEditorFieldDefinition> {
+
+    @Override
+    public Class<VariablesEditorFieldType> getFieldType() {
+        return VariablesEditorFieldType.class;
+    }
+
+    @Override
+    public String getFieldTypeName() {
+        return VariablesEditorFieldDefinition.FIELD_TYPE.getTypeName();
+    }
 
     @Override
     public int getPriority() {
@@ -36,13 +47,8 @@ public class VariablesEditorFieldProvider extends BasicTypeFieldProvider<Variabl
     }
 
     @Override
-    public VariablesEditorFieldDefinition createFieldByType(final FieldTypeInfo typeInfo) {
+    public VariablesEditorFieldDefinition createFieldByType(FieldDataType typeInfo) {
         return getDefaultField();
-    }
-
-    @Override
-    public String getProviderCode() {
-        return VariablesEditorFieldDefinition.CODE;
     }
 
     @Override

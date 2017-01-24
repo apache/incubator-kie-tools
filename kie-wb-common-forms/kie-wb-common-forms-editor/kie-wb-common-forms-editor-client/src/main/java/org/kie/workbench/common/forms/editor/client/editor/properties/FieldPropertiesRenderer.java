@@ -25,6 +25,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.editor.service.FieldPropertiesService;
 import org.kie.workbench.common.forms.editor.service.FormEditorRenderingContext;
 
@@ -39,11 +41,18 @@ public class FieldPropertiesRenderer implements IsWidget {
         Modal getPropertiesModal();
     }
 
-    @Inject
     private FieldPropertiesRendererView view;
 
-    @Inject
     private Caller<FieldPropertiesService> propertiesService;
+
+    private DynamicFormModelGenerator dynamicFormModelGenerator;
+
+    @Inject
+    public FieldPropertiesRenderer( FieldPropertiesRendererView view, Caller<FieldPropertiesService> propertiesService, DynamicFormModelGenerator dynamicFormModelGenerator ) {
+        this.view = view;
+        this.propertiesService = propertiesService;
+        this.dynamicFormModelGenerator = dynamicFormModelGenerator;
+    }
 
     @PostConstruct
     protected void init() {
@@ -51,14 +60,24 @@ public class FieldPropertiesRenderer implements IsWidget {
     }
 
     public void render( final FieldPropertiesRendererHelper helper ) {
-        propertiesService.call( new RemoteCallback<FormEditorRenderingContext>() {
-            @Override
-            public void callback( FormEditorRenderingContext renderingContext ) {
-                renderingContext.setModel( helper.getCurrentField() );
-                renderingContext.setParentContext( helper.getCurrentRenderingContext() );
-                view.render( helper, renderingContext );
-            }
-        } ).getFieldPropertiesRenderingContext( helper.getCurrentField(), helper.getPath() );
+
+        FormRenderingContext context = dynamicFormModelGenerator.getContextForModel( helper.getCurrentField() );
+        if ( context != null ) {
+            FormEditorRenderingContext renderingContext = new FormEditorRenderingContext( helper.getPath() );
+            renderingContext.setRootForm( context.getRootForm() );
+            renderingContext.getAvailableForms().putAll( context.getAvailableForms() );
+            renderingContext.setModel( helper.getCurrentField() );
+            view.render( helper, renderingContext );
+        } else {
+            propertiesService.call( new RemoteCallback<FormEditorRenderingContext>() {
+                @Override
+                public void callback( FormEditorRenderingContext renderingContext ) {
+                    renderingContext.setModel( helper.getCurrentField() );
+                    renderingContext.setParentContext( helper.getCurrentRenderingContext() );
+                    view.render( helper, renderingContext );
+                }
+            } ).getFieldPropertiesRenderingContext( helper.getCurrentField(), helper.getPath() );
+        }
     }
 
     public FieldPropertiesRendererView getView() {

@@ -21,31 +21,37 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
-import org.kie.workbench.common.forms.metaModel.TextArea;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_DOCUMENTATION;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_NAME;
-
 @Portable
 @Bindable
 @PropertySet
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "name"
+)
 public class BPMNGeneralSet implements BPMNPropertySet {
 
     @org.kie.workbench.common.stunner.core.definition.annotation.Name
     public static final transient String propertySetName = "General";
 
     @Property
-    @FieldDef(label = FIELDDEF_NAME, property = "value", position = 0)
+    @FormField(labelKey = "name")
     @Valid
     private Name name;
 
     @Property
-    @FieldDef(label = FIELDDEF_DOCUMENTATION, property = "value", position = 1)
-    @TextArea(rows = 3)
+    @FormField(
+            type = TextAreaFieldType.class,
+            labelKey = "documentation",
+            afterElement = "name"
+    )
     @Valid
     private Documentation documentation;
 

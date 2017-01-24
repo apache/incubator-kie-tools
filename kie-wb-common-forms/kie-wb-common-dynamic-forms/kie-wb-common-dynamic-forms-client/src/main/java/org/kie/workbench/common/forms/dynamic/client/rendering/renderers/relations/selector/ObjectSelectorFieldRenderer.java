@@ -25,7 +25,7 @@ import org.gwtbootstrap3.extras.typeahead.client.base.SuggestionCallback;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.flatViews.impl.ObjectFlatView;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.typeahead.BindableTypeAhead;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
-import org.kie.workbench.common.forms.model.impl.relations.ObjectSelectorFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.objectSelector.definition.ObjectSelectorFieldDefinition;
 
 @Dependent
 public class ObjectSelectorFieldRenderer extends FieldRenderer<ObjectSelectorFieldDefinition> {
@@ -42,7 +42,7 @@ public class ObjectSelectorFieldRenderer extends FieldRenderer<ObjectSelectorFie
 
     @Override
     public String getName() {
-        return ObjectSelectorFieldDefinition.CODE;
+        return ObjectSelectorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ObjectSelectorFieldRenderer extends FieldRenderer<ObjectSelectorFie
 
     @Override
     public String getSupportedCode() {
-        return ObjectSelectorFieldDefinition.CODE;
+        return ObjectSelectorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

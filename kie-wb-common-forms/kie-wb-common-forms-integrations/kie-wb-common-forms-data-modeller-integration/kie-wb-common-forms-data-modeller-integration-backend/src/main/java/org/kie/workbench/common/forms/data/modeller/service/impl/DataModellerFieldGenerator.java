@@ -17,9 +17,9 @@
 package org.kie.workbench.common.forms.data.modeller.service.impl;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.kie.workbench.common.forms.model.DefaultFieldTypeInfo;
+import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.HasPlaceHolder;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.service.FieldManager;
 import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
@@ -57,14 +57,14 @@ public class DataModellerFieldGenerator {
         String propertyName = holderName + "_" + property.getName();
 
         FieldDefinition field = null;
-        if (property.getBag() == null) field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( property.getClassName(), false, false ) );
-        else field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( property.getClassName(), true, false ) );
+        if (property.getBag() == null) field = fieldManager.getDefinitionByDataType( new FieldDataType( property.getClassName(), false, false ) );
+        else field = fieldManager.getDefinitionByDataType( new FieldDataType( property.getClassName(), true, false ) );
 
         if (field == null) return null;
 
         // TODO: improve this
         field.setAnnotatedId( property.getAnnotation( "javax.persistence.Id" ) != null );
-        field.setReadonly( field.isAnnotatedId() );
+        field.setReadOnly( field.isAnnotatedId() );
 
         field.setName( propertyName );
         String label = getPropertyLabel( property );

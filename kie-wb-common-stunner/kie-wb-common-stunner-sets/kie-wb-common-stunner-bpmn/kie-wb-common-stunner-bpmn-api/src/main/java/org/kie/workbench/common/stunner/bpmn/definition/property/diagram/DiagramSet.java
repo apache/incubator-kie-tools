@@ -21,50 +21,64 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
-import org.kie.workbench.common.forms.metaModel.TextArea;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_DOCUMENTATION;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_ID;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_NAME;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_PACKAGE;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_VERSION;
-
 @Portable
 @Bindable
 @PropertySet
+@FormDefinition(
+        policy = FieldPolicy.ONLY_MARKED,
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "name"
+)
 public class DiagramSet {
 
     @org.kie.workbench.common.stunner.core.definition.annotation.Name
     public static final transient String propertySetName = "BPMN Process";
 
     @Property
-    @FieldDef(label = FIELDDEF_NAME, property = "value", position = 0)
+    @FormField(labelKey = "name")
     @Valid
     private Name name;
 
     @Property
-    @FieldDef(label = FIELDDEF_DOCUMENTATION, property = "value", position = 1)
-    @TextArea(rows = 3)
+    @FormField(
+            type = TextAreaFieldType.class,
+            labelKey = "documentation",
+            afterElement = "name"
+    )
     @Valid
     private Documentation documentation;
 
     @Property
-    @FieldDef(label = FIELDDEF_ID, property = "value", position = 2)
+    @FormField(
+            labelKey = "id",
+            afterElement = "documentation"
+    )
     @Valid
     private Id id;
 
     @Property
-    @FieldDef(label = FIELDDEF_PACKAGE, property = "value", position = 3)
+    @FormField(
+            labelKey = "packageProperty",
+            afterElement = "id"
+    )
     @Valid
     private Package packageProperty;
 
     @Property
-    @FieldDef(label = FIELDDEF_VERSION, property = "value", position = 4)
+    @FormField(
+            labelKey = "version",
+            afterElement = "packageProperty"
+    )
     @Valid
     private Version version;
 

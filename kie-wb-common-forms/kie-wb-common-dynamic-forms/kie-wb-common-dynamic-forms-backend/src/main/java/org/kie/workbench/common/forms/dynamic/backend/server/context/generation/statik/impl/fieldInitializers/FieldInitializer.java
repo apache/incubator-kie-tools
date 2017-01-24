@@ -21,6 +21,7 @@ import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 public interface FieldInitializer<T extends FieldDefinition> {
+
     public boolean supports( FieldDefinition field );
 
     public void initializeField( T field, FieldSetting setting, DMOBasedTransformerContext context );

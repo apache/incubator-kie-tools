@@ -19,7 +19,6 @@ package org.kie.workbench.common.forms.dynamic.service.context.generation.dynami
 import java.io.Serializable;
 import java.util.Map;
 
-import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 import org.kie.workbench.common.forms.model.FormDefinition;
 
 /**

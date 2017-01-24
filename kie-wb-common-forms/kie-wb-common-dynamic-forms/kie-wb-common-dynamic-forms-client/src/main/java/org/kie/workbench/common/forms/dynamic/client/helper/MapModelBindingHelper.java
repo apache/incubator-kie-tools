@@ -31,16 +31,15 @@ import org.jboss.errai.databinding.client.PropertyType;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
-import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.slider.IntegerSliderDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
 
 @ApplicationScoped
 public class MapModelBindingHelper {
 
-    protected Map<Class<? extends FieldDefinition>, PropertyGenerator> propertiesGenerator = new HashMap<>();
+    protected Map<Class<? extends AbstractFieldDefinition>, PropertyGenerator> propertiesGenerator = new HashMap<>();
 
     protected Map<String, Class> basicProperties = new HashMap<>();
 

@@ -35,7 +35,7 @@ public class ColorPickerFieldRenderer extends FieldRenderer<ColorPickerFieldDefi
 
     @Override
     public String getName() {
-        return ColorPickerFieldDefinition.CODE;
+        return ColorPickerFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override
@@ -49,7 +49,7 @@ public class ColorPickerFieldRenderer extends FieldRenderer<ColorPickerFieldDefi
 
     @Override
     public String getSupportedCode() {
-        return ColorPickerFieldDefinition.CODE;
+        return ColorPickerFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

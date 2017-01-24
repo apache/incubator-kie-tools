@@ -56,7 +56,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
 
     @Override
     public String getName() {
-        return VariablesEditorFieldDefinition.CODE;
+        return VariablesEditorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override
@@ -82,7 +82,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
 
     @Override
     public String getSupportedCode() {
-        return VariablesEditorFieldDefinition.CODE;
+        return VariablesEditorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

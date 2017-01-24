@@ -22,7 +22,7 @@ import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -33,8 +33,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
-
 @MorphBase(defaultType = ParallelGateway.class)
 public abstract class BaseGateway implements BPMNDefinition {
 
@@ -42,12 +40,17 @@ public abstract class BaseGateway implements BPMNDefinition {
     public static final transient String category = Categories.GATEWAYS;
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_GENERAL_SETTINGS, position = 0)
+    @FormField(
+            labelKey = "general"
+    )
     @Valid
     protected BPMNGeneralSet general;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2 )
+    @FormField(
+            labelKey = "backgroundSet",
+            afterElement = "general"
+    )
     @Valid
     protected BackgroundSet backgroundSet;
 

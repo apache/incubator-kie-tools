@@ -15,10 +15,10 @@
 
     <name>Kie Workbench - Common - Forms - Dynamic Forms</name>
     <description>Kie Workbench - Common - Forms - Dynamic Forms</description>
+
     <modules>
         <module>kie-wb-common-dynamic-forms-api</module>
         <module>kie-wb-common-dynamic-forms-backend</module>
         <module>kie-wb-common-dynamic-forms-client</module>
     </modules>
-
 </project>

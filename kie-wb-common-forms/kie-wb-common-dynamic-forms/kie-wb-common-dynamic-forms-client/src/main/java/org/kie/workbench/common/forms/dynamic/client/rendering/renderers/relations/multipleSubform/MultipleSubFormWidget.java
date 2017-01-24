@@ -26,8 +26,8 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relatio
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.multipleSubform.columns.ColumnGenerator;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
-import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.TableColumnMeta;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableColumnMeta;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.IsNestedModel;
 import org.uberfire.ext.widgets.table.client.ColumnMeta;
@@ -267,7 +267,7 @@ public class MultipleSubFormWidget extends Composite implements TakesValue<List<
         this.field = field;
         this.renderingContext = renderingContext;
 
-        isReadOnly = field.getReadonly() || !renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE );
+        isReadOnly = field.getReadOnly() || !renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE );
 
         bindingHelper = BindingHelpers.getHelper( renderingContext, field );
 

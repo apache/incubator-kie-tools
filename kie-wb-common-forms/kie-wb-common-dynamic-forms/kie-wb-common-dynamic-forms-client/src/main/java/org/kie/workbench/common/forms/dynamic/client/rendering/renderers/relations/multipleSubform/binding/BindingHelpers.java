@@ -22,7 +22,7 @@ import java.util.Map;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
-import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 
 public class BindingHelpers {
     private static Map<Class<? extends FormRenderingContext>, Class<? extends BindingHelper>> helpers = new HashMap<>();

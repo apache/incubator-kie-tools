@@ -33,20 +33,21 @@ import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.processors.SliderAnnotationProcessor;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.processors.TextAreaAnnotationProcessor;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.provider.ListBoxFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.provider.RadioGroupFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.provider.SliderFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.provider.TextAreaFieldProvider;
+import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.FieldType;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.service.impl.fieldProviders.ListBoxFieldProvider;
-import org.kie.workbench.common.forms.service.impl.fieldProviders.RadioGroupFieldProvider;
-import org.kie.workbench.common.forms.service.impl.fieldProviders.SliderFieldProvider;
-import org.kie.workbench.common.forms.service.impl.fieldProviders.TextAreaFieldProvider;
-import org.kie.workbench.common.forms.service.mock.TestFieldManager;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public abstract class AbstractFormRenderingContextGeneratorTest<T> {
 
-    protected Instance<FieldAnnotationProcessor<? extends FieldDefinition>> annotationProcessors;
+    protected Instance<FieldAnnotationProcessor<? extends FieldType, ? extends FieldDefinition>> annotationProcessors;
 
     protected Instance<FieldInitializer<? extends FieldDefinition>> fieldInitializers;
 

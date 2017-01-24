@@ -21,6 +21,9 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -36,6 +39,7 @@ import org.kie.workbench.common.stunner.core.definition.property.type.StringType
 
 @Portable
 @Bindable
+@FieldDefinition
 @Property(meta = PropertyMetaTypes.NAME)
 public class Name implements BPMNProperty {
 
@@ -45,8 +49,9 @@ public class Name implements BPMNProperty {
     @Description
     public static final transient String description = "The element's name";
 
+    @FieldReadOnly
     @ReadOnly
-    public static final Boolean readOnly = false;
+    public Boolean readOnly = false;
 
     @Optional
     public static final Boolean optional = false;
@@ -58,6 +63,7 @@ public class Name implements BPMNProperty {
     public static final transient String defaultValue = "DefaultName";
 
     @Value
+    @FieldValue
     @NotNull
     @NotEmpty
     private String value = defaultValue;

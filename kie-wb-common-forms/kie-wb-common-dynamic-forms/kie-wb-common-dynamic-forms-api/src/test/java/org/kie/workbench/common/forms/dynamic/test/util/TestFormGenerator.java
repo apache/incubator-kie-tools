@@ -21,11 +21,11 @@ import java.util.Date;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.test.model.Address;
 import org.kie.workbench.common.forms.dynamic.test.model.Employee;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.checkBox.CheckBoxFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.datePicker.DatePickerFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.textBox.TextBoxFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 
 public class TestFormGenerator {
 

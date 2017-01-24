@@ -22,12 +22,13 @@ import javax.inject.Inject;
 import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.FieldSetting;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.RadioGroupBaseDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.provider.RadioGroupFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.type.RadioGroupFieldType;
 import org.kie.workbench.common.forms.metaModel.RadioGroup;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.radioGroup.RadioGroupBase;
-import org.kie.workbench.common.forms.service.impl.fieldProviders.RadioGroupFieldProvider;
 
 @Dependent
-public class RadioGroupFieldAnnotationProcessor extends AbstractSelectorAnnotationProcessor<RadioGroupBase, RadioGroupFieldProvider> {
+public class RadioGroupFieldAnnotationProcessor extends AbstractSelectorAnnotationProcessor<RadioGroupFieldType, RadioGroupBaseDefinition<?>, RadioGroupFieldProvider> {
 
     @Inject
     public RadioGroupFieldAnnotationProcessor( RadioGroupFieldProvider fieldProvider ) {
@@ -35,7 +36,7 @@ public class RadioGroupFieldAnnotationProcessor extends AbstractSelectorAnnotati
     }
 
     @Override
-    protected void initField( RadioGroupBase field,
+    protected void initField( RadioGroupBaseDefinition field,
                               Annotation annotation,
                               FieldSetting fieldSetting,
                               TransformerContext context ) {

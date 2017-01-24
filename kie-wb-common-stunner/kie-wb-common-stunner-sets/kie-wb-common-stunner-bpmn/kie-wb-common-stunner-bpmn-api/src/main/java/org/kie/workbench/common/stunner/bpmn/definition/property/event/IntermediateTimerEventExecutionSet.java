@@ -20,35 +20,41 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
-import org.kie.workbench.common.forms.metaModel.ListBox;
-import org.kie.workbench.common.forms.metaModel.SelectorDataProvider;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_TIME_CYCLE;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_TIME_CYCLE_LANGUAGE;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_TIME_DATE;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_TIME_DURATION;
-
 @Portable
 @Bindable
 @PropertySet
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "timeCycle"
+)
 public class IntermediateTimerEventExecutionSet implements BPMNPropertySet {
 
     @Name
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef(label = FIELDDEF_TIME_CYCLE, property = "value", position = 1)
+    @FormField(
+            labelKey = "timeCycle"
+    )
     @Valid
     private TimeCycle timeCycle;
 
     @Property
-    @FieldDef(label = FIELDDEF_TIME_CYCLE_LANGUAGE, property = "value", position = 2)
-    @ListBox
+    @FormField(
+            type = ListBoxFieldType.class,
+            labelKey = "timeCycleLanguage",
+            afterElement = "timeCycle"
+    )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
             className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.TimeCycleLanguageProvider")
@@ -56,12 +62,18 @@ public class IntermediateTimerEventExecutionSet implements BPMNPropertySet {
     protected TimeCycleLanguage timeCycleLanguage;
 
     @Property
-    @FieldDef(label = FIELDDEF_TIME_DATE, property = "value", position = 3)
+    @FormField(
+            labelKey = "timeDate",
+            afterElement = "timeCycleLanguage"
+    )
     @Valid
     private TimeDate timeDate;
 
     @Property
-    @FieldDef(label = FIELDDEF_TIME_DURATION, property = "value", position = 4)
+    @FormField(
+            labelKey = "timeDuration",
+            afterElement = "timeDate"
+    )
     @Valid
     private TimeDuration timeDuration;
 

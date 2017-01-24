@@ -22,29 +22,29 @@ import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.DMOBasedTransformerContext;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.FieldSetting;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DefaultSelectorOption;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorFieldBaseDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.DefaultSelectorOption;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.SelectorFieldBase;
 
 @Dependent
-public class EnumSelectorFieldInitializer implements FieldInitializer<SelectorFieldBase> {
+public class EnumSelectorFieldInitializer implements FieldInitializer<SelectorFieldBaseDefinition> {
 
     @Override
     public boolean supports( FieldDefinition field ) {
-        return field instanceof SelectorFieldBase && field.getFieldTypeInfo().isEnum();
+        return field instanceof SelectorFieldBaseDefinition && field.getFieldTypeInfo().isEnum();
     }
 
     @Override
-    public void initializeField( SelectorFieldBase field, FieldSetting setting, DMOBasedTransformerContext context ) {
+    public void initializeField( SelectorFieldBaseDefinition field, FieldSetting setting, DMOBasedTransformerContext context ) {
 
         try {
-            Enum[] enumValues = (Enum[])Class.forName( setting.getType() ).getEnumConstants();
+            Enum[] enumValues = (Enum[]) Class.forName( setting.getType() ).getEnumConstants();
 
             if ( enumValues != null && ( field.getOptions() == null || field.getOptions().isEmpty() ) ) {
                 List<DefaultSelectorOption<Enum>> options = new ArrayList<>();
                 for ( Enum enumConstant : enumValues ) {
                     DefaultSelectorOption<Enum> selectorOption = new DefaultSelectorOption<>(
-                            enumConstant, enumConstant.toString(), false);
+                            enumConstant, enumConstant.toString(), false );
 
                     options.add( selectorOption );
                 }
@@ -54,8 +54,6 @@ public class EnumSelectorFieldInitializer implements FieldInitializer<SelectorFi
         } catch ( Exception e ) {
             e.printStackTrace();
         }
-
-
 
     }
 }

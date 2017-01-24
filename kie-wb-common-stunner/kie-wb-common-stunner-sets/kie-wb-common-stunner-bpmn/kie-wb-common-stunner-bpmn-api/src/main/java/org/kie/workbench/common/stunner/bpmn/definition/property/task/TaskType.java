@@ -20,6 +20,9 @@ import java.util.ArrayList;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -36,6 +39,7 @@ import org.kie.workbench.common.stunner.core.definition.property.type.EnumType;
 @Portable
 @Bindable
 @Property
+@FieldDefinition
 public class TaskType implements BPMNProperty {
 
     @Caption
@@ -48,7 +52,8 @@ public class TaskType implements BPMNProperty {
     public static final PropertyType type = new EnumType();
 
     @ReadOnly
-    public static final Boolean readOnly = true;
+    @FieldReadOnly
+    private Boolean readOnly = true;
 
     @Optional
     public static final Boolean optional = false;
@@ -65,6 +70,7 @@ public class TaskType implements BPMNProperty {
     }};
 
     @Value
+    @FieldValue
     private TaskTypes value = defaultValue;
 
     public TaskType() {

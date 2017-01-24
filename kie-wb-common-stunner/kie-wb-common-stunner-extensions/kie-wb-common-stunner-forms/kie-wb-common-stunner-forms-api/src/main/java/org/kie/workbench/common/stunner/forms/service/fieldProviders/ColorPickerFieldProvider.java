@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.forms.service.fieldProviders;
 
-import org.kie.workbench.common.forms.model.FieldTypeInfo;
-import org.kie.workbench.common.forms.service.impl.fieldProviders.BasicTypeFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
+import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldDefinition;
+import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 
-public class ColorPickerFieldProvider extends BasicTypeFieldProvider<ColorPickerFieldDefinition> {
-
+public class ColorPickerFieldProvider extends BasicTypeFieldProvider<ColorPickerFieldType, ColorPickerFieldDefinition> {
     @Override
     public int getPriority() {
         return 100;
@@ -29,17 +29,22 @@ public class ColorPickerFieldProvider extends BasicTypeFieldProvider<ColorPicker
 
     @Override
     protected void doRegisterFields() {
-        registerPropertyType(String.class);
+        registerPropertyType( String.class );
     }
 
     @Override
-    public ColorPickerFieldDefinition createFieldByType(final FieldTypeInfo typeInfo) {
+    public ColorPickerFieldDefinition createFieldByType( FieldDataType typeInfo ) {
         return getDefaultField();
     }
 
     @Override
-    public String getProviderCode() {
-        return ColorPickerFieldDefinition.CODE;
+    public Class<ColorPickerFieldType> getFieldType() {
+        return ColorPickerFieldType.class;
+    }
+
+    @Override
+    public String getFieldTypeName() {
+        return ColorPickerFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

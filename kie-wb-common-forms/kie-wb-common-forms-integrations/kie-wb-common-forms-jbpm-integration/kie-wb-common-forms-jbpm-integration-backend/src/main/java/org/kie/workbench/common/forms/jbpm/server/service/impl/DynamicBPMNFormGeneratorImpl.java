@@ -33,21 +33,20 @@ import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.forms.commons.layout.Dynamic;
 import org.kie.workbench.common.forms.commons.layout.FormLayoutTemplateGenerator;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.EntityRelationField;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.IsCRUDDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableColumnMeta;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.jbpm.service.bpmn.DynamicBPMNFormGenerator;
 import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
-import org.kie.workbench.common.forms.model.DefaultFieldTypeInfo;
+import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.FieldTypeInfo;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.PortableJavaModel;
-import org.kie.workbench.common.forms.model.impl.basic.HasPlaceHolder;
-import org.kie.workbench.common.forms.model.impl.relations.EmbeddedFormField;
-import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.TableColumnMeta;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.HasNestedForm;
 import org.kie.workbench.common.forms.service.FieldManager;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.FactBuilder;
@@ -99,7 +98,7 @@ public class DynamicBPMNFormGeneratorImpl implements DynamicBPMNFormGenerator {
             }
 
             FieldDefinition field = generateFieldDefinition( variable.getName(),
-                                                             new DefaultFieldTypeInfo( BPMNVariableUtils.getRealTypeForInput(
+                                                             new FieldDataType( BPMNVariableUtils.getRealTypeForInput(
                                                                      variable.getType() ) ),
                                                              context );
             if ( field != null ) {
@@ -115,9 +114,9 @@ public class DynamicBPMNFormGeneratorImpl implements DynamicBPMNFormGenerator {
 
 
     protected FieldDefinition generateFieldDefinition( String fieldName,
-                                                       FieldTypeInfo typeInfo,
+                                                       FieldDataType typeInfo,
                                                        GenerationContext context ) {
-        FieldDefinition field = fieldManager.getDefinitionByValueType( typeInfo );
+        FieldDefinition field = fieldManager.getDefinitionByDataType( typeInfo );
 
         if ( field == null ) {
             return null;
@@ -132,7 +131,7 @@ public class DynamicBPMNFormGeneratorImpl implements DynamicBPMNFormGenerator {
         if ( field instanceof HasPlaceHolder ) {
             ( (HasPlaceHolder) field ).setPlaceHolder( label );
         }
-        if ( field instanceof EmbeddedFormField ) {
+        if ( field instanceof EntityRelationField ) {
             FormDefinition nestedForm = context.getContextForms().get( field.getStandaloneClassName() );
 
             if ( nestedForm == null ) {
@@ -141,10 +140,10 @@ public class DynamicBPMNFormGeneratorImpl implements DynamicBPMNFormGenerator {
             }
 
             if ( nestedForm != null ) {
-                if ( field instanceof SubFormFieldDefinition ) {
-                    ( (SubFormFieldDefinition) field ).setNestedForm( nestedForm.getId() );
+                if ( field instanceof HasNestedForm ) {
+                    ( (HasNestedForm) field ).setNestedForm( nestedForm.getId() );
                 } else {
-                    MultipleSubFormFieldDefinition multipleSubForm = (MultipleSubFormFieldDefinition) field;
+                    IsCRUDDefinition multipleSubForm = (IsCRUDDefinition) field;
 
                     multipleSubForm.setCreationForm( nestedForm.getId() );
                     multipleSubForm.setEditionForm( nestedForm.getId() );
@@ -198,7 +197,7 @@ public class DynamicBPMNFormGeneratorImpl implements DynamicBPMNFormGenerator {
                 if ( modelField.getName().equals( "this" ) ) {
                     return;
                 }
-                FieldTypeInfo info;
+                FieldDataType info;
                 String fieldType = modelField.getClassName();
                 boolean isEnunm = oracle.getProjectJavaEnumDefinitions().get( modelType + "#" + modelField.getName() ) != null;
                 boolean isList = DataType.TYPE_COLLECTION.equals( modelField.getType() );
@@ -207,7 +206,7 @@ public class DynamicBPMNFormGeneratorImpl implements DynamicBPMNFormGenerator {
                     fieldType = oracle.getProjectFieldParametersType().get( modelType + "#" + modelField.getName() );
                 }
 
-                info = new DefaultFieldTypeInfo( fieldType, isList, isEnunm );
+                info = new FieldDataType( fieldType, isList, isEnunm );
 
                 FieldDefinition field = generateFieldDefinition( modelField.getName(),
                                                                  info,

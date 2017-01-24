@@ -20,10 +20,11 @@ import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.FieldSetting;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.FieldType;
 
-public interface FieldAnnotationProcessor<F extends FieldDefinition> {
+public interface FieldAnnotationProcessor<FIELD_TYPE extends FieldType, FIELD extends FieldDefinition<FIELD_TYPE>> {
 
     boolean supportsAnnotation( Annotation annotation );
 
-    public F getFieldDefinition( FieldSetting setting, Annotation annotation, TransformerContext context );
+    public FIELD getFieldDefinition( FieldSetting setting, Annotation annotation, TransformerContext context );
 }

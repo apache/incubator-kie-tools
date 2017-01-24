@@ -43,7 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Helper tools to generate names and other stuff easily from code generation engine.
+ * Helper tools to generate names and other stuff easily from code adf engine.
  */
 public class GenerationTools {
 
@@ -641,7 +641,7 @@ public class GenerationTools {
         }
     }
 
-    //TODO replace indent String with an integer that represents the indent level and get rid of duplicate methods (created not to affect existing generation)
+    //TODO replace indent String with an integer that represents the indent level and get rid of duplicate methods (created not to affect existing adf)
     public String resolveAllFieldsConstructor( DataObject dataObject, String indent ) {
         if ( !dataObject.getProperties().isEmpty() ) {
             List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
@@ -855,7 +855,7 @@ public class GenerationTools {
         return head.toString();
     }
 
-    // Same as above, but removed some indents that are not wanted for partial code generation purposes
+    // Same as above, but removed some indents that are not wanted for partial code adf purposes
     // TODO to be refactored
     public String resolveConstructor2( DataObject dataObject, List<ObjectProperty> properties, String indent ) {
 

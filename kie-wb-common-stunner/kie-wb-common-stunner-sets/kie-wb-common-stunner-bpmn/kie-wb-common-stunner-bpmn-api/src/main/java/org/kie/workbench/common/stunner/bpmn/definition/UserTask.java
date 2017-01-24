@@ -22,7 +22,10 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.AssigneeSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
@@ -43,31 +46,41 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_ASSIGNED_TO;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_IMPLEMENTATION_EXECUTION;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_TASK_DATA;
-
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = UserTask.UserTaskBuilder.class)
 @CanDock(roles = {"IntermediateEventOnActivityBoundary"})
 @Morph(base = BaseTask.class)
+@FormDefinition(
+        policy = FieldPolicy.ONLY_MARKED,
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "general"
+)
 public class UserTask extends BaseTask implements DataIOModel {
 
     @Title
     public static final transient String title = "User Task";
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1)
+    @FormField(
+            labelKey = "executionSet",
+            afterElement = "general"
+    )
     @Valid
     protected UserTaskExecutionSet executionSet;
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_ASSIGNED_TO, position = 2)
+    @FormField(
+            labelKey = "assigneeSet",
+            afterElement = "executionSet"
+    )
     protected AssigneeSet assigneeSet;
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_TASK_DATA, position = 3)
+    @FormField(
+            labelKey = "dataIOSet",
+            afterElement = "assigneeSet"
+    )
     @Valid
     protected DataIOSet dataIOSet;
 

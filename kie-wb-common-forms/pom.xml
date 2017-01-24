@@ -18,11 +18,34 @@
   <description>Kie Workbench - Common - Forms</description>
 
   <modules>
-    <module>kie-wb-common-forms-api</module>
+    <module>kie-wb-common-forms-core</module>
     <module>kie-wb-common-forms-commons</module>
     <module>kie-wb-common-dynamic-forms</module>
     <module>kie-wb-common-forms-editor</module>
     <module>kie-wb-common-forms-integrations</module>
   </modules>
 
+  <build>
+    <plugins>
+      <plugin>
+        <!-- Entry needed to provide parsed version properties -->
+        <!-- Additionally it adds allows generated sources goes into -sources artifact -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>target/generated-sources/annotations/</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

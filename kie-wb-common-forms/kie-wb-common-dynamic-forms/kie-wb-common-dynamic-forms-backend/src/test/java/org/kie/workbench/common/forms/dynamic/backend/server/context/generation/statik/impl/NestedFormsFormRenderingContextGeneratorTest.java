@@ -28,10 +28,10 @@ import org.kie.workbench.common.forms.dynamic.test.model.Age;
 import org.kie.workbench.common.forms.dynamic.test.model.Department;
 import org.kie.workbench.common.forms.dynamic.test.model.Employee;
 import org.kie.workbench.common.forms.dynamic.test.model.Title;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;

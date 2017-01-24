@@ -26,7 +26,7 @@ import org.jboss.errai.databinding.client.MapPropertyType;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.kie.workbench.common.forms.dynamic.client.helper.MapModelBindingHelper;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
-import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 
 @Dependent
 public class DynamicBindingHelper extends AbstractBindingHelper<MapModelRenderingContext, MapBindableProxy, Map<String, Object>> {

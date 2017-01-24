@@ -18,36 +18,32 @@ package org.kie.workbench.common.stunner.bpmn.forms.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.AssignmentsEditor;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_DEFAULT_VALUE;
 
 @Portable
 @Bindable
-public class AssignmentsEditorFieldDefinition extends FieldDefinition {
+public class AssignmentsEditorFieldDefinition extends AbstractFieldDefinition<AssignmentsEditorFieldType> {
 
-    public static final String CODE = "AssignmentsEditor";
+    public static final AssignmentsEditorFieldType FIELD_TYPE = new AssignmentsEditorFieldType();
 
-    @FieldDef(label = FIELDDEF_DEFAULT_VALUE)
-    @AssignmentsEditor
     private String defaultValue;
 
-    public AssignmentsEditorFieldDefinition() {
-        super(CODE);
+    @Override
+    public AssignmentsEditorFieldType getFieldType() {
+        return FIELD_TYPE;
     }
 
     public String getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue(final String defaultValue) {
+    public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
     @Override
-    protected void doCopyFrom(final FieldDefinition other) {
+    protected void doCopyFrom(FieldDefinition other) {
         if (other instanceof AssignmentsEditorFieldDefinition) {
             this.setDefaultValue(((AssignmentsEditorFieldDefinition) other).getDefaultValue());
         }

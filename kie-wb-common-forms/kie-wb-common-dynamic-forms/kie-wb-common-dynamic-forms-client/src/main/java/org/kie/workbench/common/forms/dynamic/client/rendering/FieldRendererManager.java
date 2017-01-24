@@ -19,25 +19,25 @@ package org.kie.workbench.common.forms.dynamic.client.rendering;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
-@ApplicationScoped
+@Dependent
 public class FieldRendererManager {
 
     @Inject
-    private SyncBeanManager iocBeanManager;
+    private ManagedInstance<FieldRenderer> renderers;
 
-    private Map<String, FieldRenderer> availableRenderers = new HashMap<String, FieldRenderer>();
+    private static Map<String, FieldRenderer> availableRenderers = new HashMap<String, FieldRenderer>();
 
-    @PostConstruct
-    protected void init() {
-        Collection<SyncBeanDef<FieldRenderer>> renderers = iocBeanManager.lookupBeans( FieldRenderer.class );
+    static {
+        Collection<SyncBeanDef<FieldRenderer>> renderers = IOC.getBeanManager().lookupBeans( FieldRenderer.class );
         for ( SyncBeanDef<FieldRenderer> rendererDef : renderers ) {
             FieldRenderer renderer = rendererDef.getInstance();
             if ( renderer != null ) {
@@ -47,12 +47,16 @@ public class FieldRendererManager {
     }
 
     public FieldRenderer getRendererForField( FieldDefinition fieldDefinition ) {
-        FieldRenderer def = availableRenderers.get( fieldDefinition.getCode() );
+        FieldRenderer def = availableRenderers.get( fieldDefinition.getFieldType().getTypeName() );
 
         if ( def != null ) {
-            return iocBeanManager.lookupBean( def.getClass() ).newInstance();
+            return renderers.select( def.getClass() ).get();
         }
-
         return null;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        renderers.destroyAll();
     }
 }

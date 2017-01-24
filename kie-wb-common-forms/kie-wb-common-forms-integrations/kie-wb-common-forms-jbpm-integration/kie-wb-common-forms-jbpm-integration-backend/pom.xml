@@ -106,7 +106,7 @@
     </dependency>
     <!-- end of jbpm document integration -->
 
-    <!-- start default form generation -->
+    <!-- start default form adf -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-datamodel-api</artifactId>
@@ -136,6 +136,11 @@
     <dependency>
       <groupId>org.kie.workbench.forms</groupId>
       <artifactId>kie-wb-common-forms-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.forms</groupId>
+      <artifactId>kie-wb-common-forms-fields</artifactId>
     </dependency>
 
     <dependency>
@@ -178,9 +183,9 @@
 
     <dependency>
       <groupId>org.kie.workbench.forms</groupId>
-      <artifactId>kie-wb-common-forms-api</artifactId>
+      <artifactId>kie-wb-common-forms-fields</artifactId>
       <scope>test</scope>
-      <classifier>tests</classifier>
+      <type>test-jar</type>
     </dependency>
   </dependencies>
 

@@ -415,7 +415,7 @@ public class DataModelerServiceImpl
      * Updates Java code provided in the source parameter with the data object values provided in the dataObject
      * parameter. This method does not write any changes in the file system.
      * @param source Java code to be updated.
-     * @param path Path to the java file. (used for error messages generation and project )
+     * @param path Path to the java file. (used for error messages adf and project )
      * @param dataObject Data object definition.
      * @return returns a GenerationResult object with the updated Java code and the dataObject parameter as is.
      */
@@ -455,7 +455,7 @@ public class DataModelerServiceImpl
      * This method does not write changes in the file system.
      * @param dataObject Data object definition to be updated.
      * @param source Java code to use for the update.
-     * @param path Path to the java file. (used for error messages generation)
+     * @param path Path to the java file. (used for error messages adf)
      * @return returns a GenerationResult object with the updated data object and the source and path parameter as is.
      */
     @Override
@@ -832,7 +832,7 @@ public class DataModelerServiceImpl
             return result;
 
         } catch ( Exception e ) {
-            logger.error( "An error was produced during data model generation, dataModel: " + dataModel + ", path: " + project.getRootPath(), e );
+            logger.error( "An error was produced during data model adf, dataModel: " + dataModel + ", path: " + project.getRootPath(), e );
             if ( onBatch ) {
                 try {
                     logger.warn( "IOService batch method is still on, trying to end batch processing." );

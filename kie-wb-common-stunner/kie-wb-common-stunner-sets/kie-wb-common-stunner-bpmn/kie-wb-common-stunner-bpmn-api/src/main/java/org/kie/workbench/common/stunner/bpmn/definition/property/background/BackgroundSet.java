@@ -20,41 +20,59 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
-import org.kie.workbench.common.forms.metaModel.Slider;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.forms.meta.definition.ColorPicker;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_BACKGROUND_COLOR;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_BORDER_COLOR;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_BORDER_SIZE;
+import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 
 @Portable
 @Bindable
 @PropertySet
+@FormDefinition(
+        policy = FieldPolicy.ONLY_MARKED,
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "bgColor"
+)
 public class BackgroundSet implements BPMNPropertySet {
 
     @Name
     public static final transient String propertySetName = "Background Set";
 
     @Property
-    @FieldDef(label = FIELDDEF_BACKGROUND_COLOR, property = "value")
-    @ColorPicker
+    @FormField(
+            type = ColorPickerFieldType.class,
+            labelKey = "bgColor"
+    )
     @Valid
     private BgColor bgColor;
 
     @Property
-    @FieldDef(label = FIELDDEF_BORDER_COLOR, property = "value")
-    @ColorPicker
+    @FormField(
+            type = ColorPickerFieldType.class,
+            labelKey = "borderColor",
+            afterElement = "bgColor"
+    )
     @Valid
     private BorderColor borderColor;
 
     @Property
-    @FieldDef(label = FIELDDEF_BORDER_SIZE, property = "value")
-    @Slider(min = 0.0, max = 5.0, step = 0.5)
+    @FormField(
+            type = SliderFieldType.class,
+            labelKey = "borderSize",
+            afterElement = "borderColor",
+            settings = {
+                    @FieldParam(name = "min", value = "0.0"),
+                    @FieldParam(name = "max", value = "5.0"),
+                    @FieldParam(name = "step", value = "0.5")
+            }
+    )
     @Valid
     private BorderSize borderSize;
 

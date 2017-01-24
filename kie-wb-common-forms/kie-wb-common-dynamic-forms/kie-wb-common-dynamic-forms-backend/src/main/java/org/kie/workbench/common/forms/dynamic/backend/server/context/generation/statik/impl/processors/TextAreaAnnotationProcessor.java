@@ -22,12 +22,13 @@ import javax.inject.Inject;
 import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.FieldSetting;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.provider.TextAreaFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.forms.metaModel.TextArea;
-import org.kie.workbench.common.forms.model.impl.basic.textArea.TextAreaFieldDefinition;
-import org.kie.workbench.common.forms.service.impl.fieldProviders.TextAreaFieldProvider;
 
 @Dependent
-public class TextAreaAnnotationProcessor extends AbstractFieldAnnotationProcessor<TextAreaFieldDefinition, TextAreaFieldProvider> {
+public class TextAreaAnnotationProcessor extends AbstractFieldAnnotationProcessor<TextAreaFieldType, TextAreaFieldDefinition, TextAreaFieldProvider> {
 
     @Inject
     public TextAreaAnnotationProcessor( TextAreaFieldProvider fieldProvider ) {
@@ -40,7 +41,7 @@ public class TextAreaAnnotationProcessor extends AbstractFieldAnnotationProcesso
                               FieldSetting fieldSetting,
                               TransformerContext context ) {
         String placeHolder = annotation.getParameters().get( "placeHolder" ).toString();
-        if ( !placeHolder.isEmpty() ) {
+        if ( ! placeHolder.isEmpty() ) {
             field.setPlaceHolder( placeHolder );
         }
         field.setRows( (Integer) annotation.getParameters().get( "rows" ) );

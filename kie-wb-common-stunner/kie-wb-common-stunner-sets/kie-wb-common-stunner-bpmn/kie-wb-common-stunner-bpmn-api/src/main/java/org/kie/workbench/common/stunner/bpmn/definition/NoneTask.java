@@ -22,7 +22,9 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -40,20 +42,22 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_IMPLEMENTATION_EXECUTION;
-
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = NoneTask.NoneTaskBuilder.class)
 @CanDock(roles = {"IntermediateEventOnActivityBoundary"})
 @Morph(base = BaseTask.class)
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "general",
+        policy = FieldPolicy.ONLY_MARKED
+)
 public class NoneTask extends BaseTask {
 
     @Title
     public static final transient String title = "None Task";
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1)
     @Valid
     protected EmptyTaskExecutionSet executionSet;
 

@@ -279,7 +279,7 @@ public class FormEditorPresenter extends KieEditor {
         if ( editorContext.getFormDefinition().getId().equals( formId ) ) {
             String fieldId = event.getLayoutComponent().getProperties().get( FieldLayoutComponent.FIELD_ID );
             FieldDefinition field = editorContext.removeField( fieldId, true );
-            if ( field != null ) {
+            if ( field != null && ( field.getBinding() != null && !field.getBinding().isEmpty() ) ) {
                 EditorFieldLayoutComponent layoutFieldComponent = beanManager
                         .lookupBean( EditorFieldLayoutComponent.class ).newInstance();
                 if ( layoutFieldComponent != null ) {

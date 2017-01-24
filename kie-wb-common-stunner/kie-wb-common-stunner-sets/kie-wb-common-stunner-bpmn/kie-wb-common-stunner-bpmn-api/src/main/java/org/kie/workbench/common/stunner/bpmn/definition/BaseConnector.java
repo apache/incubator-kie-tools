@@ -22,7 +22,7 @@ import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
@@ -35,8 +35,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
-
 @Shape(factory = BasicShapesFactory.class, def = SequenceFlowConnectorDef.class)
 public abstract class BaseConnector implements BPMNDefinition {
 
@@ -47,17 +45,17 @@ public abstract class BaseConnector implements BPMNDefinition {
     public static final transient String description = "A Connecting Object";
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_GENERAL_SETTINGS, position = 0)
+    @FormField(
+            labelKey = "general"
+    )
     @Valid
     protected BPMNGeneralSet general;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2 )
     @Valid
     protected BackgroundSet backgroundSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_FONT_SETTINGS, position = 3 )
     protected FontSet fontSet;
 
     @NonPortable

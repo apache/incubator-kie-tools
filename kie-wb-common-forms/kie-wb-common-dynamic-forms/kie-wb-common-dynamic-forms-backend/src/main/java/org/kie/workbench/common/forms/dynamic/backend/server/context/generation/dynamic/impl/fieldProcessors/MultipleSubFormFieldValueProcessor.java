@@ -24,8 +24,8 @@ import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

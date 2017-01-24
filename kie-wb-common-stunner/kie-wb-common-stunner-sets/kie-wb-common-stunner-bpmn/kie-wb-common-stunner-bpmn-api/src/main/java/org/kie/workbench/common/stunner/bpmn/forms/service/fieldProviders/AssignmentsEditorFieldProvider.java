@@ -18,12 +18,13 @@ package org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders;
 
 import javax.enterprise.inject.Model;
 
-import org.kie.workbench.common.forms.model.FieldTypeInfo;
-import org.kie.workbench.common.forms.service.impl.fieldProviders.BasicTypeFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
+import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldType;
 
 @Model
-public class AssignmentsEditorFieldProvider extends BasicTypeFieldProvider<AssignmentsEditorFieldDefinition> {
+public class AssignmentsEditorFieldProvider extends BasicTypeFieldProvider<AssignmentsEditorFieldType, AssignmentsEditorFieldDefinition> {
 
     @Override
     public int getPriority() {
@@ -36,13 +37,18 @@ public class AssignmentsEditorFieldProvider extends BasicTypeFieldProvider<Assig
     }
 
     @Override
-    public AssignmentsEditorFieldDefinition createFieldByType(final FieldTypeInfo typeInfo) {
+    public AssignmentsEditorFieldDefinition createFieldByType(FieldDataType typeInfo) {
         return getDefaultField();
     }
 
     @Override
-    public String getProviderCode() {
-        return AssignmentsEditorFieldDefinition.CODE;
+    public Class<AssignmentsEditorFieldType> getFieldType() {
+        return AssignmentsEditorFieldType.class;
+    }
+
+    @Override
+    public String getFieldTypeName() {
+        return AssignmentsEditorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

@@ -18,36 +18,32 @@ package org.kie.workbench.common.stunner.bpmn.forms.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.VariablesEditor;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_DEFAULT_VALUE;
 
 @Portable
 @Bindable
-public class VariablesEditorFieldDefinition extends FieldDefinition {
+public class VariablesEditorFieldDefinition extends AbstractFieldDefinition<VariablesEditorFieldType> {
 
-    public static final String CODE = "VariablesEditor";
+    public static final VariablesEditorFieldType FIELD_TYPE = new VariablesEditorFieldType();
 
-    @FieldDef(label = FIELDDEF_DEFAULT_VALUE)
-    @VariablesEditor
     private String defaultValue;
 
-    public VariablesEditorFieldDefinition() {
-        super(CODE);
+    @Override
+    public VariablesEditorFieldType getFieldType() {
+        return FIELD_TYPE;
     }
 
     public String getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue(final String defaultValue) {
+    public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
     @Override
-    protected void doCopyFrom(final FieldDefinition other) {
+    protected void doCopyFrom(FieldDefinition other) {
         if (other instanceof VariablesEditorFieldDefinition) {
             this.setDefaultValue(((VariablesEditorFieldDefinition) other).getDefaultValue());
         }

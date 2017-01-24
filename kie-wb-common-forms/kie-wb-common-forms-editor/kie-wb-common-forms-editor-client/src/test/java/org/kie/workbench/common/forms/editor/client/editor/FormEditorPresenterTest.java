@@ -17,11 +17,7 @@ package org.kie.workbench.common.forms.editor.client.editor;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -29,19 +25,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
-import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorContextResponse;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.client.resources.images.FormEditorImageResources;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
-import org.kie.workbench.common.forms.model.impl.basic.checkBox.CheckBoxFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.datePicker.DatePickerFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.textArea.TextAreaFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.textBox.TextBoxFieldDefinition;
-import org.kie.workbench.common.forms.service.mock.TestFieldManager;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
@@ -50,7 +45,6 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
@@ -315,7 +309,7 @@ public class FormEditorPresenterTest {
 
     public void testUnbindedFieldProperties() {
 
-        testFieldProperties( TextBoxFieldDefinition.CODE, false );
+        testFieldProperties( TextBoxFieldDefinition.FIELD_TYPE.getTypeName(), false );
     }
 
     protected void testFieldProperties( String fieldId, boolean binded ) {
@@ -344,9 +338,9 @@ public class FormEditorPresenterTest {
                       expected,
                       compatibleTypes.size() );
         assertTrue( "Missing TextAreaFieldDefinition as a compatible type for TextBoxFieldDefinition",
-                    compatibleTypes.contains( TextAreaFieldDefinition.CODE ) );
+                    compatibleTypes.contains( TextAreaFieldDefinition.FIELD_TYPE.getTypeName() ) );
 
-        field = editorContext.switchToFieldType( field, TextAreaFieldDefinition.CODE );
+        field = editorContext.switchToFieldType( field, TextAreaFieldDefinition.FIELD_TYPE.getTypeName() );
         checkFieldType( field, TextAreaFieldDefinition.class );
 
         List<String> compatibleFields = editorContext.getCompatibleFieldCodes( field );

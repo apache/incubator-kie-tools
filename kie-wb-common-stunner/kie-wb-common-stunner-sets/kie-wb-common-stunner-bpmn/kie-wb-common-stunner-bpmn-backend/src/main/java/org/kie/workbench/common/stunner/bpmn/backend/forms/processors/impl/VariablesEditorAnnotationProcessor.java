@@ -25,10 +25,11 @@ import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.
 import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
 import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.VariablesEditor;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders.VariablesEditorFieldProvider;
 
 @Dependent
-public class VariablesEditorAnnotationProcessor extends AbstractFieldAnnotationProcessor<VariablesEditorFieldDefinition, VariablesEditorFieldProvider> {
+public class VariablesEditorAnnotationProcessor extends AbstractFieldAnnotationProcessor<VariablesEditorFieldType, VariablesEditorFieldDefinition, VariablesEditorFieldProvider> {
 
     @Inject
     public VariablesEditorAnnotationProcessor(final VariablesEditorFieldProvider fieldProvider) {

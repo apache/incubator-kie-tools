@@ -20,7 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.validation.client.dynamic.DynamicValidator;
-import org.kie.workbench.common.forms.dynamic.client.DynamicModelValidator;
+import org.kie.workbench.common.forms.dynamic.client.processing.engine.handling.DynamicModelValidator;
 import org.kie.workbench.common.forms.dynamic.client.helper.MapModelBindingHelper;
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGenerator;
 import org.kie.workbench.common.forms.dynamic.service.shared.DynamicContext;

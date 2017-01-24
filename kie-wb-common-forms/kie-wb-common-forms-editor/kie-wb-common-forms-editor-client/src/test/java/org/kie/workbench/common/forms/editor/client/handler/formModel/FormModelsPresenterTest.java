@@ -108,12 +108,10 @@ public class FormModelsPresenterTest {
 
         presenter.selectContainer( container );
 
-        verify( containerView ).hideCreationView();
-        verify( containerView, times( 2 ) ).showCreationView();
+        verify( containerView ).select();
 
         presenter.selectContainer( container );
 
-        verify( containerView, times( 2 ) ).hideCreationView();
         verify( containerView, times( 3 ) ).showCreationView();
 
         presenter.isValid();

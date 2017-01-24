@@ -17,6 +17,8 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.connectors;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -32,6 +34,7 @@ import org.kie.workbench.common.stunner.core.definition.property.type.StringType
 @Portable
 @Bindable
 @Property
+@FieldDefinition
 public class ConditionExpressionLanguage implements BPMNProperty {
 
     @Caption
@@ -41,7 +44,7 @@ public class ConditionExpressionLanguage implements BPMNProperty {
     public static final transient String description = "Condition Expression Language";
 
     @ReadOnly
-    public static final Boolean readOnly = false;
+    private Boolean readOnly = false;
 
     @Optional
     public static final Boolean optional = false;
@@ -53,6 +56,7 @@ public class ConditionExpressionLanguage implements BPMNProperty {
     public static final transient String defaultValue = "";
 
     @Value
+    @FieldValue
     private String value = defaultValue;
 
     public ConditionExpressionLanguage() {

@@ -23,7 +23,9 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.SequenceFlowExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -34,8 +36,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ti
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_IMPLEMENTATION_EXECUTION;
 
 @Portable
 @Bindable
@@ -52,13 +52,20 @@ import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIE
 @EdgeOccurrences(role = "Endevents_all", type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 // A single outgoing sequence flows for messageflow_start roles, such as Tasks or Subprocess.
 @EdgeOccurrences(role = "messageflow_start", type = EdgeOccurrences.EdgeType.OUTGOING, max = 1)
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "general"
+)
 public class SequenceFlow extends BaseConnector {
 
     @Title
     public static final transient String title = "Sequence Flow";
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1)
+    @FormField(
+            labelKey = "executionSet",
+            afterElement = "general"
+    )
     @Valid
     protected SequenceFlowExecutionSet executionSet;
 

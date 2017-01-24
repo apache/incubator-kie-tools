@@ -27,8 +27,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Radio;
 import org.gwtbootstrap3.client.ui.StringRadioGroup;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.StringSelectorOption;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.radioGroup.StringRadioGroupFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.StringSelectorOption;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.StringRadioGroupFieldDefinition;
 
 @Dependent
 public class StringRadioGroupFieldRenderer extends RadioGroupFieldRendererBase<StringRadioGroupFieldDefinition, StringSelectorOption, String> {
@@ -58,7 +58,7 @@ public class StringRadioGroupFieldRenderer extends RadioGroupFieldRendererBase<S
 
     @Override
     public String getSupportedCode() {
-        return StringRadioGroupFieldDefinition.CODE;
+        return StringRadioGroupFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     protected void refreshInput( Map<String, String> optionsValues, String defaultValue ) {

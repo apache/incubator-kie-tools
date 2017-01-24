@@ -25,11 +25,11 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.ValueListBox;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.util.DefaultValueListBoxRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.SelectorFieldRenderer;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.SelectorOption;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.listBox.ListBoxBase;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.ListBoxBaseDefinition;
 
 @Dependent
-public class ListBoxFieldRenderer<F extends ListBoxBase, O extends SelectorOption<T>, T>
+public class ListBoxFieldRenderer<F extends ListBoxBaseDefinition, O extends SelectorOption<T>, T>
         extends SelectorFieldRenderer<F, O, T> {
 
     protected DefaultValueListBoxRenderer<T> optionsRenderer = new DefaultValueListBoxRenderer();
@@ -38,7 +38,7 @@ public class ListBoxFieldRenderer<F extends ListBoxBase, O extends SelectorOptio
 
     @Override
     public String getName() {
-        return "ListBox";
+        return "ListBoxField";
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ListBoxFieldRenderer<F extends ListBoxBase, O extends SelectorOptio
 
     @Override
     public void initInputWidget() {
-        widgetList.setEnabled( !field.getReadonly() );
+        widgetList.setEnabled( !field.getReadOnly() );
         refreshSelectorOptions();
     }
 
@@ -77,7 +77,7 @@ public class ListBoxFieldRenderer<F extends ListBoxBase, O extends SelectorOptio
 
     @Override
     public String getSupportedCode() {
-        return ListBoxBase.CODE;
+        return ListBoxBaseDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

@@ -31,7 +31,7 @@ import org.kie.workbench.common.forms.dynamic.model.document.DocumentData;
 import org.kie.workbench.common.forms.dynamic.model.document.DocumentStatus;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.FieldValueProcessor;
-import org.kie.workbench.common.forms.jbpm.model.document.DocumentFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.authoring.document.definition.DocumentFieldDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

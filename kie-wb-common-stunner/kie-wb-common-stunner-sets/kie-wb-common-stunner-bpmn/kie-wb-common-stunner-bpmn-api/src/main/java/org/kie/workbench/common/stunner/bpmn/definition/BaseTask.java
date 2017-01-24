@@ -23,7 +23,7 @@ import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -44,8 +44,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphPr
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
-
 @Shape(factory = BasicShapesFactory.class, def = TaskShapeDef.class)
 @MorphBase(defaultType = NoneTask.class, targets = {ReusableSubprocess.class})
 public abstract class BaseTask implements BPMNDefinition {
@@ -57,17 +55,19 @@ public abstract class BaseTask implements BPMNDefinition {
     public static final transient String description = "A task is a unit of work - the job to be performed";
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_GENERAL_SETTINGS, position = 0)
+    @FormField(labelKey = "general")
     @Valid
     protected TaskGeneralSet general;
 
     @Property
-    //@FieldDef( label = FIELDDEF_TASK_TYPE, property = "value", position = 3 )
     @MorphProperty(binder = TaskTypeMorphPropertyBinding.class)
     protected TaskType taskType;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 4 )
+    @FormField(
+            labelKey = "backgroundSet",
+            afterElement = "general"
+    )
     @Valid
     protected BackgroundSet backgroundSet;
 

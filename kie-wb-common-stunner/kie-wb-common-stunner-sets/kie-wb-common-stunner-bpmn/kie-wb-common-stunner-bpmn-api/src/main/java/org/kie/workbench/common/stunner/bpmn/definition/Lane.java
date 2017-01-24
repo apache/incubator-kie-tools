@@ -24,7 +24,10 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontBorderSize;
@@ -45,13 +48,16 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
-
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = Lane.LaneBuilder.class)
 @CanContain(roles = {"all"})
 @Shape(factory = BasicShapesFactory.class, def = LaneShapeDef.class)
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "general",
+        policy = FieldPolicy.ONLY_MARKED
+)
 public class Lane implements BPMNDefinition {
 
     @Category
@@ -66,12 +72,17 @@ public class Lane implements BPMNDefinition {
             "Lanes sub-divide pools or other lanes hierarchically.";
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_GENERAL_SETTINGS, position = 0)
+    @FormField(
+            labelKey = "general"
+    )
     @Valid
     protected BPMNGeneralSet general;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2)
+    @FormField(
+            labelKey = "backgroundSet",
+            afterElement = "general"
+    )
     @Valid
     protected BackgroundSet backgroundSet;
 

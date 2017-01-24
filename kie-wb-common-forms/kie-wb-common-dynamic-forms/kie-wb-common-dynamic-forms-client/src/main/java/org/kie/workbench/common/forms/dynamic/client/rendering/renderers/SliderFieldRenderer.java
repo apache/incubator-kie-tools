@@ -22,16 +22,16 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.slider.Slider;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
-import org.kie.workbench.common.forms.model.impl.basic.slider.SliderBase;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.definition.SliderBaseDefinition;
 
 @Dependent
-public class SliderFieldRenderer extends FieldRenderer<SliderBase> {
+public class SliderFieldRenderer extends FieldRenderer<SliderBaseDefinition> {
 
     private Slider slider;
 
     @Override
     public String getName() {
-        return SliderBase.CODE;
+        return SliderBaseDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class SliderFieldRenderer extends FieldRenderer<SliderBase> {
                              field.getMax().doubleValue(),
                              field.getPrecision().doubleValue(),
                              field.getStep().doubleValue() );
-        slider.setEnabled( !field.getReadonly() && renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE ) );
+        slider.setEnabled( !field.getReadOnly() && renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE ) );
     }
 
     @Override
@@ -56,7 +56,7 @@ public class SliderFieldRenderer extends FieldRenderer<SliderBase> {
 
     @Override
     public String getSupportedCode() {
-        return SliderBase.CODE;
+        return SliderBaseDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

@@ -22,21 +22,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.FieldSetting;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
+import org.kie.workbench.common.forms.fields.shared.FieldProvider;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.service.FieldProvider;
+import org.kie.workbench.common.forms.model.FieldType;
 
-public abstract class AbstractFieldAnnotationProcessor<T extends FieldDefinition, P extends FieldProvider<T>> implements FieldAnnotationProcessor<T> {
+public abstract class AbstractFieldAnnotationProcessor<FIELD_TYPE extends FieldType, FIELD extends FieldDefinition<FIELD_TYPE>, PROVIDER extends FieldProvider<FIELD_TYPE, FIELD>> implements FieldAnnotationProcessor<FIELD_TYPE, FIELD> {
 
-    protected P fieldProvider;
+    protected PROVIDER fieldProvider;
 
     @Inject
-    public AbstractFieldAnnotationProcessor( P fieldProvider ) {
+    public AbstractFieldAnnotationProcessor( PROVIDER fieldProvider ) {
         this.fieldProvider = fieldProvider;
     }
 
     @Override
-    public T getFieldDefinition( FieldSetting setting, Annotation annotation, TransformerContext context ) {
-        T field = fieldProvider.getFieldByType( setting.getTypeInfo() );
+    public FIELD getFieldDefinition( FieldSetting setting, Annotation annotation, TransformerContext context ) {
+        FIELD field = fieldProvider.getFieldByType( setting.getTypeInfo() );
 
         if ( field == null ) {
             return null;
@@ -47,7 +48,7 @@ public abstract class AbstractFieldAnnotationProcessor<T extends FieldDefinition
         field.setLabel( setting.getLabel() );
 
         String binding = setting.getFieldName();
-        if ( !StringUtils.isEmpty( setting.getProperty() ) ) {
+        if ( ! StringUtils.isEmpty( setting.getProperty() ) ) {
             binding += "." + setting.getProperty();
         }
 
@@ -63,10 +64,10 @@ public abstract class AbstractFieldAnnotationProcessor<T extends FieldDefinition
         return annotation.getQualifiedTypeName().equals( getSupportedAnnotation().getName() );
     }
 
-    protected abstract void initField( T field,
+    protected abstract void initField( FIELD field,
                                        Annotation annotation,
                                        FieldSetting fieldSetting,
                                        TransformerContext context );
 
-    protected abstract Class< ? extends java.lang.annotation.Annotation> getSupportedAnnotation();
+    protected abstract Class<? extends java.lang.annotation.Annotation> getSupportedAnnotation();
 }

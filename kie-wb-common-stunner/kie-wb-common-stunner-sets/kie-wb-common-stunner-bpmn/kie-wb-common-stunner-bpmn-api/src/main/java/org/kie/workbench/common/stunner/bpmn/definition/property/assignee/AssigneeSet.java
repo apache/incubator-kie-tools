@@ -21,34 +21,44 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
-import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.AssigneeEditor;
-import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_ACTORS;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GROUPS;
-
 @Portable
 @Bindable
 @PropertySet
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "actors"
+)
 public class AssigneeSet implements BPMNPropertySet {
 
     @Name
     public static final transient String propertySetName = "Assigned to";
 
     @Property
-    @FieldDef(label = FIELDDEF_ACTORS, property = "value")
-    @AssigneeEditor(type = AssigneeType.USER)
+    @FormField(
+            type = AssigneeEditorFieldType.class,
+            labelKey = "actors",
+            settings = @FieldParam(name = "type", value = "USER")
+    )
     @Valid
     private Actors actors;
 
     @Property
-    @FieldDef(label = FIELDDEF_GROUPS, property = "value")
-    @AssigneeEditor(type = AssigneeType.GROUP)
+    @FormField(
+            type = AssigneeEditorFieldType.class,
+            labelKey = "groupid",
+            afterElement = "actors",
+            settings = @FieldParam(name = "type", value = "GROUP")
+    )
     @Valid
     private Groupid groupid;
 

@@ -25,22 +25,23 @@ import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.
 import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
 import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.AssigneeEditor;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
 import org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders.AssigneeEditorFieldProvider;
 
 @Dependent
-public class AssigneeEditorAnnotationProcessor extends AbstractFieldAnnotationProcessor<AssigneeEditorFieldDefinition, AssigneeEditorFieldProvider> {
+public class AssigneeEditorAnnotationProcessor extends AbstractFieldAnnotationProcessor<AssigneeEditorFieldType, AssigneeEditorFieldDefinition, AssigneeEditorFieldProvider> {
 
     @Inject
-    public AssigneeEditorAnnotationProcessor(final AssigneeEditorFieldProvider fieldProvider) {
+    public AssigneeEditorAnnotationProcessor(AssigneeEditorFieldProvider fieldProvider) {
         super(fieldProvider);
     }
 
     @Override
-    protected void initField(final AssigneeEditorFieldDefinition field,
-                             final Annotation annotation,
-                             final FieldSetting fieldSetting,
-                             final TransformerContext context) {
+    protected void initField(AssigneeEditorFieldDefinition field,
+                             Annotation annotation,
+                             FieldSetting fieldSetting,
+                             TransformerContext context) {
         field.setDefaultValue((String) annotation.getParameters().get("defaultValue"));
         field.setType(AssigneeType.valueOf((String) annotation.getParameters().get("type")));
     }

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.forms.editor.client.handler.formModel;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -26,10 +25,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.api.Assert;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.kie.workbench.common.forms.editor.client.handler.formModel.container.FormModelCreationContainer;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.uberfire.backend.vfs.Path;
@@ -84,7 +80,7 @@ public class FormModelsPresenter implements IsWidget {
         view.reset();
 
         currentManager = containers.get( 0 );
-        currentManager.showCreationView();
+        currentManager.selectManager();
 
         containers.forEach( container -> {
             container.initData( projectPath );

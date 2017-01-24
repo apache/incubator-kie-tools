@@ -20,9 +20,9 @@ import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.DMOBasedTransformerContext;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.FieldSetting;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
 
 @Dependent
 public class SubFormFieldInitializer extends FormAwareFieldInitializer<SubFormFieldDefinition> {

@@ -21,24 +21,25 @@ import java.util.List;
 
 import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.FieldSetting;
-import org.kie.workbench.common.forms.dynamic.service.shared.SelectorDataProviderManager;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.SelectorDataProviderManager;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorFieldBaseDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.StringSelectorOption;
 import org.kie.workbench.common.forms.metaModel.Option;
 import org.kie.workbench.common.forms.metaModel.SelectorDataProvider;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.SelectorFieldBase;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.SelectorOption;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.StringSelectorOption;
-import org.kie.workbench.common.forms.service.impl.fieldProviders.SelectorFieldProvider;
+import org.kie.workbench.common.forms.model.FieldType;
 
-public abstract class AbstractSelectorAnnotationProcessor<T extends SelectorFieldBase, P extends SelectorFieldProvider<T>>
-        extends AbstractFieldAnnotationProcessor<T, P> {
+public abstract class AbstractSelectorAnnotationProcessor<FIELD_TYPE extends FieldType, FIELD extends SelectorFieldBaseDefinition<FIELD_TYPE, ? extends SelectorOption>, PROVIDER extends SelectorFieldProvider<FIELD_TYPE, FIELD>>
+        extends AbstractFieldAnnotationProcessor<FIELD_TYPE, FIELD, PROVIDER> {
 
-    public AbstractSelectorAnnotationProcessor( P fieldProvider ) {
+    public AbstractSelectorAnnotationProcessor( PROVIDER fieldProvider ) {
         super( fieldProvider );
     }
 
     @Override
-    protected void initField( T field, Annotation annotation, FieldSetting fieldSetting, TransformerContext context ) {
+    protected void initField( FIELD field, Annotation annotation, FieldSetting fieldSetting, TransformerContext context ) {
         List<SelectorOption> options = new ArrayList<>();
         Annotation selectorProvider = null;
         for ( Annotation settingAnnotation : fieldSetting.getAnnotations() ) {
@@ -53,7 +54,7 @@ public abstract class AbstractSelectorAnnotationProcessor<T extends SelectorFiel
             }
         }
 
-        field.setOptions( options );
+        //field.setOptions( options );
 
         if ( options.isEmpty() && selectorProvider != null ) {
             String providerId = selectorProvider.getParameters().get( "type" ) + SelectorDataProviderManager.SEPARATOR + selectorProvider.getParameters().get( "className" );

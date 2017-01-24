@@ -21,6 +21,9 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -36,6 +39,7 @@ import org.kie.workbench.common.stunner.core.definition.property.type.StringType
 @Portable
 @Bindable
 @Property
+@FieldDefinition
 public class Id implements BPMNProperty {
 
     @Caption
@@ -45,7 +49,8 @@ public class Id implements BPMNProperty {
     public static final transient String description = "The process ID";
 
     @ReadOnly
-    public static final Boolean readOnly = false;
+    @FieldReadOnly
+    public Boolean readOnly = false;
 
     @Optional
     public static final Boolean optional = false;
@@ -59,6 +64,7 @@ public class Id implements BPMNProperty {
     @Value
     @NotNull
     @NotEmpty
+    @FieldValue
     private String value = defaultValue;
 
     public Id() {

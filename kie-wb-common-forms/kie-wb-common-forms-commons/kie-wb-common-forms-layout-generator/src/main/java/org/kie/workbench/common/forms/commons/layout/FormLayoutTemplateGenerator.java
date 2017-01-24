@@ -16,10 +16,9 @@
 package org.kie.workbench.common.forms.commons.layout;
 
 import java.util.List;
-
+;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
 /**
  * Component to generate LayoutTemplates for FormDefinition

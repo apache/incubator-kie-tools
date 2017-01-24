@@ -19,29 +19,65 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.font;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 
 @Portable
 @Bindable
 @PropertySet
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "fontFamily"
+)
 public class FontSet implements BPMNPropertySet {
 
     @Name
     public static final transient String propertySetName = "Font";
 
     @Property
+    @FormField(labelKey = "fontFamily")
     private FontFamily fontFamily;
 
     @Property
+    @FormField(
+            type = ColorPickerFieldType.class,
+            labelKey = "fontColor",
+            afterElement = "fontFamily"
+    )
     private FontColor fontColor;
 
     @Property
+    @FormField(
+            type = SliderFieldType.class,
+            labelKey = "fontSize",
+            afterElement = "fontColor",
+            settings = {
+                    @FieldParam(name = "min", value = "8.0"),
+                    @FieldParam(name = "max", value = "24.0"),
+                    @FieldParam(name = "step", value = "1.0")
+            }
+    )
     private FontSize fontSize;
 
     @Property
+    @FormField(
+            type = SliderFieldType.class,
+            labelKey = "fontBorderSize",
+            afterElement = "fontSize",
+            settings = {
+                    @FieldParam(name = "min", value = "0.0"),
+                    @FieldParam(name = "max", value = "5.0"),
+                    @FieldParam(name = "step", value = "1.0")
+            }
+    )
     private FontBorderSize fontBorderSize;
 
     public FontSet() {

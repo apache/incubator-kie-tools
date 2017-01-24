@@ -21,12 +21,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.test.model.Address;
 import org.kie.workbench.common.forms.dynamic.test.model.Employee;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.checkBox.CheckBoxFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.textArea.TextAreaFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.textBox.TextBoxFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;

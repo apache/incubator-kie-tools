@@ -77,7 +77,7 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
 
-    <!-- code generation dependencies -->
+    <!-- code adf dependencies -->
     <dependency>
       <groupId>org.apache.velocity</groupId>
       <artifactId>velocity</artifactId>

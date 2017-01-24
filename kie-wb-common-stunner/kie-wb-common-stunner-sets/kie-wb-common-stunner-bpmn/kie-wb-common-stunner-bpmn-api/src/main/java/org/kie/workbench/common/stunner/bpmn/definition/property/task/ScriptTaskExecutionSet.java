@@ -20,35 +20,45 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
-import org.kie.workbench.common.forms.metaModel.ListBox;
-import org.kie.workbench.common.forms.metaModel.SelectorDataProvider;
-import org.kie.workbench.common.forms.metaModel.TextArea;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_SCRIPT;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_SCRIPT_LANGUAGE;
-
 @Portable
 @Bindable
 @PropertySet
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "script"
+)
 public class ScriptTaskExecutionSet implements BPMNPropertySet {
 
     @Name
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef(label = FIELDDEF_SCRIPT, property = "value", position = 1)
-    @TextArea(rows = 5)
+    @FormField(
+            type = TextAreaFieldType.class,
+            labelKey = "script",
+            settings = {@FieldParam(name = "rows", value = "5")}
+    )
     @Valid
     private Script script;
 
     @Property
-    @FieldDef(label = FIELDDEF_SCRIPT_LANGUAGE, property = "value", position = 2)
-    @ListBox
+    @FormField(
+            type = ListBoxFieldType.class,
+            labelKey = "scriptLanguage",
+            afterElement = "script"
+    )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
             className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.ScriptLanguageFormProvider")

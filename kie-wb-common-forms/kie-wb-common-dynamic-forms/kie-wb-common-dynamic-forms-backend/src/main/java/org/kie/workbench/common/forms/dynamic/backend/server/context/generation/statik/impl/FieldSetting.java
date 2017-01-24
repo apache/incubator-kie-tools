@@ -18,8 +18,7 @@ package org.kie.workbench.common.forms.dynamic.backend.server.context.generation
 
 import java.util.Set;
 
-import org.kie.workbench.common.forms.model.DefaultFieldTypeInfo;
-import org.kie.workbench.common.forms.model.FieldTypeInfo;
+import org.kie.workbench.common.forms.model.FieldDataType;
 
 public class FieldSetting implements Comparable<FieldSetting> {
     private String fieldName;
@@ -28,9 +27,9 @@ public class FieldSetting implements Comparable<FieldSetting> {
     private int position;
     private String type;
     private Set<org.drools.workbench.models.datamodel.oracle.Annotation> annotations;
-    private FieldTypeInfo typeInfo;
+    private FieldDataType typeInfo;
 
-    public FieldSetting( String fieldName, DefaultFieldTypeInfo typeInfo, org.drools.workbench.models.datamodel.oracle.Annotation annotation, Set<org.drools.workbench.models.datamodel.oracle.Annotation> annotations ) {
+    public FieldSetting( String fieldName, FieldDataType typeInfo, org.drools.workbench.models.datamodel.oracle.Annotation annotation, Set<org.drools.workbench.models.datamodel.oracle.Annotation> annotations ) {
         this.fieldName = fieldName;
         this.typeInfo = typeInfo;
         this.type = typeInfo.getType();
@@ -48,7 +47,7 @@ public class FieldSetting implements Comparable<FieldSetting> {
         this.fieldName = fieldName;
     }
 
-    public FieldTypeInfo getTypeInfo() {
+    public FieldDataType getTypeInfo() {
         return typeInfo;
     }
 

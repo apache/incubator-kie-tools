@@ -24,7 +24,10 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
@@ -43,13 +46,15 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_IMPLEMENTATION_EXECUTION;
-
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = IntermediateTimerEvent.IntermediateTimerEventBuilder.class)
 @Shape(factory = BasicShapesFactory.class, def = IntermediateTimerEventShapeDef.class)
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        policy = FieldPolicy.ONLY_MARKED,
+        startElement = "general"
+)
 public class IntermediateTimerEvent implements BPMNDefinition {
 
     @Category
@@ -63,17 +68,25 @@ public class IntermediateTimerEvent implements BPMNDefinition {
             "is reached or a particular duration is over.";
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_GENERAL_SETTINGS, position = 0)
+    @FormField(
+            labelKey = "general"
+    )
     @Valid
     private BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_IMPLEMENTATION_EXECUTION, position = 1)
+    @FormField(
+            labelKey = "executionSet",
+            afterElement = "general"
+    )
     @Valid
     protected IntermediateTimerEventExecutionSet executionSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 2 )
+    @FormField(
+            labelKey = "backgroundSet",
+            afterElement = "executionSet"
+    )
     @Valid
     private BackgroundSet backgroundSet;
 

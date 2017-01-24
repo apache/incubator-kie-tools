@@ -17,7 +17,9 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
@@ -26,12 +28,15 @@ import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.generator.AbstractLayoutGenerator;
-import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 
 @Any
 @Dependent
@@ -39,10 +44,19 @@ public class FormLayoutGenerator extends AbstractLayoutGenerator {
 
     private List<FieldLayoutComponent> layoutComponents = new ArrayList<FieldLayoutComponent>();
 
-    @Inject
-    private LayoutDragComponentHelper dragTypeBeanResolver;
+    private Map<String, Class<? extends LayoutDragComponent>> componentsCache = new HashMap<>();
+
+    private SyncBeanManager beanManager;
+
+    private ManagedInstance<LayoutDragComponent> instance;
 
     private FormRenderingContext renderingContext;
+
+    @Inject
+    public FormLayoutGenerator( SyncBeanManager beanManager, ManagedInstance<LayoutDragComponent> instance ) {
+        this.beanManager = beanManager;
+        this.instance = instance;
+    }
 
     public Panel buildLayout( FormRenderingContext renderingContext ) {
         this.renderingContext = renderingContext;
@@ -60,7 +74,18 @@ public class FormLayoutGenerator extends AbstractLayoutGenerator {
 
     @Override
     public LayoutDragComponent getLayoutDragComponent( LayoutComponent layoutComponent ) {
-        LayoutDragComponent dragComponent = dragTypeBeanResolver.lookupDragTypeBean( layoutComponent.getDragTypeName() );
+
+        Class<? extends LayoutDragComponent> clazz = componentsCache.get( layoutComponent.getDragTypeName() );
+        if ( clazz == null ) {
+            SyncBeanDef dragTypeDef = beanManager.lookupBeans( layoutComponent.getDragTypeName() ).iterator().next();
+
+            componentsCache.put( layoutComponent.getDragTypeName(), dragTypeDef.getBeanClass() );
+
+            clazz = dragTypeDef.getBeanClass();
+        }
+
+        LayoutDragComponent dragComponent = instance.select( clazz ).get();
+
         if ( dragComponent instanceof FieldLayoutComponent ) {
             FieldLayoutComponent fieldComponent = (FieldLayoutComponent) dragComponent;
 
@@ -70,6 +95,7 @@ public class FormLayoutGenerator extends AbstractLayoutGenerator {
 
             layoutComponents.add( fieldComponent );
         }
+
         return dragComponent;
     }
 
@@ -82,5 +108,10 @@ public class FormLayoutGenerator extends AbstractLayoutGenerator {
             if ( component.getField().equals( field ) ) return component;
         }
         return null;
+    }
+
+    public void clear() {
+        layoutComponents.clear();
+        instance.destroyAll();
     }
 }

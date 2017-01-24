@@ -35,9 +35,9 @@ import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorCont
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.FormEditorRenderingContext;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.service.FieldManager;
 
 @Dependent
@@ -80,7 +80,7 @@ public class FormEditorHelper {
             SyncBeanDef<EditorFieldLayoutComponent> beanDef = beanManager.lookupBean( EditorFieldLayoutComponent.class );
             EditorFieldLayoutComponent layoutComponent = beanDef.newInstance();
             if ( layoutComponent != null ) {
-                FieldDefinition field = fieldManager.getDefinitionByTypeCode( baseType );
+                FieldDefinition field = fieldManager.getDefinitionByFieldTypeName( baseType );
                 field.setId( baseType );
                 layoutComponent.init( content.getRenderingContext(), field );
                 fieldLayoutComponents.add( layoutComponent );
@@ -119,13 +119,13 @@ public class FormEditorHelper {
             if ( result != null ) {
                 availableFields.remove( fieldId );
             } else {
-                result = fieldManager.getDefinitionByTypeCode( fieldId );
+                result = fieldManager.getDefinitionByFieldTypeName( fieldId );
 
                 if ( result != null ) {
                     result.setName( generateUnbindedFieldName( result ) );
-                    result.setLabel( result.getCode() );
+                    result.setLabel( result.getFieldType().getTypeName() );
                     if ( result instanceof HasPlaceHolder ) {
-                        ( (HasPlaceHolder) result ).setPlaceHolder( result.getCode() );
+                        ( (HasPlaceHolder) result ).setPlaceHolder( result.getFieldType().getTypeName() );
                     }
                 }
             }
@@ -169,7 +169,7 @@ public class FormEditorHelper {
         if ( field.getBinding() != null ) result.add( field.getBinding() );
         for ( String compatibleType : compatibles ) {
             for ( FieldDefinition definition : availableFields.values() ) {
-                if ( definition.getCode().equals( compatibleType ) ) result.add( definition.getBinding() );
+                if ( definition.getFieldType().getTypeName().equals( compatibleType ) ) result.add( definition.getBinding() );
             }
         }
         return new ArrayList<>( result );
@@ -180,7 +180,7 @@ public class FormEditorHelper {
     }
 
     public FieldDefinition switchToField( FieldDefinition field, String bindingExpression ) {
-        FieldDefinition resultDefinition = fieldManager.getDefinitionByTypeCode( field.getCode() );
+        FieldDefinition resultDefinition = fieldManager.getDefinitionByFieldTypeName( field.getFieldType().getTypeName() );
 
         // TODO: make settings copy optional
         resultDefinition.copyFrom( field );

@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Specializes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -37,14 +38,20 @@ import org.kie.workbench.common.forms.editor.service.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.client.api.*;
+import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
+import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
+import org.uberfire.ext.layout.editor.client.api.HasDragAndDropSettings;
+import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
+import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
+import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 
+@Specializes
 @Dependent
 public class EditorFieldLayoutComponent extends FieldLayoutComponent implements HasDragAndDropSettings,
         HasModalConfiguration {
 
-    public final String[] SETTINGS_KEYS = new String[] { FORM_ID, FIELD_ID};
+    public final String[] SETTINGS_KEYS = new String[] { FORM_ID, FIELD_ID };
 
     @Inject
     protected FieldPropertiesRenderer propertiesRenderer;
@@ -94,7 +101,7 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
 
             @Override
             public List<String> getAvailableFields() {
-                return  editorHelper.getCompatibleFieldCodes( field );
+                return editorHelper.getCompatibleFieldCodes( field );
             }
 
             @Override
@@ -106,7 +113,7 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
             public void onClose() {
                 renderContent();
                 showProperties = false;
-                if ( configContext != null) {
+                if ( configContext != null ) {
                     configContext.getComponentProperties().put( FORM_ID, formId );
                     configContext.getComponentProperties().put( FIELD_ID, field.getId() );
                     configContext.configurationFinished();
@@ -126,7 +133,7 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
 
             @Override
             public Path getPath() {
-                return ((FormEditorRenderingContext)renderingContext).getFormPath();
+                return ( (FormEditorRenderingContext) renderingContext ).getFormPath();
             }
         };
     }
@@ -138,22 +145,21 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
 
     @Override
     public void setSettingValue( String key, String value ) {
-        if ( FORM_ID.equals( key )) {
+        if ( FORM_ID.equals( key ) ) {
             formId = value;
-        } else if (FIELD_ID.equals( key )) {
+        } else if ( FIELD_ID.equals( key ) ) {
             fieldId = value;
         }
     }
 
     @Override
     public String getSettingValue( String key ) {
-        if ( FORM_ID.equals( key )) {
+        if ( FORM_ID.equals( key ) ) {
             if ( renderingContext != null ) {
                 return renderingContext.getRootForm().getId();
             }
             return formId;
-        }
-        else if (FIELD_ID.equals( key )) {
+        } else if ( FIELD_ID.equals( key ) ) {
             if ( field != null ) {
                 return field.getId();
             }
@@ -177,7 +183,7 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
 
         configContext = ctx;
 
-        if (field == null) {
+        if ( field == null ) {
             getEditionContext( ctx.getComponentProperties() );
         } else {
             propertiesRenderer.render( propertiesRendererHelper );
@@ -189,7 +195,7 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
 
     @Override
     protected IsWidget generateContent( RenderingContext ctx ) {
-        if ( fieldRenderer != null) {
+        if ( fieldRenderer != null ) {
             renderContent();
         } else {
             getEditionContext( ctx.getComponent().getProperties() );
@@ -198,23 +204,25 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
     }
 
     protected void getEditionContext( Map<String, String> properties ) {
-        if (field != null) return;
-
-        if (fieldId == null) {
-            fieldId = properties.get(FIELD_ID);
+        if ( field != null ) {
+            return;
         }
 
-        if (formId == null) {
+        if ( fieldId == null ) {
+            fieldId = properties.get( FIELD_ID );
+        }
+
+        if ( formId == null ) {
             formId = properties.get( FORM_ID );
         }
 
         fieldRequest.fire( new FormEditorContextRequest( formId, fieldId ) );
     }
 
-    public void onFieldResponse(@Observes FormEditorContextResponse response) {
-        if ( !response.getFormId().equals( formId ) ) {
+    public void onFieldResponse( @Observes FormEditorContextResponse response ) {
+        if ( ! response.getFormId().equals( formId ) ) {
             return;
-        } else if ( field != null && !response.getFieldId().equals( fieldId )) {
+        } else if ( field != null && ! response.getFieldId().equals( fieldId ) ) {
             return;
         }
 
@@ -237,12 +245,16 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
         return editorHelper.getCompatibleFieldTypes( field );
     }
 
-    public void switchToField(String bindingExpression) {
-        if (field.getBinding().equals( bindingExpression )) return;
+    public void switchToField( String bindingExpression ) {
+        if ( field.getBinding().equals( bindingExpression ) ) {
+            return;
+        }
 
         FieldDefinition destField = editorHelper.switchToField( field, bindingExpression );
 
-        if ( destField == null ) return;
+        if ( destField == null ) {
+            return;
+        }
 
         LayoutComponent component = layoutDragComponentHelper.getLayoutComponent( this );
 
@@ -264,9 +276,11 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
     }
 
     public void switchToFieldType( String typeCode ) {
-        if ( field.getCode().equals(typeCode) ) return;
+        if ( field.getFieldType().getTypeName().equals( typeCode ) ) {
+            return;
+        }
 
-        field = editorHelper.switchToFieldType( field, typeCode);
+        field = editorHelper.switchToFieldType( field, typeCode );
 
         initComponent();
 

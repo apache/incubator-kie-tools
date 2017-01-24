@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl;
 
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,11 +31,11 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.model.Person;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.DynamicModelConstraints;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.FieldConstraint;
-import org.kie.workbench.common.forms.model.DefaultFieldTypeInfo;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
+import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.JavaModel;
-import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -196,17 +194,17 @@ public class NestedFormBackendFormRenderingContextManagerTest extends AbstractBa
 
         form.setId( Person.class.getName() );
 
-        FieldDefinition field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( String.class.getName() ) );
+        FieldDefinition field = fieldManager.getDefinitionByDataType( new FieldDataType( String.class.getName() ) );
         field.setName( "name" );
         field.setBinding( "name" );
         form.getFields().add( field );
 
-        field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( String.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType( new FieldDataType( String.class.getName() ) );
         field.setName( "lastName" );
         field.setBinding( "lastName" );
         form.getFields().add( field );
 
-        field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Date.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType( new FieldDataType( Date.class.getName() ) );
         field.setName( "birthday" );
         field.setBinding( "birthday" );
         form.getFields().add( field );
@@ -217,7 +215,7 @@ public class NestedFormBackendFormRenderingContextManagerTest extends AbstractBa
     @Override
     protected FormDefinition getRootForm() {
         FormDefinition form = new FormDefinition( () -> "root" );
-        FieldDefinition field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Person.class.getName() ) );
+        FieldDefinition field = fieldManager.getDefinitionByDataType( new FieldDataType( Person.class.getName() ) );
 
         field.setName( "person" );
         field.setBinding( "person" );

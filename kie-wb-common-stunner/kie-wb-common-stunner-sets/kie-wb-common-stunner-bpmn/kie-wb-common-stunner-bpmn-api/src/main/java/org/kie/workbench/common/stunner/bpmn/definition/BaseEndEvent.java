@@ -21,7 +21,7 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
@@ -35,9 +35,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_TASK_DATA;
-
 @MorphBase(defaultType = EndNoneEvent.class
         /* TODO: Disabled morphing from end to start events for M1
         targets = { BaseStartEvent.class } */
@@ -49,17 +46,25 @@ public abstract class BaseEndEvent implements BPMNDefinition,
     public static final transient String category = Categories.EVENTS;
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_GENERAL_SETTINGS, position = 1)
+    @FormField(
+            labelKey = "general"
+    )
     @Valid
     protected BPMNGeneralSet general;
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_TASK_DATA, position = 2)
+    @FormField(
+            labelKey = "dataIOSet",
+            afterElement = "general"
+    )
     @Valid
     protected DataIOSet dataIOSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 3 )
+    @FormField(
+            labelKey = "backgroundSet",
+            afterElement = "dataIOSet"
+    )
     @Valid
     protected BackgroundSet backgroundSet;
 
@@ -67,11 +72,9 @@ public abstract class BaseEndEvent implements BPMNDefinition,
     protected ThrowEventAttributes throwEventAttributes;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_FONT_SETTINGS )
     protected FontSet fontSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 5 )
     protected CircleDimensionSet dimensionsSet;
 
     @Labels

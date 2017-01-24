@@ -23,9 +23,9 @@ import org.kie.workbench.common.forms.dynamic.test.model.Person;
 import org.kie.workbench.common.forms.dynamic.test.model.Title;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.datePicker.DatePickerFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.listBox.EnumListBoxFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.textBox.TextBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.EnumListBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;

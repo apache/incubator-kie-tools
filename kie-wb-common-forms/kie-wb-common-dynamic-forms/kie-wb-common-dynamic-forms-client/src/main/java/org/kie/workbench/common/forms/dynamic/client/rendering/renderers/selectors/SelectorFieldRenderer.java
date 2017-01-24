@@ -28,10 +28,10 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.service.shared.BackendSelectorDataProviderService;
 import org.kie.workbench.common.forms.dynamic.service.shared.SelectorDataProviderManager;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.SelectorFieldBase;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.SelectorOption;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorFieldBaseDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 
-public abstract class SelectorFieldRenderer<F extends SelectorFieldBase, O extends SelectorOption<T>, T> extends FieldRenderer<F> {
+public abstract class SelectorFieldRenderer<F extends SelectorFieldBaseDefinition, O extends SelectorOption<T>, T> extends FieldRenderer<F> {
 
     @Inject
     protected SelectorDataProviderManager clientProviderManager;

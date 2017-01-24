@@ -76,7 +76,7 @@ public abstract class DefaultDynamicFormField<F extends FieldDefinition, W exten
 
     @Override
     public void setReadOnly( boolean readOnly ) {
-        if ( !field.getReadonly() ) {
+        if ( !field.getReadOnly() ) {
             doSetReadOnly( readOnly );
         }
     }

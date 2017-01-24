@@ -22,12 +22,12 @@ import javax.inject.Inject;
 import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.FieldSetting;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.definition.SliderBaseDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.provider.SliderFieldProvider;
 import org.kie.workbench.common.forms.metaModel.Slider;
-import org.kie.workbench.common.forms.model.impl.basic.slider.SliderBase;
-import org.kie.workbench.common.forms.service.impl.fieldProviders.SliderFieldProvider;
 
 @Dependent
-public class SliderAnnotationProcessor extends AbstractFieldAnnotationProcessor<SliderBase, SliderFieldProvider> {
+public class SliderAnnotationProcessor extends AbstractFieldAnnotationProcessor<org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType, SliderBaseDefinition<?>, SliderFieldProvider> {
 
     @Inject
     public SliderAnnotationProcessor( SliderFieldProvider fieldProvider ) {
@@ -35,15 +35,15 @@ public class SliderAnnotationProcessor extends AbstractFieldAnnotationProcessor<
     }
 
     @Override
-    protected void initField( SliderBase field,
+    protected void initField( SliderBaseDefinition field,
                               Annotation annotation,
                               FieldSetting fieldSetting,
                               TransformerContext context ) {
 
-        field.setMin( ((Number)annotation.getParameters().get( "min" )).doubleValue() );
-        field.setMax( ((Number)annotation.getParameters().get( "max" )).doubleValue() );
-        field.setPrecision( ((Number)annotation.getParameters().get( "precision" )).doubleValue() );
-        field.setStep( ((Number)annotation.getParameters().get( "step" )).doubleValue() );
+        field.setMin( ( (Number) annotation.getParameters().get( "min" ) ).doubleValue() );
+        field.setMax( ( (Number) annotation.getParameters().get( "max" ) ).doubleValue() );
+        field.setPrecision( ( (Number) annotation.getParameters().get( "precision" ) ).doubleValue() );
+        field.setStep( ( (Number) annotation.getParameters().get( "step" ) ).doubleValue() );
     }
 
     @Override

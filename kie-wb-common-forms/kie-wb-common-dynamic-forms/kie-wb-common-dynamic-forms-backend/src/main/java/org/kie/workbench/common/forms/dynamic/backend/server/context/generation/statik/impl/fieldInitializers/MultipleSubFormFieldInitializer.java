@@ -22,11 +22,11 @@ import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.DMOBasedTransformerContext;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.FieldSetting;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.EntityRelationField;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableColumnMeta;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.EntityRelationField;
-import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.TableColumnMeta;
 
 @Dependent
 public class MultipleSubFormFieldInitializer extends FormAwareFieldInitializer<MultipleSubFormFieldDefinition> {
@@ -46,7 +46,7 @@ public class MultipleSubFormFieldInitializer extends FormAwareFieldInitializer<M
 
         List<TableColumnMeta> metas = new ArrayList<TableColumnMeta>();
         for ( FieldDefinition fieldDefinition : form.getFields() ) {
-            if ( !( fieldDefinition instanceof EntityRelationField ) ) {
+            if ( ! ( fieldDefinition instanceof EntityRelationField ) ) {
                 metas.add( new TableColumnMeta( fieldDefinition.getLabel(),
                         fieldDefinition.getBinding() ) );
             }
@@ -55,6 +55,6 @@ public class MultipleSubFormFieldInitializer extends FormAwareFieldInitializer<M
         field.setCreationForm( form.getId() );
         field.setEditionForm( form.getId() );
         field.setColumnMetas( metas );
-        field.setReadonly( setting.getTypeInfo().isEnum() );
+        field.setReadOnly( setting.getTypeInfo().isEnum() );
     }
 }

@@ -28,11 +28,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.model.Person;
-import org.kie.workbench.common.forms.model.DefaultFieldTypeInfo;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
+import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.JavaModel;
-import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -217,22 +217,22 @@ public class MultipleSubformBackendFormRenderingContextManagerTest extends Abstr
         FormDefinition creationForm = new FormDefinition( model );
         creationForm.setId( "person-creation" );
 
-        FieldDefinition field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Long.class.getName() ) );
+        FieldDefinition field = fieldManager.getDefinitionByDataType( new FieldDataType( Long.class.getName() ) );
         field.setName( "id" );
         field.setBinding( "id" );
         creationForm.getFields().add( field );
 
-        field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( String.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType( new FieldDataType( String.class.getName() ) );
         field.setName( "name" );
         field.setBinding( "name" );
         creationForm.getFields().add( field );
 
-        field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( String.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType( new FieldDataType( String.class.getName() ) );
         field.setName( "lastName" );
         field.setBinding( "lastName" );
         creationForm.getFields().add( field );
 
-        field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Date.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType( new FieldDataType( Date.class.getName() ) );
         field.setName( "birthday" );
         field.setBinding( "birthday" );
         creationForm.getFields().add( field );
@@ -240,22 +240,22 @@ public class MultipleSubformBackendFormRenderingContextManagerTest extends Abstr
         FormDefinition editionForm = new FormDefinition( model );
         editionForm.setId( "person-edition" );
 
-        field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Long.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType( new FieldDataType( Long.class.getName() ) );
         field.setName( "id" );
         field.setBinding( "id" );
         editionForm.getFields().add( field );
 
-        field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( String.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType( new FieldDataType( String.class.getName() ) );
         field.setName( "name" );
         field.setBinding( "name" );
         editionForm.getFields().add( field );
 
-        field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( String.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType( new FieldDataType( String.class.getName() ) );
         field.setName( "lastName" );
         field.setBinding( "lastName" );
         editionForm.getFields().add( field );
 
-        field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Date.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType( new FieldDataType( Date.class.getName() ) );
         field.setName( "birthday" );
         field.setBinding( "birthday" );
         editionForm.getFields().add( field );
@@ -268,7 +268,7 @@ public class MultipleSubformBackendFormRenderingContextManagerTest extends Abstr
         FormDefinition form = new FormDefinition( () -> "root" );
         form.setId( "form" );
 
-        FieldDefinition field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( Person.class.getName(),
+        FieldDefinition field = fieldManager.getDefinitionByDataType( new FieldDataType( Person.class.getName(),
                                                                                  true,
                                                                                  false ) );
         field.setName( "persons" );

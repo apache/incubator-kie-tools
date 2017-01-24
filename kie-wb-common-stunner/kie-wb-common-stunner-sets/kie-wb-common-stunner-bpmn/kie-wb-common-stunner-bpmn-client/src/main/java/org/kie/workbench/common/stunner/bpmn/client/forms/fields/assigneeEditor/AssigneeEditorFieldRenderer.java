@@ -47,7 +47,7 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
 
     @Override
     public String getName() {
-        return AssigneeEditorFieldDefinition.CODE;
+        return AssigneeEditorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
 
     @Override
     public String getSupportedCode() {
-        return AssigneeEditorFieldDefinition.CODE;
+        return AssigneeEditorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
-import org.kie.workbench.common.forms.jbpm.model.document.DocumentFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.authoring.document.definition.DocumentFieldDefinition;
 
 @Dependent
 public class DocumentFieldRenderer extends FieldRenderer<DocumentFieldDefinition> {
@@ -47,7 +47,7 @@ public class DocumentFieldRenderer extends FieldRenderer<DocumentFieldDefinition
 
     @Override
     public void initInputWidget() {
-        view.setReadOnly( field.getReadonly() || !renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE ) );
+        view.setReadOnly( field.getReadOnly() || !renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE ) );
     }
 
     @Override
@@ -63,7 +63,7 @@ public class DocumentFieldRenderer extends FieldRenderer<DocumentFieldDefinition
 
     @Override
     public String getSupportedCode() {
-        return DocumentFieldDefinition.CODE;
+        return DocumentFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

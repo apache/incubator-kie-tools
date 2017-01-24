@@ -119,7 +119,7 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
         int i = 0;
         for ( String type : types ) {
             fieldType.addItem( type );
-            if ( type.equals( helper.getCurrentField().getCode() )) {
+            if ( type.equals( helper.getCurrentField().getFieldType().getTypeName() )) {
                 fieldType.setSelectedIndex( i );
             }
             i++;

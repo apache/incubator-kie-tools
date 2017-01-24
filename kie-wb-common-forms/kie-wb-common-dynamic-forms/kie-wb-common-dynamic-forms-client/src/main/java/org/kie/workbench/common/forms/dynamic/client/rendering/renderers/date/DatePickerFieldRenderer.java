@@ -24,7 +24,7 @@ import org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker;
 import org.gwtbootstrap3.extras.datetimepicker.client.ui.DateTimePicker;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.flatViews.impl.DateFlatView;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
-import org.kie.workbench.common.forms.model.impl.basic.datePicker.DatePickerFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
 
 @Dependent
 public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefinition> {
@@ -43,7 +43,7 @@ public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefini
         if ( field.getShowTime() ) {
             DateTimePicker box = new DateTimePicker();
             box.setPlaceholder( field.getPlaceHolder() );
-            box.setEnabled( !field.getReadonly() );
+            box.setEnabled( !field.getReadOnly() );
             box.setAutoClose( true );
             box.setHighlightToday( true );
             box.setShowTodayButton( true );
@@ -52,7 +52,7 @@ public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefini
         } else {
             final DatePicker box = new DatePicker();
             box.setPlaceholder( field.getPlaceHolder() );
-            box.setEnabled( !field.getReadonly() );
+            box.setEnabled( !field.getReadOnly() );
             box.setAutoClose( true );
             box.setHighlightToday( true );
             box.setShowTodayButton( true );
@@ -73,7 +73,7 @@ public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefini
 
     @Override
     public String getSupportedCode() {
-        return DatePickerFieldDefinition.CODE;
+        return DatePickerFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

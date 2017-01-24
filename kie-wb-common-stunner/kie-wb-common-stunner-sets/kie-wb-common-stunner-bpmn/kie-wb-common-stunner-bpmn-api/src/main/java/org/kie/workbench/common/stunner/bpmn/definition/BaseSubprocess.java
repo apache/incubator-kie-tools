@@ -21,7 +21,7 @@ import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -37,8 +37,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBa
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_GENERAL_SETTINGS;
-
 @Shape(factory = BasicShapesFactory.class, def = SubprocessShapeDef.class)
 @MorphBase(defaultType = ReusableSubprocess.class, targets = {BaseTask.class})
 public abstract class BaseSubprocess implements BPMNDefinition {
@@ -50,12 +48,17 @@ public abstract class BaseSubprocess implements BPMNDefinition {
     public static final transient String description = "A subprocess is a decomposable activity.";
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_GENERAL_SETTINGS, position = 0)
+    @FormField(
+            labelKey = "general"
+    )
     @Valid
     protected BPMNGeneralSet general;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_BACKGROUND_SETTINGS, position = 3 )
+    @FormField(
+            labelKey = "backgroundSet",
+            afterElement = "general"
+    )
     @Valid
     protected BackgroundSet backgroundSet;
 

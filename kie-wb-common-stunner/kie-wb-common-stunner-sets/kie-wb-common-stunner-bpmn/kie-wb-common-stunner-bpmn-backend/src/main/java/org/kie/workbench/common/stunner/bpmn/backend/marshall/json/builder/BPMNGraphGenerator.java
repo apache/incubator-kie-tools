@@ -154,7 +154,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
                 // Initialize the builder context.
                 .init(graph)
                 // Clears the nodes present, if any, on the recently new graph instance for BPMN. This generator
-                // provides the generation for the complete graph structure and nodes.
+                // provides the adf for the complete graph structure and nodes.
                 .execute(builderContext.getCommandFactory().clearGraph());
         NodeObjectBuilder diagramBuilder = getDiagramBuilder(builderContext);
         if (diagramBuilder == null) {

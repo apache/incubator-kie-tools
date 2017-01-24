@@ -40,11 +40,11 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Simple velocity based code generation engine.
+ * Simple velocity based code adf engine.
  */
 //TODO Eventually, weed out everything that is no longer needed (unused templates, listener, unused context attributes - currentDataObject for example, or context alltoghether, ... )
 public class GenerationEngine {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(GenerationEngine.class);
 
     private static GenerationEngine singleton;
@@ -62,7 +62,7 @@ public class GenerationEngine {
     }
 
     /**
-     * Initializes the code generation engine
+     * Initializes the code adf engine
      */
     private void init() throws Exception {
         if (!inited) {
@@ -83,9 +83,9 @@ public class GenerationEngine {
     }
 
     /**
-     * Runs the code generation.
+     * Runs the code adf.
      *
-     * @param generationContext Context information for the generation.
+     * @param generationContext Context information for the adf.
      *
      * @throws Exception
      *
@@ -97,7 +97,7 @@ public class GenerationEngine {
         String initialTemplate = generationContext.getInitialTemplate();
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Starting code generation with templatesPath: " + templatesPath + ", initialTemplate: " + initialTemplate);
+            logger.debug("Starting code adf with templatesPath: " + templatesPath + ", initialTemplate: " + initialTemplate);
         }
         // Always start by the initial template
         String templatePath = getFullVelocityPath(templatesPath, initialTemplate);
@@ -153,7 +153,7 @@ public class GenerationEngine {
         t.merge(context, writer);
 
         if (generationContext.getOutputPath() != null) {
-            //generate the java file in the filesystem only if the output path was set in the generation context.
+            //generate the java file in the filesystem only if the output path was set in the adf context.
             File fout = new File(generationContext.getOutputPath(), filePath);
             fout.getParentFile().mkdirs();
             FileOutputStream fos = new FileOutputStream(fout, false);
@@ -204,12 +204,12 @@ public class GenerationEngine {
     public void generateSubTemplate(GenerationContext generationContext, String template) throws Exception {
         //read the template to use
         String templatePath = null;
-        try {         
+        try {
             templatePath = getFullVelocityPath(generationContext.getTemplatesPath(), template);
             Template t = velocityEngine.getTemplate(templatePath);
             t.merge(generationContext.getVelocityContext(), generationContext.getCurrentOutput());
         } catch (Exception e) {
-            logger.error("An error was produced during template generation: template: " + template + ", templatePath: " + templatePath, e);
+            logger.error("An error was produced during template adf: template: " + template + ", templatePath: " + templatePath, e);
         }
     }
 
@@ -425,7 +425,7 @@ public class GenerationEngine {
             Template t = velocityEngine.getTemplate(templatePath);
             t.merge(generationContext.getVelocityContext(), writer);
         } catch (Exception e) {
-            logger.error("An error was produced during template generation: template: " + template + ", templatePath: " + templatePath, e);
+            logger.error("An error was produced during template adf: template: " + template + ", templatePath: " + templatePath, e);
         }
         return writer.toString();
     }

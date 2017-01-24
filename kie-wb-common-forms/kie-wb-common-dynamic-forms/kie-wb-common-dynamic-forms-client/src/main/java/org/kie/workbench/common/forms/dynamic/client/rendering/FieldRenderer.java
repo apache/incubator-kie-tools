@@ -25,6 +25,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplaye
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.configError.ConfigErrorFormGroupDisplayer;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
+import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 public abstract class FieldRenderer<F extends FieldDefinition> {

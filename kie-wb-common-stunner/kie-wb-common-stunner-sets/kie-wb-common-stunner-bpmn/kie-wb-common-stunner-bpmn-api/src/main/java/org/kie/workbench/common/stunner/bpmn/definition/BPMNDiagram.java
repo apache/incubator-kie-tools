@@ -24,7 +24,10 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
@@ -43,14 +46,16 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_DATA;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_PROCESS_SETTINGS;
-
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = BPMNDiagram.BPMNDiagramBuilder.class)
 @CanContain(roles = {"all"})
 @Shape(factory = BasicShapesFactory.class, def = BPMNDiagramShapeDef.class)
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "diagramSet",
+        policy = FieldPolicy.ONLY_MARKED
+)
 public class BPMNDiagram implements BPMNDefinition {
 
     @Category
@@ -63,12 +68,17 @@ public class BPMNDiagram implements BPMNDefinition {
     public static final transient String description = "BPMN Diagram";
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_PROCESS_SETTINGS, position = 0)
+    @FormField(
+            labelKey = "diagramSet"
+    )
     @Valid
     private DiagramSet diagramSet;
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_DATA, position = 1)
+    @FormField(
+            labelKey = "processData",
+            afterElement = "diagramSet"
+    )
     @Valid
     protected ProcessData processData;
 
@@ -79,7 +89,6 @@ public class BPMNDiagram implements BPMNDefinition {
     private FontSet fontSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 5 )
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels

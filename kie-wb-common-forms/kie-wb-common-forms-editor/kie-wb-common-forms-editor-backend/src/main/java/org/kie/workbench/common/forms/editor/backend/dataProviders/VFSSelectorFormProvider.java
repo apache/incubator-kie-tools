@@ -26,9 +26,9 @@ import org.kie.workbench.common.forms.dynamic.model.config.SystemSelectorDataPro
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.editor.service.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.editor.service.VFSFormFinderService;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.EntityRelationField;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.EmbeddedFormField;
 
 public class VFSSelectorFormProvider implements SystemSelectorDataProvider {
 
@@ -44,7 +44,7 @@ public class VFSSelectorFormProvider implements SystemSelectorDataProvider {
     public SelectorData getSelectorData( FormRenderingContext context ) {
         Map<String, String> values = new TreeMap<>();
 
-        if ( context.getModel() instanceof EmbeddedFormField ) {
+        if ( context.getModel() instanceof EntityRelationField ) {
             FormEditorRenderingContext editorContext = (FormEditorRenderingContext) context;
 
             FieldDefinition field = (FieldDefinition) context.getModel();

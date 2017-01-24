@@ -21,8 +21,8 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

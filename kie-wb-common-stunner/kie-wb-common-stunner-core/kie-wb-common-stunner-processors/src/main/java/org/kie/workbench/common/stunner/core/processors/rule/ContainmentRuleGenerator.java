@@ -52,7 +52,7 @@ public class ContainmentRuleGenerator extends AbstractGenerator {
                                  final ProcessingEnvironment processingEnvironment) throws GenerationException {
         final Messager messager = processingEnvironment.getMessager();
         messager.printMessage(Diagnostic.Kind.NOTE,
-                              "Starting code generation for [" + className + "]");
+                              "Starting code adf for [" + className + "]");
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
         final String annotationName = MainProcessor.ANNOTATION_RULE_CAN_CONTAIN;

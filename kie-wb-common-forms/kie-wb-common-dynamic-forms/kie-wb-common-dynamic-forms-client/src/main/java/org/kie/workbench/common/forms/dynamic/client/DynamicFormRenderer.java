@@ -26,20 +26,18 @@ import org.jboss.errai.common.client.api.Assert;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormView;
-import org.kie.workbench.common.forms.dynamic.client.helper.MapModelBindingHelper;
-import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGenerator;
+import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGeneratorManager;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget.SubFormWidget;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
-import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
-import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget.SubFormWidget;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -64,13 +62,17 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
 
     private FormHandlerGeneratorManager formHandlerGenerator;
 
+    private DynamicFormModelGenerator dynamicFormModelGenerator;
+
     @Inject
     public DynamicFormRenderer( DynamicFormRendererView view,
                                 Caller<FormRenderingContextGeneratorService> transformerService,
-                                FormHandlerGeneratorManager formHandlerGenerator ) {
+                                FormHandlerGeneratorManager formHandlerGenerator,
+                                DynamicFormModelGenerator dynamicFormModelGenerator ) {
         this.view = view;
         this.transformerService = transformerService;
         this.formHandlerGenerator = formHandlerGenerator;
+        this.dynamicFormModelGenerator = dynamicFormModelGenerator;
     }
 
     @PostConstruct
@@ -83,16 +85,24 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
     }
 
     public void renderDefaultForm( final Object model, final Command callback ) {
-        transformerService.call( new RemoteCallback<FormRenderingContext>() {
-            @Override
-            public void callback( FormRenderingContext context ) {
-                context.setModel( model );
-                render( context );
-                if ( callback != null ) {
-                    callback.execute();
-                }
+        FormRenderingContext context = dynamicFormModelGenerator.getContextForModel( model );
+        if ( context != null ) {
+            render( context );
+            if ( callback != null ) {
+                callback.execute();
             }
-        } ).createContext( model );
+        } else {
+            transformerService.call( new RemoteCallback<FormRenderingContext>() {
+                @Override
+                public void callback( FormRenderingContext context ) {
+                    context.setModel( model );
+                    render( context );
+                    if ( callback != null ) {
+                        callback.execute();
+                    }
+                }
+            } ).createContext( model );
+        }
     }
 
     public void render ( FormRenderingContext context ) {

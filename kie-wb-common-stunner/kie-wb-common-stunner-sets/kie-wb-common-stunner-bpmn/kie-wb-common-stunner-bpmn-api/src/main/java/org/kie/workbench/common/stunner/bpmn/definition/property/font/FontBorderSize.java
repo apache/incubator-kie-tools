@@ -18,6 +18,9 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.font;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -33,6 +36,7 @@ import org.kie.workbench.common.stunner.core.definition.property.type.DoubleType
 @Portable
 @Bindable
 @Property
+@FieldDefinition
 public class FontBorderSize implements BPMNProperty {
 
     @Caption
@@ -42,7 +46,8 @@ public class FontBorderSize implements BPMNProperty {
     public static final transient String description = "The font border size";
 
     @ReadOnly
-    public static final Boolean readOnly = false;
+    @FieldReadOnly
+    private Boolean readOnly = false;
 
     @Optional
     public static final Boolean optional = false;
@@ -54,6 +59,7 @@ public class FontBorderSize implements BPMNProperty {
     public static final Double defaultValue = 0.5d;
 
     @Value
+    @FieldValue
     private Double value = defaultValue;
 
     public FontBorderSize() {

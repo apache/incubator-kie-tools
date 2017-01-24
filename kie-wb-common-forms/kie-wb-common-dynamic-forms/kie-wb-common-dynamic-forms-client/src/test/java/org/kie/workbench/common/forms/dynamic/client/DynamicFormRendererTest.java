@@ -22,11 +22,13 @@ import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.dynamic.client.helper.MapModelBindingHelper;
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGeneratorManager;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget.SubFormWidget;
+import org.kie.workbench.common.forms.dynamic.client.test.TestDynamicFormRenderer;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
 import org.kie.workbench.common.forms.dynamic.test.model.Employee;
@@ -94,7 +96,7 @@ public class DynamicFormRendererTest extends TestCase {
         FormHandlerGeneratorManager generatorManager = new FormHandlerGeneratorManager( context -> formHandler,
                                                                                         context -> formHandler );
 
-        renderer = new TestDynamicFormRenderer( view, transformer, generatorManager );
+        renderer = new TestDynamicFormRenderer( view, transformer, generatorManager, mock( DynamicFormModelGenerator.class ) );
         renderer.init();
         verify( view ).setPresenter( renderer );
         renderer.asWidget();

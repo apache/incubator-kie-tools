@@ -20,23 +20,23 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_CURRENCY;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_DISTRIBUTION_TYPE;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_QUANTITY;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_STANDARD_DEVIATION;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_TIME_UNIT;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_UNITCOST;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_WORKINGHOURS;
-
 @Portable
 @Bindable
 @PropertySet
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
+        startElement = "timeUnit",
+        policy = FieldPolicy.ONLY_MARKED
+)
 public class SimulationSet implements BPMNPropertySet {
 
     @Name
@@ -52,32 +52,52 @@ public class SimulationSet implements BPMNPropertySet {
     protected Mean mean;
 
     @Property
-    @FieldDef(label = FIELDDEF_TIME_UNIT, property = "value")
+    @FormField(
+            labelKey = "timeUnit"
+    )
     @Valid
     protected TimeUnit timeUnit;
 
     @Property
-    @FieldDef(label = FIELDDEF_STANDARD_DEVIATION, property = "value")
+    @FormField(
+            labelKey = "standardDeviation",
+            afterElement = "timeUnit"
+    )
     protected StandardDeviation standardDeviation;
 
     @Property
-    @FieldDef(label = FIELDDEF_DISTRIBUTION_TYPE, property = "value")
+    @FormField(
+            labelKey = "distributionType",
+            afterElement = "standardDeviation"
+    )
     protected DistributionType distributionType;
 
     @Property
-    @FieldDef(label = FIELDDEF_QUANTITY, property = "value")
+    @FormField(
+            labelKey = "quantity",
+            afterElement = "distributionType"
+    )
     protected Quantity quantity;
 
     @Property
-    @FieldDef(label = FIELDDEF_WORKINGHOURS, property = "value")
+    @FormField(
+            labelKey = "workingHours",
+            afterElement = "quantity"
+    )
     protected WorkingHours workingHours;
 
     @Property
-    @FieldDef(label = FIELDDEF_UNITCOST, property = "value")
+    @FormField(
+            labelKey = "unitCost",
+            afterElement = "workingHours"
+    )
     protected UnitCost unitCost;
 
     @Property
-    @FieldDef(label = FIELDDEF_CURRENCY, property = "value")
+    @FormField(
+            labelKey = "currency",
+            afterElement = "unitCost"
+    )
     protected Currency currency;
 
     public SimulationSet() {

@@ -21,7 +21,7 @@ import com.google.gwtmockito.GwtMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.FormGroupDisplayerView;
-import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.*;
@@ -32,7 +32,7 @@ public abstract class AbstractFormGroupDisplayerTest<D extends AbstractFormGroup
     protected Widget widget;
 
     @Mock
-    protected FieldDefinition fieldDefinition;
+    protected AbstractFieldDefinition fieldDefinition;
 
     protected D displayer;
 

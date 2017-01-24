@@ -18,36 +18,29 @@ package org.kie.workbench.common.stunner.bpmn.forms.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.AssigneeEditor;
-
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_DEFAULT_VALUE;
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_TYPE;
 
 @Portable
 @Bindable
-public class AssigneeEditorFieldDefinition extends FieldDefinition {
+public class AssigneeEditorFieldDefinition extends AbstractFieldDefinition<AssigneeEditorFieldType> {
 
-    public static final String CODE = "AssigneeEditor";
+    public static final AssigneeEditorFieldType FIELD_TYPE = new AssigneeEditorFieldType();
 
-    @FieldDef(label = FIELDDEF_DEFAULT_VALUE)
-    @AssigneeEditor
     private String defaultValue;
 
-    @FieldDef(label = FIELDDEF_TYPE)
-    @AssigneeEditor
     private AssigneeType type;
 
-    public AssigneeEditorFieldDefinition() {
-        super(CODE);
+    @Override
+    public AssigneeEditorFieldType getFieldType() {
+        return FIELD_TYPE;
     }
 
     public String getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue(final String defaultValue) {
+    public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
@@ -55,12 +48,12 @@ public class AssigneeEditorFieldDefinition extends FieldDefinition {
         return type;
     }
 
-    public void setType(final AssigneeType type) {
+    public void setType(AssigneeType type) {
         this.type = type;
     }
 
     @Override
-    protected void doCopyFrom(final FieldDefinition other) {
+    protected void doCopyFrom(FieldDefinition other) {
         if (other instanceof AssigneeEditorFieldDefinition) {
             this.setDefaultValue(((AssigneeEditorFieldDefinition) other).getDefaultValue());
             this.setType(((AssigneeEditorFieldDefinition) other).getType());

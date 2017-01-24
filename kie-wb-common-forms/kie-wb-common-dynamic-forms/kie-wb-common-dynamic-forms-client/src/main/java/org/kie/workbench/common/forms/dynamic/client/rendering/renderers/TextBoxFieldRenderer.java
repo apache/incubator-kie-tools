@@ -22,10 +22,10 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
-import org.kie.workbench.common.forms.model.impl.basic.textBox.TextBoxBase;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxBaseDefinition;
 
 @Dependent
-public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBase> {
+public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBaseDefinition> {
 
     private TextBox textBox = new TextBox();
 
@@ -40,7 +40,7 @@ public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBase> {
         textBox.setId( field.getId() );
         textBox.setPlaceholder( field.getPlaceHolder() );
         textBox.setMaxLength( field.getMaxLength() );
-        textBox.setEnabled( !field.getReadonly() );
+        textBox.setEnabled( !field.getReadOnly() );
     }
 
     @Override
@@ -55,7 +55,7 @@ public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBase> {
 
     @Override
     public String getSupportedCode() {
-        return TextBoxBase.CODE;
+        return TextBoxBaseDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

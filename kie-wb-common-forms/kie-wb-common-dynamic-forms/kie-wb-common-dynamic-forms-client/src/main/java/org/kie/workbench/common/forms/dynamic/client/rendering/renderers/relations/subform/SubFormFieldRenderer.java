@@ -28,7 +28,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget.SubFormWidget;
 import org.kie.workbench.common.forms.dynamic.client.resources.i18n.FormRenderingConstants;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
-import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 
 @Dependent
 public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition> {
@@ -82,7 +82,7 @@ public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition> 
 
     @Override
     public String getSupportedCode() {
-        return SubFormFieldDefinition.CODE;
+        return SubFormFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

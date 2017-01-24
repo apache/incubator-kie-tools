@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
-import org.kie.workbench.common.forms.model.impl.basic.checkBox.CheckBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
 
 @Dependent
 public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition> {
@@ -36,7 +36,7 @@ public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition
     @Override
     public void initInputWidget() {
         checkbox = new CheckBox( field.getLabel() );
-        checkbox.setEnabled( !field.getReadonly() || renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE ) );
+        checkbox.setEnabled( !field.getReadOnly() || renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE ) );
     }
 
     @Override
@@ -52,7 +52,7 @@ public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition
 
     @Override
     public String getSupportedCode() {
-        return CheckBoxFieldDefinition.CODE;
+        return CheckBoxFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override

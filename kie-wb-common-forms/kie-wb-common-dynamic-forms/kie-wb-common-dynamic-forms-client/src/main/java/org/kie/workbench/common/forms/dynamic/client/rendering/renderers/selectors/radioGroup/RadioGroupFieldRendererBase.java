@@ -17,9 +17,9 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.radioGroup;
 
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.SelectorFieldRenderer;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.SelectorOption;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.radioGroup.RadioGroupBase;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.RadioGroupBaseDefinition;
 
-public abstract class RadioGroupFieldRendererBase<F extends RadioGroupBase<O>, O extends SelectorOption<T>, T>
+public abstract class RadioGroupFieldRendererBase<F extends RadioGroupBaseDefinition<O>, O extends SelectorOption<T>, T>
         extends SelectorFieldRenderer<F, O, T> {
 }

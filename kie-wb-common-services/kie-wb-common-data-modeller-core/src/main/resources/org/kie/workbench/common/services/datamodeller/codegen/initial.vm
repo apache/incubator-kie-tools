@@ -1,5 +1,5 @@
 ##
-## POJOs generation main template.
+## POJOs adf main template.
 ##
 
 ## Iterate over the data model and generate the pojo for each data object

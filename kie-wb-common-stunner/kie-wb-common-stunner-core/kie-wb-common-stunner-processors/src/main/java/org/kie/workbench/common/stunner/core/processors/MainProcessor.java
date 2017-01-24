@@ -1083,7 +1083,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                                                                            MORPH_DEFINITION_CLASSNAME)[1];
                     String defaultType = processingContext.getMorphingAnnotations().getBaseDefaultTypes().get(baseType);
                     messager.printMessage(Diagnostic.Kind.NOTE,
-                                          "Starting MorphDefinition generation for class named " + classFQName);
+                                          "Starting MorphDefinition adf for class named " + classFQName);
                     final StringBuffer ruleClassCode = morphDefinitionGenerator.generate(packageName,
                                                                                          className,
                                                                                          baseType,
@@ -1110,7 +1110,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                                                                            MORPH_PROPERTY_DEFINITION_CLASSNAME)[1];
                     String defaultType = processingContext.getMorphingAnnotations().getBaseDefaultTypes().get(baseType);
                     messager.printMessage(Diagnostic.Kind.NOTE,
-                                          "Starting MorphPropertyDefinition generation for class named " + classFQName);
+                                          "Starting MorphPropertyDefinition adf for class named " + classFQName);
                     final StringBuffer ruleClassCode = morphPropertyDefinitionGenerator.generate(packageName,
                                                                                                  className,
                                                                                                  baseType,
@@ -1128,7 +1128,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 final String className = getSetClassPrefix() + MORPH_PROVIDER_CLASSNAME;
                 final String classFQName = packageName + "." + className;
                 messager.printMessage(Diagnostic.Kind.NOTE,
-                                      "Starting MorphDefinitionProvider generation for class named " + classFQName);
+                                      "Starting MorphDefinitionProvider adf for class named " + classFQName);
                 final StringBuffer ruleClassCode = morphDefinitionProviderGenerator.generate(packageName,
                                                                                              className,
                                                                                              generatedDefinitionClasses,
@@ -1164,7 +1164,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             final String className = getSetClassPrefix() + RULE_ADAPTER_CLASSNAME;
             final String classFQName = packageName + "." + className;
             messager.printMessage(Diagnostic.Kind.NOTE,
-                                  "Starting RuleAdapter generation for class named " + classFQName);
+                                  "Starting RuleAdapter adf for class named " + classFQName);
             final StringBuffer ruleClassCode = ruleAdapterGenerator.generate(packageName,
                                                                              className,
                                                                              processingContext.getDefinitionSet().getClassName(),
@@ -1190,7 +1190,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             final String className = getSetClassPrefix() + DEFINITIONSET_ADAPTER_CLASSNAME;
             final String classFQName = packageName + "." + className;
             messager.printMessage(Diagnostic.Kind.NOTE,
-                                  "Starting ErraiBinderAdapter generation named " + classFQName);
+                                  "Starting ErraiBinderAdapter adf named " + classFQName);
             final StringBuffer ruleClassCode = definitionSetAdapterGenerator.generate(packageName,
                                                                                       className,
                                                                                       processingContext.getDefSetAnnotations(),
@@ -1215,7 +1215,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             final String className = getSetClassPrefix() + DEFINITIONSET_PROXY_CLASSNAME;
             final String classFQName = packageName + "." + className;
             messager.printMessage(Diagnostic.Kind.NOTE,
-                                  "Starting DefinitionSetProxyAdapter generation for class named " + classFQName);
+                                  "Starting DefinitionSetProxyAdapter adf for class named " + classFQName);
             final StringBuffer ruleClassCode = definitionSetProxyGenerator.generate(packageName,
                                                                                     className,
                                                                                     processingContext.getDefinitionSet(),
@@ -1241,7 +1241,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             final String className = getSetClassPrefix() + PROPERTYSET_ADAPTER_CLASSNAME;
             final String classFQName = packageName + "." + className;
             messager.printMessage(Diagnostic.Kind.NOTE,
-                                  "Starting ErraiBinderAdapter generation named " + classFQName);
+                                  "Starting ErraiBinderAdapter adf named " + classFQName);
             final StringBuffer ruleClassCode = propertySetAdapterGenerator.generate(packageName,
                                                                                     className,
                                                                                     processingContext.getPropertySetAnnotations(),
@@ -1276,7 +1276,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 final String className = getSetClassPrefix() + DEFINITION_FACTORY_CLASSNAME;
                 final String classFQName = packageName + "." + className;
                 messager.printMessage(Diagnostic.Kind.NOTE,
-                                      "Starting ModelFactory generation for class named " + classFQName);
+                                      "Starting ModelFactory adf for class named " + classFQName);
                 final StringBuffer ruleClassCode = generatedDefinitionFactoryGenerator.generate(packageName,
                                                                                                 className,
                                                                                                 buildersMap,
@@ -1302,7 +1302,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             final String className = getSetClassPrefix() + DEFINITION_ADAPTER_CLASSNAME;
             final String classFQName = packageName + "." + className;
             messager.printMessage(Diagnostic.Kind.NOTE,
-                                  "Starting ErraiBinderAdapter generation named " + classFQName);
+                                  "Starting ErraiBinderAdapter adf named " + classFQName);
             final StringBuffer ruleClassCode = definitionAdapterGenerator.generate(packageName,
                                                                                    className,
                                                                                    processingContext,
@@ -1327,7 +1327,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             final String className = getSetClassPrefix() + PROPERTY_ADAPTER_CLASSNAME;
             final String classFQName = packageName + "." + className;
             messager.printMessage(Diagnostic.Kind.NOTE,
-                                  "Starting ErraiBinderAdapter generation named " + classFQName);
+                                  "Starting ErraiBinderAdapter adf named " + classFQName);
             final StringBuffer ruleClassCode = propertyAdapterGenerator.generate(packageName,
                                                                                  className,
                                                                                  processingContext.getPropertyAnnotations(),
@@ -1356,7 +1356,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 final String className = getSetClassPrefix() + SHAPE_FACTORY_CLASSNAME;
                 shapeFactoryClassname = packageName + "." + className;
                 messager.printMessage(Diagnostic.Kind.NOTE,
-                                      "Starting Shape Factory bean generation " +
+                                      "Starting Shape Factory bean adf " +
                                               "[" + shapeFactoryClassname + "]");
                 final StringBuffer sfClassCode = shapeFactoryGenerator.generate(packageName,
                                                                                 className,
@@ -1370,7 +1370,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 final String className2 = getSetClassPrefix() + BindableAdapterUtils.SHAPE_SET_SUFFIX;
                 final String classFQName2 = packageName2 + "." + className2;
                 messager.printMessage(Diagnostic.Kind.NOTE,
-                                      "Starting Shape Set bean generation " +
+                                      "Starting Shape Set bean adf " +
                                               "[" + classFQName2 + "]");
                 final String defSetClassName = processingContext.getDefinitionSet().getClassName();
                 final StringBuffer ssClassCode = shapeSetGenerator.generate(packageName2,

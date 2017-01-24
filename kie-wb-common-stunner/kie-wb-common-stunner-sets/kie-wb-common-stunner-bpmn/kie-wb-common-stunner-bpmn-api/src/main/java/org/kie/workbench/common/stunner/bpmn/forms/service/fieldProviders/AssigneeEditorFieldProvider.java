@@ -18,12 +18,23 @@ package org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders;
 
 import javax.enterprise.inject.Model;
 
-import org.kie.workbench.common.forms.model.FieldTypeInfo;
-import org.kie.workbench.common.forms.service.impl.fieldProviders.BasicTypeFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
+import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldDefinition;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldType;
 
 @Model
-public class AssigneeEditorFieldProvider extends BasicTypeFieldProvider<AssigneeEditorFieldDefinition> {
+public class AssigneeEditorFieldProvider extends BasicTypeFieldProvider<AssigneeEditorFieldType, AssigneeEditorFieldDefinition> {
+
+    @Override
+    public Class<AssigneeEditorFieldType> getFieldType() {
+        return AssigneeEditorFieldType.class;
+    }
+
+    @Override
+    public String getFieldTypeName() {
+        return AssigneeEditorFieldDefinition.FIELD_TYPE.getTypeName();
+    }
 
     @Override
     public int getPriority() {
@@ -36,13 +47,8 @@ public class AssigneeEditorFieldProvider extends BasicTypeFieldProvider<Assignee
     }
 
     @Override
-    public AssigneeEditorFieldDefinition createFieldByType(final FieldTypeInfo typeInfo) {
+    public AssigneeEditorFieldDefinition createFieldByType(FieldDataType typeInfo) {
         return getDefaultField();
-    }
-
-    @Override
-    public String getProviderCode() {
-        return AssigneeEditorFieldDefinition.CODE;
     }
 
     @Override

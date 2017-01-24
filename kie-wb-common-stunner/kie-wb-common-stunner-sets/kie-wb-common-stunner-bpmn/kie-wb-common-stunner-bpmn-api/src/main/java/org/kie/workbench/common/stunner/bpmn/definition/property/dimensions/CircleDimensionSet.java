@@ -18,26 +18,38 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.dimensions;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
-import org.kie.workbench.common.forms.metaModel.Slider;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_RADIUS;
-
 @Portable
 @Bindable
 @PropertySet
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties")
+)
 public class CircleDimensionSet implements BPMNPropertySet {
 
     @Name
     public static final transient String propertySetName = "Shape Dimensions";
 
     @Property
-    @FieldDef(label = FIELDDEF_RADIUS, property = "value")
-    @Slider(min = 25.0, max = 50.0, step = 1, precision = 0.0)
+    @FormField(
+            type = SliderFieldType.class,
+            labelKey = "radius",
+            settings = {
+                    @FieldParam(name = "min", value = "25.0"),
+                    @FieldParam(name = "max", value = "50.0"),
+                    @FieldParam(name = "step", value = "1.0"),
+                    @FieldParam(name = "precision", value = "0.0")
+            }
+    )
     protected Radius radius;
 
     public CircleDimensionSet() {

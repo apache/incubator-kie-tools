@@ -21,27 +21,33 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
-import org.kie.workbench.common.forms.metaModel.ListBox;
-import org.kie.workbench.common.forms.metaModel.SelectorDataProvider;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-import static org.kie.workbench.common.stunner.bpmn.util.FieldLabelConstants.FIELDDEF_DEFAULT_ROUTE;
-
 @Portable
 @Bindable
 @PropertySet
+@FormDefinition(
+        i18n = @I18nSettings(keyPreffix = "BPMNProperties")
+)
 public class ExclusiveGatewayExecutionSet implements BPMNPropertySet {
 
     @Name
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FieldDef(label = FIELDDEF_DEFAULT_ROUTE, property = "value")
-    @ListBox
+    @FormField(
+            type = ListBoxFieldType.class,
+            labelKey = "defaultRoute"
+
+    )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.CLIENT,
             className = "org.kie.workbench.common.stunner.bpmn.client.forms.fields.gateway.DefaultRouteFormProvider")

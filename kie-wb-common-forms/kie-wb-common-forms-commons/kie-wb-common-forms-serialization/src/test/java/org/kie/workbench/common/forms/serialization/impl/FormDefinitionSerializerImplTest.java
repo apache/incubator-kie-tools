@@ -20,14 +20,14 @@ import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.model.DefaultFieldTypeInfo;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.EnumListBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.test.TestFieldManager;
+import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.impl.basic.selectors.listBox.EnumListBoxFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.MultipleSubFormFieldDefinition;
-import org.kie.workbench.common.forms.model.impl.relations.SubFormFieldDefinition;
-import org.kie.workbench.common.forms.service.impl.fieldProviders.BasicTypeFieldProvider;
-import org.kie.workbench.common.forms.service.mock.TestFieldManager;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
@@ -57,11 +57,11 @@ public class FormDefinitionSerializerImplTest extends TestCase {
 
         for ( BasicTypeFieldProvider provider : fieldManager.getAllBasicTypeProviders() ) {
             for ( String type : provider.getSupportedTypes() ) {
-                FieldDefinition field = provider.getFieldByType( new DefaultFieldTypeInfo( type ) );
+                FieldDefinition field = provider.getFieldByType( new FieldDataType( type ) );
 
                 assertNotNull( field );
 
-                String fieldDescription = provider.getProviderCode() + "_" + type;
+                String fieldDescription = provider.getFieldTypeName() + "_" + type;
 
                 field.setName( fieldDescription );
                 field.setLabel( fieldDescription );

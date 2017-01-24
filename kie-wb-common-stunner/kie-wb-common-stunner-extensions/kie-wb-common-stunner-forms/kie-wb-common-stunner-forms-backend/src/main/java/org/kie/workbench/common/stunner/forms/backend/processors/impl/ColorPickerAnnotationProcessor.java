@@ -25,10 +25,11 @@ import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.
 import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
 import org.kie.workbench.common.stunner.forms.meta.definition.ColorPicker;
 import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldDefinition;
+import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 import org.kie.workbench.common.stunner.forms.service.fieldProviders.ColorPickerFieldProvider;
 
 @Dependent
-public class ColorPickerAnnotationProcessor extends AbstractFieldAnnotationProcessor<ColorPickerFieldDefinition, ColorPickerFieldProvider> {
+public class ColorPickerAnnotationProcessor extends AbstractFieldAnnotationProcessor<ColorPickerFieldType, ColorPickerFieldDefinition, ColorPickerFieldProvider> {
 
     @Inject
     public ColorPickerAnnotationProcessor(ColorPickerFieldProvider fieldProvider) {

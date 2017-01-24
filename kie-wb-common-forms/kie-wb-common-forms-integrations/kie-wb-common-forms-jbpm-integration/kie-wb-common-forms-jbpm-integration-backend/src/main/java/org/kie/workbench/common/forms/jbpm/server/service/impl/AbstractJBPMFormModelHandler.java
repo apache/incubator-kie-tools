@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
-import org.kie.workbench.common.forms.model.DefaultFieldTypeInfo;
+import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.service.FieldManager;
 import org.kie.workbench.common.forms.service.impl.AbstractFormModelHandler;
@@ -44,7 +44,7 @@ public abstract class AbstractJBPMFormModelHandler<M extends JBPMFormModel> exte
         List<FieldDefinition> fields = new ArrayList<>();
 
         formModel.getVariables().forEach( variable -> {
-            FieldDefinition field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( variable.getType() ) );
+            FieldDefinition field = fieldManager.getDefinitionByDataType( new FieldDataType( variable.getType() ) );
 
             if ( field != null ) {
                 field.setName( variable.getName() );
@@ -61,7 +61,7 @@ public abstract class AbstractJBPMFormModelHandler<M extends JBPMFormModel> exte
     protected FieldDefinition doCreateFieldDefinition( String fieldName ) {
 
         for ( JBPMVariable variable : formModel.getVariables() ) {
-            FieldDefinition field = fieldManager.getDefinitionByValueType( new DefaultFieldTypeInfo( variable.getType() ) );
+            FieldDefinition field = fieldManager.getDefinitionByDataType( new FieldDataType( variable.getType() ) );
 
             if ( field != null ) {
                 field.setName( variable.getName() );

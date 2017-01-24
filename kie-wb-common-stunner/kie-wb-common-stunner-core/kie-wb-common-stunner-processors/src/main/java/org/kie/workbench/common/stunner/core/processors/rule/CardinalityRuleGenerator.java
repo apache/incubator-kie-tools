@@ -51,7 +51,7 @@ public class CardinalityRuleGenerator extends AbstractGenerator {
                                  final ProcessingEnvironment processingEnvironment) throws GenerationException {
         final Messager messager = processingEnvironment.getMessager();
         messager.printMessage(Diagnostic.Kind.NOTE,
-                              "Starting code generation for [" + className + "]");
+                              "Starting code adf for [" + className + "]");
         final Elements elementUtils = processingEnvironment.getElementUtils();
         //Extract required information
         final TypeElement classElement = (TypeElement) element;

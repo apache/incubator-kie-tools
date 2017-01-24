@@ -37,7 +37,7 @@ public class AssignmentsEditorFieldRenderer extends FieldRenderer<AssignmentsEdi
 
     @Override
     public String getName() {
-        return AssignmentsEditorFieldDefinition.CODE;
+        return AssignmentsEditorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override
@@ -67,6 +67,6 @@ public class AssignmentsEditorFieldRenderer extends FieldRenderer<AssignmentsEdi
 
     @Override
     public String getSupportedCode() {
-        return AssignmentsEditorFieldDefinition.CODE;
+        return AssignmentsEditorFieldDefinition.FIELD_TYPE.getTypeName();
     }
 }

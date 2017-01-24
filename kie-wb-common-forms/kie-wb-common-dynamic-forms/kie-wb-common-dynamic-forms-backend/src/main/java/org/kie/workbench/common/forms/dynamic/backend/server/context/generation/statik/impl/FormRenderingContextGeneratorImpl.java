@@ -37,8 +37,9 @@ import org.kie.workbench.common.forms.dynamic.service.context.generation.FormRen
 import org.kie.workbench.common.forms.dynamic.service.shared.StaticContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
-import org.kie.workbench.common.forms.model.DefaultFieldTypeInfo;
+import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.FieldType;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.service.FieldManager;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.fieldInitializers.FieldInitializer;
@@ -57,12 +58,12 @@ public class FormRenderingContextGeneratorImpl implements FormRenderingContextGe
 
     private FormLayoutTemplateGenerator layoutGenerator;
 
-    private List<FieldAnnotationProcessor<? extends FieldDefinition>> processors = new ArrayList<>();
+    private List<FieldAnnotationProcessor> processors = new ArrayList<>();
 
     private List<FieldInitializer<? extends FieldDefinition>> fieldInitializers = new ArrayList<>();
 
     @Inject
-    public FormRenderingContextGeneratorImpl( Instance<FieldAnnotationProcessor<? extends FieldDefinition>> installedProcessors,
+    public FormRenderingContextGeneratorImpl( Instance<FieldAnnotationProcessor<? extends FieldType, ? extends FieldDefinition>> installedProcessors,
                                               Instance<FieldInitializer<? extends FieldDefinition>> installedInitializers,
                                               @Dynamic FormLayoutTemplateGenerator layoutGenerator,
                                               FieldManager fieldManager ) {
@@ -120,7 +121,7 @@ public class FormRenderingContextGeneratorImpl implements FormRenderingContextGe
             }
 
             if ( field == null ) {
-                field = fieldManager.getDefinitionByValueType( setting.getTypeInfo() );
+                field = fieldManager.getDefinitionByDataType( setting.getTypeInfo() );
                 if ( field != null ) {
                     field.setId( setting.getFieldName() );
                     field.setName( setting.getFieldName() );
@@ -237,7 +238,7 @@ public class FormRenderingContextGeneratorImpl implements FormRenderingContextGe
                     }
 
                     if ( fieldClassName != null ) {
-                        FieldSetting setting = new FieldSetting( fieldName, new DefaultFieldTypeInfo( fieldClassName, isCollection, isEnunm ), annotation, annotations );
+                        FieldSetting setting = new FieldSetting( fieldName, new FieldDataType( fieldClassName, isCollection, isEnunm ), annotation, annotations );
                         settings.add( setting );
                     }
                 }

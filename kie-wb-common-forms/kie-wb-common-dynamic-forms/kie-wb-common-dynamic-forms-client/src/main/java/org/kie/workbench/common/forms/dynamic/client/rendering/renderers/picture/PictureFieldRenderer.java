@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.picture.PictureInput;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
-import org.kie.workbench.common.forms.model.impl.basic.image.PictureFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.image.definition.PictureFieldDefinition;
 
 @Dependent
 public class PictureFieldRenderer extends FieldRenderer<PictureFieldDefinition> {
@@ -37,13 +37,13 @@ public class PictureFieldRenderer extends FieldRenderer<PictureFieldDefinition> 
 
     @Override
     public String getName() {
-        return PictureFieldDefinition.CODE;
+        return PictureFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override
     public void initInputWidget() {
         pictureInput.init( field.getSize().getWidth(), field.getSize().getHeight() );
-        pictureInput.setReadOnly( field.getReadonly() || renderingContext.getRenderMode().equals( RenderMode.PRETTY_MODE ) );
+        pictureInput.setReadOnly( field.getReadOnly() || renderingContext.getRenderMode().equals( RenderMode.PRETTY_MODE ) );
     }
 
     @Override
@@ -59,7 +59,7 @@ public class PictureFieldRenderer extends FieldRenderer<PictureFieldDefinition> 
 
     @Override
     public String getSupportedCode() {
-        return PictureFieldDefinition.CODE;
+        return PictureFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override
