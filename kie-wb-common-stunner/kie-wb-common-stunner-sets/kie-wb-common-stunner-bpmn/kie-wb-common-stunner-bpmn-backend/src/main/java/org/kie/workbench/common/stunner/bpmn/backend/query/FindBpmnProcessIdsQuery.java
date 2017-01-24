@@ -67,24 +67,28 @@ public class FindBpmnProcessIdsQuery extends FindResourcesQuery implements Named
 
     @Override
     public void validateTerms(Set<ValueIndexTerm> queryTerms) throws IllegalArgumentException {
-        this.checkInvalidAndRequiredTerms(queryTerms, NAME, new String[]{ValueResourceIndexTerm.class.getSimpleName()}, new Predicate[]{(t) -> {
-            if (!(t instanceof ValueResourceIndexTerm)) {
-                return false;
-            } else {
-                return (((ValueResourceIndexTerm) t).getTerm().equals(ResourceType.BPMN2.toString()));
-            }
-        }});
-        this.checkTermsSize(1, queryTerms);
+        this.checkInvalidAndRequiredTerms(queryTerms,
+                                          NAME,
+                                          new String[]{ValueResourceIndexTerm.class.getSimpleName()},
+                                          new Predicate[]{t -> {
+                                              if (!(t instanceof ValueResourceIndexTerm)) {
+                                                  return false;
+                                              } else {
+                                                  return ((ValueResourceIndexTerm) t).getTerm().equals(ResourceType.BPMN2.toString());
+                                              }
+                                          }});
+        this.checkTermsSize(1,
+                            queryTerms);
     }
 
     public static class BpmnProcessIdsResponseBuilder implements ResponseBuilder {
 
         private IOService ioService;
 
-        public BpmnProcessIdsResponseBuilder(){
+        public BpmnProcessIdsResponseBuilder() {
         }
 
-        public BpmnProcessIdsResponseBuilder(IOService ioService){
+        public BpmnProcessIdsResponseBuilder(IOService ioService) {
             this.ioService = ioService;
         }
 
@@ -117,7 +121,8 @@ public class FindBpmnProcessIdsQuery extends FindResourcesQuery implements Named
                         String bpmnProcessId = (String) property.getValue();
                         final Path path = Paths.convert(ioService.get(URI.create(kObject.getKey())));
                         Map<String, Path> map = new HashMap<String, Path>();
-                        map.put(bpmnProcessId, path);
+                        map.put(bpmnProcessId,
+                                path);
                         RefactoringMapPageRow row = new RefactoringMapPageRow();
                         row.setValue(map);
                         result.add(row);

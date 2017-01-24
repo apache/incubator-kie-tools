@@ -101,7 +101,8 @@ public class BpmnFileIndexerTest extends BaseIndexingTest<BPMNDefinitionSetResou
                 Path path = basePath.resolve(bpmnFile);
                 pathList.add(path);
                 String bpmnStr = loadText(bpmnFile);
-                ioService().write(path, bpmnStr);
+                ioService().write(path,
+                                  bpmnStr);
             }
         }
         Path[] paths = pathList.toArray(new Path[pathList.size()]);
@@ -110,16 +111,19 @@ public class BpmnFileIndexerTest extends BaseIndexingTest<BPMNDefinitionSetResou
 
         {
             final RefactoringPageRequest request = new RefactoringPageRequest(FindResourcesQuery.NAME,
-                    new HashSet<ValueIndexTerm>() {{
-                        add(new ValueResourceIndexTerm("*", ResourceType.BPMN2, ValueIndexTerm.TermSearchType.WILDCARD));
-                    }},
-                    0,
-                    10);
+                                                                              new HashSet<ValueIndexTerm>() {{
+                                                                                  add(new ValueResourceIndexTerm("*",
+                                                                                                                 ResourceType.BPMN2,
+                                                                                                                 ValueIndexTerm.TermSearchType.WILDCARD));
+                                                                              }},
+                                                                              0,
+                                                                              10);
 
             try {
                 final PageResponse<RefactoringPageRow> response = service.query(request);
                 assertNotNull(response);
-                assertEquals(paths.length, response.getPageRowList().size());
+                assertEquals(paths.length,
+                             response.getPageRowList().size());
             } catch (IllegalArgumentException e) {
                 fail("Exception thrown: " + e.getMessage());
             }
@@ -127,14 +131,18 @@ public class BpmnFileIndexerTest extends BaseIndexingTest<BPMNDefinitionSetResou
 
         {
             QueryOperationRequest request = QueryOperationRequest
-                    .referencesSharedPart("*", PartType.RULEFLOW_GROUP, ValueIndexTerm.TermSearchType.WILDCARD)
+                    .referencesSharedPart("*",
+                                          PartType.RULEFLOW_GROUP,
+                                          ValueIndexTerm.TermSearchType.WILDCARD)
                     .inAllProjects().onAllBranches();
 
             try {
                 final List<RefactoringPageRow> response = service.queryToList(request);
                 assertNotNull(response);
-                assertEquals(1, response.size());
-                assertResponseContains(response, paths[4]);
+                assertEquals(1,
+                             response.size());
+                assertResponseContains(response,
+                                       paths[4]);
             } catch (IllegalArgumentException e) {
                 fail("Exception thrown: " + e.getMessage());
             }
@@ -142,14 +150,17 @@ public class BpmnFileIndexerTest extends BaseIndexingTest<BPMNDefinitionSetResou
 
         {
             QueryOperationRequest request = QueryOperationRequest
-                    .referencesSharedPart("MySignal", PartType.SIGNAL)
+                    .referencesSharedPart("MySignal",
+                                          PartType.SIGNAL)
                     .inAllProjects().onAllBranches();
 
             try {
                 final List<RefactoringPageRow> response = service.queryToList(request);
                 assertNotNull(response);
-                assertEquals(1, response.size());
-                assertResponseContains(response, paths[5]);
+                assertEquals(1,
+                             response.size());
+                assertResponseContains(response,
+                                       paths[5]);
             } catch (IllegalArgumentException e) {
                 fail("Exception thrown: " + e.getMessage());
             }
@@ -157,29 +168,36 @@ public class BpmnFileIndexerTest extends BaseIndexingTest<BPMNDefinitionSetResou
 
         {
             QueryOperationRequest request = QueryOperationRequest
-                    .referencesSharedPart("BrokenSignal", PartType.SIGNAL)
+                    .referencesSharedPart("BrokenSignal",
+                                          PartType.SIGNAL)
                     .inAllProjects().onAllBranches();
 
             try {
                 final List<RefactoringPageRow> response = service.queryToList(request);
                 assertNotNull(response);
-                assertEquals(1, response.size());
-                assertResponseContains(response, paths[6]);
+                assertEquals(1,
+                             response.size());
+                assertResponseContains(response,
+                                       paths[6]);
             } catch (IllegalArgumentException e) {
                 fail("Exception thrown: " + e.getMessage());
             }
         }
         {
             QueryOperationRequest request = QueryOperationRequest
-                    .referencesSharedPart("name", PartType.GLOBAL)
+                    .referencesSharedPart("name",
+                                          PartType.GLOBAL)
                     .inAllProjects().onAllBranches();
 
             try {
                 final List<RefactoringPageRow> response = service.queryToList(request);
                 assertNotNull(response);
-                assertEquals(2, response.size());
-                assertResponseContains(response, paths[5]);
-                assertResponseContains(response, paths[6]);
+                assertEquals(2,
+                             response.size());
+                assertResponseContains(response,
+                                       paths[5]);
+                assertResponseContains(response,
+                                       paths[6]);
             } catch (IllegalArgumentException e) {
                 fail("Exception thrown: " + e.getMessage());
             }
@@ -187,14 +205,17 @@ public class BpmnFileIndexerTest extends BaseIndexingTest<BPMNDefinitionSetResou
         {
 
             final Set<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>() {{
-                add(new ValueResourceIndexTerm("*", ResourceType.BPMN2, ValueIndexTerm.TermSearchType.WILDCARD));
+                add(new ValueResourceIndexTerm("*",
+                                               ResourceType.BPMN2,
+                                               ValueIndexTerm.TermSearchType.WILDCARD));
             }};
             try {
                 List<RefactoringPageRow> response = service.query(
                         FindBpmnProcessIdsQuery.NAME,
                         queryTerms);
                 assertNotNull(response);
-                assertEquals(paths.length, response.size());
+                assertEquals(paths.length,
+                             response.size());
 
                 for (String expectedId : PROCESS_IDS) {
                     boolean foundId = false;

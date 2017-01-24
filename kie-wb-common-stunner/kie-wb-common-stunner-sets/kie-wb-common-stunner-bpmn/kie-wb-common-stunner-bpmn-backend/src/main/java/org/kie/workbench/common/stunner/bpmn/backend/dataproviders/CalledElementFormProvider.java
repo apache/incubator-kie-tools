@@ -49,12 +49,15 @@ public class CalledElementFormProvider implements SelectorDataProvider {
 
     @Override
     public SelectorData getSelectorData(FormRenderingContext context) {
-        return new SelectorData(getBusinessProcessIDs(), null);
+        return new SelectorData(getBusinessProcessIDs(),
+                                null);
     }
 
     public Map<Object, String> getBusinessProcessIDs() {
         final Set<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>() {{
-            add(new ValueResourceIndexTerm("*", ResourceType.BPMN2, ValueIndexTerm.TermSearchType.WILDCARD));
+            add(new ValueResourceIndexTerm("*",
+                                           ResourceType.BPMN2,
+                                           ValueIndexTerm.TermSearchType.WILDCARD));
         }};
         List<RefactoringPageRow> results = queryService.query(
                 FindBpmnProcessIdsQuery.NAME,
@@ -65,7 +68,8 @@ public class CalledElementFormProvider implements SelectorDataProvider {
         for (RefactoringPageRow row : results) {
             Map<String, Path> mapRow = (Map<String, Path>) row.getValue();
             for (String rKey : mapRow.keySet()) {
-                businessProcessIDs.put(rKey, rKey);
+                businessProcessIDs.put(rKey,
+                                       rKey);
             }
         }
 

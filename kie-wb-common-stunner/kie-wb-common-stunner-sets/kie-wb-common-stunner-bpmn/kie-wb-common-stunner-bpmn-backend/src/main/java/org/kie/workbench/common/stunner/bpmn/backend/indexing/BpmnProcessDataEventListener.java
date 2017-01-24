@@ -52,7 +52,8 @@ import org.slf4j.LoggerFactory;
  */
 public class BpmnProcessDataEventListener
         extends ResourceReferenceCollector
-        implements ProcessDataEventListener, Serializable
+        implements ProcessDataEventListener,
+                   Serializable
 
 {
 
@@ -86,39 +87,49 @@ public class BpmnProcessDataEventListener
             RuleSetNode ruleSetNode = (RuleSetNode) node;
             String ruleFlowGroup = ruleSetNode.getRuleFlowGroup();
             if (ruleFlowGroup != null) {
-                addSharedReference(ruleFlowGroup, PartType.RULEFLOW_GROUP);
+                addSharedReference(ruleFlowGroup,
+                                   PartType.RULEFLOW_GROUP);
             }
         } else if (node instanceof WorkItemNode) {
             String taskName = ((WorkItemNode) node).getWork().getName();
-            addSharedReference(taskName, PartType.TASK_NAME);
+            addSharedReference(taskName,
+                               PartType.TASK_NAME);
         } else if (node instanceof SubProcessNode) {
             SubProcessNode subProcess = (SubProcessNode) node;
 
             String processName = subProcess.getProcessName();
             if (!StringUtils.isEmpty(processName)) {
-                addResourceReference(processName, ResourceType.BPMN2_NAME);
+                addResourceReference(processName,
+                                     ResourceType.BPMN2_NAME);
             }
             String processId = subProcess.getProcessId();
             if (!StringUtils.isEmpty(processId)) {
-                addResourceReference(processId, ResourceType.BPMN2);
+                addResourceReference(processId,
+                                     ResourceType.BPMN2);
             }
         }
     }
 
     @Override
     public void onProcessAdded(Process process) {
-        logger.debug("Added process with id {} and name {}", process.getId(), process.getName());
+        logger.debug("Added process with id {} and name {}",
+                     process.getId(),
+                     process.getName());
         this.process = process;
-        resource = addResource(process.getId(), ResourceType.BPMN2);
-        addResource(process.getName(), ResourceType.BPMN2_NAME);
+        resource = addResource(process.getId(),
+                               ResourceType.BPMN2);
+        addResource(process.getName(),
+                    ResourceType.BPMN2_NAME);
 
         //add process descriptor as process meta data
-        process.getMetaData().put(NAME, this);
+        process.getMetaData().put(NAME,
+                                  this);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onMetaDataAdded(String name, Object data) {
+    public void onMetaDataAdded(String name,
+                                Object data) {
         if (name.equals("Variable")) {
             if (variables == null) {
                 variables = new ArrayList<>();
@@ -127,7 +138,7 @@ public class BpmnProcessDataEventListener
         } else if ("ItemDefinitions".equals(name)) {
             itemDefinitions = (Map<String, ItemDefinition>) data;
         } else if ("signalNames".equals(name)) {
-            signals = ((Set<String>) data);
+            signals = (Set<String>) data;
         } else if ("Messages".equals(name)) {
             Map<String, Message> builderMessagesMap = (Map<String, Message>) data;
             messages = builderMessagesMap.keySet();
@@ -137,6 +148,18 @@ public class BpmnProcessDataEventListener
     @Override
     public void onComplete(Process process) {
         // process item definitions
+        visitItemDefinitions();
+
+        // process globals
+        Map<String, String> globals = ((RuleFlowProcess) process).getGlobals();
+        visitGlobals(globals);
+
+        // process imports
+        Set<String> imports = ((RuleFlowProcess) process).getImports();
+        visitImports(imports);
+    }
+
+    private void visitItemDefinitions() {
         if (itemDefinitions != null) {
             for (ItemDefinition item : itemDefinitions.values()) {
                 String structureRef = item.getStructureRef();
@@ -144,23 +167,6 @@ public class BpmnProcessDataEventListener
                     getReferencedClasses().add(structureRef);
                 } else {
                     getUnqualifiedClasses().add(structureRef);
-                }
-            }
-        }
-
-        // process globals
-        Map<String, String> globals = ((RuleFlowProcess) process).getGlobals();
-        visitGlobals(globals);
-
-        { // process imports
-            Set<String> imports = ((RuleFlowProcess) process).getImports();
-            if (imports != null) {
-                for (String type : imports) {
-                    if (type.contains(".")) {
-                        getReferencedClasses().add(type);
-                    } else {
-                        getUnqualifiedClasses().add(type);
-                    }
                 }
             }
         }
@@ -179,7 +185,20 @@ public class BpmnProcessDataEventListener
                 }
             }
             for (String globalName : globalNames) {
-                addSharedReference(globalName, PartType.GLOBAL);
+                addSharedReference(globalName,
+                                   PartType.GLOBAL);
+            }
+        }
+    }
+
+    private void visitImports(Set<String> imports) {
+        if (imports != null) {
+            for (String type : imports) {
+                if (type.contains(".")) {
+                    getReferencedClasses().add(type);
+                } else {
+                    getUnqualifiedClasses().add(type);
+                }
             }
         }
     }
@@ -232,7 +251,8 @@ public class BpmnProcessDataEventListener
                     type = itemDef.getStructureRef();
                 }
 
-                resource.addPart(data.getName(), PartType.VARIABLE);
+                resource.addPart(data.getName(),
+                                 PartType.VARIABLE);
                 if (type.contains(".")) {
                     getReferencedClasses().add(type);
                 } else {
@@ -253,7 +273,8 @@ public class BpmnProcessDataEventListener
         if (functionImports != null) {
             for (String functionImport : functionImports) {
                 if (!functionImport.endsWith("*")) {
-                    addResourceReference(functionImport, ResourceType.FUNCTION);
+                    addResourceReference(functionImport,
+                                         ResourceType.FUNCTION);
                 }
             }
         }
@@ -262,7 +283,8 @@ public class BpmnProcessDataEventListener
     private void visitSignals(Collection<String> signals) {
         if (signals != null) {
             for (String signal : signals) {
-                addSharedReference(signal, PartType.SIGNAL);
+                addSharedReference(signal,
+                                   PartType.SIGNAL);
             }
         }
     }
@@ -289,7 +311,8 @@ public class BpmnProcessDataEventListener
             }
         }
         for (String className : getUnqualifiedClasses()) {
-            logger.warn("Unable to resolve unqualified class name, adding to list of classes: '{}'", className);
+            logger.warn("Unable to resolve unqualified class name, adding to list of classes: '{}'",
+                        className);
             getReferencedClasses().add(className);
         }
     }

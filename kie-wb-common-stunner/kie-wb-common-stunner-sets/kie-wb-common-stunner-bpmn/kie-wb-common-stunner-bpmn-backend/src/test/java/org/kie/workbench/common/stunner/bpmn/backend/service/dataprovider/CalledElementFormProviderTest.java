@@ -65,27 +65,34 @@ public class CalledElementFormProviderTest {
         List<RefactoringPageRow> results = new ArrayList<RefactoringPageRow>();
         RefactoringMapPageRow refactoringMapPageRow = new RefactoringMapPageRow();
         Map<String, Path> map = new HashMap<String, Path>();
-        map.put(ID1, path1);
-        map.put(ID2, path2);
+        map.put(ID1,
+                path1);
+        map.put(ID2,
+                path2);
         refactoringMapPageRow.setValue(map);
         results.add(refactoringMapPageRow);
-        when(queryService.query(anyString(), anyObject())).thenReturn(results);
+        when(queryService.query(anyString(),
+                                anyObject())).thenReturn(results);
     }
 
     @Test
     public void getBusinessProcessIDsTest() {
         Map<Object, String> results = calledElementFormProvider.getBusinessProcessIDs();
-        assertEquals(results.size(), 2);
+        assertEquals(results.size(),
+                     2);
         assertTrue(results.keySet().contains(ID1));
         assertTrue(results.keySet().contains(ID2));
-        assertEquals(results.get(ID1), ID1);
-        assertEquals(results.get(ID1), ID1);
+        assertEquals(results.get(ID1),
+                     ID1);
+        assertEquals(results.get(ID1),
+                     ID1);
     }
 
     @Test
     public void getSelectorDataTest() {
         SelectorData selectorData = calledElementFormProvider.getSelectorData(context);
 
-        assertEquals(selectorData.getValues().size(), 2);
+        assertEquals(selectorData.getValues().size(),
+                     2);
     }
 }
