@@ -75,8 +75,22 @@ public class ActionInsertFactColumnConverter extends BaseColumnConverterImpl {
     @Override
     public List<GridColumn.HeaderMetaData> makeHeaderMetaData( final BaseColumn column ) {
         return new ArrayList<GridColumn.HeaderMetaData>() {{
-            add( new BaseHeaderMetaData( column.getHeader(),
-                                         ActionCol52.class.getName() ) );
+            if ( column instanceof ActionInsertFactCol52 ) {
+                ActionInsertFactCol52 actionInsertFactColumn = ( ActionInsertFactCol52 ) column;
+                StringBuilder headerFirstRow = new StringBuilder();
+                if ( actionInsertFactColumn.getBoundName() != null && !actionInsertFactColumn.getBoundName().isEmpty() ) {
+                    headerFirstRow.append( actionInsertFactColumn.getBoundName() )
+                                  .append( " : " );
+                }
+                headerFirstRow.append( actionInsertFactColumn.getFactType() );
+                add( new BaseHeaderMetaData( headerFirstRow.toString(),
+                                             ActionCol52.class.getName() ) );
+                add( new BaseHeaderMetaData( column.getHeader(),
+                                             headerFirstRow.toString() ) );
+            } else {
+                add( new BaseHeaderMetaData( column.getHeader(),
+                                             ActionCol52.class.getName() ) );
+            }
         }};
     }
 

@@ -71,7 +71,15 @@ public class BRLActionVariableColumnConverter extends BaseColumnConverterImpl {
     public List<GridColumn.HeaderMetaData> makeHeaderMetaData( final BaseColumn column ) {
         return new ArrayList<GridColumn.HeaderMetaData>() {{
             add( new BaseHeaderMetaData( column.getHeader(),
-                                         ActionCol52.class.getName() + ":" + model.getExpandedColumns().indexOf( column ) ) );
+                                         ActionCol52.class.getName() ) );
+            if ( column instanceof BRLActionVariableColumn ) {
+                BRLActionVariableColumn brlActionColumn = ( BRLActionVariableColumn ) column;
+                if ( brlActionColumn.getVarName() != null && ! brlActionColumn.getVarName().isEmpty() ) {
+                    add( new BaseHeaderMetaData( brlActionColumn.getVarName(),
+                                                 column.getHeader() )
+                    );
+                }
+            }
         }};
     }
 

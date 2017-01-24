@@ -75,8 +75,18 @@ public class ActionSetFieldColumnConverter extends BaseColumnConverterImpl {
     @Override
     public List<GridColumn.HeaderMetaData> makeHeaderMetaData( final BaseColumn column ) {
         return new ArrayList<GridColumn.HeaderMetaData>() {{
-            add( new BaseHeaderMetaData( column.getHeader(),
-                                         ActionCol52.class.getName() ) );
+            if ( column instanceof ActionSetFieldCol52 ) {
+                ActionSetFieldCol52 actionSetFieldColumn = ( ActionSetFieldCol52 ) column;
+                if ( actionSetFieldColumn.getBoundName() != null && !actionSetFieldColumn.getBoundName().isEmpty() ) {
+                    add( new BaseHeaderMetaData( actionSetFieldColumn.getBoundName(),
+                                                 ActionCol52.class.getName() ) );
+                    add( new BaseHeaderMetaData( column.getHeader(),
+                                                 actionSetFieldColumn.getBoundName() ) );
+                }
+            } else {
+                add( new BaseHeaderMetaData( column.getHeader(),
+                                             ActionCol52.class.getName() ) );
+            }
         }};
     }
 

@@ -98,7 +98,7 @@ public class ConditionColumnConverter extends BaseColumnConverterImpl {
         final String conditionHeader = getConditionHeader( column );
         return new ArrayList<GridColumn.HeaderMetaData>() {{
             add( new BaseHeaderMetaData( patternHeader,
-                                         Pattern52.class.getName() ) );
+                                         ConditionCol52.class.getName() ) );
             add( new BaseHeaderMetaData( conditionHeader,
                                          patternHeader ) );
         }};

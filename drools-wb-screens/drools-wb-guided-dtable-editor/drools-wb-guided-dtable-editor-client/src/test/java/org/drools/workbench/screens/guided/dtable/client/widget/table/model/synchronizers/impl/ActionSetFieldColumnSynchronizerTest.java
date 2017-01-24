@@ -296,10 +296,14 @@ public class ActionSetFieldColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().size() );
         final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get( 3 );
         final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get( 4 );
-        assertEquals( "age",
+        assertEquals( "$a",
                       uiModelColumn1_1.getHeaderMetaData().get( 0 ).getTitle() );
-        assertEquals( "name",
+        assertEquals( "age",
+                      uiModelColumn1_1.getHeaderMetaData().get( 1 ).getTitle() );
+        assertEquals( "$a",
                       uiModelColumn2_1.getHeaderMetaData().get( 0 ).getTitle() );
+        assertEquals( "name",
+                      uiModelColumn2_1.getHeaderMetaData().get( 1 ).getTitle() );
         assertTrue( uiModelColumn1_1 instanceof IntegerUiColumn );
         assertTrue( uiModelColumn2_1 instanceof StringUiColumn );
         assertEquals( 3,
@@ -329,10 +333,14 @@ public class ActionSetFieldColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().size() );
         final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get( 3 );
         final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get( 4 );
-        assertEquals( "name",
+        assertEquals( "$a",
                       uiModelColumn1_2.getHeaderMetaData().get( 0 ).getTitle() );
-        assertEquals( "age",
+        assertEquals( "name",
+                      uiModelColumn1_2.getHeaderMetaData().get( 1 ).getTitle() );
+        assertEquals( "$a",
                       uiModelColumn2_2.getHeaderMetaData().get( 0 ).getTitle() );
+        assertEquals( "age",
+                      uiModelColumn2_2.getHeaderMetaData().get( 1 ).getTitle() );
         assertTrue( uiModelColumn1_2 instanceof StringUiColumn );
         assertTrue( uiModelColumn2_2 instanceof IntegerUiColumn );
         assertEquals( 4,
@@ -396,10 +404,14 @@ public class ActionSetFieldColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().size() );
         final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get( 3 );
         final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get( 4 );
-        assertEquals( "age",
+        assertEquals( "$a",
                       uiModelColumn1_1.getHeaderMetaData().get( 0 ).getTitle() );
-        assertEquals( "name",
+        assertEquals( "age",
+                      uiModelColumn1_1.getHeaderMetaData().get( 1 ).getTitle() );
+        assertEquals( "$a",
                       uiModelColumn2_1.getHeaderMetaData().get( 0 ).getTitle() );
+        assertEquals( "name",
+                      uiModelColumn2_1.getHeaderMetaData().get( 1 ).getTitle() );
         assertTrue( uiModelColumn1_1 instanceof IntegerUiColumn );
         assertTrue( uiModelColumn2_1 instanceof StringUiColumn );
         assertEquals( 3,
@@ -429,10 +441,14 @@ public class ActionSetFieldColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().size() );
         final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get( 3 );
         final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get( 4 );
-        assertEquals( "name",
+        assertEquals( "$a",
                       uiModelColumn1_2.getHeaderMetaData().get( 0 ).getTitle() );
-        assertEquals( "age",
+        assertEquals( "name",
+                      uiModelColumn1_2.getHeaderMetaData().get( 1 ).getTitle() );
+        assertEquals( "$a",
                       uiModelColumn2_2.getHeaderMetaData().get( 0 ).getTitle() );
+        assertEquals( "age",
+                      uiModelColumn2_2.getHeaderMetaData().get( 1 ).getTitle() );
         assertTrue( uiModelColumn1_2 instanceof StringUiColumn );
         assertTrue( uiModelColumn2_2 instanceof IntegerUiColumn );
         assertEquals( 4,
@@ -496,10 +512,14 @@ public class ActionSetFieldColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().size() );
         final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get( 3 );
         final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get( 4 );
-        assertEquals( "age",
+        assertEquals( "$a",
                       uiModelColumn1_1.getHeaderMetaData().get( 0 ).getTitle() );
-        assertEquals( "name",
+        assertEquals( "age",
+                      uiModelColumn1_1.getHeaderMetaData().get( 1 ).getTitle() );
+        assertEquals( "$a",
                       uiModelColumn2_1.getHeaderMetaData().get( 0 ).getTitle() );
+        assertEquals( "name",
+                      uiModelColumn2_1.getHeaderMetaData().get( 1 ).getTitle() );
         assertTrue( uiModelColumn1_1 instanceof IntegerUiColumn );
         assertTrue( uiModelColumn2_1 instanceof StringUiColumn );
         assertEquals( 3,
@@ -529,10 +549,14 @@ public class ActionSetFieldColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().size() );
         final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get( 3 );
         final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get( 4 );
-        assertEquals( "age",
+        assertEquals( "$a",
                       uiModelColumn1_2.getHeaderMetaData().get( 0 ).getTitle() );
-        assertEquals( "name",
+        assertEquals( "age",
+                      uiModelColumn1_2.getHeaderMetaData().get( 1 ).getTitle() );
+        assertEquals( "$a",
                       uiModelColumn2_2.getHeaderMetaData().get( 0 ).getTitle() );
+        assertEquals( "name",
+                      uiModelColumn2_2.getHeaderMetaData().get( 1 ).getTitle() );
         assertTrue( uiModelColumn1_2 instanceof IntegerUiColumn );
         assertTrue( uiModelColumn2_2 instanceof StringUiColumn );
         assertEquals( 3,

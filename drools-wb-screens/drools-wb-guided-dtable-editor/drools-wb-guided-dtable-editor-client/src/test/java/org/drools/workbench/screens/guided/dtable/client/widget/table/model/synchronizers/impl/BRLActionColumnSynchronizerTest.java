@@ -144,6 +144,15 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().size() );
         assertTrue( uiModel.getColumns().get( 2 ) instanceof IntegerUiColumn );
         assertTrue( uiModel.getColumns().get( 3 ) instanceof StringUiColumn );
+
+        assertEquals( "col1v0",
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 0 ).getTitle() );
+        assertEquals( "$age",
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 1 ).getTitle() );
+        assertEquals( "col1v1",
+                      uiModel.getColumns().get( 3 ).getHeaderMetaData().get( 0 ).getTitle() );
+        assertEquals( "$name",
+                      uiModel.getColumns().get( 3 ).getHeaderMetaData().get( 1 ).getTitle() );
     }
 
     @Test
@@ -195,6 +204,8 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue( uiModel.getColumns().get( 2 ) instanceof StringUiColumn );
         assertEquals( "updated",
                       uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 0 ).getTitle() );
+        assertEquals( "$name",
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 1 ).getTitle() );
         assertEquals( false,
                       uiModel.getColumns().get( 2 ).isVisible() );
     }
@@ -255,6 +266,8 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue( uiModel.getColumns().get( 2 ) instanceof StringUiColumn );
         assertEquals( "updated",
                       uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 0 ).getTitle() );
+        assertEquals( "$name",
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 1 ).getTitle() );
         assertEquals( false,
                       uiModel.getColumns().get( 2 ).isVisible() );
     }
@@ -315,6 +328,8 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue( uiModel.getColumns().get( 2 ) instanceof LongUiColumn );
         assertEquals( "updated",
                       uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 0 ).getTitle() );
+        assertEquals( "$s",
+                      uiModel.getColumns().get( 2 ).getHeaderMetaData().get( 1 ).getTitle() );
         assertEquals( false,
                       uiModel.getColumns().get( 2 ).isVisible() );
     }
