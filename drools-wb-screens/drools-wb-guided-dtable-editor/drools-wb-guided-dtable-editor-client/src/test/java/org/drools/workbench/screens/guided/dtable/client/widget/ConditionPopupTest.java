@@ -195,7 +195,7 @@ public class ConditionPopupTest {
         verify( popup.view, never() ).addLimitedEntryValue();
         verify( popup.view, never() ).setLimitedEntryVisibility( anyBoolean() );
 
-        verify( popup.view ).addDefaultValue();
+        verify( popup.view ).addDefaultValueIfNoPresent();
         verify( popup.view ).setDefaultValueVisibility( false );
         assertEquals( null, popup.getEditingCol().getDefaultValue() );
 
@@ -231,7 +231,7 @@ public class ConditionPopupTest {
         verify( popup.view, never() ).addLimitedEntryValue();
         verify( popup.view, never() ).setLimitedEntryVisibility( anyBoolean() );
 
-        verify( popup.view ).addDefaultValue();
+        verify( popup.view ).addDefaultValueIfNoPresent();
         verify( popup.view ).setDefaultValueVisibility( true );
         assertEquals( null, popup.getEditingCol().getDefaultValue().getStringValue() );
 
@@ -267,7 +267,7 @@ public class ConditionPopupTest {
         verify( popup.view, never() ).addLimitedEntryValue();
         verify( popup.view, never() ).setLimitedEntryVisibility( anyBoolean() );
 
-        verify( popup.view, never() ).addDefaultValue();
+        verify( popup.view, never() ).addDefaultValueIfNoPresent();
         verify( popup.view, never() ).setDefaultValueVisibility( anyBoolean() );
 
         verify( popup.view, never() ).setOperatorLabelText( anyString() );

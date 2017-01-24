@@ -461,9 +461,13 @@ public class ConditionPopupView extends FormStylePopup {
                 limitedEntryValueWidgetContainer ).getIndex();
     }
 
-    public void addDefaultValue() {
-        defaultValueWidgetContainerIndex = addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.DefaultValue() ).append( GuidedDecisionTableConstants.COLON ).toString(),
-                defaultValueWidgetContainer ).getIndex();
+    public void addDefaultValueIfNoPresent() {
+        if( defaultValueWidgetContainerIndex == -1 ) {
+            defaultValueWidgetContainerIndex = addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.DefaultValue() )
+                                                                    .append(GuidedDecisionTableConstants.COLON)
+                                                                    .toString(),
+                                                             defaultValueWidgetContainer ).getIndex();
+        }
     }
 
     @Override

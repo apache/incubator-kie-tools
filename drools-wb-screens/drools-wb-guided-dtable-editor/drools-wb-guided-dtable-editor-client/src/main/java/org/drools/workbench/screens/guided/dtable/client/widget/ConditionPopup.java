@@ -268,7 +268,7 @@ public class ConditionPopup {
     public void makeDefaultValueWidget() {
         //Default value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            view.addDefaultValue();
+            view.addDefaultValueIfNoPresent();
             if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
                 return;
             }

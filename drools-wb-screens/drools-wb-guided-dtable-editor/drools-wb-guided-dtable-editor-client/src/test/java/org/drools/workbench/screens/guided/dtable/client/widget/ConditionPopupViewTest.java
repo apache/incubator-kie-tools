@@ -6,12 +6,15 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.gwtbootstrap3.client.ui.InlineRadio;
@@ -29,7 +32,10 @@ import org.uberfire.ext.widgets.common.client.common.ImageButton;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -247,5 +253,14 @@ public class ConditionPopupViewTest {
         verify( binding ).addChangeHandler( changeHandlerCaptor.capture() );
         changeHandlerCaptor.getValue().onChange( changeEvent );
         verify( presenter ).setBinding( "NewBinding" );
+    }
+
+    @Test
+    public void testAddDefaultValueIfNoPresent() throws Exception {
+        verify( view, never() ).addAttribute( anyString(), any( IsWidget.class ) );
+        view.addDefaultValueIfNoPresent();
+        verify( view ).addAttribute( eq( GuidedDecisionTableConstants.INSTANCE.DefaultValue() + ":" ), any( SimplePanel.class ) );
+        view.addDefaultValueIfNoPresent();
+        verify( view ).addAttribute( eq( GuidedDecisionTableConstants.INSTANCE.DefaultValue() + ":" ), any( SimplePanel.class ) );
     }
 }
