@@ -44,6 +44,11 @@ public class PropertyTypeFactoryImpl implements PropertyTypeFactory {
         baseTypes.add(new PropertyTypeImpl("Double", Double.class.getName()));
 
         baseTypes.add(new PropertyTypeImpl("Date", Date.class.getName()));
+        // TODO: Replace by class.getName once GWT supports the following types
+        baseTypes.add(new PropertyTypeImpl("LocalDate", "java.time.LocalDate"));
+        baseTypes.add(new PropertyTypeImpl("LocalDateTime", "java.time.LocalDateTime"));
+        baseTypes.add(new PropertyTypeImpl("LocalTime", "java.time.LocalTime"));
+        baseTypes.add(new PropertyTypeImpl("OffsetDateTime", "java.time.OffsetDateTime"));
 
         baseTypes.add(new PropertyTypeImpl("Boolean", Boolean.class.getName()));
         baseTypes.add(new PropertyTypeImpl("String", String.class.getName()));
