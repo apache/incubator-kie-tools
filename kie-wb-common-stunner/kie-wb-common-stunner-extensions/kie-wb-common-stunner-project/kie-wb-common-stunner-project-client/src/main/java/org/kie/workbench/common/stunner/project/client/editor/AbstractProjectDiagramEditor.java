@@ -26,12 +26,14 @@ import javax.inject.Inject;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.bs3.BS3PaletteWidget;
-import org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory.BS3PaletteFactory;
-import org.kie.workbench.common.stunner.client.widgets.session.presenter.impl.AbstractClientSessionPresenter;
-import org.kie.workbench.common.stunner.client.widgets.session.view.ScreenErrorView;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
+import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSelectionSessionCommand;
@@ -46,7 +48,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.Validat
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.util.ClientSessionUtils;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationViolation;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidatorCallback;
@@ -87,10 +89,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     private final R resourceType;
     private final ClientProjectDiagramService projectDiagramServices;
-    private final AbstractClientSessionManager clientSessionManager;
-    private final AbstractClientSessionPresenter clientSessionPresenter;
+    private final SessionManager sessionManager;
+    private final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
     private final ScreenErrorView editorErrorView;
-    private final BS3PaletteFactory paletteFactory;
     private final ClientSessionUtils sessionUtils;
     private final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
 
@@ -104,8 +105,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private final ValidateSessionCommand sessionValidateCommand;
     private final RefreshSessionCommand sessionRefreshCommand;
 
-    private AbstractClientFullSession session;
-    private BS3PaletteWidget paletteWidget;
+    private SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter;
     private String title = "Project Diagram Editor";
 
     @Inject
@@ -116,10 +116,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                         final SavePopUpPresenter savePopUpPresenter,
                                         final R resourceType,
                                         final ClientProjectDiagramService projectDiagramServices,
-                                        final AbstractClientSessionManager clientSessionManager,
-                                        final AbstractClientSessionPresenter clientSessionPresenter,
+                                        final SessionManager sessionManager,
+                                        final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
                                         final ScreenErrorView editorErrorView,
-                                        final BS3PaletteFactory paletteFactory,
                                         final ClientSessionUtils sessionUtils,
                                         final SessionCommandFactory sessionCommandFactory,
                                         final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder) {
@@ -130,10 +129,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.savePopUpPresenter = savePopUpPresenter;
         this.resourceType = resourceType;
         this.projectDiagramServices = projectDiagramServices;
-        this.clientSessionManager = clientSessionManager;
-        this.clientSessionPresenter = clientSessionPresenter;
+        this.sessionManager = sessionManager;
+        this.sessionPresenterFactory = sessionPresenterFactory;
         this.editorErrorView = editorErrorView;
-        this.paletteFactory = paletteFactory;
         this.sessionUtils = sessionUtils;
         this.menuItemsBuilder = menuItemsBuilder;
         this.sessionClearSelectionCommand = sessionCommandFactory.newClearSelectionCommand();
@@ -155,18 +153,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     @SuppressWarnings("unchecked")
     public void init() {
         getView().init(this);
-        // Create a new full control session.
-        session = (AbstractClientFullSession) clientSessionManager.newFullSession();
-        // Initialize the session presenter.
-        clientSessionPresenter
-                .setDisplayErrors(true)
-                .initialize(session,
-                            getCanvasWidth(),
-                            getCanvasHeight());
-        // Use the session presenter's view.
-        getView().setWidget(clientSessionPresenter.getView());
-        // Initialize toolbar's commands.
-        bindCommands();
     }
 
     protected void doStartUp(final ObservablePath path,
@@ -194,31 +180,63 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     protected void open(final ProjectDiagram diagram) {
         showLoadingViews();
-        final Command callback = () -> {
-            hideLoadingViews();
-        };
-        // Use the session presenter's view.
-        this.paletteWidget = buildPalette(diagram);
-        getView().setWidget(clientSessionPresenter.getView());
-        clientSessionPresenter.getView().setPalette(this.paletteWidget.getView());
-        clientSessionPresenter.open(diagram,
-                                    callback);
-        updateTitle(diagram.getMetadata().getTitle());
+        final AbstractClientFullSession session = newSession(diagram);
+        presenter = sessionPresenterFactory.newPresenterEditor(diagram);
+        getView().setWidget(presenter.getView());
+        presenter
+                .withToolbar(false)
+                .withPalette(true)
+                .displayNotifications(true)
+                .displayErrors(true)
+                .open(diagram,
+                      session,
+                      new SessionPresenter.SessionPresenterCallback<AbstractClientFullSession, Diagram>() {
+                          @Override
+                          public void afterSessionOpened() {
+
+                          }
+
+                          @Override
+                          public void afterCanvasInitialized() {
+
+                          }
+
+                          @Override
+                          public void onSuccess() {
+                              bindCommands();
+                              updateTitle(diagram.getMetadata().getTitle());
+                              hideLoadingViews();
+                          }
+
+                          @Override
+                          public void onError(final ClientRuntimeError error) {
+                              showError(error);
+                          }
+                      });
+    }
+
+    private AbstractClientFullSession newSession(final Diagram diagram) {
+        return (AbstractClientFullSession) sessionManager.getSessionFactory(diagram,
+                                                                            ClientFullSession.class).newSession();
     }
 
     @Override
     protected Command onValidate() {
         showLoadingViews();
         return () -> {
-            session.getValidationControl().validate();
+            getSession().getValidationControl().validate();
             hideLoadingViews();
         };
+    }
+
+    private AbstractClientFullSession getSession() {
+        return null != presenter ? presenter.getInstance() : null;
     }
 
     @Override
     protected void save(final String commitMessage) {
         showLoadingViews();
-        session.getValidationControl().validate(new CanvasValidatorCallback() {
+        getSession().getValidationControl().validate(new CanvasValidatorCallback() {
             @Override
             public void onSuccess() {
                 doSave(commitMessage);
@@ -236,9 +254,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     @SuppressWarnings("unchecked")
     protected void doSave(final String commitMessage) {
         // Obtain diagram's image data before saving.
-        final String thumbData = sessionUtils.canvasToImageData(session);
+        final String thumbData = sessionUtils.canvasToImageData(getSession());
         // Update diagram's image data as thumbnail.
-        final CanvasHandler canvasHandler = session.getCanvasHandler();
+        final CanvasHandler canvasHandler = getSession().getCanvasHandler();
         final Diagram diagram = canvasHandler.getDiagram();
         diagram.getMetadata().setThumbData(thumbData);
         // Perform update operation remote call.
@@ -360,31 +378,29 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     protected void doOpen() {
-        if (null != session && session.isOpened()) {
-            clientSessionManager.resume(session);
+        if (null != getSession()) {
+            sessionManager.resume(getSession());
         }
     }
 
     protected void showLoadingViews() {
         getView().showLoading();
-        clientSessionPresenter.getView().setLoading(true);
     }
 
     protected void hideLoadingViews() {
         getView().hideBusyIndicator();
-        clientSessionPresenter.getView().setLoading(false);
     }
 
     protected void doClose() {
-        disposeSession();
+        destroySession();
     }
 
     protected void doFocus() {
         log(FINE,
             "Focusing Stunner Project Diagram Editor...");
-        if (!isSameSession(clientSessionManager.getCurrentSession())) {
-            clientSessionManager.open(session);
-        } else {
+        if (null != getSession() && !isSameSession(sessionManager.getCurrentSession())) {
+            sessionManager.open(getSession());
+        } else if (null != getSession()) {
             log(FINE,
                 "Session already active, no action.");
         }
@@ -403,7 +419,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     private boolean isSameSession(final ClientSession other) {
-        return null != other && null != session && other.equals(session);
+        return null != other && null != getSession() && other.equals(getSession());
     }
 
     public String getTitleText() {
@@ -421,19 +437,19 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return super.mayClose(getCurrentDiagramHash());
     }
 
-    private void bindCommands() {
-        this.sessionClearSelectionCommand.bind(session);
-        this.sessionVisitGraphCommand.bind(session);
-        this.sessionSwitchGridCommand.bind(session);
-        this.sessionClearCommand.bind(session);
-        this.sessionDeleteSelectionCommand.bind(session);
-        this.sessionUndoCommand.bind(session);
-        this.sessionRedoCommand.bind(session);
-        this.sessionValidateCommand.bind(session);
-        this.sessionRefreshCommand.bind(session);
+    void bindCommands() {
+        this.sessionClearSelectionCommand.bind(getSession());
+        this.sessionVisitGraphCommand.bind(getSession());
+        this.sessionSwitchGridCommand.bind(getSession());
+        this.sessionClearCommand.bind(getSession());
+        this.sessionDeleteSelectionCommand.bind(getSession());
+        this.sessionUndoCommand.bind(getSession());
+        this.sessionRedoCommand.bind(getSession());
+        this.sessionValidateCommand.bind(getSession());
+        this.sessionRefreshCommand.bind(getSession());
     }
 
-    private void unbindCommands() {
+    void unbindCommands() {
         this.sessionClearSelectionCommand.unbind();
         this.sessionVisitGraphCommand.unbind();
         this.sessionSwitchGridCommand.unbind();
@@ -445,35 +461,13 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.sessionRefreshCommand.unbind();
     }
 
-    private void resume() {
-        clientSessionManager.resume(session);
-    }
-
     private void pauseSession() {
-        clientSessionManager.pause();
+        sessionManager.pause();
     }
 
-    private void disposeSession() {
-        clientSessionManager.dispose();
+    private void destroySession() {
         unbindCommands();
-        if (null != paletteWidget) {
-            destroyPalette();
-        }
-        this.paletteWidget = null;
-        this.session = null;
-    }
-
-    private BS3PaletteWidget buildPalette(final ProjectDiagram diagram) {
-        return paletteFactory
-                .forCanvasHandler(session.getCanvasHandler())
-                .newPalette(diagram.getMetadata().getShapeSetId());
-    }
-
-    private void destroyPalette() {
-        if (null != paletteWidget) {
-            paletteWidget.unbind();
-            paletteWidget.destroy();
-        }
+        presenter.clear();
     }
 
     private void updateTitle(final String title) {
@@ -484,8 +478,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     private void hidePaletteFloatingView() {
-        if (null != paletteWidget) {
-            paletteWidget.getFloatingView().hide();
+        if (null != presenter) {
+            ((BS3PaletteWidget) presenter.getPalette()).getFloatingView().hide();
         }
     }
 
@@ -503,8 +497,12 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return getDiagram().hashCode();
     }
 
+    protected CanvasHandler getCanvasHandler() {
+        return null != sessionManager.getCurrentSession() ? sessionManager.getCurrentSession().getCanvasHandler() : null;
+    }
+
     protected ProjectDiagram getDiagram() {
-        return null != clientSessionPresenter.getCanvasHandler() ? (ProjectDiagram) clientSessionPresenter.getCanvasHandler().getDiagram() : null;
+        return null != getCanvasHandler() ? (ProjectDiagram) getCanvasHandler().getDiagram() : null;
     }
 
     private void executeWithConfirm(final String message,

@@ -27,12 +27,11 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
+import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
 // TODO: I18n.
 @ApplicationScoped
@@ -246,20 +245,6 @@ public class ProjectDiagramEditorMenuItemsBuilder {
     }
 
     private MenuItem buildItem(final IsWidget widget) {
-        return new MenuFactory.CustomMenuBuilder() {
-            @Override
-            public void push(MenuFactory.CustomMenuBuilder element) {
-            }
-
-            @Override
-            public MenuItem build() {
-                return new BaseMenuCustom() {
-                    @Override
-                    public IsWidget build() {
-                        return widget;
-                    }
-                };
-            }
-        }.build();
+        return MenuUtils.buildItem(widget);
     }
 }

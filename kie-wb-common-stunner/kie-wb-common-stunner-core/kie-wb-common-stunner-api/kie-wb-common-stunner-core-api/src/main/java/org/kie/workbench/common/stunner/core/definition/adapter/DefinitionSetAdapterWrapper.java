@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
@@ -55,6 +56,11 @@ public abstract class DefinitionSetAdapterWrapper<T, A extends DefinitionSetAdap
     @Override
     public Class<? extends ElementFactory> getGraphFactoryType(final T pojo) {
         return adapter.getGraphFactoryType(pojo);
+    }
+
+    @Override
+    public Annotation getQualifier(final T pojo) {
+        return adapter.getQualifier(pojo);
     }
 
     @Override

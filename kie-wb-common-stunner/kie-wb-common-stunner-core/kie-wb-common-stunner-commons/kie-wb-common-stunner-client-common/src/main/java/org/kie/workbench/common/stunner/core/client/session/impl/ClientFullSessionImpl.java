@@ -21,10 +21,10 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -36,46 +36,69 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.select.Selec
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.ToolboxControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.Request;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 
 @Dependent
 public class ClientFullSessionImpl extends AbstractClientFullSession {
 
+    private ResizeControl<AbstractCanvasHandler, Element> resizeControl;
+    private CanvasPaletteControl<AbstractCanvasHandler> canvasPaletteControl;
+    private CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl;
+    private ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
+
     @Inject
-    public ClientFullSessionImpl(final AbstractCanvas canvas,
-                                 final AbstractCanvasHandler canvasHandler,
-                                 final ResizeControl<AbstractCanvasHandler, Element> resizeControl,
-                                 final CanvasValidationControl<AbstractCanvasHandler> canvasValidationControl,
-                                 final CanvasPaletteControl<AbstractCanvasHandler> canvasPaletteControl,
+    @SuppressWarnings("unchecked")
+    public ClientFullSessionImpl(final CanvasFactory<AbstractCanvas, AbstractCanvasHandler> factory,
                                  final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
-                                 final RegistryFactory registryFactory,
-                                 final ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl,
-                                 final ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl,
-                                 final DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl,
-                                 final CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl,
-                                 final SelectionControl<AbstractCanvasHandler, Element> selectionControl,
-                                 final DragControl<AbstractCanvasHandler, Element> dragControl,
-                                 final ToolboxControl<AbstractCanvasHandler, Element> toolboxControl,
-                                 final @Observer ElementBuilderControl<AbstractCanvasHandler> builderControl,
-                                 final ZoomControl<AbstractCanvas> zoomControl,
-                                 final PanControl<AbstractCanvas> panControl) {
-        super(canvas,
-              canvasHandler,
-              resizeControl,
-              canvasValidationControl,
-              canvasPaletteControl,
-              selectionControl,
-              zoomControl,
-              panControl,
+                                 final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                 final @Request SessionCommandManager<AbstractCanvasHandler> requestCommandManager,
+                                 final RegistryFactory registryFactory) {
+        super(factory.newCanvas(),
+              factory.newCanvasHandler(),
+              factory.newControl(CanvasValidationControl.class),
+              factory.newControl(SelectionControl.class),
+              factory.newControl(ZoomControl.class),
+              factory.newControl(PanControl.class),
               canvasCommandManager,
+              () -> sessionCommandManager,
+              () -> requestCommandManager,
               registryFactory.newCommandRegistry(),
-              connectionAcceptorControl,
-              containmentAcceptorControl,
-              dockingAcceptorControl,
-              canvasNameEditionControl,
-              dragControl,
-              toolboxControl,
-              builderControl);
+              factory.newControl(DragControl.class),
+              factory.newControl(ConnectionAcceptorControl.class),
+              factory.newControl(ContainmentAcceptorControl.class),
+              factory.newControl(DockingAcceptorControl.class),
+              factory.newControl(ElementBuilderControl.class));
+        this.resizeControl = factory.newControl(ResizeControl.class);
+        this.canvasPaletteControl = factory.newControl(CanvasPaletteControl.class);
+        this.canvasNameEditionControl = factory.newControl(CanvasNameEditionControl.class);
+        this.toolboxControl = factory.newControl(ToolboxControl.class);
+        getRegistrationHandler().registerCanvasHandlerControl(resizeControl);
+        resizeControl.setCommandManagerProvider(() -> sessionCommandManager);
+        getRegistrationHandler().registerCanvasHandlerControl(toolboxControl);
+        toolboxControl.setCommandManagerProvider(() -> sessionCommandManager);
+        getRegistrationHandler().registerCanvasHandlerControl(canvasPaletteControl);
+        canvasPaletteControl.setCommandManagerProvider(() -> sessionCommandManager);
+        getRegistrationHandler().registerCanvasHandlerControl(canvasNameEditionControl);
+        canvasNameEditionControl.setCommandManagerProvider(() -> sessionCommandManager);
+    }
+
+    public CanvasPaletteControl<AbstractCanvasHandler> getPaletteControl() {
+        return canvasPaletteControl;
+    }
+
+    public ResizeControl<AbstractCanvasHandler, Element> getResizeControl() {
+        return resizeControl;
+    }
+
+    public ToolboxControl<AbstractCanvasHandler, Element> getToolboxControl() {
+        return toolboxControl;
+    }
+
+    public CanvasNameEditionControl<AbstractCanvasHandler, Element> getCanvasNameEditionControl() {
+        return canvasNameEditionControl;
     }
 }

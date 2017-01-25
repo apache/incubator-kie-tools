@@ -26,8 +26,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.AbstractToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.AbstractToolbar;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
@@ -81,9 +81,9 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
         return uuid;
     }
 
-    public void show(final Toolbar<S> toolbar,
+    public void show(final AbstractToolbar<S> toolbar,
                      final S session,
-                     final ToolbarCommand<S> command,
+                     final AbstractToolbarCommand<S, ?> command,
                      final Command clickHandler) {
         // Initialize the command with the current session.
         command.initialize(toolbar,
@@ -114,6 +114,23 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
 
     public void destroy() {
         view.destroy();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AbstractToolbarItem)) {
+            return false;
+        }
+        final AbstractToolbarItem that = (AbstractToolbarItem) o;
+        return uuid.equals(that.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid == null ? 0 : ~~uuid.hashCode();
     }
 
     private void log(final Level level,

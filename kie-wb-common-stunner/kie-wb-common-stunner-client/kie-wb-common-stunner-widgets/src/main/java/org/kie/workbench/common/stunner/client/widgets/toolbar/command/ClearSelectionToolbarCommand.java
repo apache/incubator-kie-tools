@@ -20,12 +20,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 
 @Dependent
-public class ClearSelectionToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientReadOnlySession, ClearSelectionSessionCommand> {
+public class ClearSelectionToolbarCommand extends AbstractToolbarCommand<ClientReadOnlySession, ClearSelectionSessionCommand> {
 
     @Inject
     public ClearSelectionToolbarCommand(final SessionCommandFactory sessionCommandFactory) {

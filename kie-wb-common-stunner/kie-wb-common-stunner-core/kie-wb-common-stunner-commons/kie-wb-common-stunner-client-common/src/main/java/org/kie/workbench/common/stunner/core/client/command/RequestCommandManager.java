@@ -22,12 +22,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseDownEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseUpEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionDisposedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroyedEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandListener;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -92,11 +92,10 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
                                     final Command<AbstractCanvasHandler, CanvasViolation> command,
                                     final CommandResult<CanvasViolation> result) {
                     // Nothing to do with the command registry for the allow operation.
-                }
-
-                @Override
-                protected CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> getRegistry() {
-                    return RequestCommandManager.this.getRegistry();
+                    // Notify listener, if any.
+                    RequestCommandManager.this.postAllow(context,
+                                                         command,
+                                                         result);
                 }
 
                 @Override
@@ -108,6 +107,28 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
                                    "Adding command [" + command + "] into current request command builder.");
                         currentCommandBuilder.addCommand(command);
                     }
+                    // Notify listener, if any.
+                    RequestCommandManager.this.postExecute(context,
+                                                           command,
+                                                           result);
+                }
+
+                @Override
+                public void onUndo(final AbstractCanvasHandler context,
+                                   final Command<AbstractCanvasHandler, CanvasViolation> command,
+                                   final CommandResult<CanvasViolation> result) {
+                    super.onUndo(context,
+                                 command,
+                                 result);
+                    // Notify listener, if any.
+                    RequestCommandManager.this.postUndo(context,
+                                                        command,
+                                                        result);
+                }
+
+                @Override
+                protected CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> getRegistry() {
+                    return RequestCommandManager.this.getRegistry();
                 }
             };
 
@@ -145,9 +166,9 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
     /**
      * Checks that once disposing a client session, no pending requests are present.
      */
-    void onCanvasSessionDisposed(final @Observes SessionDisposedEvent sessionDisposedEvent) {
-        checkNotNull("sessionDisposedEvent",
-                     sessionDisposedEvent);
+    void onCanvasSessionDestroyed(final @Observes SessionDestroyedEvent sessionDestroyedEvent) {
+        checkNotNull("sessionDestroyedEvent",
+                     sessionDestroyedEvent);
         if (isRequestStarted()) {
             LOGGER.log(Level.WARNING,
                        "Current client request has not been completed yet.");
@@ -159,10 +180,13 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
      */
     private void start() {
         if (isRequestStarted()) {
-            throw new IllegalStateException("Current client request has not been completed yet. " +
-                                                    "A new client request cannot be started!");
+
+            LOGGER.log(Level.WARNING,
+                       "Current client request has not been completed yet." +
+                               "A new client request cannot be started!");
+            clear();
         }
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.FINE,
                    "New client request started.");
         currentCommandBuilder = new CompositeCommandImpl
                 .CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
@@ -174,7 +198,7 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
      * session's registry.
      */
     private void complete() {
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.FINE,
                    "Checking if current client request has been completed...");
         checkRequestStarted();
         // If any commands have been aggregated, let's execute those.
@@ -184,7 +208,7 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
             getRegistry().register(currentCommandBuilder.build());
         }
         clear();
-        LOGGER.log(Level.INFO,
+        LOGGER.log(Level.FINE,
                    "Current client request completed.");
     }
 

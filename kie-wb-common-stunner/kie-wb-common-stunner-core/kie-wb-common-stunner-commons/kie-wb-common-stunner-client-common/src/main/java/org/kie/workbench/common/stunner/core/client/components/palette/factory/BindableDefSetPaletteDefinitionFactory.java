@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette.factory;
 
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 

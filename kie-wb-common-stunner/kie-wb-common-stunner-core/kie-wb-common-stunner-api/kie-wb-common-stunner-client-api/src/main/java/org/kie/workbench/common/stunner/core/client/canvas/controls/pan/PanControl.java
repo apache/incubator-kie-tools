@@ -21,4 +21,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasContro
 
 public interface PanControl<C extends Canvas> extends CanvasControl<C> {
 
+    PanControl<C> translate(double tx,
+                            double ty);
 }

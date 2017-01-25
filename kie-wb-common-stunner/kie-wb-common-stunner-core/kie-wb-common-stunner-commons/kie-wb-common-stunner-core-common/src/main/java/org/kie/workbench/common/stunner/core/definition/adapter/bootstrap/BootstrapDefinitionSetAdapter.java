@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.bootstrap;
 
+import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
@@ -53,6 +54,11 @@ class BootstrapDefinitionSetAdapter implements DefinitionSetAdapter<Object> {
     @Override
     public Class<? extends ElementFactory> getGraphFactoryType(final Object pojo) {
         return getWrapped(pojo).getGraphFactoryType(pojo);
+    }
+
+    @Override
+    public Annotation getQualifier(final Object pojo) {
+        return getWrapped(pojo).getQualifier(pojo);
     }
 
     @Override

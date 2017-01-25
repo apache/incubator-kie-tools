@@ -48,13 +48,13 @@ public final class SetCanvasConnectionCommand extends AbstractCanvasCommand {
                                     context,
                                     MutationContext.STATIC);
         if (null != source) {
-            context.fireCanvasElementUpdated(source);
+            context.notifyCanvasElementUpdated(source);
             highlightInvalidConnection(context,
                                        edge,
                                        source);
         }
         if (null != target) {
-            context.fireCanvasElementUpdated(target);
+            context.notifyCanvasElementUpdated(target);
             highlightInvalidConnection(context,
                                        edge,
                                        target);

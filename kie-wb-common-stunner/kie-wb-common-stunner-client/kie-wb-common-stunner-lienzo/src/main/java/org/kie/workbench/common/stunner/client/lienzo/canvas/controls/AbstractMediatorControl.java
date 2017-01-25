@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasControl;
 
-public abstract class AbstractMediatorControl<M extends IMediator> extends AbstractCanvasControl {
+public abstract class AbstractMediatorControl<M extends IMediator, C extends AbstractCanvas> extends AbstractCanvasControl<C> {
 
     protected abstract M buildMediator();
 
@@ -30,7 +30,7 @@ public abstract class AbstractMediatorControl<M extends IMediator> extends Abstr
     protected M mediator;
 
     @Override
-    public void enable(final AbstractCanvas canvas) {
+    public void enable(final C canvas) {
         super.enable(canvas);
         this.mediator = buildMediator();
         final LienzoLayer lienzoLayer = (LienzoLayer) canvas.getLayer();
@@ -40,7 +40,9 @@ public abstract class AbstractMediatorControl<M extends IMediator> extends Abstr
 
     @Override
     protected void doDisable() {
-        mediators.remove(getMediator());
+        if (null != mediators) {
+            mediators.remove(getMediator());
+        }
     }
 
     public M getMediator() {

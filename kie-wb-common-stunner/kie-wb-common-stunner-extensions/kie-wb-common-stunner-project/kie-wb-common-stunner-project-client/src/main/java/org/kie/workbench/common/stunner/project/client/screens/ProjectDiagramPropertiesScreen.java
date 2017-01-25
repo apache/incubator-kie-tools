@@ -25,9 +25,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.kie.workbench.common.stunner.forms.client.widgets.FormPropertiesWidget;
 import org.kie.workbench.common.stunner.project.client.view.ProjectScreenView;
@@ -43,6 +43,11 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
+/**
+ * The screen for the project context (includes the kie workbenches) which is included in a docked area
+ * and displays the formulary/ies for the selected element on the canvas.
+ * TODO: I18n.
+ */
 @Dependent
 @WorkbenchScreen(identifier = ProjectDiagramPropertiesScreen.SCREEN_ID)
 public class ProjectDiagramPropertiesScreen {
@@ -148,7 +153,7 @@ public class ProjectDiagramPropertiesScreen {
 
     @WorkbenchContextId
     public String getMyContextRef() {
-        return "stunnerProjectDiagramPropertiesScreenContext";
+        return "projectDiagramPropertiesScreenContext";
     }
 
     void onFormPropertiesOpened(final @Observes FormPropertiesOpened propertiesOpened) {

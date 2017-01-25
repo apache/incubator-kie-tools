@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.util;
 
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +40,8 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class DefinitionUtils {
@@ -202,8 +205,11 @@ public class DefinitionUtils {
         return MorphPolicy.DEFAULT.equals(definition.getPolicy());
     }
 
-    public DefinitionManager getDefinitionManager() {
-        return definitionManager;
+    public Annotation getQualifier(final String defSetId) {
+        checkNotNull("defSetId",
+                     defSetId);
+        final Object ds = definitionManager.definitionSets().getDefinitionSetById(defSetId);
+        return definitionManager.adapters().forDefinitionSet().getQualifier(ds);
     }
 
     /**
@@ -259,5 +265,9 @@ public class DefinitionUtils {
             return factory instanceof EdgeFactory;
         }
         return true;
+    }
+
+    public DefinitionManager getDefinitionManager() {
+        return definitionManager;
     }
 }

@@ -18,12 +18,15 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.actions;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
+import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 /**
  * Provides element's name edition via some widget.
  */
-public interface CanvasNameEditionControl<C extends CanvasHandler, E extends Element> extends CanvasRegistationControl<C, E> {
+public interface CanvasNameEditionControl<C extends CanvasHandler, E extends Element>
+        extends CanvasRegistationControl<C, E>,
+                RequiresCommandManager<C> {
 
     CanvasNameEditionControl<C, E> show(final E item,
                                         final double x,

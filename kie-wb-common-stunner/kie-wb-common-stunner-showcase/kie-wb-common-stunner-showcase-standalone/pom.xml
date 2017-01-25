@@ -714,7 +714,7 @@
           <localWorkers>${gwt.compiler.localWorkers}</localWorkers>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <draftCompile>true</draftCompile>
-          <extraJvmArgs>-Xmx2048m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
+          <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
           <module>org.kie.workbench.common.stunner.standalone.FastCompiledStunnerStandaloneShowcase</module>
           <logLevel>INFO</logLevel>
           <noServer>false</noServer>

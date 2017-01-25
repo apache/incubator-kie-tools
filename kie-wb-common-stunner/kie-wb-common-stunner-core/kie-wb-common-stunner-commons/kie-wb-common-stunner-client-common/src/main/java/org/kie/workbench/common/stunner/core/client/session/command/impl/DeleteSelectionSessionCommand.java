@@ -24,17 +24,17 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyDownEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyboardEvent;
-import org.kie.workbench.common.stunner.core.client.command.Session;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.session.ClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -46,11 +46,11 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
  * It also captures the <code>DELETE</code> keyboard event and fires the delete operation as well.
  */
 @Dependent
-public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<AbstractClientFullSession> {
+public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<ClientFullSession> {
 
     private static Logger LOGGER = Logger.getLogger(DeleteSelectionSessionCommand.class.getName());
 
-    private final ClientSessionManager<?, ?, ?> clientSessionManager;
+    private final SessionManager clientSessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final CanvasCommandFactory canvasCommandFactory;
 
@@ -61,7 +61,7 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
     }
 
     @Inject
-    public DeleteSelectionSessionCommand(final ClientSessionManager<?, ?, ?> clientSessionManager,
+    public DeleteSelectionSessionCommand(final SessionManager clientSessionManager,
                                          final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                          final CanvasCommandFactory canvasCommandFactory) {
         super(false);
@@ -75,7 +75,7 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
         checkNotNull("callback",
                      callback);
         if (null != getSession().getSelectionControl()) {
-            final AbstractCanvasHandler canvasHandler = getSession().getCanvasHandler();
+            final AbstractCanvasHandler canvasHandler = (AbstractCanvasHandler) getSession().getCanvasHandler();
             final SelectionControl<AbstractCanvasHandler, Element> selectionControl = getSession().getSelectionControl();
             final Collection<String> selectedItems = selectionControl.getSelectedItems();
             if (selectedItems != null && !selectedItems.isEmpty()) {

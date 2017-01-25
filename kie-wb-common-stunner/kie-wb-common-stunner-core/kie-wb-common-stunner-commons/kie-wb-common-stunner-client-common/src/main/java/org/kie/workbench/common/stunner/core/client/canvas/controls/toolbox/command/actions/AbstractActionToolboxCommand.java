@@ -51,8 +51,8 @@ public abstract class AbstractActionToolboxCommand<I> extends AbstractToolboxCom
         super.mouseEnter(context,
                          element);
         final Transform transform = context.getCanvasHandler().getCanvas().getLayer().getTransform();
-        final double ax = context.getCanvasHandler().getCanvas().getView().getAbsoluteX();
-        final double ay = context.getCanvasHandler().getCanvas().getView().getAbsoluteY();
+        final double ax = context.getCanvasHandler().getAbstractCanvas().getView().getAbsoluteX();
+        final double ay = context.getCanvasHandler().getAbstractCanvas().getView().getAbsoluteY();
         // As tooltip is a floating view (not part of the canvas), need to transform the cartesian coordinates
         // using current transform attributes to obtain the right absolute position on the screen.
         final Point2D t = transform.transform(context.getX(),

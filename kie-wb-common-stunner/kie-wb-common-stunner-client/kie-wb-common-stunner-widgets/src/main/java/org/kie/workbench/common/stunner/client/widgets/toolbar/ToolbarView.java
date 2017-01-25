@@ -17,10 +17,9 @@
 package org.kie.workbench.common.stunner.client.widgets.toolbar;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.AbstractToolbar;
 import org.uberfire.client.mvp.UberView;
 
-public interface ToolbarView extends UberView<AbstractToolbar> {
+public interface ToolbarView<T extends Toolbar> extends UberView<T> {
 
     ToolbarView addItem(final IsWidget toolbarItemView);
 

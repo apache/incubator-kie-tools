@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.validation.client.impl.Group;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoPanelUtils;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 
 class BS3PaletteGlyphViewFactory implements BS3PaletteViewFactory {

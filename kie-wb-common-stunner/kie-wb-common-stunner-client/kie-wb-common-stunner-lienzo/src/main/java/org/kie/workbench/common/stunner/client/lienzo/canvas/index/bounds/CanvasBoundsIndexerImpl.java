@@ -43,7 +43,7 @@ public class CanvasBoundsIndexerImpl implements CanvasBoundsIndexer<AbstractCanv
     @SuppressWarnings("unchecked")
     public Node<View<?>, Edge> getAt(final double x,
                                      final double y) {
-        final AbstractCanvas canvas = canvasHandler.getCanvas();
+        final AbstractCanvas canvas = canvasHandler.getAbstractCanvas();
         final LienzoLayer lienzoLayer = (LienzoLayer) canvas.getLayer();
         final String viewUUID = LienzoLayerUtils.getUUID_At(lienzoLayer,
                                                             x,

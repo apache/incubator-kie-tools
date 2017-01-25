@@ -18,10 +18,12 @@ package org.kie.workbench.common.stunner.core.client.components.actions;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.uberfire.mvp.Command;
 
-public interface NameEditBox<C extends CanvasHandler, E extends Element> extends IsWidget {
+public interface NameEditBox<C extends CanvasHandler, E extends Element> extends IsWidget,
+                                                                                 RequiresCommandManager<C> {
 
     void initialize(final C canvasHandler,
                     final Command closeCallback);

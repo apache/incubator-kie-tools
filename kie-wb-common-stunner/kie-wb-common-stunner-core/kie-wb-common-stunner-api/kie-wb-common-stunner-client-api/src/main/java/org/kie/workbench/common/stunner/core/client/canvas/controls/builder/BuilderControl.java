@@ -18,9 +18,12 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.builder;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
+import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 
-public interface BuilderControl<C extends CanvasHandler, R extends BuildRequest> extends CanvasControl<C> {
+public interface BuilderControl<C extends CanvasHandler, R extends BuildRequest>
+        extends CanvasControl<C>,
+                RequiresCommandManager<C> {
 
     interface BuildCallback {
 
@@ -29,8 +32,8 @@ public interface BuilderControl<C extends CanvasHandler, R extends BuildRequest>
         void onError(final ClientRuntimeError error);
     }
 
-    boolean allows(final R request);
+    boolean allows(R request);
 
-    void build(final R request,
-               final BuildCallback callback);
+    void build(R request,
+               BuildCallback callback);
 }

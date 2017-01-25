@@ -60,6 +60,8 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     public interface View<P> extends IsWidget {
 
         View show(final P panel,
+                  final int width,
+                  final int height,
                   final Layer layer);
 
         View add(final IsWidget widget);
@@ -93,6 +95,12 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         View setGrid(final CanvasGrid grid);
 
         View setCursor(final Cursors cursor);
+
+        View setDecoratorStrokeWidth(final double width);
+
+        View setDecoratorStrokeAlpha(final double alpha);
+
+        View setDecoratorStrokeColor(final String color);
 
         Layer getLayer();
 
@@ -134,10 +142,14 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     }
 
     @SuppressWarnings("unchecked")
-    public <P> void show(final P panel,
-                         final Layer layer) {
+    protected <P> void show(final P panel,
+                            final int width,
+                            final int height,
+                            final Layer layer) {
         // Show the canvas layer on using the given panel instance.
         view.show(panel,
+                  width,
+                  height,
                   layer);
         // TODO: Review this.
         //       If adding this handler, the SelectionControl for this layer never fires,

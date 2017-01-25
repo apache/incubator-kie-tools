@@ -90,8 +90,8 @@ public class SetCanvasConnectionCommandTest extends AbstractCanvasCommandTest {
                                           eq(targetShapeView),
                                           any(MutationContext.class));
         verify(canvasHandler,
-               times(1)).fireCanvasElementUpdated(eq(source));
+               times(1)).notifyCanvasElementUpdated(eq(source));
         verify(canvasHandler,
-               times(1)).fireCanvasElementUpdated(eq(target));
+               times(1)).notifyCanvasElementUpdated(eq(target));
     }
 }

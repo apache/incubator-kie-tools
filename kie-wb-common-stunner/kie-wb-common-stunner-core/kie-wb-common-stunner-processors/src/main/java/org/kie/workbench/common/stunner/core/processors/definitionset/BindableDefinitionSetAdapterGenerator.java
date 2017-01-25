@@ -51,6 +51,9 @@ public class BindableDefinitionSetAdapterGenerator extends AbstractBindableAdapt
         addFields("graphFactoryTypes",
                   root,
                   processingDefinitionSetAnnotations.getGraphFactoryTypes());
+        addFields("qualifiers",
+                  root,
+                  processingDefinitionSetAnnotations.getQualifiers());
         addFields("valuePropNames",
                   root,
                   processingDefinitionSetAnnotations.getDescriptionFieldNames());
@@ -58,8 +61,7 @@ public class BindableDefinitionSetAdapterGenerator extends AbstractBindableAdapt
                  processingDefinitionSetAnnotations.getDefinitionIds());
         root.put("definitionIdsSize",
                  processingDefinitionSetAnnotations.getDefinitionIds().size());
-
-        //Generate code
+        // Generate code from the template.
         return writeTemplate(packageName,
                              className,
                              root,

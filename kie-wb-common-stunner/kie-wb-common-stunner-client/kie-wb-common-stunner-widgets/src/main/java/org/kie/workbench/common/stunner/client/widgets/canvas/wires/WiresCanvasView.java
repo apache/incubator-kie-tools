@@ -25,7 +25,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.AbstractConnectorView;
-import org.kie.workbench.common.stunner.client.widgets.canvas.CanvasView;
+import org.kie.workbench.common.stunner.client.widgets.canvas.view.CanvasView;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 /**

@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.com
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.canvas.Transform;
@@ -87,8 +87,8 @@ public abstract class AbstractElementBuilderCommand<I> extends AbstractBuilderCo
                          element);
         if (null != getFactory(context.getCanvasHandler())) {
             final Transform transform = context.getCanvasHandler().getCanvas().getLayer().getTransform();
-            final double ax = context.getCanvasHandler().getCanvas().getView().getAbsoluteX();
-            final double ay = context.getCanvasHandler().getCanvas().getView().getAbsoluteY();
+            final double ax = context.getCanvasHandler().getAbstractCanvas().getView().getAbsoluteX();
+            final double ay = context.getCanvasHandler().getAbstractCanvas().getView().getAbsoluteY();
             // As tooltip is a floating view (not part of the canvas), need to transform the cartesian coordinates
             // using current transform attributes to obtain the right absolute position on the screen.
             final Point2D t = transform.transform(context.getX(),

@@ -33,8 +33,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.requ
 import org.kie.workbench.common.stunner.core.client.canvas.controls.event.BuildCanvasShapeEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
-import org.kie.workbench.common.stunner.core.client.command.Session;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
@@ -62,14 +60,12 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
              null,
              null,
              null,
-             null,
              null);
     }
 
     @Inject
     public ObserverBuilderControl(final ClientDefinitionManager clientDefinitionManager,
                                   final ClientFactoryService clientFactoryServices,
-                                  final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                   final GraphUtils graphUtils,
                                   final ModelContainmentRuleManager modelContainmentRuleManager,
                                   final ModelCardinalityRuleManager modelCardinalityRuleManager,
@@ -79,7 +75,6 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                                   final Event<CanvasElementSelectedEvent> elementSelectedEvent) {
         super(clientDefinitionManager,
               clientFactoryServices,
-              canvasCommandManager,
               graphUtils,
               modelContainmentRuleManager,
               modelCardinalityRuleManager,
@@ -99,11 +94,12 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                 final Object definition = buildCanvasShapeEvent.getDefinition();
                 final double x = buildCanvasShapeEvent.getX();
                 final double y = buildCanvasShapeEvent.getY();
-                final double _x = x >= 0 ? x - canvasHandler.getCanvas().getAbsoluteX() : -1;
-                final double _y = y >= 0 ? y - canvasHandler.getCanvas().getAbsoluteY() : -1;
-                final ElementBuildRequest<AbstractCanvasHandler> request = new ElementBuildRequestImpl(_x,
-                                                                                                       _y,
-                                                                                                       definition);
+                final double _x = x >= 0 ? x - canvasHandler.getAbstractCanvas().getAbsoluteX() : -1;
+                final double _y = y >= 0 ? y - canvasHandler.getAbstractCanvas().getAbsoluteY() : -1;
+                final ElementBuildRequest<AbstractCanvasHandler> request =
+                        new ElementBuildRequestImpl(_x,
+                                                    _y,
+                                                    definition);
                 ObserverBuilderControl.this.build(request,
                                                   new BuildCallback() {
                                                       @Override

@@ -54,7 +54,7 @@ public class AbstractClientSessionTest {
         verify(tested,
                times(0)).doResume();
         verify(tested,
-               times(0)).doDispose();
+               times(0)).doDestroy();
     }
 
     @Test
@@ -69,7 +69,7 @@ public class AbstractClientSessionTest {
         verify(tested,
                times(0)).doResume();
         verify(tested,
-               times(0)).doDispose();
+               times(0)).doDestroy();
     }
 
     @Test(expected = java.lang.IllegalStateException.class)
@@ -90,19 +90,27 @@ public class AbstractClientSessionTest {
         verify(tested,
                times(1)).doResume();
         verify(tested,
-               times(0)).doDispose();
-    }
-
-    @Test(expected = java.lang.IllegalStateException.class)
-    public void testCannotResume() {
-        tested.isOpened = false;
-        tested.resume();
+               times(0)).doDestroy();
     }
 
     @Test
-    public void testDispose() {
+    public void testCannotResume() {
+        tested.isOpened = false;
+        tested.resume();
+        verify(tested,
+               times(0)).doOpen();
+        verify(tested,
+               times(0)).doPause();
+        verify(tested,
+               times(0)).doResume();
+        verify(tested,
+               times(0)).doDestroy();
+    }
+
+    @Test
+    public void testDestroy() {
         tested.isOpened = true;
-        tested.dispose();
+        tested.destroy();
         assertFalse(tested.isOpened());
         verify(tested,
                times(0)).doOpen();
@@ -111,19 +119,20 @@ public class AbstractClientSessionTest {
         verify(tested,
                times(0)).doResume();
         verify(tested,
-               times(1)).doDispose();
+               times(1)).doDestroy();
         verify(canvasHandler,
                times(1)).destroy();
     }
 
     @Test(expected = java.lang.IllegalStateException.class)
-    public void testCannotDispose() {
+    public void testCannotDestroy() {
         tested.isOpened = false;
-        tested.dispose();
+        tested.destroy();
     }
 
     private class AbstractClientSessionStub extends AbstractClientSession {
 
+        @SuppressWarnings("unchecked")
         AbstractClientSessionStub(AbstractCanvas canvas,
                                   AbstractCanvasHandler canvasHandler) {
             super(canvas,
@@ -143,7 +152,7 @@ public class AbstractClientSessionTest {
         }
 
         @Override
-        protected void doDispose() {
+        protected void doDestroy() {
         }
     }
 }

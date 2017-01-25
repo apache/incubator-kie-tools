@@ -24,15 +24,17 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
-import org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory.BS3PaletteFactory;
-import org.kie.workbench.common.stunner.client.widgets.session.presenter.impl.AbstractClientSessionPresenter;
-import org.kie.workbench.common.stunner.client.widgets.session.view.ScreenErrorView;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
+import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.util.ClientSessionUtils;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.ProjectDiagramEditorMenuItemsBuilder;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
-import org.kie.workbench.common.stunner.project.client.session.impl.ClientProjectSessionManager;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -66,10 +68,9 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                              final SavePopUpPresenter savePopUpPresenter,
                              final BPMNDiagramResourceType resourceType,
                              final ClientProjectDiagramService projectDiagramServices,
-                             final ClientProjectSessionManager clientSessionManager,
-                             final AbstractClientSessionPresenter clientSessionPresenter,
+                             final SessionManager sessionManager,
+                             final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
                              final ScreenErrorView editorErrorView,
-                             final BS3PaletteFactory paletteFactory,
                              final ClientSessionUtils sessionUtils,
                              final SessionCommandFactory sessionCommandFactory,
                              final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder) {
@@ -80,10 +81,9 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
               savePopUpPresenter,
               resourceType,
               projectDiagramServices,
-              clientSessionManager,
-              clientSessionPresenter,
+              sessionManager,
+              sessionPresenterFactory,
               editorErrorView,
-              paletteFactory,
               sessionUtils,
               sessionCommandFactory,
               menuItemsBuilder);

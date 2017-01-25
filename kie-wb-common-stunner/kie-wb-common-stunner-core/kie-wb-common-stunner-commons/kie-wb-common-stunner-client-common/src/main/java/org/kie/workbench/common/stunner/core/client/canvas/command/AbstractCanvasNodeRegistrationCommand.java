@@ -74,7 +74,7 @@ public abstract class AbstractCanvasNodeRegistrationCommand extends AbstractCanv
                               @Override
                               public void startGraphTraversal(final Graph graph) {
                                   command = null;
-                                  commandBuilder = new CompositeCommandImpl.CompositeCommandBuilder<>();
+                                  commandBuilder = new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>().forward();
                               }
 
                               @Override
@@ -82,14 +82,18 @@ public abstract class AbstractCanvasNodeRegistrationCommand extends AbstractCanv
                               public boolean startNodeTraversal(final Node node) {
                                   if (CanvasLayoutUtils.isCanvasRoot(diagram,
                                                                      node)) {
+                                      // Canvas root gets not bind to any shape, so no need to execute
+                                      // any canvas registration command for it.
                                       return true;
                                   }
-                                  // Register the candidate node.
+                                  // Delegate to subtypes the candidate node registering.
                                   if (null != AbstractCanvasNodeRegistrationCommand.this.node
                                           && AbstractCanvasNodeRegistrationCommand.this.node.equals(node)) {
                                       return registerCandidate(context);
                                   }
-                                  // Register only visible and candidate's child nodes.
+                                  // Register only visible and candidate's child nodes. The
+                                  // execution of the AddCanvasNodeCommand will traverse only its children
+                                  // as well, an so on recursively.
                                   if (node.getContent() instanceof View && isChild(node)) {
                                       commandBuilder.addCommand(new AddCanvasNodeCommand(node,
                                                                                          shapeSetId));
@@ -103,6 +107,7 @@ public abstract class AbstractCanvasNodeRegistrationCommand extends AbstractCanv
                               public boolean startEdgeTraversal(final Edge edge) {
                                   final Object content = edge.getContent();
                                   if (content instanceof View) {
+                                      // Add the commands that register view connectors.
                                       commandBuilder.addCommand(new AddCanvasConnectorCommand(edge,
                                                                                               shapeSetId));
                                       return true;
@@ -131,6 +136,7 @@ public abstract class AbstractCanvasNodeRegistrationCommand extends AbstractCanv
                               @Override
                               public void endGraphTraversal() {
                                   super.endGraphTraversal();
+                                  // BUild a composite command that aggregates the other ones, if any registered.
                                   if (commandBuilder.size() > 0) {
                                       command = commandBuilder.build();
                                   }

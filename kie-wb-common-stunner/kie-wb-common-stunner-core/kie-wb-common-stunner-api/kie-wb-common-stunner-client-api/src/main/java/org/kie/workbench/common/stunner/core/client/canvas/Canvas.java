@@ -20,6 +20,14 @@ import java.util.List;
 
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 
+/**
+ * A canvas type for displaying shapes.
+ * <p>
+ * This default Canvas type provides methods for managing shapes using a single Layer for the diagram's representation.
+ * Implementations could provide a multi-layer solution, but most of the Stunner's components and beans consider
+ * a single layer approach.
+ * @param <S> The supertype for the shapes that this canvas handles.
+ */
 public interface Canvas<S extends Shape> {
 
     /**
@@ -64,7 +72,7 @@ public interface Canvas<S extends Shape> {
     Canvas clear();
 
     /**
-     * Returns the underlying layer.
+     * Returns the canvas' layer.
      */
     Layer getLayer();
 

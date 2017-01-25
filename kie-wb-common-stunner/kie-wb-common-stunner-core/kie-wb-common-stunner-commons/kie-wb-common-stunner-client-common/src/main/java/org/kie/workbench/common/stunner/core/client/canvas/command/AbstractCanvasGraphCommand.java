@@ -26,7 +26,6 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContextImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 /**
@@ -75,12 +74,10 @@ public abstract class AbstractCanvasGraphCommand
 
     @Override
     public CommandResult<CanvasViolation> allow(final AbstractCanvasHandler context) {
-        // Ensure the canvas command is initialized before updating the element on the graph side.
-        getCanvasCommand(context);
         final CommandResult<CanvasViolation> canvasResult =
                 performOperationOnGraph(context,
                                         CommandOperation.ALLOW);
-        if (!CommandUtils.isError(canvasResult)) {
+        if (canDoCanvasOperation(canvasResult)) {
             return getCanvasCommand(context).allow(context);
         }
         return canvasResult;
@@ -88,12 +85,10 @@ public abstract class AbstractCanvasGraphCommand
 
     @Override
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-        // Ensure the canvas command is initialized before updating the element on the graph side.
-        getCanvasCommand(context);
         final CommandResult<CanvasViolation> canvasResult =
                 performOperationOnGraph(context,
                                         CommandOperation.EXECUTE);
-        if (!CommandUtils.isError(canvasResult)) {
+        if (canDoCanvasOperation(canvasResult)) {
             return getCanvasCommand(context).execute(context);
         }
         return canvasResult;
@@ -101,12 +96,10 @@ public abstract class AbstractCanvasGraphCommand
 
     @Override
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
-        // Ensure the canvas command is initialized before updating the element on the graph side.
-        getCanvasCommand(context);
         final CommandResult<CanvasViolation> canvasResult =
                 performOperationOnGraph(context,
                                         CommandOperation.UNDO);
-        if (!CommandUtils.isError(canvasResult)) {
+        if (canDoCanvasOperation(canvasResult)) {
             return getCanvasCommand(context).undo(context);
         }
         return canvasResult;
@@ -124,34 +117,33 @@ public abstract class AbstractCanvasGraphCommand
         UNDO
     }
 
-    /**
-     * Performs any of the following operations on the graph command.
-     */
     private CommandResult<CanvasViolation> performOperationOnGraph(final AbstractCanvasHandler context,
                                                                    final CommandOperation op) {
-        final GraphCommandExecutionContext graphContext = getGraphCommandExecutionContext(context);
-        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = getGraphCommand(context);
-        CommandResult<RuleViolation> graphResult = null;
-        switch (op) {
-            case ALLOW:
-                graphResult = graphCommand.allow(graphContext);
-                break;
-            case EXECUTE:
-                graphResult = graphCommand.execute(graphContext);
-                break;
-            case UNDO:
-                graphResult = graphCommand.undo(graphContext);
-                break;
+        // Ensure the canvas command is initialized before updating the element on the graph side.
+        getCanvasCommand(context);
+        // Obtain the graph execution context and execute the graph command updates.
+        final GraphCommandExecutionContext graphContext = context.getGraphExecutionContext();
+        if (null != graphContext) {
+            final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = getGraphCommand(context);
+            CommandResult<RuleViolation> graphResult = null;
+            switch (op) {
+                case ALLOW:
+                    graphResult = graphCommand.allow(graphContext);
+                    break;
+                case EXECUTE:
+                    graphResult = graphCommand.execute(graphContext);
+                    break;
+                case UNDO:
+                    graphResult = graphCommand.undo(graphContext);
+                    break;
+            }
+            return new CanvasCommandResultBuilder(graphResult).build();
         }
-        return new CanvasCommandResultBuilder(graphResult).build();
+        return null;
     }
 
-    private GraphCommandExecutionContext getGraphCommandExecutionContext(final AbstractCanvasHandler context) {
-        return new GraphCommandExecutionContextImpl(context.getClientDefinitionManager(),
-                                                    context.getClientFactoryServices().getClientFactoryManager(),
-                                                    context.getGraphRulesManager(),
-                                                    context.getGraphIndex(),
-                                                    context.getGraphUtils());
+    private boolean canDoCanvasOperation(CommandResult<CanvasViolation> result) {
+        return null == result || !CommandUtils.isError(result);
     }
 
     @Override

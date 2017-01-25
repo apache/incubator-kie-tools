@@ -18,7 +18,10 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
+import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 
-public interface ToolboxControl<C extends CanvasHandler, E> extends CanvasRegistationControl<C, E> {
+// // TODO: Missing support for HasCommandManagerProvider.
+public interface ToolboxControl<C extends CanvasHandler, E> extends CanvasRegistationControl<C, E>,
+                                                                    RequiresCommandManager<C> {
 
 }

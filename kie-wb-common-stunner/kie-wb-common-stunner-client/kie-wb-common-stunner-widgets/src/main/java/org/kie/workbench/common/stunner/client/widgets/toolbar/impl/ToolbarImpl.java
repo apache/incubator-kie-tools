@@ -21,12 +21,18 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarView;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.item.AbstractToolbarItem;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 
-class ToolbarImpl extends AbstractToolbar<ClientSession> {
+public class ToolbarImpl<S extends ClientSession> extends AbstractToolbar<S> {
 
-    ToolbarImpl(final ManagedInstance<AbstractToolbarItem<ClientSession>> toolbarItems,
-                final ToolbarView view) {
-        super(toolbarItems,
-              view);
-        doInit();
+    private final ManagedInstance<AbstractToolbarItem<S>> items;
+
+    ToolbarImpl(final ManagedInstance<AbstractToolbarItem<S>> items,
+                final ToolbarView<AbstractToolbar> view) {
+        super(view);
+        this.items = items;
+    }
+
+    @Override
+    protected AbstractToolbarItem<S> newToolbarItem() {
+        return items.get();
     }
 }

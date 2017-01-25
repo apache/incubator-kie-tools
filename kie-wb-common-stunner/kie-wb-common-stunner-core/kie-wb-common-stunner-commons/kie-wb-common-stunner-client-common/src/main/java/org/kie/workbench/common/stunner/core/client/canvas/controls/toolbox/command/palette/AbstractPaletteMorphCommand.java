@@ -23,12 +23,12 @@ import java.util.Set;
 import javax.enterprise.event.Event;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.drag.NodeDragProxy;
 import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.GlyphPaletteItem;
@@ -46,14 +46,12 @@ public abstract class AbstractPaletteMorphCommand<I> extends AbstractPaletteComm
 
     protected final DefinitionUtils definitionUtils;
     protected final CanvasCommandFactory commandFactory;
-    protected final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
     protected final Event<CanvasElementSelectedEvent> elementSelectedEvent;
 
     protected final Map<String, MorphDefinition> morphDefinitions = new HashMap<>();
 
     public AbstractPaletteMorphCommand(final DefinitionUtils definitionUtils,
                                        final CanvasCommandFactory commandFactory,
-                                       final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                        final ClientFactoryService clientFactoryServices,
                                        final CommonLookups commonLookups,
                                        final ShapeManager shapeManager,
@@ -75,7 +73,6 @@ public abstract class AbstractPaletteMorphCommand<I> extends AbstractPaletteComm
               icon);
         this.definitionUtils = definitionUtils;
         this.commandFactory = commandFactory;
-        this.canvasCommandManager = canvasCommandManager;
         this.elementSelectedEvent = elementSelectedEvent;
     }
 
@@ -109,17 +106,18 @@ public abstract class AbstractPaletteMorphCommand<I> extends AbstractPaletteComm
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void onItemSelected(final String definitionId,
+    protected void onItemSelected(final Context<AbstractCanvasHandler> context,
+                                  final String definitionId,
                                   final double x,
                                   final double y) {
         final MorphDefinition morphDefinition = morphDefinitions.get(definitionId);
         final Node node = (Node) sourceNode;
         final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
-        canvasCommandManager.execute(canvasHandler,
-                                     commandFactory.morphNode(node,
-                                                              morphDefinition,
-                                                              definitionId,
-                                                              ssid));
+        context.getCommandManager().execute(canvasHandler,
+                                            commandFactory.morphNode(node,
+                                                                     morphDefinition,
+                                                                     definitionId,
+                                                                     ssid));
         this.morphDefinitions.clear();
         clear();
         fireElementSelectedEvent(elementSelectedEvent,

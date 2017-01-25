@@ -20,12 +20,12 @@ import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 
 @Dependent
-public class RedoToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientFullSession, RedoSessionCommand> {
+public class RedoToolbarCommand extends AbstractToolbarCommand<ClientFullSession, RedoSessionCommand> {
 
     @Inject
     public RedoToolbarCommand(final SessionCommandFactory sessionCommandFactory) {

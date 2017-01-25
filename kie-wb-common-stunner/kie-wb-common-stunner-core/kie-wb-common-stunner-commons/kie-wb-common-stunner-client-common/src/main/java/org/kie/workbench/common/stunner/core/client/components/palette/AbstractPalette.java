@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette;
 
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
 
 public abstract class AbstractPalette<D extends HasPaletteItems> implements Palette<D> {

@@ -18,104 +18,49 @@ package org.kie.workbench.common.stunner.client.widgets.toolbar.impl;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import com.google.gwt.logging.client.LogConfiguration;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommandCallback;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarView;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.command.AbstractToolbarSessionCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.AbstractToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.item.AbstractToolbarItem;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.uberfire.mvp.Command;
 
-public abstract class AbstractToolbar<S extends ClientSession> implements Toolbar<S>,
-                                                                          IsWidget {
+public abstract class AbstractToolbar<S extends ClientSession> implements Toolbar<S> {
 
-    private static Logger LOGGER = Logger.getLogger(AbstractToolbar.class.getName());
-
-    private final List<ToolbarCommand<S>> commands = new LinkedList<>();
+    private final List<ToolbarCommand<? super S>> commands = new LinkedList<>();
     private final List<AbstractToolbarItem<S>> items = new LinkedList<>();
-    private S session;
+    private final ToolbarView<AbstractToolbar> view;
 
-    private ManagedInstance<AbstractToolbarItem<S>> toolbarItems;
-    private ToolbarView view;
-
-    public AbstractToolbar(final ManagedInstance<AbstractToolbarItem<S>> toolbarItems,
-                           final ToolbarView view) {
-        this.toolbarItems = toolbarItems;
+    protected AbstractToolbar(final ToolbarView<AbstractToolbar> view) {
         this.view = view;
-    }
-
-    public void doInit() {
         view.init(this);
     }
 
-    public void addCommand(final ToolbarCommand<S> item) {
-        commands.add(item);
-    }
+    protected abstract AbstractToolbarItem<S> newToolbarItem();
 
-    public void initialize(final S session,
-                           final ToolbarCommandCallback<?> callback) {
-        this.session = session;
-        for (final ToolbarCommand<S> command : commands) {
-            final Command clickHandler = () -> command.execute(callback);
-            final AbstractToolbarItem<S> toolbarItem = toolbarItems.get();
-            toolbarItem.setUUID(((AbstractToolbarSessionCommand) command).getUuid());
-            view.addItem(toolbarItem.asWidget());
-            items.add(toolbarItem);
-            toolbarItem.show(this,
-                             session,
-                             command,
-                             clickHandler);
-        }
+    @SuppressWarnings("unchecked")
+    public void initialize(final S session) {
+        commands.stream()
+                .forEach(command -> {
+                    final AbstractToolbarItem<S> toolbarItem = newToolbarItem();
+                    toolbarItem.setUUID(((AbstractToolbarCommand) command).getUuid());
+                    getView().addItem(toolbarItem.asWidget());
+                    items.add(toolbarItem);
+                    toolbarItem.show(this,
+                                     session,
+                                     (AbstractToolbarCommand<S, ?>) command,
+                                     command::execute);
+                });
         afterDraw();
         show();
     }
 
-    private void afterDraw() {
-        for (final ToolbarCommand<S> command : commands) {
-            ((AbstractToolbarSessionCommand) command).afterDraw();
-        }
-    }
-
-    public void show() {
-        view.show();
-    }
-
-    public void hide() {
-        view.hide();
-    }
-
-    public void destroy() {
-        for (final ToolbarCommand<S> c : commands) {
-            c.destroy();
-        }
-        commands.clear();
-        for (final AbstractToolbarItem<S> item : items) {
-            item.destroy();
-        }
-        items.clear();
-        view.destroy();
-        this.view = null;
-        this.session = null;
+    public void addCommand(final ToolbarCommand<? super S> item) {
+        commands.add(item);
     }
 
     @Override
-    public ToolbarView getView() {
-        return view;
-    }
-
-    @Override
-    public Widget asWidget() {
-        return view.asWidget();
-    }
-
     public void disable(final ToolbarCommand<S> command) {
         final AbstractToolbarItem<S> item = getItem(command);
         if (null != item) {
@@ -123,6 +68,7 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
         }
     }
 
+    @Override
     public void enable(final ToolbarCommand<S> command) {
         final AbstractToolbarItem<S> item = getItem(command);
         if (null != item) {
@@ -130,21 +76,42 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
         }
     }
 
-    protected AbstractToolbarItem<S> getItem(final ToolbarCommand<?> command) {
-        final String uuid = ((AbstractToolbarSessionCommand) command).getUuid();
-        for (final AbstractToolbarItem<S> item : items) {
-            if (uuid.equals(item.getUUID())) {
-                return item;
-            }
-        }
-        return null;
+    @Override
+    public void clear() {
+        commands.clear();
+        items.clear();
+        getView().clear();
     }
 
-    private void log(final Level level,
-                     final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
-            LOGGER.log(level,
-                       message);
-        }
+    @Override
+    public void destroy() {
+        commands.clear();
+        items.clear();
+        getView().destroy();
+    }
+
+    @Override
+    public ToolbarView<? extends Toolbar> getView() {
+        return view;
+    }
+
+    protected ToolbarCommand<? super S> getCommand(final int index) {
+        return commands.get(index);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected AbstractToolbarItem<S> getItem(final ToolbarCommand<?> command) {
+        return items.stream()
+                .filter(command::equals)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private void afterDraw() {
+        commands.forEach(ToolbarCommand::refresh);
+    }
+
+    private void show() {
+        getView().show();
     }
 }

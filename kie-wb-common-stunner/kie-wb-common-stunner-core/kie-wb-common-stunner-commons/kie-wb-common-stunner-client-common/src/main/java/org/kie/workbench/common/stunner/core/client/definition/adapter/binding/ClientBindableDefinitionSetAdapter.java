@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,14 +29,17 @@ class ClientBindableDefinitionSetAdapter extends AbstractClientBindableAdapter<O
     private Map<Class, String> propertyDescriptionFieldNames;
     private Map<Class, Class> graphFactoryTypes;
     private Set<String> definitionIds;
+    private Map<Class, Annotation> qualifiers;
 
     @Override
     public void setBindings(final Map<Class, String> propertyDescriptionFieldNames,
                             final Map<Class, Class> graphFactoryTypes,
+                            final Map<Class, Annotation> qualifiers,
                             final Set<String> definitionIds) {
         this.propertyDescriptionFieldNames = propertyDescriptionFieldNames;
         this.graphFactoryTypes = graphFactoryTypes;
         this.definitionIds = definitionIds;
+        this.qualifiers = qualifiers;
     }
 
     @Override
@@ -74,6 +78,11 @@ class ClientBindableDefinitionSetAdapter extends AbstractClientBindableAdapter<O
     }
 
     @Override
+    public Annotation getQualifier(final Object pojo) {
+        return getQualifiers().get(pojo.getClass());
+    }
+
+    @Override
     public boolean accepts(final Class<?> pojoClass) {
         if (null != propertyDescriptionFieldNames) {
             return getPropertyDescriptionFieldNames().containsKey(pojoClass);
@@ -87,6 +96,10 @@ class ClientBindableDefinitionSetAdapter extends AbstractClientBindableAdapter<O
 
     private Map<Class, Class> getGraphFactoryTypes() {
         return graphFactoryTypes;
+    }
+
+    private Map<Class, Annotation> getQualifiers() {
+        return qualifiers;
     }
 
     private Set<String> getDefinitionIds() {

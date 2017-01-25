@@ -20,6 +20,7 @@ import ${parentAdapterClassName};
 
 import javax.annotation.Generated;
 import javax.enterprise.context.ApplicationScoped;
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -37,7 +38,18 @@ public class ${className} extends ${parentAdapterClassName}<Object> {
         <#list valuePropNames as valuePropName>
             put( ${valuePropName.className}.class, "${valuePropName.methodName}" );
         </#list>
+    }};
 
+    private static final Map<Class, Annotation> qualifiers = new HashMap<Class, Annotation>(${qualifiersSize}) {{
+        <#list qualifiers as qualifier>
+            put( ${qualifier.className}.class,
+                new ${qualifier.methodName}() {
+                    @Override
+                    public Class<? extends Annotation> annotationType() {
+                        return ${qualifier.methodName}.class;
+                }
+            });
+        </#list>
     }};
 
     private static final Set<String> definitionIds = new HashSet<String>(${definitionIdsSize}) {{
@@ -62,7 +74,7 @@ public class ${className} extends ${parentAdapterClassName}<Object> {
 
     @Override
     protected void setBindings(final BindableDefinitionSetAdapter<Object> adapter) {
-        adapter.setBindings( descriptionFieldNames, graphFactoryTypes, definitionIds );
+        adapter.setBindings( descriptionFieldNames, graphFactoryTypes, qualifiers, definitionIds );
     }
 
 }

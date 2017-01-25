@@ -29,23 +29,19 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.command.Request;
-import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 
 @Dependent
-public class ContainmentAcceptorControlImpl extends AbstractContainmentBasedControl<AbstractCanvasHandler>
+public class ContainmentAcceptorControlImpl extends AbstractContainmentBasedControl
         implements ContainmentAcceptorControl<AbstractCanvasHandler> {
 
     private CanvasCommandFactory canvasCommandFactory;
 
     @Inject
-    public ContainmentAcceptorControlImpl(final CanvasCommandFactory canvasCommandFactory,
-                                          final @Request SessionCommandManager<AbstractCanvasHandler> canvasCommandManager) {
-        super(canvasCommandManager);
+    public ContainmentAcceptorControlImpl(final CanvasCommandFactory canvasCommandFactory) {
         this.canvasCommandFactory = canvasCommandFactory;
     }
 

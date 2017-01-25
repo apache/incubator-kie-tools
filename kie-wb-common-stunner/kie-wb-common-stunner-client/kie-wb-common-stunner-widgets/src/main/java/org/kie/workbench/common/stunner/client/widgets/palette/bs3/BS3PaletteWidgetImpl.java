@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.client.widgets.palette.AbstractPaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory.BS3PaletteViewFactory;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
@@ -285,9 +285,12 @@ public class BS3PaletteWidgetImpl extends AbstractPaletteWidget<DefinitionSetPal
     }
 
     private void hideFloatingPalette() {
-        clearItemMouseOverTimer();
-        paletteCategory.clear();
-        floatingView.hide();
+        // Hide floating view once has been initialized.
+        if (null != paletteCategory.getView()) {
+            clearItemMouseOverTimer();
+            paletteCategory.clear();
+            floatingView.hide();
+        }
     }
 
     private void showDragProxy(final String id,

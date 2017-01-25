@@ -347,10 +347,10 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             final String className = classElement.getSimpleName().toString();
             processingContext.setDefinitionSet(packageName,
                                                className);
-            String propertyClassName = packageName + "." + className;
+            String defSetClassName = packageName + "." + className;
             // Description fields.
             processFieldName(classElement,
-                             propertyClassName,
+                             defSetClassName,
                              ANNOTATION_DESCRIPTION,
                              processingContext.getDefSetAnnotations().getDescriptionFieldNames(),
                              true);
@@ -374,7 +374,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             processingContext.getDefSetAnnotations().getDefinitionIds().addAll(defIds);
             // Builder class.
             processDefinitionSetModelBuilder(e,
-                                             propertyClassName,
+                                             defSetClassName,
                                              processingContext.getDefSetAnnotations().getBuilderFieldNames());
             // Graph factory type.
             TypeMirror mirror = null;
@@ -387,8 +387,20 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 throw new RuntimeException("No graph factory class specifyed for the @DefinitionSet.");
             }
             String fqcn = mirror.toString();
-            processingContext.getDefSetAnnotations().getGraphFactoryTypes().put(propertyClassName,
+            processingContext.getDefSetAnnotations().getGraphFactoryTypes().put(defSetClassName,
                                                                                 fqcn);
+            // Definition Set's qualifier.
+            try {
+                Class<?> qualifierClass = definitionSetAnn.qualifier();
+            } catch (MirroredTypeException mte) {
+                mirror = mte.getTypeMirror();
+            }
+            if (null == mirror) {
+                throw new RuntimeException("No qualifier class specifyed for the @DefinitionSet.");
+            }
+            processingContext.getDefSetAnnotations().getQualifiers().put(defSetClassName,
+                                                                         mirror.toString());
+            // Shape Set definition.
             ShapeSet shapeSetAnn = e.getAnnotation(ShapeSet.class);
             if (null != shapeSetAnn) {
                 processingContext.getDefSetAnnotations().setHasShapeSet(true);

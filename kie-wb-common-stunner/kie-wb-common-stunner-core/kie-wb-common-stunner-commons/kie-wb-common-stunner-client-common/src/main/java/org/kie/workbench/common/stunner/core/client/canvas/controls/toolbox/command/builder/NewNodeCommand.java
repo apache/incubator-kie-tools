@@ -24,7 +24,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.BuildRequest;
@@ -168,6 +168,7 @@ public class NewNodeCommand<I> extends AbstractElementBuilderCommand<I> {
                                                                                     @Override
                                                                                     public void execute() {
                                                                                         getBuilderControl().enable(canvasHandler);
+                                                                                        getBuilderControl().setCommandManagerProvider(context::getCommandManager);
                                                                                         getGraphBoundsIndexer().build(canvasHandler.getDiagram().getGraph());
                                                                                         // TODO: Use right magnets.
                                                                                         NewNodeCommand.this.sourceMagnet = 3;

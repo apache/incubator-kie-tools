@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
 
 @Dependent
 public class CanvasValidationControlImpl
-        extends AbstractCanvasHandlerControl
+        extends AbstractCanvasHandlerControl<AbstractCanvasHandler>
         implements CanvasValidationControl<AbstractCanvasHandler> {
 
     CanvasValidator canvasValidator;

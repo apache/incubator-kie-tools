@@ -20,12 +20,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 
 @Dependent
-public class VisitGraphToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientReadOnlySession, VisitGraphSessionCommand> {
+public class VisitGraphToolbarCommand extends AbstractToolbarCommand<ClientSession, VisitGraphSessionCommand> {
 
     @Inject
     public VisitGraphToolbarCommand(final SessionCommandFactory sessionCommandFactory) {

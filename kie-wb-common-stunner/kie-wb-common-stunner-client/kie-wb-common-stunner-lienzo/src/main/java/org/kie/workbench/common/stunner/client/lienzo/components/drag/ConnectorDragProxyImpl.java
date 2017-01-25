@@ -60,7 +60,7 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
     @Override
     public DragProxy<AbstractCanvasHandler, Item, DragProxyCallback> proxyFor(final AbstractCanvasHandler context) {
         this.canvasHandler = context;
-        this.shapeViewDragProxyFactory.proxyFor(context.getCanvas());
+        this.shapeViewDragProxyFactory.proxyFor(context.getAbstractCanvas());
         this.graphBoundsIndexer.setRootUUID(context.getDiagram().getMetadata().getCanvasRootUUID());
         return this;
     }
@@ -160,7 +160,7 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
     }
 
     private WiresManager getWiresManager() {
-        final AbstractCanvas<?> canvas = canvasHandler.getCanvas();
+        final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
         final LienzoLayer layer = (LienzoLayer) canvas.getLayer();
         return WiresManager.get(layer.getLienzoLayer());
     }
@@ -174,7 +174,7 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
     }
 
     private AbstractCanvas<?> getCanvas() {
-        return canvasHandler.getCanvas();
+        return canvasHandler.getAbstractCanvas();
     }
 
     private class DummyShapeView extends WiresShape implements ShapeView<DummyShapeView> {

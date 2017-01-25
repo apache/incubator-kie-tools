@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.client.lienzo.Lienzo;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
-import org.kie.workbench.common.stunner.client.widgets.canvas.LienzoPanel;
+import org.kie.workbench.common.stunner.client.widgets.canvas.view.LienzoPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
@@ -81,7 +81,14 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
         lienzoPanel.show(width,
                          height,
                          PADDING);
+        // Show a decorator to represent the diagram's bounds.
+        view
+                .setDecoratorStrokeWidth(1)
+                .setDecoratorStrokeAlpha(0.8)
+                .setDecoratorStrokeColor("#d3d3d3");
         show(lienzoPanel.asWidget(),
+             width,
+             height,
              layer);
         layer.onAfterDraw(WiresCanvasPresenter.this::afterDrawCanvas);
         return this;
@@ -101,5 +108,9 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
     public void destroy() {
         super.destroy();
         lienzoPanel.destroy();
+    }
+
+    public LienzoPanel getLienzoPanel() {
+        return lienzoPanel;
     }
 }

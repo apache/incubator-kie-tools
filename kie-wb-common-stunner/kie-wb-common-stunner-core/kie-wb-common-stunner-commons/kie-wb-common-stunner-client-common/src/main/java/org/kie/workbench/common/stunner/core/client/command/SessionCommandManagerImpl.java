@@ -19,8 +19,9 @@ package org.kie.workbench.common.stunner.core.client.command;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandListener;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -66,6 +67,36 @@ public class SessionCommandManagerImpl
                                     final Command<AbstractCanvasHandler, CanvasViolation> command,
                                     final CommandResult<CanvasViolation> result) {
                     // Nothing to do with the command registry for the allow operation.
+                    // Notify listener, if any.
+                    SessionCommandManagerImpl.this.postAllow(context,
+                                                             command,
+                                                             result);
+                }
+
+                @Override
+                public void onExecute(final AbstractCanvasHandler context,
+                                      final Command<AbstractCanvasHandler, CanvasViolation> command,
+                                      final CommandResult<CanvasViolation> result) {
+                    super.onExecute(context,
+                                    command,
+                                    result);
+                    // Notify listener, if any.
+                    SessionCommandManagerImpl.this.postExecute(context,
+                                                               command,
+                                                               result);
+                }
+
+                @Override
+                public void onUndo(final AbstractCanvasHandler context,
+                                   final Command<AbstractCanvasHandler, CanvasViolation> command,
+                                   final CommandResult<CanvasViolation> result) {
+                    super.onUndo(context,
+                                 command,
+                                 result);
+                    // Notify listener, if any.
+                    SessionCommandManagerImpl.this.postUndo(context,
+                                                            command,
+                                                            result);
                 }
 
                 @Override

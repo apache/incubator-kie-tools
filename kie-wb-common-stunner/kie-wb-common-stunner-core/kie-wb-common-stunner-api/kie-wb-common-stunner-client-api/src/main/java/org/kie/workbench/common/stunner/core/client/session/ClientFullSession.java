@@ -18,16 +18,12 @@ package org.kie.workbench.common.stunner.core.client.session;
 
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.palette.CanvasPaletteControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.ToolboxControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -36,17 +32,15 @@ import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 /**
  * A session that provides controls which can potentially update or modify the session's diagram structure/metadata.
+ * Any full session instance must provide at least the following controls.
+ * Implementation can provide additional controls.
  * @param <C> The canvas.
  * @param <H> The canvas handler.
  */
 public interface ClientFullSession<C extends Canvas, H extends CanvasHandler>
         extends ClientReadOnlySession<C, H> {
 
-    ResizeControl<H, Element> getResizeControl();
-
     CanvasValidationControl<H> getValidationControl();
-
-    CanvasPaletteControl<H> getPaletteControl();
 
     CanvasCommandManager<H> getCommandManager();
 
@@ -58,11 +52,7 @@ public interface ClientFullSession<C extends Canvas, H extends CanvasHandler>
 
     DockingAcceptorControl<H> getDockingAcceptorControl();
 
-    CanvasNameEditionControl<H, Element> getCanvasNameEditionControl();
-
     DragControl<H, Element> getDragControl();
-
-    ToolboxControl<H, Element> getToolboxControl();
 
     ElementBuilderControl<H> getBuilderControl();
 }

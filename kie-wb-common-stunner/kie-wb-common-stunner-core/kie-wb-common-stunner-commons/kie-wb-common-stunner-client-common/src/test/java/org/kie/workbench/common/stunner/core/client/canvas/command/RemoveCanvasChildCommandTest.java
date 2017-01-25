@@ -59,8 +59,8 @@ public class RemoveCanvasChildCommandTest extends AbstractCanvasCommandTest {
         assertNotEquals(CommandResult.Type.ERROR,
                         result.getType());
         verify(canvasHandler,
-               times(1)).removeChild(eq(PARENT_ID),
-                                     eq(CHILD_ID));
+               times(1)).removeChild(eq(parent),
+                                     eq(child));
         verify(canvasHandler,
                times(1)).applyElementMutation(eq(parent),
                                               any(MutationContext.class));

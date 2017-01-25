@@ -20,12 +20,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 
 @Dependent
-public class ValidateToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientFullSession, ValidateSessionCommand> {
+public class ValidateToolbarCommand extends AbstractToolbarCommand<ClientFullSession, ValidateSessionCommand> {
 
     @Inject
     public ValidateToolbarCommand(final SessionCommandFactory sessionCommandFactory) {

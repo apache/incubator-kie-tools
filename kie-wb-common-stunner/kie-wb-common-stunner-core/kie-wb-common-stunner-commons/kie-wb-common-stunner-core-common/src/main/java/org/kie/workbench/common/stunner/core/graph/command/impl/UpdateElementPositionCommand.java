@@ -93,7 +93,7 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
         final Element<?> element = checkNodeNotNull(context);
         final Point2D oldPosition = GraphUtils.getPosition((View) element.getContent());
-        final double[] oldSize = GraphUtils.getSize((View) element.getContent());
+        final double[] oldSize = GraphUtils.getNodeSize((View) element.getContent());
         this.oldX = oldPosition.getX();
         this.oldY = oldPosition.getY();
         final double w = oldSize[0];

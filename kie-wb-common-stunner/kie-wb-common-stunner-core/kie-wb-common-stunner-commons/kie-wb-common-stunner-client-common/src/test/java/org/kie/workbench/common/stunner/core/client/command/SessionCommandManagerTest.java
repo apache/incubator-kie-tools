@@ -19,10 +19,10 @@ package org.kie.workbench.common.stunner.core.client.command;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.mockito.Mock;
@@ -46,7 +46,7 @@ public class SessionCommandManagerTest {
     @Mock
     AbstractCanvas canvas;
     @Mock
-    AbstractClientFullSession clientFullSession;
+    ClientFullSession clientFullSession;
     @Mock
     Command<AbstractCanvasHandler, CanvasViolation> command;
     @Mock

@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -31,7 +32,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventTy
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 @Dependent
-public final class SelectionControlImpl extends AbstractSelectionControl {
+public final class SelectionControlImpl<H extends AbstractCanvasHandler> extends AbstractSelectionControl<H> {
 
     @Inject
     public SelectionControlImpl(final Event<CanvasElementSelectedEvent> elementSelectedEventEvent,

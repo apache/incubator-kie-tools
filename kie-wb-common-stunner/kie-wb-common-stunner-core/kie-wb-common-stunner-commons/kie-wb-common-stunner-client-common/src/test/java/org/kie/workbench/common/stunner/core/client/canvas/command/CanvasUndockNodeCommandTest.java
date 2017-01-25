@@ -66,8 +66,8 @@ public class CanvasUndockNodeCommandTest extends AbstractCanvasCommandTest {
                times(0)).addChild(any(Node.class),
                                   any(Node.class));
         verify(canvasHandler,
-               times(1)).undock(eq(P_ID),
-                                eq(C_ID));
+               times(1)).undock(eq(parent),
+                                eq(candidate));
         verify(canvasHandler,
                times(1)).applyElementMutation(eq(candidate),
                                               any(MutationContext.class));

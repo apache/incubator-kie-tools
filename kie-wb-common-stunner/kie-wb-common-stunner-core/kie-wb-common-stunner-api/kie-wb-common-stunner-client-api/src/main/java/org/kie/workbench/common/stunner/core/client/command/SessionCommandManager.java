@@ -17,10 +17,13 @@
 package org.kie.workbench.common.stunner.core.client.command;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.command.CommandListener;
+import org.kie.workbench.common.stunner.core.command.HasCommandListener;
 import org.kie.workbench.common.stunner.core.command.HasCommandRegistry;
 
 public interface SessionCommandManager<H extends CanvasHandler>
         extends CanvasCommandManager<H>,
-                HasCommandRegistry<H, CanvasViolation> {
+                HasCommandRegistry<H, CanvasViolation>,
+                HasCommandListener<CommandListener<H, CanvasViolation>> {
 
 }

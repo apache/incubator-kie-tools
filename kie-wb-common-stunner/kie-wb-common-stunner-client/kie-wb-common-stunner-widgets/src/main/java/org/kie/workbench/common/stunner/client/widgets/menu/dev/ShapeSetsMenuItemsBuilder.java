@@ -28,11 +28,10 @@ import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
-import org.uberfire.workbench.model.menu.MenuFactory;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
 /**
  * The menu builder that provides a dropdown menu item in order to create new diagrams.
@@ -78,24 +77,6 @@ public class ShapeSetsMenuItemsBuilder {
             }});
             add(menu);
         }};
-        return buildItem(group);
-    }
-
-    private MenuItem buildItem(final IsWidget widget) {
-        return new MenuFactory.CustomMenuBuilder() {
-            @Override
-            public void push(MenuFactory.CustomMenuBuilder element) {
-            }
-
-            @Override
-            public MenuItem build() {
-                return new BaseMenuCustom() {
-                    @Override
-                    public IsWidget build() {
-                        return widget;
-                    }
-                };
-            }
-        }.build();
+        return MenuUtils.buildItem(group);
     }
 }

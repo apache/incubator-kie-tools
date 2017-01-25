@@ -44,8 +44,8 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
-public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegistrationControl
-        implements SelectionControl<AbstractCanvasHandler, Element> {
+public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler> extends AbstractCanvasHandlerRegistrationControl<H>
+        implements SelectionControl<H, Element> {
 
     private static Logger LOGGER = Logger.getLogger(AbstractSelectionControl.class.getName());
 
@@ -69,7 +69,7 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
      */
 
     @Override
-    public void enable(final AbstractCanvasHandler canvasHandler) {
+    public void enable(final H canvasHandler) {
         super.enable(canvasHandler);
         final Layer layer = canvasHandler.getCanvas().getLayer();
         // Click event.
@@ -92,10 +92,12 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
 
     @Override
     public void register(final Element element) {
-        final Shape<?> shape = getCanvas().getShape(element.getUUID());
-        if (null != shape) {
-            register(element,
-                     shape);
+        if (checkNotRegistered(element)) {
+            final Shape<?> shape = getCanvas().getShape(element.getUUID());
+            if (null != shape) {
+                register(element,
+                         shape);
+            }
         }
     }
 
@@ -116,11 +118,16 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
         }
     }
 
+    /**
+     * When clicking on the layer or on the canvas root element, it's not
+     * being added into the selected list but it fires the selection event
+     * so other components can process or present their stuff at this point.
+     */
     protected void handleLayerClick(final boolean clearSelection) {
         if (clearSelection) {
             clearSelection();
         }
-        final String canvasRootUUID = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
+        final String canvasRootUUID = getRootUUID();
         if (null != canvasRootUUID) {
             elementSelectedEventEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
                                                                           canvasRootUUID));
@@ -132,8 +139,10 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
     @Override
     protected void doDisable() {
         super.doDisable();
-        if (null != layerClickHandler) {
-            this.getCanvas().getLayer().removeHandler(layerClickHandler);
+        if (null != layerClickHandler
+                && null != getCanvas()
+                && null != getCanvas().getLayer()) {
+            getCanvas().getLayer().removeHandler(layerClickHandler);
             this.layerClickHandler = null;
         }
     }
@@ -182,8 +191,8 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
         ***************************************************************
      */
 
-    public SelectionControl<AbstractCanvasHandler, Element> select(final String uuid,
-                                                                   final boolean fireEvent) {
+    public SelectionControl<H, Element> select(final String uuid,
+                                               final boolean fireEvent) {
         selectedElements.add(uuid);
         updateViewShapesState();
         if (fireEvent) {
@@ -194,20 +203,20 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
     }
 
     @Override
-    public SelectionControl<AbstractCanvasHandler, Element> select(final Element element) {
+    public SelectionControl<H, Element> select(final Element element) {
         return select(element,
                       true);
     }
 
-    public SelectionControl<AbstractCanvasHandler, Element> select(final Element element,
-                                                                   final boolean fireEvent) {
+    public SelectionControl<H, Element> select(final Element element,
+                                               final boolean fireEvent) {
         this.select(element.getUUID(),
                     fireEvent);
         return this;
     }
 
-    public SelectionControl<AbstractCanvasHandler, Element> deselect(final String uuid,
-                                                                     final boolean fireEvent) {
+    public SelectionControl<H, Element> deselect(final String uuid,
+                                                 final boolean fireEvent) {
         // GWT.log("***** DESELECTING " + uuid );
         selectedElements.remove(uuid);
         updateViewShapesState();
@@ -218,13 +227,13 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
     }
 
     @Override
-    public SelectionControl<AbstractCanvasHandler, Element> deselect(final Element element) {
+    public SelectionControl<H, Element> deselect(final Element element) {
         return deselect(element,
                         true);
     }
 
-    public SelectionControl<AbstractCanvasHandler, Element> deselect(final Element element,
-                                                                     final boolean fireEvent) {
+    public SelectionControl<H, Element> deselect(final Element element,
+                                                 final boolean fireEvent) {
         return this.deselect(element.getUUID(),
                              fireEvent);
     }
@@ -244,11 +253,11 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
     }
 
     @Override
-    public SelectionControl<AbstractCanvasHandler, Element> clearSelection() {
+    public SelectionControl<H, Element> clearSelection() {
         return clearSelection(true);
     }
 
-    public SelectionControl<AbstractCanvasHandler, Element> clearSelection(final boolean fireEvent) {
+    public SelectionControl<H, Element> clearSelection(final boolean fireEvent) {
         // De-select all currently selected shapes.
         for (final String uuid : selectedElements) {
             final Shape<?> shape = canvasHandler.getCanvas().getShape(uuid);
@@ -289,7 +298,7 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
     }
 
     private void doSelect(final String uuid) {
-        if (!isSelected(uuid)) {
+        if (!isSelected(uuid) && !uuid.equals(getRootUUID())) {
             this.clearSelection(false);
             this.select(uuid,
                         false);
@@ -310,6 +319,10 @@ public abstract class AbstractSelectionControl extends AbstractCanvasHandlerRegi
 
     protected Canvas getCanvas() {
         return null != canvasHandler ? canvasHandler.getCanvas() : null;
+    }
+
+    private String getRootUUID() {
+        return canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
     }
 
     private void log(final Level level,

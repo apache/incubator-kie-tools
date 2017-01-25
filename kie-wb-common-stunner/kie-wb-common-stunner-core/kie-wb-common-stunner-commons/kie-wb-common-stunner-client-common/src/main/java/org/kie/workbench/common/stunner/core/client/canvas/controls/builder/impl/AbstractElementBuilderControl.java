@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.requ
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
@@ -51,24 +52,23 @@ import org.kie.workbench.common.stunner.core.rule.model.ModelCardinalityRuleMana
 import org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleManager;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
-public abstract class AbstractElementBuilderControl extends AbstractCanvasHandlerControl
+public abstract class AbstractElementBuilderControl extends AbstractCanvasHandlerControl<AbstractCanvasHandler>
         implements ElementBuilderControl<AbstractCanvasHandler> {
 
     private static Logger LOGGER = Logger.getLogger(AbstractElementBuilderControl.class.getName());
 
     private final ClientDefinitionManager clientDefinitionManager;
     private final ClientFactoryService clientFactoryServices;
-    private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
     private final CanvasCommandFactory canvasCommandFactory;
     private final GraphUtils graphUtils;
     private final ModelContainmentRuleManager modelContainmentRuleManager;
     private final ModelCardinalityRuleManager modelCardinalityRuleManager;
     private final GraphBoundsIndexer graphBoundsIndexer;
     private final CanvasLayoutUtils canvasLayoutUtils;
+    private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
     public AbstractElementBuilderControl(final ClientDefinitionManager clientDefinitionManager,
                                          final ClientFactoryService clientFactoryServices,
-                                         final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                          final GraphUtils graphUtils,
                                          final ModelContainmentRuleManager modelContainmentRuleManager,
                                          final ModelCardinalityRuleManager modelCardinalityRuleManager,
@@ -77,13 +77,17 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                                          final CanvasLayoutUtils canvasLayoutUtils) {
         this.clientDefinitionManager = clientDefinitionManager;
         this.clientFactoryServices = clientFactoryServices;
-        this.canvasCommandManager = canvasCommandManager;
         this.graphUtils = graphUtils;
         this.modelContainmentRuleManager = modelContainmentRuleManager;
         this.modelCardinalityRuleManager = modelCardinalityRuleManager;
         this.canvasCommandFactory = canvasCommandFactory;
         this.graphBoundsIndexer = graphBoundsIndexer;
         this.canvasLayoutUtils = canvasLayoutUtils;
+    }
+
+    @Override
+    public void setCommandManagerProvider(final RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> provider) {
+        this.commandManagerProvider = provider;
     }
 
     @Override
@@ -111,9 +115,10 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         final DefaultRuleViolations cardinalityViolations = new DefaultRuleViolations();
         labels.stream().forEach(role -> {
             final Integer i = graphLabelCount.get(role);
-            final RuleViolations violations = modelCardinalityRuleManager.evaluate(role,
-                                                                                   null != i ? i : 0,
-                                                                                   RuleManager.Operation.ADD);
+            final RuleViolations violations =
+                    modelCardinalityRuleManager.evaluate(role,
+                                                         null != i ? i : 0,
+                                                         RuleManager.Operation.ADD);
             cardinalityViolations.addViolations(violations);
         });
         return isValid(cardinalityViolations);
@@ -157,10 +162,10 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                         @Override
                         public void onComplete(final String uuid,
                                                final List<Command<AbstractCanvasHandler, CanvasViolation>> commands) {
-                            canvasCommandManager.execute(canvasHandler,
-                                                         new CompositeCommandImpl.CompositeCommandBuilder()
-                                                                 .addCommands(commands)
-                                                                 .build());
+                            getCommandManager().execute(canvasHandler,
+                                                        new CompositeCommandImpl.CompositeCommandBuilder()
+                                                                .addCommands(commands)
+                                                                .build());
                             buildCallback.onSuccess(uuid);
                             // Notify processing ends.
                             fireProcessingCompleted();
@@ -180,6 +185,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         graphBoundsIndexer.destroy();
         modelContainmentRuleManager.clearRules();
         modelCardinalityRuleManager.clearRules();
+        commandManagerProvider = null;
     }
 
     public interface CommandsCallback {
@@ -304,5 +310,9 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
 
     protected String getShapeSetId() {
         return canvasHandler.getDiagram().getMetadata().getShapeSetId();
+    }
+
+    CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
+        return commandManagerProvider.getCommandManager();
     }
 }

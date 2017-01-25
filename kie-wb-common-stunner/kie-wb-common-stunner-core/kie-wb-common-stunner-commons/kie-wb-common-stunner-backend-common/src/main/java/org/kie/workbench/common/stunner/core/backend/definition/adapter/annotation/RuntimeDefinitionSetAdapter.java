@@ -15,6 +15,7 @@
 
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.annotation;
 
+import java.lang.annotation.Annotation;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -54,6 +55,17 @@ public class RuntimeDefinitionSetAdapter<T> extends AbstractRuntimeDefinitionSet
             }
         }
         return result;
+    }
+
+    @Override
+    public Annotation getQualifier(final T definitionSet) {
+        if (null != definitionSet) {
+            DefinitionSet annotation = definitionSet.getClass().getAnnotation(DefinitionSet.class);
+            if (null != annotation) {
+                return annotation::qualifier;
+            }
+        }
+        return null;
     }
 
     @Override

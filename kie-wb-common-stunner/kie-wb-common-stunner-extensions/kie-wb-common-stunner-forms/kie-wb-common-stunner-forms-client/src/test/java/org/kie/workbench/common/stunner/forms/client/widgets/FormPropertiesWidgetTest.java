@@ -27,7 +27,7 @@ import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -56,7 +56,7 @@ public class FormPropertiesWidgetTest {
     @Mock
     Event<FormPropertiesOpened> propertiesOpenedEvent;
     @Mock
-    AbstractClientFullSession session;
+    ClientFullSession session;
     @Mock
     SelectionControl selectionControl;
     @Mock

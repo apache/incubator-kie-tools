@@ -63,8 +63,8 @@ public class DeleteCanvasConnectorCommandTest extends AbstractCanvasCommandTest 
         verify(canvasHandler,
                times(1)).deregister(eq(candidate));
         verify(canvasHandler,
-               times(1)).fireCanvasElementUpdated(eq(source));
+               times(1)).notifyCanvasElementUpdated(eq(source));
         verify(canvasHandler,
-               times(1)).fireCanvasElementUpdated(eq(target));
+               times(1)).notifyCanvasElementUpdated(eq(target));
     }
 }

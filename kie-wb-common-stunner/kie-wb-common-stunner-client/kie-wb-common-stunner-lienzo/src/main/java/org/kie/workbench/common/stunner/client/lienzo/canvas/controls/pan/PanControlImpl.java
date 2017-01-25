@@ -21,17 +21,30 @@ import javax.enterprise.context.Dependent;
 import com.ait.lienzo.client.core.mediator.EventFilter;
 import com.ait.lienzo.client.core.mediator.IEventFilter;
 import com.ait.lienzo.client.core.mediator.MousePanMediator;
+import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.controls.AbstractMediatorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 
 @Dependent
-public class PanControlImpl extends AbstractMediatorControl<MousePanMediator> implements PanControl<AbstractCanvas> {
+public class PanControlImpl<C extends AbstractCanvas> extends AbstractMediatorControl<MousePanMediator, C> implements PanControl<C> {
 
     private final IEventFilter[] filters = new IEventFilter[]{EventFilter.ALT};
 
     @Override
     protected MousePanMediator buildMediator() {
         return new MousePanMediator(filters);
+    }
+
+    @Override
+    public PanControl<C> translate(double tx,
+                                   double ty) {
+        getLienzoLayer().translate(tx,
+                                   ty);
+        return this;
+    }
+
+    private LienzoLayer getLienzoLayer() {
+        return (LienzoLayer) canvas.getLayer();
     }
 }

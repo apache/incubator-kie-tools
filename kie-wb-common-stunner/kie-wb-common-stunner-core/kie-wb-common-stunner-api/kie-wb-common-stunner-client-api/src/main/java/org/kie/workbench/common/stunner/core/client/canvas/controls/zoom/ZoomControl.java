@@ -26,4 +26,9 @@ public interface ZoomControl<C extends Canvas> extends CanvasControl<C> {
     ZoomControl<C> setMaxScale(final double maxScale);
 
     ZoomControl<C> setZoomFactory(final double factor);
+
+    ZoomControl<C> scale(final double factor);
+
+    ZoomControl<C> scale(final double sx,
+                         final double sy);
 }

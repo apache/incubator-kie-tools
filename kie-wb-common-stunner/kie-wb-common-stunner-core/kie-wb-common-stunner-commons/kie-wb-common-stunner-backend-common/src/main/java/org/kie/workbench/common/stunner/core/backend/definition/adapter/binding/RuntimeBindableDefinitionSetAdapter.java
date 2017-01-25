@@ -15,6 +15,7 @@
 
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.binding;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,14 +33,17 @@ class RuntimeBindableDefinitionSetAdapter<T> extends AbstractRuntimeDefinitionSe
     private Map<Class, String> propertyDescriptionFieldNames;
     private Map<Class, Class> graphFactoryTypes;
     private Set<String> definitionIds;
+    private Map<Class, Annotation> qualifiers;
 
     @Override
     public void setBindings(final Map<Class, String> propertyDescriptionFieldNames,
                             final Map<Class, Class> graphFactoryTypes,
+                            final Map<Class, Annotation> qualifiers,
                             final Set<String> definitionIds) {
         this.propertyDescriptionFieldNames = propertyDescriptionFieldNames;
         this.graphFactoryTypes = graphFactoryTypes;
         this.definitionIds = definitionIds;
+        this.qualifiers = qualifiers;
     }
 
     @Override
@@ -62,8 +66,14 @@ class RuntimeBindableDefinitionSetAdapter<T> extends AbstractRuntimeDefinitionSe
     @Override
     @SuppressWarnings("unchecked")
     public Class<? extends ElementFactory> getGraphFactoryType(final T definitionSet) {
-        Class<?> type = definitionSet.getClass();
+        final Class<?> type = definitionSet.getClass();
         return graphFactoryTypes.get(type);
+    }
+
+    @Override
+    public Annotation getQualifier(final T definitionSet) {
+        final Class<?> type = definitionSet.getClass();
+        return qualifiers.get(type);
     }
 
     @Override

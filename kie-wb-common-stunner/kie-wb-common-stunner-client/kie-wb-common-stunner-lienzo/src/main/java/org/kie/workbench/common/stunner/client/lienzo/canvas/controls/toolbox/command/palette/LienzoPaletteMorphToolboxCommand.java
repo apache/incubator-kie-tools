@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.client.lienzo.components.palette.Abstrac
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoGlyphsHoverPalette;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoPalette;
 import org.kie.workbench.common.stunner.client.lienzo.util.SVGUtils;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.canvas.Transform;
@@ -36,8 +36,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Node
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.palette.AbstractPaletteMorphCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
-import org.kie.workbench.common.stunner.core.client.command.Session;
 import org.kie.workbench.common.stunner.core.client.components.drag.NodeDragProxy;
 import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphTooltip;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPalette;
@@ -57,7 +55,6 @@ public class LienzoPaletteMorphToolboxCommand extends AbstractPaletteMorphComman
     @Inject
     public LienzoPaletteMorphToolboxCommand(final DefinitionUtils definitionUtils,
                                             final CanvasCommandFactory commandFactory,
-                                            final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                             final ClientFactoryService clientFactoryServices,
                                             final CommonLookups commonLookups,
                                             final ShapeManager shapeManager,
@@ -69,7 +66,6 @@ public class LienzoPaletteMorphToolboxCommand extends AbstractPaletteMorphComman
                                             final Event<CanvasElementSelectedEvent> elementSelectedEvent) {
         super(definitionUtils,
               commandFactory,
-              canvasCommandManager,
               clientFactoryServices,
               commonLookups,
               shapeManager,
@@ -100,8 +96,8 @@ public class LienzoPaletteMorphToolboxCommand extends AbstractPaletteMorphComman
                                              mouseY,
                                              itemX, itemY) -> {
             final Transform transform = canvasHandler.getCanvas().getLayer().getTransform();
-            final double ax = canvasHandler.getCanvas().getAbsoluteX();
-            final double ay = canvasHandler.getCanvas().getAbsoluteY();
+            final double ax = canvasHandler.getAbstractCanvas().getAbsoluteX();
+            final double ay = canvasHandler.getAbstractCanvas().getAbsoluteY();
             // As tooltip is a floating view (not part of the canvas), need to transform the cartesian coordinates
             // using current transform attributes to obtain the right absolute position on the screen.
             final Point2D t = transform.transform(getPaletteView().getX(),

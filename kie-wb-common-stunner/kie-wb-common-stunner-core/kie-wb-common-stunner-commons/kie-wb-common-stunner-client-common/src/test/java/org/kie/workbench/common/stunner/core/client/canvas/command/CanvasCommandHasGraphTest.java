@@ -53,7 +53,7 @@ public class CanvasCommandHasGraphTest extends AbstractCanvasCommandTest {
     @Before
     public void setup() throws Exception {
         super.setup();
-        when(canvasHandler.getClientFactoryServices()).thenReturn(clientFactoryService);
+        when(canvasHandler.getGraphExecutionContext()).thenReturn(graphCommandExecutionContext);
         when(successGraphCommandResult.getType()).thenReturn(CommandResult.Type.INFO);
         when(successGraphCommandResult.getViolations()).thenReturn(null);
         when(successGraphCommandResult.getMessage()).thenReturn("OK");
@@ -114,6 +114,34 @@ public class CanvasCommandHasGraphTest extends AbstractCanvasCommandTest {
                times(1)).execute(any(GraphCommandExecutionContext.class));
         verify(canvasCommand,
                times(0)).execute(eq(canvasHandler));
+        verify(graphCommand,
+               times(0)).allow(any(GraphCommandExecutionContext.class));
+        verify(canvasCommand,
+               times(0)).allow(eq(canvasHandler));
+    }
+
+    @Test
+    public void testAllowNoGraphContext() {
+        when(canvasHandler.getGraphExecutionContext()).thenReturn(null);
+        tested.allow(canvasHandler);
+        verify(graphCommand,
+               times(0)).allow(any(GraphCommandExecutionContext.class));
+        verify(canvasCommand,
+               times(1)).allow(eq(canvasHandler));
+        verify(graphCommand,
+               times(0)).execute(any(GraphCommandExecutionContext.class));
+        verify(canvasCommand,
+               times(0)).execute(eq(canvasHandler));
+    }
+
+    @Test
+    public void testExecuteNoGraphContext() {
+        when(canvasHandler.getGraphExecutionContext()).thenReturn(null);
+        tested.execute(canvasHandler);
+        verify(graphCommand,
+               times(0)).execute(any(GraphCommandExecutionContext.class));
+        verify(canvasCommand,
+               times(1)).execute(eq(canvasHandler));
         verify(graphCommand,
                times(0)).allow(any(GraphCommandExecutionContext.class));
         verify(canvasCommand,

@@ -16,19 +16,27 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.uberfire.mvp.ParameterizedCommand;
 
 public interface CanvasHandler<D extends Diagram, C extends Canvas> {
 
     /**
-     * Initializes the handler for a given canvas.
+     * Sets the handled canvas instance.
      */
-    CanvasHandler<D, C> initialize(final C canvas);
+    CanvasHandler<D, C> handle(final C canvas);
 
     /**
-     * Draws the given diagram..
+     * Loads a diagram.instance (depends on each implementation which state, such as index/es, rules etc should
+     * be kept) and draws it in the handled canvas.
+     * @param diagram The Diagram instance to load and draw into the handled canvas.
+     * @param loadCallback A parametrized callback as this operation can be asynchronous, eg: calling third party
+     * endpoints or using the client-server bus application bug in order to perform initializations.
+     * This operation returns the errors or the violated constraint occurred during the execution, if any.
      */
-    CanvasHandler<D, C> draw(final D diagram);
+    void draw(final D diagram,
+              final ParameterizedCommand<CommandResult<?>> loadCallback);
 
     /**
      * The managed diagram instance.

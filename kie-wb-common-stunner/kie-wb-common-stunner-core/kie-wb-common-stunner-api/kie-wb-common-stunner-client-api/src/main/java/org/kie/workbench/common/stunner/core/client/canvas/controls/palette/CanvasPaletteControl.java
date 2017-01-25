@@ -18,11 +18,14 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.palette;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
+import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 
 /**
  * Canvas control to show a floating palette.
  */
-public interface CanvasPaletteControl<C extends CanvasHandler> extends CanvasControl<C> {
+public interface CanvasPaletteControl<C extends CanvasHandler>
+        extends CanvasControl<C>,
+                RequiresCommandManager<C> {
 
     CanvasPaletteControl<C> show(final double x,
                                  final double y);

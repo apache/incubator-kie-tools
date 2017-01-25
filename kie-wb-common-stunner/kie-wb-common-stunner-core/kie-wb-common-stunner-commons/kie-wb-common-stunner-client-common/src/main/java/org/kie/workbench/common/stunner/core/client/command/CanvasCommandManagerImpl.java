@@ -38,18 +38,18 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
  * It operates with instances of type <code>CanvasCommand</code> and throw different context events.
  */
 @Dependent
-public class CanvasCommandManagerImpl
-        extends DelegateCommandManager<AbstractCanvasHandler, CanvasViolation>
+public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
+        extends DelegateCommandManager<H, CanvasViolation>
         implements
-        CanvasCommandManager<AbstractCanvasHandler>,
-        HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>> {
+        CanvasCommandManager<H>,
+        HasCommandListener<CommandListener<H, CanvasViolation>> {
 
     private final Event<CanvasCommandAllowedEvent> isCanvasCommandAllowedEvent;
     private final Event<CanvasCommandExecutedEvent> canvasCommandExecutedEvent;
     private final Event<CanvasUndoCommandExecutedEvent> canvasUndoCommandExecutedEvent;
 
-    private final CommandManager<AbstractCanvasHandler, CanvasViolation> commandManager;
-    private CommandListener<AbstractCanvasHandler, CanvasViolation> listener;
+    private final CommandManager<H, CanvasViolation> commandManager;
+    private CommandListener<H, CanvasViolation> listener;
 
     protected CanvasCommandManagerImpl() {
         this(null,
@@ -69,14 +69,14 @@ public class CanvasCommandManagerImpl
     }
 
     @Override
-    protected CommandManager<AbstractCanvasHandler, CanvasViolation> getDelegate() {
+    protected CommandManager<H, CanvasViolation> getDelegate() {
         return commandManager;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void postAllow(final AbstractCanvasHandler context,
-                             final Command<AbstractCanvasHandler, CanvasViolation> command,
+    protected void postAllow(final H context,
+                             final Command<H, CanvasViolation> command,
                              final CommandResult<CanvasViolation> result) {
         super.postAllow(context,
                         command,
@@ -95,8 +95,8 @@ public class CanvasCommandManagerImpl
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void postExecute(final AbstractCanvasHandler context,
-                               final Command<AbstractCanvasHandler, CanvasViolation> command,
+    protected void postExecute(final H context,
+                               final Command<H, CanvasViolation> command,
                                final CommandResult<CanvasViolation> result) {
         super.postExecute(context,
                           command,
@@ -118,8 +118,8 @@ public class CanvasCommandManagerImpl
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void postUndo(final AbstractCanvasHandler context,
-                            final Command<AbstractCanvasHandler, CanvasViolation> command,
+    protected void postUndo(final H context,
+                            final Command<H, CanvasViolation> command,
                             final CommandResult<CanvasViolation> result) {
         super.postUndo(context,
                        command,
@@ -140,11 +140,11 @@ public class CanvasCommandManagerImpl
     }
 
     @Override
-    public void setCommandListener(final CommandListener<AbstractCanvasHandler, CanvasViolation> listener) {
+    public void setCommandListener(final CommandListener<H, CanvasViolation> listener) {
         this.listener = listener;
     }
 
-    private void draw(final AbstractCanvasHandler context) {
+    private void draw(final H context) {
         context.getCanvas().draw();
     }
 }

@@ -84,6 +84,6 @@ public class AddCanvasConnectorCommandTest extends AbstractCanvasCommandTest {
                                           eq(null),
                                           any(MutationContext.class));
         verify(canvasHandler,
-               times(1)).fireCanvasElementUpdated(eq(source));
+               times(1)).notifyCanvasElementUpdated(eq(source));
     }
 }

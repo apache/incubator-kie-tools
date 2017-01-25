@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette.factory;
 
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinitionBuilder;
 
 public abstract class AbstractPaletteDefinitionFactory<B extends PaletteDefinitionBuilder>

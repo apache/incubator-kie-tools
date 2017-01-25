@@ -37,7 +37,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
 
 /**
- * Lienzo "Wires" based Canvas .
+ * Lienzo based Canvas for Lienzo layer types.
+ * Provides a Lienzo canvas with a single layer as main layer for representing the diagram
+ * and supports both primitives/shapes and wires shapes/connectors as well.
  */
 public abstract class WiresCanvas extends AbstractCanvas<WiresCanvas.View> {
 

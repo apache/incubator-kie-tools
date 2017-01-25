@@ -20,7 +20,20 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.PaletteFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
 
+/**
+ * Provides a widget available to add into the DOM for a given palette.
+ * @param <I> The palette definition type.
+ * @param <P> The palette type wrapped by the widget.
+ */
 public interface PaletteWidgetFactory<I extends PaletteDefinition, P extends PaletteWidget<I, ?>> extends PaletteFactory<I, P> {
 
-    PaletteWidgetFactory<I, P> forCanvasHandler(final CanvasHandler canvasHandler);
+    /**
+     * Builds a new palette widget.
+     * This widget produces events, such as dropping elements from the palette intoa canvas,
+     * and bind those events to the canvas' handler instance.
+     * @param shapeSetId The shape set identifier.
+     * @param canvasHandler The canvas' handler.
+     */
+    P newPalette(final String shapeSetId,
+                 final CanvasHandler canvasHandler);
 }

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 
 public interface Context<H extends CanvasHandler> {
 
@@ -31,6 +32,11 @@ public interface Context<H extends CanvasHandler> {
      * Returns the canvas handler instance for this context.
      */
     H getCanvasHandler();
+
+    /**
+     * Returns the canvas command manager instance assigned to the canvas toolbox control.
+     */
+    CanvasCommandManager<H> getCommandManager();
 
     /**
      * Returns the type of event that has been fired.

@@ -24,16 +24,16 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.command.Session;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-public class UndoSessionCommand extends AbstractClientSessionCommand<AbstractClientFullSession> {
+public class UndoSessionCommand extends AbstractClientSessionCommand<ClientFullSession> {
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
@@ -54,7 +54,7 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<AbstractCli
                      callback);
         final SessionCommandManager<AbstractCanvasHandler> scm = getSessionCommandManager();
         if (null != scm) {
-            final CommandResult<CanvasViolation> result = getSessionCommandManager().undo(getSession().getCanvasHandler());
+            final CommandResult<CanvasViolation> result = getSessionCommandManager().undo((AbstractCanvasHandler) getSession().getCanvasHandler());
             checkState();
             callback.onSuccess((T) result);
         }

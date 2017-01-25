@@ -31,8 +31,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanv
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.command.Request;
-import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -48,35 +46,37 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 @Dependent
-public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl
+public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler>
         implements DragControl<AbstractCanvasHandler, Element> {
 
     private static Logger LOGGER = Logger.getLogger(DragControlImpl.class.getName());
     private static final int delta = 10;
     private final CanvasCommandFactory canvasCommandFactory;
-    private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
     private CanvasGrid dragGrid;
+    private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
     protected DragControlImpl() {
-        this(null,
-             null);
+        this(null);
     }
 
     @Inject
-    public DragControlImpl(final CanvasCommandFactory canvasCommandFactory,
-                           final @Request SessionCommandManager<AbstractCanvasHandler> canvasCommandManager) {
+    public DragControlImpl(final CanvasCommandFactory canvasCommandFactory) {
         this.canvasCommandFactory = canvasCommandFactory;
-        this.canvasCommandManager = canvasCommandManager;
+    }
+
+    @Override
+    public void setCommandManagerProvider(final CommandManagerProvider<AbstractCanvasHandler> provider) {
+        this.commandManagerProvider = provider;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void register(final Element element) {
-        final AbstractCanvas<?> canvas = canvasHandler.getCanvas();
-        final Shape<?> shape = canvas.getShape(element.getUUID());
-        if (shape.getShapeView() instanceof HasEventHandlers) {
-            final HasEventHandlers hasEventHandlers = (HasEventHandlers) shape.getShapeView();
-            if (hasEventHandlers.supports(ViewEventType.DRAG)) {
+        if (checkNotRegistered(element)) {
+            final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
+            final Shape<?> shape = canvas.getShape(element.getUUID());
+            if (shape.getShapeView() instanceof HasEventHandlers) {
+                final HasEventHandlers hasEventHandlers = (HasEventHandlers) shape.getShapeView();
                 final DragHandler handler = new DragHandler() {
 
                     private final double[] shapeSize = new double[]{0, 0};
@@ -84,7 +84,7 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl
 
                     @Override
                     public void start(final DragEvent event) {
-                        final double[] size = GraphUtils.getSize((View) element.getContent());
+                        final double[] size = GraphUtils.getNodeSize((View) element.getContent());
                         shapeSize[0] = size[0];
                         shapeSize[1] = size[1];
                         if (isDragGridEnabled()) {
@@ -133,14 +133,15 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl
     public CommandResult<CanvasViolation> move(final Element element,
                                                final double tx,
                                                final double ty) {
-        final UpdateElementPositionCommand c = canvasCommandFactory.updatePosition((Node<View<?>, Edge>) element,
-                                                                                   tx,
-                                                                                   ty);
-        CommandResult<CanvasViolation> result = canvasCommandManager.allow(canvasHandler,
-                                                                           c);
+        final UpdateElementPositionCommand c = canvasCommandFactory
+                .updatePosition((Node<View<?>, Edge>) element,
+                                tx,
+                                ty);
+        CommandResult<CanvasViolation> result = getCommandManager().allow(canvasHandler,
+                                                                          c);
         if (!CommandUtils.isError(result)) {
-            result = canvasCommandManager.execute(canvasHandler,
-                                                  c);
+            result = getCommandManager().execute(canvasHandler,
+                                                 c);
         }
         if (CommandUtils.isError(result)) {
             LOGGER.log(Level.SEVERE,
@@ -191,6 +192,12 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl
                     ty);
     }
 
+    @Override
+    protected void doDisable() {
+        super.doDisable();
+        commandManagerProvider = null;
+    }
+
     /**
      * Setting dragBounds for the shape doesn't work on lienzo side, so
      * ensure drag does not exceed the canvas bounds.
@@ -215,6 +222,10 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl
             shapeView.setShapeX(tx);
             shapeView.setShapeY(ty);
         }
+    }
+
+    private CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
+        return commandManagerProvider.getCommandManager();
     }
 
     private boolean isDragGridEnabled() {

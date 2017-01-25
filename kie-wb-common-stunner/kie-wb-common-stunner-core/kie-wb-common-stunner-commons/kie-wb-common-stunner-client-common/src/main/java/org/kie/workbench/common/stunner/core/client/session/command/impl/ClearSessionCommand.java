@@ -22,14 +22,15 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.command.Session;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -45,12 +46,12 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
  * after a successful execution.
  */
 @Dependent
-public class ClearSessionCommand extends AbstractClientSessionCommand<AbstractClientFullSession> {
+public class ClearSessionCommand extends AbstractClientSessionCommand<ClientFullSession> {
 
     private static Logger LOGGER = Logger.getLogger(ClearSessionCommand.class.getName());
 
     private final CanvasCommandFactory canvasCommandFactory;
-    private final SessionCommandManager sessionCommandManager;
+    private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     protected ClearSessionCommand() {
         this(null,
@@ -59,14 +60,14 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<AbstractCl
 
     @Inject
     public ClearSessionCommand(final CanvasCommandFactory canvasCommandFactory,
-                               final @Session SessionCommandManager sessionCommandManager) {
+                               final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager) {
         super(false);
         this.canvasCommandFactory = canvasCommandFactory;
         this.sessionCommandManager = sessionCommandManager;
     }
 
     @Override
-    public AbstractClientSessionCommand<AbstractClientFullSession> bind(final AbstractClientFullSession session) {
+    public AbstractClientSessionCommand<ClientFullSession> bind(final ClientFullSession session) {
         super.bind(session);
         checkState();
         return this;

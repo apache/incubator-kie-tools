@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 
 public abstract class BindableBS3PaletteGlyphViewFactory<V extends IsWidget> extends BindableBS3PaletteViewFactory<V> {
 

@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanv
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.command.Session;
+import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
@@ -60,35 +60,34 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 @Dependent
-public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl implements ResizeControl<AbstractCanvasHandler, Element> {
+public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler> implements ResizeControl<AbstractCanvasHandler, Element> {
 
     private static Logger LOGGER = Logger.getLogger(ResizeControlImpl.class.getName());
 
     private final CanvasCommandFactory canvasCommandFactory;
-    private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+    private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
     protected ResizeControlImpl() {
-        this(null,
-             null);
+        this(null);
     }
 
     @Inject
-    public ResizeControlImpl(final CanvasCommandFactory canvasCommandFactory,
-                             final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager) {
+    public ResizeControlImpl(final CanvasCommandFactory canvasCommandFactory) {
         this.canvasCommandFactory = canvasCommandFactory;
-        this.canvasCommandManager = canvasCommandManager;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void register(final Element element) {
-        final AbstractCanvas<?> canvas = canvasHandler.getCanvas();
-        final Shape<?> shape = canvas.getShape(element.getUUID());
-        if (supportsResize(shape)) {
-            registerCPHandlers(element,
-                               shape.getShapeView());
-            registerResizeHandlers(element,
-                                   shape);
+        if (checkNotRegistered(element)) {
+            final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
+            final Shape<?> shape = canvas.getShape(element.getUUID());
+            if (supportsResize(shape)) {
+                registerCPHandlers(element,
+                                   shape.getShapeView());
+                registerResizeHandlers(element,
+                                       shape);
+            }
         }
     }
 
@@ -114,6 +113,17 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
                         y,
                         width,
                         height);
+    }
+
+    @Override
+    public void setCommandManagerProvider(final RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> provider) {
+        this.commandManagerProvider = provider;
+    }
+
+    @Override
+    protected void doDisable() {
+        super.doDisable();
+        this.commandManagerProvider = null;
     }
 
     /**
@@ -254,8 +264,8 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
             }
             commands.stream().forEach(commandBuilder::addCommand);
         }
-        final CommandResult<CanvasViolation> resizeResults = canvasCommandManager.execute(canvasHandler,
-                                                                                          commandBuilder.build());
+        final CommandResult<CanvasViolation> resizeResults = getCommandManager().execute(canvasHandler,
+                                                                                         commandBuilder.build());
         // Update the view bounds on the node content after successful resize.
         if (!CommandUtils.isError(resizeResults)) {
             element.getContent().setBounds(newBounds);
@@ -274,20 +284,19 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
                                                                                     final double h) {
         final Definition content = (Definition) element.getContent();
         final Object def = content.getDefinition();
-        final DefinitionAdapter<Object> adapter = canvasHandler
-                .getClientDefinitionManager()
-                .adapters()
-                .registry()
-                .getDefinitionAdapter(def.getClass());
+        final DefinitionAdapter<Object> adapter =
+                canvasHandler.getDefinitionManager()
+                        .adapters().registry().getDefinitionAdapter(def.getClass());
         final ShapeView<?> shapeView = shape.getShapeView();
-        final List<Command<AbstractCanvasHandler, CanvasViolation>> result = new LinkedList<>();
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> result =
+                new LinkedList<>();
         if (shapeView instanceof HasSize) {
             final Object width = adapter.getMetaProperty(PropertyMetaTypes.WIDTH,
                                                          def);
             final Object height = adapter.getMetaProperty(PropertyMetaTypes.HEIGHT,
                                                           def);
-            final String wId = null != width ? canvasHandler.getClientDefinitionManager().adapters().forProperty().getId(width) : null;
-            final String hId = null != width ? canvasHandler.getClientDefinitionManager().adapters().forProperty().getId(height) : null;
+            final String wId = null != width ? canvasHandler.getDefinitionManager().adapters().forProperty().getId(width) : null;
+            final String hId = null != width ? canvasHandler.getDefinitionManager().adapters().forProperty().getId(height) : null;
             if (null != wId && null != hId) {
                 result.add(canvasCommandFactory.updatePropertyValue(element,
                                                                     wId,
@@ -303,7 +312,7 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
         } else if (shapeView instanceof HasRadius) {
             final Object radius = adapter.getMetaProperty(PropertyMetaTypes.RADIUS,
                                                           def);
-            final String rId = null != radius ? canvasHandler.getClientDefinitionManager().adapters().forProperty().getId(radius) : null;
+            final String rId = null != radius ? canvasHandler.getDefinitionManager().adapters().forProperty().getId(radius) : null;
             if (null != rId) {
                 final double r = w > h ? (h / 2) : (w / 2);
                 result.add(canvasCommandFactory.updatePropertyValue(element,
@@ -316,5 +325,9 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl 
             }
         }
         return result;
+    }
+
+    private CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
+        return commandManagerProvider.getCommandManager();
     }
 }

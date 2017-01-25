@@ -21,12 +21,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.logging.client.LogConfiguration;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.BuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.NodeBuildRequest;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.NodeBuildRequestImpl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlight;
 import org.kie.workbench.common.stunner.core.client.components.drag.NodeDragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.NodeDragProxyCallback;
@@ -92,7 +93,8 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void onItemSelected(final String definitionId,
+    protected void onItemSelected(final Context<AbstractCanvasHandler> context,
+                                  final String definitionId,
                                   final double x,
                                   final double y) {
         clientFactoryServices.newElement(UUID.uuid(),
@@ -139,6 +141,7 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
                                                                                               }
                                                                                           };
                                                                                           nodeBuilderControl.enable(canvasHandler);
+                                                                                          nodeBuilderControl.setCommandManagerProvider(context::getCommandManager);
                                                                                           canvasHighlight = new CanvasHighlight(canvasHandler);
                                                                                           graphBoundsIndexer.build(canvasHandler.getDiagram().getGraph());
                                                                                           nodeDragProxyFactory
@@ -193,6 +196,7 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
 
                                                                                                                                              @Override
                                                                                                                                              public void onSuccess(final String uuid) {
+                                                                                                                                                 nodeBuilderControl.setCommandManagerProvider(null);
                                                                                                                                                  nodeBuilderControl.disable();
                                                                                                                                                  canvasHighlight.unhighLight();
                                                                                                                                              }

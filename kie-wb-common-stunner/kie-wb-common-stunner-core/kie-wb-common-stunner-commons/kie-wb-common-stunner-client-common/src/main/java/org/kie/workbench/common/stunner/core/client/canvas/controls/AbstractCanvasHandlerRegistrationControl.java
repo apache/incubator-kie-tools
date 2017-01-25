@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -28,8 +30,10 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
-public abstract class AbstractCanvasHandlerRegistrationControl extends AbstractCanvasHandlerControl
-        implements CanvasRegistationControl<AbstractCanvasHandler, Element> {
+public abstract class AbstractCanvasHandlerRegistrationControl<H extends AbstractCanvasHandler> extends AbstractCanvasHandlerControl<H>
+        implements CanvasRegistationControl<H, Element> {
+
+    private static Logger LOGGER = Logger.getLogger(AbstractCanvasHandlerRegistrationControl.class.getName());
 
     private final Map<String, ViewHandler<?>> handlers = new HashMap<>();
 
@@ -60,11 +64,30 @@ public abstract class AbstractCanvasHandlerRegistrationControl extends AbstractC
         deregister(element.getUUID());
     }
 
+    public boolean isRegistered(final Element element) {
+        return handlers.containsKey(element.getUUID());
+    }
+
     protected void deregister(final String uuid) {
         final Shape shape = canvasHandler.getCanvas().getShape(uuid);
         final ViewHandler<?> handler = handlers.get(uuid);
         doDeregisterHandler(shape,
                             handler);
+    }
+
+    protected boolean checkNotRegistered(final Element element) {
+        if (isRegistered(element)) {
+            LOGGER.log(Level.WARNING,
+                       "Trying to register element [" + element.getUUID() + "] again into " +
+                               "the control for type [" + this.getClass().getName() + "]");
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean checkEventContext(final AbstractCanvasHandlerEvent canvasHandlerEvent) {
+        final CanvasHandler _canvasHandler = canvasHandlerEvent.getCanvasHandler();
+        return canvasHandler != null && canvasHandler.equals(_canvasHandler);
     }
 
     private void doDeregisterHandler(final Shape shape,
@@ -74,10 +97,5 @@ public abstract class AbstractCanvasHandlerRegistrationControl extends AbstractC
             hasEventHandlers.removeHandler(handler);
             handlers.remove(shape.getUUID());
         }
-    }
-
-    protected boolean checkEventContext(final AbstractCanvasHandlerEvent canvasHandlerEvent) {
-        final CanvasHandler _canvasHandler = canvasHandlerEvent.getCanvasHandler();
-        return canvasHandler != null && canvasHandler.equals(_canvasHandler);
     }
 }

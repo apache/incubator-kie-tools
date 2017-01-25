@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
-import org.kie.workbench.common.stunner.core.client.session.ClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -47,7 +47,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 public class DefaultRouteFormProvider implements SelectorDataProvider {
 
     @Inject
-    ClientSessionManager canvasSessionManager;
+    SessionManager canvasSessionManager;
 
     @Override
     public String getProviderName() {
@@ -81,13 +81,16 @@ public class DefaultRouteFormProvider implements SelectorDataProvider {
                     targetName = ((BaseSubprocess) bpmnDefinition).getGeneral().getName().getValue();
                 }
                 if (targetName != null && !targetName.isEmpty()) {
-                    values.put(routeIdentifier, targetName);
+                    values.put(routeIdentifier,
+                               targetName);
                 } else {
-                    values.put(routeIdentifier, routeIdentifier);
+                    values.put(routeIdentifier,
+                               routeIdentifier);
                 }
             }
         }
-        return new SelectorData(values, null);
+        return new SelectorData(values,
+                                null);
     }
 
     protected List<Edge> getGatewayOutEdges(FormRenderingContext context) {

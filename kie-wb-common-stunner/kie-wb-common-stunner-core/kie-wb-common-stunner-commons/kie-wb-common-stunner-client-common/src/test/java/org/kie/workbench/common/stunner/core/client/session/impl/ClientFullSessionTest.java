@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
@@ -38,6 +39,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomCon
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.mockito.Mock;
@@ -50,6 +52,8 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class ClientFullSessionTest {
 
+    @Mock
+    CanvasFactory<AbstractCanvas, AbstractCanvasHandler> factory;
     @Mock
     AbstractCanvas canvas;
     @Mock
@@ -68,6 +72,10 @@ public class ClientFullSessionTest {
     CanvasPaletteControl<AbstractCanvasHandler> canvasPaletteControl;
     @Mock
     CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+    @Mock
+    SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    @Mock
+    SessionCommandManager<AbstractCanvasHandler> requestCommandManager;
     @Mock
     RegistryFactory registryFactory;
     @Mock
@@ -89,24 +97,27 @@ public class ClientFullSessionTest {
 
     @Before
     public void setup() throws Exception {
+        when(factory.newCanvas()).thenReturn(canvas);
+        when(factory.newCanvasHandler()).thenReturn(canvasHandler);
+        when(factory.newControl(eq(ZoomControl.class))).thenReturn(zoomControl);
+        when(factory.newControl(eq(PanControl.class))).thenReturn(panControl);
+        when(factory.newControl(eq(SelectionControl.class))).thenReturn(selectionControl);
+        when(factory.newControl(eq(ResizeControl.class))).thenReturn(resizeControl);
+        when(factory.newControl(eq(CanvasValidationControl.class))).thenReturn(canvasValidationControl);
+        when(factory.newControl(eq(CanvasPaletteControl.class))).thenReturn(canvasPaletteControl);
+        when(factory.newControl(eq(ConnectionAcceptorControl.class))).thenReturn(connectionAcceptorControl);
+        when(factory.newControl(eq(ContainmentAcceptorControl.class))).thenReturn(containmentAcceptorControl);
+        when(factory.newControl(eq(DockingAcceptorControl.class))).thenReturn(dockingAcceptorControl);
+        when(factory.newControl(eq(DragControl.class))).thenReturn(dragControl);
+        when(factory.newControl(eq(CanvasNameEditionControl.class))).thenReturn(canvasNameEditionControl);
+        when(factory.newControl(eq(ToolboxControl.class))).thenReturn(toolboxControl);
+        when(factory.newControl(eq(ElementBuilderControl.class))).thenReturn(builderControl);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
-        this.tested = new ClientFullSessionImpl(canvas,
-                                                canvasHandler,
-                                                resizeControl,
-                                                canvasValidationControl,
-                                                canvasPaletteControl,
+        this.tested = new ClientFullSessionImpl(factory,
                                                 canvasCommandManager,
-                                                registryFactory,
-                                                connectionAcceptorControl,
-                                                containmentAcceptorControl,
-                                                dockingAcceptorControl,
-                                                canvasNameEditionControl,
-                                                selectionControl,
-                                                dragControl,
-                                                toolboxControl,
-                                                builderControl,
-                                                zoomControl,
-                                                panControl);
+                                                sessionCommandManager,
+                                                requestCommandManager,
+                                                registryFactory);
     }
 
     @Test
@@ -181,10 +192,10 @@ public class ClientFullSessionTest {
     }
 
     @Test
-    public void testDisposeSession() {
+    public void testDestroySession() {
         tested.isOpened = true;
         tested.doOpen(); // Force to register listeners.
-        tested.dispose();
+        tested.destroy();
         assertFalse(tested.isOpened());
         verify(canvas,
                times(1)).removeRegistrationListener(any(CanvasShapeListener.class));

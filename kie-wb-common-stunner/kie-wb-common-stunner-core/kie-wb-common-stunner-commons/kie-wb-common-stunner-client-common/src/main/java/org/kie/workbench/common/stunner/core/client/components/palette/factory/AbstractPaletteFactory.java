@@ -26,8 +26,8 @@ import com.google.gwt.logging.client.LogConfiguration;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinitionBuilder;
@@ -39,24 +39,22 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
 
     private static Logger LOGGER = Logger.getLogger(AbstractPaletteFactory.class.getName());
 
-    protected SyncBeanManager beanManager;
-    protected ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance;
-    protected ShapeManager shapeManager;
+    protected final SyncBeanManager beanManager;
+    protected final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance;
+    protected final ManagedInstance<P> paletteInstances;
+    protected final ShapeManager shapeManager;
 
     protected final List<DefSetPaletteDefinitionFactory> paletteDefinitionFactories = new LinkedList<>();
-    protected P palette;
 
     public AbstractPaletteFactory(final ShapeManager shapeManager,
                                   final SyncBeanManager beanManager,
                                   final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
-                                  final P palette) {
+                                  final ManagedInstance<P> paletteInstances) {
         this.shapeManager = shapeManager;
         this.beanManager = beanManager;
         this.defaultPaletteDefinitionFactoryInstance = defaultPaletteDefinitionFactoryInstance;
-        this.palette = palette;
+        this.paletteInstances = paletteInstances;
     }
-
-    protected abstract void applyGrid(final PaletteGrid grid);
 
     public void init() {
         Collection<SyncBeanDef<DefSetPaletteDefinitionFactory>> factorySets = beanManager.lookupBeans(DefSetPaletteDefinitionFactory.class);
@@ -82,10 +80,10 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
                           null);
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public P newPalette(final String shapeSetId,
                         final PaletteGrid grid) {
+        final P palette = paletteInstances.get();
         final String defSetId = getShapeSet(shapeSetId).getDefinitionSetId();
         final PaletteDefinitionFactory<PaletteDefinitionBuilder<Object, I, ClientRuntimeError>> paletteDefinitionFactory = getPaletteDefinitionFactory(defSetId);
         final PaletteDefinitionBuilder<Object, I, ClientRuntimeError> paletteDefinitionBuilder = paletteDefinitionFactory.newBuilder(defSetId);
@@ -94,11 +92,14 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
 
                                            @Override
                                            public void onSuccess(final I paletteDefinition) {
-                                               applyGrid(grid);
+                                               applyGrid(grid,
+                                                         palette);
                                                beforeBindPalette(paletteDefinition,
+                                                                 palette,
                                                                  shapeSetId);
                                                palette.bind(paletteDefinition);
                                                afterBindPalette(paletteDefinition,
+                                                                palette,
                                                                 shapeSetId);
                                            }
 
@@ -111,11 +112,20 @@ public abstract class AbstractPaletteFactory<I extends HasPaletteItems, P extend
     }
 
     protected void beforeBindPalette(final I paletteDefinition,
+                                     final P palette,
                                      final String shapeSetId) {
+        // Implementations can performs pre-bind operations here.
     }
 
     protected void afterBindPalette(final I paletteDefinition,
+                                    final P palette,
                                     final String shapeSetId) {
+        // Implementations can performs post-bind operations here.
+    }
+
+    protected void applyGrid(final PaletteGrid grid,
+                             final P palette) {
+        // Implementations can apply grids to the palette, if necessary.
     }
 
     private ShapeSet getShapeSet(final String id) {

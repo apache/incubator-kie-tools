@@ -15,22 +15,37 @@
 
 package org.kie.workbench.common.stunner.standalone.client.screens;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 
-public class SessionScreenViewImpl extends FlowPanel implements SessionScreenView {
+// TODO: i18N.
+@Dependent
+public class SessionScreenViewImpl implements SessionScreenView {
 
+    private static final String EMPTY_TEXT = "No diagram session active.";
+
+    private final FlowPanel mainPanel = new FlowPanel();
     private final FlowPanel emptyViewPanel = new FlowPanel();
     private final FlowPanel screenViewPanel = new FlowPanel();
 
-    public SessionScreenViewImpl() {
-        init();
-    }
-
-    public SessionScreenViewImpl(final String tag) {
-        super(tag);
-        init();
+    @PostConstruct
+    public void init() {
+        mainPanel.add(emptyViewPanel);
+        mainPanel.add(screenViewPanel);
+        mainPanel.setHeight("100%");
+        this.emptyViewPanel.setHeight("100%");
+        this.emptyViewPanel.getElement().getStyle().setTextAlign(Style.TextAlign.CENTER);
+        this.screenViewPanel.setHeight("100%");
+        this.emptyViewPanel.add(new Heading(HeadingSize.H5,
+                                            EMPTY_TEXT));
+        showEmptySession();
     }
 
     @Override
@@ -67,23 +82,14 @@ public class SessionScreenViewImpl extends FlowPanel implements SessionScreenVie
                                                                    Style.Unit.PX);
     }
 
-    @Override
-    public IsWidget getView() {
-        return this;
-    }
-
-    private void init() {
-        this.add(emptyViewPanel);
-        this.add(screenViewPanel);
-        this.setHeight("100%");
-        this.emptyViewPanel.setHeight("100%");
-        this.screenViewPanel.setHeight("100%");
-        showEmptySession();
-    }
-
     private SessionScreenView setScreenView(final IsWidget view) {
         this.screenViewPanel.clear();
         this.screenViewPanel.add(view);
         return this;
+    }
+
+    @Override
+    public Widget asWidget() {
+        return mainPanel;
     }
 }

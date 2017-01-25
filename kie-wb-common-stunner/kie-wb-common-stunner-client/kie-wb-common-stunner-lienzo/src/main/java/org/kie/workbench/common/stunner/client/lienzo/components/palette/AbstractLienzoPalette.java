@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.client.lienzo.components.palette;
 
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.view.LienzoPaletteView;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteGrid;

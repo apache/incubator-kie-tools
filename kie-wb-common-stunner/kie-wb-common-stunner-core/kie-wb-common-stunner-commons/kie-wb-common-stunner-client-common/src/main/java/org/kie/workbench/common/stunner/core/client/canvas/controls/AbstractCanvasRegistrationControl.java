@@ -24,13 +24,13 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 
-public abstract class AbstractCanvasRegistrationControl extends AbstractCanvasControl
-        implements CanvasRegistationControl<AbstractCanvas, Shape> {
+public abstract class AbstractCanvasRegistrationControl<C extends AbstractCanvas> extends AbstractCanvasControl<C>
+        implements CanvasRegistationControl<C, Shape> {
 
     private final Map<String, ViewHandler<?>> handlers = new HashMap<>();
 
-    protected void registerHandler(final String uuid,
-                                   final ViewHandler<?> handler) {
+    protected void registerHandler(String uuid,
+                                   ViewHandler<?> handler) {
         handlers.put(uuid,
                      handler);
     }

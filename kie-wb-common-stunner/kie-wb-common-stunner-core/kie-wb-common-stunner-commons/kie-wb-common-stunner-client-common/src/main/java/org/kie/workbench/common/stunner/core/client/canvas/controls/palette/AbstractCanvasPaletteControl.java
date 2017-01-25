@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.palette;
 
 import com.google.gwt.core.client.GWT;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
@@ -26,9 +26,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequest;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequestImpl;
 import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
-import org.kie.workbench.common.stunner.core.client.components.palette.factory.PaletteFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
-import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteGrid;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteView;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -40,10 +38,9 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 public abstract class AbstractCanvasPaletteControl
-        extends AbstractCanvasHandlerControl
+        extends AbstractCanvasHandlerControl<AbstractCanvasHandler>
         implements CanvasPaletteControl<AbstractCanvasHandler> {
 
-    protected PaletteFactory<DefinitionSetPalette, ? extends Palette<DefinitionSetPalette>> paletteFactory;
     protected ElementBuilderControl<AbstractCanvasHandler> elementBuilderControl;
     protected ClientFactoryService factoryServices;
     protected ShapeManager shapeManager;
@@ -51,12 +48,11 @@ public abstract class AbstractCanvasPaletteControl
     protected ViewHandler<?> layerClickHandler;
     protected Palette<DefinitionSetPalette> palette;
     protected boolean paletteVisible;
+    private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
-    public AbstractCanvasPaletteControl(final PaletteFactory<DefinitionSetPalette, ? extends Palette<DefinitionSetPalette>> paletteFactory,
-                                        final ElementBuilderControl<AbstractCanvasHandler> elementBuilderControl,
+    public AbstractCanvasPaletteControl(final ElementBuilderControl<AbstractCanvasHandler> elementBuilderControl,
                                         final ClientFactoryService factoryServices,
                                         final ShapeManager shapeManager) {
-        this.paletteFactory = paletteFactory;
         this.elementBuilderControl = elementBuilderControl;
         this.factoryServices = factoryServices;
         this.shapeManager = shapeManager;
@@ -64,17 +60,18 @@ public abstract class AbstractCanvasPaletteControl
         this.paletteVisible = false;
     }
 
+    protected abstract Palette<DefinitionSetPalette> newPalette(final String shapeSetId);
+
     protected abstract void attachPaletteView();
 
     protected abstract PaletteView getPaletteView();
-
-    protected abstract PaletteGrid getGrid();
 
     @Override
     @SuppressWarnings("unchecked")
     public void enable(final AbstractCanvasHandler canvasHandler) {
         super.enable(canvasHandler);
         elementBuilderControl.enable(canvasHandler);
+        elementBuilderControl.setCommandManagerProvider(commandManagerProvider);
         final Layer layer = canvasHandler.getCanvas().getLayer();
         final MouseDoubleClickHandler doubleClickHandler = new MouseDoubleClickHandler() {
 
@@ -94,6 +91,11 @@ public abstract class AbstractCanvasPaletteControl
     }
 
     @Override
+    public void setCommandManagerProvider(final CommandManagerProvider<AbstractCanvasHandler> provider) {
+        this.commandManagerProvider = provider;
+    }
+
+    @Override
     protected void doDisable() {
         if (null != this.elementBuilderControl) {
             this.elementBuilderControl.disable();
@@ -105,13 +107,13 @@ public abstract class AbstractCanvasPaletteControl
             canvasHandler.getCanvas().getLayer().removeHandler(layerClickHandler);
             this.layerClickHandler = null;
         }
+        this.commandManagerProvider = null;
     }
 
     private void initializePalette() {
         if (null == palette) {
             final String ssid = getShapeSetId(canvasHandler.getDiagram().getMetadata());
-            this.palette = paletteFactory.newPalette(ssid,
-                                                     getGrid());
+            this.palette = newPalette(ssid);
             this.palette.onItemClick(AbstractCanvasPaletteControl.this::_onItemClick);
             this.palette.onClose(() -> {
                 hide();

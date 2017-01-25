@@ -29,9 +29,8 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.uberfire.workbench.model.menu.MenuFactory;
+import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
 import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
 /**
  * The menu builder for different Stunner's dev menu items.
@@ -85,24 +84,6 @@ public class MenuDevCommandsBuilder {
             }});
             add(menu);
         }};
-        return buildItem(group);
-    }
-
-    private MenuItem buildItem(final IsWidget widget) {
-        return new MenuFactory.CustomMenuBuilder() {
-            @Override
-            public void push(MenuFactory.CustomMenuBuilder element) {
-            }
-
-            @Override
-            public MenuItem build() {
-                return new BaseMenuCustom() {
-                    @Override
-                    public IsWidget build() {
-                        return widget;
-                    }
-                };
-            }
-        }.build();
+        return MenuUtils.buildItem(group);
     }
 }

@@ -40,10 +40,10 @@ public final class DeleteCanvasConnectorCommand extends AbstractCanvasCommand {
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         context.deregister(candidate);
         if (null != source) {
-            context.fireCanvasElementUpdated(source);
+            context.notifyCanvasElementUpdated(source);
         }
         if (null != target) {
-            context.fireCanvasElementUpdated(target);
+            context.notifyCanvasElementUpdated(target);
         }
         return buildResult();
     }

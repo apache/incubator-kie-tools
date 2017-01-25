@@ -18,14 +18,14 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 
-public abstract class AbstractCanvasControl implements CanvasControl<AbstractCanvas> {
+public abstract class AbstractCanvasControl<C extends AbstractCanvas> implements CanvasControl<C> {
 
-    protected AbstractCanvas canvas;
+    protected C canvas;
 
     protected abstract void doDisable();
 
     @Override
-    public void enable(final AbstractCanvas canvas) {
+    public void enable(final C canvas) {
         this.canvas = canvas;
     }
 

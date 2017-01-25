@@ -21,13 +21,13 @@ import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 
 // TODO: I18n.
 @Dependent
-public class ClearToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientFullSession, ClearSessionCommand> {
+public class ClearToolbarCommand extends AbstractToolbarCommand<ClientFullSession, ClearSessionCommand> {
 
     private CanvasCommandFactory canvasCommandFactory;
 
@@ -65,11 +65,5 @@ public class ClearToolbarCommand extends AbstractToolbarSessionCommand<AbstractC
     @Override
     protected String getConfirmMessage() {
         return super.getConfirmMessage() + " This operation cannot be reverted.";
-    }
-
-    @Override
-    public void afterDraw() {
-        super.afterDraw();
-        checkState();
     }
 }

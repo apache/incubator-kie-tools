@@ -26,10 +26,10 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
@@ -38,17 +38,14 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 
-public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> implements CanvasControl<AbstractCanvasHandler> {
+public abstract class AbstractContainmentBasedControl
+        implements CanvasControl<AbstractCanvasHandler>,
+                   RequiresCommandManager<AbstractCanvasHandler> {
 
     private static Logger LOGGER = Logger.getLogger(AbstractContainmentBasedControl.class.getName());
 
-    private CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
-
     private AbstractCanvasHandler canvasHandler;
-
-    public AbstractContainmentBasedControl(final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager) {
-        this.canvasCommandManager = canvasCommandManager;
-    }
+    private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
     protected abstract void doEnable(final WiresCanvas.View view);
 
@@ -65,17 +62,23 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
     @Override
     public void enable(final AbstractCanvasHandler canvasHandler) {
         this.canvasHandler = canvasHandler;
-        final WiresCanvas.View canvasView = (WiresCanvas.View) canvasHandler.getCanvas().getView();
+        final WiresCanvas.View canvasView = (WiresCanvas.View) canvasHandler.getAbstractCanvas().getView();
         doEnable(canvasView);
     }
 
     @Override
     public void disable() {
         if (null != canvasHandler && null != canvasHandler.getCanvas()) {
-            final WiresCanvas.View canvasView = (WiresCanvas.View) canvasHandler.getCanvas().getView();
+            final WiresCanvas.View canvasView = (WiresCanvas.View) canvasHandler.getAbstractCanvas().getView();
             doDisable(canvasView);
         }
         this.canvasHandler = null;
+        this.commandManagerProvider = null;
+    }
+
+    @Override
+    public void setCommandManagerProvider(final CommandManagerProvider<AbstractCanvasHandler> provider) {
+        this.commandManagerProvider = provider;
     }
 
     @SuppressWarnings("unchecked")
@@ -95,8 +98,8 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
         } else {
             final Command<AbstractCanvasHandler, CanvasViolation> command = getAddEdgeCommand(parent,
                                                                                               child);
-            CommandResult<CanvasViolation> violations = canvasCommandManager.allow(canvasHandler,
-                                                                                   command);
+            CommandResult<CanvasViolation> violations = getCommandManager().allow(canvasHandler,
+                                                                                  command);
             isAllow = isAccept(violations);
             logResults("isAllow",
                        command,
@@ -134,8 +137,8 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
                             builder
                                     .addCommand(c)
                                     .build();
-            final CommandResult<CanvasViolation> violations = canvasCommandManager.execute(canvasHandler,
-                                                                                           command);
+            final CommandResult<CanvasViolation> violations = getCommandManager().execute(canvasHandler,
+                                                                                          command);
             isAccept = isAccept(violations);
             logResults("isAccept",
                        command,
@@ -202,6 +205,10 @@ public abstract class AbstractContainmentBasedControl<H extends CanvasHandler> i
 
     private boolean isAccept(final CommandResult<CanvasViolation> result) {
         return !CommandUtils.isError(result);
+    }
+
+    private CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
+        return commandManagerProvider.getCommandManager();
     }
 
     private void logResults(final String prefix,

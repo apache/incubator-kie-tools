@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.basicset.definition.Categories;
 import org.kie.workbench.common.stunner.basicset.definition.PolygonWithIcon;
 import org.kie.workbench.common.stunner.basicset.definition.Rectangle;
 import org.kie.workbench.common.stunner.basicset.definition.icon.statics.UserIcon;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindableDefSetPaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
 

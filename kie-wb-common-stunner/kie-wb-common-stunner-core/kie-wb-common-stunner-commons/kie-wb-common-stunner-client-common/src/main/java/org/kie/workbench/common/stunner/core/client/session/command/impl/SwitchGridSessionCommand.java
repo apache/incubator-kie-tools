@@ -19,13 +19,13 @@ import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
 import org.kie.workbench.common.stunner.core.client.canvas.DefaultCanvasGrid;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-public class SwitchGridSessionCommand extends AbstractClientSessionCommand<AbstractClientReadOnlySession> {
+public class SwitchGridSessionCommand extends AbstractClientSessionCommand<ClientSession> {
 
     private CanvasGrid grid;
 
@@ -34,7 +34,7 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Abstr
     }
 
     @Override
-    public SwitchGridSessionCommand bind(final AbstractClientReadOnlySession session) {
+    public SwitchGridSessionCommand bind(final ClientSession session) {
         super.bind(session);
         hideGrid();
         return this;

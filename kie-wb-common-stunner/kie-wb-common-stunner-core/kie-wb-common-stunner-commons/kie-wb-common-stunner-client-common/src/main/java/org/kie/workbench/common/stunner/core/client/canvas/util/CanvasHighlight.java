@@ -86,6 +86,6 @@ public class CanvasHighlight {
     }
 
     private AbstractCanvas getCanvas() {
-        return canvasHandler.getCanvas();
+        return canvasHandler.getAbstractCanvas();
     }
 }

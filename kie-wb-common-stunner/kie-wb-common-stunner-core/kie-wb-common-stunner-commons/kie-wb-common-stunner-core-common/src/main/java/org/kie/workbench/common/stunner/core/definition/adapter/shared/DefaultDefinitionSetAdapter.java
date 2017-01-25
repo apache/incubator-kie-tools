@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.shared;
 
+import java.lang.annotation.Annotation;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 
@@ -59,6 +60,11 @@ public class DefaultDefinitionSetAdapter implements DefinitionSetAdapter<Definit
 
     @Override
     public Class<? extends ElementFactory> getGraphFactoryType(final DefinitionSetImpl pojo) {
+        return null;
+    }
+
+    @Override
+    public Annotation getQualifier(final DefinitionSetImpl pojo) {
         return null;
     }
 

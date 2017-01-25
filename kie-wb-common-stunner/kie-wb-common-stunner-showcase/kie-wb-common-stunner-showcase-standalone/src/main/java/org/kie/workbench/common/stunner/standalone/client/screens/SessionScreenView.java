@@ -17,7 +17,7 @@ package org.kie.workbench.common.stunner.standalone.client.screens;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface SessionScreenView {
+public interface SessionScreenView extends IsWidget {
 
     void showEmptySession();
 
@@ -28,6 +28,4 @@ public interface SessionScreenView {
     void setMarginTop(final int px);
 
     void setPaddingTop(final int px);
-
-    IsWidget getView();
 }

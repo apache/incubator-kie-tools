@@ -20,10 +20,10 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory.BS3PaletteFactory;
-import org.kie.workbench.common.stunner.client.widgets.session.presenter.ClientSessionPresenter;
-import org.kie.workbench.common.stunner.client.widgets.session.presenter.impl.AbstractClientSessionPresenter;
-import org.kie.workbench.common.stunner.client.widgets.session.view.ScreenErrorView;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
+import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
+import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
@@ -36,8 +36,10 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSes
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ClientFullSessionImpl;
 import org.kie.workbench.common.stunner.core.client.util.ClientSessionUtils;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -53,7 +55,6 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -89,18 +90,17 @@ public class ProjectDiagramEditorTest {
     @Mock
     AbstractClientSessionManager clientSessionManager;
     @Mock
-    AbstractClientSessionPresenter clientSessionPresenter;
+    SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> presenterFactory;
+    @Mock
+    SessionPresenter presenter;
     @Mock
     ScreenErrorView editorErrorView;
-    @Mock
-    BS3PaletteFactory paletteFactory;
     @Mock
     ClientSessionUtils sessionUtils;
     @Mock
     SessionCommandFactory sessionCommandFactory;
     @Mock
     ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
-
     @Mock
     ClearSelectionSessionCommand sessionClearSelectionCommand;
     @Mock
@@ -119,11 +119,8 @@ public class ProjectDiagramEditorTest {
     ValidateSessionCommand sessionValidateCommand;
     @Mock
     RefreshSessionCommand sessionRefreshCommand;
-
     @Mock
-    AbstractClientFullSession fullSession;
-    @Mock
-    ClientSessionPresenter.View clientSessionPresenterView;
+    ClientFullSessionImpl fullSession;
     @Mock
     ObservablePath path;
 
@@ -141,9 +138,9 @@ public class ProjectDiagramEditorTest {
         when(sessionCommandFactory.newRedoCommand()).thenReturn(sessionRedoCommand);
         when(sessionCommandFactory.newValidateCommand()).thenReturn(sessionValidateCommand);
         when(sessionCommandFactory.newRefreshSessionCommand()).thenReturn(sessionRefreshCommand);
-        when(clientSessionManager.newFullSession()).thenReturn(fullSession);
-        when(clientSessionPresenter.getView()).thenReturn(clientSessionPresenterView);
-        when(clientSessionPresenter.setDisplayErrors(anyBoolean())).thenReturn(clientSessionPresenter);
+        when(presenterFactory.newPresenterEditor(any(Diagram.class))).thenReturn(presenter);
+        when(clientSessionManager.getCurrentSession()).thenReturn(fullSession);
+        when(presenter.getInstance()).thenReturn(fullSession);
         this.tested = new ProjectDiagramEditorStub(view,
                                                    placeManager,
                                                    errorPopupPresenter,
@@ -152,9 +149,8 @@ public class ProjectDiagramEditorTest {
                                                    resourceType,
                                                    projectDiagramServices,
                                                    clientSessionManager,
-                                                   clientSessionPresenter,
+                                                   presenterFactory,
                                                    editorErrorView,
-                                                   paletteFactory,
                                                    sessionUtils,
                                                    sessionCommandFactory,
                                                    menuItemsBuilder);
@@ -164,32 +160,26 @@ public class ProjectDiagramEditorTest {
     @SuppressWarnings("unchecked")
     public void testInit() {
         tested.init();
-        verify(clientSessionPresenter,
-               times(1)).initialize(eq(fullSession),
-                                    anyInt(),
-                                    anyInt());
         verify(view,
                times(1)).init(eq(tested));
-        verify(view,
-               times(1)).setWidget(eq(clientSessionPresenterView));
         verify(sessionClearSelectionCommand,
-               times(1)).bind(eq(fullSession));
+               times(0)).bind(eq(fullSession));
         verify(sessionVisitGraphCommand,
-               times(1)).bind(eq(fullSession));
+               times(0)).bind(eq(fullSession));
         verify(sessionSwitchGridCommand,
-               times(1)).bind(eq(fullSession));
+               times(0)).bind(eq(fullSession));
         verify(sessionClearCommand,
-               times(1)).bind(eq(fullSession));
+               times(0)).bind(eq(fullSession));
         verify(sessionDeleteSelectionCommand,
-               times(1)).bind(eq(fullSession));
+               times(0)).bind(eq(fullSession));
         verify(sessionUndoCommand,
-               times(1)).bind(eq(fullSession));
+               times(0)).bind(eq(fullSession));
         verify(sessionRedoCommand,
-               times(1)).bind(eq(fullSession));
+               times(0)).bind(eq(fullSession));
         verify(sessionValidateCommand,
-               times(1)).bind(eq(fullSession));
+               times(0)).bind(eq(fullSession));
         verify(sessionRefreshCommand,
-               times(1)).bind(eq(fullSession));
+               times(0)).bind(eq(fullSession));
     }
 
     // TODO: @Test - versionRecordManager is not being set.

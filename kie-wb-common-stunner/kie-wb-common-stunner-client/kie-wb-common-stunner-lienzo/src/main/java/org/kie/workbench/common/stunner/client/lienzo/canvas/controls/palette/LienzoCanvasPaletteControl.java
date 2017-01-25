@@ -24,12 +24,14 @@ import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoDefinitionSetPalette;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoPalette;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.factory.LienzoDefinitionSetPaletteFactory;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Element;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.palette.AbstractCanvasPaletteControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
+import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteGrid;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteGridImpl;
 import org.kie.workbench.common.stunner.core.client.components.palette.view.PaletteView;
@@ -41,7 +43,8 @@ public class LienzoCanvasPaletteControl extends AbstractCanvasPaletteControl {
     private static final int ICON_SIZE = 25;
     private static final int PADDING = 5;
 
-    Event<CanvasElementSelectedEvent> elementSelectedEvent;
+    private final LienzoDefinitionSetPaletteFactory paletteFactory;
+    private final Event<CanvasElementSelectedEvent> elementSelectedEvent;
 
     @Inject
     public LienzoCanvasPaletteControl(final LienzoDefinitionSetPaletteFactory paletteFactory,
@@ -49,15 +52,21 @@ public class LienzoCanvasPaletteControl extends AbstractCanvasPaletteControl {
                                       final ClientFactoryService factoryServices,
                                       final ShapeManager shapeManager,
                                       final Event<CanvasElementSelectedEvent> elementSelectedEvent) {
-        super(paletteFactory,
-              elementBuilderControl,
+        super(elementBuilderControl,
               factoryServices,
               shapeManager);
+        this.paletteFactory = paletteFactory;
         this.elementSelectedEvent = elementSelectedEvent;
     }
 
     private LienzoDefinitionSetPalette getLienzoPalette() {
         return null != this.palette ? (LienzoDefinitionSetPalette) this.palette : null;
+    }
+
+    @Override
+    protected Palette<DefinitionSetPalette> newPalette(final String shapeSetId) {
+        return paletteFactory.newPalette(shapeSetId,
+                                         getGrid());
     }
 
     @Override
@@ -76,15 +85,14 @@ public class LienzoCanvasPaletteControl extends AbstractCanvasPaletteControl {
     }
 
     @Override
-    protected PaletteGrid getGrid() {
-        return new PaletteGridImpl(ICON_SIZE,
-                                   PADDING);
-    }
-
-    @Override
     protected void onItemBuilt(final String uuid) {
         super.onItemBuilt(uuid);
         elementSelectedEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
                                                                  uuid));
+    }
+
+    private PaletteGrid getGrid() {
+        return new PaletteGridImpl(ICON_SIZE,
+                                   PADDING);
     }
 }

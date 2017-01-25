@@ -52,7 +52,7 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
     @Override
     public DragProxy<AbstractCanvasHandler, Item, NodeDragProxyCallback> proxyFor(final AbstractCanvasHandler context) {
         this.canvasHandler = context;
-        this.shapeDragProxyFactory.proxyFor(context.getCanvas());
+        this.shapeDragProxyFactory.proxyFor(context.getAbstractCanvas());
         return this;
     }
 
@@ -62,7 +62,7 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
                                                                               final int x,
                                                                               final int y,
                                                                               final NodeDragProxyCallback callback) {
-        final AbstractCanvas canvas = canvasHandler.getCanvas();
+        final AbstractCanvas canvas = canvasHandler.getAbstractCanvas();
         final Node<View<?>, Edge> node = item.getNode();
         final ShapeFactory<Object, AbstractCanvasHandler, ?> nodeShapeFactory = item.getNodeShapeFactory();
         final Edge<View<?>, Node> inEdge = item.getInEdge();
@@ -158,7 +158,7 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
     }
 
     private AbstractCanvas getCanvas() {
-        return canvasHandler.getCanvas();
+        return canvasHandler.getAbstractCanvas();
     }
 
     private void deleteTransientEdgeShape() {

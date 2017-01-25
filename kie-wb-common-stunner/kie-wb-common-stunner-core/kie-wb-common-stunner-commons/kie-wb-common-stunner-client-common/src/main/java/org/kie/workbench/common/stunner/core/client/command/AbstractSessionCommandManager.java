@@ -19,12 +19,12 @@ package org.kie.workbench.common.stunner.core.client.command;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandListener;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
@@ -43,6 +43,8 @@ public abstract class AbstractSessionCommandManager
         implements SessionCommandManager<AbstractCanvasHandler> {
 
     private static Logger LOGGER = Logger.getLogger(AbstractSessionCommandManager.class.getName());
+
+    private CommandListener<AbstractCanvasHandler, CanvasViolation> listener;
 
     protected abstract AbstractClientSessionManager getClientSessionManager();
 
@@ -79,6 +81,7 @@ public abstract class AbstractSessionCommandManager
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public ClientSession<AbstractCanvas, AbstractCanvasHandler> getCurrentSession() {
         return getClientSessionManager().getCurrentSession();
     }
@@ -127,5 +130,59 @@ public abstract class AbstractSessionCommandManager
     public String toString() {
         return "[" + getClass().getName() + "] - Current session = ["
                 + (null != getCurrentSession() ? getCurrentSession().toString() : "null") + "]";
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void postAllow(final AbstractCanvasHandler context,
+                             final Command<AbstractCanvasHandler, CanvasViolation> command,
+                             final CommandResult<CanvasViolation> result) {
+        super.postAllow(context,
+                        command,
+                        result);
+        if (null != this.listener) {
+            listener.onAllow(context,
+                             command,
+                             result);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void postExecute(final AbstractCanvasHandler context,
+                               final Command<AbstractCanvasHandler, CanvasViolation> command,
+                               final CommandResult<CanvasViolation> result) {
+        super.postExecute(context,
+                          command,
+                          result);
+        if (null != this.listener) {
+            listener.onExecute(context,
+                               command,
+                               result);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void postUndo(final AbstractCanvasHandler context,
+                            final Command<AbstractCanvasHandler, CanvasViolation> command,
+                            final CommandResult<CanvasViolation> result) {
+        super.postUndo(context,
+                       command,
+                       result);
+        if (null != this.listener) {
+            listener.onUndo(context,
+                            command,
+                            result);
+        }
+    }
+
+    @Override
+    public void setCommandListener(final CommandListener<AbstractCanvasHandler, CanvasViolation> listener) {
+        if (null != this.listener) {
+            LOGGER.log(Level.WARNING,
+                       "Overriding listener for the session's command manager.");
+        }
+        this.listener = listener;
     }
 }

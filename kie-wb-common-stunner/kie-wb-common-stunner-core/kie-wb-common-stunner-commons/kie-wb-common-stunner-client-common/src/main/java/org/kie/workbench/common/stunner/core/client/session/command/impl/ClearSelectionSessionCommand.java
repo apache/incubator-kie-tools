@@ -17,13 +17,13 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import javax.enterprise.context.Dependent;
 
+import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-public class ClearSelectionSessionCommand extends AbstractClientSessionCommand<AbstractClientReadOnlySession> {
+public class ClearSelectionSessionCommand extends AbstractClientSessionCommand<ClientReadOnlySession> {
 
     public ClearSelectionSessionCommand() {
         super(false);

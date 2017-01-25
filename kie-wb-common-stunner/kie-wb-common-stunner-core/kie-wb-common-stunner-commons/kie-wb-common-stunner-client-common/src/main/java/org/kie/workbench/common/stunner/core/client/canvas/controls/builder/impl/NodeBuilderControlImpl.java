@@ -20,20 +20,18 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequest;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequestImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.NodeBuildRequest;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.command.Session;
+import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
@@ -49,18 +47,16 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 @Dependent
-public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl implements NodeBuilderControl<AbstractCanvasHandler> {
+public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl<AbstractCanvasHandler> implements NodeBuilderControl<AbstractCanvasHandler> {
 
     private final ClientDefinitionManager clientDefinitionManager;
     private final ShapeManager shapeManager;
     private final CanvasCommandFactory commandFactory;
-    private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
-    private final ElementBuilderControl<AbstractCanvasHandler> elementBuilderControl;
+    private final AbstractElementBuilderControl elementBuilderControl;
     private final EdgeMagnetsHelper magnetsHelper;
 
     protected NodeBuilderControlImpl() {
         this(null,
-             null,
              null,
              null,
              null,
@@ -71,13 +67,11 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
     public NodeBuilderControlImpl(final ClientDefinitionManager clientDefinitionManager,
                                   final ShapeManager shapeManager,
                                   final CanvasCommandFactory commandFactory,
-                                  final @Session CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
-                                  final @Element ElementBuilderControl<AbstractCanvasHandler> elementBuilderControl,
+                                  final @Element AbstractElementBuilderControl elementBuilderControl,
                                   final EdgeMagnetsHelper magnetsHelper) {
         this.clientDefinitionManager = clientDefinitionManager;
         this.shapeManager = shapeManager;
         this.commandFactory = commandFactory;
-        this.canvasCommandManager = canvasCommandManager;
         this.elementBuilderControl = elementBuilderControl;
         this.magnetsHelper = magnetsHelper;
     }
@@ -91,6 +85,11 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
     @Override
     protected void doDisable() {
         this.elementBuilderControl.disable();
+    }
+
+    @Override
+    public void setCommandManagerProvider(final RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> provider) {
+        this.elementBuilderControl.setCommandManagerProvider(provider);
     }
 
     @Override
@@ -148,8 +147,8 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl impleme
                                                                                                       inEdge,
                                                                                                       targetMagnet));
                                            }
-                                           final CommandResult<CanvasViolation> results = canvasCommandManager.execute(canvasHandler,
-                                                                                                                       commandBuilder.build());
+                                           final CommandResult<CanvasViolation> results = elementBuilderControl.getCommandManager().execute(canvasHandler,
+                                                                                                                                            commandBuilder.build());
                                            if (!CommandUtils.isError(results)) {
                                                updateConnectorShape(inEdge,
                                                                     node,

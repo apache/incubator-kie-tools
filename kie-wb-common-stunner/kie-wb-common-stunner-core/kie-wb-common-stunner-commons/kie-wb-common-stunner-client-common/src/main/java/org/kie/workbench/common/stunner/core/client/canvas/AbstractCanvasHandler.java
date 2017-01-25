@@ -16,189 +16,175 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
-import com.google.gwt.logging.client.LogConfiguration;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementRemovedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.HasCanvasListeners;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
-import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.shape.GraphShape;
-import org.kie.workbench.common.stunner.core.client.shape.Lifecycle;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
-import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.rule.Rule;
 import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
 import org.kie.workbench.common.stunner.core.rule.model.ModelRulesManager;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
+/**
+ * This type is the canvas handler type used as default by Stunner, most of the component implementations
+ * rely on this public API handler type.
+ * If you need to provide a custom canvas handler for you Definition Set, is a good idea to create the handler
+ * as a subtype for <code>AbstractCanvasHandler</code>, so most of the different IOC resolutions that Stunner requires
+ * on other areas will be, at least, resolved with the default implementations that rely on subtypes
+ * for <code>AbstractCanvasHandler</code>.
+ * @param <D> The diagram type.
+ * @param <C> The handled canvas type.
+ */
 public abstract class AbstractCanvasHandler<D extends Diagram, C extends AbstractCanvas>
         implements CanvasHandler<D, C>,
                    HasCanvasListeners<CanvasElementListener> {
 
-    private static Logger LOGGER = Logger.getLogger(AbstractCanvasHandler.class.getName());
-
-    private final ClientDefinitionManager clientDefinitionManager;
-    private final ClientFactoryService clientFactoryServices;
-    private final GraphRulesManager graphRulesManager;
-    private final ModelRulesManager modelRulesManager;
-    private final GraphUtils graphUtils;
-    private final GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder;
-    private final ShapeManager shapeManager;
-    private final Event<CanvasElementAddedEvent> canvasElementAddedEvent;
-    private final Event<CanvasElementRemovedEvent> canvasElementRemovedEvent;
-    private final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent;
-    private final Event<CanvasElementsClearEvent> canvasElementsClearEvent;
-    private final CanvasCommandFactory canvasCommandFactory;
-
     private final String uuid;
     private final List<CanvasElementListener> listeners = new LinkedList<>();
-    private C canvas;
-    private D diagram;
-    private MutableIndex<?, ?> graphIndex;
 
-    @Inject
-    public AbstractCanvasHandler(final ClientDefinitionManager clientDefinitionManager,
-                                 final ClientFactoryService clientFactoryServices,
-                                 final GraphRulesManager graphRulesManager,
-                                 final ModelRulesManager modelRulesManager,
-                                 final GraphUtils graphUtils,
-                                 final GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder,
-                                 final ShapeManager shapeManager,
-                                 final Event<CanvasElementAddedEvent> canvasElementAddedEvent,
-                                 final Event<CanvasElementRemovedEvent> canvasElementRemovedEvent,
-                                 final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent,
-                                 final Event<CanvasElementsClearEvent> canvasElementsClearEvent,
-                                 final CanvasCommandFactory canvasCommandFactory) {
-        this.clientDefinitionManager = clientDefinitionManager;
-        this.clientFactoryServices = clientFactoryServices;
-        this.modelRulesManager = modelRulesManager;
-        this.graphRulesManager = graphRulesManager;
-        this.graphUtils = graphUtils;
-        this.indexBuilder = indexBuilder;
-        this.shapeManager = shapeManager;
-        this.canvasElementAddedEvent = canvasElementAddedEvent;
-        this.canvasElementRemovedEvent = canvasElementRemovedEvent;
-        this.canvasElementUpdatedEvent = canvasElementUpdatedEvent;
-        this.canvasElementsClearEvent = canvasElementsClearEvent;
-        this.canvasCommandFactory = canvasCommandFactory;
+    public AbstractCanvasHandler() {
         this.uuid = UUID.uuid();
     }
 
-    @Override
-    public CanvasHandler<D, C> initialize(final C canvas) {
-        this.canvas = canvas;
-        return this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public AbstractCanvasHandler<D, C> draw(final D diagram) {
-        this.diagram = diagram;
-        // Initialize the graph handler that provides processing and querying operations over the graph.
-        this.graphIndex = indexBuilder.build(diagram.getGraph());
-        initializeGraphBounds(diagram);
-        doLoadRules();
-        return this;
-    }
-
-    // TODO: just temporal...
-    @SuppressWarnings("unchecked")
-    private void initializeGraphBounds(final D diagram) {
-        final double w = getCanvas().getWidth();
-        final double h = getCanvas().getHeight();
-        final Bounds bounds = new BoundsImpl(new BoundImpl(0d,
-                                                           0d),
-                                             new BoundImpl(w,
-                                                           h));
-        final Graph<DefinitionSet, ?> graph = diagram.getGraph();
-        graph.getContent().setBounds(bounds);
-    }
-
-    protected void doLoadRules() {
-        // Load the rules that apply for the diagram.
-        final String defSetId = getDiagram().getMetadata().getDefinitionSetId();
-        clientFactoryServices.newDefinition(defSetId,
-                                            new ServiceCallback<Object>() {
-                                                @Override
-                                                public void onSuccess(final Object definitionSet) {
-                                                    final Collection<Rule> rules = clientDefinitionManager.adapters().forRules().getRules(definitionSet);
-                                                    if (rules != null) {
-                                                        for (final Rule rule : rules) {
-                                                            graphRulesManager.addRule(rule);
-                                                            modelRulesManager.addRule(rule);
-                                                        }
-                                                    }
-                                                    // Run the draw command.
-                                                    canvasCommandFactory.draw().execute(AbstractCanvasHandler.this);
-                                                }
-
-                                                @Override
-                                                public void onError(final ClientRuntimeError error) {
-                                                    showError(error);
-                                                }
-                                            });
-    }
-
-    @Override
-    public C getCanvas() {
-        return canvas;
-    }
-
-    @Override
-    public D getDiagram() {
-        return diagram;
-    }
-
-    /*
-        ***************************************************************************************
-        * Shape/element handling
-        ***************************************************************************************
+    /**
+     * Provides a definition manager instance in this context.
      */
+    public abstract DefinitionManager getDefinitionManager();
 
+    /**
+     * Provides the graph rules manager instance for this context.
+     * If the implementation class handles rules, this manager will
+     * be populated once loading the diagram instance.
+     */
+    public abstract GraphRulesManager getGraphRulesManager();
+
+    /**
+     * Provides the graph rules manager instance for this context.
+     * If the implementation class handles rules, this manager will
+     * be populated once loading the diagram instance.
+     */
+    public abstract ModelRulesManager getModelRulesManager();
+
+    /**
+     * Returns the graph index instance to perform lookups over the graph structure
+     * foe this canvas handler's diagram instance loaded.
+     * Implementation can provide custom graph index types, if necessary targeted
+     * and optimized for a concrete graph structure.
+     */
+    public abstract Index<?, ?> getGraphIndex();
+
+    /**
+     * Should return a graph execution context to perform the model updates applied by the graph command executions.
+     * If the implementation is not going to perform model updates, the graph execution context can be
+     * either <code>null</code> or an empty context type.
+     */
+    public abstract GraphCommandExecutionContext getGraphExecutionContext();
+
+    /**
+     * This method sets the given <code>child</code> instance as children for the given
+     * given <code>parent</code> instance.
+     * It sets the shape for the <code>child</code> instance as child shape for the
+     * <code>parent</code> instance's shape.
+     * @param parent The parent graph element.
+     * @param child The graph element to set as child.
+     */
+    public abstract void addChild(final Element parent,
+                                  final Element child);
+
+    /**
+     * This method removes the given <code>child</code> instance as children for the given
+     * given <code>parent</code> instance.
+     * It removes the shape for the <code>child</code> instance as child shape for the
+     * <code>parent</code> instance's shape.
+     * @param parent The parent graph element.
+     * @param child The element to remove as a child from the parent.
+     */
+    public abstract void removeChild(final Element parent,
+                                     final Element child);
+
+    /**
+     * This method sets the given <code>child</code> instance as docked child for the given
+     * given <code>parent</code> instance.
+     * It sets the shape for the <code>child</code> instance as a docked child shape for the
+     * <code>parent</code> instance's shape.
+     * @param parent The parent graph element.
+     * @param child The graph element to set as a docked child.
+     */
+    public abstract void dock(final Element parent,
+                              final Element child);
+
+    /**
+     * This method removes the given <code>child</code> instance as docked child for the given
+     * given <code>parent</code> instance.
+     * It removes the shape for the <code>child</code> instance as a docked child shape for the
+     * <code>parent</code> instance's shape.
+     * @param parent The parent graph element.
+     * @param child The element to remove as a docked child from the parent.
+     */
+    public abstract void undock(final Element parent,
+                                final Element child);
+
+    /**
+     * Subtypes must clear this instance's state here.
+     */
+    protected abstract CanvasHandler<D, C> doClear();
+
+    /**
+     * Subtypes must destroy this instance's state here.
+     */
+    protected abstract void doDestroy();
+
+    protected abstract void register(final Shape shape,
+                                     final Element<View<?>> candidate,
+                                     final boolean fireEvents);
+
+    protected abstract void deregister(final Shape shape,
+                                       final Element element,
+                                       final boolean fireEvents);
+
+    protected abstract void applyElementMutation(final Shape shape,
+                                                 final Element candidate,
+                                                 final boolean applyPosition,
+                                                 final boolean applyProperties,
+                                                 final MutationContext mutationContext);
+
+    protected abstract ShapeFactory<Object, AbstractCanvasHandler, Shape> getShapeFactory(String shapeSetId);
+
+    /**
+     * It does:
+     * - Registers a new graph element into the structure
+     * - Creates the shape for the element to register, using the shape factory provided
+     * for the given <code>shapeSetId</code> value.
+     * @param shapeSetId The identifier for the ShapeSet to use.
+     * @param candidate The graph element to register.
+     */
     @SuppressWarnings("unchecked")
     public void register(final String shapeSetId,
                          final Element<View<?>> candidate) {
-        final ShapeFactory<Object, AbstractCanvasHandler, Shape> factory = shapeManager
-                .getShapeSet(shapeSetId)
-                .getShapeFactory();
+        final ShapeFactory<Object, AbstractCanvasHandler, Shape> factory = getShapeFactory(shapeSetId);
         register(factory,
                  candidate,
                  true);
     }
 
+    /**
+     * It does:
+     * - Registers a new graph element into the structure
+     * - Creates the shape for the element to register, using the given shape factory.
+     * @param factory The shape factory to use.
+     * @param candidate The graph element to register.
+     * @param fireEvents If canvas and canvas handled registration events must be fired.
+     */
     @SuppressWarnings("unchecked")
     public void register(final ShapeFactory<Object, AbstractCanvasHandler, Shape> factory,
                          final Element<View<?>> candidate,
@@ -210,47 +196,41 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         if (null == shape.getUUID()) {
             shape.setUUID(candidate.getUUID());
         }
-        // Add the shapes on canvas and fire events.
-        addShape(shape);
-        canvas.draw();
-        if (fireEvents) {
-            // Fire listeners.
-            fireCanvasElementAdded(candidate);
-            // Fire updates.
-            afterElementAdded(candidate,
-                              shape);
-        }
+        register(shape,
+                 candidate,
+                 fireEvents);
     }
 
+    /**
+     * Deregisters an element from the graph structure and from the canvas.
+     * @param element The element to deregister and remove from the canvas.
+     */
     public void deregister(final Element element) {
         deregister(element,
                    true);
     }
 
+    /**
+     * De-registers an element from the graph structure and from the canvas.
+     * @param element The element to de-register and remove from the canvas.
+     * @param fireEvents If canvas and canvas handled registration events must be fired.
+     */
     public void deregister(final Element element,
                            final boolean fireEvents) {
-        final Shape shape = canvas.getShape(element.getUUID());
-        if (fireEvents) {
-            // Fire listeners.
-            fireCanvasElementRemoved(element);
-            // Fire events.
-            beforeElementDeleted(element,
-                                 shape);
-        }
-        doDeregister(shape,
-                     element);
-        removeShape(shape);
-        canvas.draw();
-        if (fireEvents) {
-            afterElementDeleted(element,
-                                shape);
-        }
+        final Shape shape = getCanvas().getShape(element.getUUID());
+        deregister(shape,
+                   element,
+                   fireEvents);
     }
 
-    protected void doDeregister(final Shape shape,
-                                final Element element) {
-    }
-
+    /**
+     * When an element has been changed, this method produces to update the handler and the canvas
+     * and mutates the shape bind to the given element using new properties and/or values.
+     * This method checks all available element properties and can potentially change
+     * the shape coordinates, size,or whatever property that produces any visual effect on the canvas.
+     * @param element The element that has been updated.
+     * @param mutationContext The context for the shape mutations.
+     */
     public void applyElementMutation(final Element element,
                                      final MutationContext mutationContext) {
         applyElementMutation(element,
@@ -259,6 +239,12 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
                              mutationContext);
     }
 
+    /**
+     * When an element has been changed, this method produces to update the coordinates for
+     * the shape bind to the given element.
+     * @param element The element that has been updated.
+     * @param mutationContext The context for the shape mutations.
+     */
     public void updateElementPosition(final Element element,
                                       final MutationContext mutationContext) {
         applyElementMutation(element,
@@ -267,6 +253,14 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
                              mutationContext);
     }
 
+    /**
+     * When an element has been changed, this method produces to update the handler and the canvas
+     * and mutates the shape bind to the given element using new properties and/or values.
+     * This method checks all available element properties and can potentially change whatever property
+     * that produces any visual effect on the canvas, but no produces coordinates or bounds size updates.
+     * @param element The element that has been updated.
+     * @param mutationContext The context for the shape mutations.
+     */
     public void updateElementProperties(final Element element,
                                         final MutationContext mutationContext) {
         applyElementMutation(element,
@@ -276,333 +270,134 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     }
 
     @SuppressWarnings("unchecked")
-    public void applyElementMutation(final Element candidate,
-                                     final boolean applyPosition,
-                                     final boolean applyProperties,
-                                     final MutationContext mutationContext) {
+    protected void applyElementMutation(final Element candidate,
+                                        final boolean applyPosition,
+                                        final boolean applyProperties,
+                                        final MutationContext mutationContext) {
         if (null != candidate && !isCanvasRoot(candidate)) {
-            final Shape shape = canvas.getShape(candidate.getUUID());
-            if (shape instanceof GraphShape) {
-                final GraphShape graphShape = (GraphShape) shape;
-                if (applyPosition) {
-                    graphShape.applyPosition(candidate,
-                                             mutationContext);
-                }
-                if (applyProperties) {
-                    graphShape.applyProperties(candidate,
-                                               mutationContext);
-                }
-                beforeElementUpdated(candidate,
-                                     graphShape);
-                canvas.draw();
-                fireCanvasElementUpdated(candidate);
-                afterElementUpdated(candidate,
-                                    graphShape);
-            }
+            final Shape shape = getCanvas().getShape(candidate.getUUID());
+            applyElementMutation(shape,
+                                 candidate,
+                                 applyPosition,
+                                 applyProperties,
+                                 mutationContext);
         }
     }
 
-    public void addShape(final Shape shape) {
-        shape.getShapeView().setZIndex(0);
-        canvas.addShape(shape);
-    }
-
-    public void removeShape(final Shape shape) {
-        canvas.deleteShape(shape);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void addChild(final Element parent,
-                         final Element child) {
-        final Shape childShape = canvas.getShape(child.getUUID());
-        if (!isCanvasRoot(parent)) {
-            final Shape parentShape = canvas.getShape(parent.getUUID());
-            handleParentChildZIndex(parent,
-                                    child,
-                                    parentShape,
-                                    childShape,
-                                    true);
-            canvas.addChildShape(parentShape,
-                                 childShape);
-        } else {
-            // -- Special case when parent is the canvas root --
-            // Ensure the shape is added into the layer, but no need to register it again and generate new
-            // handlers ( f.i. using canvas#addShape() method ).
-            canvas.getLayer().addShape(childShape.getShapeView());
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void removeChild(final String parentUUID,
-                            final String childUUID) {
-        final Shape childShape = canvas.getShape(childUUID);
-        if (!isCanvasRoot(parentUUID)) {
-            final Shape parentShape = canvas.getShape(parentUUID);
-            handleParentChildZIndex(null,
-                                    null,
-                                    parentShape,
-                                    childShape,
-                                    false);
-            canvas.deleteChildShape(parentShape,
-                                    childShape);
-        } else {
-            // -- Special case when parent is the canvas root --
-            // Ensure the shape is removed from the layer, but no need to deregister any
-            // handlers ( f.i. using canvas#removeShape() method ).
-            canvas.getLayer().removeShape(childShape.getShapeView());
-        }
-    }
-
-    private boolean isCanvasRoot(final Element parent) {
-        return CanvasLayoutUtils.isCanvasRoot(getDiagram(),
-                                              parent);
-    }
-
-    private boolean isCanvasRoot(final String pUUID) {
-        return CanvasLayoutUtils.isCanvasRoot(getDiagram(),
-                                              pUUID);
-    }
-
-    public void dock(final Element parent,
-                     final Element child) {
-        if (!isCanvasRoot(parent)) {
-            final Shape parentShape = canvas.getShape(parent.getUUID());
-            final Shape childShape = canvas.getShape(child.getUUID());
-            handleParentChildZIndex(parent,
-                                    child,
-                                    parentShape,
-                                    childShape,
-                                    true);
-            canvas.dock(parentShape,
-                        childShape);
-        }
-    }
-
-    public void undock(final String parentUUID,
-                       final String childUUID) {
-        if (!isCanvasRoot(parentUUID)) {
-            final Shape parentShape = canvas.getShape(parentUUID);
-            final Shape childShape = canvas.getShape(childUUID);
-            handleParentChildZIndex(null,
-                                    null,
-                                    parentShape,
-                                    childShape,
-                                    false);
-            canvas.undock(parentShape,
-                          childShape);
-        }
-    }
-
-    protected void handleParentChildZIndex(final Element parent,
-                                           final Element child,
-                                           final Shape parentShape,
-                                           final Shape childShape,
-                                           final boolean add) {
-        if (add) {
-            handleZIndex(childShape,
-                         parentShape.getShapeView().getZIndex() + 1);
-            handleZIndex(child,
-                         parentShape.getShapeView().getZIndex() + 1);
-        } else {
-            handleZIndex(childShape,
-                         0);
-            final Element element = getGraphIndex().get(childShape.getUUID());
-            if (null != element) {
-                handleZIndex(element,
-                             0);
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    protected void handleZIndex(final Element child,
-                                final int zindex) {
-        // ZIndex for child shape's outgoing connectors.
-        if (child instanceof Node) {
-            final Node childNode = (Node) child;
-            final List<Edge> outEdges = childNode.getOutEdges();
-            if (null != outEdges && !outEdges.isEmpty()) {
-                final Set<String> suuids = new LinkedHashSet<>();
-                for (final Edge edge : outEdges) {
-                    if (edge.getContent() instanceof View) {
-                        suuids.add(edge.getUUID());
-                    }
-                }
-                handleZIndex(suuids,
-                             zindex);
-            }
-        }
-    }
-
-    protected void handleZIndex(final Set<String> shapeUUIDs,
-                                final int zindex) {
-        for (final String suuid : shapeUUIDs) {
-            final Shape edgeShape = canvas.getShape(suuid);
-            handleZIndex(edgeShape,
-                         zindex);
-        }
-    }
-
-    protected void handleZIndex(final Shape shape,
-                                final int zindex) {
-        if (null != shape) {
-            shape.getShapeView().setZIndex(zindex);
-        }
-    }
-
-    public void clearCanvas() {
-        fireCanvasClear();
-        canvasElementsClearEvent.fire(new CanvasElementsClearEvent(this));
-        canvas.clear();
-        canvas.draw();
-    }
-
-    @Override
-    public CanvasHandler<D, C> clear() {
-        canvas.clear();
-        destroyGraphIndex();
-        graphIndex = null;
-        diagram = null;
-        return this;
-    }
-
-    @Override
-    public void destroy() {
-        canvas.destroy();
-        destroyGraphIndex();
-        listeners.clear();
-        canvas = null;
-        graphIndex = null;
-        diagram = null;
-    }
-
-    private void destroyGraphIndex() {
-        if (null != graphIndex) {
-            graphIndex.clear();
-            graphIndex = null;
-        }
-    }
-
+    /**
+     * Adds a listener instance in order to be notified about graph element structure updates.
+     * @param instance The listener instance.
+     */
     @Override
     public HasCanvasListeners<CanvasElementListener> addRegistrationListener(final CanvasElementListener instance) {
         listeners.add(instance);
         return this;
     }
 
+    /**
+     * Removes a previously register listener instance.
+     * @param instance The listener instance.
+     */
     @Override
     public HasCanvasListeners<CanvasElementListener> removeRegistrationListener(final CanvasElementListener instance) {
         listeners.remove(instance);
         return this;
     }
 
+    /**
+     * Clears all the registered listeners.
+     */
     @Override
     public HasCanvasListeners<CanvasElementListener> clearRegistrationListeners() {
         listeners.clear();
         return this;
     }
 
-    public void fireCanvasElementRemoved(final Element candidate) {
+    /**
+     * Notifies an element removed to the listeners.
+     */
+    public void notifyCanvasElementRemoved(final Element candidate) {
         for (final CanvasElementListener instance : listeners) {
             instance.deregister(candidate);
         }
     }
 
-    public void fireCanvasElementAdded(final Element candidate) {
+    /**
+     * Notifies an element added to the listeners.
+     */
+    public void notifyCanvasElementAdded(final Element candidate) {
         for (final CanvasElementListener instance : listeners) {
             instance.register(candidate);
         }
     }
 
-    public void fireCanvasElementUpdated(final Element candidate) {
+    /**
+     * Notifies an element updated to the listeners.
+     */
+    public void notifyCanvasElementUpdated(final Element candidate) {
         for (final CanvasElementListener instance : listeners) {
             instance.update(candidate);
         }
     }
 
-    protected void fireCanvasClear() {
+    /**
+     * Notifies a clean canvas to the listeners.
+     */
+    protected void notifyCanvasClear() {
         for (final CanvasElementListener instance : listeners) {
             instance.clear();
         }
     }
 
-    protected void afterElementAdded(final Element element,
-                                     final Shape shape) {
-        // Fire a canvas element added event.
-        canvasElementAddedEvent.fire(new CanvasElementAddedEvent(this,
-                                                                 element));
-    }
-
-    protected void beforeElementDeleted(final Element element,
-                                        final Shape shape) {
-        // Fire a canvas element deleted event.
-        canvasElementRemovedEvent.fire(new CanvasElementRemovedEvent(this,
-                                                                     element));
-    }
-
-    protected void afterElementDeleted(final Element element,
-                                       final Shape shape) {
-    }
-
-    protected void beforeElementUpdated(final Element element,
-                                        final Shape shape) {
-        if (shape instanceof Lifecycle) {
-            final Lifecycle lifecycle = (Lifecycle) shape;
-            lifecycle.beforeDraw();
+    public void clearCanvas() {
+        if (null != getCanvas()) {
+            notifyCanvasClear();
+            getCanvas().clear();
+            getCanvas().draw();
         }
     }
 
-    protected void afterElementUpdated(final Element element,
-                                       final Shape shape) {
-        if (shape instanceof Lifecycle) {
-            final Lifecycle lifecycle = (Lifecycle) shape;
-            lifecycle.afterDraw();
+    /**
+     * Clears this handler state and the handled canvas instance.
+     * Other further diagrams can be loaded and displayed using this handler.
+     */
+    @Override
+    public CanvasHandler<D, C> clear() {
+        if (null != getCanvas()) {
+            getCanvas().clear();
         }
-        // Fire a canvas element added event.
-        canvasElementUpdatedEvent.fire(new CanvasElementUpdatedEvent(this,
-                                                                     element));
+        doClear();
+        return this;
     }
 
-    protected void showError(final ClientRuntimeError error) {
-        final String message = error.getThrowable() != null ?
-                error.getThrowable().getMessage() : error.getMessage();
-        log(Level.SEVERE,
-            message);
+    /**
+     * Destroys this handler state and the handled canvas instance.
+     * This instance cannot be longer used and should be eligible by the garbage collector.
+     */
+    @Override
+    public void destroy() {
+        if (null != getCanvas()) {
+            getCanvas().destroy();
+        }
+        doDestroy();
+        listeners.clear();
     }
 
-    public ClientDefinitionManager getClientDefinitionManager() {
-        return clientDefinitionManager;
+    /**
+     * Used to avoid forcing specifying the generic for the canvas type
+     * from other beans.
+     */
+    public AbstractCanvas getAbstractCanvas() {
+        return getCanvas();
     }
 
-    public ClientFactoryService getClientFactoryServices() {
-        return clientFactoryServices;
+    protected boolean isCanvasRoot(final Element parent) {
+        return CanvasLayoutUtils.isCanvasRoot(getDiagram(),
+                                              parent);
     }
 
-    public GraphRulesManager getGraphRulesManager() {
-        return graphRulesManager;
-    }
-
-    public ModelRulesManager getModelRulesManager() {
-        return modelRulesManager;
-    }
-
-    public GraphUtils getGraphUtils() {
-        return graphUtils;
-    }
-
-    public Index<?, ?> getGraphIndex() {
-        return graphIndex;
-    }
-
-    public GraphIndexBuilder<?> getIndexBuilder() {
-        return indexBuilder;
-    }
-
-    public ShapeManager getShapeManager() {
-        return shapeManager;
-    }
-
-    protected String getDefinitionId(final Object definition) {
-        return clientDefinitionManager.adapters().forDefinition().getId(definition);
+    protected String getUuid() {
+        return uuid;
     }
 
     @Override
@@ -614,24 +409,16 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
             return false;
         }
         AbstractCanvasHandler that = (AbstractCanvasHandler) o;
-        return uuid.equals(that.uuid);
+        return getUuid().equals(that.getUuid());
     }
 
     @Override
     public int hashCode() {
-        return uuid == null ? 0 : ~~uuid.hashCode();
+        return getUuid() == null ? 0 : ~~getUuid().hashCode();
     }
 
     @Override
     public String toString() {
-        return "AbstractCanvasHandler [" + uuid + "]";
-    }
-
-    private void log(final Level level,
-                     final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
-            LOGGER.log(level,
-                       message);
-        }
+        return this.getClass().getName() + " [" + getUuid() + "]";
     }
 }

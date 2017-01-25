@@ -133,11 +133,11 @@ public class ProjectDiagramWorkbenchDocks {
 
     private UberfireDock createExplorerDock(final String perspectiveId) {
         return new UberfireDock(POSITION,
-                                "LIST_UL",
+                                "EYE",
                                 new DefaultPlaceRequest(ProjectDiagramExplorerScreen.SCREEN_ID),
                                 perspectiveId)
                 .withSize(450)
-                .withLabel("Explorer");
+                .withLabel("Explore");
     }
 
     private void log(final Level level,

@@ -49,8 +49,8 @@ public final class DeleteCanvasNodeCommand extends AbstractCanvasCommand {
     @Override
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         if (null != parent) {
-            context.removeChild(parent.getUUID(),
-                                candidate.getUUID());
+            context.removeChild(parent,
+                                candidate);
         }
         context.deregister(candidate);
         if (null != parent) {

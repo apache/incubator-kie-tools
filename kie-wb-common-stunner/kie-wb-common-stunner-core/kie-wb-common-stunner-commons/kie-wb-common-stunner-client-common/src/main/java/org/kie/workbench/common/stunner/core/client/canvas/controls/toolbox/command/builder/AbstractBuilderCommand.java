@@ -120,6 +120,7 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
                                                                            item,
                                                                            () -> {
                                                                                getBuilderControl().enable(canvasHandler);
+                                                                               getBuilderControl().setCommandManagerProvider(context::getCommandManager);
                                                                                canvasHighlight = new CanvasHighlight(canvasHandler);
                                                                                graphBoundsIndexer.build(canvasHandler.getDiagram().getGraph());
                                                                                DragProxyCallback proxyCallback = getDragProxyCallback(context,
@@ -205,6 +206,7 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
                                                   "Item build with UUID [" + uuid + "]");
                                               onItemBuilt(context,
                                                           uuid);
+                                              getBuilderControl().setCommandManagerProvider(null);
                                               fireLoadingCompleted(context);
                                           }
 
@@ -215,7 +217,7 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
                                           }
                                       });
         }
-        context.getCanvasHandler().getCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
+        context.getCanvasHandler().getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
     }
 
     protected void onError(final Context<AbstractCanvasHandler> context,
@@ -231,8 +233,10 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void destroy() {
         this.getDragProxyFactory().destroy();
+        getBuilderControl().setCommandManagerProvider(null);
         this.getBuilderControl().disable();
         this.graphBoundsIndexer.destroy();
         if (null != canvasHighlight) {

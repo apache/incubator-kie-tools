@@ -36,12 +36,12 @@ public abstract class AbstractToolboxCommand<I> implements ToolboxCommand<Abstra
 
     public void mouseEnter(final Context<AbstractCanvasHandler> context,
                            final Element element) {
-        context.getCanvasHandler().getCanvas().getView().setCursor(AbstractCanvas.Cursors.POINTER);
+        context.getCanvasHandler().getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.POINTER);
     }
 
     public void mouseExit(final Context<AbstractCanvasHandler> context,
                           final Element element) {
-        context.getCanvasHandler().getCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
+        context.getCanvasHandler().getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
     }
 
     @Override
@@ -88,10 +88,10 @@ public abstract class AbstractToolboxCommand<I> implements ToolboxCommand<Abstra
     }
 
     protected void fireLoadingStarted(final Context<AbstractCanvasHandler> context) {
-        context.getCanvasHandler().getCanvas().loadingStarted();
+        context.getCanvasHandler().getAbstractCanvas().loadingStarted();
     }
 
     protected void fireLoadingCompleted(final Context<AbstractCanvasHandler> context) {
-        context.getCanvasHandler().getCanvas().loadingCompleted();
+        context.getCanvasHandler().getAbstractCanvas().loadingCompleted();
     }
 }

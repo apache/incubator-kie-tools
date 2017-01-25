@@ -38,8 +38,8 @@ public final class RemoveCanvasChildCommand extends AbstractCanvasCommand {
 
     @Override
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-        context.removeChild(parent.getUUID(),
-                            child.getUUID());
+        context.removeChild(parent,
+                            child);
         context.applyElementMutation(parent,
                                      MutationContext.STATIC);
         context.applyElementMutation(child,

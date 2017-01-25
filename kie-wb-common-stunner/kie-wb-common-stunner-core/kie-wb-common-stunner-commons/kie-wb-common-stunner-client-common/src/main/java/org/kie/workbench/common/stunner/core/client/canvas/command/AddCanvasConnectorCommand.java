@@ -49,7 +49,7 @@ public final class AddCanvasConnectorCommand extends AbstractCanvasCommand {
                                     MutationContext.STATIC);
         final Node source = candidate.getSourceNode();
         if (null != source) {
-            context.fireCanvasElementUpdated(source);
+            context.notifyCanvasElementUpdated(source);
         }
         return buildResult();
     }

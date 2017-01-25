@@ -59,8 +59,8 @@ public class DeleteCanvasNodeCommandTest extends AbstractCanvasCommandTest {
         assertNotEquals(CommandResult.Type.ERROR,
                         result.getType());
         verify(canvasHandler,
-               times(1)).removeChild(eq(P_ID),
-                                     eq(C_ID));
+               times(1)).removeChild(eq(parent),
+                                     eq(candidate));
         verify(canvasHandler,
                times(1)).deregister(eq(candidate));
         verify(canvasHandler,

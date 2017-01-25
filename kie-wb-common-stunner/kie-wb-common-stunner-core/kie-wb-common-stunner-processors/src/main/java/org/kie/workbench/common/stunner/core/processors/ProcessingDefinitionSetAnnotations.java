@@ -27,6 +27,7 @@ public class ProcessingDefinitionSetAnnotations {
     private final Set<String> definitionIds = new HashSet<>();
     private final Map<String, String> builderFieldNames = new HashMap<>();
     private final Map<String, String> graphTypes = new HashMap<>();
+    private final Map<String, String> qualifiers = new HashMap<>();
     private boolean hasShapeSet = false;
 
     public Map<String, String> getDescriptionFieldNames() {
@@ -51,5 +52,9 @@ public class ProcessingDefinitionSetAnnotations {
 
     public void setHasShapeSet(final boolean hasShapeSet) {
         this.hasShapeSet = hasShapeSet;
+    }
+
+    public Map<String, String> getQualifiers() {
+        return qualifiers;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarView;
 
 @Dependent
-public class ToolbarViewImpl extends Composite implements ToolbarView {
+public class ToolbarViewImpl extends Composite implements ToolbarView<AbstractToolbar> {
 
     interface ViewBinder extends UiBinder<Widget, ToolbarViewImpl> {
 

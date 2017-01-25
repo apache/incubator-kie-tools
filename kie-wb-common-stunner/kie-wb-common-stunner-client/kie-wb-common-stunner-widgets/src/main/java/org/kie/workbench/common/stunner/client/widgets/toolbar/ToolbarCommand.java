@@ -30,12 +30,9 @@ public interface ToolbarCommand<S extends ClientSession> {
 
     String getTooltip();
 
-    ToolbarCommand<S> initialize(final Toolbar<S> toolbar,
-                                 final S session);
-
     void execute();
 
-    <T> void execute(final ToolbarCommandCallback<T> callback);
+    void refresh();
 
     void destroy();
 }

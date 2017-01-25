@@ -29,11 +29,13 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public class StunnerClientLogger {
 
@@ -49,6 +51,16 @@ public class StunnerClientLogger {
             return t1.getMessage();
         }
         return null != message ? message : " -- No message -- ";
+    }
+
+    public static void logBounds(final Element<View<?>> item) {
+        final Bounds bounds = item.getContent().getBounds();
+        final Bounds.Bound ul = bounds.getUpperLeft();
+        final Bounds.Bound lr = bounds.getLowerRight();
+        LOGGER.log(Level.FINE,
+                   "Bounds for [" + item.getUUID() + "] ARE " +
+                           "{ UL=[" + ul.getX() + ", " + ul.getY() + "] " +
+                           "LR=[ " + lr.getX() + ", " + lr.getY() + "] }");
     }
 
     public static void logSessionInfo(final AbstractClientSession session) {
@@ -78,8 +90,8 @@ public class StunnerClientLogger {
             } else {
                 log("CanvasHandler = null");
             }
-            if (session instanceof AbstractClientFullSession) {
-                logFullSessionInfo((AbstractClientFullSession) session);
+            if (session instanceof ClientFullSession) {
+                logFullSessionInfo((ClientFullSession) session);
             }
         } else {
             log("Session is null");
@@ -87,7 +99,7 @@ public class StunnerClientLogger {
         log("******************************************");
     }
 
-    private static void logFullSessionInfo(final AbstractClientFullSession session) {
+    private static void logFullSessionInfo(final ClientFullSession session) {
         final ElementBuilderControl<AbstractCanvasHandler> builderControl = session.getBuilderControl();
         final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager =
                 session.getCommandManager();

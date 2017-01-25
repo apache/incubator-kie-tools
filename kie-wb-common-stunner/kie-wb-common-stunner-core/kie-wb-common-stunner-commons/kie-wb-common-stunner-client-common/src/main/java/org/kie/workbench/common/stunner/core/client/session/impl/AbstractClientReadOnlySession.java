@@ -18,24 +18,21 @@ package org.kie.workbench.common.stunner.core.client.session.impl;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControlRegistrationHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
-import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
-import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 public abstract class AbstractClientReadOnlySession extends AbstractClientSession
         implements ClientReadOnlySession<AbstractCanvas, AbstractCanvasHandler> {
 
-    private SelectionControl<AbstractCanvasHandler, Element> selectionControl;
-    private ZoomControl<AbstractCanvas> zoomControl;
-    private PanControl<AbstractCanvas> panControl;
+    protected SelectionControl<AbstractCanvasHandler, Element> selectionControl;
+    protected ZoomControl<AbstractCanvas> zoomControl;
+    protected PanControl<AbstractCanvas> panControl;
 
-    private CanvasShapeListener shapeListener;
-    private CanvasElementListener elementListener;
+    private final CanvasControlRegistrationHandler<AbstractCanvas, AbstractCanvasHandler> registrationHandler;
 
     public AbstractClientReadOnlySession(final AbstractCanvas canvas,
                                          final AbstractCanvasHandler canvasHandler,
@@ -47,33 +44,21 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
         this.selectionControl = selectionControl;
         this.zoomControl = zoomControl;
         this.panControl = panControl;
-    }
-
-    @Override
-    public SelectionControl<AbstractCanvasHandler, Element> getSelectionControl() {
-        return selectionControl;
-    }
-
-    @Override
-    public ZoomControl<AbstractCanvas> getZoomControl() {
-        return zoomControl;
-    }
-
-    @Override
-    public PanControl<AbstractCanvas> getPanControl() {
-        return panControl;
+        this.registrationHandler = new CanvasControlRegistrationHandler<AbstractCanvas, AbstractCanvasHandler>(canvas,
+                                                                                                               canvasHandler);
+        this.registrationHandler.registerCanvasHandlerControl(selectionControl);
+        this.registrationHandler.registerCanvasControl(zoomControl);
+        this.registrationHandler.registerCanvasControl(panControl);
     }
 
     @Override
     protected void doOpen() {
-        initializeListeners();
-        enableControls();
+        registrationHandler.enable();
     }
 
     @Override
-    public void doDispose() {
-        removeListeners();
-        disableControls();
+    public void doDestroy() {
+        registrationHandler.disable();
     }
 
     @Override
@@ -86,131 +71,7 @@ public abstract class AbstractClientReadOnlySession extends AbstractClientSessio
         // TODO: Performance improvements: Re-enable controls here.
     }
 
-    private void initializeListeners() {
-        // Canvas listeners.
-        final AbstractCanvas canvas = getCanvasHandler().getCanvas();
-        this.shapeListener = new CanvasShapeListener() {
-
-            @Override
-            public void register(final Shape item) {
-                onRegisterShape(item);
-            }
-
-            @Override
-            public void deregister(final Shape item) {
-                onDeregisterShape(item);
-            }
-
-            @Override
-            public void clear() {
-                onClear();
-            }
-        };
-        canvas.addRegistrationListener(shapeListener);
-        // Canvas handler listeners.
-        this.elementListener = new CanvasElementListener() {
-
-            @Override
-            public void update(final Element item) {
-                onElementRegistration(item,
-                                      false,
-                                      true);
-            }
-
-            @Override
-            public void register(final Element item) {
-                onRegisterElement(item);
-            }
-
-            @Override
-            public void deregister(final Element item) {
-                onDeregisterElement(item);
-            }
-
-            @Override
-            public void clear() {
-                onClear();
-            }
-        };
-        getCanvasHandler().addRegistrationListener(elementListener);
-    }
-
-    private void removeListeners() {
-        if (null != shapeListener) {
-            getCanvas().removeRegistrationListener(shapeListener);
-        }
-        if (null != elementListener) {
-            getCanvasHandler().removeRegistrationListener(elementListener);
-        }
-    }
-
-    private void onRegisterShape(final Shape shape) {
-        onShapeRegistration(shape,
-                            true);
-    }
-
-    private void onDeregisterShape(final Shape shape) {
-        onShapeRegistration(shape,
-                            false);
-    }
-
-    private void onRegisterElement(final Element element) {
-        onElementRegistration(element,
-                              true,
-                              false);
-    }
-
-    private void onDeregisterElement(final Element element) {
-        onElementRegistration(element,
-                              false,
-                              false);
-    }
-
-    protected void onElementRegistration(final Element element,
-                                         final boolean add,
-                                         final boolean update) {
-        if (update) {
-            fireRegistrationUpdateListeners(getSelectionControl(),
-                                            element);
-        } else {
-            fireRegistrationListeners(getSelectionControl(),
-                                      element,
-                                      add);
-        }
-    }
-
-    protected void onShapeRegistration(final Shape shape,
-                                       final boolean add) {
-        fireRegistrationListeners(getZoomControl(),
-                                  shape,
-                                  add);
-        fireRegistrationListeners(getPanControl(),
-                                  shape,
-                                  add);
-    }
-
-    protected void onClear() {
-        fireRegistrationClearListeners(getSelectionControl());
-    }
-
-    protected void enableControls() {
-        enableControl(getSelectionControl(),
-                      getCanvasHandler());
-        enableControl(getZoomControl(),
-                      getCanvas());
-        enableControl(getPanControl(),
-                      getCanvas());
-    }
-
-    protected void disableControls() {
-        if (null != getSelectionControl()) {
-            getSelectionControl().disable();
-        }
-        if (null != getZoomControl()) {
-            getZoomControl().disable();
-        }
-        if (null != getPanControl()) {
-            getPanControl().disable();
-        }
+    protected CanvasControlRegistrationHandler<AbstractCanvas, AbstractCanvasHandler> getRegistrationHandler() {
+        return registrationHandler;
     }
 }

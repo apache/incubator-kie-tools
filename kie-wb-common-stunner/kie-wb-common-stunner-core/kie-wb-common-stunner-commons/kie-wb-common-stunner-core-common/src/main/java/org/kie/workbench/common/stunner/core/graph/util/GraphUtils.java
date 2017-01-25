@@ -206,7 +206,15 @@ public class GraphUtils {
                            y);
     }
 
-    public static double[] getSize(final View element) {
+    public static double[] getGraphSize(final DefinitionSet element) {
+        final Bounds.Bound ul = element.getBounds().getUpperLeft();
+        final Bounds.Bound lr = element.getBounds().getLowerRight();
+        final double w = lr.getX() - ul.getX();
+        final double h = lr.getY() - ul.getY();
+        return new double[]{Math.abs(w), Math.abs(h)};
+    }
+
+    public static double[] getNodeSize(final View element) {
         final Bounds.Bound ul = element.getBounds().getUpperLeft();
         final Bounds.Bound lr = element.getBounds().getLowerRight();
         final double w = lr.getX() - ul.getX();

@@ -17,14 +17,14 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import javax.enterprise.context.Dependent;
 
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.util.CanvasHighlightVisitor;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-public class VisitGraphSessionCommand extends AbstractClientSessionCommand<AbstractClientReadOnlySession> {
+public class VisitGraphSessionCommand extends AbstractClientSessionCommand<ClientSession> {
 
     public VisitGraphSessionCommand() {
         super(true);

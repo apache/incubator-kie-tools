@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
+import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.ShapeSet;
@@ -45,6 +46,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
 @Bindable
 @DefinitionSet(
         graphFactory = BPMNGraphFactory.class,
+        qualifier = BPMN.class,
         definitions = {
                 BPMNDiagram.class,
                 Lane.class,

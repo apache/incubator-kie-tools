@@ -20,15 +20,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 
 @Dependent
-public class SwitchGridToolbarCommand extends AbstractToolbarSessionCommand<AbstractClientReadOnlySession, SwitchGridSessionCommand> {
-
-    private CanvasGrid grid;
+public class SwitchGridToolbarCommand extends AbstractToolbarCommand<ClientSession, SwitchGridSessionCommand> {
 
     @Inject
     public SwitchGridToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
@@ -59,6 +56,5 @@ public class SwitchGridToolbarCommand extends AbstractToolbarSessionCommand<Abst
     @Override
     protected void doDestroy() {
         super.doDestroy();
-        this.grid = null;
     }
 }

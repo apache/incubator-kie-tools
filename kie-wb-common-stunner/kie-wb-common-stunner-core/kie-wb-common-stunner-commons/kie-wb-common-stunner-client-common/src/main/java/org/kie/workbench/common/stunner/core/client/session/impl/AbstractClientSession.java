@@ -18,12 +18,7 @@ package org.kie.workbench.common.stunner.core.client.session.impl;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 public abstract class AbstractClientSession implements ClientSession<AbstractCanvas, AbstractCanvasHandler> {
@@ -47,7 +42,7 @@ public abstract class AbstractClientSession implements ClientSession<AbstractCan
 
     protected abstract void doResume();
 
-    protected abstract void doDispose();
+    protected abstract void doDestroy();
 
     public void open() {
         doOpen();
@@ -62,17 +57,16 @@ public abstract class AbstractClientSession implements ClientSession<AbstractCan
     }
 
     public void resume() {
-        if (!isOpened) {
-            throw new IllegalStateException("Session cannot be resumed as it has been not opened yet.");
+        if (isOpened) {
+            doResume();
         }
-        doResume();
     }
 
-    public void dispose() {
+    public void destroy() {
         if (!isOpened) {
-            throw new IllegalStateException("Session cannot be disposed as it has been not opened yet.");
+            throw new IllegalStateException("Session cannot be destroyed as it has been not opened.");
         }
-        doDispose();
+        doDestroy();
         canvasHandler.destroy();
         isOpened = false;
     }
@@ -85,63 +79,6 @@ public abstract class AbstractClientSession implements ClientSession<AbstractCan
     @Override
     public AbstractCanvasHandler getCanvasHandler() {
         return canvasHandler;
-    }
-
-    protected void enableControl(final CanvasControl<AbstractCanvasHandler> control,
-                                 final AbstractCanvasHandler handler) {
-        if (null != control) {
-            control.enable(handler);
-        }
-    }
-
-    protected void enableControl(final CanvasControl<AbstractCanvas> control,
-                                 final AbstractCanvas handler) {
-        if (null != control) {
-            control.enable(handler);
-        }
-    }
-
-    protected void fireRegistrationListeners(final CanvasControl<AbstractCanvasHandler> control,
-                                             final Element element,
-                                             final boolean add) {
-        if (null != control && null != element && control instanceof CanvasRegistationControl) {
-            final CanvasRegistationControl<AbstractCanvasHandler, Element> registationControl =
-                    (CanvasRegistationControl<AbstractCanvasHandler, Element>) control;
-            if (add) {
-                registationControl.register(element);
-            } else {
-                registationControl.deregister(element);
-            }
-        }
-    }
-
-    protected void fireRegistrationListeners(final CanvasControl<AbstractCanvas> control,
-                                             final Shape shape,
-                                             final boolean add) {
-        if (null != control && null != shape && control instanceof CanvasRegistationControl) {
-            final CanvasRegistationControl<AbstractCanvas, Shape> registationControl =
-                    (CanvasRegistationControl<AbstractCanvas, Shape>) control;
-            if (add) {
-                registationControl.register(shape);
-            } else {
-                registationControl.deregister(shape);
-            }
-        }
-    }
-
-    protected void fireRegistrationUpdateListeners(final CanvasControl<AbstractCanvasHandler> control,
-                                                   final Element element) {
-        if (null != control && null != element && control instanceof AbstractCanvasHandlerRegistrationControl) {
-            final AbstractCanvasHandlerRegistrationControl registationControl = (AbstractCanvasHandlerRegistrationControl) control;
-            registationControl.update(element);
-        }
-    }
-
-    protected void fireRegistrationClearListeners(final CanvasControl<AbstractCanvasHandler> control) {
-        if (null != control && control instanceof AbstractCanvasHandlerRegistrationControl) {
-            final AbstractCanvasHandlerRegistrationControl registationControl = (AbstractCanvasHandlerRegistrationControl) control;
-            registationControl.deregisterAll();
-        }
     }
 
     @Override

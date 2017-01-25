@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.logging.client.LogConfiguration;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
@@ -89,7 +89,8 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
 
     protected abstract Set<String> getDefinitions();
 
-    protected abstract void onItemSelected(final String definitionId,
+    protected abstract void onItemSelected(final Context<AbstractCanvasHandler> context,
+                                           final String definitionId,
                                            final double x,
                                            final double y);
 
@@ -164,13 +165,32 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
     @SuppressWarnings("unchecked")
     private void initializeView(final DefinitionsPalette paletteDefinition,
                                 final Context<AbstractCanvasHandler> context) {
+        // Delegate to the builder control instance the current command manager.
+        nodeBuilderControl.setCommandManagerProvider(context::getCommandManager);
+        // Palette binding.
         beforeBindPalette(paletteDefinition,
                           context);
         palette.bind(paletteDefinition)
-                .onItemHover(AbstractPaletteCommand.this::_onItemHover)
-                .onItemOut(AbstractPaletteCommand.this::_onItemOut)
-                .onItemClick(AbstractPaletteCommand.this::_onItemClick)
-                .onItemMouseDown(AbstractPaletteCommand.this::_onItemMouseDown);
+                .onItemHover((id, mouseX, mouseY, itemX, itemY) -> AbstractPaletteCommand.this._onItemHover(context,
+                                                                                                            id,
+                                                                                                            mouseX,
+                                                                                                            mouseY,
+                                                                                                            itemX,
+                                                                                                            itemY))
+                .onItemOut((id) -> AbstractPaletteCommand.this._onItemOut(context,
+                                                                          id))
+                .onItemClick((id, mouseX, mouseY, itemX, itemY) -> AbstractPaletteCommand.this._onItemClick(context,
+                                                                                                            id,
+                                                                                                            mouseX,
+                                                                                                            mouseY,
+                                                                                                            itemX,
+                                                                                                            itemY))
+                .onItemMouseDown((id, mouseX, mouseY, itemX, itemY) -> AbstractPaletteCommand.this._onItemMouseDown(context,
+                                                                                                                    id,
+                                                                                                                    mouseX,
+                                                                                                                    mouseY,
+                                                                                                                    itemX,
+                                                                                                                    itemY));
         // Use the relative coordinates (x/y) as palette gets added into same canvas' layer as the toolbox.
         showPaletteViewAt(context.getX(),
                           context.getY());
@@ -190,12 +210,14 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
     }
 
     public void clear() {
+        this.nodeBuilderControl.setCommandManagerProvider(null);
         this.paletteVisible = false;
         this.elementUUID = null;
         getPaletteView().clear();
     }
 
-    private boolean _onItemClick(final String id,
+    private boolean _onItemClick(final Context<AbstractCanvasHandler> context,
+                                 final String id,
                                  final double mouseX,
                                  final double mouseY,
                                  final double itemX,
@@ -204,27 +226,31 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
         return true;
     }
 
-    private boolean _onItemHover(final String id,
+    private boolean _onItemHover(final Context<AbstractCanvasHandler> context,
+                                 final String id,
                                  final double mouseX,
                                  final double mouseY,
                                  final double itemX,
                                  final double itemY) {
-        canvasHandler.getCanvas().getView().setCursor(AbstractCanvas.Cursors.POINTER);
+        canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.POINTER);
         return true;
     }
 
-    private boolean _onItemOut(final String id) {
-        canvasHandler.getCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
+    private boolean _onItemOut(final Context<AbstractCanvasHandler> context,
+                               final String id) {
+        canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
         return true;
     }
 
     @SuppressWarnings("unchecked")
-    private boolean _onItemMouseDown(final String id,
+    private boolean _onItemMouseDown(final Context<AbstractCanvasHandler> context,
+                                     final String id,
                                      final double mouseX,
                                      final double mouseY,
                                      final double itemX,
                                      final double itemY) {
-        onItemSelected(id,
+        onItemSelected(context,
+                       id,
                        mouseX,
                        mouseY);
         return true;
@@ -232,14 +258,15 @@ public abstract class AbstractPaletteCommand<I> extends AbstractToolboxCommand<I
 
     @Override
     public void destroy() {
-        this.canvasHandler = null;
-        this.canvasHighlight = null;
-        this.sourceNode = null;
         this.palette.destroy();
         this.nodeDragProxyFactory.destroy();
+        this.nodeBuilderControl.setCommandManagerProvider(null);
         this.nodeBuilderControl.disable();
         this.graphBoundsIndexer.destroy();
         this.canvasHighlight.destroy();
+        this.canvasHandler = null;
+        this.canvasHighlight = null;
+        this.sourceNode = null;
     }
 
     protected abstract PaletteView getPaletteView();

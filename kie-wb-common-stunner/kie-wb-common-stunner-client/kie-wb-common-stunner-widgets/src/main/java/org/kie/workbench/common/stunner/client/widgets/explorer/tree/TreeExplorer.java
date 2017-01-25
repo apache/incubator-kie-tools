@@ -32,6 +32,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
@@ -232,8 +233,10 @@ public class TreeExplorer implements IsWidget {
                                                                       uuid));
     }
 
-    void onCanvasClearEvent(final @Observes CanvasClearEvent canvasClearEvent) {
-        if (canvasHandler != null && canvasHandler.getCanvas().equals(canvasClearEvent.getCanvas())) {
+    void onCanvasClearEvent(@Observes CanvasClearEvent canvasClearEvent) {
+        if (null != canvasHandler &&
+                null != canvasHandler.getCanvas() &&
+                canvasHandler.getCanvas().equals(canvasClearEvent.getCanvas())) {
             clear();
         }
     }
@@ -265,6 +268,12 @@ public class TreeExplorer implements IsWidget {
     private boolean checkEventContext(final AbstractCanvasHandlerEvent canvasHandlerEvent) {
         final CanvasHandler _canvasHandler = canvasHandlerEvent.getCanvasHandler();
         return canvasHandler != null && canvasHandler.equals(_canvasHandler);
+    }
+
+    private boolean checkEventContext(final AbstractCanvasEvent canvasEvent) {
+        final Canvas canvas = canvasEvent.getCanvas();
+        return null != canvasHandler && null != canvasHandler.getCanvas()
+                && canvasHandler.getCanvas().equals(canvas);
     }
 
     private String getShapeSetId() {

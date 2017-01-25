@@ -20,20 +20,13 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 
 public interface Toolbar<S extends ClientSession> {
 
-    void initialize(final S session,
-                    final ToolbarCommandCallback<?> callback);
-
-    void addCommand(final ToolbarCommand<S> command);
-
     void disable(final ToolbarCommand<S> command);
 
     void enable(final ToolbarCommand<S> command);
 
-    void show();
-
-    void hide();
+    void clear();
 
     void destroy();
 
-    ToolbarView getView();
+    ToolbarView<? extends Toolbar> getView();
 }

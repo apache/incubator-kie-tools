@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.client.lienzo.components.palette.view.el
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.view.element.LienzoSeparatorPaletteElementViewImpl;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.view.element.LienzoTextPaletteElementView;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.view.element.LienzoTextPaletteElementViewImpl;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionGlyphTooltip;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.GlyphPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;

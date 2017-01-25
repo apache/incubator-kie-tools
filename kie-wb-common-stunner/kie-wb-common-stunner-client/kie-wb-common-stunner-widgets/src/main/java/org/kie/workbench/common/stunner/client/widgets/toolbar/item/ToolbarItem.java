@@ -24,10 +24,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 
 @Dependent
-public class ToolbarItem extends AbstractToolbarItem<AbstractClientFullSession> {
+public class ToolbarItem<S extends ClientSession> extends AbstractToolbarItem<S> {
 
     private static Logger LOGGER = Logger.getLogger(ToolbarItem.class.getName());
 

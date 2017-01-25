@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
@@ -49,4 +50,11 @@ public interface DefinitionSetAdapter<T> extends PriorityAdapter {
      * Returns the definition set's graph class for a given pojo.
      */
     Class<? extends ElementFactory> getGraphFactoryType(final T pojo);
+
+    /**
+     * Returns the qualifier used for this Definition Set component's implementations, if any.
+     * It must return at least <code>javax.enterprise.inject.Default</code>
+     * or <code>javax.enterprise.inject.Any</code>.
+     */
+    Annotation getQualifier(final T pojo);
 }

@@ -33,22 +33,21 @@ import org.jboss.errai.databinding.client.BindableProxyFactory;
 import org.jboss.errai.databinding.client.HasProperties;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionDisposedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroyedEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.uberfire.mvp.Command;
@@ -65,7 +64,8 @@ public class FormPropertiesWidget implements IsWidget {
     private final DynamicFormRenderer formRenderer;
     private final Event<FormPropertiesOpened> propertiesOpenedEvent;
 
-    private AbstractClientFullSession session;
+    private ClientSession session;
+    private FormFeaturesSessionProvider featuresSessionProvider;
 
     protected FormPropertiesWidget() {
         this(null,
@@ -94,8 +94,12 @@ public class FormPropertiesWidget implements IsWidget {
     /**
      * Binds a session.
      */
-    public FormPropertiesWidget bind(final AbstractClientFullSession session) {
+    public FormPropertiesWidget bind(final ClientSession session) {
         this.session = session;
+        featuresSessionProvider = getFeaturesSessionProvider(session);
+        if (null == featuresSessionProvider) {
+            throw new UnsupportedOperationException("No client session type supported.");
+        }
         return this;
     }
 
@@ -125,12 +129,16 @@ public class FormPropertiesWidget implements IsWidget {
         if (null != session) {
             // Obtain first element selected on session, if any.
             String selectedItemUUID = null;
-            final SelectionControl selectionControl = session.getSelectionControl();
+            final SelectionControl selectionControl = featuresSessionProvider.getSelectionControl(session);
             if (null != selectionControl) {
                 final Collection<String> selectedItems = selectionControl.getSelectedItems();
                 if (null != selectedItems && !selectedItems.isEmpty()) {
                     selectedItemUUID = selectedItems.iterator().next();
                 }
+            } else {
+                LOGGER.log(Level.WARNING,
+                           "Cannot show properties as session type does not provides " +
+                                   "selection control's support.");
             }
             if (null == selectedItemUUID) {
                 final Diagram<?, ?> diagram = getDiagram();
@@ -144,6 +152,7 @@ public class FormPropertiesWidget implements IsWidget {
             }
             if (null != selectedItemUUID) {
                 showByUUID(selectedItemUUID,
+                           getSessionRenderMode(),
                            callback);
                 done = true;
             }
@@ -156,12 +165,16 @@ public class FormPropertiesWidget implements IsWidget {
     /**
      * Show properties for the element with the given identifier.
      */
-    public void showByUUID(final String uuid) {
+    public void showByUUID(final String uuid,
+                           final RenderMode renderMode) {
         this.showByUUID(uuid,
+                        renderMode,
                         null);
     }
 
+    @SuppressWarnings("unchecked")
     public void showByUUID(final String uuid,
+                           final RenderMode renderMode,
                            final Command callback) {
         final Element<? extends Definition<?>> element = (null != uuid && null != getCanvasHandler()) ?
                 getCanvasHandler().getGraphIndex().get(uuid) : null;
@@ -172,7 +185,7 @@ public class FormPropertiesWidget implements IsWidget {
                                            () -> {
                                                formRenderer.addFieldChangeHandler((fieldName, newValue) -> {
                                                    try {
-                                                       // TODO - Pere: We have to review this. Meanwhile, note that this is working only for properties
+                                                       // TODO (Pere): We have to review this. Meanwhile, note that this is working only for properties
                                                        // that are direct members of the definitions ( ex: Task#width or StartEvent#radius ).
                                                        // But it's not working for the properties that are inside property sets, for example an error
                                                        // occurs when updating "documentation", as thisl callback "fieldName" = "documentation", but
@@ -192,6 +205,10 @@ public class FormPropertiesWidget implements IsWidget {
                                                        }
                                                    }
                                                });
+                                               // TODO (Pere): When render mode is type PRETTY, and the user clicks
+                                               // on the canvas, an infinite recursive operations seems to be running
+                                               // and finally produces an error (and an error message on the UI as well).
+                                               // formRenderer.switchToMode(renderMode);
                                            });
             final String name = definitionUtils.getName(definition);
             propertiesOpenedEvent.fire(new FormPropertiesOpened(session,
@@ -211,11 +228,19 @@ public class FormPropertiesWidget implements IsWidget {
     }
 
     private AbstractCanvasHandler getCanvasHandler() {
-        return session != null ? session.getCanvasHandler() : null;
+        return session != null ? (AbstractCanvasHandler) session.getCanvasHandler() : null;
     }
 
     private Diagram<?, ?> getDiagram() {
         return null != getCanvasHandler() ? getCanvasHandler().getDiagram() : null;
+    }
+
+    private RenderMode getSessionRenderMode() {
+        return getRenderMode(session);
+    }
+
+    private RenderMode getRenderMode(final ClientSession session) {
+        return session instanceof ClientFullSession ? RenderMode.EDIT_MODE : RenderMode.PRETTY_MODE;
     }
 
     @SuppressWarnings("unchecked")
@@ -224,7 +249,8 @@ public class FormPropertiesWidget implements IsWidget {
                      event);
         if (null != getCanvasHandler()) {
             final String uuid = event.getElementUUID();
-            showByUUID(uuid);
+            showByUUID(uuid,
+                       getSessionRenderMode());
         }
     }
 
@@ -240,15 +266,15 @@ public class FormPropertiesWidget implements IsWidget {
         doOpenSession(sessionOpenedEvent.getSession());
     }
 
-    void onCanvasSessionDisposed(@Observes SessionDisposedEvent sessionDisposedEvent) {
-        checkNotNull("sessionDisposedEvent",
-                     sessionDisposedEvent);
+    void onCanvasSessionDestroyed(@Observes SessionDestroyedEvent sessionDestroyedEvent) {
+        checkNotNull("sessionDestroyedEvent",
+                     sessionDestroyedEvent);
         unbind();
     }
 
     private void doOpenSession(final ClientSession session) {
         try {
-            bind((AbstractClientFullSession) session).show();
+            bind(session).show();
         } catch (ClassCastException e) {
             // No writteable session. Do not show properties until read mode available.
             log(Level.INFO,
@@ -257,28 +283,24 @@ public class FormPropertiesWidget implements IsWidget {
     }
 
     private void doClear() {
-        // TODO: formRenderer.unBind(); -> NPE
-        // TODO: changeTitleNotification.fire(new ChangeTitleWidgetEvent(placeRequest, "Properties"));
+        // TODO (Pere): formRenderer.unBind(); -> Produces NPE. Right now when closing a diagram, the forms
+        // for the latest selected element are still present. They should be removed here.
     }
 
+    @SuppressWarnings("unchecked")
     private void executeUpdateProperty(final Element<? extends Definition<?>> element,
                                        final String propertyId,
                                        final Object value) {
-        final CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCommandManager();
-        commandManager.execute(getCanvasHandler(),
-                               commandFactory.updatePropertyValue(element,
-                                                                  propertyId,
-                                                                  value));
-    }
-
-    private void executeMove(final Element<? extends Definition<?>> element,
-                             final double x,
-                             final double y) {
-        final CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCommandManager();
-        commandManager.execute(getCanvasHandler(),
-                               commandFactory.updatePosition((Node<View<?>, Edge>) element,
-                                                             x,
-                                                             y));
+        final CanvasCommandManager<AbstractCanvasHandler> commandManager = featuresSessionProvider.getCommandManager(session);
+        if (null != commandManager) {
+            commandManager.execute(getCanvasHandler(),
+                                   commandFactory.updatePropertyValue(element,
+                                                                      propertyId,
+                                                                      value));
+        } else {
+            LOGGER.log(Level.WARNING,
+                       "Cannot update property [" + propertyId + "] as session type is not supported.");
+        }
     }
 
     private String getModifiedPropertyId(HasProperties model,
@@ -300,6 +322,88 @@ public class FormPropertiesWidget implements IsWidget {
                 .adapters()
                 .forProperty()
                 .getId(property);
+    }
+
+    private FormFeaturesSessionProvider getFeaturesSessionProvider(final ClientSession session) {
+        for (final FormFeaturesSessionProvider featureSessionProvider : FEATURE_SESSION_PROVIDERS) {
+            if (featureSessionProvider.supports(session)) {
+                return featureSessionProvider;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * An ORDERED array of feature providers supported.
+     */
+    private static final FormFeaturesSessionProvider[] FEATURE_SESSION_PROVIDERS =
+            new FormFeaturesSessionProvider[]{
+                    new FormFeaturesFullSessionProvider(),
+                    new FormFeaturesReadOnlySessionProvider()};
+
+    /**
+     * This type provides required features that are specific for concrete client session types.
+     */
+    private interface FormFeaturesSessionProvider<S extends ClientSession> {
+
+        /**
+         * Returns <code>true</code> is the session type is supported.
+         */
+        boolean supports(ClientSession type);
+
+        /**
+         * Returns the session's selection control instance, if not available, it returns <code>null</code>.
+         */
+        SelectionControl getSelectionControl(S session);
+
+        /**
+         * Returns the session's command manager instance, if not available, it returns <code>null</code>.
+         */
+        CanvasCommandManager<AbstractCanvasHandler> getCommandManager(S session);
+    }
+
+    private static class FormFeaturesReadOnlySessionProvider implements FormFeaturesSessionProvider<ClientReadOnlySession> {
+
+        @Override
+        public boolean supports(final ClientSession type) {
+            return type instanceof ClientReadOnlySession;
+        }
+
+        @Override
+        public SelectionControl getSelectionControl(final ClientReadOnlySession session) {
+            return cast(session).getSelectionControl();
+        }
+
+        @Override
+        public CanvasCommandManager<AbstractCanvasHandler> getCommandManager(final ClientReadOnlySession session) {
+            return null;
+        }
+
+        private ClientReadOnlySession cast(final ClientSession session) {
+            return (ClientReadOnlySession) session;
+        }
+    }
+
+    private static class FormFeaturesFullSessionProvider implements FormFeaturesSessionProvider<ClientFullSession> {
+
+        @Override
+        public boolean supports(final ClientSession type) {
+            return type instanceof ClientFullSession;
+        }
+
+        @Override
+        public SelectionControl getSelectionControl(final ClientFullSession session) {
+            return cast(session).getSelectionControl();
+        }
+
+        @Override
+        public CanvasCommandManager<AbstractCanvasHandler> getCommandManager(final ClientFullSession session) {
+            return cast(session).getCommandManager();
+        }
+
+        private ClientFullSession cast(final ClientSession session) {
+            return (ClientFullSession) session;
+        }
     }
 
     private boolean isEmpty(final String s) {

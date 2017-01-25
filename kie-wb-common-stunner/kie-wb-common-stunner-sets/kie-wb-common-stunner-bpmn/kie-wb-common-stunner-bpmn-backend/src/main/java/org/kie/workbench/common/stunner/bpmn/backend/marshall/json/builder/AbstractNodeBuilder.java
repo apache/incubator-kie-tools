@@ -109,7 +109,7 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
 
     protected void setSize(final BuilderContext context,
                            final T node) {
-        final double[] size = GraphUtils.getSize(node.getContent());
+        final double[] size = GraphUtils.getNodeSize(node.getContent());
         setSize(context,
                 node,
                 size[0],

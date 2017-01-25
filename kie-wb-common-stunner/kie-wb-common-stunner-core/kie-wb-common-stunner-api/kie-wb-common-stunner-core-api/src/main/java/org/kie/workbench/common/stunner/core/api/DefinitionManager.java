@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.api;
 
+import java.lang.annotation.Annotation;
+import javax.enterprise.inject.Default;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 
@@ -23,6 +26,16 @@ import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionS
  * Entry point for handling the different Definition Sets present on the context.
  */
 public interface DefinitionManager {
+
+    /**
+     * The default qualifier for any Definition Set.
+     */
+    Annotation DEFAULT_QUALIFIER = new Default() {
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Default.class;
+        }
+    };
 
     /**
      * The registry that contains the Definition Sets present on the context.

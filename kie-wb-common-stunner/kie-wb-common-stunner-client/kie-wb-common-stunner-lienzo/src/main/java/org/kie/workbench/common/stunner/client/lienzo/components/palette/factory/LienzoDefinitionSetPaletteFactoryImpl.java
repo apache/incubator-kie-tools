@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.stunner.client.lienzo.components.palette.LienzoDefinitionSetPalette;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.AbstractPaletteFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.DefaultDefSetPaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
@@ -38,11 +38,11 @@ public class LienzoDefinitionSetPaletteFactoryImpl
     public LienzoDefinitionSetPaletteFactoryImpl(final ShapeManager shapeManager,
                                                  final SyncBeanManager beanManager,
                                                  final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
-                                                 final LienzoDefinitionSetPalette palette) {
+                                                 final ManagedInstance<LienzoDefinitionSetPalette> paletteInstances) {
         super(shapeManager,
               beanManager,
               defaultPaletteDefinitionFactoryInstance,
-              palette);
+              paletteInstances);
     }
 
     @PostConstruct
@@ -53,14 +53,17 @@ public class LienzoDefinitionSetPaletteFactoryImpl
 
     @Override
     protected void beforeBindPalette(final DefinitionSetPalette paletteDefinition,
+                                     final LienzoDefinitionSetPalette palette,
                                      final String shapeSetId) {
         super.beforeBindPalette(paletteDefinition,
+                                palette,
                                 shapeSetId);
         palette.setShapeSetId(shapeSetId);
     }
 
     @Override
-    protected void applyGrid(final PaletteGrid grid) {
+    protected void applyGrid(final PaletteGrid grid,
+                             final LienzoDefinitionSetPalette palette) {
         palette.setIconSize(grid.getIconSize());
         palette.setPadding(grid.getPadding());
     }

@@ -20,8 +20,10 @@ import javax.enterprise.context.Dependent;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
+import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.util.LienzoImageDataUtils;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
@@ -34,6 +36,10 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventTy
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 import org.uberfire.mvp.Command;
 
+/**
+ * An Stunner's Layer type implementation that wraps a Lienzo layer and provides
+ * support for primitives, shapes and wires.
+ */
 @Dependent
 @Lienzo
 public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<?>> {
@@ -182,5 +188,67 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
                 layer.getAbsoluteTransform().getScaleX(),
                 layer.getAbsoluteTransform().getScaleY()
         );
+    }
+
+    public void translate(final double tx,
+                          final double ty) {
+        setTransform(t -> translate(t,
+                                    tx,
+                                    ty));
+    }
+
+    public void scale(final double sx,
+                      final double sy) {
+        setTransform(t -> scale(t,
+                                sx,
+                                sy));
+    }
+
+    public void scale(final double delta) {
+        setTransform(t -> scale(t,
+                                delta));
+    }
+
+    private interface TransformCallback {
+
+        void apply(Transform transform);
+    }
+
+    private void setTransform(final TransformCallback callback) {
+
+        Transform transform = getViewPort().getTransform();
+
+        if (transform == null) {
+            getViewPort().setTransform(transform = new Transform());
+        }
+
+        callback.apply(transform);
+
+        getViewPort().setTransform(transform);
+
+        getViewPort().getScene().batch();
+    }
+
+    private void scale(final Transform transform,
+                       final double sx,
+                       final double sy) {
+        transform.scale(sx,
+                        sy);
+    }
+
+    private void scale(final Transform transform,
+                       final double delta) {
+        transform.scale(delta);
+    }
+
+    private void translate(final Transform transform,
+                           final double tx,
+                           final double ty) {
+        transform.translate(tx,
+                            ty);
+    }
+
+    private Viewport getViewPort() {
+        return layer.getViewport();
     }
 }

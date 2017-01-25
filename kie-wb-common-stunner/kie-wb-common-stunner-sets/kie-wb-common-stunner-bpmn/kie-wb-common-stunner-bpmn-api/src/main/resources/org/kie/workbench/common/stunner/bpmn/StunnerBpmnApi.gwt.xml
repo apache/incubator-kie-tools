@@ -26,6 +26,7 @@
   <source path="definition"/>
   <source path="factory"/>
   <source path="forms"/>
+  <source path="qualifiers"/>
   <source path="resource"/>
   <source path="service"/>
   <source path="shape/def"/>

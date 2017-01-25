@@ -25,6 +25,8 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 
 /**
  * A session that provides controls which do not update or modify the session's diagram structure/metadata.
+ * Any read only session instance must provide at least two controls - zoom control and pan control.
+ * Implementation can provide additional controls.
  * @param <C> The canvas.
  * @param <H> The canvas handler.
  */

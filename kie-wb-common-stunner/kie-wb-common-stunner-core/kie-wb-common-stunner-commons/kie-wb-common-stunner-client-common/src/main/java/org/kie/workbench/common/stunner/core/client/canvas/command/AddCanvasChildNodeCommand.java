@@ -68,7 +68,7 @@ public final class AddCanvasChildNodeCommand extends AbstractCanvasNodeRegistrat
                                      MutationContext.STATIC);
         context.applyElementMutation(getCandidate(),
                                      MutationContext.STATIC);
-        return true;
+        return false;
     }
 
     @Override

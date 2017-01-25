@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
-import org.kie.workbench.common.stunner.core.client.session.ClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -49,7 +49,7 @@ import static org.junit.Assert.*;
 public class DefaultRouteFormProviderTest {
 
     @Mock
-    ClientSessionManager canvasSessionManager;
+    SessionManager canvasSessionManager;
 
     @Mock
     FormRenderingContext context;
@@ -96,13 +96,49 @@ public class DefaultRouteFormProviderTest {
         Mockito.when(edge2.getContent()).thenReturn(edge2ViewConnector);
         Mockito.when(edge3.getContent()).thenReturn(edge3ViewConnector);
 
-        Mockito.when(edge1ViewConnector.getDefinition()).thenReturn(new SequenceFlow(new BPMNGeneralSet("sequence"), null, null, null));
-        Mockito.when(edge2ViewConnector.getDefinition()).thenReturn(new SequenceFlow(new BPMNGeneralSet("sequence"), null, null, null));
-        Mockito.when(edge3ViewConnector.getDefinition()).thenReturn(new SequenceFlow(new BPMNGeneralSet("sequence"), null, null, null));
+        Mockito.when(edge1ViewConnector.getDefinition()).thenReturn(new SequenceFlow(new BPMNGeneralSet("sequence"),
+                                                                                     null,
+                                                                                     null,
+                                                                                     null));
+        Mockito.when(edge2ViewConnector.getDefinition()).thenReturn(new SequenceFlow(new BPMNGeneralSet("sequence"),
+                                                                                     null,
+                                                                                     null,
+                                                                                     null));
+        Mockito.when(edge3ViewConnector.getDefinition()).thenReturn(new SequenceFlow(new BPMNGeneralSet("sequence"),
+                                                                                     null,
+                                                                                     null,
+                                                                                     null));
 
-        UserTask userTask1 = new UserTask(new TaskGeneralSet(new Name("Task1"), null), null, null, null, null, null, null, null, null);
-        UserTask userTask2 = new UserTask(new TaskGeneralSet(new Name("Task2"), null), null, null, null, null, null, null, null, null);
-        UserTask userTask3 = new UserTask(new TaskGeneralSet(new Name("Task3"), null), null, null, null, null, null, null, null, null);
+        UserTask userTask1 = new UserTask(new TaskGeneralSet(new Name("Task1"),
+                                                             null),
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null);
+        UserTask userTask2 = new UserTask(new TaskGeneralSet(new Name("Task2"),
+                                                             null),
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null);
+        UserTask userTask3 = new UserTask(new TaskGeneralSet(new Name("Task3"),
+                                                             null),
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null);
         Mockito.when(defaultRouteFormProvider.getEdgeTarget(edge1)).thenReturn(userTask1);
         Mockito.when(defaultRouteFormProvider.getEdgeTarget(edge2)).thenReturn(userTask2);
         Mockito.when(defaultRouteFormProvider.getEdgeTarget(edge3)).thenReturn(userTask3);
@@ -117,8 +153,11 @@ public class DefaultRouteFormProviderTest {
         SelectorData selectorData = defaultRouteFormProvider.getSelectorData(context);
         Map<String, String> values = selectorData.getValues();
         assertTrue(values.size() == 3);
-        assertEquals("Task1", values.get("sequence : Edge1"));
-        assertEquals("Task2", values.get("sequence : Edge2"));
-        assertEquals("Task3", values.get("sequence : Edge3"));
+        assertEquals("Task1",
+                     values.get("sequence : Edge1"));
+        assertEquals("Task2",
+                     values.get("sequence : Edge2"));
+        assertEquals("Task3",
+                     values.get("sequence : Edge3"));
     }
 }

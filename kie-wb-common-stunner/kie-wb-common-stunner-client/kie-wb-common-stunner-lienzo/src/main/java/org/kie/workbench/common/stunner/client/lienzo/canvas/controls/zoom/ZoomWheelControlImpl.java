@@ -21,12 +21,13 @@ import javax.enterprise.context.Dependent;
 import com.ait.lienzo.client.core.mediator.EventFilter;
 import com.ait.lienzo.client.core.mediator.IEventFilter;
 import com.ait.lienzo.client.core.mediator.MouseWheelZoomMediator;
+import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.controls.AbstractMediatorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 
 @Dependent
-public class ZoomWheelControlImpl extends AbstractMediatorControl<MouseWheelZoomMediator> implements ZoomControl<AbstractCanvas> {
+public class ZoomWheelControlImpl<C extends AbstractCanvas> extends AbstractMediatorControl<MouseWheelZoomMediator, C> implements ZoomControl<C> {
 
     private static final double MIN_SCALE = 1;
     private static final double MAX_SCALE = 2;
@@ -42,20 +43,38 @@ public class ZoomWheelControlImpl extends AbstractMediatorControl<MouseWheelZoom
     }
 
     @Override
-    public ZoomControl<AbstractCanvas> setMinScale(final double minScale) {
+    public ZoomControl<C> setMinScale(final double minScale) {
         getMediator().setMinScale(minScale);
         return this;
     }
 
     @Override
-    public ZoomControl<AbstractCanvas> setMaxScale(final double maxScale) {
+    public ZoomControl<C> setMaxScale(final double maxScale) {
         getMediator().setMaxScale(maxScale);
         return this;
     }
 
     @Override
-    public ZoomControl<AbstractCanvas> setZoomFactory(final double factor) {
+    public ZoomControl<C> setZoomFactory(final double factor) {
         getMediator().setZoomFactor(factor);
         return this;
+    }
+
+    @Override
+    public ZoomControl<C> scale(final double factor) {
+        getLienzoLayer().scale(factor);
+        return this;
+    }
+
+    @Override
+    public ZoomControl<C> scale(double sx,
+                                double sy) {
+        getLienzoLayer().scale(sx,
+                               sy);
+        return this;
+    }
+
+    private LienzoLayer getLienzoLayer() {
+        return (LienzoLayer) canvas.getLayer();
     }
 }

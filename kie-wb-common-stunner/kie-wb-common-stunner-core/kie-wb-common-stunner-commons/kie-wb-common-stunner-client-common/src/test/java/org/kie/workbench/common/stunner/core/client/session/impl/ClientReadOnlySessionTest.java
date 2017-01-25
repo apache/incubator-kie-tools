@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -38,6 +39,8 @@ import static org.mockito.Mockito.*;
 public class ClientReadOnlySessionTest {
 
     @Mock
+    CanvasFactory<AbstractCanvas, AbstractCanvasHandler> factory;
+    @Mock
     AbstractCanvas canvas;
     @Mock
     AbstractCanvasHandler canvasHandler;
@@ -52,12 +55,13 @@ public class ClientReadOnlySessionTest {
 
     @Before
     public void setup() throws Exception {
+        when(factory.newCanvas()).thenReturn(canvas);
+        when(factory.newCanvasHandler()).thenReturn(canvasHandler);
+        when(factory.newControl(eq(ZoomControl.class))).thenReturn(zoomControl);
+        when(factory.newControl(eq(PanControl.class))).thenReturn(panControl);
+        when(factory.newControl(eq(SelectionControl.class))).thenReturn(selectionControl);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
-        this.tested = new ClientReadOnlySessionImpl(canvas,
-                                                    canvasHandler,
-                                                    selectionControl,
-                                                    zoomControl,
-                                                    panControl);
+        this.tested = new ClientReadOnlySessionImpl(factory);
     }
 
     @Test
@@ -90,10 +94,10 @@ public class ClientReadOnlySessionTest {
     }
 
     @Test
-    public void testDisposeSession() {
+    public void testDestroySession() {
         tested.isOpened = true;
         tested.doOpen(); // Force to register listeners.
-        tested.dispose();
+        tested.destroy();
         assertFalse(tested.isOpened());
         verify(canvas,
                times(1)).removeRegistrationListener(any(CanvasShapeListener.class));

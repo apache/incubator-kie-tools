@@ -27,7 +27,7 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.stunner.basicset.BasicSet;
 import org.kie.workbench.common.stunner.basicset.definition.Categories;
 import org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory.BindableBS3PaletteGlyphViewFactory;
-import org.kie.workbench.common.stunner.core.client.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 
 @ApplicationScoped
 public class BasicSetBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactory<Icon> {

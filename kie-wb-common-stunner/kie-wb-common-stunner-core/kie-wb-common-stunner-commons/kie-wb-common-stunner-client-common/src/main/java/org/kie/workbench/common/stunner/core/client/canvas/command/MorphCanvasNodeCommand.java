@@ -51,8 +51,8 @@ public final class MorphCanvasNodeCommand extends AbstractCanvasCommand {
         // Deregister the existing shape.
         Node parent = getParent();
         if (null != parent) {
-            context.removeChild(parent.getUUID(),
-                                candidate.getUUID());
+            context.removeChild(parent,
+                                candidate);
         }
         context.deregister(candidate);
 

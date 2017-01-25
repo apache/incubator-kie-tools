@@ -22,39 +22,47 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.command.Session;
+import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-public class RefreshSessionCommand extends AbstractClientSessionCommand<AbstractClientFullSession> {
+public class RefreshSessionCommand extends AbstractClientSessionCommand<ClientFullSession> {
 
     private static Logger LOGGER = Logger.getLogger(RefreshSessionCommand.class.getName());
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private final CanvasCommandFactory commandFactory;
     private final ClientDiagramService clientDiagramService;
 
     protected RefreshSessionCommand() {
         this(null,
+             null,
              null);
     }
 
     @Inject
     public RefreshSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                 final CanvasCommandFactory commandFactory,
                                  final ClientDiagramService clientDiagramService) {
         super(false);
-        this.clientDiagramService = clientDiagramService;
         this.sessionCommandManager = sessionCommandManager;
+        this.clientDiagramService = clientDiagramService;
+        this.commandFactory = commandFactory;
     }
 
     @Override
@@ -65,16 +73,32 @@ public class RefreshSessionCommand extends AbstractClientSessionCommand<Abstract
         final Path path = getDiagramPath();
         LOGGER.log(Level.FINE,
                    "Refreshing diagram for path [" + path + "]...");
+        // Clear the canvas handler.
         getSession().getCanvasHandler().clear();
+        // Clear the session's registry.
+        sessionCommandManager.getRegistry().clear();
+        // Load again the diagram.
         clientDiagramService.getByPath(path,
                                        new ServiceCallback<Diagram<Graph, Metadata>>() {
                                            @Override
                                            public void onSuccess(final Diagram diagram) {
                                                LOGGER.log(Level.FINE,
                                                           "Refreshing diagram for path [" + path + "]...");
-                                               getSession().getCanvasHandler().draw(diagram);
-                                               callback.onSuccess((T) diagram);
-                                               // TODO: Apply session commands.
+                                               getSession().getCanvasHandler().draw(diagram,
+                                                                                    new ParameterizedCommand<CommandResult<?>>() {
+                                                                                        @Override
+                                                                                        public void execute(CommandResult<?> result) {
+                                                                                            if (!CommandUtils.isError(result)) {
+                                                                                                // TODO: Apply session commands again to restore latest client snapshot?
+                                                                                                callback.onSuccess((T) diagram);
+                                                                                            } else {
+                                                                                                LOGGER.log(Level.SEVERE,
+                                                                                                           "Error when drawing diagram for path [" + path + "] - " +
+                                                                                                                   "[result=" + result + "]");
+                                                                                                callback.onError(new ClientRuntimeError(result.getMessage()));
+                                                                                            }
+                                                                                        }
+                                                                                    });
                                            }
 
                                            @Override
