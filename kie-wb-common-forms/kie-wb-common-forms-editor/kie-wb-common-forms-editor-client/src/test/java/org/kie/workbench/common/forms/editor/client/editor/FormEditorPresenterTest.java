@@ -206,13 +206,25 @@ public class FormEditorPresenterTest {
     }
 
     @Test
-    public void testLoad() throws Exception {
+    public void testLoad() {
         loadContent();
 
+        verify( layoutEditor ).loadLayout( content.getDefinition().getLayoutTemplate() );
         verify( view ).init( presenter );
         verify( view ).setupLayoutEditor( layoutEditor );
     }
 
+    @Test
+    public void testLoadWithContent() {
+        testLoad();
+
+        presenter.loadContent();
+
+        verify( layoutEditor ).clear();
+        verify( layoutEditor, times( 2 ) ).loadLayout( content.getDefinition().getLayoutTemplate() );
+        verify( view, times( 2 ) ).init( presenter );
+        verify( view,times( 2 ) ).setupLayoutEditor( layoutEditor );
+    }
 
     @Test
     public void testDataObjectsFields() {

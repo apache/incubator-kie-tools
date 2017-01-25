@@ -138,8 +138,10 @@ public class FormEditorPresenter extends KieEditor {
     public void doLoadContent( FormModelerContent content ) {
         busyIndicatorView.hideBusyIndicator();
 
-        // TODO: fix this, this return avoids to reload the layout editor again
-        if ( editorContext.getContent() != null ) return;
+        // Clear LayoutEditor before loading new content.
+        if ( editorContext.getContent() != null ) {
+            layoutEditor.clear();
+        }
 
         editorContext.initHelper( content );
 
