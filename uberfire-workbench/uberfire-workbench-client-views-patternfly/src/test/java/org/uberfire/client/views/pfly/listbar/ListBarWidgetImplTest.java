@@ -16,32 +16,57 @@
 
 package org.uberfire.client.views.pfly.listbar;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonGroup;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.security.Resource;
+import org.uberfire.security.ResourceAction;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.security.authz.Permission;
 import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.Menus;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith( GwtMockitoTestRunner.class )
 public class ListBarWidgetImplTest {
 
+    @Mock
+    AuthorizationManager authzManager;
+
+    @Mock
+    User identity;
+
+    @Spy
+    @InjectMocks
     ListBarWidgetImpl listBar;
 
     @Before
     public void setUp() throws Exception {
-        listBar = new ListBarWidgetImpl() {
-            @Override
-            void setupContextMenu() {
-            }
-        };
+        when(authzManager.authorize(any(Permission.class), any(User.class))).thenReturn(true);
+        when(authzManager.authorize(any(Resource.class), any(User.class))).thenReturn(true);
+        when(authzManager.authorize(any(Resource.class), any(ResourceAction.class), any(User.class))).thenReturn(true);
+
+        doNothing().when(listBar).setupContextMenu();
     }
 
     @Test
@@ -73,6 +98,51 @@ public class ListBarWidgetImplTest {
 
         assertEquals(2, listBar.getParts().size());
 
+    }
+
+    @Test
+    public void testSingleMenu(){
+        final String caption = "test";
+        final Menus menus = MenuFactory.newTopLevelMenu(caption).respondsWith(() -> {}).endMenu().build();
+
+        final Widget widget = listBar.makeItem( menus.getItems().get(0), true );
+
+        assertTrue(widget instanceof Button);
+        verify((Button)widget).setText(caption);
+    }
+
+    @Test
+    public void testSubMenus(){
+        final String caption = "test";
+        final String submenu1 = "submenu1";
+        final String submenu2 = "submenu2";
+        final Menus menus = MenuFactory.newTopLevelMenu(caption)
+                .menus()
+                    .menu(submenu1).respondsWith(() -> {}).endMenu()
+                    .menu(submenu2).respondsWith(() -> {}).endMenu()
+                .endMenus()
+                .endMenu()
+                .build();
+
+        final Widget widget = listBar.makeItem( menus.getItems().get(0), true );
+
+        assertTrue(widget instanceof ButtonGroup);
+
+        ArgumentCaptor<Widget> buttonCaptor = ArgumentCaptor.forClass(Widget.class);
+        verify( ((ButtonGroup) widget), times(2)).add(buttonCaptor.capture());
+
+        final List<Widget> widgetList = buttonCaptor.getAllValues();
+        assertEquals(2, widgetList.size());
+        verify((Button)widgetList.get(0)).setText(caption);
+
+        ArgumentCaptor<Widget> dropCaptor = ArgumentCaptor.forClass(Widget.class);
+
+        verify((DropDownMenu)widgetList.get(1), times(2)).add(dropCaptor.capture());
+
+        final List<Widget> subMenusWidgetList = dropCaptor.getAllValues();
+        assertEquals(2, subMenusWidgetList.size());
+        verify((AnchorListItem)subMenusWidgetList.get(0)).setText(submenu1);
+        verify((AnchorListItem)subMenusWidgetList.get(1)).setText(submenu2);
     }
 
 }

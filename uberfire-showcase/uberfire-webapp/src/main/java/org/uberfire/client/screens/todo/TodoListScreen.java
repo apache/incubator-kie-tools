@@ -22,7 +22,6 @@ import com.google.gwt.user.client.Window;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -44,20 +43,20 @@ public class TodoListScreen extends AbstractMarkdownScreen {
     public Menus getMenu() {
         return MenuFactory
                 .newTopLevelMenu( "Save" )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        Window.alert( "Saved!" );
-                    }
-                } )
+                    .respondsWith( () -> Window.alert( "Saved!" ) )
                 .endMenu()
                 .newTopLevelMenu( "Delete" )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        Window.alert( "Deleted!" );
-                    }
-                } )
+                    .respondsWith( () -> Window.alert( "Deleted!" ) )
+                .endMenu()
+                .newTopLevelMenu( "Edit" )
+                    .menus()
+                        .menu( "Cut" )
+                            .respondsWith( () -> Window.alert( "Cut!" ) )
+                        .endMenu()
+                        .menu( "Paste" )
+                            .respondsWith( () -> Window.alert( "Paste!" ) )
+                        .endMenu()
+                    .endMenus()
                 .endMenu()
                 .build();
     }
