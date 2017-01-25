@@ -19,6 +19,7 @@ package org.kie.workbench.common.services.datamodeller.driver.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.jboss.forge.roaster.model.ValuePair;
@@ -128,9 +129,14 @@ public class DefaultJavaRoasterModelAnnotationDriver implements AnnotationDriver
     }
 
     private Object parseClassValue( AnnotationSource javaAnnotationToken, AnnotationValuePairDefinition valuePairDefinition ) {
-        String value = parseLiteralValue( javaAnnotationToken.getLiteralValue( valuePairDefinition.getName() ) );
+        String value = null;
         Object result;
-
+        List<ValuePair> values = javaAnnotationToken.getValues();
+        if ( values != null ) {
+            Optional<ValuePair> valuePair = values.stream().filter(
+                    vp -> valuePairDefinition.getName().equals( vp.getName() ) ).findFirst( );
+            value = valuePair.map( vp -> vp.getLiteralValue() ).orElse( null );
+        }
         if ( value == null ) {
             return null;
         }
