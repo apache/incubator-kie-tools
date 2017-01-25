@@ -111,7 +111,6 @@ public class Container {
         view.addEmptyRow( emptyDropRow.getView() );
     }
 
-
     public void loadEmptyLayout( String layoutName, String emptyTitleText, String emptySubTitleText ) {
         this.layoutName = layoutName;
         this.emptyTitleText = emptyTitleText;
@@ -133,6 +132,16 @@ public class Container {
         } else {
             createEmptyDropRow();
         }
+    }
+
+    public void reset() {
+        init();
+        layoutTemplate = null;
+        emptyTitleText = null;
+        emptySubTitleText = null;
+        layoutName = null;
+        properties = null;
+        emptyDropRow = null;
     }
 
     private EmptyDropRow createEmptyRow() {

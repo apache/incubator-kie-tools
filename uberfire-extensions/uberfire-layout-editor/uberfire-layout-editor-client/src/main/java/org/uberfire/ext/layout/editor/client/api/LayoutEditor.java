@@ -23,6 +23,8 @@ public interface LayoutEditor {
     void init( String layoutName, LayoutDragComponentGroup layoutDragComponentGroup, String emptyTitleText,
                String emptySubTitleText );
 
+    void clear();
+
     Widget asWidget();
 
     void loadLayout( LayoutTemplate layoutTemplate );

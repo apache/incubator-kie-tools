@@ -71,6 +71,11 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     }
 
     @Override
+    public void clear() {
+        layoutEditorPresenter.clear();
+    }
+
+    @Override
     public Widget asWidget() {
         final UberElement<LayoutEditorPresenter> view = layoutEditorPresenter.getView();
         return ElementWrapperWidget.getWidget( view.getElement() );

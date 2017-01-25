@@ -28,6 +28,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,7 +56,7 @@ public class LayoutEditorPresenter {
 
     ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance;
 
-    private Map<String, LayoutDragComponentGroupPresenter> layoutDragComponentGroups = new HashMap<>();
+    protected Map<String, LayoutDragComponentGroupPresenter> layoutDragComponentGroups = new HashMap<>();
 
     @Inject
     public LayoutEditorPresenter( final View view, Container container,
@@ -68,6 +70,12 @@ public class LayoutEditorPresenter {
     @PostConstruct
     public void initNew() {
         view.setupContainer( container.getView() );
+    }
+
+    public void clear() {
+        List<String> groupNames = new ArrayList<>(layoutDragComponentGroups.keySet());
+        groupNames.forEach( groupName -> removeDraggableGroup( groupName ) );
+        container.reset();
     }
 
     public UberElement<LayoutEditorPresenter> getView() {
@@ -116,14 +124,17 @@ public class LayoutEditorPresenter {
 
     public void removeDraggableGroup( String groupName ) {
         LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroups
-                .get( groupName );
-        view.removeDraggableComponentGroup( layoutDragComponentGroupPresenter.getView() );
-
+                .remove( groupName );
+        if ( layoutDragComponentGroupPresenter != null ) {
+            view.removeDraggableComponentGroup(layoutDragComponentGroupPresenter.getView());
+        }
     }
 
     public void removeDraggableComponentFromGroup( String groupName, String componentId ) {
         LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroups
                 .get( groupName );
-        layoutDragComponentGroupPresenter.removeDraggableComponentFromGroup( componentId );
+        if ( layoutDragComponentGroupPresenter != null ) {
+            layoutDragComponentGroupPresenter.removeDraggableComponentFromGroup(componentId);
+        }
     }
 }
