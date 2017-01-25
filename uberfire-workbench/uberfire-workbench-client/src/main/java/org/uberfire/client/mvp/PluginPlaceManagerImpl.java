@@ -197,6 +197,17 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     }
 
     @Override
+    public void forceCloseAllPlaces() {
+        fail();
+    }
+
+    @Override
+    public boolean closeAllPlacesOrNothing() {
+        fail();
+        return false;
+    }
+
+    @Override
     public void registerOnOpenCallback( final PlaceRequest place,
                                         final Command command ) {
         fail();

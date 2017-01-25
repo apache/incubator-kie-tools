@@ -104,10 +104,23 @@ public class UberfireBreadcrumbsTest {
         assertEquals( 2, uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).size() );
     }
 
+    @Test
+    public void clearBreadCrumbsTest() {
+        uberfireBreadcrumbs.currentPerspective = "myperspective";
+        uberfireBreadcrumbs.addToolbar( "myperspective", mock( Element.class ) );
+        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
+
+        assertFalse( uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).isEmpty() );
+        assertFalse( uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty() );
+
+        uberfireBreadcrumbs.clearBreadCrumbs( "myperspective" );
+
+        assertTrue( uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).isEmpty() );
+        assertFalse( uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty() );
+    }
 
     @Test
-    public void clearBreadCrumbs() {
-
+    public void clearBreadCrumbsAndToolBarsTest() {
         uberfireBreadcrumbs.currentPerspective = "myperspective";
         uberfireBreadcrumbs.addToolbar( "myperspective", mock( Element.class ) );
         uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
@@ -119,7 +132,6 @@ public class UberfireBreadcrumbsTest {
 
         assertTrue( uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).isEmpty() );
         assertTrue( uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty() );
-
     }
 
     @Test
@@ -198,6 +210,13 @@ public class UberfireBreadcrumbsTest {
 
         verify( view, times( 2 ) ).addBreadcrumb( any( UberElement.class ) );
         verify( view, times( 1 ) ).addBreadcrumbToolbar( any( Element.class ) );
+    }
+
+    @Test
+    public void addBreadcrumbAssociatedWithACommandTest() {
+        final Command command = mock( Command.class );
+        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", command );
+        verify( uberfireBreadcrumbs ).addBreadCrumb( "myperspective", "label", null, null, command );
     }
 
     @Test

@@ -18,6 +18,7 @@ package org.uberfire.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 /**
@@ -31,6 +32,14 @@ public final class URIUtil {
     public static String encode( final String content ) {
         try {
             return URLEncoder.encode( content, "UTF-8" );
+        } catch ( UnsupportedEncodingException e ) {
+        }
+        return null;
+    }
+
+    public static String decode( final String content ) {
+        try {
+            return URLDecoder.decode( content, "UTF-8" );
         } catch ( UnsupportedEncodingException e ) {
         }
         return null;

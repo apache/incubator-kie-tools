@@ -143,7 +143,7 @@ public interface PlaceManager {
     void closePlace( final String id );
 
     void closePlace( final PlaceRequest placeToClose );
-    
+
     void tryClosePlace( final PlaceRequest placeToClose,
                         final Command onAfterClose );
 
@@ -154,6 +154,10 @@ public interface PlaceManager {
     void forceClosePlace( final PlaceRequest place );
 
     void closeAllPlaces();
+
+    void forceCloseAllPlaces();
+
+    boolean closeAllPlacesOrNothing();
 
     void registerOnOpenCallback( final PlaceRequest place,
                                  final Command command );

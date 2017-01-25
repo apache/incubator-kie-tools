@@ -188,24 +188,6 @@
             </configuration>
           </execution>
           <execution>
-            <id>copy-patternfly-less-resources</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/patternfly/less</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${project.build.directory}/patternfly/META-INF/resources/webjars/patternfly/${version.org.webjars.bower.org.patternfly}/less</directory>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-          <execution>
             <id>copy-prettify-resources</id>
             <phase>process-resources</phase>
             <goals>

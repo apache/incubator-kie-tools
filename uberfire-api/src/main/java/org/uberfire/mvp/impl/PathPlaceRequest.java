@@ -104,11 +104,11 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
     }
 
     @Override
-    public boolean equals( Object o ) {
+    public boolean equals( final Object o ) {
         if ( this == o ) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if ( !( o instanceof PathPlaceRequest ) ) {
             return false;
         }
         if ( !super.equals( o ) ) {
@@ -117,17 +117,19 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
 
         final PathPlaceRequest that = (PathPlaceRequest) o;
 
-        return getPath().equals( that.getPath() );
+        return !( getPath() != null ? !getPath().equals( that.getPath() ) : that.getPath() != null );
+
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + ((getPath() != null) ? getPath().hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + ( getPath() != null ? getPath().hashCode() : 0 );
         result = ~~result;
         return result;
     }
-    
+
     @Override
     public String toString() {
         return "PathPlaceRequest[\"" + identifier + "\" " + parameters + "\" " + path + "]";

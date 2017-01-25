@@ -291,6 +291,17 @@ public class PlaceManagerTest {
     }
 
     @Test
+    public void testGoToPartWeAreAlreadyAt() throws Exception {
+        when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        placeManager.goTo( new PartDefinitionImpl( kansas ), null );
+
+        // note "refEq" tests equality field by field using reflection. don't read it as "reference equals!" :)
+        verify( selectWorkbenchPartEvent ).fire( refEq( new SelectPlaceEvent( kansas ) ) );
+
+        verifyNoActivityLaunchSideEffects( kansas, kansasActivity );
+    }
+
+    @Test
     public void testGoToNowhereDoesNothing() throws Exception {
         placeManager.goTo( PlaceRequest.NOWHERE, ( PanelDefinition ) null );
 
@@ -813,13 +824,7 @@ public class PlaceManagerTest {
                 .thenReturn( customPanelDef );
 
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
-        WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
-        when( emeraldCityActivity.onMayClose() ).thenReturn( true );
-        when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
-        when( emeraldCityActivity.preferredHeight() ).thenReturn( -1 );
-        when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
-        when( activityManager.getActivities( emeraldCityPlace ) )
-                .thenReturn( singleton( ( Activity ) emeraldCityActivity ) );
+        createWorkbenchScreenActivity( emeraldCityPlace );
 
         HasWidgets customContainer = mock( HasWidgets.class );
 
@@ -839,13 +844,7 @@ public class PlaceManagerTest {
                 .thenReturn( customPanelDef );
 
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
-        WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
-        when( emeraldCityActivity.onMayClose() ).thenReturn( true );
-        when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
-        when( emeraldCityActivity.preferredHeight() ).thenReturn( -1 );
-        when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
-        when( activityManager.getActivities( emeraldCityPlace ) )
-                .thenReturn( singleton( ( Activity ) emeraldCityActivity ) );
+        createWorkbenchScreenActivity( emeraldCityPlace );
 
         HasWidgets customContainer = mock( HasWidgets.class );
 
@@ -910,13 +909,7 @@ public class PlaceManagerTest {
                 .thenReturn( customPanelDef );
 
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
-        WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
-        when( emeraldCityActivity.onMayClose() ).thenReturn( true );
-        when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
-        when( emeraldCityActivity.preferredHeight() ).thenReturn( -1 );
-        when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
-        when( activityManager.getActivities( emeraldCityPlace ) )
-                .thenReturn( singleton( ( Activity ) emeraldCityActivity ) );
+        createWorkbenchScreenActivity( emeraldCityPlace );
 
         HTMLElement customContainer = mock( HTMLElement.class );
 
@@ -936,13 +929,7 @@ public class PlaceManagerTest {
                 .thenReturn( customPanelDef );
 
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
-        WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
-        when( emeraldCityActivity.onMayClose() ).thenReturn( true );
-        when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
-        when( emeraldCityActivity.preferredHeight() ).thenReturn( -1 );
-        when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
-        when( activityManager.getActivities( emeraldCityPlace ) )
-                .thenReturn( singleton( ( Activity ) emeraldCityActivity ) );
+        createWorkbenchScreenActivity( emeraldCityPlace );
 
         HTMLElement customContainer = mock( HTMLElement.class );
 
@@ -1012,6 +999,76 @@ public class PlaceManagerTest {
         }
     }
 
+    @Test
+    public void testCloseAllPlacesOrNothingSucceeds() throws Exception {
+        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
+        WorkbenchScreenActivity emeraldCityActivity = createWorkbenchScreenActivity( emeraldCityPlace );
+        placeManager.goTo( emeraldCityPlace );
+
+        when( kansasActivity.onMayClose() ).thenReturn( true );
+        when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+
+        placeManager.closeAllPlacesOrNothing();
+
+        verifyPlaceClosed( kansas, kansasActivity );
+        verifyPlaceClosed( emeraldCityPlace, emeraldCityActivity );
+    }
+
+    @Test
+    public void testCloseAllPlacesOrNothingFails() throws Exception {
+        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
+        WorkbenchScreenActivity emeraldCityActivity = createWorkbenchScreenActivity( emeraldCityPlace );
+        doReturn( false ).when( emeraldCityActivity ).onMayClose();
+        placeManager.goTo( emeraldCityPlace );
+
+        when( kansasActivity.onMayClose() ).thenReturn( true );
+        when( kansasActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+
+        placeManager.closeAllPlacesOrNothing();
+
+        verifyPlaceNotClosed( kansas, kansasActivity );
+        verifyPlaceNotClosed( emeraldCityPlace, emeraldCityActivity );
+    }
+
+    private WorkbenchScreenActivity createWorkbenchScreenActivity( final PlaceRequest emeraldCityPlace ) {
+        WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
+        when( emeraldCityActivity.onMayClose() ).thenReturn( true );
+        when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
+        when( emeraldCityActivity.preferredHeight() ).thenReturn( -1 );
+        when( emeraldCityActivity.isType( ActivityResourceType.SCREEN.name() ) ).thenReturn( true );
+        when( activityManager.getActivities( emeraldCityPlace ) )
+                .thenReturn( singleton( (Activity) emeraldCityActivity ) );
+        return emeraldCityActivity;
+    }
+
+    private void verifyPlaceClosed( final PlaceRequest place,
+                                    final WorkbenchScreenActivity screenActivity ) {
+        verify( workbenchPartBeforeCloseEvent ).fire( refEq( new BeforeClosePlaceEvent( place, true, true ) ) );
+        verify( workbenchPartCloseEvent ).fire( refEq( new ClosePlaceEvent( place ) ) );
+        verify( screenActivity ).onMayClose();
+        verify( screenActivity ).onClose();
+        verify( screenActivity, never() ).onShutdown();
+        verify( activityManager ).destroyActivity( screenActivity );
+        verify( panelManager ).removePartForPlace( place );
+
+        assertEquals( PlaceStatus.CLOSE, placeManager.getStatus( place ) );
+        assertNull( placeManager.getActivity( place ) );
+        assertFalse( placeManager.getActivePlaceRequests().contains( place ) );
+    }
+
+    private void verifyPlaceNotClosed( final PlaceRequest place,
+                                       final WorkbenchScreenActivity screenActivity ) {
+        verify( workbenchPartBeforeCloseEvent, never() ).fire( refEq( new BeforeClosePlaceEvent( place, true, true ) ) );
+        verify( workbenchPartCloseEvent, never() ).fire( refEq( new ClosePlaceEvent( place ) ) );
+        verify( screenActivity, never() ).onClose();
+        verify( screenActivity, never() ).onShutdown();
+        verify( activityManager, never() ).destroyActivity( screenActivity );
+        verify( panelManager, never() ).removePartForPlace( place );
+
+        assertEquals( PlaceStatus.OPEN, placeManager.getStatus( place ) );
+        assertNotNull( placeManager.getActivity( place ) );
+        assertTrue( placeManager.getActivePlaceRequests().contains( place ) );
+    }
 
     // TODO test going to an unresolvable/unknown place
 

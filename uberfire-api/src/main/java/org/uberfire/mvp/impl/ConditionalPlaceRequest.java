@@ -79,7 +79,7 @@ public class ConditionalPlaceRequest extends DefaultPlaceRequest {
         if ( invalidConditionalPlaceRequest() ) {
             return this;
         }
-        if ( predicate.test( this ) ) {
+        if ( predicate == null || predicate.test( this ) ) {
             return this;
         } else {
             return resolve();
@@ -104,7 +104,7 @@ public class ConditionalPlaceRequest extends DefaultPlaceRequest {
             return identifier;
         }
 
-        if ( predicate.test( this ) ) {
+        if ( predicate == null || predicate.test( this ) ) {
             return identifier;
         } else {
             return resolve().getIdentifier();
@@ -117,7 +117,7 @@ public class ConditionalPlaceRequest extends DefaultPlaceRequest {
             return parameters;
         }
 
-        if ( predicate.test( this ) ) {
+        if ( predicate == null || predicate.test( this ) ) {
             return parameters;
         } else {
             return resolve().getParameters();
@@ -158,7 +158,7 @@ public class ConditionalPlaceRequest extends DefaultPlaceRequest {
             return super.equals( that );
         }
 
-        if ( predicate.test( this ) ) {
+        if ( predicate == null || predicate.test( this ) ) {
             return super.equals( that );
         } else {
             return resolve().equals( that );
@@ -171,7 +171,7 @@ public class ConditionalPlaceRequest extends DefaultPlaceRequest {
             return super.hashCode();
         }
 
-        if ( predicate.test( this ) ) {
+        if ( predicate == null || predicate.test( this ) ) {
             return super.hashCode();
         } else {
             return resolve().hashCode();
@@ -180,10 +180,10 @@ public class ConditionalPlaceRequest extends DefaultPlaceRequest {
 
     @Override
     public String toString() {
-        return "ConditionalPlaceRequest[" +
-                super.toString() +
-                ", orElsePlaceRequest=" + orElsePlaceRequest +
-                ", predicate=" + predicate +
-                ']';
+        if ( predicate == null || predicate.test( this ) ) {
+            return super.toString();
+        } else {
+            return resolve().toString();
+        }
     }
 }

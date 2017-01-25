@@ -246,6 +246,7 @@ public class DefaultPlaceRequest implements PlaceRequest {
     @Override
     public int hashCode() {
         int result = identifier.hashCode();
+        result = ~~result;
         result = 31 * result + parameters.hashCode();
         result = ~~result;
         return result;

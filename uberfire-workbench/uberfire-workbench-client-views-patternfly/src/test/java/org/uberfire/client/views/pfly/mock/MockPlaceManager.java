@@ -147,6 +147,16 @@ public class MockPlaceManager implements PlaceManager {
     }
 
     @Override
+    public void forceCloseAllPlaces() {
+        throw new UnsupportedOperationException( "Not implemented." );
+    }
+
+    @Override
+    public boolean closeAllPlacesOrNothing() {
+        throw new UnsupportedOperationException( "Not implemented." );
+    }
+
+    @Override
     public void registerOnOpenCallback( PlaceRequest place,
                                         Command command ) {
         throw new UnsupportedOperationException( "Not implemented." );

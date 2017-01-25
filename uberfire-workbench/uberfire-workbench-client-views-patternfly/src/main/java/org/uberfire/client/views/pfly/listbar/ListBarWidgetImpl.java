@@ -75,9 +75,8 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
 import org.uberfire.workbench.model.menu.impl.BaseMenuVisitor;
 
-import static com.google.gwt.dom.client.Style.Display.BLOCK;
-import static com.google.gwt.dom.client.Style.Display.NONE;
-import static org.uberfire.plugin.PluginUtil.ensureIterable;
+import static com.google.gwt.dom.client.Style.Display.*;
+import static org.uberfire.plugin.PluginUtil.*;
 
 /**
  * Implementation of ListBarWidget based on PatternFly components.
@@ -248,7 +247,9 @@ public class ListBarWidgetImpl
         // IMPORTANT! if you change what goes in this map, update the remove(PartDefinition) method
         partContentView.put( partDefinition, panel );
 
-        titleDropDown.addPart( view );
+        if ( partDefinition.isSelectable() ) {
+            titleDropDown.addPart( view );
+        }
 
         header.setVisible( true );
 
@@ -260,7 +261,9 @@ public class ListBarWidgetImpl
     public void changeTitle( final PartDefinition part,
                              final String title,
                              final IsWidget titleDecoration ) {
-        titleDropDown.changeTitle( part, title, titleDecoration );
+        if ( part.isSelectable() ) {
+            titleDropDown.changeTitle( part, title, titleDecoration );
+        }
     }
 
     @Override
@@ -283,8 +286,13 @@ public class ListBarWidgetImpl
         currentPart.getK2().getElement().getStyle().setDisplay( BLOCK );
         parts.remove( currentPart.getK1() );
 
-        titleDropDown.selectPart( part );
-        setupContextMenu();
+        if ( part.isSelectable() ) {
+            titleDropDown.selectPart( part );
+            setupContextMenu();
+            header.setVisible( true );
+        } else {
+            header.setVisible( false );
+        }
 
         scheduleResize();
 
@@ -309,8 +317,11 @@ public class ListBarWidgetImpl
 
     @Override
     public boolean remove( final PartDefinition part ) {
-        titleDropDown.removePart( part );
-        if ( currentPart.getK1().asString().equals( part.asString() ) ) {
+        if ( part.isSelectable() ) {
+            titleDropDown.removePart( part );
+        }
+
+        if ( currentPart != null && currentPart.getK1().asString().equals( part.asString() ) ) {
             if ( parts.size() > 0 ) {
                 presenter.selectPart( parts.iterator().next() );
             } else {
@@ -504,7 +515,7 @@ public class ListBarWidgetImpl
         } );
     }
 
-    private void resizePanelBody() {
+    void resizePanelBody() {
         //When an Item is added to the PanelHeader recalculate the PanelBody size.
         //This cannot be performed in either the @PostConstruct or onAttach() methods as at
         //these times the PanelHeader may not have any content and hence have no size.

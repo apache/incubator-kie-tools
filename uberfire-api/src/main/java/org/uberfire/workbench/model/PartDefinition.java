@@ -49,4 +49,7 @@ public interface PartDefinition {
     default String asString() {
         return this.toString();
     }
+
+    boolean isSelectable();
+    void setSelectable( boolean selectable );
 }

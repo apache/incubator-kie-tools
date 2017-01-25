@@ -15,17 +15,17 @@
  */
 package org.uberfire.ext.widgets.common.client.breadcrumbs.widget;
 
-import org.uberfire.client.mvp.UberElement;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import org.uberfire.client.mvp.UberElement;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 public class BreadcrumbsPresenter {
 
-    private DefaultPlaceRequest placeRequest;
+    private PlaceRequest placeRequest;
 
     public interface View extends UberElement<BreadcrumbsPresenter> {
 
@@ -51,12 +51,14 @@ public class BreadcrumbsPresenter {
         view.deactivate();
     }
 
-    public void setup( String label, DefaultPlaceRequest placeRequest, Command selectCommand ) {
+    public void setup( final String label,
+                       final PlaceRequest placeRequest,
+                       final Command selectCommand ) {
         this.placeRequest = placeRequest;
         view.setup( label, selectCommand );
     }
 
-    public DefaultPlaceRequest getPlaceRequest() {
+    public PlaceRequest getPlaceRequest() {
         return placeRequest;
     }
 

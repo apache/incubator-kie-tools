@@ -39,6 +39,8 @@ PartDefinition {
     private ContextDefinition contextDefinition;
     private ContextDisplayMode contextDisplayMode = SHOW;
 
+    private boolean selectable = true;
+
     public PartDefinitionImpl() {
     }
 
@@ -99,6 +101,16 @@ PartDefinition {
     @Override
     public void setContextDisplayMode( final ContextDisplayMode contextDisplayMode ) {
         this.contextDisplayMode = contextDisplayMode;
+    }
+
+    @Override
+    public boolean isSelectable() {
+        return this.selectable;
+    }
+
+    @Override
+    public void setSelectable( final boolean selectable ) {
+        this.selectable = selectable;
     }
 
     @Override

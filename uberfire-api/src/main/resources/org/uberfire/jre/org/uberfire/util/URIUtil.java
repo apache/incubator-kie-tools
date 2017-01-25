@@ -43,6 +43,10 @@ public final class URIUtil {
         return URL.encode( content );
     }
 
+    public static String decode( String content ) {
+        return URL.decode( content );
+    }
+
     public static String encodeQueryString( String content ) {
         return URL.encodeQueryString( content );
     }

@@ -489,10 +489,32 @@ public class PlaceManagerImpl
 
     @Override
     public void closeAllPlaces() {
+        closeAllPlaces( false );
+    }
+
+    @Override
+    public void forceCloseAllPlaces() {
+        closeAllPlaces( true );
+    }
+
+    private void closeAllPlaces( final boolean force ) {
         final List<PlaceRequest> placesToClose = new ArrayList<PlaceRequest>( visibleWorkbenchParts.keySet() );
         for ( PlaceRequest placeToClose : placesToClose ) {
-            closePlace( placeToClose );
+            closePlace( placeToClose, force );
         }
+    }
+
+    @Override
+    public boolean closeAllPlacesOrNothing() {
+        final List<PlaceRequest> placesToClose = new ArrayList<>( visibleWorkbenchParts.keySet() );
+        for ( PlaceRequest placeToClose : placesToClose ) {
+            if ( !canClosePlace( placeToClose ) ) {
+                return false;
+            }
+        }
+
+        forceCloseAllPlaces();
+        return true;
     }
 
     private boolean closeAllCurrentPanels() {
@@ -646,6 +668,10 @@ public class PlaceManagerImpl
                                                  final WorkbenchActivity activity,
                                                  final PartDefinition part,
                                                  final PanelDefinition panel ) {
+        if ( visibleWorkbenchParts.containsKey( place ) ) {
+            selectWorkbenchPartEvent.fire( new SelectPlaceEvent( place ) );
+            return;
+        }
 
         visibleWorkbenchParts.put( place, part );
         getPlaceHistoryHandler().onPlaceChange( place );
@@ -878,6 +904,28 @@ public class PlaceManagerImpl
         if ( place instanceof PathPlaceRequest ) {
             ( (PathPlaceRequest) place ).getPath().dispose();
         }
+    }
+
+    private boolean canClosePlace( final PlaceRequest place ) {
+
+        final Activity activity = existingWorkbenchActivities.get( place );
+        if ( activity == null ) {
+            return false;
+        }
+
+        if ( activity.isType( ActivityResourceType.SCREEN.name() ) || activity.isType( ActivityResourceType.EDITOR.name() ) ) {
+            WorkbenchActivity activity1 = (WorkbenchActivity) activity;
+            if ( onMayCloseList.containsKey( place ) || activity1.onMayClose() ) {
+                return true;
+            }
+        } else if ( activity.isType( ActivityResourceType.POPUP.name() ) ) {
+            PopupActivity activity1 = (PopupActivity) activity;
+            if ( activity1.onMayClose() ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @SuppressWarnings("unused")
