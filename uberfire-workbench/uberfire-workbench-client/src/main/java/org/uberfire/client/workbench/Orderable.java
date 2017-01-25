@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@
 
 package org.uberfire.client.workbench;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
-public interface OrderableIsWidget extends IsWidget {
+public interface Orderable {
 
     /**
      * Returns the unique identifier of this widget. This ID is used when specifying which headers and footers to retain

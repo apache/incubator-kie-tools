@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.uberfire.client.workbench;
 
 import org.jboss.errai.ioc.client.container.BeanActivator;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 
 
@@ -30,6 +31,6 @@ import org.uberfire.client.workbench.events.ApplicationReadyEvent;
  * until your activator obtains the data it needs. (The blocker could be registered in your entry point's
  * {@code @PostConstruct} method).
  */
-public interface Footer extends OrderableIsWidget {
+public interface Footer extends IsElement, Orderable {
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,10 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.util.Layouts;
@@ -50,70 +54,9 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     /**
      * Holder for style information that was modified in order to maximize a panel.
      */
-    protected static class OriginalStyleInfo {
-
-        private String position;
-        private String top;
-        private String left;
-        private String width;
-        private String height;
-        private String zIndex;
-        private int absoluteTop;
-        private int absoluteLeft;
-        private int clientHeight;
-        private int clientWidth;
-
-        public OriginalStyleInfo( final Widget w ) {
-            absoluteLeft = w.getAbsoluteLeft();
-            absoluteTop = w.getAbsoluteTop();
-            clientHeight = w.getElement().getClientHeight();
-            clientWidth = w.getElement().getClientWidth();
-
-            final Style style = w.getElement().getStyle();
-            position = style.getPosition();
-            top = style.getTop();
-            left = style.getLeft();
-            width = style.getWidth();
-            height = style.getHeight();
-            zIndex = style.getZIndex();
-        }
-
-        /**
-         * Restores to {@code w} all style values to those most recently set on this instance.
-         *
-         * @param w the widget to restore styles on.
-         */
-        public void restore( final Widget w ) {
-            final Style style = w.getElement().getStyle();
-            style.setProperty( "position", position );
-            style.setProperty( "top", top );
-            style.setProperty( "left", left );
-            style.setProperty( "width", width );
-            style.setProperty( "height", height );
-            style.setProperty( "zIndex", zIndex );
-        }
-
-        public int getAbsoluteTop() {
-            return absoluteTop;
-        }
-
-        public int getAbsoluteLeft() {
-            return absoluteLeft;
-        }
-
-        public int getClientHeight() {
-            return clientHeight;
-        }
-
-        public int getClientWidth() {
-            return clientWidth;
-        }
-
-    }
 
     private static final int MAXIMIZED_PANEL_Z_INDEX = 100;
 
-    @Inject
     private SyncBeanManager iocManager;
 
     /**
@@ -121,7 +64,6 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
      * footers, and the current perspective. During a normal startup of UberFire, this panel would be added directly to
      * the RootLayoutPanel.
      */
-    @Inject // using @Inject here because a real HeaderPanel can't be constructed in a GwtMockito test
     private HeaderPanel root;
 
     /**
@@ -141,7 +83,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
      * it's cleared and repopulated with the new perspective's root view each time
      * {@link #setHeaderContents(java.util.List)} gets called.
      */
-    private final Panel headerPanel = new FlowPanel();
+    private Div headerPanel;
 
     /**
      * The panel within which the current perspective's footer widgets reside. This panel lasts the lifetime of the app;
@@ -149,28 +91,47 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
      * {@link #setFooterContents(java.util.List)} gets called. The actual panel that's used for this is specified by the
      * concrete subclass's constructor.
      */
-    private final Panel footerPanel = new FlowPanel();
+    private Div footerPanel;
 
-    @Inject
     private WorkbenchDragAndDropManager dndManager;
 
     /**
      * An abstraction for DockLayoutPanel used by Uberfire Docks.
      */
-    @Inject
     private UberfireDocksContainer uberfireDocksContainer;
 
     /**
      * We read the drag boundary panel out of this, and sandwich it between the root panel and the perspective container panel.
      */
-    @Inject
     private WorkbenchPickupDragController dragController;
+
+    public WorkbenchLayoutImpl(){
+
+    }
+
+    @Inject
+    public WorkbenchLayoutImpl(SyncBeanManager iocManager,
+                               HeaderPanel root,
+                               WorkbenchDragAndDropManager dndManager,
+                               UberfireDocksContainer uberfireDocksContainer,
+                               WorkbenchPickupDragController dragController,
+                               Div headerPanel,
+                               Div footerPanel){
+
+        this.iocManager = iocManager;
+        this.root = root;
+        this.dndManager = dndManager;
+        this.uberfireDocksContainer = uberfireDocksContainer;
+        this.dragController = dragController;
+        this.headerPanel = headerPanel;
+        this.footerPanel = footerPanel;
+    }
 
     @PostConstruct
     private void init() {
         perspectiveRootContainer.ensureDebugId( "perspectiveRootContainer" );
-        headerPanel.ensureDebugId( "workbenchHeaderPanel" );
-        footerPanel.ensureDebugId( "workbenchFooterPanel" );
+        headerPanel.setId( "workbenchHeaderPanel" );
+        footerPanel.setId( "workbenchFooterPanel" );
         dragController.getBoundaryPanel().ensureDebugId( "workbenchDragBoundary" );
         root.addStyleName( "uf-workbench-layout" );
     }
@@ -185,26 +146,28 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         return perspectiveRootContainer;
     }
 
-    private void setHeaderContents( List<Header> headers ) {
-        headerPanel.clear();
-        root.remove( headerPanel );
+    void setHeaderContents( List<Header> headers ) {
+        DOMUtil.removeAllChildren( headerPanel );
         if ( !headers.isEmpty() ) {
             for ( Header h : headers ) {
-                headerPanel.add( h );
+                headerPanel.appendChild( h.getElement() );
             }
-            root.setHeaderWidget( headerPanel );
+            root.setHeaderWidget( createWidgetFrom( headerPanel ) );
         }
     }
 
-    private void setFooterContents( List<Footer> footers ) {
-        footerPanel.clear();
-        root.remove( footerPanel );
+    void setFooterContents( List<Footer> footers ) {
+        DOMUtil.removeAllChildren( footerPanel );
         if ( !footers.isEmpty() ) {
             for ( Footer f : footers ) {
-                footerPanel.add( f );
+                footerPanel.appendChild( f.getElement()  );
             }
-            root.setFooterWidget( footerPanel );
+            root.setFooterWidget( createWidgetFrom( footerPanel ) );
         }
+    }
+
+    ElementWrapperWidget<?> createWidgetFrom( HTMLElement h ) {
+        return ElementWrapperWidget.getWidget( h );
     }
 
     @Override
@@ -429,9 +392,9 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         setFooterContents( discoverMarginWidgets( isStandaloneMode, headersToKeep, Footer.class ) );
     }
 
-    private <T extends OrderableIsWidget> List<T> discoverMarginWidgets( boolean isStandaloneMode,
-                                                                         Set<String> headersToKeep,
-                                                                         Class<T> marginType ) {
+    private <T extends Orderable> List<T> discoverMarginWidgets( boolean isStandaloneMode,
+                                                                 Set<String> headersToKeep,
+                                                                 Class<T> marginType ) {
         final Collection<SyncBeanDef<T>> headerBeans = iocManager.lookupBeans( marginType );
         final List<T> instances = new ArrayList<T>();
         for ( final SyncBeanDef<T> headerBean : headerBeans ) {
@@ -447,10 +410,10 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
                 instances.add( instance );
             }
         }
-        sort( instances, new Comparator<OrderableIsWidget>() {
+        sort( instances, new Comparator<Orderable>() {
             @Override
-            public int compare( final OrderableIsWidget o1,
-                                final OrderableIsWidget o2 ) {
+            public int compare( final Orderable o1,
+                                final Orderable o2 ) {
                 if ( o1.getOrder() < o2.getOrder() ) {
                     return 1;
                 } else if ( o1.getOrder() > o2.getOrder() ) {
@@ -464,7 +427,75 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         return instances;
     }
 
-    protected Widget getHeaderPanel() {
+    protected Div getHeaderPanel() {
         return headerPanel;
+    }
+
+    protected Div getFooterPanel() {
+        return footerPanel;
+    }
+
+    /**
+     * Holder for style information that was modified in order to maximize a panel.
+     */
+    protected static class OriginalStyleInfo {
+
+        private String position;
+        private String top;
+        private String left;
+        private String width;
+        private String height;
+        private String zIndex;
+        private int absoluteTop;
+        private int absoluteLeft;
+        private int clientHeight;
+        private int clientWidth;
+
+        public OriginalStyleInfo( final Widget w ) {
+            absoluteLeft = w.getAbsoluteLeft();
+            absoluteTop = w.getAbsoluteTop();
+            clientHeight = w.getElement().getClientHeight();
+            clientWidth = w.getElement().getClientWidth();
+
+            final Style style = w.getElement().getStyle();
+            position = style.getPosition();
+            top = style.getTop();
+            left = style.getLeft();
+            width = style.getWidth();
+            height = style.getHeight();
+            zIndex = style.getZIndex();
+        }
+
+        /**
+         * Restores to {@code w} all style values to those most recently set on this instance.
+         *
+         * @param w the widget to restore styles on.
+         */
+        public void restore( final Widget w ) {
+            final Style style = w.getElement().getStyle();
+            style.setProperty( "position", position );
+            style.setProperty( "top", top );
+            style.setProperty( "left", left );
+            style.setProperty( "width", width );
+            style.setProperty( "height", height );
+            style.setProperty( "zIndex", zIndex );
+        }
+
+        public int getAbsoluteTop() {
+            return absoluteTop;
+        }
+
+        public int getAbsoluteLeft() {
+            return absoluteLeft;
+        }
+
+        public int getClientHeight() {
+            return clientHeight;
+        }
+
+        public int getClientWidth() {
+            return clientWidth;
+        }
+
     }
 }

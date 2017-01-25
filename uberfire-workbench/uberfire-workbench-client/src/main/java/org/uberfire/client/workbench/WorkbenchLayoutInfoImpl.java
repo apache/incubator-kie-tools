@@ -19,6 +19,8 @@ package org.uberfire.client.workbench;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.dom.DOMUtil;
+
 @ApplicationScoped
 public class WorkbenchLayoutInfoImpl implements WorkbenchLayoutInfo {
 
@@ -27,6 +29,8 @@ public class WorkbenchLayoutInfoImpl implements WorkbenchLayoutInfo {
 
     @Override
     public int getHeaderHeight() {
-        return workbenchLayout.getHeaderPanel().getOffsetHeight();
+
+        return workbenchLayout.getHeaderPanel().getBoundingClientRect().getHeight().intValue();
+
     }
 }
