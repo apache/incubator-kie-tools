@@ -16,27 +16,34 @@
 
 package org.drools.workbench.client.navbar;
 
+
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.client.workbench.Header;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.workbench.Header;
 
 import static java.lang.Integer.*;
 
 @ApplicationScoped
-public class LogoWidgetPresenter implements Header {
-
-    public interface View extends IsWidget {
-
-    }
+@Templated
+public class LogoNavBar implements Header {
 
     @Inject
-    private View view;
+    private LogoWidgetView logo;
 
-    public View getView() {
-        return view;
+    @Inject
+    @DataField
+    Div header;
+
+    @AfterInitialization
+    public void setup(){
+        DOMUtil.appendWidgetToElement( header, logo.asWidget() );
     }
 
     @Override
@@ -47,11 +54,6 @@ public class LogoWidgetPresenter implements Header {
     @Override
     public int getOrder() {
         return MAX_VALUE;
-    }
-
-    @Override
-    public Widget asWidget() {
-        return view.asWidget();
     }
 
 }

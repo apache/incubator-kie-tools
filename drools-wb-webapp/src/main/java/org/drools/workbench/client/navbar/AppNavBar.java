@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -15,26 +15,33 @@
 
 package org.drools.workbench.client.navbar;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.workbench.Header;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 
-import static java.lang.Integer.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import static java.lang.Integer.MAX_VALUE;
 
 @ApplicationScoped
-public class AppNavBar
-        extends Composite implements Header {
+@Templated
+public class AppNavBar implements Header {
+
+    @Inject
+    @DataField
+    Div header;
 
     @Inject
     private WorkbenchMenuBarPresenter menuBarPresenter;
 
-    @Override
-    public Widget asWidget() {
-        return menuBarPresenter.getView().asWidget();
+    @AfterInitialization
+    public void setup(){
+        DOMUtil.appendWidgetToElement( header, menuBarPresenter.getView().asWidget() );
     }
 
     @Override
@@ -44,6 +51,6 @@ public class AppNavBar
 
     @Override
     public int getOrder() {
-        return 2;
+        return MAX_VALUE;
     }
 }
