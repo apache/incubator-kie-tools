@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.kie.api.definition.type.Description;
 import org.kie.api.definition.type.Duration;
@@ -30,7 +31,6 @@ import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 import org.kie.api.definition.type.TypeSafe;
-import org.kie.api.remote.Remotable;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
@@ -78,7 +78,7 @@ public class DataModelerEditorsTestHelper {
         dataObject.addAnnotation( createAnnotation( Timestamp.class, new Pair<String, Object>( "value" , "field2" ) ) );
         dataObject.addAnnotation( createAnnotation( Duration.class, new Pair<String, Object>( "value", "field3" ) ) );
         dataObject.addAnnotation( createAnnotation( Expires.class, new Pair<String, Object>( "value", "1h" ) ) );
-        dataObject.addAnnotation( createAnnotation( Remotable.class ) );
+        dataObject.addAnnotation( createAnnotation( XmlRootElement.class ) );
 
 
         //add fields

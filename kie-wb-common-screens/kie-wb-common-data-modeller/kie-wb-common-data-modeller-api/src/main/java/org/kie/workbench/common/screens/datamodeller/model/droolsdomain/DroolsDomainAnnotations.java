@@ -38,6 +38,8 @@ public class DroolsDomainAnnotations {
 
     public static final String REMOTABLE_ANNOTATION = "org.kie.api.remote.Remotable";
 
+    public static final String JAXB_XML_ROOT_ELEMENT_ANNOTATION = "javax.xml.bind.annotation.XmlRootElement";
+
     public static final String VALUE_PARAM = "value";
 
 }

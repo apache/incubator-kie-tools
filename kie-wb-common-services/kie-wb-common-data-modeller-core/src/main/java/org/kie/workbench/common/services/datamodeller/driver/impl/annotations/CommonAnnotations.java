@@ -29,6 +29,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.envers.Audited;
 import org.kie.api.definition.type.ClassReactive;
@@ -64,6 +65,7 @@ public class CommonAnnotations {
         commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Timestamp.class ) );
         commonAnnotations.add( DriverUtils.buildAnnotationDefinition( TypeSafe.class ) );
         commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Remotable.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( XmlRootElement.class ) );
 
         //JPA domain annotations
         commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Entity.class ) );

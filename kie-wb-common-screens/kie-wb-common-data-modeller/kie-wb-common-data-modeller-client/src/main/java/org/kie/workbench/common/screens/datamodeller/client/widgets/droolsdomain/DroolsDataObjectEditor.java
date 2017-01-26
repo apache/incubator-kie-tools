@@ -141,7 +141,11 @@ public class DroolsDataObjectEditor
                 view.setExpires( annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM ).toString() );
             }
 
-            annotation = dataObject.getAnnotation( DroolsDomainAnnotations.REMOTABLE_ANNOTATION );
+            annotation = dataObject.getAnnotation( DroolsDomainAnnotations.JAXB_XML_ROOT_ELEMENT_ANNOTATION );
+            if ( annotation == null ) {
+                // look for old style annotation.
+                annotation = dataObject.getAnnotation( DroolsDomainAnnotations.REMOTABLE_ANNOTATION );
+            }
             if ( annotation != null ) {
                 view.setRemotable( Boolean.TRUE );
             }
@@ -313,8 +317,10 @@ public class DroolsDataObjectEditor
 
             final Boolean isChecked = view.getRemotable();
             commandBuilder.buildDataObjectAddOrRemoveAnnotationCommand( getContext(), getName(), getDataObject(),
-                    DroolsDomainAnnotations.REMOTABLE_ANNOTATION, isChecked ).execute();
-
+                    DroolsDomainAnnotations.JAXB_XML_ROOT_ELEMENT_ANNOTATION, isChecked ).execute();
+            //remove the old style annotation.
+            commandBuilder.buildDataObjectRemoveAnnotationCommand( getContext(), getName(), getDataObject(),
+                    DroolsDomainAnnotations.REMOTABLE_ANNOTATION ).execute();
         }
     }
 
