@@ -26,7 +26,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.workbench.Header;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 
-import static java.lang.Integer.*;
+import static java.lang.Integer.MAX_VALUE;
 
 @ApplicationScoped
 @Templated
