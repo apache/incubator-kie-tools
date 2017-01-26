@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
  * Clears the canvas and the graph.
  * Note: Undo not supported due to ClearGraphCommand does not support it as well.
  */
-public final class ClearCommand extends AbstractCanvasGraphCommand {
+public class ClearCommand extends AbstractCanvasGraphCommand {
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {

@@ -35,7 +35,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Diagram
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
-import org.kie.workbench.common.stunner.cm.shape.def.CaseManagementDiagramShapeDef;
+import org.kie.workbench.common.stunner.cm.shapes.def.CaseManagementDiagramShapeDef;
+import org.kie.workbench.common.stunner.cm.shapes.factory.CaseManagementShapesFactory;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -46,13 +47,12 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ti
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
-import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 @Portable
 @Bindable
-@CanContain(roles = {"all"})
+@CanContain(roles = {"stage"})
 @Definition(graphFactory = NodeFactory.class, builder = CaseManagementDiagram.CaseManagementDiagramBuilder.class)
-@Shape(factory = BasicShapesFactory.class, def = CaseManagementDiagramShapeDef.class)
+@Shape(factory = CaseManagementShapesFactory.class, def = CaseManagementDiagramShapeDef.class)
 @FormDefinition(
         i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "diagramSet",
@@ -99,14 +99,13 @@ public class CaseManagementDiagram implements BPMNDefinition {
 
     @Labels
     private final Set<String> labels = new HashSet<String>() {{
-        add("canContainArtifacts");
         add("diagram");
     }};
 
     @NonPortable
     public static class CaseManagementDiagramBuilder implements Builder<CaseManagementDiagram> {
 
-        public static final transient String COLOR = "#FFFFFF";
+        public static final transient String COLOR = "#ffa500";
         public static final transient String BORDER_COLOR = "#000000";
         public static final Double BORDER_SIZE = 1d;
         public static final Double WIDTH = 950d;

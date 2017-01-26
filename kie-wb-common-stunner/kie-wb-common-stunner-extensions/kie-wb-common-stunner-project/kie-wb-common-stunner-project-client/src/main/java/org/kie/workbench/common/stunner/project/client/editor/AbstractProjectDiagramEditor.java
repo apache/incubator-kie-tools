@@ -105,7 +105,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private final ValidateSessionCommand sessionValidateCommand;
     private final RefreshSessionCommand sessionRefreshCommand;
 
-    private SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter;
+    protected SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter;
+
     private String title = "Project Diagram Editor";
 
     @Inject

@@ -23,11 +23,11 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public final class UpdateElementPositionCommand extends AbstractCanvasGraphCommand {
+public class UpdateElementPositionCommand extends AbstractCanvasGraphCommand {
 
-    private final Node<View<?>, Edge> element;
-    private final Double x;
-    private final Double y;
+    protected final Node<View<?>, Edge> element;
+    protected final Double x;
+    protected final Double y;
 
     public UpdateElementPositionCommand(final Node<View<?>, Edge> element,
                                         final Double x,

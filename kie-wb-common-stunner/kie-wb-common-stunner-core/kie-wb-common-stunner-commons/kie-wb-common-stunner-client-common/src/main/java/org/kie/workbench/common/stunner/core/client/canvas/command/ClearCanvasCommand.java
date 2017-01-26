@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
  * Clears the canvas.
  * Note: Undo not supported due to ClearGraphCommand does not support it as well.
  */
-public final class ClearCanvasCommand extends AbstractCanvasCommand {
+public class ClearCanvasCommand extends AbstractCanvasCommand {
 
     @Override
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {

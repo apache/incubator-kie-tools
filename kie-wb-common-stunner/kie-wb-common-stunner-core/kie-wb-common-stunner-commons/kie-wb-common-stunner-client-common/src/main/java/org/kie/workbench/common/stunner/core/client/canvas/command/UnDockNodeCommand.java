@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
  * Removes the parent-dock relationship between two nodes.
  * Operation is done both model and canvas side.
  */
-public final class UnDockNodeCommand extends AbstractCanvasGraphCommand {
+public class UnDockNodeCommand extends AbstractCanvasGraphCommand {
 
     private final Node parent;
     private final Node child;

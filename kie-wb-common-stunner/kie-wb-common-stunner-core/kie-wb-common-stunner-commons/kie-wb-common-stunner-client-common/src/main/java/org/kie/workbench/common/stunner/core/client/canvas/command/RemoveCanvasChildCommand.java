@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 /**
  * Removes the parent-child relationship between two nodes in the canvas context.
  */
-public final class RemoveCanvasChildCommand extends AbstractCanvasCommand {
+public class RemoveCanvasChildCommand extends AbstractCanvasCommand {
 
     private final Node parent;
     private final Node child;

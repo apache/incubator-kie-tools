@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public final class SetConnectionSourceNodeCommand extends AbstractCanvasGraphCommand {
+public class SetConnectionSourceNodeCommand extends AbstractCanvasGraphCommand {
 
     private final Node<? extends View<?>, Edge> node;
     private final Edge<? extends View<?>, Node> edge;

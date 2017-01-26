@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 /**
  * Registers the candidate node into the canvas and docks it into the parent node.
  */
-public final class AddCanvasDockedNodeCommand extends AbstractCanvasCommand {
+public class AddCanvasDockedNodeCommand extends AbstractCanvasCommand {
 
     private final Node parent;
     private final Node candidate;

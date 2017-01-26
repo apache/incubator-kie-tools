@@ -21,7 +21,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
-public final class DeleteNodeCommand extends AbstractNodeDeregistrationCommand {
+public class DeleteNodeCommand extends AbstractNodeDeregistrationCommand {
 
     @SuppressWarnings("unchecked")
     public DeleteNodeCommand(final Node candidate) {

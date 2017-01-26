@@ -182,18 +182,4 @@ public class BS3PaletteCategories
                                                   itemY);
         }
     }
-
-    private int getIndex(final String categoryId) {
-        final List<DefinitionPaletteCategory> categories = paletteDefinition.getItems();
-        if (null != categories && !categories.isEmpty()) {
-            int x = 0;
-            for (final DefinitionPaletteCategory category : categories) {
-                if (category.getId().equals(categoryId)) {
-                    return x;
-                }
-                x++;
-            }
-        }
-        return -1;
-    }
 }

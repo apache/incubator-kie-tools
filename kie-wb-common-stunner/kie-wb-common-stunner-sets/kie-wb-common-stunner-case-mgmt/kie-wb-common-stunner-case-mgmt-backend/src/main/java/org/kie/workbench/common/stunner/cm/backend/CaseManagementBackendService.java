@@ -20,7 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.backend.service.AbstractDefinitionSetService;
-import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagement;
+import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.cm.resource.CaseManagementDefinitionSetResourceType;
 import org.kie.workbench.common.stunner.core.definition.DefinitionSetResourceType;
 
@@ -35,7 +35,7 @@ public class CaseManagementBackendService extends AbstractDefinitionSetService {
     }
 
     @Inject
-    public CaseManagementBackendService(final @CaseManagement CaseManagementDiagramMarshaller cmDiagramMarshaller,
+    public CaseManagementBackendService(final @CaseManagementEditor CaseManagementDiagramMarshaller cmDiagramMarshaller,
                                         final CaseManagementDefinitionSetResourceType cmResourceType) {
         super(cmDiagramMarshaller);
         this.cmResourceType = cmResourceType;

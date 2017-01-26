@@ -33,6 +33,7 @@
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
   <inherits name="org.kie.workbench.common.stunner.basicset.StunnerBasicSetClient"/>
   <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnClient"/>
+  <inherits name="org.kie.workbench.common.stunner.cm.StunnerCaseManagementClient"/>
 
   <!-- Form modeler.-->
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>

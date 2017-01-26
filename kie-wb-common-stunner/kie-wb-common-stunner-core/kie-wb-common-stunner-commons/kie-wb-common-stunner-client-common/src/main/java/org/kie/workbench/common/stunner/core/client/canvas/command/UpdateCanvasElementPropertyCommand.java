@@ -21,7 +21,7 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
-public final class UpdateCanvasElementPropertyCommand extends AbstractCanvasCommand {
+public class UpdateCanvasElementPropertyCommand extends AbstractCanvasCommand {
 
     private final Element element;
 

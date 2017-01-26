@@ -23,6 +23,7 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn20Stencil;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.BaseOryxIdMappings;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
@@ -31,12 +32,19 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.gateway.Default
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementAdhocSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementBaseTask;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementBusinessRuleTask;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagement;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementNoneTask;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementScriptTask;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementUserTask;
+import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 
 @Dependent
-@CaseManagement
+@CaseManagementEditor
 public class CaseManagementOryxIdMappings extends BaseOryxIdMappings {
 
     @Inject
@@ -48,7 +56,21 @@ public class CaseManagementOryxIdMappings extends BaseOryxIdMappings {
     public Map<Class<?>, String> getCustomMappings() {
         final Map<Class<?>, String> customMappings = new HashMap<Class<?>, String>() {{
             put(CaseManagementDiagram.class,
-                "BPMNDiagram");
+                Bpmn20Stencil.BPMNDiagram.name());
+            put(CaseManagementAdhocSubprocess.class,
+                Bpmn20Stencil.AdHocSubprocess.name());
+            put(CaseManagementReusableSubprocess.class,
+                Bpmn20Stencil.ReusableSubprocess.name());
+            put(CaseManagementBaseTask.class,
+                Bpmn20Stencil.Task.name());
+            put(CaseManagementNoneTask.class,
+                Bpmn20Stencil.Task.name());
+            put(CaseManagementBusinessRuleTask.class,
+                Bpmn20Stencil.Task.name());
+            put(CaseManagementScriptTask.class,
+                Bpmn20Stencil.Task.name());
+            put(CaseManagementUserTask.class,
+                Bpmn20Stencil.Task.name());
         }};
 
         return customMappings;

@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public final class MorphNodeCommand extends AbstractCanvasGraphCommand {
+public class MorphNodeCommand extends AbstractCanvasGraphCommand {
 
     private Node<? extends Definition<?>, Edge> candidate;
     private MorphDefinition morphDefinition;

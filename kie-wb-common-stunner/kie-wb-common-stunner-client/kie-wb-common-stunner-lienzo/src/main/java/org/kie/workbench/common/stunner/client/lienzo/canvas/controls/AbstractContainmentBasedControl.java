@@ -166,8 +166,8 @@ public abstract class AbstractContainmentBasedControl
         return canvasHandler != null;
     }
 
-    private boolean isSameParent(final Node parent,
-                                 final Edge<Child, Node> edge) {
+    protected boolean isSameParent(final Node parent,
+                                   final Edge<Child, Node> edge) {
         if (null != edge) {
             final Node sourceNode = edge.getSourceNode();
             if (null != sourceNode) {
@@ -179,7 +179,7 @@ public abstract class AbstractContainmentBasedControl
     }
 
     @SuppressWarnings("unchecked")
-    private Edge<Object, Node> getTheEdge(final Node child) {
+    protected Edge<Object, Node> getTheEdge(final Node child) {
         if (child != null) {
             final List<Edge> outEdges = child.getInEdges();
             if (null != outEdges && !outEdges.isEmpty()) {
@@ -203,17 +203,17 @@ public abstract class AbstractContainmentBasedControl
         return null != wiresShape && wiresShape instanceof WiresLayer;
     }
 
-    private boolean isAccept(final CommandResult<CanvasViolation> result) {
+    protected boolean isAccept(final CommandResult<CanvasViolation> result) {
         return !CommandUtils.isError(result);
     }
 
-    private CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
+    protected CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
         return commandManagerProvider.getCommandManager();
     }
 
-    private void logResults(final String prefix,
-                            final Command<AbstractCanvasHandler, CanvasViolation> command,
-                            final CommandResult<CanvasViolation> violations) {
+    protected void logResults(final String prefix,
+                              final Command<AbstractCanvasHandler, CanvasViolation> command,
+                              final CommandResult<CanvasViolation> violations) {
         if (LogConfiguration.loggingIsEnabled()) {
             final boolean isOk = isAccept(violations);
             if (isOk) {
@@ -230,8 +230,8 @@ public abstract class AbstractContainmentBasedControl
         }
     }
 
-    private void log(final Level level,
-                     final String message) {
+    protected void log(final Level level,
+                       final String message) {
         if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level,
                        message);

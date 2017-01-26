@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
  * Registers the candidate node.
  * Operation is done both model and canvas side.
  */
-public final class AddNodeCommand extends AbstractCanvasGraphCommand {
+public class AddNodeCommand extends AbstractCanvasGraphCommand {
 
     private final Node candidate;
     private final String shapeSetId;

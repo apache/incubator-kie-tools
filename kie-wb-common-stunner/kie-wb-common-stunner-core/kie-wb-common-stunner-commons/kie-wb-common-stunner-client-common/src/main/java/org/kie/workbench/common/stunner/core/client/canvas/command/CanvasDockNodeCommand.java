@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 /**
  * Docks a node shape into thee parent's one in the canvas context.
  */
-public final class CanvasDockNodeCommand extends AbstractCanvasCommand {
+public class CanvasDockNodeCommand extends AbstractCanvasCommand {
 
     private final Node parent;
     private final Node candidate;

@@ -72,7 +72,7 @@ public final class BuildCanvasShapeEvent extends AbstractCanvasHandlerEvent<Abst
 
     @Override
     public String toString() {
-        return "PaletteShapeSelectedEvent [definition=" + definition + ", factory=" + shapeFactory.toString() +
+        return "BuildCanvasShapeEvent [definition=" + definition + ", factory=" + shapeFactory.toString() +
                 ", x=" + x + ", y=" + y + "]";
     }
 }

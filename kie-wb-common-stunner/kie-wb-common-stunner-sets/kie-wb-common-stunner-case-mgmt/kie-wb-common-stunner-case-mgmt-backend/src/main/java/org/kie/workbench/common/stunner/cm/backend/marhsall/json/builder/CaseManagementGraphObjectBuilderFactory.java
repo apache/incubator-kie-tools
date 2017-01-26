@@ -20,10 +20,10 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.BPMNGraphObjectBuilderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
-import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagement;
+import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 
-@CaseManagement
+@CaseManagementEditor
 @ApplicationScoped
 public class CaseManagementGraphObjectBuilderFactory extends BPMNGraphObjectBuilderFactory {
 
@@ -32,7 +32,7 @@ public class CaseManagementGraphObjectBuilderFactory extends BPMNGraphObjectBuil
 
     @Inject
     public CaseManagementGraphObjectBuilderFactory(final DefinitionManager definitionManager,
-                                                   final @CaseManagement OryxManager oryxManager) {
+                                                   final @CaseManagementEditor OryxManager oryxManager) {
         super(definitionManager,
               oryxManager);
     }

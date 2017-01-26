@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 /**
  * Registers the child shape into the canvas and  add it into the parent's one  as well.
  */
-public final class AddCanvasChildNodeCommand extends AbstractCanvasNodeRegistrationCommand {
+public class AddCanvasChildNodeCommand extends AbstractCanvasNodeRegistrationCommand {
 
     private final Node parent;
     private final String shapeSetId;
@@ -43,9 +43,9 @@ public final class AddCanvasChildNodeCommand extends AbstractCanvasNodeRegistrat
         this.shapeSetId = shapeSetId;
     }
 
-    AddCanvasChildNodeCommand(final Node parent,
-                              final Node candidate,
-                              final String shapeSetId) {
+    public AddCanvasChildNodeCommand(final Node parent,
+                                     final Node candidate,
+                                     final String shapeSetId) {
         super(new TreeWalkTraverseProcessorImpl(),
               candidate);
         this.parent = parent;

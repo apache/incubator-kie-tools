@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 /**
  * Adds a connector shape into the canvas and sets its source node.
  */
-public final class AddConnectorCommand extends AbstractCanvasGraphCommand {
+public class AddConnectorCommand extends AbstractCanvasGraphCommand {
 
     private final Node source;
     private final Edge candidate;

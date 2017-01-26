@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
  * Registers the candidate node and docks it into the parent node.
  * Operations are done both model and canvas side.
  */
-public final class AddDockedNodeCommand extends AbstractCanvasGraphCommand {
+public class AddDockedNodeCommand extends AbstractCanvasGraphCommand {
 
     private final Node parent;
     private final Node candidate;

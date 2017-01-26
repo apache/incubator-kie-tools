@@ -458,6 +458,22 @@
 
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-case-mgmt-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-case-mgmt-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-case-mgmt-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-forms-api</artifactId>
     </dependency>
 
@@ -792,6 +808,9 @@
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-basicset-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-bpmn-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-bpmn-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-case-mgmt-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-case-mgmt-backend</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-case-mgmt-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
 

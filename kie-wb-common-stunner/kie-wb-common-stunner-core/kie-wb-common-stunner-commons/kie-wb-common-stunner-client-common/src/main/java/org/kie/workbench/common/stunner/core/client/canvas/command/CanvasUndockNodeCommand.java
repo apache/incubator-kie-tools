@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 /**
  * Removes the parent-dock relationship between two nodes in the canvas context.
  */
-public final class CanvasUndockNodeCommand extends AbstractCanvasCommand {
+public class CanvasUndockNodeCommand extends AbstractCanvasCommand {
 
     private final Node parent;
     private final Node child;

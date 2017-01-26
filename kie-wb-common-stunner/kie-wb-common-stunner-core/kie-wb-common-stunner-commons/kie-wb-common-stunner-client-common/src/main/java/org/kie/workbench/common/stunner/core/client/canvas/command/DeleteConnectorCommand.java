@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
  * Removes a connector between two nodes from the canvas and graph structure
  * Operation is done both model and canvas side.
  */
-public final class DeleteConnectorCommand extends AbstractCanvasGraphCommand {
+public class DeleteConnectorCommand extends AbstractCanvasGraphCommand {
 
     private final Edge candidate;
 

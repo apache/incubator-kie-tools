@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 /**
  * Deletes a node shape from the canvas.
  */
-public final class DeleteCanvasNodeCommand extends AbstractCanvasCommand {
+public class DeleteCanvasNodeCommand extends AbstractCanvasCommand {
 
     private final Node candidate;
     private final Node parent;

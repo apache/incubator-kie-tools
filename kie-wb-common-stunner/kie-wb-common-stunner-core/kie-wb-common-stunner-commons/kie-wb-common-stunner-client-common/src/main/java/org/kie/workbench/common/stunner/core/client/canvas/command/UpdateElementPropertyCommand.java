@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPropertyValueCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public final class UpdateElementPropertyCommand extends AbstractCanvasGraphCommand {
+public class UpdateElementPropertyCommand extends AbstractCanvasGraphCommand {
 
     private final Element element;
     private final String propertyId;

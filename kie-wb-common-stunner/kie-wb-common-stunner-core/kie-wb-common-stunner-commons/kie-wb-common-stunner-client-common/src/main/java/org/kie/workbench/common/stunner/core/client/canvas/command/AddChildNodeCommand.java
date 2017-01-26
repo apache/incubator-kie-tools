@@ -21,11 +21,11 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public final class AddChildNodeCommand extends AbstractCanvasGraphCommand {
+public class AddChildNodeCommand extends AbstractCanvasGraphCommand {
 
-    private final Node parent;
-    private final Node candidate;
-    private final String shapeSetId;
+    protected final Node parent;
+    protected final Node candidate;
+    protected final String shapeSetId;
 
     public AddChildNodeCommand(final Node parent,
                                final Node candidate,

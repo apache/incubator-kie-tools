@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 /**
  * Registers a node shape into de canvas.
  */
-public final class AddCanvasNodeCommand extends AbstractCanvasNodeRegistrationCommand {
+public class AddCanvasNodeCommand extends AbstractCanvasNodeRegistrationCommand {
 
     private final String shapeSetId;
 
@@ -39,8 +39,8 @@ public final class AddCanvasNodeCommand extends AbstractCanvasNodeRegistrationCo
         this.shapeSetId = shapeSetId;
     }
 
-    AddCanvasNodeCommand(final Node candidate,
-                         final String shapeSetId) {
+    public AddCanvasNodeCommand(final Node candidate,
+                                final String shapeSetId) {
         super(new TreeWalkTraverseProcessorImpl(),
               candidate);
         this.shapeSetId = shapeSetId;

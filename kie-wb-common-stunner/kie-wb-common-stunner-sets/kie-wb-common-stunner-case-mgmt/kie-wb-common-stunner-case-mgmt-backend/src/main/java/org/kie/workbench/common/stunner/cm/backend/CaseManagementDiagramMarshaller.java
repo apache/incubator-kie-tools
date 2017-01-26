@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxMana
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagement;
+import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.cm.util.CaseManagementUtils;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -39,16 +39,16 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBu
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 @Dependent
-@CaseManagement
+@CaseManagementEditor
 public class CaseManagementDiagramMarshaller extends BaseDiagramMarshaller<CaseManagementDiagram> {
 
     @Inject
     public CaseManagementDiagramMarshaller(final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
-                                           final @CaseManagement GraphObjectBuilderFactory bpmnGraphBuilderFactory,
+                                           final @CaseManagementEditor GraphObjectBuilderFactory bpmnGraphBuilderFactory,
                                            final DefinitionManager definitionManager,
                                            final GraphUtils graphUtils,
                                            final GraphIndexBuilder<?> indexBuilder,
-                                           final @CaseManagement OryxManager oryxManager,
+                                           final @CaseManagementEditor OryxManager oryxManager,
                                            final FactoryManager factoryManager,
                                            final GraphCommandManager graphCommandManager,
                                            final GraphCommandFactory commandFactory) {

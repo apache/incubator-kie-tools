@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
-public final class SetCanvasChildNodeCommand extends AbstractCanvasCommand {
+public class SetCanvasChildNodeCommand extends AbstractCanvasCommand {
 
     private final Node parent;
     private final Node candidate;

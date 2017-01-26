@@ -50,10 +50,15 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
         implements DragControl<AbstractCanvasHandler, Element> {
 
     private static Logger LOGGER = Logger.getLogger(DragControlImpl.class.getName());
+
     private static final int delta = 10;
+
     private final CanvasCommandFactory canvasCommandFactory;
-    private CanvasGrid dragGrid;
     private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
+
+    protected CanvasGrid dragGrid;
+    protected final double[] dragShapeSize = new double[]{0, 0};
+    protected CanvasGrid originalGrid = null;
 
     protected DragControlImpl() {
         this(null);
@@ -79,39 +84,19 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
                 final HasEventHandlers hasEventHandlers = (HasEventHandlers) shape.getShapeView();
                 final DragHandler handler = new DragHandler() {
 
-                    private final double[] shapeSize = new double[]{0, 0};
-                    private CanvasGrid grid = null;
-
                     @Override
                     public void start(final DragEvent event) {
-                        final double[] size = GraphUtils.getNodeSize((View) element.getContent());
-                        shapeSize[0] = size[0];
-                        shapeSize[1] = size[1];
-                        if (isDragGridEnabled()) {
-                            this.grid = canvas.getGrid();
-                            if (null == grid) {
-                                canvas.setGrid(dragGrid);
-                            }
-                        }
+                        doDragStart(element);
                     }
 
                     @Override
                     public void handle(final DragEvent event) {
-                        ensureDragConstrains(shape.getShapeView(),
-                                             shapeSize);
+                        doDragUpdate(element);
                     }
 
                     @Override
                     public void end(final DragEvent event) {
-                        final double x = shape.getShapeView().getShapeX();
-                        final double y = shape.getShapeView().getShapeY();
-                        move(element,
-                             x,
-                             y);
-                        if (isDragGridEnabled()) {
-                            canvas.setGrid(this.grid);
-                            this.grid = null;
-                        }
+                        doDragEnd(element);
                     }
                 };
                 hasEventHandlers.addHandler(ViewEventType.DRAG,
@@ -119,6 +104,39 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
                 registerHandler(element.getUUID(),
                                 handler);
             }
+        }
+    }
+
+    protected void doDragStart(final Element element) {
+        final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
+        final double[] size = GraphUtils.getNodeSize((View) element.getContent());
+        dragShapeSize[0] = size[0];
+        dragShapeSize[1] = size[1];
+        if (isDragGridEnabled()) {
+            this.originalGrid = canvas.getGrid();
+            if (null == originalGrid) {
+                canvas.setGrid(dragGrid);
+            }
+        }
+    }
+
+    protected void doDragUpdate(final Element element) {
+        final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
+        final Shape<?> shape = canvas.getShape(element.getUUID());
+        ensureDragConstrains(shape.getShapeView());
+    }
+
+    protected void doDragEnd(final Element element) {
+        final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
+        final Shape<?> shape = canvas.getShape(element.getUUID());
+        final double x = shape.getShapeView().getShapeX();
+        final double y = shape.getShapeView().getShapeY();
+        move(element,
+             x,
+             y);
+        if (isDragGridEnabled()) {
+            canvas.setGrid(originalGrid);
+            originalGrid = null;
         }
     }
 
@@ -203,15 +221,14 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
      * ensure drag does not exceed the canvas bounds.
      * @param shapeView The shape view instance being drag.
      */
-    private void ensureDragConstrains(final ShapeView<?> shapeView,
-                                      final double[] shapeSize) {
+    private void ensureDragConstrains(final ShapeView<?> shapeView) {
         final int mw = canvasHandler.getCanvas().getWidth();
         final int mh = canvasHandler.getCanvas().getHeight();
         final Point2D sa = shapeView.getShapeAbsoluteLocation();
         LOGGER.log(Level.FINE,
                    "Ensuring drag constraints for absolute coordinates at [" + sa.getX() + ", " + sa.getY() + "]");
-        final double ax = mw - shapeSize[0];
-        final double ay = mh - shapeSize[1];
+        final double ax = mw - dragShapeSize[0];
+        final double ay = mh - dragShapeSize[1];
         final boolean xb = sa.getX() >= ax || sa.getX() < 0;
         final boolean yb = sa.getY() >= ay || sa.getY() < 0;
         if (xb || yb) {

@@ -75,6 +75,9 @@ public class BS3PaletteWidgetView extends Composite implements PaletteWidgetView
                               final double x,
                               final double y) {
         final Glyph<Group> glyph = (Glyph<Group>) presenter.getShapeGlyph(itemId);
+        presenter.onDragStart(itemId,
+                              x,
+                              y);
         shapeGlyphDragHandler.show(glyph,
                                    x,
                                    y,

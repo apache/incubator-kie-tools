@@ -24,8 +24,9 @@
 
   <source path="definition"/>
   <source path="factory"/>
+  <source path="qualifiers"/>
   <source path="resource"/>
-  <source path="shape/def"/>
+  <source path="shapes"/>
   <source path="util"/>
   <source path="" includes="CaseManagementDefinitionSet.java"/>
 

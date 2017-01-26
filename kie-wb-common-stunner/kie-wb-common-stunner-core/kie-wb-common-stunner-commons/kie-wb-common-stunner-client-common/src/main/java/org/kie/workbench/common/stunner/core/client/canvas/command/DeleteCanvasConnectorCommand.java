@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 /**
  * Removes a connector between two nodes from the canvas.
  */
-public final class DeleteCanvasConnectorCommand extends AbstractCanvasCommand {
+public class DeleteCanvasConnectorCommand extends AbstractCanvasCommand {
 
     private final Edge candidate;
     private final Node source;

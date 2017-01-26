@@ -21,7 +21,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public final class DockNodeCommand extends AbstractCanvasGraphCommand {
+public class DockNodeCommand extends AbstractCanvasGraphCommand {
 
     private final Node parent;
     private final Node candidate;

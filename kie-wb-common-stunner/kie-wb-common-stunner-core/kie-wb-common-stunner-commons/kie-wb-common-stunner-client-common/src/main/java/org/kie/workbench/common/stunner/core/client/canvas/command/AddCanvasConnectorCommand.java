@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 /**
  * Adds a new connector shape into the canvas and updates its connections.
  */
-public final class AddCanvasConnectorCommand extends AbstractCanvasCommand {
+public class AddCanvasConnectorCommand extends AbstractCanvasCommand {
 
     private final Edge candidate;
     private final String shapeSetId;

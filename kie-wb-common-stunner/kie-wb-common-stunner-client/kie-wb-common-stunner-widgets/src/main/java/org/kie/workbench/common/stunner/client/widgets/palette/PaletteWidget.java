@@ -32,7 +32,27 @@ public interface PaletteWidget<D extends PaletteDefinition, V extends PaletteWid
                         final double y);
     }
 
+    interface ItemDragStartCallback {
+
+        void onDragStartItem(final Object definition,
+                              final ShapeFactory<?, ?, ? extends Shape> factory,
+                              final double x,
+                              final double y);
+    }
+
+    interface ItemDragUpdateCallback {
+
+        void onDragUpdateItem(final Object definition,
+                              final ShapeFactory<?, ?, ? extends Shape> factory,
+                              final double x,
+                              final double y);
+    }
+
     PaletteWidget<D, V> onItemDrop(final ItemDropCallback callback);
+
+    PaletteWidget<D, V> onItemDragStart(final ItemDragStartCallback callback);
+
+    PaletteWidget<D, V> onItemDragUpdate(final ItemDragUpdateCallback callback);
 
     PaletteWidget<D, V> setMaxWidth(final int maxWidth);
 

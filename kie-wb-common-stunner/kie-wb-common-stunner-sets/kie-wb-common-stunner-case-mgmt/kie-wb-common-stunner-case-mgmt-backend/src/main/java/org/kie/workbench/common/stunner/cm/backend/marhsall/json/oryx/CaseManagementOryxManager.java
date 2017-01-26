@@ -25,10 +25,10 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.BaseOryx
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxIdMappings;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.Bpmn2OryxPropertyManager;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
-import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagement;
+import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.backend.util.BackendBindableDefinitionUtils;
 
-@CaseManagement
+@CaseManagementEditor
 @ApplicationScoped
 public class CaseManagementOryxManager extends BaseOryxManager {
 
@@ -36,7 +36,7 @@ public class CaseManagementOryxManager extends BaseOryxManager {
     }
 
     @Inject
-    public CaseManagementOryxManager(final @CaseManagement OryxIdMappings oryxIdMappings,
+    public CaseManagementOryxManager(final @CaseManagementEditor OryxIdMappings oryxIdMappings,
                                      final Bpmn2OryxPropertyManager oryxPropertyManager) {
         super(oryxIdMappings,
               oryxPropertyManager);

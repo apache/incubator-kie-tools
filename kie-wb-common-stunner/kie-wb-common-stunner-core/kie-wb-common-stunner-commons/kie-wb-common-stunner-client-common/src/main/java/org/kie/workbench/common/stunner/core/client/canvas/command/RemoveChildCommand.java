@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
  * Removes the parent-child relationship between two nodes.
  * Operation is done both model and canvas side.
  */
-public final class RemoveChildCommand extends AbstractCanvasGraphCommand {
+public class RemoveChildCommand extends AbstractCanvasGraphCommand {
 
     private final Node parent;
     private final Node child;

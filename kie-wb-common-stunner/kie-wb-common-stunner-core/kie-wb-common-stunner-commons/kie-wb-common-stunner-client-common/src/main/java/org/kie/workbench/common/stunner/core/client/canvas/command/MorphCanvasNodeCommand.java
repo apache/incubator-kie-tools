@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public final class MorphCanvasNodeCommand extends AbstractCanvasCommand {
+public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
 
     private Node<? extends Definition<?>, Edge> candidate;
     private MorphDefinition morphDefinition;

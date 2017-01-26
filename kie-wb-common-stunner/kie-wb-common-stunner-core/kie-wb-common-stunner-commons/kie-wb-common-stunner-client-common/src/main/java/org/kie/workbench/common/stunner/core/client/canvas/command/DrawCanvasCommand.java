@@ -27,11 +27,11 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
 
-public final class DrawCanvasCommand extends AbstractCanvasCommand {
+public class DrawCanvasCommand extends AbstractCanvasCommand {
 
     private static Logger LOGGER = Logger.getLogger(DrawCanvasCommand.class.getName());
 
-    private final TreeWalkTraverseProcessor treeWalkTraverseProcessor;
+    protected final TreeWalkTraverseProcessor treeWalkTraverseProcessor;
 
     public DrawCanvasCommand(final TreeWalkTraverseProcessor treeWalkTraverseProcessor) {
         this.treeWalkTraverseProcessor = treeWalkTraverseProcessor;

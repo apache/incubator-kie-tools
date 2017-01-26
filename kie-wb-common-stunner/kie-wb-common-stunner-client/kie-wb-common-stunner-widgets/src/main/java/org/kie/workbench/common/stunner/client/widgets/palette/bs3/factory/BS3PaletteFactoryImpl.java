@@ -32,6 +32,8 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.event.BuildCanvasShapeEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.event.CanvasShapeDragStartEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.event.CanvasShapeDragUpdateEvent;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.AbstractPaletteFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.DefaultDefSetPaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
@@ -41,6 +43,8 @@ public class BS3PaletteFactoryImpl extends AbstractPaletteFactory<DefinitionSetP
         implements BS3PaletteFactory {
 
     private final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent;
+    private final Event<CanvasShapeDragStartEvent> canvasShapeDragStartEvent;
+    private final Event<CanvasShapeDragUpdateEvent> canvasShapeDragUpdateEvent;
     private final List<BS3PaletteViewFactory> viewFactories = new LinkedList<>();
 
     @Inject
@@ -48,12 +52,16 @@ public class BS3PaletteFactoryImpl extends AbstractPaletteFactory<DefinitionSetP
                                  final SyncBeanManager beanManager,
                                  final ManagedInstance<DefaultDefSetPaletteDefinitionFactory> defaultPaletteDefinitionFactoryInstance,
                                  final ManagedInstance<BS3PaletteWidget> paletteInstances,
-                                 final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent) {
+                                 final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent,
+                                 final Event<CanvasShapeDragStartEvent> canvasShapeDragStartEvent,
+                                 final Event<CanvasShapeDragUpdateEvent> canvasShapeDragUpdateEvent) {
         super(shapeManager,
               beanManager,
               defaultPaletteDefinitionFactoryInstance,
               paletteInstances);
         this.buildCanvasShapeEvent = buildCanvasShapeEvent;
+        this.canvasShapeDragStartEvent = canvasShapeDragStartEvent;
+        this.canvasShapeDragUpdateEvent = canvasShapeDragUpdateEvent;
     }
 
     @PostConstruct
@@ -82,6 +90,18 @@ public class BS3PaletteFactoryImpl extends AbstractPaletteFactory<DefinitionSetP
                                                                                             factory,
                                                                                             x,
                                                                                             y)));
+            palette.onItemDragStart((definition, factory, x, y) ->
+                                            canvasShapeDragStartEvent.fire(new CanvasShapeDragStartEvent((AbstractCanvasHandler) canvasHandler,
+                                                                                                         definition,
+                                                                                                         factory,
+                                                                                                         x,
+                                                                                                         y)));
+            palette.onItemDragUpdate((definition, factory, x, y) ->
+                                             canvasShapeDragUpdateEvent.fire(new CanvasShapeDragUpdateEvent((AbstractCanvasHandler) canvasHandler,
+                                                                                                            definition,
+                                                                                                            factory,
+                                                                                                            x,
+                                                                                                            y)));
         }
 
         return palette;

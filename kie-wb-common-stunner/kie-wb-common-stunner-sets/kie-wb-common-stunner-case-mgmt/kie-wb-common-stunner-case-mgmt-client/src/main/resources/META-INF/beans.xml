@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" bean-discovery-mode="all">
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" bean-discovery-mode="none">
   <scan>
     <exclude name="org.kie.workbench.common.stunner.cm.client.**"/>
   </scan>

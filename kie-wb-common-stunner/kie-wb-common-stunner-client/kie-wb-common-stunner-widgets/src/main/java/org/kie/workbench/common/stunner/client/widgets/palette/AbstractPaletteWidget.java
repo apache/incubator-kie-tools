@@ -30,6 +30,8 @@ public abstract class AbstractPaletteWidget<D extends PaletteDefinition, V exten
 
     protected final ClientFactoryService clientFactoryServices;
     protected ItemDropCallback itemDropCallback;
+    protected ItemDragStartCallback itemDragStartCallback;
+    protected ItemDragUpdateCallback itemDragUpdateCallback;
     protected V view;
     protected int maxWidth;
     protected int maxHeight;
@@ -49,6 +51,18 @@ public abstract class AbstractPaletteWidget<D extends PaletteDefinition, V exten
     @Override
     public PaletteWidget<D, V> onItemDrop(final ItemDropCallback callback) {
         this.itemDropCallback = callback;
+        return this;
+    }
+
+    @Override
+    public PaletteWidget<D, V> onItemDragStart(final ItemDragStartCallback callback) {
+        this.itemDragStartCallback = callback;
+        return this;
+    }
+
+    @Override
+    public PaletteWidget<D, V> onItemDragUpdate(final ItemDragUpdateCallback callback) {
+        this.itemDragUpdateCallback = callback;
         return this;
     }
 
@@ -81,9 +95,34 @@ public abstract class AbstractPaletteWidget<D extends PaletteDefinition, V exten
         return this;
     }
 
+    @SuppressWarnings("unchecked")
+    public void onDragStart(final String definitionId,
+                            final double x,
+                            final double y) {
+        if (null != itemDragStartCallback) {
+            final Object definition = clientFactoryServices.getClientFactoryManager().newDefinition(definitionId);
+            final ShapeFactory<?, ?, ? extends Shape> factory = getShapeFactory();
+            // Fire the callback as shape drag starts.
+            itemDragStartCallback.onDragStartItem(definition,
+                                                  factory,
+                                                  x,
+                                                  y);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     public void onDragProxyMove(final String definitionId,
                                 final double x,
                                 final double y) {
+        if (null != itemDragUpdateCallback) {
+            final Object definition = clientFactoryServices.getClientFactoryManager().newDefinition(definitionId);
+            final ShapeFactory<?, ?, ? extends Shape> factory = getShapeFactory();
+            // Fire the callback as shape dragged over the target canvas.
+            itemDragUpdateCallback.onDragUpdateItem(definition,
+                                                    factory,
+                                                    x,
+                                                    y);
+        }
     }
 
     public void onDragProxyComplete(final String definitionId) {
