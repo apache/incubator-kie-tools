@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.connectors;
 
+import javax.validation.constraints.Pattern;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
@@ -58,6 +60,7 @@ public class Priority implements BPMNProperty {
     public static final transient String defaultValue = "";
 
     @Value
+    @Pattern(regexp = "^$|^[1-9][0-9]*", message = "Must be a positive integer")
     @FieldValue
     private String value = defaultValue;
 
