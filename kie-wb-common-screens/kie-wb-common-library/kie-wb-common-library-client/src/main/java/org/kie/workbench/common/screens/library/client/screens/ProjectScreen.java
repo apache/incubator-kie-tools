@@ -23,64 +23,57 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.model.Project;
+import org.ext.uberfire.social.activities.client.widgets.utils.SocialDateFormatter;
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
-import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
-import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
+import org.kie.workbench.common.screens.library.api.AssetInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.util.LibraryBreadcrumbs;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.ResourceRef;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.workbench.model.ActivityResourceType;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.util.URIUtil;
 
-@WorkbenchScreen( identifier = LibraryPlaces.PROJECT_SCREEN,
-        owningPerspective = LibraryPerspective.class )
+@WorkbenchScreen(identifier = LibraryPlaces.PROJECT_SCREEN,
+        owningPerspective = LibraryPerspective.class)
 public class ProjectScreen {
 
     public interface View extends UberElement<ProjectScreen> {
 
+        void setProjectName( String projectName );
+
         void clearAssets();
 
         void addAsset( String assetName,
+                       String assetPath,
                        String assetType,
                        IsWidget assetIcon,
+                       String lastModifiedTime,
+                       String createdTime,
                        Command details,
                        Command select );
-
-        void noRightsPopup();
     }
 
     private View view;
 
-    private PlaceManager placeManager;
-
-    private LibraryBreadcrumbs libraryBreadcrumbs;
-
-    private Event<LibraryContextSwitchEvent> libraryContextSwitchEvent;
-
-    private SessionInfo sessionInfo;
-
-    private AuthorizationManager authorizationManager;
+    private LibraryPlaces libraryPlaces;
 
     private TranslationService ts;
 
@@ -90,120 +83,136 @@ public class ProjectScreen {
 
     private Event<AssetDetailEvent> assetDetailEvent;
 
-    private Project project;
+    private Event<ProjectContextChangeEvent> projectContextChangeEvent;
 
-    private List<FolderItem> assets;
+    private BusyIndicatorView busyIndicatorView;
+
+    private ProjectInfo projectInfo;
+
+    private List<AssetInfo> assets;
 
     @Inject
     public ProjectScreen( final View view,
-                          final PlaceManager placeManager,
-                          final LibraryBreadcrumbs libraryBreadcrumbs,
-                          final Event<LibraryContextSwitchEvent> libraryContextSwitchEvent,
-                          final SessionInfo sessionInfo,
-                          final AuthorizationManager authorizationManager,
+                          final LibraryPlaces libraryPlaces,
                           final TranslationService ts,
                           final Caller<LibraryService> libraryService,
                           final Classifier assetClassifier,
-                          final Event<AssetDetailEvent> assetDetailEvent ) {
+                          final Event<AssetDetailEvent> assetDetailEvent,
+                          final Event<ProjectContextChangeEvent> projectContextChangeEvent,
+                          final BusyIndicatorView busyIndicatorView ) {
         this.view = view;
-        this.placeManager = placeManager;
-        this.libraryBreadcrumbs = libraryBreadcrumbs;
-        this.libraryContextSwitchEvent = libraryContextSwitchEvent;
-        this.sessionInfo = sessionInfo;
-        this.authorizationManager = authorizationManager;
+        this.libraryPlaces = libraryPlaces;
         this.ts = ts;
         this.libraryService = libraryService;
         this.assetClassifier = assetClassifier;
         this.assetDetailEvent = assetDetailEvent;
+        this.projectContextChangeEvent = projectContextChangeEvent;
+        this.busyIndicatorView = busyIndicatorView;
     }
 
     public void onStartup( @Observes final ProjectDetailEvent projectDetailEvent ) {
-        this.project = projectDetailEvent.getProjectSelected();
+        this.projectInfo = projectDetailEvent.getProjectInfo();
+        projectContextChangeEvent.fire( new ProjectContextChangeEvent( projectInfo.getOrganizationalUnit(),
+                                                                       projectInfo.getRepository(),
+                                                                       projectInfo.getBranch(),
+                                                                       projectInfo.getProject() ) );
         loadProjectInfo();
+        view.setProjectName( projectInfo.getProject().getProjectName() );
     }
 
-    private void loadProjectInfo() {
-        libraryService.call( new RemoteCallback<List<FolderItem>>() {
-            @Override
-            public void callback( List<FolderItem> assetsList ) {
-                assets = assetsList;
-                loadProject( assets );
-            }
-        } ).getProjectAssets( project );
+    public void refreshOnFocus( @Observes final PlaceGainFocusEvent placeGainFocusEvent ) {
+        final PlaceRequest place = placeGainFocusEvent.getPlace();
+        if ( projectInfo != null && place.getIdentifier().equals( LibraryPlaces.PROJECT_SCREEN ) ) {
+            loadProjectInfo();
+        }
     }
 
-    private void loadProject( List<FolderItem> assets ) {
-        setupAssets( assets );
-        setupToolBar();
-    }
-
-    private void setupToolBar() {
-        libraryBreadcrumbs.setupLibraryBreadCrumbsForProject( project );
-    }
-
-    private void setupAssets( List<FolderItem> assets ) {
-        view.clearAssets();
-
-        assets.stream().forEach( asset -> {
-            if ( !asset.getType().equals( FolderItemType.FOLDER ) ) {
-                final ClientResourceType assetResourceType = assetClassifier.findResourceType( asset );
-                final String assetName = Utils.getBaseFileName( asset.getFileName(), assetResourceType.getSuffix() );
-
-                view.addAsset( assetName,
-                               assetResourceType.getDescription(),
-                               assetResourceType.getIcon(),
-                               detailsCommand( asset ),
-                               selectCommand( assetName, ( (Path) asset.getItem() ) ) );
-            }
-        } );
-    }
-
-    Command selectCommand( final String assetName,
-                           final Path assetPath ) {
-        return () -> {
-            placeManager.goTo( LibraryPlaces.ASSET_PERSPECTIVE );
-            assetDetailEvent.fire( new AssetDetailEvent( project, assetPath ) );
-        };
-    }
-
-    boolean hasAccessToPerspective( String perspectiveId ) {
-        ResourceRef resourceRef = new ResourceRef( perspectiveId, ActivityResourceType.PERSPECTIVE );
-        return authorizationManager.authorize( resourceRef, sessionInfo.getIdentity() );
-    }
-
-    private Command detailsCommand( FolderItem asset ) {
-        // TODO Show asset details
-        return () -> {};
-    }
-
-    public void updateAssetsBy( String filter ) {
+    public void updateAssetsBy( final String filter ) {
         if ( assets != null ) {
-            List<FolderItem> filteredAssets = filterAssets( assets, filter );
+            List<AssetInfo> filteredAssets = filterAssets( assets, filter );
             setupAssets( filteredAssets );
         }
     }
 
-    List<FolderItem> filterAssets( final List<FolderItem> assets,
-                                   final String filter ) {
+    public void goToSettings() {
+        assetDetailEvent.fire( new AssetDetailEvent( projectInfo, null ) );
+    }
+
+    public String getProjectName() {
+        return projectInfo.getProject().getProjectName();
+    }
+
+    List<AssetInfo> filterAssets( final List<AssetInfo> assets,
+                                  final String filter ) {
         return assets.stream()
-                .filter( a -> a.getFileName().toUpperCase().startsWith( filter.toUpperCase() ) )
+                .filter( a -> a.getFolderItem().getFileName().toUpperCase().startsWith( filter.toUpperCase() ) )
                 .collect( Collectors.toList() );
     }
 
-    public void newAsset() {
-        if ( hasAccessToPerspective( LibraryPlaces.AUTHORING ) ) {
-            placeManager.goTo( new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
-            libraryContextSwitchEvent.fire( new LibraryContextSwitchEvent( LibraryContextSwitchEvent.EventType.PROJECT_SELECTED,
-                                                                           project.getRootPath(),
-                                                                           () -> libraryBreadcrumbs.setupLibraryBreadCrumbsForProject( project ) ) );
-        } else {
-            view.noRightsPopup();
-        }
+    String getLastModifiedTime( final AssetInfo asset ) {
+        return ts.format( LibraryConstants.LastModified ) + " " + SocialDateFormatter.format( asset.getLastModifiedTime() );
+    }
+
+    String getCreatedTime( final AssetInfo asset ) {
+        return ts.format( LibraryConstants.Created ) + " " + SocialDateFormatter.format( asset.getCreatedTime() );
+    }
+
+    Command selectCommand( final Path assetPath ) {
+        return () -> libraryPlaces.goToAsset( projectInfo, assetPath );
+    }
+
+    Command detailsCommand( final Path assetPath ) {
+        return selectCommand( assetPath );
+    }
+
+    private void loadProjectInfo() {
+        busyIndicatorView.showBusyIndicator( ts.getTranslation( LibraryConstants.LoadingAssets ) );
+        libraryService.call( new RemoteCallback<List<AssetInfo>>() {
+            @Override
+            public void callback( List<AssetInfo> assetsList ) {
+                assets = assetsList;
+                loadProject( assets );
+                busyIndicatorView.hideBusyIndicator();
+            }
+        } ).getProjectAssets( projectInfo.getProject() );
+    }
+
+    private void loadProject( List<AssetInfo> assets ) {
+        setupAssets( assets );
+    }
+
+    private void setupAssets( List<AssetInfo> assets ) {
+        view.clearAssets();
+
+        assets.stream().forEach( asset -> {
+            if ( !asset.getFolderItem().getType().equals( FolderItemType.FOLDER ) ) {
+                final ClientResourceType assetResourceType = assetClassifier.findResourceType( asset.getFolderItem() );
+                final String assetName = Utils.getBaseFileName( asset.getFolderItem().getFileName(), assetResourceType.getSuffix() );
+
+                view.addAsset( assetName,
+                               getAssetPath( asset ),
+                               assetResourceType.getDescription(),
+                               assetResourceType.getIcon(),
+                               getLastModifiedTime( asset ),
+                               getCreatedTime( asset ),
+                               detailsCommand( (Path) asset.getFolderItem().getItem() ),
+                               selectCommand( (Path) asset.getFolderItem().getItem() ) );
+            }
+        } );
+    }
+
+    private String getAssetPath( final AssetInfo asset ) {
+        final String fullPath = ( (Path) asset.getFolderItem().getItem() ).toURI();
+        final String projectRootPath = projectInfo.getProject().getRootPath().toURI();
+        final String relativeAssetPath = fullPath.substring( projectRootPath.length() + 1 );
+        final String decodedRelativeAssetPath = URIUtil.decode( relativeAssetPath );
+
+        return decodedRelativeAssetPath;
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return ts.getTranslation( LibraryConstants.LibraryScreen );
+        return "Project Screen";
     }
 
     @WorkbenchPartView

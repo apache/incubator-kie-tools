@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.resources.i18n.GuvnorDefaultEditorConstants;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
@@ -111,6 +112,7 @@ public class NewFileUploader
                                 busyIndicatorView.hideBusyIndicator();
                                 presenter.complete();
                                 notifySuccess();
+                                newResourceSuccessEvent.fire( new NewResourceSuccessEvent( path ) );
                                 placeManager.goTo( newPath );
                             }
 

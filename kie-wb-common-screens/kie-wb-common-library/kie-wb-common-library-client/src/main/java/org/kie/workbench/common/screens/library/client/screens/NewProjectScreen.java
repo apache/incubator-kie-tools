@@ -16,24 +16,19 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
-import java.util.HashMap;
-import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
+import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.client.monitor.LibraryMonitor;
+import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.util.LibraryBreadcrumbs;
-import org.kie.workbench.common.screens.library.client.util.LibraryParameters;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -43,128 +38,91 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
-@WorkbenchScreen( identifier = "NewProjectScreen" )
+@WorkbenchScreen(identifier = LibraryPlaces.NEW_PROJECT_SCREEN)
 public class NewProjectScreen {
 
     public interface View extends UberElement<NewProjectScreen> {
 
-        void addOrganizationUnit( String ou );
-
-        void clearOrganizationUnits();
-
-        void setOrganizationUnitSelected( String identifier );
-
-        void setOUAlias( String ouAlias );
-
-        String getOrganizationUnitSelected();
     }
 
-    @Inject
-    Caller<LibraryService> libraryService;
+    private Caller<LibraryService> libraryService;
 
-    @Inject
     private PlaceManager placeManager;
 
-    @Inject
     private BusyIndicatorView busyIndicatorView;
 
-    @Inject
     private Event<NotificationEvent> notificationEvent;
 
-    @Inject
-    private LibraryBreadcrumbs breadcrumbs;
+    private LibraryPlaces libraryPlaces;
 
-    @Inject
     private View view;
 
-    @Inject
     private TranslationService ts;
 
-    @Inject
-    private Event<LibraryContextSwitchEvent> libraryContextSwitchEvent;
-
-    @Inject
-    private AuthorizationManager authorizationManager;
-
-    @Inject
     private SessionInfo sessionInfo;
 
-    @Inject
-    private LibraryMonitor libraryMonitor;
+    private Event<NewProjectEvent> newProjectEvent;
 
-    private DefaultPlaceRequest backPlaceRequest;
+    LibraryInfo libraryInfo;
+
+    @Inject
+    public NewProjectScreen( final Caller<LibraryService> libraryService,
+                             final PlaceManager placeManager,
+                             final BusyIndicatorView busyIndicatorView,
+                             final Event<NotificationEvent> notificationEvent,
+                             final LibraryPlaces libraryPlaces,
+                             final View view,
+                             final TranslationService ts,
+                             final SessionInfo sessionInfo,
+                             final Event<NewProjectEvent> newProjectEvent ) {
+        this.libraryService = libraryService;
+        this.placeManager = placeManager;
+        this.busyIndicatorView = busyIndicatorView;
+        this.notificationEvent = notificationEvent;
+        this.libraryPlaces = libraryPlaces;
+        this.view = view;
+        this.ts = ts;
+        this.sessionInfo = sessionInfo;
+        this.newProjectEvent = newProjectEvent;
+    }
 
     @OnStartup
-    public void onStartup( final PlaceRequest place ) {
-        setupBreadCrumbs();
-        setupBackPlaceRequest( place );
-        loadSelectedOU( place );
-    }
-
-    private void setupBreadCrumbs() {
-        breadcrumbs.setupLibraryBreadCrumbs();
-    }
-
-    private void loadSelectedOU( PlaceRequest place ) {
-        setOrganizationUnitSelected( place.getParameter( LibraryParameters.SELECTED_OU, "" ) );
-        load();
-    }
-
-    void load() {
+    public void load() {
+        view.init( this );
         libraryService.call( new RemoteCallback<LibraryInfo>() {
             @Override
-            public void callback( LibraryInfo lib ) {
-                view.setOUAlias( lib.getOuAlias() );
-                clearOrganizationUnits();
-                lib.getOrganizationUnits()
-                        .forEach( ou -> addOrganizationUnit( ou.getIdentifier() ) );
-                if ( view.getOrganizationUnitSelected().isEmpty() ) {
-                    setOrganizationUnitSelected( lib.getSelectedOrganizationUnit().getIdentifier() );
-                }
+            public void callback( LibraryInfo libraryInfo ) {
+                NewProjectScreen.this.libraryInfo = libraryInfo;
             }
-        } ).getDefaultLibraryInfo();
+        } ).getLibraryInfo( libraryPlaces.getSelectedRepository() );
     }
 
-    private void addOrganizationUnit( String identifier ) {
-        view.addOrganizationUnit( identifier );
-    }
-
-    private void clearOrganizationUnits() {
-        view.clearOrganizationUnits();
-    }
-
-    private void setOrganizationUnitSelected( String identifier ) {
-        view.setOrganizationUnitSelected( identifier );
-    }
-
-    private void setupBackPlaceRequest( PlaceRequest place ) {
-        String placeTarget = place.getParameter( LibraryParameters.BACK_PLACE, LibraryPlaces.EMPTY_LIBRARY_SCREEN );
-        this.backPlaceRequest = new DefaultPlaceRequest( placeTarget );
-
-    }
-
-    public void back() {
-        placeManager.goTo( backPlaceRequest );
+    public void cancel() {
+        libraryPlaces.goToLibrary();
+        placeManager.closePlace( LibraryPlaces.NEW_PROJECT_SCREEN );
     }
 
     public void createProject( String projectName ) {
         busyIndicatorView.showBusyIndicator( ts.getTranslation( LibraryConstants.NewProjectScreen_Saving ) );
         libraryService.call( getSuccessCallback(),
-                             getErrorCallBack() ).newProject( projectName,
-                                                              view.getOrganizationUnitSelected(),
-                                                              getBaseURL() );
+                             getErrorCallBack() ).createProject( projectName,
+                                                                 libraryPlaces.getSelectedOrganizationalUnit().getIdentifier(),
+                                                                 getBaseURL() );
     }
 
-    String getBaseURL() {
-        final String url = GWT.getModuleBaseURL();
-        final String baseUrl = url.replace( GWT.getModuleName() + "/", "" );
-        return baseUrl;
+    private RemoteCallback<KieProject> getSuccessCallback() {
+        return project -> {
+            newProjectEvent.fire( new NewProjectEvent( project,
+                                                       sessionInfo.getId(),
+                                                       sessionInfo.getIdentity().getIdentifier() ) );
+            hideLoadingBox();
+            notifySuccess();
+            goToProject( project );
+            placeManager.closePlace( LibraryPlaces.NEW_PROJECT_SCREEN );
+        };
     }
 
     private ErrorCallback<?> getErrorCallBack() {
@@ -177,26 +135,18 @@ public class NewProjectScreen {
         };
     }
 
-    private void hideLoadingBox() {
-        busyIndicatorView.hideBusyIndicator();
+    String getBaseURL() {
+        final String url = GWT.getModuleBaseURL();
+        final String baseUrl = url.replace( GWT.getModuleName() + "/", "" );
+        return baseUrl;
     }
 
-    RemoteCallback<KieProject> getSuccessCallback() {
-        return project -> {
-            libraryMonitor.setThereIsAtLeastOneProjectAccessible( true );
-            hideLoadingBox();
-            notifySuccess();
-            goToProject( project );
-        };
-    }
-
-    void goToProject( KieProject project ) {
-        setupBreadCrumbs( project );
-        openProject( project );
-    }
-
-    private void setupBreadCrumbs( KieProject project ) {
-        breadcrumbs.setupAuthoringBreadCrumbsForProject( project.getProjectName() );
+    private void goToProject( KieProject project ) {
+        final ProjectInfo projectInfo = new ProjectInfo( libraryPlaces.getSelectedOrganizationalUnit(),
+                                                         libraryPlaces.getSelectedRepository(),
+                                                         libraryInfo.getSelectedBranch(),
+                                                         project );
+        libraryPlaces.goToProject( projectInfo );
     }
 
     private void notifySuccess() {
@@ -204,16 +154,8 @@ public class NewProjectScreen {
                                                        NotificationEvent.NotificationType.SUCCESS ) );
     }
 
-    void openProject( KieProject project ) {
-        final Map<String, String> params = new HashMap<>();
-        params.put( "projectName", project.getProjectName() );
-        params.put( "projectPath", project.getIdentifier() );
-        placeManager.goTo( new DefaultPlaceRequest( LibraryPlaces.PROJECT_SCREEN, params ) );
-    }
-
-    @PostConstruct
-    public void setup() {
-        view.init( this );
+    private void hideLoadingBox() {
+        busyIndicatorView.hideBusyIndicator();
     }
 
     @WorkbenchPartTitle
@@ -225,5 +167,4 @@ public class NewProjectScreen {
     public UberElement<NewProjectScreen> getView() {
         return view;
     }
-
 }

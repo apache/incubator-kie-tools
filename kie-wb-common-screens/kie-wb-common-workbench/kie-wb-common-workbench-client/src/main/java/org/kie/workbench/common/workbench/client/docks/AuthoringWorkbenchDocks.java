@@ -94,9 +94,7 @@ public class AuthoringWorkbenchDocks {
                 uberfireDocks.remove( plannerDock );
             }
 
-            if ( projectExplorerDock != null ) {
-                uberfireDocks.expand( projectExplorerDock );
-            }
+            expandProjectExplorer();
         }
     }
 
@@ -131,7 +129,7 @@ public class AuthoringWorkbenchDocks {
         }
     }
 
-    private boolean isAuthoringActive() {
+    public boolean isAuthoringActive() {
         return authoringPerspectiveIdentifier != null &&
                 authoringPerspectiveIdentifier.equals( currentPerspectiveIdentifier );
     }
@@ -160,5 +158,21 @@ public class AuthoringWorkbenchDocks {
 
     private boolean shouldDisplayWestDocks( DataModelerContext context ) {
         return context != null && context.getEditionMode() == DataModelerContext.EditionMode.GRAPHICAL_MODE;
+    }
+
+    public void hide() {
+        uberfireDocks.disable( UberfireDockPosition.WEST, authoringPerspectiveIdentifier );
+        enableDocks( false );
+    }
+
+    public void show() {
+        uberfireDocks.enable( UberfireDockPosition.WEST, authoringPerspectiveIdentifier );
+        handleDocks();
+    }
+
+    public void expandProjectExplorer() {
+        if ( projectExplorerDock != null ) {
+            uberfireDocks.expand( projectExplorerDock );
+        }
     }
 }

@@ -18,64 +18,46 @@ package org.kie.workbench.common.screens.library.client.perspective;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.kie.workbench.common.screens.library.client.monitor.LibraryMonitor;
-import org.kie.workbench.common.screens.library.client.util.LibraryDocks;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.docks.UberfireDocks;
-import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.ConditionalPlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
+import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "LibraryPerspective")
 public class LibraryPerspective {
 
-    private PlaceManager placeManager;
+    private LibraryPlaces libraryPlaces;
 
-    private UberfireDocks uberfireDocks;
-
-    private LibraryDocks libraryDocks;
-
-    private LibraryMonitor libraryMonitor;
+    private PerspectiveDefinition perspectiveDefinition;
 
     public LibraryPerspective() {
     }
 
     @Inject
-    public LibraryPerspective( final PlaceManager placeManager,
-                               final UberfireDocks uberfireDocks,
-                               final LibraryDocks libraryDocks,
-                               final LibraryMonitor libraryMonitor ) {
-        this.placeManager = placeManager;
-        this.uberfireDocks = uberfireDocks;
-        this.libraryDocks = libraryDocks;
-        this.libraryMonitor = libraryMonitor;
-    }
-
-    @AfterInitialization
-    public void setupDocks() {
-        libraryDocks.start();
+    public LibraryPerspective( final LibraryPlaces libraryPlaces ) {
+        this.libraryPlaces = libraryPlaces;
     }
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition perspectiveDefinition = new PerspectiveDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
+        perspectiveDefinition = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         perspectiveDefinition.setName( "Library Perspective" );
-        perspectiveDefinition.getRoot().addPart( new PartDefinitionImpl( getLibraryPlaceRequest() ) );
 
         return perspectiveDefinition;
     }
 
-    PlaceRequest getLibraryPlaceRequest() {
-        final DefaultPlaceRequest emptyLibraryPlaceRequest = new DefaultPlaceRequest( LibraryPlaces.EMPTY_LIBRARY_SCREEN );
-        return new ConditionalPlaceRequest( LibraryPlaces.LIBRARY_SCREEN ).when( p -> libraryMonitor.thereIsAtLeastOneProjectAccessible() ).orElse( emptyLibraryPlaceRequest );
+    @OnOpen
+    public void onOpen() {
+        libraryPlaces.refresh();
+    }
+
+    public PanelDefinition getRootPanel() {
+        return perspectiveDefinition.getRoot();
     }
 }

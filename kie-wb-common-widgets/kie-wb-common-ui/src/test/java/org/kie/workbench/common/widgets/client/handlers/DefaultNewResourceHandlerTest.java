@@ -30,6 +30,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.mockito.ArgumentCaptor;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -54,17 +56,27 @@ public class DefaultNewResourceHandlerTest {
     private Caller<ValidationService> validationServiceCaller;
     private PlaceManager placeManager;
     private Event<NotificationEvent> notificationEvent;
+    private Event<NewResourceSuccessEvent> newResourceSuccessEventMock;
     private BusyIndicatorView busyIndicatorView;
 
     @Before
     public void setup() {
         context = mock( ProjectContext.class );
         projectService = mock( KieProjectService.class );
-        projectServiceCaller = new CallerMock<KieProjectService>( projectService );
+        projectServiceCaller = new CallerMock<>( projectService );
         validationService = mock( ValidationService.class );
-        validationServiceCaller = new CallerMock<ValidationService>( validationService );
+        validationServiceCaller = new CallerMock<>( validationService );
         placeManager = mock( PlaceManager.class );
-        notificationEvent = new EventSourceMock<NotificationEvent>();
+        notificationEvent = new EventSourceMock<NotificationEvent>() {
+            @Override
+            public void fire( final NotificationEvent event ) {
+            }
+        };
+        newResourceSuccessEventMock = spy( new EventSourceMock<NewResourceSuccessEvent>() {
+            @Override
+            public void fire( final NewResourceSuccessEvent event ) {
+            }
+        } );
         busyIndicatorView = mock( BusyIndicatorView.class );
 
         handler = new DefaultNewResourceHandler( context,
@@ -73,6 +85,10 @@ public class DefaultNewResourceHandlerTest {
                                                  placeManager,
                                                  notificationEvent,
                                                  busyIndicatorView ) {
+            {
+                newResourceSuccessEvent = newResourceSuccessEventMock;
+            }
+
             @Override
             public String getDescription() {
                 return "mock";
@@ -175,4 +191,19 @@ public class DefaultNewResourceHandlerTest {
                 times( 1 ) ).show( handler );
     }
 
+    @Test
+    public void testCreateSuccessCallback() {
+        final ArgumentCaptor<Path> pathArgumentCaptor = ArgumentCaptor.forClass( Path.class );
+        final NewResourcePresenter presenter = mock( NewResourcePresenter.class );
+
+        final Path path = mock( Path.class );
+        handler.getSuccessCallback( presenter ).callback( path );
+
+        verify( busyIndicatorView, times( 1 ) ).hideBusyIndicator();
+        verify( presenter, times( 1 ) ).complete();
+        verify( newResourceSuccessEventMock, times( 1 ) ).fire( any( NewResourceSuccessEvent.class ) );
+        verify( placeManager, times( 1 ) ).goTo( pathArgumentCaptor.capture() );
+
+        assertEquals( path, pathArgumentCaptor.getValue() );
+    }
 }

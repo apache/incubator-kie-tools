@@ -17,6 +17,9 @@ package org.kie.workbench.common.screens.library.api;
 
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,64 +28,50 @@ import java.util.Set;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
+@Portable
 public class LibraryInfo {
 
-    private OrganizationalUnit defaultOrganizationUnit;
-    private OrganizationalUnit selectedOrganizationUnit;
+    private String selectedBranch;
     private Set<Project> projects = new HashSet<>();
-    private Collection<OrganizationalUnit> organizationUnits = new ArrayList<>();
-    private String ouAlias;
 
-    public LibraryInfo() {
+    public LibraryInfo( @MapsTo( "selectedBranch" ) final String selectedBranch,
+                        @MapsTo( "projects" ) final Set<Project> projects ) {
+        this.selectedBranch = checkNotNull( "selectedBranch", selectedBranch );
+        this.projects = checkNotNull( "projects", projects );
     }
 
-    public LibraryInfo( OrganizationalUnit defaultOrganizationUnit,
-                        OrganizationalUnit selectedOrganizationUnit,
-                        Set<Project> projects,
-                        Collection<OrganizationalUnit> organizationUnits,
-                        String ouAlias) {
-        checkNotNull( "defaultOrganizationUnit", defaultOrganizationUnit );
-        checkNotNull( "selectedOrganizationUnit", selectedOrganizationUnit );
-        checkNotNull( "projects", projects );
-        checkNotNull( "organizationUnits", organizationUnits );
-        checkNotNull( "ouAlias", ouAlias );
-
-        this.defaultOrganizationUnit = defaultOrganizationUnit;
-        this.selectedOrganizationUnit = selectedOrganizationUnit;
-        this.projects = projects;
-        this.organizationUnits = organizationUnits;
-        this.ouAlias = ouAlias;
-    }
-
-    public OrganizationalUnit getDefaultOrganizationUnit() {
-        return defaultOrganizationUnit;
+    public String getSelectedBranch() {
+        return selectedBranch;
     }
 
     public Set<Project> getProjects() {
         return projects;
     }
 
-    public Collection<OrganizationalUnit> getOrganizationUnits() {
-        return organizationUnits;
+    @Override
+    public boolean equals( final Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof LibraryInfo ) ) {
+            return false;
+        }
+
+        final LibraryInfo that = (LibraryInfo) o;
+
+        if ( getSelectedBranch() != null ? !getSelectedBranch().equals( that.getSelectedBranch() ) : that.getSelectedBranch() != null ) {
+            return false;
+        }
+        return !( getProjects() != null ? !getProjects().equals( that.getProjects() ) : that.getProjects() != null );
+
     }
 
-    public boolean isFullLibrary() {
-        return hasDefaultOu() && !getProjects().isEmpty();
-    }
-
-    public boolean hasProjects() {
-        return getProjects() != null && !getProjects().isEmpty();
-    }
-
-    public boolean hasDefaultOu() {
-        return defaultOrganizationUnit != null;
-    }
-
-    public OrganizationalUnit getSelectedOrganizationUnit() {
-        return selectedOrganizationUnit;
-    }
-
-    public String getOuAlias() {
-        return ouAlias;
+    @Override
+    public int hashCode() {
+        int result = getSelectedBranch() != null ? getSelectedBranch().hashCode() : 0;
+        result = ~~result;
+        result = 31 * result + ( getProjects() != null ? getProjects().hashCode() : 0 );
+        result = ~~result;
+        return result;
     }
 }

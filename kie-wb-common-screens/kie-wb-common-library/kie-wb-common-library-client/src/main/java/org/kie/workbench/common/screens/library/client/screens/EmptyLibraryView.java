@@ -15,78 +15,88 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import com.google.gwt.user.client.Event;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Heading;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.SinkNative;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.util.InfoPopup;
-
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.kie.workbench.common.screens.library.client.widgets.ImportExampleButtonWidget;
 
 @Templated
-public class EmptyLibraryView implements EmptyLibraryScreen.View, IsElement {
+public class EmptyLibraryView implements EmptyLibraryScreen.View,
+                                         IsElement {
 
     private EmptyLibraryScreen presenter;
 
     @Inject
-    @DataField
-    private Button newProject;
+    private TranslationService ts;
 
     @Inject
-    @DataField
-    private Button example;
+    private ManagedInstance<ImportExampleButtonWidget> importExampleButtonWidgets;
 
-    @Named( "h1" )
     @Inject
+    @Named("h1")
     @DataField
     private Heading welcome;
 
     @Inject
-    @DataField
-    private Anchor newProjectLink;
+    @DataField("import-container")
+    private Div importContainer;
 
     @Inject
-    TranslationService ts;
+    @DataField("new-project-link")
+    Anchor newProjectLink;
+
+    @Inject
+    @DataField("new-project")
+    Button newProject;
 
     @Override
     public void init( EmptyLibraryScreen presenter ) {
         this.presenter = presenter;
     }
 
-    @SinkNative( Event.ONCLICK )
-    @EventHandler( "newProject" )
+    @Override
+    public void setup( String username ) {
+        welcome.setInnerHTML( ts.getTranslation( LibraryConstants.EmptyLibraryView_Welcome ) + " " + username + "." );
+    }
+
+    @Override
+    public void addProjectToImport( final ExampleProject exampleProject ) {
+        final ImportExampleButtonWidget importExampleButton = importExampleButtonWidgets.get();
+        importExampleButton.init( exampleProject.getName(),
+                                  exampleProject.getDescription(),
+                                  () -> presenter.importProject( exampleProject ) );
+
+        importContainer.appendChild( importExampleButton.getElement() );
+    }
+
+    @Override
+    public void clearImportProjectsContainer() {
+        importContainer.setInnerHTML( "" );
+    }
+
+    @SinkNative(Event.ONCLICK)
+    @EventHandler("new-project")
     public void newProject( Event e ) {
         presenter.newProject();
     }
 
-    @SinkNative( Event.ONCLICK )
-    @EventHandler( "newProjectLink" )
+    @SinkNative(Event.ONCLICK)
+    @EventHandler("new-project-link")
     public void newProjectLink( Event e ) {
         presenter.newProject();
-    }
-
-    @SinkNative( Event.ONCLICK )
-    @EventHandler( "example" )
-    public void example( Event e ) {
-        presenter.importExample();
-    }
-
-    @Override
-    public void setup( String username ) {
-        welcome.setInnerHTML(
-                ts.getTranslation( LibraryConstants.EmptyLibraryView_Welcome ) + " " + username + "." );
-    }
-
-    @Override
-    public void openNoRightsPopup() {
-        InfoPopup.generate( ts.getTranslation( LibraryConstants.Error_NoAccessRights ) );
     }
 }

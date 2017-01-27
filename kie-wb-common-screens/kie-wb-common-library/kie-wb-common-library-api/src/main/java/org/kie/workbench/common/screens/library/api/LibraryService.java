@@ -16,29 +16,41 @@
 
 package org.kie.workbench.common.screens.library.api;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.services.shared.project.KieProject;
 
 @Remote
 public interface LibraryService {
 
-    OrganizationalUnit getDefaultOrganizationalUnit();
+    String LAST_MODIFIED_TIME = "lastModifiedTime";
+    String CREATED_TIME = "creationTime";
 
-    LibraryInfo getDefaultLibraryInfo();
+    OrganizationalUnitRepositoryInfo getDefaultOrganizationalUnitRepositoryInfo();
 
-    LibraryInfo getLibraryInfo( String selectedOuIdentifier );
+    OrganizationalUnitRepositoryInfo getOrganizationalUnitRepositoryInfo( OrganizationalUnit selectedOrganizationalUnit );
 
-    Collection<OrganizationalUnit> getOrganizationalUnits();
+    LibraryInfo getLibraryInfo( Repository selectedRepository );
 
-    KieProject newProject( String projectName, String selectOu, String baseURL );
+    KieProject createProject( String projectName, String selectOu, String baseURL );
 
     Boolean thereIsAProjectInTheWorkbench();
 
-    List<FolderItem> getProjectAssets( Project project );
+    List<AssetInfo> getProjectAssets( Project project );
+
+    Boolean hasProjects( Repository repository );
+
+    Boolean hasAssets( Project project );
+
+    Set<ExampleProject> getExampleProjects();
+
+    Project importProject( OrganizationalUnit organizationalUnit,
+                           Repository repository,
+                           ExampleProject exampleProject );
 }

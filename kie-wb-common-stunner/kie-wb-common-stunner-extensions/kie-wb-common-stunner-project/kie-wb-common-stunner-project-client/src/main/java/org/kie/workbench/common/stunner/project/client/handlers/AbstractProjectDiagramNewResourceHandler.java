@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
@@ -80,6 +81,7 @@ public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientR
                                               BusyPopup.close();
                                               presenter.complete();
                                               notifySuccess();
+                                              newResourceSuccessEvent.fire( new NewResourceSuccessEvent( path ) );
                                               PlaceRequest place = new PathPlaceRequest(path,
                                                                                         getEditorIdentifier());
                                               placeManager.goTo(place);

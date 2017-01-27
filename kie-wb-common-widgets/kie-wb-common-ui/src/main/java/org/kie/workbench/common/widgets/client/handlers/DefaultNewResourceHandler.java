@@ -17,14 +17,12 @@ package org.kie.workbench.common.widgets.client.handlers;
 
 import java.util.LinkedList;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -35,7 +33,6 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -63,6 +60,9 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
 
     @Inject
     protected Event<NotificationEvent> notificationEvent;
+
+    @Inject
+    protected Event<NewResourceSuccessEvent> newResourceSuccessEvent;
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
@@ -159,8 +159,8 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
                 busyIndicatorView.hideBusyIndicator();
                 presenter.complete();
                 notifySuccess();
-                final PlaceRequest place = new PathPlaceRequest( path );
-                placeManager.goTo( place );
+                newResourceSuccessEvent.fire( new NewResourceSuccessEvent( path ) );
+                placeManager.goTo( path );
             }
 
         };

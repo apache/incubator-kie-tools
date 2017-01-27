@@ -231,6 +231,42 @@ public class ExplorerServiceHelper {
                                   getPathSegments( basePath ) );
     }
 
+    public boolean hasAssets( final Package pkg ) {
+        if ( pkg == null ) {
+            return false;
+        }
+
+        if ( hasAssets( pkg.getPackageMainSrcPath() )
+                || hasAssets( pkg.getPackageTestSrcPath() )
+                || hasAssets( pkg.getPackageMainResourcesPath() )
+                || hasAssets( pkg.getPackageTestResourcesPath() ) ) {
+            return true;
+        }
+
+        final Set<Package> childPackages = projectService.resolvePackages( pkg );
+        for ( final Package childPackage : childPackages ) {
+            if ( hasAssets( childPackage ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    boolean hasAssets( final Path packagePath ) {
+        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( packagePath );
+
+        if ( Files.exists( nioPackagePath ) ) {
+            final DirectoryStream<org.uberfire.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPackagePath,
+                                                                                                            regularFileFilter );
+            for ( org.uberfire.java.nio.file.Path nioPath : nioPaths ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public List<FolderItem> getAssetsRecursively( final Package pkg,
                                                   final ActiveOptions options ) {
         return getItems( pkg, options ).stream().flatMap( ( FolderItem item ) -> {

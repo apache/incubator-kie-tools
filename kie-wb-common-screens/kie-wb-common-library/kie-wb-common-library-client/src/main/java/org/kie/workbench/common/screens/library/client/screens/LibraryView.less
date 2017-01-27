@@ -13,7 +13,7 @@
     //Circle Icons
     // Includes :hover
     .circle-icon-kie {
-        background-color: @alert-info-bg;
+        background-color: @color-pf-black-150;
         font-size: 15px;
         font-weight: 400;
         height: 2.5em;
@@ -152,11 +152,17 @@
         box-shadow: none;
         min-width: 10em;
         padding: 1em;
+        height: 10em;
+        width: 15em;
+        white-space: normal;
         &:hover .circle-icon-kie {
             background-color: @color-pf-black-600;
             color: @color-pf-white;
         }
-
+        .text {
+            position: absolute;
+            width: 13em;
+        }
     }
 
     // Add this to the .fa-code-fork icon to make the process-flow icon
@@ -172,6 +178,10 @@
     // A link to the right side of a card's title
     .card-title-link-kie {
         margin-left: .5em;
+    }
+
+    .card-pf {
+        margin: 0 3px 3px 3px
     }
 
     .card-pf-heading-link-kie {
@@ -226,24 +236,27 @@
             width: calc(~'70% - 20px'); // IE9 fallback
         }
         .list-view-pf .list-group-item-text {
-            -ms-flex: 0 0 calc(~'30% - 20px'); // IE10 fallback
-            flex:     0 0 calc(~'30% - 20px');
-            width: calc(~'30% - 20px'); // IE9 fallback
+            -ms-flex: 0 0 calc(~'25% - 20px'); // IE10 fallback
+            flex:     0 0 calc(~'25% - 20px');
+            width: calc(~'25% - 20px'); // IE9 fallback
         }
     }
 
     //selector length needed to override specificity
     // Adjust size of the circle so that the icon fits nicely
-    .list-view-pf-left .fa.list-view-pf-icon-sm {
+    .list-view-pf-left .fa.list-view-pf-icon-sm,
+    .circle-icon-kie {
         height: 2em;
         line-height: 2em;
         width: 2em;
         display: flex;
         justify-content: center;
         align-items: center;
+        margin: .5em auto;
     }
 
-    .list-view-pf-left .fa.list-view-pf-icon-sm img {
+    .list-view-pf-left .fa.list-view-pf-icon-sm img,
+    .circle-icon-kie img {
         width: 1em;
         height: auto;
     }
@@ -254,7 +267,6 @@
         align-items: center;
     }
 
-    /* hack by ederign */
     .dropdown-kebab-pf {
         margin-left: 0 !important;
     }
@@ -267,5 +279,33 @@
     .normal-font {
         font-weight: normal;
         /* i cannot override flex size check with designers*/
+    }
+
+    .list-group-item,
+    a {
+        cursor: pointer;
+    }
+
+    .resource-handler-container {
+        max-width: 45em;
+        margin: 3em auto;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .resource-handler-container.retracted {
+        height: 10em;
+    }
+
+    .list-item-container.selected {
+        background-color: @color-pf-black-150;
+    }
+
+    .form-group.actions {
+        text-align: right;
+    }
+
+    .list-view-pf-view {
+        margin-top: 0;
     }
 }

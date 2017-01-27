@@ -15,15 +15,16 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-import javax.inject.Inject;
-
 @Templated
-public class ProjectsDetailView implements ProjectsDetailScreen.View, IsElement {
+public class ProjectsDetailView implements ProjectsDetailScreen.View,
+                                           IsElement {
 
     private ProjectsDetailScreen presenter;
 

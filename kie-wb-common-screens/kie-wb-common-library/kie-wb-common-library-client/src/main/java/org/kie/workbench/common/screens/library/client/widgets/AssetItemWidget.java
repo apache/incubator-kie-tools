@@ -25,7 +25,6 @@ import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Node;
 import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.TemplateUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -37,44 +36,58 @@ import org.uberfire.mvp.Command;
 public class AssetItemWidget implements IsElement {
 
     @Inject
-    @DataField
+    @DataField("asset-container")
+    Div assetContainer;
+
+    @Inject
+    @DataField("asset-icon")
+    Div assetIcon;
+
+    @Inject
+    @DataField("asset-name")
     Anchor assetName;
 
     @Inject
-    @DataField
+    @DataField("asset-path")
+    Span assetPath;
+
+    @Inject
+    @DataField("asset-type")
     Span assetType;
 
     @Inject
-    @DataField
-    Div assetListItem;
+    @DataField("asset-last-modified-date")
+    Span assetLastModifiedDate;
 
     @Inject
-    @DataField
-    Div assetListItemKebab;
+    @DataField("asset-created-date")
+    Span assetCreatedDate;
 
-    @Inject
-    @DataField
-    Div assetListItemText;
-
-    @Inject
-    @DataField
-    Div assetListItemIcon;
-
-    public void init( String assetName, String assetType, IsWidget assetIcon, Command details, Command select ) {
-        if ( assetIcon != null ) {
-            HTMLElement assetIconHtml = TemplateUtil.<HTMLElement>nativeCast( assetIcon.asWidget().getElement() );
+    public void init( final String name,
+                      final String path,
+                      final String type,
+                      final IsWidget icon,
+                      final String lastModifiedDate,
+                      final String createdDate,
+                      final Command details,
+                      final Command select ) {
+        if ( icon != null ) {
+            HTMLElement assetIconHtml = TemplateUtil.<HTMLElement>nativeCast( icon.asWidget().getElement() );
             final Node clonedAssetIconHtml = assetIconHtml.cloneNode( true );
-            this.assetListItemIcon.appendChild( clonedAssetIconHtml );
+            this.assetIcon.appendChild( clonedAssetIconHtml );
         }
 
-        this.assetName.setTextContent( assetName );
+        this.assetName.setTextContent( name );
         this.assetName.setOnclick( e -> {
             e.stopImmediatePropagation();
             select.execute();
         } );
 
-        this.assetType.setTextContent( assetType );
+        this.assetPath.setTextContent( path );
+        this.assetType.setTextContent( type );
+        this.assetLastModifiedDate.setTextContent( lastModifiedDate );
+        this.assetCreatedDate.setTextContent( createdDate );
 
-        assetListItem.setOnclick( e -> details.execute() );
+        assetContainer.setOnclick( e -> details.execute() );
     }
 }

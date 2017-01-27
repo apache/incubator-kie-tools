@@ -14,25 +14,26 @@
   ~ limitations under the License.
   -->
 
-<div class="list-group-item" data-field="assetListItem">
+<div class="list-group-item asset-container" data-field="asset-container">
     <div class="list-view-pf-main-info">
         <div class="list-view-pf-left">
-            <div class="fa list-view-pf-icon-sm" data-field="assetListItemIcon"></div>
+            <div class="fa list-view-pf-icon-sm" data-field="asset-icon"></div>
         </div>
         <div class="list-view-pf-body">
             <div class="list-view-pf-description">
-                <div class="list-group-item-text bold-font" data-field="assetListItemHeading">
-                    <a data-field="assetName">
-                    </a>
+                <div class="list-group-item-text bold-font">
+                    <a data-field="asset-name"></a>
+                    <span class="asset-path normal-font" data-field="asset-path"></span>
                 </div>
-                <div class="list-group-item-text" data-field="assetListItemType">
-                    <span data-field="assetType">
-                    </span>
+                <div class="list-group-item-text">
+                    <span data-field="asset-type"></span>
                 </div>
-                <div class="list-group-item-heading normal-font" data-field="assetListItemText">
+                <div class="list-group-item-text">
+                    <span data-field="asset-last-modified-date"></span>
                 </div>
-            </div>
-            <div data-field="assetListItemKebab">
+                <div class="list-group-item-text">
+                    <span data-field="asset-created-date"></span>
+                </div>
             </div>
         </div>
     </div>

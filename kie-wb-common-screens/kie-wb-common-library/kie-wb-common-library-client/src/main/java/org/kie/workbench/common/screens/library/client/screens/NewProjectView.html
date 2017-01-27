@@ -14,40 +14,30 @@
   ~ limitations under the License.
   -->
 
-<div>
-    <div id="library" class="full container-fluid library">
-        <div class="col-md-12">
-            <div class="example-pf">
-                <div class="form-horizontal">
-                    <h1 id="back">
-                        <i class="fa fa-arrow-left"
-                           aria-hidden="true"></i>
-                        <span data-i18n-key="newProject"></span>
-                    </h1>
+<div class="ac library">
+    <div class="page-content-kie">
+        <div class="col-md-12 col-lg-12">
+            <div class="main-content-kie">
+                <div class="toolbar-pf">
+                    <form data-field="toolbar" class="toolbar-pf-actions">
+                        <div class="toolbar-data-title-kie" data-i18n-key="NewProject"></div>
+                    </form>
+                </div>
+                <div class="blank-slate-pf form-horizontal">
                     <div class="form-group">
-                        <label data-i18n-key="projectName" class="col-sm-2 control-label" for="projectName"></label>
+                        <label data-i18n-key="ProjectName" class="col-sm-2 control-label" for="project-name"></label>
                         <div class="col-sm-3">
-                            <input type="text" id="projectName" class="form-control">
+                            <input type="text" id="project-name" class="form-control">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label" id="ouLabel" for="ouDropdown"></label>
-                        <div class="col-sm-3">
-                            <select id="ouDropdown" class="form-control">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <button type="button" data-i18n-key="Cancel" data-field="cancel"
-                                    class="btn btn-default"></button>
-                            <button type="button" data-i18n-key="Create" data-field="create"
-                                    class="btn btn-primary"></button>
+                    <div class="form-group actions">
+                        <div class="col-sm-5">
+                            <button type="button" data-i18n-key="Cancel" data-field="cancel" class="btn btn-default"></button>
+                            <button type="button" data-i18n-key="Create" data-field="create" class="btn btn-primary"></button>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

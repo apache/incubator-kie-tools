@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.monitor;
+.asset-container .asset-path {
+    display: none;
+    white-space: nowrap;
+    margin-top: .3em;
+    position: absolute;
+}
 
-public interface LibraryMonitor {
+.asset-container .list-group-item-text {
+    align-self: flex-start;
+    transition: all .5s;
+}
 
-    void initialize();
-
-    boolean thereIsAtLeastOneProjectAccessible();
-
-    void setThereIsAtLeastOneProjectAccessible( final boolean thereIsAtLeastOneProjectAccessible );
+.asset-container:hover .asset-path {
+    display: block;
 }

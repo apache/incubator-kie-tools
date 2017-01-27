@@ -15,8 +15,17 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.Event;
-import org.jboss.errai.common.client.dom.*;
+import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Document;
+import org.jboss.errai.common.client.dom.Input;
+import org.jboss.errai.common.client.dom.ListItem;
+import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -24,47 +33,69 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.SinkNative;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.util.InfoPopup;
+import org.kie.workbench.common.screens.library.client.widgets.ImportExampleButtonWidget;
+import org.kie.workbench.common.screens.library.client.widgets.ImportExampleListItemWidget;
 import org.kie.workbench.common.screens.library.client.widgets.ProjectItemWidget;
 import org.uberfire.mvp.Command;
 
-import javax.inject.Inject;
-
 @Templated
-public class LibraryView implements LibraryScreen.View, IsElement {
+public class LibraryView implements LibraryScreen.View,
+                                    IsElement {
 
     private LibraryScreen presenter;
 
-    @DataField
     @Inject
+    private ProjectsDetailScreen projectsDetailScreen;
+
+    @Inject
+    private TranslationService ts;
+
+    @Inject
+    private ManagedInstance<ImportExampleListItemWidget> importExampleListItemWidgets;
+
+    @Inject
+    private ManagedInstance<ProjectItemWidget> itemWidgetsInstances;
+
+    @Inject
+    @DataField("main-container")
+    Div mainContainer;
+
+    @Inject
+    @DataField("details-container")
+    Div detailsContainer;
+
+    @Inject
+    @DataField("project-list")
     Div projectList;
 
-    @DataField
     @Inject
-    Button newProjectButton;
+    @DataField("import-project-container")
+    UnorderedList importProjectContainer;
 
-    @DataField
     @Inject
-    Button importExample;
-
-    @DataField
-    @Inject
+    @DataField("filter-text")
     Input filterText;
 
     @Inject
-    Document document;
+    @DataField("new-project-button")
+    Button newProjectButton;
 
     @Inject
-    ManagedInstance<ProjectItemWidget> itemWidgetsInstances;
+    @DataField("import-project")
+    Button importProject;
 
-    @Inject
-    TranslationService ts;
+    private ProjectItemWidget selectedProjectItemWidget;
+
+    private boolean importProjectLoaded = false;
 
     @Override
     public void init( LibraryScreen presenter ) {
         this.presenter = presenter;
+        this.selectedProjectItemWidget = null;
         filterText.setAttribute( "placeholder", ts.getTranslation( LibraryConstants.LibraryView_Filter ) );
+        detailsContainer.appendChild( projectsDetailScreen.getView().getElement() );
     }
 
     @Override
@@ -73,10 +104,61 @@ public class LibraryView implements LibraryScreen.View, IsElement {
     }
 
     @Override
-    public void addProject( String project, Command details, Command select ) {
+    public void addProject( final String project,
+                            final Command details,
+                            final Command select ) {
         ProjectItemWidget projectItemWidget = itemWidgetsInstances.get();
-        projectItemWidget.init( project, details, select );
+        projectItemWidget.init( project, detailsCommand( details, projectItemWidget ), select );
         projectList.appendChild( projectItemWidget.getElement() );
+    }
+
+    private Command detailsCommand( final Command details,
+                                    final ProjectItemWidget projectItemWidget ) {
+        return () -> {
+            details.execute();
+
+            if ( projectItemWidget.equals( selectedProjectItemWidget ) ) {
+                mainContainer.getClassList().add( "col-md-12" );
+                mainContainer.getClassList().add( "col-lg-12" );
+                mainContainer.getClassList().remove( "col-md-8" );
+                mainContainer.getClassList().remove( "col-lg-9" );
+                detailsContainer.getClassList().add( "hidden" );
+                detailsContainer.getClassList().remove( "col-md-4" );
+                detailsContainer.getClassList().remove( "col-lg-3" );
+                projectItemWidget.unselect();
+                this.selectedProjectItemWidget = null;
+            } else {
+                if ( selectedProjectItemWidget == null ) {
+                    mainContainer.getClassList().remove( "col-md-12" );
+                    mainContainer.getClassList().remove( "col-lg-12" );
+                    mainContainer.getClassList().add( "col-md-8" );
+                    mainContainer.getClassList().add( "col-lg-9" );
+                    detailsContainer.getClassList().remove( "hidden" );
+                    detailsContainer.getClassList().add( "col-md-4" );
+                    detailsContainer.getClassList().add( "col-lg-3" );
+                } else {
+                    selectedProjectItemWidget.unselect();
+                }
+
+                projectItemWidget.select();
+                this.selectedProjectItemWidget = projectItemWidget;
+            }
+        };
+    }
+
+    @Override
+    public void addProjectToImport( final ExampleProject exampleProject ) {
+        final ImportExampleListItemWidget importExampleListItem = importExampleListItemWidgets.get();
+        importExampleListItem.init( exampleProject.getName(),
+                                    exampleProject.getDescription(),
+                                    () -> presenter.importProject( exampleProject ) );
+
+        importProjectContainer.appendChild( importExampleListItem.getElement() );
+    }
+
+    @Override
+    public void clearImportProjectsContainer() {
+        importProjectContainer.setInnerHTML( "" );
     }
 
     @Override
@@ -84,27 +166,24 @@ public class LibraryView implements LibraryScreen.View, IsElement {
         this.filterText.setValue( "" );
     }
 
-    @SinkNative( Event.ONCLICK )
-    @EventHandler( "newProjectButton" )
+    @SinkNative(Event.ONCLICK)
+    @EventHandler("new-project-button")
     public void newProject( Event e ) {
         presenter.newProject();
     }
 
-    @SinkNative( Event.ONCLICK )
-    @EventHandler( "importExample" )
-    public void importExample( Event e ) {
-        presenter.importExample();
+    @SinkNative(Event.ONCLICK)
+    @EventHandler("import-project")
+    public void importProject( Event e ) {
+        if ( !importProjectLoaded ) {
+            presenter.updateImportProjects();
+            importProjectLoaded = true;
+        }
     }
 
-    @SinkNative( Event.ONKEYUP )
-    @EventHandler( "filterText" )
+    @SinkNative(Event.ONKEYUP)
+    @EventHandler("filter-text")
     public void filterTextChange( Event e ) {
         presenter.updateProjectsBy( filterText.getValue() );
-    }
-
-    private Option createOption( String ou ) {
-        Option option = ( Option ) document.createElement( "option" );
-        option.setText( ou );
-        return option;
     }
 }

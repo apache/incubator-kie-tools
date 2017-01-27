@@ -20,12 +20,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Document;
+import org.jboss.errai.common.client.dom.Form;
 import org.jboss.errai.common.client.dom.Input;
-import org.jboss.errai.common.client.dom.Option;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -34,41 +32,60 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.SinkNative;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.util.InfoPopup;
 import org.kie.workbench.common.screens.library.client.widgets.AssetItemWidget;
-import org.kie.workbench.common.screens.library.client.widgets.ProjectItemWidget;
+import org.kie.workbench.common.screens.library.client.widgets.ProjectActionsWidget;
 import org.uberfire.mvp.Command;
 
 @Templated
-public class ProjectView implements ProjectScreen.View, IsElement {
+public class ProjectView implements ProjectScreen.View,
+                                    IsElement {
 
     private ProjectScreen presenter;
 
-    @DataField
     @Inject
+    private ProjectsDetailScreen projectsDetailScreen;
+
+    @Inject
+    private ProjectActionsWidget projectActionsWidget;
+
+    @Inject
+    private ManagedInstance<AssetItemWidget> itemWidgetsInstances;
+
+    @Inject
+    private TranslationService ts;
+
+    @Inject
+    @DataField
+    Form toolbar;
+
+    @Inject
+    @DataField("details-container")
+    Div detailsContainer;
+
+    @Inject
+    @DataField("asset-list")
     Div assetList;
 
-    @DataField
     @Inject
-    Button newAssetButton;
-
-    @DataField
-    @Inject
+    @DataField("filter-text")
     Input filterText;
 
     @Inject
-    Document document;
-
-    @Inject
-    ManagedInstance<AssetItemWidget> itemWidgetsInstances;
-
-    @Inject
-    TranslationService ts;
+    @DataField("project-name")
+    Div projectNameContainer;
 
     @Override
     public void init( ProjectScreen presenter ) {
         this.presenter = presenter;
+        projectActionsWidget.init( () -> presenter.goToSettings() );
         filterText.setAttribute( "placeholder", ts.getTranslation( LibraryConstants.LibraryView_Filter ) );
+        detailsContainer.appendChild( projectsDetailScreen.getView().getElement() );
+        toolbar.appendChild( projectActionsWidget.getView().getElement() );
+    }
+
+    @Override
+    public void setProjectName( final String projectName ) {
+        projectNameContainer.setTextContent( projectName );
     }
 
     @Override
@@ -77,32 +94,22 @@ public class ProjectView implements ProjectScreen.View, IsElement {
     }
 
     @Override
-    public void addAsset( String assetName, String assetType, IsWidget assetIcon, Command details, Command select ) {
+    public void addAsset( final String assetName,
+                          final String assetPath,
+                          final String assetType,
+                          final IsWidget assetIcon,
+                          final String lastModifiedDate,
+                          final String createdDate,
+                          final Command details,
+                          final Command select ) {
         AssetItemWidget assetItemWidget = itemWidgetsInstances.get();
-        assetItemWidget.init( assetName, assetType, assetIcon, details, select );
+        assetItemWidget.init( assetName, assetPath, assetType, assetIcon, lastModifiedDate, createdDate, details, select );
         assetList.appendChild( assetItemWidget.getElement() );
     }
 
-    @Override
-    public void noRightsPopup() {
-        InfoPopup.generate( ts.getTranslation( LibraryConstants.Error_NoAccessRights ) );
-    }
-
-    @SinkNative( Event.ONCLICK )
-    @EventHandler( "newAssetButton" )
-    public void newAsset( Event e ) {
-        presenter.newAsset();
-    }
-
-    @SinkNative( Event.ONKEYUP )
-    @EventHandler( "filterText" )
+    @SinkNative(Event.ONKEYUP)
+    @EventHandler("filter-text")
     public void filterTextChange( Event e ) {
         presenter.updateAssetsBy( filterText.getValue() );
-    }
-
-    private Option createOption( String ou ) {
-        Option option = ( Option ) document.createElement( "option" );
-        option.setText( ou );
-        return option;
     }
 }

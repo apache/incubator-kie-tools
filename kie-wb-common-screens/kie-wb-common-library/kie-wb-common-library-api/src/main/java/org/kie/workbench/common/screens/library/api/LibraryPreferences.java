@@ -16,45 +16,54 @@
 
 package org.kie.workbench.common.screens.library.api;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.preferences.shared.PropertyFormType;
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.preferences.shared.bean.BasePreference;
 
-@WorkbenchPreference( identifier = "LibraryPreferences",
-        bundleKey = "LibraryPreferences.Label" )
-@Portable
+@WorkbenchPreference(identifier = "LibraryPreferences",
+        bundleKey = "LibraryPreferences.Label")
 public class LibraryPreferences implements BasePreference<LibraryPreferences> {
 
-    @Property( bundleKey = "LibraryPreferences.OuIdentifier" )
+    @Property(bundleKey = "LibraryPreferences.OuIdentifier")
     String ouIdentifier;
 
-    @Property( bundleKey = "LibraryPreferences.OuOwner" )
+    @Property(bundleKey = "LibraryPreferences.OuOwner")
     String ouOwner;
 
-    @Property( bundleKey = "LibraryPreferences.OUGroupId" )
+    @Property(bundleKey = "LibraryPreferences.OUGroupId")
     String ouGroupId;
 
-    @Property( bundleKey = "LibraryPreferences.OUAlias" )
+    @Property(bundleKey = "LibraryPreferences.OUAlias")
     String ouAlias;
 
-    @Property( bundleKey = "LibraryPreferences.RepositoryAlias" )
+    @Property(bundleKey = "LibraryPreferences.RepositoryAlias")
     String repositoryAlias;
 
-    @Property( bundleKey = "LibraryPreferences.RepositoryDefaultScheme" )
+    @Property(bundleKey = "LibraryPreferences.RepositoryDefaultScheme")
     String repositoryDefaultScheme;
 
-    @Property( bundleKey = "LibraryPreferences.ProjectGroupId" )
+    @Property(bundleKey = "LibraryPreferences.ProjectGroupId")
     String projectGroupId;
 
-    @Property( bundleKey = "LibraryPreferences.ProjectVersion" )
+    @Property(bundleKey = "LibraryPreferences.ProjectVersion")
     String projectVersion;
 
-    @Property( bundleKey = "LibraryPreferences.ProjectDescription" )
+    @Property(bundleKey = "LibraryPreferences.ProjectDescription")
     String projectDescription;
 
-    @Property( bundleKey = "LibraryPreferences.ProjectDefaultBranch" )
+    @Property(bundleKey = "LibraryPreferences.ProjectDefaultBranch")
     String projectDefaultBranch;
+
+    @Property(bundleKey = "LibraryPreferences.ImportProjectsUrl")
+    String importProjectsUrl;
+
+    @Property(bundleKey = "LibraryPreferences.ProjectExplorerExpanded",
+            formType = PropertyFormType.BOOLEAN)
+    boolean projectExplorerExpanded;
+
+    public LibraryPreferences() {
+    }
 
     @Override
     public LibraryPreferences defaultValue( final LibraryPreferences defaultValue ) {
@@ -68,6 +77,8 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
         defaultValue.projectVersion = "1.0.0";
         defaultValue.projectDescription = "default description";
         defaultValue.projectDefaultBranch = "master";
+        defaultValue.importProjectsUrl = "https://github.com/droolsjbpm/kie-wb-playground.git";
+        defaultValue.projectExplorerExpanded = false;
         return defaultValue;
     }
 
@@ -109,5 +120,13 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
 
     public String getOuAlias() {
         return ouAlias;
+    }
+
+    public String getImportProjectsUrl() {
+        return importProjectsUrl;
+    }
+
+    public boolean isProjectExplorerExpanded() {
+        return projectExplorerExpanded;
     }
 }

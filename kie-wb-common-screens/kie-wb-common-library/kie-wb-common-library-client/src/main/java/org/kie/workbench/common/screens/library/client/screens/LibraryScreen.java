@@ -16,204 +16,142 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
+import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
-import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.util.LibraryBreadcrumbs;
-import org.kie.workbench.common.screens.library.client.util.LibraryDocks;
-import org.kie.workbench.common.screens.library.client.util.LibraryParameters;
+import org.kie.workbench.common.screens.library.client.util.ExamplesUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
-import org.kie.workbench.common.screens.library.client.widgets.LibraryBreadCrumbToolbarPresenter;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.ResourceRef;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.workbench.model.ActivityResourceType;
 
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-@WorkbenchScreen( identifier = LibraryPlaces.LIBRARY_SCREEN,
-        owningPerspective = LibraryPerspective.class )
+@WorkbenchScreen(identifier = LibraryPlaces.LIBRARY_SCREEN,
+        owningPerspective = LibraryPerspective.class)
 public class LibraryScreen {
 
     public interface View extends UberElement<LibraryScreen> {
 
         void clearProjects();
 
-        void addProject( String project, Command details, Command select );
+        void addProject( String project,
+                         Command details,
+                         Command select );
 
         void clearFilterText();
+
+        void addProjectToImport( ExampleProject exampleProject );
+
+        void clearImportProjectsContainer();
     }
 
     private View view;
 
-    private LibraryBreadCrumbToolbarPresenter breadCrumbToolbarPresenter;
-
-    private LibraryDocks libraryDocks;
-
     private PlaceManager placeManager;
 
-    private LibraryBreadcrumbs libraryBreadcrumbs;
-
-    private Event<LibraryContextSwitchEvent> libraryContextSwitchEvent;
-
-    private SessionInfo sessionInfo;
-
-    private AuthorizationManager authorizationManager;
-
-    private TranslationService ts;
+    private LibraryPlaces libraryPlaces;
 
     private Event<ProjectDetailEvent> projectDetailEvent;
 
-    Caller<LibraryService> libraryService;
+    private Caller<LibraryService> libraryService;
+
+    private ExamplesUtils examplesUtils;
 
     LibraryInfo libraryInfo;
 
     @Inject
     public LibraryScreen( final View view,
-                          final LibraryBreadCrumbToolbarPresenter breadCrumbToolbarPresenter,
-                          final LibraryDocks libraryDocks,
                           final PlaceManager placeManager,
-                          final LibraryBreadcrumbs libraryBreadcrumbs,
-                          final Event<LibraryContextSwitchEvent> libraryContextSwitchEvent,
-                          final SessionInfo sessionInfo,
-                          final AuthorizationManager authorizationManager,
-                          final TranslationService ts,
+                          final LibraryPlaces libraryPlaces,
                           final Event<ProjectDetailEvent> projectDetailEvent,
-                          final Caller<LibraryService> libraryService ) {
+                          final Caller<LibraryService> libraryService,
+                          final ExamplesUtils examplesUtils ) {
         this.view = view;
-        this.breadCrumbToolbarPresenter = breadCrumbToolbarPresenter;
-        this.libraryDocks = libraryDocks;
         this.placeManager = placeManager;
-        this.libraryBreadcrumbs = libraryBreadcrumbs;
-        this.libraryContextSwitchEvent = libraryContextSwitchEvent;
-        this.sessionInfo = sessionInfo;
-        this.authorizationManager = authorizationManager;
-        this.ts = ts;
+        this.libraryPlaces = libraryPlaces;
         this.projectDetailEvent = projectDetailEvent;
         this.libraryService = libraryService;
+        this.examplesUtils = examplesUtils;
     }
 
-    @OnStartup
-    public void onStartup() {
-        loadDefaultLibrary();
-    }
-
-    private void loadDefaultLibrary() {
+    @PostConstruct
+    public void setup() {
         libraryService.call( new RemoteCallback<LibraryInfo>() {
             @Override
             public void callback( LibraryInfo libraryInfo ) {
-                if ( libraryInfo.isFullLibrary() ) {
-                    loadLibrary( libraryInfo );
-                }
+                updateLibrary( libraryInfo );
             }
-        } ).getDefaultLibraryInfo();
-
-        setupToolBar();
+        } ).getLibraryInfo( libraryPlaces.getSelectedRepository() );
+        placeManager.closePlace( LibraryPlaces.EMPTY_LIBRARY_SCREEN );
     }
 
-    private void loadLibrary( LibraryInfo libraryInfo ) {
+    private void updateLibrary( final LibraryInfo libraryInfo ) {
         LibraryScreen.this.libraryInfo = libraryInfo;
+        view.clearFilterText();
         setupProjects( libraryInfo.getProjects() );
-        setupOus( libraryInfo );
-        libraryDocks.refresh();
     }
 
-    private void setupToolBar() {
-        libraryBreadcrumbs.setupToolBar( breadCrumbToolbarPresenter );
-    }
-
-    private void setupOus( LibraryInfo libraryInfo ) {
-        breadCrumbToolbarPresenter.init( ou -> {
-            selectOrganizationUnit( ou );
-        }, libraryInfo );
-    }
-
-    private void updateLibrary( String ou ) {
-        libraryService.call( new RemoteCallback<LibraryInfo>() {
-            @Override
-            public void callback( LibraryInfo libraryInfo ) {
-                LibraryScreen.this.libraryInfo = libraryInfo;
-                view.clearFilterText();
-                setupProjects( libraryInfo.getProjects() );
-            }
-        } ).getLibraryInfo( ou );
-    }
-
-    private void setupProjects( Set<Project> projects ) {
+    private void setupProjects( final Set<Project> projects ) {
         view.clearProjects();
 
-        projects.stream().forEach( p -> view
-                .addProject( p.getProjectName(), detailsCommand( p ),
-                             selectCommand( p ) ) );
+        projects.stream().forEach( p -> view.addProject( p.getProjectName(),
+                                                         detailsCommand( p ),
+                                                         selectCommand( p ) ) );
     }
 
     public void newProject() {
-        libraryDocks.hide();
-        placeManager.goTo( new DefaultPlaceRequest( LibraryPlaces.NEW_PROJECT_SCREEN, newProjectParameters() ) );
+        libraryPlaces.goToNewProject();
     }
 
-    private Map<String, String> newProjectParameters() {
-        Map<String, String> param = new HashMap<>();
-        param.put( LibraryParameters.BACK_PLACE, LibraryPlaces.LIBRARY_SCREEN );
-        param.put( LibraryParameters.SELECTED_OU, libraryInfo.getSelectedOrganizationUnit().getIdentifier() );
-        return param;
-    }
-
-
-    Command selectCommand( Project project ) {
-        return () -> {
-            placeManager.goTo( LibraryPlaces.PROJECT_SCREEN );
-            projectDetailEvent.fire( new ProjectDetailEvent( project ) );
-
-            detailsCommand( project ).execute();
-        };
-    }
-
-    boolean hasAccessToPerspective( String perspectiveId ) {
-        ResourceRef resourceRef = new ResourceRef( perspectiveId, ActivityResourceType.PERSPECTIVE );
-        return authorizationManager.authorize( resourceRef, sessionInfo.getIdentity() );
-    }
-
-    Command detailsCommand( Project selectedProject ) {
-        return () -> {
-            libraryDocks.handle( selectedProject );
-        };
-    }
-
-    public void selectOrganizationUnit( String ou ) {
-        updateLibrary( ou );
-    }
-
-    public void updateProjectsBy( String filter ) {
-        if ( libraryInfo != null && libraryInfo.isFullLibrary() ) {
+    public void updateProjectsBy( final String filter ) {
+        if ( libraryInfo != null ) {
             Set<Project> filteredProjects = filterProjects( filter );
-
             setupProjects( filteredProjects );
         }
     }
 
-    Set<Project> filterProjects( String filter ) {
+    public void importProject( final ExampleProject exampleProject ) {
+        examplesUtils.importProject( exampleProject );
+    }
+
+    public void updateImportProjects() {
+        examplesUtils.getExampleProjects( exampleProjects -> {
+            view.clearImportProjectsContainer();
+            for ( ExampleProject exampleProject : exampleProjects ) {
+                view.addProjectToImport( exampleProject );
+            }
+        } );
+    }
+
+    Command selectCommand( final Project project ) {
+        return () -> {
+            final ProjectInfo projectInfo = getProjectInfo( project );
+            libraryPlaces.goToProject( projectInfo );
+        };
+    }
+
+    Command detailsCommand( final Project project ) {
+        return () -> {
+            final ProjectInfo projectInfo = getProjectInfo( project );
+            projectDetailEvent.fire( new ProjectDetailEvent( projectInfo ) );
+        };
+    }
+
+    Set<Project> filterProjects( final String filter ) {
         return libraryInfo.getProjects().stream()
                 .filter( p -> p.getProjectName() != null )
                 .filter( p -> p.getProjectName().toUpperCase()
@@ -221,20 +159,16 @@ public class LibraryScreen {
                 .collect( Collectors.toSet() );
     }
 
-    public void importExample() {
-        if ( hasAccessToPerspective( LibraryPlaces.AUTHORING ) ) {
-
-            libraryBreadcrumbs.setupAuthoringBreadcrumbsForExample();
-
-            placeManager.goTo( new DefaultPlaceRequest( LibraryPlaces.AUTHORING ) );
-            libraryContextSwitchEvent
-                    .fire( new LibraryContextSwitchEvent( LibraryContextSwitchEvent.EventType.PROJECT_FROM_EXAMPLE ) );
-        }
+    private ProjectInfo getProjectInfo( final Project project ) {
+        return new ProjectInfo( libraryPlaces.getSelectedOrganizationalUnit(),
+                                libraryPlaces.getSelectedRepository(),
+                                libraryPlaces.getSelectedBranch(),
+                                project );
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return ts.getTranslation( LibraryConstants.LibraryScreen );
+        return "Library Screen";
     }
 
     @WorkbenchPartView

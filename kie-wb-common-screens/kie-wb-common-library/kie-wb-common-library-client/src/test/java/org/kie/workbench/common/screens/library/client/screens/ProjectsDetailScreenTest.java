@@ -17,32 +17,41 @@ package org.kie.workbench.common.screens.library.client.screens;
 
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ProjectsDetailScreenTest {
 
     @Mock
-    ProjectsDetailScreen.View view;
+    private ProjectsDetailScreen.View view;
 
-    ProjectsDetailScreen projectsDetail;
+    private ProjectsDetailScreen projectsDetail;
+
+    @Before
+    public void setup() {
+        projectsDetail = new ProjectsDetailScreen( view );
+    }
 
     @Test
     public void testUpdate() throws Exception {
-
-        projectsDetail = new ProjectsDetailScreen( view, null );
-
-        Project project = mock( Project.class );
-        POM pom = mock( POM.class );
+        final POM pom = mock( POM.class );
         when( pom.getDescription() ).thenReturn( "desc" );
-        when( project.getPom() ).thenReturn( pom );
-        ProjectDetailEvent event = new ProjectDetailEvent( project );
+
+        final Project project = mock( Project.class );
+        doReturn( pom ).when( project ).getPom();
+
+        final ProjectInfo projectInfo = mock( ProjectInfo.class );
+        when( projectInfo.getProject() ).thenReturn( project );
+
+        ProjectDetailEvent event = new ProjectDetailEvent( projectInfo );
 
         projectsDetail.update( event );
 

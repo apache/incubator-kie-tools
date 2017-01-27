@@ -15,147 +15,133 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import javax.enterprise.event.Event;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.client.monitor.LibraryMonitor;
+import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.junit.Assert.*;
+import static org.jgroups.util.Util.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class NewProjectScreenTest {
 
     @Mock
-    NewProjectScreen.View view;
-
-    @Spy
-    @InjectMocks
-    NewProjectScreen newProjectScreen;
+    private LibraryService libraryService;
+    private Caller<LibraryService> libraryServiceCaller;
 
     @Mock
-    BusyIndicatorView busyIndicatorView;
+    private PlaceManager placeManager;
 
     @Mock
-    Event<NotificationEvent> notificationEvent;
+    private BusyIndicatorView busyIndicatorView;
 
     @Mock
-    TranslationService ts;
+    private Event<NotificationEvent> notificationEvent;
 
     @Mock
-    AuthorizationManager authorizationManager;
+    private LibraryPlaces libraryPlaces;
 
     @Mock
-    SessionInfo sessionInfo;
+    private NewProjectScreen.View view;
 
     @Mock
-    LibraryService libraryService;
+    private TranslationService ts;
+
+    private SessionInfo sessionInfo;
 
     @Mock
-    LibraryMonitor libraryMonitor;
+    private Event<NewProjectEvent> newProjectEvent;
 
-    @Mock
-    PlaceManager placeManager;
+    private NewProjectScreen newProjectScreen;
 
-    @Mock
-    private OrganizationalUnit ou1;
-
-    @Mock
-    private OrganizationalUnit ou2;
-
-    CallerMock<LibraryService> libraryServiceCaller;
-    private String ouAlias;
+    private LibraryInfo libraryInfo;
 
     @Before
     public void setup() {
         libraryServiceCaller = new CallerMock<>( libraryService );
-        newProjectScreen.libraryService = libraryServiceCaller;
+        sessionInfo = new SessionInfoMock();
 
-        doNothing().when( newProjectScreen ).goToProject( any( KieProject.class ) );
-        doReturn( "" ).when( view ).getOrganizationUnitSelected();
-    }
+        final OrganizationalUnit selectedOrganizationalUnit = mock( OrganizationalUnit.class );
+        doReturn( "selectedOrganizationalUnit" ).when( selectedOrganizationalUnit ).getIdentifier();
+        doReturn( selectedOrganizationalUnit ).when( libraryPlaces ).getSelectedOrganizationalUnit();
 
-    @Test
-    public void loadTest() throws Exception {
-        when( libraryService.getDefaultLibraryInfo() ).thenReturn( getDefaultLibraryMock() );
+        newProjectScreen = spy( new NewProjectScreen( libraryServiceCaller,
+                                                      placeManager,
+                                                      busyIndicatorView,
+                                                      notificationEvent,
+                                                      libraryPlaces,
+                                                      view,
+                                                      ts,
+                                                      sessionInfo,
+                                                      newProjectEvent ) );
+
+        doReturn( "baseUrl" ).when( newProjectScreen ).getBaseURL();
+
+        libraryInfo = new LibraryInfo( "master", new HashSet<>() );
+        doReturn( libraryInfo ).when( libraryService ).getLibraryInfo( any( Repository.class ) );
 
         newProjectScreen.load();
-
-        verify( view ).setOUAlias( ouAlias );
-        verify( view, times( 2 ) ).addOrganizationUnit( any() );
-        verify( view ).setOrganizationUnitSelected( ou2.getIdentifier() );
     }
 
     @Test
-    public void projectCreationNotifiesLibraryMonitorTest() {
-        newProjectScreen.getSuccessCallback().callback( null );
-
-        verify( libraryMonitor ).setThereIsAtLeastOneProjectAccessible( true );
+    public void loadTest() {
+        verify( view ).init( newProjectScreen );
+        assertEquals( libraryInfo, newProjectScreen.libraryInfo );
     }
 
     @Test
-    public void projectCreationArgumentsTest() {
-        doReturn( "baseUrl" ).when( newProjectScreen ).getBaseURL();
-        doReturn( "selectedOU" ).when( view ).getOrganizationUnitSelected();
+    public void cancelTest() {
+        newProjectScreen.cancel();
+
+        verify( libraryPlaces ).goToLibrary();
+        verify( placeManager ).closePlace( LibraryPlaces.NEW_PROJECT_SCREEN );
+    }
+
+    @Test
+    public void createProjectSuccessfullyTest() {
+        newProjectScreen.createProject( "projectName" );
+
+        verify( busyIndicatorView ).showBusyIndicator( anyString() );
+        verify( newProjectEvent ).fire( any( NewProjectEvent.class ) );
+        verify( busyIndicatorView ).hideBusyIndicator();
+        verify( notificationEvent ).fire( any( NotificationEvent.class ) );
+        verify( libraryPlaces ).goToProject( any( ProjectInfo.class ) );
+        verify( placeManager ).closePlace( LibraryPlaces.NEW_PROJECT_SCREEN );
+    }
+
+    @Test
+    public void createProjectFailedTest() {
+        doThrow( new RuntimeException() ).when( libraryService ).createProject( anyString(),
+                                                                                anyString(),
+                                                                                anyString() );
 
         newProjectScreen.createProject( "projectName" );
 
-        verify( libraryService ).newProject( "projectName", "selectedOU", "baseUrl" );
-    }
-
-    @Test
-    public void openProjectTest() {
-        final KieProject project = mock( KieProject.class );
-        doReturn( "projectName" ).when( project ).getProjectName();
-        doReturn( "projectPath" ).when( project ).getIdentifier();
-
-        newProjectScreen.openProject( project );
-
-        final Map<String, String> params = new HashMap<>();
-        params.put( "projectName", project.getProjectName() );
-        params.put( "projectPath", project.getIdentifier() );
-        verify( placeManager ).goTo( new DefaultPlaceRequest( LibraryPlaces.PROJECT_SCREEN, params ) );
-    }
-
-    private LibraryInfo getDefaultLibraryMock() {
-        OrganizationalUnit defaultOrganizationUnit = ou1;
-        OrganizationalUnit selectedOrganizationUnit = ou2;
-
-        Set<Project> projects = new HashSet<>();
-        projects.add( mock( Project.class ) );
-        projects.add( mock( Project.class ) );
-        projects.add( mock( Project.class ) );
-        Collection<OrganizationalUnit> organizationUnits = Arrays.asList( ou1, ou2 );
-        ouAlias = "alias";
-
-        LibraryInfo libraryInfo = new LibraryInfo( defaultOrganizationUnit, selectedOrganizationUnit, projects,
-                                                   organizationUnits, ouAlias );
-        return libraryInfo;
+        verify( busyIndicatorView ).showBusyIndicator( anyString() );
+        verify( newProjectEvent, never() ).fire( any( NewProjectEvent.class ) );
+        verify( busyIndicatorView ).hideBusyIndicator();
+        verify( notificationEvent ).fire( any( NotificationEvent.class ) );
+        verify( libraryPlaces, never() ).goToProject( any( ProjectInfo.class ) );
+        verify( placeManager, never() ).closePlace( LibraryPlaces.NEW_PROJECT_SCREEN );
     }
 }

@@ -126,7 +126,8 @@ public class ExamplesWizard extends AbstractWizard {
 
     @Override
     public String getTitle() {
-        return translator.format( ExamplesScreenConstants.ExamplesWizard_WizardTitle );
+        final String title = translator.format( ExamplesScreenConstants.ExamplesWizard_WizardTitle );
+        return title != null && !title.isEmpty() ? title : "Import Example";
     }
 
     @Override

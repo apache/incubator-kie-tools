@@ -15,25 +15,10 @@
 
 package org.kie.workbench.common.screens.library.client;
 
-import javax.inject.Inject;
-
-import com.google.gwt.user.client.Window;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
-import org.kie.workbench.common.screens.library.client.monitor.LibraryMonitor;
 
 @EntryPoint
 @Bundle( "resources/i18n/Library.properties" )
 public class LibraryEntryPoint {
-
-    @Inject
-    private LibraryMonitor libraryMonitor;
-
-    @AfterInitialization
-    public void setup() {
-        libraryMonitor.initialize();
-    }
 }

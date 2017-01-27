@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
@@ -61,6 +62,13 @@ public class NewFileUploaderTest {
     @Mock
     private NewResourcePresenter presenter;
 
+    private Event<NewResourceSuccessEvent> newResourceSuccessEventMock = spy( new EventSourceMock<NewResourceSuccessEvent>() {
+        @Override
+        public void fire( final NewResourceSuccessEvent event ) {
+            //Do nothing. Default implementation throws an Exception
+        }
+    } );
+
     private Event<NotificationEvent> mockNotificationEvent = new EventSourceMock<NotificationEvent>() {
         @Override
         public void fire( final NotificationEvent event ) {
@@ -78,6 +86,7 @@ public class NewFileUploaderTest {
                                         busyIndicatorView ) {
             {
                 super.notificationEvent = mockNotificationEvent;
+                super.newResourceSuccessEvent = newResourceSuccessEventMock;
             }
 
             @Override
@@ -146,6 +155,8 @@ public class NewFileUploaderTest {
                 times( 1 ) ).hideBusyIndicator();
         verify( presenter,
                 times( 1 ) ).complete();
+        verify( newResourceSuccessEventMock,
+                times( 1 ) ).fire( any( NewResourceSuccessEvent.class ) );
         verify( placeManager,
                 times( 1 ) ).goTo( pathArgumentCaptor.capture() );
 

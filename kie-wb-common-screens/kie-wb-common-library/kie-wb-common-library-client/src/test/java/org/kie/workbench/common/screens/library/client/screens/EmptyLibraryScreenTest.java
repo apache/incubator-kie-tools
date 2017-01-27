@@ -15,79 +15,89 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
+import java.util.HashSet;
+import java.util.Set;
 
+import org.jboss.errai.security.shared.api.identity.User;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
-import org.mockito.InjectMocks;
+import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.library.client.util.ExamplesUtils;
+import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mocks.EventSourceMock;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.ResourceRef;
-import org.uberfire.security.authz.AuthorizationManager;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.util.TypeLiteral;
-import java.lang.annotation.Annotation;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class EmptyLibraryScreenTest {
 
     @Mock
-    private AuthorizationManager authorizationManager;
+    private EmptyLibraryScreen.View view;
 
     @Mock
-    private PlaceManager placeManager;
+    private User user;
 
     @Mock
-    EventMock eventMock;
+    private LibraryPlaces libraryPlaces;
 
     @Mock
-    private SessionInfo sessionInfo;
+    private ExamplesUtils examplesUtils;
 
-    @InjectMocks
-    EmptyLibraryScreen emptyLibrary;
+    private EmptyLibraryScreen emptyLibraryScreen;
 
-    @Test
-    public void importExampleTest() throws Exception {
-        when( authorizationManager.authorize( ( ResourceRef ) any(), any() ) ).thenReturn( true );
-        emptyLibrary.libraryContextSwitchEvent = eventMock;
+    @Before
+    public void setup() {
+        emptyLibraryScreen = new EmptyLibraryScreen( view,
+                                                     user,
+                                                     libraryPlaces,
+                                                     examplesUtils );
 
-        emptyLibrary.importExample();
-
-        verify( placeManager ).goTo( any( PlaceRequest.class ) );
-        verify( eventMock ).fire( any() );
-
+        doReturn( "user" ).when( user ).getIdentifier();
     }
 
     @Test
-    public void importExampleNoRightsTest() throws Exception {
-        when( authorizationManager.authorize( ( ResourceRef ) any(), any() ) ).thenReturn( false );
+    public void setupTest() {
+        final ExampleProject exampleProject1 = mock( ExampleProject.class );
+        final ExampleProject exampleProject2 = mock( ExampleProject.class );
 
-        EmptyLibraryScreen spy = spy( emptyLibrary );
-        doNothing().when( spy ).openNoRightsPopup();
+        final Set<ExampleProject> exampleProjects = new HashSet<>();
+        exampleProjects.add( exampleProject1 );
+        exampleProjects.add( exampleProject2 );
 
-        spy.importExample();
-
-        verify( placeManager, never() ).goTo( any( PlaceRequest.class ) );
-        verify( eventMock, never() ).fire( any() );
-        verify( spy ).openNoRightsPopup();
-
-    }
-
-    static class EventMock extends EventSourceMock<LibraryContextSwitchEvent> {
-
-        @Override
-        public <U extends LibraryContextSwitchEvent> Event<U> select( TypeLiteral<U> typeLiteral,
-                                                                      Annotation... annotations ) {
+        doAnswer( invocationOnMock -> {
+            final ParameterizedCommand<Set<ExampleProject>> callback = (ParameterizedCommand<Set<ExampleProject>>) invocationOnMock.getArguments()[ 0 ];
+            callback.execute( exampleProjects );
             return null;
-        }
+        } ).when( examplesUtils ).getExampleProjects( any( ParameterizedCommand.class ) );
+
+        emptyLibraryScreen.setup();
+
+        verify( view ).init( emptyLibraryScreen );
+        verify( view ).setup( "user" );
+        verify( view ).clearImportProjectsContainer();
+
+        verify( view, times( 2 ) ).addProjectToImport( any( ExampleProject.class ) );
+        verify( view ).addProjectToImport( exampleProject1 );
+        verify( view ).addProjectToImport( exampleProject2 );
     }
 
+    @Test
+    public void newProjectTest() {
+        emptyLibraryScreen.newProject();
+
+        verify( libraryPlaces ).goToNewProject();
+    }
+
+    @Test
+    public void importProjectTest() {
+        final ExampleProject exampleProject = mock( ExampleProject.class );
+
+        emptyLibraryScreen.importProject( exampleProject );
+
+        verify( examplesUtils ).importProject( exampleProject );
+    }
 }

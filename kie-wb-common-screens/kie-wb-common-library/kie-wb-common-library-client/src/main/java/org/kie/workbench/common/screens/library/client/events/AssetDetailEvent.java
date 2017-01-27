@@ -15,31 +15,28 @@
  */
 package org.kie.workbench.common.screens.library.client.events;
 
-import org.guvnor.common.services.project.model.Project;
+import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.uberfire.backend.vfs.Path;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class AssetDetailEvent {
 
-    private Project project;
+    private ProjectInfo projectInfo;
 
     private Path path;
 
     public AssetDetailEvent() {
     }
 
-    public AssetDetailEvent( final Project project,
+    public AssetDetailEvent( final ProjectInfo projectInfo,
                              final Path path ) {
-        checkNotNull( "project", project );
-        checkNotNull( "path", path );
-
-        this.project = project;
+        this.projectInfo = checkNotNull( "projectInfo", projectInfo );
         this.path = path;
     }
 
-    public Project getProject() {
-        return project;
+    public ProjectInfo getProjectInfo() {
+        return projectInfo;
     }
 
     public Path getPath() {
@@ -57,7 +54,7 @@ public class AssetDetailEvent {
 
         final AssetDetailEvent that = (AssetDetailEvent) o;
 
-        if ( getProject() != null ? !getProject().equals( that.getProject() ) : that.getProject() != null ) {
+        if ( getProjectInfo() != null ? !getProjectInfo().equals( that.getProjectInfo() ) : that.getProjectInfo() != null ) {
             return false;
         }
         return !( getPath() != null ? !getPath().equals( that.getPath() ) : that.getPath() != null );
@@ -66,11 +63,10 @@ public class AssetDetailEvent {
 
     @Override
     public int hashCode() {
-        int result = getProject() != null ? getProject().hashCode() : 0;
+        int result = getProjectInfo() != null ? getProjectInfo().hashCode() : 0;
         result = ~~result;
         result = 31 * result + ( getPath() != null ? getPath().hashCode() : 0 );
         result = ~~result;
-
         return result;
     }
 }

@@ -16,19 +16,18 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import org.guvnor.common.services.project.model.POM;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
-import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
+import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
 
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
-@WorkbenchScreen( identifier = "ProjectsDetailScreen" )
+@WorkbenchScreen(identifier = LibraryPlaces.PROJECT_DETAIL_SCREEN)
 public class ProjectsDetailScreen {
 
     public interface View extends UberElement<ProjectsDetailScreen> {
@@ -36,20 +35,16 @@ public class ProjectsDetailScreen {
         void update( String description );
 
     }
-    private POM pom;
 
     private View view;
 
-    private TranslationService ts;
-
     @Inject
-    public ProjectsDetailScreen( View view, TranslationService ts ) {
+    public ProjectsDetailScreen( final View view ) {
         this.view = view;
-        this.ts = ts;
     }
 
-    public void update( @Observes ProjectDetailEvent event ) {
-        pom = event.getProjectSelected().getPom();
+    public void update( @Observes final ProjectDetailEvent event ) {
+        final POM pom = event.getProjectInfo().getProject().getPom();
         if ( pom != null && pom.getDescription() != null ) {
             view.update( pom.getDescription() );
         }
@@ -57,7 +52,7 @@ public class ProjectsDetailScreen {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return ts.getTranslation( LibraryConstants.ProjectDetailScreen );
+        return "Project Detail Screen";
     }
 
     @WorkbenchPartView

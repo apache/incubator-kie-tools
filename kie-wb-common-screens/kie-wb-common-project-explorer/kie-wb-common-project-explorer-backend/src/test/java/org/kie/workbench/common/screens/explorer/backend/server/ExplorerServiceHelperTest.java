@@ -17,6 +17,7 @@ package org.kie.workbench.common.screens.explorer.backend.server;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -290,6 +291,78 @@ public class ExplorerServiceHelperTest {
         assertEquals( 2, assets.size() );
         assertTrue( assets.contains( folderItem3 ) );
         assertTrue( assets.contains( folderItem2 ) );
+    }
+
+    @Test
+    public void packageHasNoAssetsTest() {
+        doReturn( false ).when( helper ).hasAssets( srcPath );
+        doReturn( false ).when( helper ).hasAssets( srcResourcesPath );
+        doReturn( false ).when( helper ).hasAssets( srcTestPath );
+        doReturn( false ).when( helper ).hasAssets( testResourcesPath );
+        doReturn( new HashSet<Package>() {{ add( childPkg ); }} ).when( projectService ).resolvePackages( pkg );
+        doReturn( false ).when( helper ).hasAssets( childPkg );
+
+        assertFalse( helper.hasAssets( pkg ) );
+    }
+
+    @Test
+    public void packageHasAssetsInsideSrcPathTest() {
+        doReturn( true ).when( helper ).hasAssets( srcPath );
+        doReturn( false ).when( helper ).hasAssets( srcResourcesPath );
+        doReturn( false ).when( helper ).hasAssets( srcTestPath );
+        doReturn( false ).when( helper ).hasAssets( testResourcesPath );
+        doReturn( new HashSet<Package>() {{ add( childPkg ); }} ).when( projectService ).resolvePackages( pkg );
+        doReturn( false ).when( helper ).hasAssets( childPkg );
+
+        assertTrue( helper.hasAssets( pkg ) );
+    }
+
+    @Test
+    public void packageHasAssetsInsideResourcesPathTest() {
+        doReturn( false ).when( helper ).hasAssets( srcPath );
+        doReturn( true ).when( helper ).hasAssets( srcResourcesPath );
+        doReturn( false ).when( helper ).hasAssets( srcTestPath );
+        doReturn( false ).when( helper ).hasAssets( testResourcesPath );
+        doReturn( new HashSet<Package>() {{ add( childPkg ); }} ).when( projectService ).resolvePackages( pkg );
+        doReturn( false ).when( helper ).hasAssets( childPkg );
+
+        assertTrue( helper.hasAssets( pkg ) );
+    }
+
+    @Test
+    public void packageHasAssetsInsideTestSrcPathTest() {
+        doReturn( false ).when( helper ).hasAssets( srcPath );
+        doReturn( false ).when( helper ).hasAssets( srcResourcesPath );
+        doReturn( true ).when( helper ).hasAssets( srcTestPath );
+        doReturn( false ).when( helper ).hasAssets( testResourcesPath );
+        doReturn( new HashSet<Package>() {{ add( childPkg ); }} ).when( projectService ).resolvePackages( pkg );
+        doReturn( false ).when( helper ).hasAssets( childPkg );
+
+        assertTrue( helper.hasAssets( pkg ) );
+    }
+
+    @Test
+    public void packageHasAssetsInsideTestResourcesPathTest() {
+        doReturn( false ).when( helper ).hasAssets( srcPath );
+        doReturn( false ).when( helper ).hasAssets( srcResourcesPath );
+        doReturn( false ).when( helper ).hasAssets( srcTestPath );
+        doReturn( true ).when( helper ).hasAssets( testResourcesPath );
+        doReturn( new HashSet<Package>() {{ add( childPkg ); }} ).when( projectService ).resolvePackages( pkg );
+        doReturn( false ).when( helper ).hasAssets( childPkg );
+
+        assertTrue( helper.hasAssets( pkg ) );
+    }
+
+    @Test
+    public void packageHasAssetsInsideChildPackageTest() {
+        doReturn( false ).when( helper ).hasAssets( srcPath );
+        doReturn( false ).when( helper ).hasAssets( srcResourcesPath );
+        doReturn( false ).when( helper ).hasAssets( srcTestPath );
+        doReturn( false ).when( helper ).hasAssets( testResourcesPath );
+        doReturn( new HashSet<Package>() {{ add( childPkg ); }} ).when( projectService ).resolvePackages( pkg );
+        doReturn( true ).when( helper ).hasAssets( childPkg );
+
+        assertTrue( helper.hasAssets( pkg ) );
     }
 
     private void givenThatOperationHasRestrictions( FolderItemOperation operation ) {

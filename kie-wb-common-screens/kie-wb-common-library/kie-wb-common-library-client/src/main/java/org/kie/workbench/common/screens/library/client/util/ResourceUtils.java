@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
+import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
@@ -39,5 +40,17 @@ public class ResourceUtils {
         final String baseName = Utils.getBaseFileName( path.getFileName(), resourceType.getSuffix() );
 
         return baseName;
+    }
+
+    public static boolean isProjectHandler( final NewResourceHandler handler ) {
+        return handler.getClass().getName().contains( "NewProjectHandler" );
+    }
+
+    public static boolean isPackageHandler( final NewResourceHandler handler ) {
+        return handler.getClass().getName().contains( "NewPackageHandler" );
+    }
+
+    public static boolean isUploadHandler( final NewResourceHandler handler ) {
+        return handler.getClass().getName().contains( "NewFileUploader" );
     }
 }

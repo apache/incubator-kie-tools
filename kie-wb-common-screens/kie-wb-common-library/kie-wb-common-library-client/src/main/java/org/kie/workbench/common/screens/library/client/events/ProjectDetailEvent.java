@@ -15,26 +15,24 @@
  */
 package org.kie.workbench.common.screens.library.client.events;
 
-import org.guvnor.common.services.project.model.Project;
+import org.kie.workbench.common.screens.library.api.ProjectInfo;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class ProjectDetailEvent {
 
-    private Project projectSelected;
+    private ProjectInfo projectInfo;
 
     public ProjectDetailEvent() {
 
     }
 
-    public ProjectDetailEvent( Project projectSelected ) {
-        checkNotNull( "projectSelected", projectSelected );
-
-        this.projectSelected = projectSelected;
+    public ProjectDetailEvent( final ProjectInfo projectInfo ) {
+        this.projectInfo = checkNotNull( "projectInfo", projectInfo );
     }
 
-    public Project getProjectSelected() {
-        return projectSelected;
+    public ProjectInfo getProjectInfo() {
+        return projectInfo;
     }
 
     @Override
@@ -48,12 +46,12 @@ public class ProjectDetailEvent {
 
         final ProjectDetailEvent that = (ProjectDetailEvent) o;
 
-        return !( getProjectSelected() != null ? !getProjectSelected().equals( that.getProjectSelected() ) : that.getProjectSelected() != null );
+        return !( getProjectInfo() != null ? !getProjectInfo().equals( that.getProjectInfo() ) : that.getProjectInfo() != null );
 
     }
 
     @Override
     public int hashCode() {
-        return getProjectSelected() != null ? getProjectSelected().hashCode() : 0;
+        return getProjectInfo() != null ? getProjectInfo().hashCode() : 0;
     }
 }

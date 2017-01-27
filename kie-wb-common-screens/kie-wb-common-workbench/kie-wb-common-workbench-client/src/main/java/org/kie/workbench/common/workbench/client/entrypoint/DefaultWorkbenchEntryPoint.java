@@ -31,6 +31,7 @@ import org.jboss.errai.ioc.client.api.UncaughtExceptionHandler;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
 import org.kie.workbench.common.widgets.client.resources.RoundedCornersResource;
+import org.kie.workbench.common.workbench.client.library.LibraryMonitor;
 import org.slf4j.Logger;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
@@ -39,6 +40,9 @@ public abstract class DefaultWorkbenchEntryPoint {
 
     @Inject
     private Logger logger;
+
+    @Inject
+    protected LibraryMonitor libraryMonitor;
 
     protected Caller<AppConfigService> appConfigService;
 
@@ -114,6 +118,7 @@ public abstract class DefaultWorkbenchEntryPoint {
     private void initializeWorkbench() {
         loadPreferences();
         loadStyles();
+        libraryMonitor.initialize();
         hideLoadingPopup();
     }
 }

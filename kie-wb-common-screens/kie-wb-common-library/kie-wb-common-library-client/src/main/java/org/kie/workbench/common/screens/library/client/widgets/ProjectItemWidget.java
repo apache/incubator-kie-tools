@@ -15,6 +15,9 @@
  */
 package org.kie.workbench.common.screens.library.client.widgets;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
@@ -22,13 +25,9 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.mvp.Command;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 @Dependent
 @Templated
 public class ProjectItemWidget implements IsElement {
-
 
     @Inject
     @DataField
@@ -46,12 +45,29 @@ public class ProjectItemWidget implements IsElement {
     @DataField
     Div projectListItemText;
 
-    public void init( String projectName, Command details, Command select ) {
-        this.projectName.setTextContent( projectName );
+    private String project;
+
+    public void init( final String project,
+                      final Command details,
+                      final Command select ) {
+        this.project = project;
+        this.projectName.setTextContent( project );
         this.projectName.setOnclick( e -> {
             e.stopImmediatePropagation();
             select.execute();
         } );
         projectListItem.setOnclick( e -> details.execute() );
+    }
+
+    public String getProject() {
+        return project;
+    }
+
+    public void select() {
+        projectListItem.getClassList().add( "selected" );
+    }
+
+    public void unselect() {
+        projectListItem.getClassList().remove( "selected" );
     }
 }

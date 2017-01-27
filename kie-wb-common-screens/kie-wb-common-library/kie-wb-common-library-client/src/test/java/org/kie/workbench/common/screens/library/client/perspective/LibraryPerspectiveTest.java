@@ -19,61 +19,28 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.library.client.monitor.LibraryMonitor;
-import org.kie.workbench.common.screens.library.client.util.LibraryDocks;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.docks.UberfireDocks;
-import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class LibraryPerspectiveTest {
 
     @Mock
-    private PlaceManager placeManager;
-
-    @Mock
-    private UberfireDocks uberfireDocks;
-
-    @Mock
-    private LibraryDocks libraryDocks;
-
-    @Mock
-    private LibraryMonitor libraryMonitor;
+    private LibraryPlaces libraryPlaces;
 
     private LibraryPerspective perspective;
 
     @Before
     public void setup() {
-        perspective = new LibraryPerspective( placeManager, uberfireDocks, libraryDocks, libraryMonitor );
+        perspective = new LibraryPerspective( libraryPlaces );
     }
 
     @Test
-    public void testSetupDocks() throws Exception {
-        perspective.setupDocks();
-        verify( libraryDocks ).start();
-    }
+    public void libraryRefreshesPlacesOnStartupTest() {
+        perspective.onOpen();
 
-    @Test
-    public void emptyLibraryScreenIsOpenedWhenThereIsNoProjectAccessibleTest() {
-        doReturn( false ).when( libraryMonitor ).thereIsAtLeastOneProjectAccessible();
-
-        final ConditionalPlaceRequest placeRequest = (ConditionalPlaceRequest) perspective.getLibraryPlaceRequest();
-
-        assertEquals( LibraryPlaces.EMPTY_LIBRARY_SCREEN, placeRequest.resolveConditionalPlaceRequest().getIdentifier() );
-    }
-
-    @Test
-    public void libraryScreenIsOpenedWhenThereIsAtLeastOneProjectAccessibleTest() {
-        doReturn( true ).when( libraryMonitor ).thereIsAtLeastOneProjectAccessible();
-
-        final ConditionalPlaceRequest placeRequest = (ConditionalPlaceRequest) perspective.getLibraryPlaceRequest();
-
-        assertEquals( LibraryPlaces.LIBRARY_SCREEN, placeRequest.resolveConditionalPlaceRequest().getIdentifier() );
+        verify( libraryPlaces ).refresh();
     }
 }

@@ -14,44 +14,38 @@
   ~ limitations under the License.
   -->
 
-<div class="ac container-fluid library">
-
-    <div class="row kie-row__nav-tabs">
-        <ul class="nav nav-tabs" id="navTabs">
-            <li class="active"><a href="#" data-i18n-key="Assets"></a></li>
-        </ul>
-    </div>
-
-    <div class="row">
-
-        <div class="toolbar-pf toolbar-kie">
-            <form class="toolbar-pf-actions">
-
-                <div class="form-group toolbar-pf-filter">
-                    <label class="sr-only" for="filterText" data-i18n-key="Name"></label>
-                    <div class="input-group input-group-kie">
-                        <div class="input-group-btn">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false" id="filterButton" data-i18n-key="Name"> <span
-                                    class="caret"></span></button>
-                            <ul class="dropdown-menu" id="filterMenu">
-                                <li><a href="#" data-i18n-key="Name"></a></li>
-                            </ul>
+<div class="ac library">
+    <div class="page-content-kie">
+        <div class="col-md-8 col-lg-9">
+            <div class="main-content-kie">
+                <div class="toolbar-pf">
+                    <form data-field="toolbar" class="toolbar-pf-actions">
+                        <div class="toolbar-data-title-kie" data-field="project-name"></div>
+                        <div class="form-group toolbar-pf-filter">
+                            <label class="sr-only" for="filter-text" data-i18n-key="Name"></label>
+                            <div class="input-group input-group-kie">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false" id="filter-button" data-i18n-key="Name">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" id="filter-menu">
+                                        <li><a href="#" data-i18n-key="Name"></a></li>
+                                    </ul>
+                                </div>
+                                <input type="text" class="form-control" id="filter-text">
+                            </div>
                         </div>
-                        <input type="text" class="form-control" id="filterText">
-                    </div>
+
+                    </form>
                 </div>
-                <div class="form-group">
-                    <span class="btn-group">
-                        <button type="button" class="btn btn-primary" id="newAssetButton" data-i18n-key="NewAsset"></button>
-                    </span>
+
+                <div class="list-group list-view-pf list-view-pf-view" id="asset-list">
                 </div>
-            </form>
+            </div>
         </div>
 
-        <div class="list-group list-view-pf list-view-pf-view" id="assetList">
-
+        <div data-field="details-container" class="col-md-4 col-lg-3">
         </div>
     </div>
-
 </div>

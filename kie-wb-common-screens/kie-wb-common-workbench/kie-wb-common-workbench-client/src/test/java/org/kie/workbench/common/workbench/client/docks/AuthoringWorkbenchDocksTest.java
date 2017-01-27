@@ -206,4 +206,32 @@ public class AuthoringWorkbenchDocksTest {
 
         verify( uberfireDocks, times( 2 ) ).disable( UberfireDockPosition.EAST, "authoring" );
     }
+
+    @Test
+    public void hideTest() {
+        authoringDocks.hide();
+
+        verify( uberfireDocks ).disable( UberfireDockPosition.WEST, "authoring" );
+        verify( uberfireDocks ).disable( UberfireDockPosition.EAST, "authoring" );
+    }
+
+    @Test
+    public void showWithDataModelerActiveTest() {
+        final DataModelerContext dataModelerContext = mock( DataModelerContext.class );
+        doReturn( DataModelerContext.EditionMode.GRAPHICAL_MODE ).when( dataModelerContext ).getEditionMode();
+        doReturn( dataModelerContext ).when( dataModelerWBContext ).getActiveContext();
+
+        authoringDocks.show();
+
+        verify( uberfireDocks ).enable( UberfireDockPosition.WEST, "authoring" );
+        verify( uberfireDocks ).enable( UberfireDockPosition.EAST, "authoring" );
+    }
+
+    @Test
+    public void showWithDataModelerInactiveTest() {
+        authoringDocks.show();
+
+        verify( uberfireDocks ).enable( UberfireDockPosition.WEST, "authoring" );
+        verify( uberfireDocks, never() ).enable( UberfireDockPosition.EAST, "authoring" );
+    }
 }

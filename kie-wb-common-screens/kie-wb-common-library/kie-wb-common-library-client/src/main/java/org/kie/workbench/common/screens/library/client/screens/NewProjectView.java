@@ -15,103 +15,49 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.Event;
-import org.jboss.errai.common.client.dom.*;
+import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.SinkNative;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 @Templated
-public class NewProjectView implements NewProjectScreen.View, IsElement {
+public class NewProjectView implements NewProjectScreen.View,
+                                       IsElement {
 
     private NewProjectScreen presenter;
 
-
-    @Named( "h1" )
     @Inject
-    @DataField
-    private Heading back;
-
-    @Inject
-    @DataField
+    @DataField("project-name")
     private Input projectName;
 
     @Inject
-    @DataField
-    Select ouDropdown;
-
-    @Inject
-    @DataField
-    private Button cancel;
-
-    @Inject
-    @DataField
+    @DataField("create")
     private Button create;
 
     @Inject
-    @DataField
-    private Label ouLabel;
-
-    @Inject
-    private Document document;
+    @DataField("cancel")
+    private Button cancel;
 
     @Override
     public void init( NewProjectScreen presenter ) {
         this.presenter = presenter;
-        back.setOnmouseover( f -> back.getStyle().setProperty( "cursor", "pointer" ) );
     }
 
-    @SinkNative( Event.ONCLICK )
-    @EventHandler( "back" )
-    public void back( Event e ) {
-        presenter.back();
-    }
-
-    @SinkNative( Event.ONCLICK )
-    @EventHandler( "cancel" )
+    @SinkNative(Event.ONCLICK)
+    @EventHandler("cancel")
     public void cancel( Event e ) {
-        presenter.back();
+        presenter.cancel();
     }
 
-    @SinkNative( Event.ONCLICK )
-    @EventHandler( "create" )
+    @SinkNative(Event.ONCLICK)
+    @EventHandler("create")
     public void createProject( Event e ) {
         presenter.createProject( projectName.getValue() );
-    }
-
-    @Override
-    public void addOrganizationUnit( String ou ) {
-        ouDropdown.add( createOption( ou ) );
-    }
-
-    @Override
-    public void clearOrganizationUnits() {
-        DOMUtil.removeAllChildren( ouDropdown );
-    }
-
-    @Override
-    public void setOrganizationUnitSelected( String identifier ) {
-        ouDropdown.setValue( identifier );
-    }
-
-    @Override
-    public void setOUAlias( String ouAlias ) {
-        ouLabel.setTextContent( ouAlias );
-    }
-
-    @Override
-    public String getOrganizationUnitSelected() {
-        return ouDropdown.getValue();
-    }
-
-    private Option createOption( String ou ) {
-        Option option = ( Option ) document.createElement( "option" );
-        option.setText( ou );
-        return option;
     }
 }

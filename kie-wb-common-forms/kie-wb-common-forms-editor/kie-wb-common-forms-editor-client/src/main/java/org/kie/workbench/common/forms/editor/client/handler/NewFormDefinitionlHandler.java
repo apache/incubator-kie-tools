@@ -79,7 +79,8 @@ public class NewFormDefinitionlHandler extends DefaultNewResourceHandler {
 
     @Override
     public String getDescription() {
-        return translationService.getTranslation( FormEditorConstants.NewFormDefinitionlHandlerForm );
+        final String description = translationService.getTranslation( FormEditorConstants.NewFormDefinitionlHandlerForm );
+        return description != null && !description.isEmpty() ? description : "Form Definition (Preview)";
     }
 
     @Override

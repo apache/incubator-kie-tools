@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
+import org.kie.workbench.common.workbench.client.library.LibraryMonitor;
 import org.mockito.Mock;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.ActivityBeansCache;
@@ -48,6 +49,9 @@ public class DefaultWorkbenchEntryPointTest {
     private DefaultWorkbenchEntryPoint entryPoint;
 
     @Mock
+    private LibraryMonitor libraryMonitorMock;
+
+    @Mock
     private Callback<String> callback1;
 
     @Mock
@@ -62,6 +66,10 @@ public class DefaultWorkbenchEntryPointTest {
         entryPoint = spy( new DefaultWorkbenchEntryPoint( appConfigServiceCallerMock,
                                                           pmasCallerMock,
                                                           activityBeansCache ) {
+            {
+                libraryMonitor = libraryMonitorMock;
+            }
+
             @Override
             protected void setupMenu() {
             }
@@ -75,6 +83,7 @@ public class DefaultWorkbenchEntryPointTest {
 
         verify( entryPoint ).loadPreferences();
         verify( entryPoint ).loadStyles();
+        verify( libraryMonitorMock ).initialize();
         verify( entryPoint ).hideLoadingPopup();
 
         verify( pmas ).initActivities( anyList() );

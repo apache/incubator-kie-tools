@@ -33,32 +33,33 @@ public class LibraryConstants {
     public static final String NewProjectScreen_Error = "NewProjectScreen.Error";
 
     @TranslationKey( defaultValue = "" )
-    public static final String NewProjectScreen_AllProjects = "NewProjectScreen.AllProjects";
-
-    @TranslationKey( defaultValue = "" )
-    public static final String ProjectsDetailsScreen_Title = "ProjectsDetailsScreenTitle";
-
-    @TranslationKey( defaultValue = "" )
-    public static final String Error_NoAccessRights = "Error_NoAccessRights";
-
-    @TranslationKey( defaultValue = "" )
-    public static final String All_Projects = "All_Projects";
+    public static final String NewProject = "NewProjectView.NewProject";
 
     @TranslationKey( defaultValue = "" )
     public static final String Project_Created = "Project_Created";
 
     @TranslationKey( defaultValue = "" )
-    public static final String EmptyLibraryScreen = "Empty_Library_Screen";
-
-    @TranslationKey( defaultValue = "" )
-    public static final String LibraryScreen = "Library_Screen";
-
-    @TranslationKey( defaultValue = "" )
     public static final String NewProjectScreen = "New_Project_Screen";
 
     @TranslationKey( defaultValue = "" )
-    public static final String ProjectDetailScreen = "Project_Detail_Screen";
+    public static final String LibraryBreadcrumbs_Settings = "LibraryBreadcrumbs.Settings";
 
+    @TranslationKey( defaultValue = "" )
+    public static final String ProjectImportedSuccessfully = "ProjectImportedSuccessfully";
 
+    @TranslationKey( defaultValue = "" )
+    public static final String ProjectImportError = "ProjectImportError";
+
+    @TranslationKey( defaultValue = "" )
+    public static final String Importing = "Importing";
+
+    @TranslationKey( defaultValue = "" )
+    public static final String LoadingAssets = "LoadingAssets";
+
+    @TranslationKey( defaultValue = "" )
+    public static final String LastModified = "LastModified";
+
+    @TranslationKey( defaultValue = "" )
+    public static final String Created = "Created";
 
 }
