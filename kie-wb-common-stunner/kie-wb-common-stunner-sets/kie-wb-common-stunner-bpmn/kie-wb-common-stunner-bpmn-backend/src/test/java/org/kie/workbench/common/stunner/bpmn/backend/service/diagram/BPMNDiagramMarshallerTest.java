@@ -678,6 +678,78 @@ public class BPMNDiagramMarshallerTest {
     }
 
     @Test
+    public void testUnmarshallScriptTask() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SCRIPTTASK);
+        ScriptTask scriptTask = null;
+        Iterator<Element> it = nodesIterator(diagram);
+        while (it.hasNext()) {
+            Element element = it.next();
+            if (element.getContent() instanceof View) {
+                Object oDefinition = ((View) element.getContent()).getDefinition();
+                if (oDefinition instanceof ScriptTask) {
+                    scriptTask = (ScriptTask) oDefinition;
+                    break;
+                }
+            }
+        }
+        assertNotNull(scriptTask);
+        assertNotNull(scriptTask.getExecutionSet());
+        assertNotNull(scriptTask.getExecutionSet().getScript());
+        assertNotNull(scriptTask.getExecutionSet().getScriptLanguage());
+        assertNotNull(scriptTask.getGeneral());
+        assertNotNull(scriptTask.getGeneral().getName());
+        assertEquals(scriptTask.getTaskType().getValue(),
+                     TaskTypes.SCRIPT);
+        assertEquals("my script task",
+                     scriptTask.getGeneral().getName().getValue());
+        assertEquals("var str = FirstName + LastName;",
+                     scriptTask.getExecutionSet().getScript().getValue());
+        assertEquals("javascript",
+                     scriptTask.getExecutionSet().getScriptLanguage().getValue());
+    }
+
+    @Test
+    public void testUnmarshallSequenceFlow() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SEQUENCEFLOW);
+        SequenceFlow sequenceFlow = null;
+        Iterator<Element> it = nodesIterator(diagram);
+        while (it.hasNext()) {
+            Element element = it.next();
+            if (element.getContent() instanceof View) {
+                Object oDefinition = ((View) element.getContent()).getDefinition();
+                if (oDefinition instanceof ExclusiveDatabasedGateway) {
+                    List<Edge> outEdges = ((NodeImpl) element).getOutEdges();
+                    for (Edge edge : outEdges) {
+                        SequenceFlow flow = (SequenceFlow) ((ViewConnectorImpl) ((EdgeImpl) edge).getContent()).getDefinition();
+                        if ("route1".equals(flow.getGeneral().getName().getValue())) {
+                            sequenceFlow = flow;
+                            break;
+                        }
+                    }
+                    if (sequenceFlow != null) {
+                        break;
+                    }
+                }
+            }
+        }
+        assertNotNull(sequenceFlow);
+        assertNotNull(sequenceFlow.getExecutionSet());
+        assertNotNull(sequenceFlow.getExecutionSet().getConditionExpression());
+        assertNotNull(sequenceFlow.getExecutionSet().getConditionExpressionLanguage());
+        assertNotNull(sequenceFlow.getExecutionSet().getPriority());
+        assertNotNull(sequenceFlow.getGeneral());
+        assertNotNull(sequenceFlow.getGeneral().getName());
+        assertEquals("route1",
+                     sequenceFlow.getGeneral().getName().getValue());
+        assertEquals("age >= 10;",
+                     sequenceFlow.getExecutionSet().getConditionExpression().getValue());
+        assertEquals("javascript",
+                     sequenceFlow.getExecutionSet().getConditionExpressionLanguage().getValue());
+        assertEquals("1",
+                     sequenceFlow.getExecutionSet().getPriority().getValue());
+    }
+
+    @Test
     public void testUnmarshallBusinessRuleTask() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_BUSINESSRULETASKRULEFLOWGROUP);
         BusinessRuleTask businessRuleTask = null;
@@ -1008,64 +1080,23 @@ public class BPMNDiagramMarshallerTest {
     @Test
     public void testMarshallScriptTask() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SCRIPTTASK);
-        ScriptTask scriptTask = null;
-        Iterator<Element> it = nodesIterator(diagram);
-        while (it.hasNext()) {
-            Element element = it.next();
-            if (element.getContent() instanceof View) {
-                Object oDefinition = ((View) element.getContent()).getDefinition();
-                if (oDefinition instanceof ScriptTask) {
-                    scriptTask = (ScriptTask) oDefinition;
-                    break;
-                }
-            }
-        }
-        assertNotNull(scriptTask);
-        assertNotNull(scriptTask.getExecutionSet());
-        assertNotNull(scriptTask.getExecutionSet().getScript());
-        assertNotNull(scriptTask.getExecutionSet().getScriptLanguage());
-        assertNotNull(scriptTask.getGeneral());
-        assertNotNull(scriptTask.getGeneral().getName());
-        assertEquals(scriptTask.getTaskType().getValue(),
-                     TaskTypes.SCRIPT);
-        assertEquals("my script task",
-                     scriptTask.getGeneral().getName().getValue());
-        assertEquals("System.out.println(\"hello\");",
-                     scriptTask.getExecutionSet().getScript().getValue());
-        assertEquals("java",
-                     scriptTask.getExecutionSet().getScriptLanguage().getValue());
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      3,
+                      2);
+        assertTrue(result.contains("name=\"my script task\" scriptFormat=\"http://www.javascript.com/javascript\""));
     }
 
     @Test
     public void testMarshallSequenceFlow() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SEQUENCEFLOW);
-        SequenceFlow sequenceFlow = null;
-        Iterator<Element> it = nodesIterator(diagram);
-        while (it.hasNext()) {
-            Element element = it.next();
-            if (element.getContent() instanceof View) {
-                Object oDefinition = ((View) element.getContent()).getDefinition();
-                if (oDefinition instanceof BusinessRuleTask) {
-                    sequenceFlow = (SequenceFlow) ((ViewConnectorImpl) ((EdgeImpl) ((NodeImpl) element).getOutEdges().get(0)).getContent()).getDefinition();
-                    break;
-                }
-            }
-        }
-        assertNotNull(sequenceFlow);
-        assertNotNull(sequenceFlow.getExecutionSet());
-        assertNotNull(sequenceFlow.getExecutionSet().getConditionExpression());
-        assertNotNull(sequenceFlow.getExecutionSet().getConditionExpressionLanguage());
-        assertNotNull(sequenceFlow.getExecutionSet().getPriority());
-        assertNotNull(sequenceFlow.getGeneral());
-        assertNotNull(sequenceFlow.getGeneral().getName());
-        assertEquals("my sequence flow",
-                     sequenceFlow.getGeneral().getName().getValue());
-        assertEquals("System.out.println(\"hello\");",
-                     sequenceFlow.getExecutionSet().getConditionExpression().getValue());
-        assertEquals("java",
-                     sequenceFlow.getExecutionSet().getConditionExpressionLanguage().getValue());
-        assertEquals("1",
-                     sequenceFlow.getExecutionSet().getPriority().getValue());
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      6,
+                      5);
+        assertTrue(result.contains("language=\"http://www.javascript.com/javascript\"><![CDATA[age < 10;]]></bpmn2:conditionExpression>"));
     }
 
     @Test
