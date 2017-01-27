@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.handlers;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableGraphResourceType;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
@@ -26,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -59,6 +62,9 @@ public class NewGuidedDecisionTableGraphHandlerTest {
     @Mock
     private EventSourceMock<NotificationEvent> mockNotificationEvent;
 
+    @Mock
+    private EventSourceMock<NewResourceSuccessEvent> newResourceSuccessEventMock;
+
     @Captor
     private ArgumentCaptor<Path> pathCaptor;
 
@@ -77,6 +83,7 @@ public class NewGuidedDecisionTableGraphHandlerTest {
                                                                                                    busyIndicatorView ) {
             {
                 this.notificationEvent = mockNotificationEvent;
+                this.newResourceSuccessEvent = newResourceSuccessEventMock;
             }
         };
         handler = spy( wrapped );
@@ -112,7 +119,8 @@ public class NewGuidedDecisionTableGraphHandlerTest {
                 times( 1 ) ).complete();
         verify( mockNotificationEvent,
                 times( 1 ) ).fire( any( NotificationEvent.class ) );
-
+        verify( newResourceSuccessEventMock,
+                times( 1 ) ).fire( any( NewResourceSuccessEvent.class ) );
         verify( placeManager,
                 times( 1 ) ).goTo( pathCaptor.capture() );
 

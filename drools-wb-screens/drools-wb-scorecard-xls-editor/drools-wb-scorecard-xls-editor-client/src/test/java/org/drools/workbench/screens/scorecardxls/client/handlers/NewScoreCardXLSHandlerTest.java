@@ -19,6 +19,8 @@ package org.drools.workbench.screens.scorecardxls.client.handlers;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwt.user.client.Command;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -30,6 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -48,6 +51,9 @@ import static org.mockito.Mockito.*;
 public class NewScoreCardXLSHandlerTest {
 
     private NewScoreCardXLSHandler handler;
+
+    @Mock
+    private EventSourceMock<NewResourceSuccessEvent> newResourceSuccessEventMock;
 
     @Mock
     private PlaceManager placeManager;
@@ -86,6 +92,7 @@ public class NewScoreCardXLSHandlerTest {
                                               clientMessageBus ) {
             {
                 this.notificationEvent = mockNotificationEvent;
+                this.newResourceSuccessEvent = newResourceSuccessEventMock;
             }
 
             @Override
@@ -128,7 +135,8 @@ public class NewScoreCardXLSHandlerTest {
                 times( 1 ) ).complete();
         verify( mockNotificationEvent,
                 times( 1 ) ).fire( any( NotificationEvent.class ) );
-
+        verify( newResourceSuccessEventMock,
+                times( 1 ) ).fire( any( NewResourceSuccessEvent.class ) );
         verify( placeManager,
                 times( 1 ) ).goTo( newPathCaptor.capture() );
 
@@ -164,7 +172,8 @@ public class NewScoreCardXLSHandlerTest {
                 times( 1 ) ).complete();
         verify( mockNotificationEvent,
                 times( 1 ) ).fire( any( NotificationEvent.class ) );
-
+        verify( newResourceSuccessEventMock,
+                times( 1 ) ).fire( any( NewResourceSuccessEvent.class ) );
         verify( placeManager,
                 times( 1 ) ).goTo( newPathCaptor.capture() );
 
@@ -200,7 +209,8 @@ public class NewScoreCardXLSHandlerTest {
                 times( 1 ) ).complete();
         verify( mockNotificationEvent,
                 times( 1 ) ).fire( any( NotificationEvent.class ) );
-
+        verify( newResourceSuccessEventMock,
+                times( 1 ) ).fire( any( NewResourceSuccessEvent.class ) );
         verify( placeManager,
                 times( 1 ) ).goTo( newPathCaptor.capture() );
 
@@ -236,7 +246,8 @@ public class NewScoreCardXLSHandlerTest {
                 times( 1 ) ).complete();
         verify( mockNotificationEvent,
                 times( 1 ) ).fire( any( NotificationEvent.class ) );
-
+        verify( newResourceSuccessEventMock,
+                times( 1 ) ).fire( any( NewResourceSuccessEvent.class ) );
         verify( placeManager,
                 times( 1 ) ).goTo( newPathCaptor.capture() );
 

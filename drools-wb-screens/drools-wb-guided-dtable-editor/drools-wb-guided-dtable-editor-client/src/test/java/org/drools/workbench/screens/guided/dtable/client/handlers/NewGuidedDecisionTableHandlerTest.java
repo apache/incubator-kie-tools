@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.handlers;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -34,6 +36,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -79,6 +82,9 @@ public class NewGuidedDecisionTableHandlerTest {
     @Mock
     private NewGuidedDecisionTableWizard wizardBean;
 
+    @Mock
+    private EventSourceMock<NewResourceSuccessEvent> newResourceSuccessEventMock;
+
     @GwtMock
     private GuidedDecisionTableOptions options;
 
@@ -107,6 +113,7 @@ public class NewGuidedDecisionTableHandlerTest {
                                                                                          beanManager ) {
             {
                 this.notificationEvent = mockNotificationEvent;
+                this.newResourceSuccessEvent = newResourceSuccessEventMock;
             }
         };
         handler = spy( wrapped );
@@ -169,7 +176,8 @@ public class NewGuidedDecisionTableHandlerTest {
                 times( 1 ) ).complete();
         verify( mockNotificationEvent,
                 times( 1 ) ).fire( any( NotificationEvent.class ) );
-
+        verify( newResourceSuccessEventMock,
+                times( 1 ) ).fire( any( NewResourceSuccessEvent.class ) );
         verify( placeManager,
                 times( 1 ) ).goTo( pathCaptor.capture() );
 

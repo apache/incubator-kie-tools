@@ -34,6 +34,7 @@ import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -141,6 +142,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
                                      busyIndicatorView.hideBusyIndicator();
                                      presenter.complete();
                                      notifySuccess();
+                                     newResourceSuccessEvent.fire( new NewResourceSuccessEvent( path ) );
                                      placeManager.goTo( newPath );
                                  }
 

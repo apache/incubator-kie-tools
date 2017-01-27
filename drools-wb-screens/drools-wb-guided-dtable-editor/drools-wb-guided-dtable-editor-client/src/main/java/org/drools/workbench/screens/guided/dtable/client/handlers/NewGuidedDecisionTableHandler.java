@@ -33,6 +33,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
@@ -151,6 +152,7 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
         return ( Path path ) -> {
             presenter.complete();
             notifySuccess();
+            newResourceSuccessEvent.fire( new NewResourceSuccessEvent( path ) );
             placeManager.goTo( path );
         };
     }
