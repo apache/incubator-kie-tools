@@ -18,7 +18,6 @@ package org.kie.workbench.common.services.backend.builder;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.compiler.kproject.xml.PomModel;
@@ -32,18 +31,20 @@ import org.uberfire.commons.validation.PortablePreconditions;
 @Named("LRUPomModelCache")
 public class LRUPomModelCache extends LRUCache<Project, PomModel> {
 
-    @Inject
     private ObservablePOMFile observablePOMFile;
 
-    public synchronized void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
-        PortablePreconditions.checkNotNull( "event",
-                                            event );
-
-        if ( event.getResourcePath() != null
-                && event.getProject() != null
-                && observablePOMFile.accept( event.getResourcePath().getFileName() ) ) {
-            invalidateCache( event.getProject() );
-        }
+    public LRUPomModelCache() {
+        observablePOMFile = new ObservablePOMFile();
     }
 
+    public synchronized void invalidateProjectCache(@Observes final InvalidateDMOProjectCacheEvent event) {
+        PortablePreconditions.checkNotNull("event",
+                                           event);
+
+        if (event.getResourcePath() != null
+                && event.getProject() != null
+                && observablePOMFile.accept(event.getResourcePath().getFileName())) {
+            invalidateCache(event.getProject());
+        }
+    }
 }

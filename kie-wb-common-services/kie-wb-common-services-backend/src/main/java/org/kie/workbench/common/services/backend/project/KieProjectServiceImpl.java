@@ -37,7 +37,6 @@ import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
-import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -61,118 +60,122 @@ public class KieProjectServiceImpl
     }
 
     @Inject
-    public KieProjectServiceImpl( final @Named("ioStrategy") IOService ioService,
-                                  final ProjectSaver projectSaver,
-                                  final POMService pomService,
-                                  final ConfigurationService configurationService,
-                                  final ConfigurationFactory configurationFactory,
-                                  final Event<NewProjectEvent> newProjectEvent,
-                                  final Event<NewPackageEvent> newPackageEvent,
-                                  final Event<RenameProjectEvent> renameProjectEvent,
-                                  final Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
-                                  final SessionInfo sessionInfo,
-                                  final AuthorizationManager authorizationManager,
-                                  final BackwardCompatibleUtil backward,
-                                  final CommentedOptionFactory commentedOptionFactory,
-                                  final KieResourceResolver resourceResolver,
-                                  final ProjectRepositoryResolver repositoryResolver ) {
-        super( ioService,
-               pomService,
-               configurationService,
-               configurationFactory,
-               newProjectEvent,
-               newPackageEvent,
-               renameProjectEvent,
-               invalidateDMOCache,
-               sessionInfo,
-               authorizationManager,
-               backward,
-               commentedOptionFactory,
-               resourceResolver );
+    public KieProjectServiceImpl(final @Named("ioStrategy") IOService ioService,
+                                 final ProjectSaver projectSaver,
+                                 final POMService pomService,
+                                 final ConfigurationService configurationService,
+                                 final ConfigurationFactory configurationFactory,
+                                 final Event<NewProjectEvent> newProjectEvent,
+                                 final Event<NewPackageEvent> newPackageEvent,
+                                 final Event<RenameProjectEvent> renameProjectEvent,
+                                 final Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
+                                 final SessionInfo sessionInfo,
+                                 final AuthorizationManager authorizationManager,
+                                 final BackwardCompatibleUtil backward,
+                                 final CommentedOptionFactory commentedOptionFactory,
+                                 final KieResourceResolver resourceResolver,
+                                 final ProjectRepositoryResolver repositoryResolver) {
+        super(ioService,
+              pomService,
+              configurationService,
+              configurationFactory,
+              newProjectEvent,
+              newPackageEvent,
+              renameProjectEvent,
+              invalidateDMOCache,
+              sessionInfo,
+              authorizationManager,
+              backward,
+              commentedOptionFactory,
+              resourceResolver);
         this.projectSaver = projectSaver;
         this.repositoryResolver = repositoryResolver;
     }
 
-    @Override
-    public KieProject newProject( final Path repositoryPath,
-                                  final POM pom,
-                                  final String baseUrl ) {
-        return newProject( repositoryPath,
-                           pom,
-                           baseUrl,
-                           DeploymentMode.VALIDATED );
+    protected void setProjectSaver(final ProjectSaver projectSaver) {
+        this.projectSaver = projectSaver;
     }
 
     @Override
-    public KieProject newProject( final Path repositoryPath,
-                                  final POM pom,
-                                  final String baseUrl,
-                                  final DeploymentMode mode ) {
-        if ( DeploymentMode.VALIDATED.equals( mode ) ) {
-            checkRepositories( pom );
+    public KieProject newProject(final Path repositoryPath,
+                                 final POM pom,
+                                 final String baseUrl) {
+        return newProject(repositoryPath,
+                          pom,
+                          baseUrl,
+                          DeploymentMode.VALIDATED);
+    }
+
+    @Override
+    public KieProject newProject(final Path repositoryPath,
+                                 final POM pom,
+                                 final String baseUrl,
+                                 final DeploymentMode mode) {
+        if (DeploymentMode.VALIDATED.equals(mode)) {
+            checkRepositories(pom);
         }
-        return projectSaver.save( repositoryPath,
-                                  pom,
-                                  baseUrl );
+        return projectSaver.save(repositoryPath,
+                                 pom,
+                                 baseUrl);
     }
 
-    private void checkRepositories( final POM pom ) {
+    private void checkRepositories(final POM pom) {
         // Check is the POM's GAV resolves to any pre-existing artifacts. We don't need to filter
         // resolved Repositories by those enabled for the Project since this is a new Project.
-        final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact( pom.getGav() );
-        if ( repositories.size() > 0 ) {
-            throw new GAVAlreadyExistsException( pom.getGav(),
-                                                 repositories );
+        final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact(pom.getGav());
+        if (repositories.size() > 0) {
+            throw new GAVAlreadyExistsException(pom.getGav(),
+                                                repositories);
         }
     }
 
     @Override
-    public KieProject simpleProjectInstance( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
-        return (KieProject) resourceResolver.simpleProjectInstance( nioProjectRootPath );
+    public KieProject simpleProjectInstance(final org.uberfire.java.nio.file.Path nioProjectRootPath) {
+        return (KieProject) resourceResolver.simpleProjectInstance(nioProjectRootPath);
     }
 
     @Override
-    public KieProject resolveProject( final Path resource ) {
-        return (KieProject) resourceResolver.resolveProject( resource );
+    public KieProject resolveProject(final Path resource) {
+        return (KieProject) resourceResolver.resolveProject(resource);
     }
 
     @Override
-    public Project resolveParentProject( final Path resource ) {
-        return resourceResolver.resolveParentProject( resource );
+    public Project resolveParentProject(final Path resource) {
+        return resourceResolver.resolveParentProject(resource);
     }
 
     @Override
-    public Project resolveToParentProject( final Path resource ) {
-        return resourceResolver.resolveToParentProject( resource );
+    public Project resolveToParentProject(final Path resource) {
+        return resourceResolver.resolveToParentProject(resource);
     }
 
     @Override
-    public Set<Package> resolvePackages( final Project project ) {
-        return resourceResolver.resolvePackages( project );
+    public Set<Package> resolvePackages(final Project project) {
+        return resourceResolver.resolvePackages(project);
     }
 
     @Override
-    public Set<Package> resolvePackages( final Package pkg ) {
-        return resourceResolver.resolvePackages( pkg );
+    public Set<Package> resolvePackages(final Package pkg) {
+        return resourceResolver.resolvePackages(pkg);
     }
 
     @Override
-    public Package resolveDefaultPackage( final Project project ) {
-        return resourceResolver.resolveDefaultPackage( project );
+    public Package resolveDefaultPackage(final Project project) {
+        return resourceResolver.resolveDefaultPackage(project);
     }
 
     @Override
-    public Package resolveParentPackage( final Package pkg ) {
-        return resourceResolver.resolveParentPackage( pkg );
+    public Package resolveParentPackage(final Package pkg) {
+        return resourceResolver.resolveParentPackage(pkg);
     }
 
     @Override
-    public boolean isPom( final Path resource ) {
-        return resourceResolver.isPom( resource );
+    public boolean isPom(final Path resource) {
+        return resourceResolver.isPom(resource);
     }
 
     @Override
-    public Package resolvePackage( final Path resource ) {
-        return resourceResolver.resolvePackage( resource );
+    public Package resolvePackage(final Path resource) {
+        return resourceResolver.resolvePackage(resource);
     }
 }

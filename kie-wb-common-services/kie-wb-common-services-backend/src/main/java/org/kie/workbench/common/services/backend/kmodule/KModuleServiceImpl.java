@@ -48,90 +48,91 @@ public class KModuleServiceImpl
     }
 
     @Inject
-    public KModuleServiceImpl( final @Named("ioStrategy") IOService ioService,
-                               final KieProjectService projectService,
-                               final MetadataService metadataService,
-                               final KModuleContentHandler moduleContentHandler ) {
+    public KModuleServiceImpl(final @Named("ioStrategy") IOService ioService,
+                              final KieProjectService projectService,
+                              final MetadataService metadataService,
+                              final KModuleContentHandler moduleContentHandler) {
         this.ioService = ioService;
         this.projectService = projectService;
         this.metadataService = metadataService;
         this.moduleContentHandler = moduleContentHandler;
     }
 
+    protected void setProjectService(final KieProjectService projectService) {
+        this.projectService = projectService;
+    }
+
     @Override
-    public boolean isKModule( final Path resource ) {
+    public boolean isKModule(final Path resource) {
         try {
             //Null resource paths cannot resolve to a Project
-            if ( resource == null ) {
+            if (resource == null) {
                 return false;
             }
 
             //Check if path equals kmodule.xml
-            final KieProject project = projectService.resolveProject( resource );
+            final KieProject project = projectService.resolveProject(resource);
             //It's possible that the Incremental Build attempts to act on a Project file before the project has been fully created.
             //This should be a short-term issue that will be resolved when saving a project batches pom.xml, kmodule.xml and project.imports
             //etc into a single git-batch. At present they are saved individually leading to multiple Incremental Build requests.
-            if ( project == null ) {
+            if (project == null) {
                 return false;
             }
 
-            final org.uberfire.java.nio.file.Path path = Paths.convert( resource ).normalize();
-            final org.uberfire.java.nio.file.Path kmoduleFilePath = Paths.convert( project.getKModuleXMLPath() );
-            return path.startsWith( kmoduleFilePath );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            final org.uberfire.java.nio.file.Path path = Paths.convert(resource).normalize();
+            final org.uberfire.java.nio.file.Path kmoduleFilePath = Paths.convert(project.getKModuleXMLPath());
+            return path.startsWith(kmoduleFilePath);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path setUpKModule( final Path path ) {
+    public Path setUpKModule(final Path path) {
         try {
-            final org.uberfire.java.nio.file.Path pathToKModuleXML = Paths.convert( path );
-            if ( ioService.exists( pathToKModuleXML ) ) {
-                throw new FileAlreadyExistsException( pathToKModuleXML.toString() );
+            final org.uberfire.java.nio.file.Path pathToKModuleXML = Paths.convert(path);
+            if (ioService.exists(pathToKModuleXML)) {
+                throw new FileAlreadyExistsException(pathToKModuleXML.toString());
             } else {
-                ioService.write( pathToKModuleXML,
-                                 moduleContentHandler.toString( new KModuleModel() ) );
+                ioService.write(pathToKModuleXML,
+                                moduleContentHandler.toString(new KModuleModel()));
 
                 //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
 
-                return Paths.convert( pathToKModuleXML );
+                return Paths.convert(pathToKModuleXML);
             }
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public KModuleModel load( final Path path ) {
+    public KModuleModel load(final Path path) {
         try {
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
-            final String content = ioService.readAllString( nioPath );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert(path);
+            final String content = ioService.readAllString(nioPath);
 
-            return moduleContentHandler.toModel( content );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return moduleContentHandler.toModel(content);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path save( final Path path,
-                      final KModuleModel content,
-                      final Metadata metadata,
-                      final String comment ) {
+    public Path save(final Path path,
+                     final KModuleModel content,
+                     final Metadata metadata,
+                     final String comment) {
         try {
-            if ( metadata == null ) {
-                ioService.write( Paths.convert( path ),
-                                 moduleContentHandler.toString( content ) );
+            if (metadata == null) {
+                ioService.write(Paths.convert(path),
+                                moduleContentHandler.toString(content));
             } else {
                 ioService.write(
-                        Paths.convert( path ),
-                        moduleContentHandler.toString( content ),
-                        metadataService.setUpAttributes( path,
-                                                         metadata ) );
+                        Paths.convert(path),
+                        moduleContentHandler.toString(content),
+                        metadataService.setUpAttributes(path,
+                                                        metadata));
             }
 
             //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
@@ -139,11 +140,9 @@ public class KModuleServiceImpl
             //in POMService.save to avoid duplicating events (and re-construction of DMO).
 
             return path;
-
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
-            throw ExceptionUtilities.handleException( e );
+            throw ExceptionUtilities.handleException(e);
         }
     }
-
 }

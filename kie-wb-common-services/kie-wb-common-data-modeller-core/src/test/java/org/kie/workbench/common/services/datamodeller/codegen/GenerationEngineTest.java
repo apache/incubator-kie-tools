@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
@@ -26,14 +27,11 @@ import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyIm
 import org.kie.workbench.common.services.datamodeller.core.impl.ParameterImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.TypeImpl;
 import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleModelDriver;
-import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
-import java.text.NumberFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

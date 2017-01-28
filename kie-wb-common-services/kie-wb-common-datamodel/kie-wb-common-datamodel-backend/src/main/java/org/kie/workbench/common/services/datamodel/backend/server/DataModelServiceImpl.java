@@ -38,17 +38,21 @@ import org.uberfire.commons.validation.PortablePreconditions;
 public class DataModelServiceImpl
         implements DataModelService {
 
-    @Inject
-    @Named("PackageDataModelOracleCache")
     private LRUDataModelOracleCache cachePackages;
 
-    @Inject
-    @Named("ProjectDataModelOracleCache")
     private LRUProjectDataModelOracleCache cacheProjects;
 
-    @Inject
     private KieProjectService projectService;
 
+    @Inject
+    public DataModelServiceImpl( final @Named("PackageDataModelOracleCache") LRUDataModelOracleCache cachePackages,
+                                 final @Named("ProjectDataModelOracleCache") LRUProjectDataModelOracleCache cacheProjects,
+                                 final KieProjectService projectService) {
+        this.cachePackages = cachePackages;
+        this.cacheProjects = cacheProjects;
+        this.projectService = projectService;
+    }
+    
     @Override
     public PackageDataModelOracle getDataModel( final Path resourcePath ) {
         try {

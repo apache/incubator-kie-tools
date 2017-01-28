@@ -60,146 +60,155 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
 
     private static final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> FILTER_DSLS = new DSLFileFilter();
 
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
 
-    @Inject
     private FileDiscoveryService fileDiscoveryService;
 
-    @Inject
-    @Named("ProjectDataModelOracleCache")
     private LRUProjectDataModelOracleCache cacheProjects;
 
-    @Inject
     private KieProjectService projectService;
 
-    @Inject
     private LRUBuilderCache builderCache;
 
-    public synchronized void invalidatePackageCache( @Observes final InvalidateDMOPackageCacheEvent event ) {
-        PortablePreconditions.checkNotNull( "event",
-                                            event );
+    public LRUDataModelOracleCache() {
+        //CDI proxy
+    }
+
+    @Inject
+    public LRUDataModelOracleCache(final @Named("ioStrategy") IOService ioService,
+                                   final FileDiscoveryService fileDiscoveryService,
+                                   final @Named("ProjectDataModelOracleCache") LRUProjectDataModelOracleCache cacheProjects,
+                                   final KieProjectService projectService,
+                                   final LRUBuilderCache builderCache) {
+        this.ioService = ioService;
+        this.fileDiscoveryService = fileDiscoveryService;
+        this.cacheProjects = cacheProjects;
+        this.projectService = projectService;
+        this.builderCache = builderCache;
+    }
+
+    public synchronized void invalidatePackageCache(@Observes final InvalidateDMOPackageCacheEvent event) {
+        PortablePreconditions.checkNotNull("event",
+                                           event);
         final Path resourcePath = event.getResourcePath();
-        final Package pkg = projectService.resolvePackage( resourcePath );
+        final Package pkg = projectService.resolvePackage(resourcePath);
 
         //If resource was not within a Package there's nothing to invalidate
-        if ( pkg != null ) {
-            invalidateCache( pkg );
+        if (pkg != null) {
+            invalidateCache(pkg);
         }
     }
 
-    public synchronized void invalidateProjectPackagesCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
-        PortablePreconditions.checkNotNull( "event",
-                                            event );
+    public synchronized void invalidateProjectPackagesCache(@Observes final InvalidateDMOProjectCacheEvent event) {
+        PortablePreconditions.checkNotNull("event",
+                                           event);
         final Path resourcePath = event.getResourcePath();
-        final KieProject project = projectService.resolveProject( resourcePath );
+        final KieProject project = projectService.resolveProject(resourcePath);
 
         //If resource was not within a Project there's nothing to invalidate
-        if ( project == null ) {
+        if (project == null) {
             return;
         }
 
         final String projectUri = project.getRootPath().toURI();
         final List<Package> cacheEntriesToInvalidate = new ArrayList<Package>();
-        for ( final Package pkg : getKeys() ) {
+        for (final Package pkg : getKeys()) {
             final Path packageMainSrcPath = pkg.getPackageMainSrcPath();
             final Path packageTestSrcPath = pkg.getPackageTestSrcPath();
             final Path packageMainResourcesPath = pkg.getPackageMainResourcesPath();
             final Path packageTestResourcesPath = pkg.getPackageTestResourcesPath();
-            if ( packageMainSrcPath != null && packageMainSrcPath.toURI().startsWith( projectUri ) ) {
-                cacheEntriesToInvalidate.add( pkg );
-            } else if ( packageTestSrcPath != null && packageTestSrcPath.toURI().startsWith( projectUri ) ) {
-                cacheEntriesToInvalidate.add( pkg );
-            } else if ( packageMainResourcesPath != null && packageMainResourcesPath.toURI().startsWith( projectUri ) ) {
-                cacheEntriesToInvalidate.add( pkg );
-            } else if ( packageTestResourcesPath != null && packageTestResourcesPath.toURI().startsWith( projectUri ) ) {
-                cacheEntriesToInvalidate.add( pkg );
+            if (packageMainSrcPath != null && packageMainSrcPath.toURI().startsWith(projectUri)) {
+                cacheEntriesToInvalidate.add(pkg);
+            } else if (packageTestSrcPath != null && packageTestSrcPath.toURI().startsWith(projectUri)) {
+                cacheEntriesToInvalidate.add(pkg);
+            } else if (packageMainResourcesPath != null && packageMainResourcesPath.toURI().startsWith(projectUri)) {
+                cacheEntriesToInvalidate.add(pkg);
+            } else if (packageTestResourcesPath != null && packageTestResourcesPath.toURI().startsWith(projectUri)) {
+                cacheEntriesToInvalidate.add(pkg);
             }
         }
-        for ( final Package pkg : cacheEntriesToInvalidate ) {
-            invalidateCache( pkg );
+        for (final Package pkg : cacheEntriesToInvalidate) {
+            invalidateCache(pkg);
         }
     }
 
     //Check the DataModelOracle for the Package has been created, otherwise create one!
-    public synchronized PackageDataModelOracle assertPackageDataModelOracle( final KieProject project,
-                                                                             final Package pkg ) {
-        PackageDataModelOracle oracle = getEntry( pkg );
-        if ( oracle == null ) {
-            oracle = makePackageDataModelOracle( project,
-                                                 pkg );
-            setEntry( pkg,
-                      oracle );
+    public synchronized PackageDataModelOracle assertPackageDataModelOracle(final KieProject project,
+                                                                            final Package pkg) {
+        PackageDataModelOracle oracle = getEntry(pkg);
+        if (oracle == null) {
+            oracle = makePackageDataModelOracle(project,
+                                                pkg);
+            setEntry(pkg,
+                     oracle);
         }
         return oracle;
     }
 
-    private PackageDataModelOracle makePackageDataModelOracle( final KieProject project,
-                                                               final Package pkg ) {
+    private PackageDataModelOracle makePackageDataModelOracle(final KieProject project,
+                                                              final Package pkg) {
         final String packageName = pkg.getPackageName();
-        final PackageDataModelOracleBuilder dmoBuilder = PackageDataModelOracleBuilder.newPackageOracleBuilder( packageName );
-        final ProjectDataModelOracle projectOracle = cacheProjects.assertProjectDataModelOracle( project );
-        dmoBuilder.setProjectOracle( projectOracle );
+        final PackageDataModelOracleBuilder dmoBuilder = PackageDataModelOracleBuilder.newPackageOracleBuilder(packageName);
+        final ProjectDataModelOracle projectOracle = cacheProjects.assertProjectDataModelOracle(project);
+        dmoBuilder.setProjectOracle(projectOracle);
 
         //Add Guvnor enumerations
-        loadEnumsForPackage( dmoBuilder,
-                             project,
-                             pkg );
+        loadEnumsForPackage(dmoBuilder,
+                            project,
+                            pkg);
 
         //Add DSLs
-        loadDslsForPackage( dmoBuilder,
-                            pkg );
+        loadDslsForPackage(dmoBuilder,
+                           pkg);
 
         //Add Globals
-        loadGlobalsForPackage( dmoBuilder,
-                               pkg );
+        loadGlobalsForPackage(dmoBuilder,
+                              pkg);
 
         return dmoBuilder.build();
     }
 
-    private BuildMessage makeMessage( final String msg ) {
+    private BuildMessage makeMessage(final String msg) {
         final BuildMessage buildMessage = new BuildMessage();
-        buildMessage.setLevel( Level.ERROR );
-        buildMessage.setText( msg );
+        buildMessage.setLevel(Level.ERROR);
+        buildMessage.setText(msg);
         return buildMessage;
     }
 
-    private void loadEnumsForPackage( final PackageDataModelOracleBuilder dmoBuilder,
-                                      final KieProject project,
-                                      final Package pkg ) {
-        final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
-        final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData( module ).getClassLoader();
-        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( pkg.getPackageMainResourcesPath() );
-        final Collection<org.uberfire.java.nio.file.Path> enumFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                          FILTER_ENUMERATIONS );
-        for ( final org.uberfire.java.nio.file.Path path : enumFiles ) {
-            final String enumDefinition = ioService.readAllString( path );
-            dmoBuilder.addEnum( enumDefinition,
-                                classLoader );
+    private void loadEnumsForPackage(final PackageDataModelOracleBuilder dmoBuilder,
+                                     final KieProject project,
+                                     final Package pkg) {
+        final KieModule module = builderCache.assertBuilder(project).getKieModuleIgnoringErrors();
+        final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData(module).getClassLoader();
+        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert(pkg.getPackageMainResourcesPath());
+        final Collection<org.uberfire.java.nio.file.Path> enumFiles = fileDiscoveryService.discoverFiles(nioPackagePath,
+                                                                                                         FILTER_ENUMERATIONS);
+        for (final org.uberfire.java.nio.file.Path path : enumFiles) {
+            final String enumDefinition = ioService.readAllString(path);
+            dmoBuilder.addEnum(enumDefinition,
+                               classLoader);
         }
     }
 
-    private void loadDslsForPackage( final PackageDataModelOracleBuilder dmoBuilder,
-                                     final Package pkg ) {
-        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( pkg.getPackageMainResourcesPath() );
-        final Collection<org.uberfire.java.nio.file.Path> dslFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                         FILTER_DSLS );
-        for ( final org.uberfire.java.nio.file.Path path : dslFiles ) {
-            final String dslDefinition = ioService.readAllString( path );
-            dmoBuilder.addDsl( dslDefinition );
+    private void loadDslsForPackage(final PackageDataModelOracleBuilder dmoBuilder,
+                                    final Package pkg) {
+        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert(pkg.getPackageMainResourcesPath());
+        final Collection<org.uberfire.java.nio.file.Path> dslFiles = fileDiscoveryService.discoverFiles(nioPackagePath,
+                                                                                                        FILTER_DSLS);
+        for (final org.uberfire.java.nio.file.Path path : dslFiles) {
+            final String dslDefinition = ioService.readAllString(path);
+            dmoBuilder.addDsl(dslDefinition);
         }
     }
 
-    private void loadGlobalsForPackage( final PackageDataModelOracleBuilder dmoBuilder,
-                                        final Package pkg ) {
-        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( pkg.getPackageMainResourcesPath() );
-        final Collection<org.uberfire.java.nio.file.Path> globalFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                            FILTER_GLOBALS );
-        for ( final org.uberfire.java.nio.file.Path path : globalFiles ) {
-            final String definition = ioService.readAllString( path );
-            dmoBuilder.addGlobals( definition );
+    private void loadGlobalsForPackage(final PackageDataModelOracleBuilder dmoBuilder,
+                                       final Package pkg) {
+        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert(pkg.getPackageMainResourcesPath());
+        final Collection<org.uberfire.java.nio.file.Path> globalFiles = fileDiscoveryService.discoverFiles(nioPackagePath,
+                                                                                                           FILTER_GLOBALS);
+        for (final org.uberfire.java.nio.file.Path path : globalFiles) {
+            final String definition = ioService.readAllString(path);
+            dmoBuilder.addGlobals(definition);
         }
     }
-
 }

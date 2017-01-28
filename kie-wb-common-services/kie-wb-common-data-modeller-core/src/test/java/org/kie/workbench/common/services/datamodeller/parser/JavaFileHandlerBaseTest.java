@@ -19,7 +19,6 @@ package org.kie.workbench.common.services.datamodeller.parser;
 import org.junit.Before;
 
 import org.kie.workbench.common.services.datamodeller.parser.util.ParserUtil;
-import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

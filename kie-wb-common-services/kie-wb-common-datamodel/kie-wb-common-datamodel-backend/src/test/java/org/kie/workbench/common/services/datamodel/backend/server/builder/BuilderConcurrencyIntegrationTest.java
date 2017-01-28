@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server.builder;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
@@ -25,15 +30,11 @@ import java.util.concurrent.TimeUnit;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.junit.Test;
-import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class BuilderConcurrencyIntegrationTest extends AbstractWeldBuilderIntegrationTest {
 

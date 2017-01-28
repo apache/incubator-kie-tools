@@ -15,13 +15,9 @@
  */
 package org.kie.workbench.common.services.backend.builder;
 
-import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.StreamSupport.stream;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -39,8 +35,12 @@ import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
+import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.io.IOService;
+
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * A simple LRU cache for Builders
@@ -48,96 +48,109 @@ import org.uberfire.io.IOService;
 @ApplicationScoped
 public class LRUBuilderCache extends LRUCache<Project, Builder> {
 
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
 
-    @Inject
     private KieProjectService projectService;
 
-    @Inject
     private ProjectImportsService importsService;
 
-    @Inject
-    @Any
     private Instance<BuildValidationHelper> buildValidationHelperBeans;
 
-    @Inject
-    @Named("LRUProjectDependenciesClassLoaderCache")
     private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
 
-    @Inject
-    @Named("LRUPomModelCache")
     private LRUPomModelCache pomModelCache;
 
-    @Inject
     private PackageNameWhiteListServiceImpl packageNameWhiteListService;
 
-    @Inject
-    @JavaSourceFilter
     private Instance<Predicate<String>> classFilterBeans;
 
     private final List<BuildValidationHelper> buildValidationHelpers = new ArrayList<>();
 
     private final List<Predicate<String>> classFilters = new ArrayList<>();
 
+    public LRUBuilderCache() {
+        //CDI proxy
+    }
+
+    @Inject
+    public LRUBuilderCache(@Named("ioStrategy") IOService ioService,
+                           KieProjectService projectService,
+                           ProjectImportsService importsService,
+                           @Any Instance<BuildValidationHelper> buildValidationHelperBeans,
+                           @Named("LRUProjectDependenciesClassLoaderCache") LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache,
+                           @Named("LRUPomModelCache") LRUPomModelCache pomModelCache,
+                           PackageNameWhiteListService packageNameWhiteListService,
+                           @JavaSourceFilter Instance<Predicate<String>> classFilterBeans) {
+        this.ioService = ioService;
+        this.projectService = projectService;
+        this.importsService = importsService;
+        this.buildValidationHelperBeans = buildValidationHelperBeans;
+        this.dependenciesClassLoaderCache = dependenciesClassLoaderCache;
+        this.pomModelCache = pomModelCache;
+        this.packageNameWhiteListService = (PackageNameWhiteListServiceImpl) packageNameWhiteListService;
+        this.classFilterBeans = classFilterBeans;
+    }
+
     @PostConstruct
     public void loadInstances() {
-        stream( buildValidationHelperBeans.spliterator(), false ).collect( toCollection( () -> buildValidationHelpers ) );
-        stream( classFilterBeans.spliterator(), false ).collect( toCollection( () -> classFilters ) );
+        stream(buildValidationHelperBeans.spliterator(),
+               false).collect(toCollection(() -> buildValidationHelpers));
+        stream(classFilterBeans.spliterator(),
+               false).collect(toCollection(() -> classFilters));
     }
 
     @PreDestroy
     public void destroyInstances() {
-        buildValidationHelpers.forEach( helper -> buildValidationHelperBeans.destroy( helper ) );
-        classFilters.forEach( filter -> classFilterBeans.destroy( filter ) );
+        buildValidationHelpers.forEach(helper -> buildValidationHelperBeans.destroy(helper));
+        classFilters.forEach(filter -> classFilterBeans.destroy(filter));
     }
 
-    public synchronized void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
-        PortablePreconditions.checkNotNull( "event",
-                                            event );
+    public synchronized void invalidateProjectCache(@Observes final InvalidateDMOProjectCacheEvent event) {
+        PortablePreconditions.checkNotNull("event",
+                                           event);
         final Project project = event.getProject();
 
         //If resource was not within a Project there's nothing to invalidate
-        if ( project != null ) {
-            invalidateCache( project );
+        if (project != null) {
+            invalidateCache(project);
         }
     }
 
-    public synchronized Builder assertBuilder( POM pom )
+    public synchronized Builder assertBuilder(POM pom)
             throws NoBuilderFoundException {
         for (Project project : getKeys()) {
-            if ( project.getPom().getGav().equals( pom.getGav() ) ) {
-                return makeBuilder( project );
+            if (project.getPom().getGav().equals(pom.getGav())) {
+                return makeBuilder(project);
             }
         }
         throw new NoBuilderFoundException();
     }
 
-    public synchronized Builder assertBuilder( final Project project ) {
-        return makeBuilder( project );
+    public synchronized Builder assertBuilder(final Project project) {
+        return makeBuilder(project);
     }
 
-    private Builder makeBuilder( Project project ) {
-        Builder builder = getEntry( project );
-        if ( builder == null ) {
-            builder = new Builder( project,
-                                   ioService,
-                                   projectService,
-                                   importsService,
-                                   buildValidationHelpers,
-                                   dependenciesClassLoaderCache,
-                                   pomModelCache,
-                                   packageNameWhiteListService,
-                                   createSingleClassFilterPredicate() );
+    private Builder makeBuilder(Project project) {
+        Builder builder = getEntry(project);
+        if (builder == null) {
+            builder = new Builder(project,
+                                  ioService,
+                                  projectService,
+                                  importsService,
+                                  buildValidationHelpers,
+                                  dependenciesClassLoaderCache,
+                                  pomModelCache,
+                                  packageNameWhiteListService,
+                                  createSingleClassFilterPredicate());
 
-            setEntry( project,
-                      builder );
+            setEntry(project,
+                     builder);
         }
         return builder;
     }
 
     private Predicate<String> createSingleClassFilterPredicate() {
-        return classFilters.stream().reduce( o -> true, (p1, p2) -> p1.and( p2 ) );
+        return classFilters.stream().reduce(o -> true,
+                                            (p1, p2) -> p1.and(p2));
     }
 }

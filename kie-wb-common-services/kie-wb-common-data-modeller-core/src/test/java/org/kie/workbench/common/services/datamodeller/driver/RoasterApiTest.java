@@ -30,7 +30,6 @@ import org.kie.workbench.common.services.datamodeller.annotations.ENUM3;
 import org.kie.workbench.common.services.datamodeller.annotations.EnumsAnnotation;
 import org.kie.workbench.common.services.datamodeller.annotations.PrimitivesAnnotation;
 import org.kie.workbench.common.services.datamodeller.annotations.TestEnums;
-import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

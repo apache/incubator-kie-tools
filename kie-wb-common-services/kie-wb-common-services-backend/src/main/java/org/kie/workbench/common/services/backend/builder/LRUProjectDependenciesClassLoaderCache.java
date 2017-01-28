@@ -33,22 +33,30 @@ public class LRUProjectDependenciesClassLoaderCache extends LRUCache<KieProject,
     @Inject
     private LRUBuilderCache builderCache;
 
-    public synchronized ClassLoader assertDependenciesClassLoader( final KieProject project ) {
-        ClassLoader classLoader = getEntry( project );
-        if ( classLoader == null ) {
-            classLoader = buildClassLoader( project );
-            setEntry( project, classLoader );
+    protected void setBuilderCache(final LRUBuilderCache builderCache) {
+        this.builderCache = builderCache;
+    }
+
+    public synchronized ClassLoader assertDependenciesClassLoader(final KieProject project) {
+        ClassLoader classLoader = getEntry(project);
+        if (classLoader == null) {
+            classLoader = buildClassLoader(project);
+            setEntry(project,
+                     classLoader);
         }
         return classLoader;
     }
 
-    public synchronized void setDependenciesClassLoader( final KieProject project, ClassLoader classLoader ) {
-        setEntry( project, classLoader );
+    public synchronized void setDependenciesClassLoader(final KieProject project,
+                                                        ClassLoader classLoader) {
+        setEntry(project,
+                 classLoader);
     }
 
-    private ClassLoader buildClassLoader( final KieProject project ) {
-        final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
-        return buildClassLoader( project, KieModuleMetaData.Factory.newKieModuleMetaData( module ) );
+    private ClassLoader buildClassLoader(final KieProject project) {
+        final KieModule module = builderCache.assertBuilder(project).getKieModuleIgnoringErrors();
+        return buildClassLoader(project,
+                                KieModuleMetaData.Factory.newKieModuleMetaData(module));
     }
 
     /**
@@ -58,20 +66,21 @@ public class LRUProjectDependenciesClassLoaderCache extends LRUCache<KieProject,
      * ClassLoader part that has the project dependencies. And the project ClassLoader can be easily calculated using
      * this ClassLoader as parent. Since current project classes are quickly calculated on each incremental build, etc.
      */
-    public static ClassLoader buildClassLoader( final KieProject project, final KieModuleMetaData kieModuleMetaData ) {
+    public static ClassLoader buildClassLoader(final KieProject project,
+                                               final KieModuleMetaData kieModuleMetaData) {
         //By construction the parent class loader for the KieModuleMetadata.getClassLoader() is an URLClass loader
         //that has the project dependencies. So this implementation relies on this. BUT can easily be changed to
         //calculate this URL class loader given that we have the pom.xml and we can use maven libraries classes
         //to calculate project maven dependencies. This is basically what the KieModuleMetaData already does. The
         //optimization was added to avoid the maven transitive calculation on complex projects.
         final ClassLoader classLoader = kieModuleMetaData.getClassLoader().getParent();
-        if ( classLoader instanceof URLClassLoader ) {
+        if (classLoader instanceof URLClassLoader) {
             return classLoader;
         } else {
             //this case should never happen. But if ProjectClassLoader calculation for KieModuleMetadata changes at
             //the error will be notified for implementation review.
-            throw new RuntimeException( "It was not posible to calculate project dependencies class loader for project: "
-                    + project.getKModuleXMLPath() );
+            throw new RuntimeException("It was not posible to calculate project dependencies class loader for project: "
+                                               + project.getKModuleXMLPath());
         }
     }
 }
