@@ -248,13 +248,13 @@ public class Bpmn2JsonUnmarshaller {
     public Bpmn2Resource unmarshall(String json,
                                     String preProcessingData) throws JsonParseException, IOException {
         return unmarshall(new JsonFactory().createJsonParser(json),
-                preProcessingData);
+                          preProcessingData);
     }
 
     public Bpmn2Resource unmarshall(File file,
                                     String preProcessingData) throws JsonParseException, IOException {
         return unmarshall(new JsonFactory().createJsonParser(file),
-                preProcessingData);
+                          preProcessingData);
     }
 
     public void setZOrderEnabled(boolean zOrderEnabled) {
@@ -278,7 +278,7 @@ public class Bpmn2JsonUnmarshaller {
             parser.nextToken(); // open the object
             ResourceSet rSet = new ResourceSetImpl();
             rSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("bpmn2",
-                    new JBPMBpmn2ResourceFactoryImpl());
+                                                                             new JBPMBpmn2ResourceFactoryImpl());
             Bpmn2Resource bpmn2 = (Bpmn2Resource) rSet.createResource(URI.createURI("virtual.bpmn2"));
             rSet.getResources().add(bpmn2);
             _currentResource = bpmn2;
@@ -287,7 +287,7 @@ public class Bpmn2JsonUnmarshaller {
             }
             // do the unmarshalling now:
             Definitions def = (Definitions) unmarshallItem(parser,
-                    preProcessingData);
+                                                           preProcessingData);
             def.setExporter("jBPM Designer");
             def.setExporterVersion("6.2.0");
             revisitUserTasks(def);
@@ -344,7 +344,7 @@ public class Bpmn2JsonUnmarshaller {
                         List<DiagramElement> unsortedElements = new ArrayList<DiagramElement>(plane.getPlaneElement());
                         plane.getPlaneElement().clear();
                         Collections.sort(unsortedElements,
-                                new DIZorderComparator());
+                                         new DIZorderComparator());
                         plane.getPlaneElement().addAll(unsortedElements);
                         diagram.setPlane(plane);
                     }
@@ -378,7 +378,7 @@ public class Bpmn2JsonUnmarshaller {
                             FeatureMap extensionElements = extattrval.getValue();
                             List<MetaDataType> metadataExtensions = (List<MetaDataType>) extensionElements
                                     .get(DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA,
-                                            true);
+                                         true);
                             for (MetaDataType eleMetadata : metadataExtensions) {
                                 if (eleMetadata.getName() != null && eleMetadata.getName().equals("elementname")) {
                                     eleMetadata.setMetaValue(wrapInCDATABlock(newName));
@@ -422,8 +422,8 @@ public class Bpmn2JsonUnmarshaller {
             if (dia instanceof BPMNShape) {
                 BPMNShape shape = (BPMNShape) dia;
                 updateShapeBounds(def,
-                        plane,
-                        shape.getBpmnElement());
+                                  plane,
+                                  shape.getBpmnElement());
             }
         }
         revisitEdgeBoundsInLanes(def);
@@ -457,19 +457,19 @@ public class Bpmn2JsonUnmarshaller {
                         if (root instanceof Process) {
                             Process process = (Process) root;
                             updateEdgeBoundsInContainers(process,
-                                    sq,
-                                    plane,
-                                    edge);
+                                                         sq,
+                                                         plane,
+                                                         edge);
                         }
                     }
                     // update the source and target on BPMNEdge
                     if (sq.getSourceRef() != null) {
                         edge.setSourceElement(getBPMNShapeForElement(sq.getSourceRef(),
-                                plane));
+                                                                     plane));
                     }
                     if (sq.getTargetRef() != null) {
                         edge.setTargetElement(getBPMNShapeForElement(sq.getTargetRef(),
-                                plane));
+                                                                     plane));
                     }
                 }
             }
@@ -485,37 +485,37 @@ public class Bpmn2JsonUnmarshaller {
             if (!(container instanceof Process)) {
                 if (fele.getId().equals(sq.getSourceRef().getId())) {
                     Bounds sourceBounds = getBoundsForElement(sq.getSourceRef(),
-                            plane);
+                                                              plane);
                     List<Point> edgePoints = edge.getWaypoint();
                     if (edgePoints != null && edgePoints.size() > 1) {
                         if (sourceBounds != null) {
                             Point first = edgePoints.get(0);
                             first.setX(first.getX() + getBoundsForElement(container,
-                                    plane).getX() + (sourceBounds.getWidth() / 2));
+                                                                          plane).getX() + (sourceBounds.getWidth() / 2));
                             first.setY(first.getY() + getBoundsForElement(container,
-                                    plane).getY());
+                                                                          plane).getY());
                         }
                     }
                 } else if (fele.getId().equals(sq.getTargetRef().getId())) {
                     Bounds targetBounds = getBoundsForElement(sq.getTargetRef(),
-                            plane);
+                                                              plane);
                     List<Point> edgePoints = edge.getWaypoint();
                     if (edgePoints != null && edgePoints.size() > 1) {
                         if (targetBounds != null) {
                             Point last = edgePoints.get(edgePoints.size() - 1);
                             last.setX(last.getX() + getBoundsForElement(container,
-                                    plane).getX() - (targetBounds.getWidth() / 2));
+                                                                        plane).getX() - (targetBounds.getWidth() / 2));
                             last.setY(last.getY() + getBoundsForElement(container,
-                                    plane).getY());
+                                                                        plane).getY());
                         }
                     }
                 }
             }
             if (fele instanceof FlowElementsContainer) {
                 updateEdgeBoundsInContainers((FlowElementsContainer) fele,
-                        sq,
-                        plane,
-                        edge);
+                                             sq,
+                                             plane,
+                                             edge);
             }
         }
     }
@@ -527,9 +527,9 @@ public class Bpmn2JsonUnmarshaller {
             if (dia instanceof BPMNEdge) {
                 BPMNEdge edge = (BPMNEdge) dia;
                 updateEdgeBoundsInLanes(def,
-                        plane,
-                        edge,
-                        edge.getBpmnElement());
+                                        plane,
+                                        edge,
+                                        edge.getBpmnElement());
             }
         }
     }
@@ -586,7 +586,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntryBgColor = new SimpleFeatureMapEntry(extensionAttributeBgColor,
-                    backgroundColor);
+                                                                                    backgroundColor);
             shape.getBpmnElement().getAnyAttribute().add(extensionEntryBgColor);
             EAttributeImpl extensionAttributeBorderColor = (EAttributeImpl) metadata.demandFeature(
                     "http://www.omg.org/spec/BPMN/non-normative/color",
@@ -594,7 +594,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntryBorderColor = new SimpleFeatureMapEntry(extensionAttributeBorderColor,
-                    borderColor);
+                                                                                        borderColor);
             shape.getBpmnElement().getAnyAttribute().add(extensionEntryBorderColor);
             EAttributeImpl extensionAttributeColor = (EAttributeImpl) metadata.demandFeature(
                     "http://www.omg.org/spec/BPMN/non-normative/color",
@@ -602,7 +602,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntryColor = new SimpleFeatureMapEntry(extensionAttributeColor,
-                    fontColor);
+                                                                                  fontColor);
             shape.getBpmnElement().getAnyAttribute().add(extensionEntryColor);
         } else {
             _logger.debug("Unable to find color information for shape: " + shape.getBpmnElement().getId());
@@ -634,7 +634,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntryBgColor = new SimpleFeatureMapEntry(extensionAttributeBgColor,
-                    backgroundColor);
+                                                                                    backgroundColor);
             edge.getBpmnElement().getAnyAttribute().add(extensionEntryBgColor);
             EAttributeImpl extensionAttributeBorderColor = (EAttributeImpl) metadata.demandFeature(
                     "http://www.omg.org/spec/BPMN/non-normative/color",
@@ -642,7 +642,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntryBorderColor = new SimpleFeatureMapEntry(extensionAttributeBorderColor,
-                    borderColor);
+                                                                                        borderColor);
             edge.getBpmnElement().getAnyAttribute().add(extensionEntryBorderColor);
             EAttributeImpl extensionAttributeColor = (EAttributeImpl) metadata.demandFeature(
                     "http://www.omg.org/spec/BPMN/non-normative/color",
@@ -650,7 +650,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntryColor = new SimpleFeatureMapEntry(extensionAttributeColor,
-                    fontColor);
+                                                                                  fontColor);
             edge.getBpmnElement().getAnyAttribute().add(extensionEntryColor);
         } else {
             _logger.debug("Unable to find color information for shape: " + edge.getBpmnElement().getId());
@@ -666,11 +666,11 @@ public class Bpmn2JsonUnmarshaller {
             // update the source and target on BPMNEdge
             if (sq.getSourceRef() != null) {
                 edge.setSourceElement(getBPMNShapeForElement(sq.getSourceRef(),
-                        plane));
+                                                             plane));
             }
             if (sq.getTargetRef() != null) {
                 edge.setTargetElement(getBPMNShapeForElement(sq.getTargetRef(),
-                        plane));
+                                                             plane));
             }
             List<RootElement> rootElements = def.getRootElements();
             for (RootElement root : rootElements) {
@@ -682,7 +682,7 @@ public class Bpmn2JsonUnmarshaller {
                                 for (Lane newLane : ls.getLanes()) {
                                     List<FlowNode> laneFlowNodes = newLane.getFlowNodeRefs();
                                     Bounds laneBounds = getBoundsForElement(newLane,
-                                            plane);
+                                                                            plane);
                                     for (FlowNode newFlowNode : laneFlowNodes) {
                                         if (newFlowNode.getId().equals(sq.getSourceRef().getId())) {
                                             List<DiagramElement> diagramElements = plane.getPlaneElement();
@@ -737,12 +737,12 @@ public class Bpmn2JsonUnmarshaller {
         if (ele instanceof Lane) {
             Lane nextLane = (Lane) ele;
             Bounds laneBounds = getBoundsForElement(nextLane,
-                    plane);
+                                                    plane);
             updateShapeBoundsInLanes(plane,
-                    ele,
-                    nextLane,
-                    laneBounds.getX(),
-                    laneBounds.getY());
+                                     ele,
+                                     nextLane,
+                                     laneBounds.getX(),
+                                     laneBounds.getY());
         } else {
             List<RootElement> rootElements = def.getRootElements();
             for (RootElement root : rootElements) {
@@ -764,13 +764,13 @@ public class Bpmn2JsonUnmarshaller {
                                 if (sp.getLanes().size() < 1) {
                                     // find the subprocess bounds
                                     Bounds subprocessBounds = getBoundsForElement(fe,
-                                            plane);
+                                                                                  plane);
                                     if (subprocessBounds != null) {
                                         updateShapeBoundsInSubprocess(plane,
-                                                ele,
-                                                (SubProcess) fe,
-                                                subprocessBounds.getX(),
-                                                subprocessBounds.getY());
+                                                                      ele,
+                                                                      (SubProcess) fe,
+                                                                      subprocessBounds.getX(),
+                                                                      subprocessBounds.getY());
                                     }
                                 }
                             }
@@ -788,23 +788,23 @@ public class Bpmn2JsonUnmarshaller {
                                          float parentY) {
         for (FlowNode fn : lane.getFlowNodeRefs()) {
             Bounds fnBounds = getBoundsForElement(fn,
-                    plane);
+                                                  plane);
             if (fnBounds != null) {
                 fnBounds.setX(fnBounds.getX() + parentX);
                 fnBounds.setY(fnBounds.getY() + parentY);
                 // if flownode is a subprocess update it too
                 if (fn instanceof SubProcess) {
                     updateShapeBoundsInSubprocessInLanes(plane,
-                            ele,
-                            (SubProcess) fn,
-                            fnBounds.getX(),
-                            fnBounds.getY());
+                                                         ele,
+                                                         (SubProcess) fn,
+                                                         fnBounds.getX(),
+                                                         fnBounds.getY());
                 } else if (fn instanceof Lane) {
                     updateShapeBoundsInLanes(plane,
-                            ele,
-                            (Lane) fn,
-                            fnBounds.getX(),
-                            fnBounds.getY());
+                                             ele,
+                                             (Lane) fn,
+                                             fnBounds.getX(),
+                                             fnBounds.getY());
                 }
             }
         }
@@ -817,17 +817,17 @@ public class Bpmn2JsonUnmarshaller {
                                                      float parentY) {
         for (FlowElement subEle : sub.getFlowElements()) {
             Bounds subEleBounds = getBoundsForElement(subEle,
-                    plane);
+                                                      plane);
             if (subEleBounds != null) {
                 subEleBounds.setX(subEleBounds.getX() + parentX);
                 subEleBounds.setY(subEleBounds.getY() + parentY);
             }
             if (subEle instanceof SubProcess) {
                 updateShapeBoundsInSubprocessInLanes(plane,
-                        ele,
-                        (SubProcess) subEle,
-                        subEleBounds.getX(),
-                        subEleBounds.getY());
+                                                     ele,
+                                                     (SubProcess) subEle,
+                                                     subEleBounds.getX(),
+                                                     subEleBounds.getY());
             }
         }
     }
@@ -842,7 +842,7 @@ public class Bpmn2JsonUnmarshaller {
             if (subEle.getId().equals(ele.getId())) {
                 foundInSubprocess = true;
                 Bounds subEleBounds = getBoundsForElement(subEle,
-                        plane);
+                                                          plane);
                 if (subEleBounds != null) {
                     subEleBounds.setX(subEleBounds.getX() + parentX);
                     subEleBounds.setY(subEleBounds.getY() + parentY);
@@ -853,12 +853,12 @@ public class Bpmn2JsonUnmarshaller {
             for (FlowElement subEle : sub.getFlowElements()) {
                 if (subEle instanceof SubProcess) {
                     Bounds subEleBounds = getBoundsForElement(subEle,
-                            plane);
+                                                              plane);
                     updateShapeBoundsInSubprocess(plane,
-                            ele,
-                            (SubProcess) subEle,
-                            subEleBounds.getX(),
-                            subEleBounds.getY());
+                                                  ele,
+                                                  (SubProcess) subEle,
+                                                  subEleBounds.getX(),
+                                                  subEleBounds.getY());
                 }
             }
         }
@@ -867,7 +867,7 @@ public class Bpmn2JsonUnmarshaller {
     private Bounds getBoundsForElement(BaseElement ele,
                                        BPMNPlane plane) {
         BPMNShape elementShape = getBPMNShapeForElement(ele,
-                plane);
+                                                        plane);
         if (elementShape != null) {
             return elementShape.getBounds();
         } else {
@@ -905,7 +905,7 @@ public class Bpmn2JsonUnmarshaller {
                                                     DataInput miCollectionInputDI = Bpmn2Factory.eINSTANCE.createDataInput();
                                                     miCollectionInputDI.setName("miinputCollection");
                                                     ItemDefinition miCollectionInputDIItemDefinition = this.getMessageItemDefinition(def.getRootElements(),
-                                                            prop.getId());
+                                                                                                                                     prop.getId());
                                                     miCollectionInputDI.setItemSubjectRef(miCollectionInputDIItemDefinition);
                                                     task.getIoSpecification().getDataInputs().add(miCollectionInputDI);
                                                     if (task.getIoSpecification().getInputSets() == null || task.getIoSpecification().getInputSets().size() < 1) {
@@ -929,7 +929,7 @@ public class Bpmn2JsonUnmarshaller {
                                                     DataOutput miCollectionOutputDI = Bpmn2Factory.eINSTANCE.createDataOutput();
                                                     miCollectionOutputDI.setName("mioutputCollection");
                                                     ItemDefinition miCollectionOutputDIItemDefinition = this.getMessageItemDefinition(def.getRootElements(),
-                                                            prop.getId());
+                                                                                                                                      prop.getId());
                                                     miCollectionOutputDI.setItemSubjectRef(miCollectionOutputDIItemDefinition);
                                                     task.getIoSpecification().getDataOutputs().add(miCollectionOutputDI);
                                                     if (task.getIoSpecification().getOutputSets() == null || task.getIoSpecification().getOutputSets().size() < 1) {
@@ -1041,7 +1041,7 @@ public class Bpmn2JsonUnmarshaller {
                         if (da.getName() != null) {
                             String daId = da.getName().trim();
                             daId = daId.replaceAll("\\W",
-                                    "");
+                                                   "");
                             da.setId(daId);
                         }
                     }
@@ -1402,9 +1402,9 @@ public class Bpmn2JsonUnmarshaller {
         for (RootElement root : rootElements) {
             if (root instanceof Process) {
                 setSendReceiveTasksInfo((Process) root,
-                        def,
-                        toAddMessages,
-                        toAddItemDefinitions);
+                                        def,
+                                        toAddMessages,
+                                        toAddItemDefinitions);
             }
         }
         for (ItemDefinition idef : toAddItemDefinitions) {
@@ -1424,18 +1424,18 @@ public class Bpmn2JsonUnmarshaller {
             if (fe instanceof ReceiveTask) {
                 ReceiveTask rt = (ReceiveTask) fe;
                 rt.setMessageRef(extractMessage(rt,
-                        toAddMessages,
-                        toAddItemDefinitions));
+                                                toAddMessages,
+                                                toAddItemDefinitions));
             } else if (fe instanceof SendTask) {
                 SendTask st = (SendTask) fe;
                 st.setMessageRef(extractMessage(st,
-                        toAddMessages,
-                        toAddItemDefinitions));
+                                                toAddMessages,
+                                                toAddItemDefinitions));
             } else if (fe instanceof FlowElementsContainer) {
                 setSendReceiveTasksInfo((FlowElementsContainer) fe,
-                        def,
-                        toAddMessages,
-                        toAddItemDefinitions);
+                                        def,
+                                        toAddMessages,
+                                        toAddItemDefinitions);
             }
         }
     }
@@ -1459,7 +1459,7 @@ public class Bpmn2JsonUnmarshaller {
                 idef = Bpmn2Factory.eINSTANCE.createItemDefinition();
                 idef.setId(idefId);
                 _itemDefinitions.put(idefId,
-                        idef);
+                                     idef);
             }
             Message msg = _messages.get(msgId);
             if (msg == null) {
@@ -1467,7 +1467,7 @@ public class Bpmn2JsonUnmarshaller {
                 msg.setId(msgId);
                 msg.setItemRef(idef);
                 _messages.put(msgId,
-                        msg);
+                              msg);
             }
             toAddMessages.add(msg);
             toAddItemDefinitions.add(idef);
@@ -1555,24 +1555,24 @@ public class Bpmn2JsonUnmarshaller {
         for (RootElement root : rootElements) {
             if (root instanceof Process) {
                 setThrowEventsInfo((Process) root,
-                        def,
-                        rootElements,
-                        toAddSignals,
-                        toAddErrors,
-                        toAddEscalations,
-                        toAddMessages,
-                        toAddItemDefinitions);
+                                   def,
+                                   rootElements,
+                                   toAddSignals,
+                                   toAddErrors,
+                                   toAddEscalations,
+                                   toAddMessages,
+                                   toAddItemDefinitions);
             }
         }
         for (Lane lane : _lanes) {
             setThrowEventsInfoForLanes(lane,
-                    def,
-                    rootElements,
-                    toAddSignals,
-                    toAddErrors,
-                    toAddEscalations,
-                    toAddMessages,
-                    toAddItemDefinitions);
+                                       def,
+                                       rootElements,
+                                       toAddSignals,
+                                       toAddErrors,
+                                       toAddEscalations,
+                                       toAddMessages,
+                                       toAddItemDefinitions);
         }
         for (Signal s : toAddSignals) {
             def.getRootElements().add(s);
@@ -1651,7 +1651,7 @@ public class Bpmn2JsonUnmarshaller {
                             err.setId(errorId);
                             err.setErrorCode(errorCode);
                             this._errors.put(errorCode,
-                                    err);
+                                             err);
                         }
                         toAddErrors.add(err);
                         ((ErrorEventDefinition) ed).setErrorRef(err);
@@ -1670,14 +1670,14 @@ public class Bpmn2JsonUnmarshaller {
                             escalation = Bpmn2Factory.eINSTANCE.createEscalation();
                             escalation.setEscalationCode(escalationCode);
                             this._escalations.put(escalationCode,
-                                    escalation);
+                                                  escalation);
                         }
                         toAddEscalations.add(escalation);
                         ((EscalationEventDefinition) ed).setEscalationRef(escalation);
                     } else if (ed instanceof MessageEventDefinition) {
                         ((MessageEventDefinition) ed).setMessageRef(extractMessage(ed,
-                                toAddMessages,
-                                toAddItemDefinitions));
+                                                                                   toAddMessages,
+                                                                                   toAddItemDefinitions));
                     } else if (ed instanceof CompensateEventDefinition) {
                         Iterator<FeatureMap.Entry> iter = ed.getAnyAttribute()
                                 .iterator();
@@ -1714,13 +1714,13 @@ public class Bpmn2JsonUnmarshaller {
                 }
             } else if (fe instanceof FlowElementsContainer) {
                 setThrowEventsInfo((FlowElementsContainer) fe,
-                        def,
-                        rootElements,
-                        toAddSignals,
-                        toAddErrors,
-                        toAddEscalations,
-                        toAddMessages,
-                        toAddItemDefinitions);
+                                   def,
+                                   rootElements,
+                                   toAddSignals,
+                                   toAddErrors,
+                                   toAddEscalations,
+                                   toAddMessages,
+                                   toAddItemDefinitions);
             }
         }
     }
@@ -1785,7 +1785,7 @@ public class Bpmn2JsonUnmarshaller {
                             err.setId(errorId);
                             err.setErrorCode(errorCode);
                             this._errors.put(errorCode,
-                                    err);
+                                             err);
                         }
                         toAddErrors.add(err);
                         ((ErrorEventDefinition) ed).setErrorRef(err);
@@ -1804,14 +1804,14 @@ public class Bpmn2JsonUnmarshaller {
                             escalation = Bpmn2Factory.eINSTANCE.createEscalation();
                             escalation.setEscalationCode(escalationCode);
                             this._escalations.put(escalationCode,
-                                    escalation);
+                                                  escalation);
                         }
                         toAddEscalations.add(escalation);
                         ((EscalationEventDefinition) ed).setEscalationRef(escalation);
                     } else if (ed instanceof MessageEventDefinition) {
                         ((MessageEventDefinition) ed).setMessageRef(extractMessage(ed,
-                                toAddMessages,
-                                toAddItemDefinitions));
+                                                                                   toAddMessages,
+                                                                                   toAddItemDefinitions));
                     } else if (ed instanceof CompensateEventDefinition) {
                         Iterator<FeatureMap.Entry> iter = ed.getAnyAttribute()
                                 .iterator();
@@ -1848,13 +1848,13 @@ public class Bpmn2JsonUnmarshaller {
                 }
             } else if (fe instanceof FlowElementsContainer) {
                 setThrowEventsInfo((FlowElementsContainer) fe,
-                        def,
-                        rootElements,
-                        toAddSignals,
-                        toAddErrors,
-                        toAddEscalations,
-                        toAddMessages,
-                        toAddItemDefinitions);
+                                   def,
+                                   rootElements,
+                                   toAddSignals,
+                                   toAddErrors,
+                                   toAddEscalations,
+                                   toAddMessages,
+                                   toAddItemDefinitions);
             }
         }
     }
@@ -1867,7 +1867,7 @@ public class Bpmn2JsonUnmarshaller {
             }
             if (flowElement instanceof FlowElementsContainer) {
                 FlowElementsContainer result = findContainerForBoundaryEvent((FlowElementsContainer) flowElement,
-                        be);
+                                                                             be);
                 if (result != null) {
                     return result;
                 }
@@ -1884,7 +1884,7 @@ public class Bpmn2JsonUnmarshaller {
             }
             if (flowElement instanceof FlowElementsContainer) {
                 return findContanerForFlowElement((FlowElementsContainer) flowElement,
-                        fl);
+                                                  fl);
             }
         }
         return null;
@@ -1899,12 +1899,12 @@ public class Bpmn2JsonUnmarshaller {
                     if (fe instanceof BoundaryEvent) {
                         BoundaryEvent be = (BoundaryEvent) fe;
                         FlowElementsContainer container = findContainerForBoundaryEvent(process,
-                                be);
+                                                                                        be);
                         if (container != null && !(container instanceof Process)) {
                             BoundaryEvent beCopy = copyBoundaryEvent(be);
                             container.getFlowElements().add(beCopy);
                             _outgoingFlows.put(beCopy,
-                                    _outgoingFlows.get(be));
+                                               _outgoingFlows.get(be));
                             toRemove.add(be);
                             _outgoingFlows.remove(be);
                         }
@@ -1981,9 +1981,9 @@ public class Bpmn2JsonUnmarshaller {
             if (root instanceof Process) {
                 Process process = (Process) root;
                 revisitCatchEVentsConvertToBoundaryExecute(process,
-                        null,
-                        catchEventsToRemove,
-                        boundaryEventsToAdd);
+                                                           null,
+                                                           catchEventsToRemove,
+                                                           boundaryEventsToAdd);
             }
         }
         reconnectFlows();
@@ -2052,26 +2052,26 @@ public class Bpmn2JsonUnmarshaller {
                             be.getDocumentation().addAll(ce.getDocumentation());
                             be.setName(ce.getName());
                             String ceElementName = Utils.getMetaDataValue(ce.getExtensionValues(),
-                                    "elementname");
+                                                                          "elementname");
                             if (ceElementName != null) {
                                 Utils.setMetaDataExtensionValue(be,
-                                        "elementname",
-                                        ceElementName);
+                                                                "elementname",
+                                                                ceElementName);
                             }
                             be.setId(ce.getId());
                             be.setAttachedToRef(((Activity) entry.getKey()));
                             ((Activity) entry.getKey()).getBoundaryEventRefs().add(be);
                             catchEventsToRemove.add(ce);
                             boundaryEventsToAdd.put(be,
-                                    _outgoingFlows.get(ce));
+                                                    _outgoingFlows.get(ce));
                         }
                     }
                 }
             } else if (fe instanceof FlowElementsContainer) {
                 revisitCatchEVentsConvertToBoundaryExecute(process,
-                        (FlowElementsContainer) fe,
-                        catchEventsToRemove,
-                        boundaryEventsToAdd);
+                                                           (FlowElementsContainer) fe,
+                                                           catchEventsToRemove,
+                                                           boundaryEventsToAdd);
             }
         }
         if (catchEventsToRemove.size() > 0) {
@@ -2086,7 +2086,7 @@ public class Bpmn2JsonUnmarshaller {
                 BoundaryEvent bToAdd = boundaryToAddIterator.next();
                 container.getFlowElements().add(bToAdd);
                 _outgoingFlows.put(bToAdd,
-                        boundaryEventsToAdd.get(bToAdd));
+                                   boundaryEventsToAdd.get(bToAdd));
             }
         }
     }
@@ -2097,8 +2097,8 @@ public class Bpmn2JsonUnmarshaller {
         for (RootElement root : rootElements) {
             if (root instanceof Process) {
                 setItemDefinitionsForActivitiesIoSpec((Process) root,
-                        def,
-                        toAddItemDefinitions);
+                                                      def,
+                                                      toAddItemDefinitions);
             }
         }
         for (ItemDefinition itemDef : toAddItemDefinitions) {
@@ -2155,8 +2155,8 @@ public class Bpmn2JsonUnmarshaller {
                 }
             } else if (fe instanceof FlowElementsContainer) {
                 setItemDefinitionsForActivitiesIoSpec((FlowElementsContainer) fe,
-                        def,
-                        toAddItemDefinitions);
+                                                      def,
+                                                      toAddItemDefinitions);
             }
         }
     }
@@ -2171,11 +2171,11 @@ public class Bpmn2JsonUnmarshaller {
         for (RootElement root : rootElements) {
             if (root instanceof Process) {
                 setSignalRefForCatchEvents((Process) root,
-                        def);
+                                           def);
                 setSignalRefForThrowEvents((Process) root,
-                        def);
+                                           def);
                 setSignalRefForBoundaryEvents((Process) root,
-                        def);
+                                              def);
             }
         }
     }
@@ -2207,7 +2207,7 @@ public class Bpmn2JsonUnmarshaller {
                         SignalEventDefinition sed = (SignalEventDefinition) ed;
                         if (sed.getSignalRef() != null) {
                             Signal signal = findSignalWithName(sed.getSignalRef(),
-                                    def);
+                                                               def);
                             if (signal != null) {
                                 sed.setSignalRef(signal.getId());
                             }
@@ -2216,7 +2216,7 @@ public class Bpmn2JsonUnmarshaller {
                 }
             } else if (fe instanceof FlowElementsContainer) {
                 setSignalRefForCatchEvents((FlowElementsContainer) fe,
-                        def);
+                                           def);
             }
         }
     }
@@ -2232,7 +2232,7 @@ public class Bpmn2JsonUnmarshaller {
                         SignalEventDefinition sed = (SignalEventDefinition) ed;
                         if (sed.getSignalRef() != null) {
                             Signal signal = findSignalWithName(sed.getSignalRef(),
-                                    def);
+                                                               def);
                             if (signal != null) {
                                 sed.setSignalRef(signal.getId());
                             }
@@ -2241,7 +2241,7 @@ public class Bpmn2JsonUnmarshaller {
                 }
             } else if (fe instanceof FlowElementsContainer) {
                 setSignalRefForThrowEvents((FlowElementsContainer) fe,
-                        def);
+                                           def);
             }
         }
     }
@@ -2257,7 +2257,7 @@ public class Bpmn2JsonUnmarshaller {
                         SignalEventDefinition sed = (SignalEventDefinition) ed;
                         if (sed.getSignalRef() != null) {
                             Signal signal = findSignalWithName(sed.getSignalRef(),
-                                    def);
+                                                               def);
                             if (signal != null) {
                                 sed.setSignalRef(signal.getId());
                             }
@@ -2266,7 +2266,7 @@ public class Bpmn2JsonUnmarshaller {
                 }
             } else if (fe instanceof FlowElementsContainer) {
                 setSignalRefForBoundaryEvents((FlowElementsContainer) fe,
-                        def);
+                                              def);
             }
         }
     }
@@ -2298,22 +2298,22 @@ public class Bpmn2JsonUnmarshaller {
         for (RootElement root : rootElements) {
             if (root instanceof Process) {
                 setCatchEventsInfo((Process) root,
-                        def,
-                        toAddSignals,
-                        toAddErrors,
-                        toAddEscalations,
-                        toAddMessages,
-                        toAddItemDefinitions);
+                                   def,
+                                   toAddSignals,
+                                   toAddErrors,
+                                   toAddEscalations,
+                                   toAddMessages,
+                                   toAddItemDefinitions);
             }
         }
         for (Lane lane : _lanes) {
             setCatchEventsInfoForLanes(lane,
-                    def,
-                    toAddSignals,
-                    toAddErrors,
-                    toAddEscalations,
-                    toAddMessages,
-                    toAddItemDefinitions);
+                                       def,
+                                       toAddSignals,
+                                       toAddErrors,
+                                       toAddEscalations,
+                                       toAddMessages,
+                                       toAddItemDefinitions);
         }
         for (Signal s : toAddSignals) {
             def.getRootElements().add(s);
@@ -2391,7 +2391,7 @@ public class Bpmn2JsonUnmarshaller {
                             err.setId(errorId);
                             err.setErrorCode(errorCode);
                             this._errors.put(errorCode,
-                                    err);
+                                             err);
                         }
                         toAddErrors.add(err);
                         ((ErrorEventDefinition) ed).setErrorRef(err);
@@ -2410,14 +2410,14 @@ public class Bpmn2JsonUnmarshaller {
                             escalation = Bpmn2Factory.eINSTANCE.createEscalation();
                             escalation.setEscalationCode(escalationCode);
                             this._escalations.put(escalationCode,
-                                    escalation);
+                                                  escalation);
                         }
                         toAddEscalations.add(escalation);
                         ((EscalationEventDefinition) ed).setEscalationRef(escalation);
                     } else if (ed instanceof MessageEventDefinition) {
                         ((MessageEventDefinition) ed).setMessageRef(extractMessage(ed,
-                                toAddMessages,
-                                toAddItemDefinitions));
+                                                                                   toAddMessages,
+                                                                                   toAddItemDefinitions));
                     } else if (ed instanceof CompensateEventDefinition) {
                         Iterator<FeatureMap.Entry> iter = ed.getAnyAttribute().iterator();
                         while (iter.hasNext()) {
@@ -2445,12 +2445,12 @@ public class Bpmn2JsonUnmarshaller {
                 }
             } else if (fe instanceof FlowElementsContainer) {
                 setCatchEventsInfo((FlowElementsContainer) fe,
-                        def,
-                        toAddSignals,
-                        toAddErrors,
-                        toAddEscalations,
-                        toAddMessages,
-                        toAddItemDefinitions);
+                                   def,
+                                   toAddSignals,
+                                   toAddErrors,
+                                   toAddEscalations,
+                                   toAddMessages,
+                                   toAddItemDefinitions);
             }
         }
     }
@@ -2514,7 +2514,7 @@ public class Bpmn2JsonUnmarshaller {
                             err.setId(errorId);
                             err.setErrorCode(errorCode);
                             this._errors.put(errorCode,
-                                    err);
+                                             err);
                         }
                         toAddErrors.add(err);
                         ((ErrorEventDefinition) ed).setErrorRef(err);
@@ -2533,14 +2533,14 @@ public class Bpmn2JsonUnmarshaller {
                             escalation = Bpmn2Factory.eINSTANCE.createEscalation();
                             escalation.setEscalationCode(escalationCode);
                             this._escalations.put(escalationCode,
-                                    escalation);
+                                                  escalation);
                         }
                         toAddEscalations.add(escalation);
                         ((EscalationEventDefinition) ed).setEscalationRef(escalation);
                     } else if (ed instanceof MessageEventDefinition) {
                         ((MessageEventDefinition) ed).setMessageRef(extractMessage(ed,
-                                toAddMessages,
-                                toAddItemDefinitions));
+                                                                                   toAddMessages,
+                                                                                   toAddItemDefinitions));
                     } else if (ed instanceof CompensateEventDefinition) {
                         Iterator<FeatureMap.Entry> iter = ed.getAnyAttribute().iterator();
                         while (iter.hasNext()) {
@@ -2568,12 +2568,12 @@ public class Bpmn2JsonUnmarshaller {
                 }
             } else if (fe instanceof FlowElementsContainer) {
                 setCatchEventsInfo((FlowElementsContainer) fe,
-                        def,
-                        toAddSignals,
-                        toAddErrors,
-                        toAddEscalations,
-                        toAddMessages,
-                        toAddItemDefinitions);
+                                   def,
+                                   toAddSignals,
+                                   toAddErrors,
+                                   toAddEscalations,
+                                   toAddMessages,
+                                   toAddItemDefinitions);
             }
         }
     }
@@ -2623,7 +2623,8 @@ public class Bpmn2JsonUnmarshaller {
                 if (ig.getOutgoing() != null) {
                     sqList.addAll(ig.getOutgoing());
                 }
-                setDefaultGateway(fe, sqList);
+                setDefaultGateway(fe,
+                                  sqList);
             }
             if (fe instanceof ExclusiveGateway) {
                 ExclusiveGateway eg = (ExclusiveGateway) fe;
@@ -2634,7 +2635,8 @@ public class Bpmn2JsonUnmarshaller {
                 if (eg.getOutgoing() != null) {
                     sqList.addAll(eg.getOutgoing());
                 }
-                setDefaultGateway(fe, sqList);
+                setDefaultGateway(fe,
+                                  sqList);
             }
             if (fe instanceof FlowElementsContainer) {
                 setGatewayInfo((FlowElementsContainer) fe);
@@ -2642,7 +2644,8 @@ public class Bpmn2JsonUnmarshaller {
         }
     }
 
-    private void setDefaultGateway(FlowElement fe, List<SequenceFlow> sqList) {
+    private void setDefaultGateway(FlowElement fe,
+                                   List<SequenceFlow> sqList) {
         Iterator<FeatureMap.Entry> iter = fe.getAnyAttribute().iterator();
         while (iter.hasNext()) {
             FeatureMap.Entry entry = iter.next();
@@ -2681,19 +2684,19 @@ public class Bpmn2JsonUnmarshaller {
         for (RootElement root : rootElements) {
             if (root instanceof Process) {
                 revisitServiceTasksExecute((Process) root,
-                        rootElements,
-                        toAddInterfaces,
-                        toAddMessages,
-                        toAddDefinitions);
+                                           rootElements,
+                                           toAddInterfaces,
+                                           toAddMessages,
+                                           toAddDefinitions);
             }
         }
         for (Lane lane : _lanes) {
             revisitServiceTasksExecuteForLanes(lane,
-                    def,
-                    rootElements,
-                    toAddInterfaces,
-                    toAddMessages,
-                    toAddDefinitions);
+                                               def,
+                                               rootElements,
+                                               toAddInterfaces,
+                                               toAddMessages,
+                                               toAddDefinitions);
         }
         for (ItemDefinition id : toAddDefinitions) {
             def.getRootElements().add(id);
@@ -2778,7 +2781,7 @@ public class Bpmn2JsonUnmarshaller {
                         serviceInterface = fe.getId() + "_ServiceInterface";
                         if (serviceInterfaceFeature != null) {
                             fe.getAnyAttribute().set(serviceInterfaceFeature,
-                                    serviceInterface);
+                                                     serviceInterface);
                         }
                     }
                     touseInterface.setName(serviceInterface);
@@ -2807,7 +2810,7 @@ public class Bpmn2JsonUnmarshaller {
                             serviceOperation = fe.getId() + "_ServiceOperation";
                             if (serviceOperationFeature != null) {
                                 fe.getAnyAttribute().set(serviceOperationFeature,
-                                        serviceOperation);
+                                                         serviceOperation);
                             }
                         }
                         touseOperation.setId(fe.getId() + "_ServiceOperation");
@@ -2827,10 +2830,10 @@ public class Bpmn2JsonUnmarshaller {
                 }
             } else if (fe instanceof FlowElementsContainer) {
                 revisitServiceTasksExecute((FlowElementsContainer) fe,
-                        rootElements,
-                        toAddInterfaces,
-                        toAddMessages,
-                        toAddDefinitions);
+                                           rootElements,
+                                           toAddInterfaces,
+                                           toAddMessages,
+                                           toAddDefinitions);
             }
         }
     }
@@ -2906,7 +2909,7 @@ public class Bpmn2JsonUnmarshaller {
                         serviceInterface = fe.getId() + "_ServiceInterface";
                         if (serviceInterfaceFeature != null) {
                             fe.getAnyAttribute().set(serviceInterfaceFeature,
-                                    serviceInterface);
+                                                     serviceInterface);
                         }
                     }
                     touseInterface.setName(serviceInterface);
@@ -2935,7 +2938,7 @@ public class Bpmn2JsonUnmarshaller {
                             serviceOperation = fe.getId() + "_ServiceOperation";
                             if (serviceOperationFeature != null) {
                                 fe.getAnyAttribute().set(serviceOperationFeature,
-                                        serviceOperation);
+                                                         serviceOperation);
                             }
                         }
                         touseOperation.setId(fe.getId() + "_ServiceOperation");
@@ -2955,10 +2958,10 @@ public class Bpmn2JsonUnmarshaller {
                 }
             } else if (fe instanceof FlowElementsContainer) {
                 revisitServiceTasksExecute((FlowElementsContainer) fe,
-                        rootElements,
-                        toAddInterfaces,
-                        toAddMessages,
-                        toAddDefinitions);
+                                           rootElements,
+                                           toAddInterfaces,
+                                           toAddMessages,
+                                           toAddDefinitions);
             }
         }
     }
@@ -2973,7 +2976,7 @@ public class Bpmn2JsonUnmarshaller {
         for (RootElement root : rootElements) {
             if (root instanceof Message) {
                 if (!existsMessageItemDefinition(rootElements,
-                        root.getId())) {
+                                                 root.getId())) {
                     ItemDefinition itemdef = Bpmn2Factory.eINSTANCE.createItemDefinition();
                     itemdef.setId(root.getId() + "Type");
                     toAddDefinitions.add(itemdef);
@@ -3042,22 +3045,22 @@ public class Bpmn2JsonUnmarshaller {
         for (FlowElement subProcessFlowElement : sp.getFlowElements()) {
             if (subProcessFlowElement instanceof SubProcess) {
                 createBpmnShapeForElement(factory,
-                        plane,
-                        subProcessFlowElement);
+                                          plane,
+                                          subProcessFlowElement);
                 createSubProcessDiagram(plane,
-                        subProcessFlowElement,
-                        factory);
+                                        subProcessFlowElement,
+                                        factory);
             } else if (subProcessFlowElement instanceof FlowNode) {
                 createBpmnShapeForElement(factory,
-                        plane,
-                        subProcessFlowElement);
+                                          plane,
+                                          subProcessFlowElement);
                 if (subProcessFlowElement instanceof BoundaryEvent) {
                     createDockersForBoundaryEvent((BoundaryEvent) subProcessFlowElement);
                 }
             } else if (subProcessFlowElement instanceof SequenceFlow) {
                 createBpmnEdgeForSequenceFlow(factory,
-                        plane,
-                        (SequenceFlow) subProcessFlowElement);
+                                              plane,
+                                              (SequenceFlow) subProcessFlowElement);
             }
         }
         if (sp.getArtifacts() != null) {
@@ -3066,15 +3069,15 @@ public class Bpmn2JsonUnmarshaller {
                 //if (artifact instanceof TextAnnotation || artifact instanceof Group) {
                 if (artifact instanceof Group) {
                     createBpmnShapeForElement(factory,
-                            plane,
-                            artifact);
+                                              plane,
+                                              artifact);
                 }
                 if (artifact instanceof Association) {
                     Association association = (Association) artifact;
                     if (association.getSourceRef() != null && association.getTargetRef() != null) {
                         createBpmnEdgeForAssociation(factory,
-                                plane,
-                                association);
+                                                     plane,
+                                                     association);
                     } else {
                         incompleteAssociations.add(association);
                     }
@@ -3101,25 +3104,25 @@ public class Bpmn2JsonUnmarshaller {
                 for (FlowElement flowElement : process.getFlowElements()) {
                     if (flowElement instanceof FlowNode) {
                         createBpmnShapeForElement(factory,
-                                plane,
-                                flowElement);
+                                                  plane,
+                                                  flowElement);
                         if (flowElement instanceof BoundaryEvent) {
                             createDockersForBoundaryEvent((BoundaryEvent) flowElement);
                         }
                         // check if its a subprocess
                         if (flowElement instanceof SubProcess) {
                             createSubProcessDiagram(plane,
-                                    flowElement,
-                                    factory);
+                                                    flowElement,
+                                                    factory);
                         }
                     } else if (flowElement instanceof DataObject) {
                         createBpmnShapeForElement(factory,
-                                plane,
-                                flowElement);
+                                                  plane,
+                                                  flowElement);
                     } else if (flowElement instanceof SequenceFlow) {
                         createBpmnEdgeForSequenceFlow(factory,
-                                plane,
-                                (SequenceFlow) flowElement);
+                                                      plane,
+                                                      (SequenceFlow) flowElement);
                     }
                 }
                 // then process artifacts
@@ -3129,15 +3132,15 @@ public class Bpmn2JsonUnmarshaller {
                         //if (artifact instanceof TextAnnotation || artifact instanceof Group) {
                         if (artifact instanceof Group) {
                             createBpmnShapeForElement(factory,
-                                    plane,
-                                    artifact);
+                                                      plane,
+                                                      artifact);
                         }
                         if (artifact instanceof Association) {
                             Association association = (Association) artifact;
                             if (association.getSourceRef() != null && association.getTargetRef() != null) {
                                 createBpmnEdgeForAssociation(factory,
-                                        plane,
-                                        association);
+                                                             plane,
+                                                             association);
                             } else {
                                 incompleteAssociations.add(association);
                             }
@@ -3154,8 +3157,8 @@ public class Bpmn2JsonUnmarshaller {
                     for (LaneSet ls : process.getLaneSets()) {
                         for (Lane lane : ls.getLanes()) {
                             createBpmnShapeForElement(factory,
-                                    plane,
-                                    lane);
+                                                      plane,
+                                                      lane);
                         }
                     }
                 }
@@ -3192,7 +3195,7 @@ public class Bpmn2JsonUnmarshaller {
                 false,
                 false);
         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                dockerBuff.toString());
+                                                                         dockerBuff.toString());
         boundaryEvent.getAnyAttribute().add(extensionEntry);
     }
 
@@ -3272,7 +3275,7 @@ public class Bpmn2JsonUnmarshaller {
                     // the childShapes element is a json array. We opened the
                     // array.
                     childElements.add(unmarshallItem(parser,
-                            preProcessingData));
+                                                     preProcessingData));
                 }
             } else if ("bounds".equals(fieldname)) {
                 // bounds: {"lowerRight":{"x":484.0,"y":198.0},"upperLeft":{"x":454.0,"y":168.0}}
@@ -3301,7 +3304,7 @@ public class Bpmn2JsonUnmarshaller {
                 b.setWidth(x2 - x1);
                 b.setHeight(y2 - y1);
                 this._bounds.put(resourceId,
-                        b);
+                                 b);
             } else if ("dockers".equals(fieldname)) {
                 // "dockers":[{"x":50,"y":40},{"x":353.5,"y":115},{"x":353.5,"y":152},{"x":50,"y":40}],
                 List<Point> dockers = new ArrayList<Point>();
@@ -3323,7 +3326,7 @@ public class Bpmn2JsonUnmarshaller {
                     end = JsonToken.END_ARRAY.equals(nextToken);
                 }
                 this._dockers.put(resourceId,
-                        dockers);
+                                  dockers);
             } else if ("outgoing".equals(fieldname)) {
                 while (parser.nextToken() != JsonToken.END_ARRAY) {
                     // {resourceId: oryx_1AAA8C9A-39A5-42FC-8ED1-507A7F3728EA}
@@ -3348,27 +3351,27 @@ public class Bpmn2JsonUnmarshaller {
             }
         }
         properties.put("resourceId",
-                resourceId);
+                       resourceId);
         boolean customElement = isCustomElement(properties.get("tasktype"),
-                preProcessingData);
+                                                preProcessingData);
         BaseElement baseElt = this.createBaseElement(stencil,
-                properties.get("tasktype"),
-                customElement);
+                                                     properties.get("tasktype"),
+                                                     customElement);
         // register the sequence flow targets.
         if (baseElt instanceof SequenceFlow) {
             _sequenceFlowTargets.addAll(outgoing);
         }
         _outgoingFlows.put(baseElt,
-                outgoing);
+                           outgoing);
         _objMap.put(baseElt,
-                resourceId); // keep the object around to do connections
+                    resourceId); // keep the object around to do connections
         _idMap.put(resourceId,
-                baseElt);
+                   baseElt);
         // baseElt.setId(resourceId); commented out as bpmn2 seems to create
         // duplicate ids right now.
         applyProperties(baseElt,
-                properties,
-                preProcessingData);
+                        properties,
+                        preProcessingData);
         if (baseElt instanceof Definitions) {
             Process rootLevelProcess = null;
             if (childElements == null || childElements.size() < 1) {
@@ -3406,8 +3409,8 @@ public class Bpmn2JsonUnmarshaller {
                                 }
                                 if (haveKPI) {
                                     Utils.setMetaDataExtensionValue(prop,
-                                            "customKPI",
-                                            wrapInCDATABlock(kpiValue));
+                                                                    "customKPI",
+                                                                    wrapInCDATABlock(kpiValue));
                                 }
                             } else {
                                 prop.setId(vardef);
@@ -3426,17 +3429,17 @@ public class Bpmn2JsonUnmarshaller {
                                 false,
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                                properties.get("adhocprocess"));
+                                                                                         properties.get("adhocprocess"));
                         rootLevelProcess.getAnyAttribute().add(extensionEntry);
                     }
                     if (properties.get("customdescription") != null && properties.get("customdescription").length() > 0) {
                         Utils.setMetaDataExtensionValue(rootLevelProcess,
-                                "customDescription",
-                                wrapInCDATABlock(properties.get("customdescription")));
+                                                        "customDescription",
+                                                        wrapInCDATABlock(properties.get("customdescription")));
                     }
                     rootLevelProcess.setId(properties.get("id"));
                     applyProcessProperties(rootLevelProcess,
-                            properties);
+                                           properties);
                     ((Definitions) baseElt).getRootElements().add(rootLevelProcess);
                 }
             } else {
@@ -3532,8 +3535,8 @@ public class Bpmn2JsonUnmarshaller {
                                         }
                                         if (haveKPI) {
                                             Utils.setMetaDataExtensionValue(prop,
-                                                    "customKPI",
-                                                    wrapInCDATABlock(kpiValue));
+                                                                            "customKPI",
+                                                                            wrapInCDATABlock(kpiValue));
                                         }
                                     } else {
                                         prop.setId(vardef);
@@ -3552,17 +3555,17 @@ public class Bpmn2JsonUnmarshaller {
                                         false,
                                         false);
                                 SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                                        properties.get("adhocprocess"));
+                                                                                                 properties.get("adhocprocess"));
                                 rootLevelProcess.getAnyAttribute().add(extensionEntry);
                             }
                             if (properties.get("customdescription") != null && properties.get("customdescription").length() > 0) {
                                 Utils.setMetaDataExtensionValue(rootLevelProcess,
-                                        "customDescription",
-                                        wrapInCDATABlock(properties.get("customdescription")));
+                                                                "customDescription",
+                                                                wrapInCDATABlock(properties.get("customdescription")));
                             }
                             rootLevelProcess.setId(properties.get("id"));
                             applyProcessProperties(rootLevelProcess,
-                                    properties);
+                                                   properties);
                             ((Definitions) baseElt).getRootElements().add(rootLevelProcess);
                         }
                     }
@@ -3614,7 +3617,7 @@ public class Bpmn2JsonUnmarshaller {
                     }
                     ((Process) baseElt).getLaneSets().get(0).getLanes().add((Lane) child);
                     addLaneFlowNodes((Process) baseElt,
-                            (Lane) child);
+                                     (Lane) child);
                 } else if (child instanceof Artifact) {
                     ((Process) baseElt).getArtifacts().add((Artifact) child);
                 } else {
@@ -3680,7 +3683,7 @@ public class Bpmn2JsonUnmarshaller {
         if (lane.getChildLaneSet() != null) {
             for (Lane l : lane.getChildLaneSet().getLanes()) {
                 addLaneFlowNodes(process,
-                        l);
+                                 l);
             }
         }
     }
@@ -3689,120 +3692,120 @@ public class Bpmn2JsonUnmarshaller {
                                    Map<String, String> properties,
                                    String preProcessingData) {
         applyBaseElementProperties(baseElement,
-                properties);
+                                   properties);
         if (baseElement instanceof SubProcess) {
             applySubProcessProperties((SubProcess) baseElement,
-                    properties);
+                                      properties);
         }
         if (baseElement instanceof AdHocSubProcess) {
             applyAdHocSubProcessProperties((AdHocSubProcess) baseElement,
-                    properties);
+                                           properties);
         }
         if (baseElement instanceof CallActivity) {
             applyCallActivityProperties((CallActivity) baseElement,
-                    properties);
+                                        properties);
         }
         if (baseElement instanceof GlobalTask) {
             applyGlobalTaskProperties((GlobalTask) baseElement,
-                    properties);
+                                      properties);
         }
         if (baseElement instanceof Definitions) {
             applyDefinitionProperties((Definitions) baseElement,
-                    properties);
+                                      properties);
         }
         if (baseElement instanceof Process) {
             applyProcessProperties((Process) baseElement,
-                    properties);
+                                   properties);
         }
         if (baseElement instanceof Lane) {
             applyLaneProperties((Lane) baseElement,
-                    properties);
+                                properties);
         }
         if (baseElement instanceof SequenceFlow) {
             applySequenceFlowProperties((SequenceFlow) baseElement,
-                    properties);
+                                        properties);
         }
         if (baseElement instanceof Task) {
             applyTaskProperties((Task) baseElement,
-                    properties,
-                    preProcessingData);
+                                properties,
+                                preProcessingData);
         }
         if (baseElement instanceof UserTask) {
             applyUserTaskProperties((UserTask) baseElement,
-                    properties);
+                                    properties);
         }
         if (baseElement instanceof BusinessRuleTask) {
             applyBusinessRuleTaskProperties((BusinessRuleTask) baseElement,
-                    properties);
+                                            properties);
         }
         if (baseElement instanceof ScriptTask) {
             applyScriptTaskProperties((ScriptTask) baseElement,
-                    properties);
+                                      properties);
         }
         if (baseElement instanceof ServiceTask) {
             applyServiceTaskProperties((ServiceTask) baseElement,
-                    properties);
+                                       properties);
         }
         if (baseElement instanceof ReceiveTask) {
             applyReceiveTaskProperties((ReceiveTask) baseElement,
-                    properties);
+                                       properties);
         }
         if (baseElement instanceof SendTask) {
             applySendTaskProperties((SendTask) baseElement,
-                    properties);
+                                    properties);
         }
         if (baseElement instanceof Gateway) {
             applyGatewayProperties((Gateway) baseElement,
-                    properties);
+                                   properties);
         }
         if (baseElement instanceof Event) {
             applyEventProperties((Event) baseElement,
-                    properties);
+                                 properties);
         }
         if (baseElement instanceof CatchEvent) {
             applyCatchEventProperties((CatchEvent) baseElement,
-                    properties);
+                                      properties);
         }
         if (baseElement instanceof ThrowEvent) {
             applyThrowEventProperties((ThrowEvent) baseElement,
-                    properties);
+                                      properties);
         }
         if (baseElement instanceof TextAnnotation) {
             applyTextAnnotationProperties((TextAnnotation) baseElement,
-                    properties);
+                                          properties);
         }
         if (baseElement instanceof Group) {
             applyGroupProperties((Group) baseElement,
-                    properties);
+                                 properties);
         }
         if (baseElement instanceof DataObject) {
             applyDataObjectProperties((DataObject) baseElement,
-                    properties);
+                                      properties);
         }
         if (baseElement instanceof DataStore) {
             applyDataStoreProperties((DataStore) baseElement,
-                    properties);
+                                     properties);
         }
         if (baseElement instanceof Message) {
             applyMessageProperties((Message) baseElement,
-                    properties);
+                                   properties);
         }
         if (baseElement instanceof StartEvent) {
             applyStartEventProperties((StartEvent) baseElement,
-                    properties);
+                                      properties);
         }
         if (baseElement instanceof EndEvent) {
             applyEndEventProperties((EndEvent) baseElement,
-                    properties);
+                                    properties);
         }
         if (baseElement instanceof Association) {
             applyAssociationProperties((Association) baseElement,
-                    properties);
+                                       properties);
         }
         // finally, apply properties from helpers:
         for (BpmnMarshallerHelper helper : _helpers) {
             helper.applyProperties(baseElement,
-                    properties);
+                                   properties);
         }
     }
 
@@ -3810,19 +3813,19 @@ public class Bpmn2JsonUnmarshaller {
                                              Map<String, String> properties) {
         if (properties.get("name") != null) {
             sp.setName(escapeXmlString(properties.get("name")).replaceAll("\\r\\n|\\r|\\n",
-                    " "));
+                                                                          " "));
             // add unescaped and untouched name value as extension element as well
             Utils.setMetaDataExtensionValue(sp,
-                    "elementname",
-                    wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
-                            "\n")));
+                                            "elementname",
+                                            wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
+                                                                                               "\n")));
         } else {
             sp.setName("");
         }
         // process on-entry and on-exit actions as custom elements
         if (properties.get("onentryactions") != null && properties.get("onentryactions").length() > 0) {
             OnEntryScriptType onEntryScript = DroolsFactory.eINSTANCE.createOnEntryScriptType();
-            onEntryScript.setScript(wrapInCDATABlock(replaceScriptEscapeAndNewLines(properties.get("onentryactions"))));
+            onEntryScript.setScript(wrapInCDATABlock(properties.get("onentryactions")));
             String scriptLanguage = getScriptLanguageFormat(properties);
             onEntryScript.setScriptFormat(scriptLanguage);
             if (sp.getExtensionValues() == null || sp.getExtensionValues().size() < 1) {
@@ -3836,7 +3839,7 @@ public class Bpmn2JsonUnmarshaller {
         }
         if (properties.get("onexitactions") != null && properties.get("onexitactions").length() > 0) {
             OnExitScriptType onExitScript = DroolsFactory.eINSTANCE.createOnExitScriptType();
-            onExitScript.setScript(wrapInCDATABlock(replaceScriptEscapeAndNewLines(properties.get("onexitactions"))));
+            onExitScript.setScript(wrapInCDATABlock(properties.get("onexitactions")));
             String scriptLanguage = getScriptLanguageFormat(properties);
             onExitScript.setScriptFormat(scriptLanguage);
             if (sp.getExtensionValues() == null || sp.getExtensionValues().size() < 1) {
@@ -3851,8 +3854,8 @@ public class Bpmn2JsonUnmarshaller {
         // isAsync metadata
         if (properties.get("isasync") != null && properties.get("isasync").length() > 0 && properties.get("isasync").equals("true")) {
             Utils.setMetaDataExtensionValue(sp,
-                    "customAsync",
-                    wrapInCDATABlock(properties.get("isasync")));
+                                            "customAsync",
+                                            wrapInCDATABlock(properties.get("isasync")));
         }
         if (sp.getIoSpecification() == null) {
             InputOutputSpecification iospec = Bpmn2Factory.eINSTANCE.createInputOutputSpecification();
@@ -3861,11 +3864,11 @@ public class Bpmn2JsonUnmarshaller {
         parseAssignmentsInfo(properties);
         // data input set
         applyDataInputProperties(sp,
-                properties,
-                new HashMap<String, DataInput>());
+                                 properties,
+                                 new HashMap<String, DataInput>());
         // data output set
         applyDataOutputProperties(sp,
-                properties);
+                                  properties);
         // assignments
         if (properties.get("assignments") != null && properties.get("assignments").length() > 0 && sp.getIoSpecification() != null) {
             String[] allAssignments = properties.get("assignments").split(",\\s*");
@@ -3875,7 +3878,7 @@ public class Bpmn2JsonUnmarshaller {
                     String fromPart = assignmentParts[0];
                     if (fromPart.startsWith("[din]")) {
                         fromPart = fromPart.substring(5,
-                                fromPart.length());
+                                                      fromPart.length());
                     }
                     DataInputAssociation dia = Bpmn2Factory.eINSTANCE.createDataInputAssociation();
                     if (sp.getIoSpecification() != null && sp.getIoSpecification().getDataOutputs() != null) {
@@ -3937,12 +3940,12 @@ public class Bpmn2JsonUnmarshaller {
                     boolean isDataOutput = false;
                     if (fromPart.startsWith("[din]")) {
                         fromPart = fromPart.substring(5,
-                                fromPart.length());
+                                                      fromPart.length());
                         isDataInput = true;
                     }
                     if (fromPart.startsWith("[dout]")) {
                         fromPart = fromPart.substring(6,
-                                fromPart.length());
+                                                      fromPart.length());
                         isDataOutput = true;
                     }
                     List<DataOutput> dataOutputs = sp.getIoSpecification().getDataOutputs();
@@ -4014,7 +4017,7 @@ public class Bpmn2JsonUnmarshaller {
                 itemDef.setId(sp.getId() + "_" + "multiInstanceItemType");
                 din.setItemSubjectRef(itemDef);
                 _subprocessItemDefs.put(itemDef.getId(),
-                        itemDef);
+                                        itemDef);
                 loopCharacteristics.setInputDataItem(din);
                 // loop characteristics output
                 if (properties.get("multipleinstancecollectionoutput") != null && properties.get("multipleinstancecollectionoutput").length() > 0) {
@@ -4041,7 +4044,7 @@ public class Bpmn2JsonUnmarshaller {
                     itemDef2.setId(sp.getId() + "_" + "multiInstanceItemType");
                     don.setItemSubjectRef(itemDef2);
                     _subprocessItemDefs.put(itemDef2.getId(),
-                            itemDef2);
+                                            itemDef2);
                     loopCharacteristics.setOutputDataItem(don);
                 }
                 // loop characteristics completion condition
@@ -4088,8 +4091,8 @@ public class Bpmn2JsonUnmarshaller {
                     }
                     if (haveKPI) {
                         Utils.setMetaDataExtensionValue(prop,
-                                "customKPI",
-                                wrapInCDATABlock(kpiValue));
+                                                        "customKPI",
+                                                        wrapInCDATABlock(kpiValue));
                     }
                 } else {
                     prop.setId(vardef);
@@ -4098,7 +4101,7 @@ public class Bpmn2JsonUnmarshaller {
                 prop.setItemSubjectRef(itemdef);
                 sp.getProperties().add(prop);
                 _subprocessItemDefs.put(itemdef.getId(),
-                        itemdef);
+                                        itemdef);
             }
         }
         // event subprocess
@@ -4149,7 +4152,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<EObject> values = new ArrayList<EObject>();
                 values.add(timeParams);
                 _simulationElementParameters.put(sp.getId(),
-                        values);
+                                                 values);
             }
         }
         CostParameters costParameters = BpsimFactory.eINSTANCE.createCostParameters();
@@ -4170,7 +4173,7 @@ public class Bpmn2JsonUnmarshaller {
             List<EObject> values = new ArrayList<EObject>();
             values.add(costParameters);
             _simulationElementParameters.put(sp.getId(),
-                    values);
+                                             values);
         }
     }
 
@@ -4212,7 +4215,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false,
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                                dataOutputParts[1]);
+                                                                                         dataOutputParts[1]);
                         nextOut.getAnyAttribute().add(extensionEntry);
                     } else {
                         nextOut.setId(activity.getId() + "_" + dataOutput + (dataOutput.endsWith("OutputX") ? "" : "OutputX"));
@@ -4224,7 +4227,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false,
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                                "Object");
+                                                                                         "Object");
                         nextOut.getAnyAttribute().add(extensionEntry);
                     }
                     activity.getIoSpecification().getDataOutputs().add(nextOut);
@@ -4268,7 +4271,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false,
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                                dataInputParts[1]);
+                                                                                         dataInputParts[1]);
                         nextInput.getAnyAttribute().add(extensionEntry);
                     } else {
                         for (String inputName : alreadyProcessedInputs.keySet()) {
@@ -4285,7 +4288,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false,
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                                "Object");
+                                                                                         "Object");
                         nextInput.getAnyAttribute().add(extensionEntry);
                     }
                     activity.getIoSpecification().getDataInputs().add(nextInput);
@@ -4345,7 +4348,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("type"));
+                                                                             properties.get("type"));
             association.getAnyAttribute().add(extensionEntry);
         }
         if (properties.get("bordercolor") != null && properties.get("bordercolor").length() > 0) {
@@ -4353,7 +4356,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<String> colorsList = new ArrayList<String>();
                 colorsList.add("bordercolor:" + properties.get("bordercolor"));
                 _elementColors.put(association.getId(),
-                        colorsList);
+                                   colorsList);
             } else {
                 _elementColors.get(association.getId()).add("bordercolor:" + properties.get("bordercolor"));
             }
@@ -4369,13 +4372,13 @@ public class Bpmn2JsonUnmarshaller {
                                           Map<String, String> properties) {
         if (properties.get("name") != null && properties.get("name").length() > 0) {
             msg.setName(escapeXmlString(properties.get("name")).replaceAll("\\r\\n|\\r|\\n",
-                    " "));
+                                                                           " "));
             msg.setId(properties.get("name") + "Message");
             // add unescaped and untouched name value as extension element as well
             Utils.setMetaDataExtensionValue(msg,
-                    "elementname",
-                    wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
-                            "\n")));
+                                            "elementname",
+                                            wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
+                                                                                               "\n")));
         } else {
             msg.setName("");
             msg.setId("Message");
@@ -4386,12 +4389,12 @@ public class Bpmn2JsonUnmarshaller {
                                             Map<String, String> properties) {
         if (properties.get("name") != null) {
             da.setName(escapeXmlString(properties.get("name")).replaceAll("\\r\\n|\\r|\\n",
-                    " "));
+                                                                          " "));
             // add unescaped and untouched name value as extension element as well
             Utils.setMetaDataExtensionValue(da,
-                    "elementname",
-                    wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
-                            "\n")));
+                                            "elementname",
+                                            wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
+                                                                                               "\n")));
         } else {
             da.setName("");
         }
@@ -4401,12 +4404,12 @@ public class Bpmn2JsonUnmarshaller {
                                              Map<String, String> properties) {
         if (properties.get("name") != null && properties.get("name").length() > 0) {
             da.setName(escapeXmlString(properties.get("name")).replaceAll("\\r\\n|\\r|\\n",
-                    " "));
+                                                                          " "));
             // add unescaped and untouched name value as extension element as well
             Utils.setMetaDataExtensionValue(da,
-                    "elementname",
-                    wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
-                            "\n")));
+                                            "elementname",
+                                            wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
+                                                                                               "\n")));
         } else {
             // we need a name, use id instead
             da.setName(da.getId());
@@ -4420,7 +4423,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("customtype"));
+                                                                             properties.get("customtype"));
             da.getAnyAttribute().add(extensionEntry);
             haveCustomType = true;
         }
@@ -4432,7 +4435,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("standardtype"));
+                                                                             properties.get("standardtype"));
             da.getAnyAttribute().add(extensionEntry);
         }
     }
@@ -4441,12 +4444,12 @@ public class Bpmn2JsonUnmarshaller {
                                                  Map<String, String> properties) {
         if (properties.get("name") != null) {
             ta.setText(escapeXmlString(properties.get("name")).replaceAll("\\r\\n|\\r|\\n",
-                    " "));
+                                                                          " "));
             // add unescaped and untouched name value as extension element as well
             Utils.setMetaDataExtensionValue(ta,
-                    "elementname",
-                    wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
-                            "\n")));
+                                            "elementname",
+                                            wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
+                                                                                               "\n")));
         } else {
             ta.setText("");
         }
@@ -4457,7 +4460,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<String> colorsList = new ArrayList<String>();
                 colorsList.add("bordercolor:" + properties.get("bordercolor"));
                 _elementColors.put(ta.getId(),
-                        colorsList);
+                                   colorsList);
             } else {
                 _elementColors.get(ta.getId()).add("bordercolor:" + properties.get("bordercolor"));
             }
@@ -4470,7 +4473,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("fontsize"));
+                                                                             properties.get("fontsize"));
             ta.getAnyAttribute().add(extensionEntry);
         }
         if (properties.get("fontcolor") != null && properties.get("fontcolor").length() > 0) {
@@ -4478,7 +4481,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<String> colorsList = new ArrayList<String>();
                 colorsList.add("fontcolor:" + properties.get("fontcolor"));
                 _elementColors.put(ta.getId(),
-                        colorsList);
+                                   colorsList);
             } else {
                 _elementColors.get(ta.getId()).add("fontcolor:" + properties.get("fontcolor"));
             }
@@ -4495,7 +4498,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("name"));
+                                                                             properties.get("name"));
             group.getAnyAttribute().add(extensionEntry);
         }
     }
@@ -4504,12 +4507,12 @@ public class Bpmn2JsonUnmarshaller {
                                         Map<String, String> properties) {
         if (properties.get("name") != null) {
             event.setName(escapeXmlString(properties.get("name")).replaceAll("\\r\\n|\\r|\\n",
-                    " "));
+                                                                             " "));
             // add unescaped and untouched name value as extension element as well
             Utils.setMetaDataExtensionValue(event,
-                    "elementname",
-                    wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
-                            "\n")));
+                                            "elementname",
+                                            wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
+                                                                                               "\n")));
         } else {
             event.setName("");
         }
@@ -4545,7 +4548,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false,
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                                doutputParts[1]);
+                                                                                         doutputParts[1]);
                         nextOutput.getAnyAttribute().add(extensionEntry);
                     } else {
                         nextOutput.setId(event.getId() + "_" + dataOutput);
@@ -4557,7 +4560,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false,
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                                "Object");
+                                                                                         "Object");
                         nextOutput.getAnyAttribute().add(extensionEntry);
                     }
                     event.getDataOutputs().add(nextOutput);
@@ -4574,7 +4577,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("boundarycancelactivity"));
+                                                                             properties.get("boundarycancelactivity"));
             event.getAnyAttribute().add(extensionEntry);
         }
         // data output associations
@@ -4586,7 +4589,7 @@ public class Bpmn2JsonUnmarshaller {
                 String fromPart = associationParts[0];
                 if (fromPart.startsWith("[dout]")) {
                     fromPart = fromPart.substring(6,
-                            fromPart.length());
+                                                  fromPart.length());
                 }
                 DataOutputAssociation doa = Bpmn2Factory.eINSTANCE.createDataOutputAssociation();
                 // for source refs we loop through already defined data outputs
@@ -4646,7 +4649,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false,
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                                properties.get("errorref"));
+                                                                                         properties.get("errorref"));
                         ((ErrorEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
                     }
                 } else if (ed instanceof ConditionalEventDefinition) {
@@ -4666,7 +4669,7 @@ public class Bpmn2JsonUnmarshaller {
                     }
                     if (properties.get("conditionexpression") != null && !"".equals(properties.get("conditionexpression"))) {
                         String scriptStr = properties.get("conditionexpression").replaceAll("\\\\n",
-                                "\n");
+                                                                                            "\n");
                         conditionExpression.setBody(wrapInCDATABlock(scriptStr));
                     }
                     ((ConditionalEventDefinition) event.getEventDefinitions().get(0)).setCondition(conditionExpression);
@@ -4679,7 +4682,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false,
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                                properties.get("escalationcode"));
+                                                                                         properties.get("escalationcode"));
                         ((EscalationEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
                     }
                 } else if (ed instanceof MessageEventDefinition) {
@@ -4691,7 +4694,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false,
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                                properties.get("messageref"));
+                                                                                         properties.get("messageref"));
                         ((MessageEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
                     }
                 } else if (ed instanceof CompensateEventDefinition) {
@@ -4703,7 +4706,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false,
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                                properties.get("activityref"));
+                                                                                         properties.get("activityref"));
                         ((CompensateEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
                     }
                 }
@@ -4747,7 +4750,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<EObject> values = new ArrayList<EObject>();
                 values.add(timeParams);
                 _simulationElementParameters.put(event.getId(),
-                        values);
+                                                 values);
             }
         }
         if (properties.get("probability") != null && properties.get("probability").length() > 0) {
@@ -4764,7 +4767,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<EObject> values = new ArrayList<EObject>();
                 values.add(controlParams);
                 _simulationElementParameters.put(event.getId(),
-                        values);
+                                                 values);
             }
         }
     }
@@ -4789,7 +4792,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false,
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                                dataInputParts[1]);
+                                                                                         dataInputParts[1]);
                         nextInput.getAnyAttribute().add(extensionEntry);
                     } else {
                         nextInput.setId(event.getId() + "_" + dataInput + (dataInput.endsWith("InputX") ? "" : "InputX"));
@@ -4801,7 +4804,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false,
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                                "Object");
+                                                                                         "Object");
                         nextInput.getAnyAttribute().add(extensionEntry);
                     }
                     event.getDataInputs().add(nextInput);
@@ -4818,7 +4821,7 @@ public class Bpmn2JsonUnmarshaller {
                     String fromPart = assignmentParts[0];
                     if (fromPart.startsWith("[din]")) {
                         fromPart = fromPart.substring(5,
-                                fromPart.length());
+                                                      fromPart.length());
                     }
                     DataInputAssociation dia = Bpmn2Factory.eINSTANCE.createDataInputAssociation();
                     if (event.getInputSet() != null) {
@@ -4850,7 +4853,7 @@ public class Bpmn2JsonUnmarshaller {
                     boolean isDataOutput = false;
                     if (fromPart.startsWith("[din]")) {
                         fromPart = fromPart.substring(5,
-                                fromPart.length());
+                                                      fromPart.length());
                         isDataInput = true;
                     }
                     if (isDataInput) {
@@ -4876,8 +4879,8 @@ public class Bpmn2JsonUnmarshaller {
         // signal scope metadata
         if (properties.get("signalscope") != null && properties.get("signalscope").length() > 0 && !properties.get("signalscope").equals("default")) {
             Utils.setMetaDataExtensionValue(event,
-                    "customScope",
-                    wrapInCDATABlock(properties.get("signalscope")));
+                                            "customScope",
+                                            wrapInCDATABlock(properties.get("signalscope")));
         }
         try {
             EventDefinition ed = event.getEventDefinitions().get(0);
@@ -4919,7 +4922,7 @@ public class Bpmn2JsonUnmarshaller {
                             false,
                             false);
                     SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                            properties.get("errorref"));
+                                                                                     properties.get("errorref"));
                     ((ErrorEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
                 }
             } else if (ed instanceof ConditionalEventDefinition) {
@@ -4939,7 +4942,7 @@ public class Bpmn2JsonUnmarshaller {
                 }
                 if (properties.get("conditionexpression") != null && !"".equals(properties.get("conditionexpression"))) {
                     String scriptStr = properties.get("conditionexpression").replaceAll("\\\\n",
-                            "\n");
+                                                                                        "\n");
                     conditionExpression.setBody(wrapInCDATABlock(scriptStr));
                 }
                 ((ConditionalEventDefinition) event.getEventDefinitions().get(0)).setCondition(conditionExpression);
@@ -4952,7 +4955,7 @@ public class Bpmn2JsonUnmarshaller {
                             false,
                             false);
                     SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                            properties.get("escalationcode"));
+                                                                                     properties.get("escalationcode"));
                     ((EscalationEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
                 }
             } else if (ed instanceof MessageEventDefinition) {
@@ -4964,7 +4967,7 @@ public class Bpmn2JsonUnmarshaller {
                             false,
                             false);
                     SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                            properties.get("messageref"));
+                                                                                     properties.get("messageref"));
                     ((MessageEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
                 }
             } else if (ed instanceof CompensateEventDefinition) {
@@ -4976,7 +4979,7 @@ public class Bpmn2JsonUnmarshaller {
                             false,
                             false);
                     SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                            properties.get("activityref"));
+                                                                                     properties.get("activityref"));
                     ((CompensateEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
                 }
             }
@@ -5019,7 +5022,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<EObject> values = new ArrayList<EObject>();
                 values.add(timeParams);
                 _simulationElementParameters.put(event.getId(),
-                        values);
+                                                 values);
             }
         }
     }
@@ -5028,15 +5031,15 @@ public class Bpmn2JsonUnmarshaller {
                                              Map<String, String> properties) {
         if (properties.get("name") != null) {
             globalTask.setName(escapeXmlString(properties.get("name")).replaceAll("\\r\\n|\\r|\\n",
-                    " "));
+                                                                                  " "));
         } else {
             globalTask.setName("");
         }
         // add unescaped and untouched name value as extension element as well
         Utils.setMetaDataExtensionValue(globalTask,
-                "elementname",
-                wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
-                        "\n")));
+                                        "elementname",
+                                        wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
+                                                                                           "\n")));
     }
 
     protected void applyBaseElementProperties(BaseElement baseElement,
@@ -5056,7 +5059,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<String> colorsList = new ArrayList<String>();
                 colorsList.add("bgcolor:" + properties.get("bgcolor"));
                 _elementColors.put(baseElement.getId(),
-                        colorsList);
+                                   colorsList);
             } else {
                 _elementColors.get(baseElement.getId()).add("bgcolor:" + properties.get("bgcolor"));
             }
@@ -5069,7 +5072,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("isselectable"));
+                                                                             properties.get("isselectable"));
             baseElement.getAnyAttribute().add(extensionEntry);
         }
         if (properties.get("bordercolor") != null && properties.get("bordercolor").length() > 0) {
@@ -5077,7 +5080,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<String> colorsList = new ArrayList<String>();
                 colorsList.add("bordercolor:" + properties.get("bordercolor"));
                 _elementColors.put(baseElement.getId(),
-                        colorsList);
+                                   colorsList);
             } else {
                 _elementColors.get(baseElement.getId()).add("bordercolor:" + properties.get("bordercolor"));
             }
@@ -5090,7 +5093,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("fontsize"));
+                                                                             properties.get("fontsize"));
             baseElement.getAnyAttribute().add(extensionEntry);
         }
         if (properties.get("fontcolor") != null && properties.get("fontcolor").length() > 0) {
@@ -5098,7 +5101,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<String> colorsList = new ArrayList<String>();
                 colorsList.add("fontcolor:" + properties.get("fontcolor"));
                 _elementColors.put(baseElement.getId(),
-                        colorsList);
+                                   colorsList);
             } else {
                 _elementColors.get(baseElement.getId()).add("fontcolor:" + properties.get("fontcolor"));
             }
@@ -5118,7 +5121,7 @@ public class Bpmn2JsonUnmarshaller {
                 false,
                 false);
         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                "http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd");
+                                                                         "http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd");
         def.getAnyAttribute().add(extensionEntry);
         //_currentResource.getContents().add(def);// hook the definitions object to the resource early.
     }
@@ -5147,7 +5150,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("package"));
+                                                                             properties.get("package"));
             process.getAnyAttribute().add(extensionEntry);
         }
         // add version attrbute to process
@@ -5159,7 +5162,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("version"));
+                                                                             properties.get("version"));
             process.getAnyAttribute().add(extensionEntry);
         }
         if (properties.get("monitoring") != null && !"".equals(properties.get("monitoring"))) {
@@ -5259,7 +5262,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("ruleflowgroup"));
+                                                                             properties.get("ruleflowgroup"));
             task.getAnyAttribute().add(extensionEntry);
         }
         if (properties.get("script_language") != null && properties.get("script_language").length() > 0) {
@@ -5271,7 +5274,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(scriptLanguageElement,
-                    scriptLanguage);
+                                                                             scriptLanguage);
             task.getAnyAttribute().add(extensionEntry);
         }
     }
@@ -5279,8 +5282,7 @@ public class Bpmn2JsonUnmarshaller {
     protected void applyScriptTaskProperties(ScriptTask scriptTask,
                                              Map<String, String> properties) {
         if (properties.get("script") != null && properties.get("script").length() > 0) {
-            //String scriptStr = properties.get("script").replaceAll("\\\\n", "\n");
-            String scriptStr = replaceScriptEscapeAndNewLines(properties.get("script"));
+            String scriptStr = properties.get("script");
             scriptTask.setScript(wrapInCDATABlock(scriptStr));
         }
         if (properties.get("script_language") != null && properties.get("script_language").length() > 0) {
@@ -5300,7 +5302,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("serviceimplementation"));
+                                                                             properties.get("serviceimplementation"));
             serviceTask.getAnyAttribute().add(extensionEntry);
         }
         if (properties.get("serviceoperation") != null && properties.get("serviceoperation").length() > 0) {
@@ -5311,7 +5313,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("serviceoperation"));
+                                                                             properties.get("serviceoperation"));
             serviceTask.getAnyAttribute().add(extensionEntry);
         }
         if (properties.get("serviceinterface") != null && properties.get("serviceinterface").length() > 0) {
@@ -5322,7 +5324,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("serviceinterface"));
+                                                                             properties.get("serviceinterface"));
             serviceTask.getAnyAttribute().add(extensionEntry);
         }
     }
@@ -5337,7 +5339,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("messageref"));
+                                                                             properties.get("messageref"));
             receiveTask.getAnyAttribute().add(extensionEntry);
         }
         receiveTask.setImplementation("Other");
@@ -5353,7 +5355,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("messageref"));
+                                                                             properties.get("messageref"));
             sendTask.getAnyAttribute().add(extensionEntry);
         }
         sendTask.setImplementation("Other");
@@ -5363,12 +5365,12 @@ public class Bpmn2JsonUnmarshaller {
                                        Map<String, String> properties) {
         if (properties.get("name") != null) {
             lane.setName(escapeXmlString(properties.get("name")).replaceAll("\\r\\n|\\r|\\n",
-                    " "));
+                                                                            " "));
             // add unescaped and untouched name value as extension element as well
             Utils.setMetaDataExtensionValue(lane,
-                    "elementname",
-                    wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
-                            "\n")));
+                                            "elementname",
+                                            wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
+                                                                                               "\n")));
         } else {
             lane.setName("");
         }
@@ -5378,12 +5380,12 @@ public class Bpmn2JsonUnmarshaller {
                                                Map<String, String> properties) {
         if (properties.get("name") != null) {
             callActivity.setName(escapeXmlString(properties.get("name")).replaceAll("\\r\\n|\\r|\\n",
-                    " "));
+                                                                                    " "));
             // add unescaped and untouched name value as extension element as well
             Utils.setMetaDataExtensionValue(callActivity,
-                    "elementname",
-                    wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
-                            "\n")));
+                                            "elementname",
+                                            wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
+                                                                                               "\n")));
         } else {
             callActivity.setName("");
         }
@@ -5395,7 +5397,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("independent"));
+                                                                             properties.get("independent"));
             callActivity.getAnyAttribute().add(extensionEntry);
         }
         if (properties.get("waitforcompletion") != null && properties.get("waitforcompletion").length() > 0) {
@@ -5406,7 +5408,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("waitforcompletion"));
+                                                                             properties.get("waitforcompletion"));
             callActivity.getAnyAttribute().add(extensionEntry);
         }
         if (properties.get("calledelement") != null && properties.get("calledelement").length() > 0) {
@@ -5415,17 +5417,17 @@ public class Bpmn2JsonUnmarshaller {
         // isAsync metadata
         if (properties.get("isasync") != null && properties.get("isasync").length() > 0 && properties.get("isasync").equals("true")) {
             Utils.setMetaDataExtensionValue(callActivity,
-                    "customAsync",
-                    wrapInCDATABlock(properties.get("isasync")));
+                                            "customAsync",
+                                            wrapInCDATABlock(properties.get("isasync")));
         }
         parseAssignmentsInfo(properties);
         //callActivity data input set
         applyDataInputProperties(callActivity,
-                properties,
-                new HashMap<String, DataInput>());
+                                 properties,
+                                 new HashMap<String, DataInput>());
         //callActivity data output set
         applyDataOutputProperties(callActivity,
-                properties);
+                                  properties);
         //callActivity assignments
         if (properties.get("assignments") != null && properties.get("assignments").length() > 0) {
             String[] allAssignments = properties.get("assignments").split(",\\s*");
@@ -5436,7 +5438,7 @@ public class Bpmn2JsonUnmarshaller {
                     String fromPart = assignmentParts[0];
                     if (fromPart.startsWith("[din]")) {
                         fromPart = fromPart.substring(5,
-                                fromPart.length());
+                                                      fromPart.length());
                     }
                     boolean foundTaskName = false;
                     if (callActivity.getIoSpecification() != null && callActivity.getIoSpecification().getDataOutputs() != null) {
@@ -5499,12 +5501,12 @@ public class Bpmn2JsonUnmarshaller {
                     boolean isDataOutput = false;
                     if (fromPart.startsWith("[din]")) {
                         fromPart = fromPart.substring(5,
-                                fromPart.length());
+                                                      fromPart.length());
                         isDataInput = true;
                     }
                     if (fromPart.startsWith("[dout]")) {
                         fromPart = fromPart.substring(6,
-                                fromPart.length());
+                                                      fromPart.length());
                         isDataOutput = true;
                     }
                     List<DataOutput> dataOutputs = callActivity.getIoSpecification().getDataOutputs();
@@ -5545,7 +5547,7 @@ public class Bpmn2JsonUnmarshaller {
         // process on-entry and on-exit actions as custom elements
         if (properties.get("onentryactions") != null && properties.get("onentryactions").length() > 0) {
             OnEntryScriptType onEntryScript = DroolsFactory.eINSTANCE.createOnEntryScriptType();
-            onEntryScript.setScript(wrapInCDATABlock(replaceScriptEscapeAndNewLines(properties.get("onentryactions"))));
+            onEntryScript.setScript(wrapInCDATABlock(properties.get("onentryactions")));
             String scriptLanguage = getScriptLanguageFormat(properties);
             onEntryScript.setScriptFormat(scriptLanguage);
             if (callActivity.getExtensionValues() == null || callActivity.getExtensionValues().size() < 1) {
@@ -5559,7 +5561,7 @@ public class Bpmn2JsonUnmarshaller {
         }
         if (properties.get("onexitactions") != null && properties.get("onexitactions").length() > 0) {
             OnExitScriptType onExitScript = DroolsFactory.eINSTANCE.createOnExitScriptType();
-            onExitScript.setScript(wrapInCDATABlock(replaceScriptEscapeAndNewLines(properties.get("onexitactions"))));
+            onExitScript.setScript(wrapInCDATABlock(properties.get("onexitactions")));
             String scriptLanguage = getScriptLanguageFormat(properties);
             onExitScript.setScriptFormat(scriptLanguage);
             if (callActivity.getExtensionValues() == null || callActivity.getExtensionValues().size() < 1) {
@@ -5615,7 +5617,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<EObject> values = new ArrayList<EObject>();
                 values.add(timeParams);
                 _simulationElementParameters.put(callActivity.getId(),
-                        values);
+                                                 values);
             }
         }
         CostParameters costParameters = BpsimFactory.eINSTANCE.createCostParameters();
@@ -5636,7 +5638,7 @@ public class Bpmn2JsonUnmarshaller {
             List<EObject> values = new ArrayList<EObject>();
             values.add(costParameters);
             _simulationElementParameters.put(callActivity.getId(),
-                    values);
+                                             values);
         }
     }
 
@@ -5645,19 +5647,19 @@ public class Bpmn2JsonUnmarshaller {
                                        String preProcessingData) {
         if (properties.get("name") != null) {
             task.setName(escapeXmlString(properties.get("name")).replaceAll("\\r\\n|\\r|\\n",
-                    " "));
+                                                                            " "));
         } else {
             task.setName("");
         }
         // add unescaped and untouched name value as extension element as well
         Utils.setMetaDataExtensionValue(task,
-                "elementname",
-                wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
-                        "\n")));
+                                        "elementname",
+                                        wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
+                                                                                           "\n")));
         DataInput taskNameDataInput = null;
         if (properties.get("taskname") != null && properties.get("taskname").length() > 0) {
             if (isCustomElement(properties.get("tasktype"),
-                    preProcessingData)) {
+                                preProcessingData)) {
                 // add droolsjbpm-specific attribute "taskName"
                 ExtendedMetaData metadata = ExtendedMetaData.INSTANCE;
                 EAttributeImpl extensionAttribute = (EAttributeImpl) metadata.demandFeature(
@@ -5666,9 +5668,9 @@ public class Bpmn2JsonUnmarshaller {
                         false,
                         false);
                 SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                        properties.get("taskname").replaceAll("&",
-                                "").replaceAll(" ",
-                                ""));
+                                                                                 properties.get("taskname").replaceAll("&",
+                                                                                                                       "").replaceAll(" ",
+                                                                                                                                      ""));
                 task.getAnyAttribute().add(extensionEntry);
             }
             // map the taskName to iospecification
@@ -5683,7 +5685,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    "String");
+                                                                             "String");
             taskNameDataInput.getAnyAttribute().add(extensionEntry);
             if (task.getIoSpecification() == null) {
                 InputOutputSpecification iospec = Bpmn2Factory.eINSTANCE.createInputOutputSpecification();
@@ -5696,8 +5698,8 @@ public class Bpmn2JsonUnmarshaller {
             Assignment taskNameAssignment = Bpmn2Factory.eINSTANCE.createAssignment();
             FormalExpression fromExp = Bpmn2Factory.eINSTANCE.createFormalExpression();
             fromExp.setBody(properties.get("taskname").replaceAll("&",
-                    "").replaceAll(" ",
-                    ""));
+                                                                  "").replaceAll(" ",
+                                                                                 ""));
             taskNameAssignment.setFrom(fromExp);
             FormalExpression toExp = Bpmn2Factory.eINSTANCE.createFormalExpression();
             toExp.setBody(task.getId() + "_TaskNameInputX");
@@ -5714,23 +5716,23 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("lanes"));
+                                                                             properties.get("lanes"));
             task.getAnyAttribute().add(extensionEntry);
         }
         // isAsync metadata
         if (properties.get("isasync") != null && properties.get("isasync").length() > 0 && properties.get("isasync").equals("true")) {
             Utils.setMetaDataExtensionValue(task,
-                    "customAsync",
-                    wrapInCDATABlock(properties.get("isasync")));
+                                            "customAsync",
+                                            wrapInCDATABlock(properties.get("isasync")));
         }
         parseAssignmentsInfo(properties);
         //process data input set
         Map<String, DataInput> alreadyProcessedInputs = new HashMap<String, DataInput>();
         alreadyProcessedInputs.put("TaskName",
-                taskNameDataInput);
+                                   taskNameDataInput);
         applyDataInputProperties(task,
-                properties,
-                alreadyProcessedInputs);
+                                 properties,
+                                 alreadyProcessedInputs);
         for (DataInput processedInput : alreadyProcessedInputs.values()) {
             if (processedInput != null) {
                 task.getIoSpecification().getInputSets().get(0).getDataInputRefs().add(processedInput);
@@ -5738,7 +5740,7 @@ public class Bpmn2JsonUnmarshaller {
         }
         //process data output set
         applyDataOutputProperties(task,
-                properties);
+                                  properties);
         //process assignments
         if (properties.get("assignments") != null && properties.get("assignments").length() > 0) {
             String[] allAssignments = properties.get("assignments").split(",\\s*");
@@ -5748,7 +5750,7 @@ public class Bpmn2JsonUnmarshaller {
                     String fromPart = assignmentParts[0];
                     if (fromPart.startsWith("[din]")) {
                         fromPart = fromPart.substring(5,
-                                fromPart.length());
+                                                      fromPart.length());
                     }
                     DataInputAssociation dia = Bpmn2Factory.eINSTANCE.createDataInputAssociation();
                     boolean foundTaskName = false;
@@ -5830,12 +5832,12 @@ public class Bpmn2JsonUnmarshaller {
                     boolean isDataOutput = false;
                     if (fromPart.startsWith("[din]")) {
                         fromPart = fromPart.substring(5,
-                                fromPart.length());
+                                                      fromPart.length());
                         isDataInput = true;
                     }
                     if (fromPart.startsWith("[dout]")) {
                         fromPart = fromPart.substring(6,
-                                fromPart.length());
+                                                      fromPart.length());
                         isDataOutput = true;
                     }
                     List<DataOutput> dataOutputs = task.getIoSpecification().getDataOutputs();
@@ -5890,7 +5892,7 @@ public class Bpmn2JsonUnmarshaller {
         // process on-entry and on-exit actions as custom elements
         if (properties.get("onentryactions") != null && properties.get("onentryactions").length() > 0) {
             OnEntryScriptType onEntryScript = DroolsFactory.eINSTANCE.createOnEntryScriptType();
-            onEntryScript.setScript(wrapInCDATABlock(replaceScriptEscapeAndNewLines(properties.get("onentryactions"))));
+            onEntryScript.setScript(wrapInCDATABlock(properties.get("onentryactions")));
             String scriptLanguage = getScriptLanguageFormat(properties);
             onEntryScript.setScriptFormat(scriptLanguage);
             if (task.getExtensionValues() == null || task.getExtensionValues().size() < 1) {
@@ -5904,7 +5906,7 @@ public class Bpmn2JsonUnmarshaller {
         }
         if (properties.get("onexitactions") != null && properties.get("onexitactions").length() > 0) {
             OnExitScriptType onExitScript = DroolsFactory.eINSTANCE.createOnExitScriptType();
-            onExitScript.setScript(wrapInCDATABlock(replaceScriptEscapeAndNewLines(properties.get("onexitactions"))));
+            onExitScript.setScript(wrapInCDATABlock(properties.get("onexitactions")));
             String scriptLanguage = getScriptLanguageFormat(properties);
             onExitScript.setScriptFormat(scriptLanguage);
             if (task.getExtensionValues() == null || task.getExtensionValues().size() < 1) {
@@ -5936,7 +5938,7 @@ public class Bpmn2JsonUnmarshaller {
             buff.append("@");
             buff.append((properties.get("multipleinstancecompletioncondition") != null && properties.get("multipleinstancecompletioncondition").length() > 0) ? properties.get("multipleinstancecompletioncondition") : " ");
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    buff.toString());
+                                                                             buff.toString());
             task.getAnyAttribute().add(extensionEntry);
         }
         // simulation
@@ -5983,7 +5985,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<EObject> values = new ArrayList<EObject>();
                 values.add(timeParams);
                 _simulationElementParameters.put(task.getId(),
-                        values);
+                                                 values);
             }
         }
         CostParameters costParameters = BpsimFactory.eINSTANCE.createCostParameters();
@@ -6004,7 +6006,7 @@ public class Bpmn2JsonUnmarshaller {
             List<EObject> values = new ArrayList<EObject>();
             values.add(costParameters);
             _simulationElementParameters.put(task.getId(),
-                    values);
+                                             values);
         }
     }
 
@@ -6032,7 +6034,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(scriptLanguageElement,
-                    scriptLanguage);
+                                                                             scriptLanguage);
             task.getAnyAttribute().add(extensionEntry);
         }
         if (properties.get("groupid") != null && properties.get("groupid").length() > 0) {
@@ -6482,12 +6484,12 @@ public class Bpmn2JsonUnmarshaller {
                 if (da.getTargetRef() != null && da.getTargetRef().getId().equals(foundNotCompletedDataInput.getId())) {
                     foundNotCompletedReassignmentAssociation = true;
                     ((FormalExpression) da.getAssignment().get(0).getFrom()).setBody(getReassignmentsAndNotificationsForType(properties.get("reassignment"),
-                            "not-completed"));
+                                                                                                                             "not-completed"));
                 }
                 if (da.getTargetRef() != null && da.getTargetRef().getId().equals(foundNotStartedDataInput.getId())) {
                     foundNotStartedReassignmentAssociation = true;
                     ((FormalExpression) da.getAssignment().get(0).getFrom()).setBody(getReassignmentsAndNotificationsForType(properties.get("reassignment"),
-                            "not-started"));
+                                                                                                                             "not-started"));
                 }
             }
             if (!foundNotCompletedReassignmentAssociation) {
@@ -6496,7 +6498,7 @@ public class Bpmn2JsonUnmarshaller {
                 Assignment a = Bpmn2Factory.eINSTANCE.createAssignment();
                 FormalExpression notCompletedFromExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
                 notCompletedFromExpression.setBody(getReassignmentsAndNotificationsForType(properties.get("reassignment"),
-                        "not-completed"));
+                                                                                           "not-completed"));
                 FormalExpression notCompletedToExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
                 notCompletedToExpression.setBody(foundNotCompletedDataInput.getId());
                 a.setFrom(notCompletedFromExpression);
@@ -6510,7 +6512,7 @@ public class Bpmn2JsonUnmarshaller {
                 Assignment a = Bpmn2Factory.eINSTANCE.createAssignment();
                 FormalExpression notStartedFromExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
                 notStartedFromExpression.setBody(getReassignmentsAndNotificationsForType(properties.get("reassignment"),
-                        "not-started"));
+                                                                                         "not-started"));
                 FormalExpression notStartedToExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
                 notStartedToExpression.setBody(foundNotStartedDataInput.getId());
                 a.setFrom(notStartedFromExpression);
@@ -6572,12 +6574,12 @@ public class Bpmn2JsonUnmarshaller {
                 if (da.getTargetRef() != null && da.getTargetRef().getId().equals(foundNotCompletedDataInput.getId())) {
                     foundNotCompletedNotificationAssociation = true;
                     ((FormalExpression) da.getAssignment().get(0).getFrom()).setBody(getReassignmentsAndNotificationsForType(properties.get("notifications"),
-                            "not-completed"));
+                                                                                                                             "not-completed"));
                 }
                 if (da.getTargetRef() != null && da.getTargetRef().getId().equals(foundNotStartedDataInput.getId())) {
                     foundNotStartedNotificationAssociation = true;
                     ((FormalExpression) da.getAssignment().get(0).getFrom()).setBody(getReassignmentsAndNotificationsForType(properties.get("notifications"),
-                            "not-started"));
+                                                                                                                             "not-started"));
                 }
             }
             if (!foundNotCompletedNotificationAssociation) {
@@ -6586,7 +6588,7 @@ public class Bpmn2JsonUnmarshaller {
                 Assignment a = Bpmn2Factory.eINSTANCE.createAssignment();
                 FormalExpression notCompletedFromExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
                 notCompletedFromExpression.setBody(getReassignmentsAndNotificationsForType(properties.get("notifications"),
-                        "not-completed"));
+                                                                                           "not-completed"));
                 FormalExpression notCompletedToExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
                 notCompletedToExpression.setBody(foundNotCompletedDataInput.getId());
                 a.setFrom(notCompletedFromExpression);
@@ -6600,7 +6602,7 @@ public class Bpmn2JsonUnmarshaller {
                 Assignment a = Bpmn2Factory.eINSTANCE.createAssignment();
                 FormalExpression notStartedFromExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
                 notStartedFromExpression.setBody(getReassignmentsAndNotificationsForType(properties.get("notifications"),
-                        "not-started"));
+                                                                                         "not-started"));
                 FormalExpression notStartedToExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
                 notStartedToExpression.setBody(foundNotStartedDataInput.getId());
                 a.setFrom(notStartedFromExpression);
@@ -6713,7 +6715,7 @@ public class Bpmn2JsonUnmarshaller {
             List<EObject> values = new ArrayList<EObject>();
             values.add(resourceParameters);
             _simulationElementParameters.put(task.getId(),
-                    values);
+                                             values);
         }
     }
 
@@ -6745,12 +6747,12 @@ public class Bpmn2JsonUnmarshaller {
                                           Map<String, String> properties) {
         if (properties.get("name") != null && properties.get("name").length() > 0) {
             gateway.setName(escapeXmlString(properties.get("name")).replaceAll("\\r\\n|\\r|\\n",
-                    " "));
+                                                                               " "));
             // add unescaped and untouched name value as extension element as well
             Utils.setMetaDataExtensionValue(gateway,
-                    "elementname",
-                    wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
-                            "\n")));
+                                            "elementname",
+                                            wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
+                                                                                               "\n")));
         } else {
             gateway.setName("");
         }
@@ -6762,7 +6764,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("defaultgate"));
+                                                                             properties.get("defaultgate"));
             gateway.getAnyAttribute().add(extensionEntry);
         }
     }
@@ -6772,19 +6774,19 @@ public class Bpmn2JsonUnmarshaller {
         // sequence flow name is options
         if (properties.get("name") != null && !"".equals(properties.get("name"))) {
             sequenceFlow.setName(escapeXmlString(properties.get("name")).replaceAll("\\r\\n|\\r|\\n",
-                    " "));
+                                                                                    " "));
             // add unescaped and untouched name value as extension eleent as well
             Utils.setMetaDataExtensionValue(sequenceFlow,
-                    "elementname",
-                    wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
-                            "\n")));
+                                            "elementname",
+                                            wrapInCDATABlock(properties.get("name").replaceAll("\\\\n",
+                                                                                               "\n")));
         }
         if (properties.get("bgcolor") != null && properties.get("bgcolor").length() > 0) {
             if (!(_elementColors.containsKey(sequenceFlow.getId()))) {
                 List<String> colorsList = new ArrayList<String>();
                 colorsList.add("bgcolor:" + properties.get("bgcolor"));
                 _elementColors.put(sequenceFlow.getId(),
-                        colorsList);
+                                   colorsList);
             } else {
                 _elementColors.get(sequenceFlow.getId()).add("bgcolor:" + properties.get("bgcolor"));
             }
@@ -6794,7 +6796,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<String> colorsList = new ArrayList<String>();
                 colorsList.add("bordercolor:" + properties.get("bordercolor"));
                 _elementColors.put(sequenceFlow.getId(),
-                        colorsList);
+                                   colorsList);
             } else {
                 _elementColors.get(sequenceFlow.getId()).add("bordercolor:" + properties.get("bordercolor"));
             }
@@ -6807,7 +6809,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("fontsize"));
+                                                                             properties.get("fontsize"));
             sequenceFlow.getAnyAttribute().add(extensionEntry);
         }
         if (properties.get("fontcolor") != null && properties.get("fontcolor").length() > 0) {
@@ -6815,7 +6817,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<String> colorsList = new ArrayList<String>();
                 colorsList.add("fontcolor:" + properties.get("fontcolor"));
                 _elementColors.put(sequenceFlow.getId(),
-                        colorsList);
+                                   colorsList);
             } else {
                 _elementColors.get(sequenceFlow.getId()).add("fontcolor:" + properties.get("fontcolor"));
             }
@@ -6828,7 +6830,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
-                    properties.get("isselectable"));
+                                                                             properties.get("isselectable"));
             sequenceFlow.getAnyAttribute().add(extensionEntry);
         }
         if (properties.get("auditing") != null && !"".equals(properties.get("auditing"))) {
@@ -6838,8 +6840,7 @@ public class Bpmn2JsonUnmarshaller {
         }
         if (properties.get("conditionexpression") != null && !"".equals(properties.get("conditionexpression"))) {
             FormalExpression expr = Bpmn2Factory.eINSTANCE.createFormalExpression();
-            String scriptStr = properties.get("conditionexpression").replaceAll("\\\\n",
-                    "\n");
+            String scriptStr = properties.get("conditionexpression");
             expr.setBody(wrapInCDATABlock(scriptStr));
             // check if language was specified
             if (properties.get("conditionexpressionlanguage") != null && !"".equals(properties.get("conditionexpressionlanguage"))) {
@@ -6868,7 +6869,7 @@ public class Bpmn2JsonUnmarshaller {
                     false,
                     false);
             SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(priorityElement,
-                    properties.get("priority"));
+                                                                             properties.get("priority"));
             sequenceFlow.getAnyAttribute().add(extensionEntry);
         }
         if (properties.get("monitoring") != null && !"".equals(properties.get("monitoring"))) {
@@ -6892,7 +6893,7 @@ public class Bpmn2JsonUnmarshaller {
                 List<EObject> values = new ArrayList<EObject>();
                 values.add(controlParams);
                 _simulationElementParameters.put(sequenceFlow.getId(),
-                        values);
+                                                 values);
             }
         }
     }
@@ -6903,7 +6904,7 @@ public class Bpmn2JsonUnmarshaller {
             String fieldname = parser.getCurrentName();
             parser.nextToken();
             properties.put(fieldname,
-                    parser.getText());
+                           parser.getText());
         }
         return properties;
     }
@@ -6931,8 +6932,8 @@ public class Bpmn2JsonUnmarshaller {
                                             String taskType,
                                             boolean customElement) {
         return Bpmn20Stencil.createElement(stencil,
-                taskType,
-                customElement);
+                                           taskType,
+                                           customElement);
     }
 
     protected String wrapInCDATABlock(String value) {
@@ -6986,61 +6987,19 @@ public class Bpmn2JsonUnmarshaller {
         for (int i = 0; i < parts.length; i++) {
             if (parts[i].endsWith("^")) {
                 parts[i] = parts[i].substring(0,
-                        parts[i].length() - 1);
+                                              parts[i].length() - 1);
             }
             if (parts[i].endsWith("@" + type)) {
                 ret += parts[i].substring(0,
-                        parts[i].length() - ("@" + type).length());
+                                          parts[i].length() - ("@" + type).length());
                 ret += "^";
             }
         }
         if (ret.endsWith("^")) {
             ret = ret.substring(0,
-                    ret.length() - 1);
+                                ret.length() - 1);
         }
         return wrapInCDATABlock(ret);
-    }
-
-    /*
-     * Converts \\ to \ and \n in Script  to '\n'
-     */
-    private String replaceScriptEscapeAndNewLines(String str) {
-        StringBuilder result = new StringBuilder(str.length());
-        char c = '\0';
-        char prevC = '\0';
-        boolean atEscape = false;
-        for (int i = 0; i < str.length(); i++) {
-            prevC = c;
-            c = str.charAt(i);
-            // set atEscape flag
-            if (c == '\\') {
-                // deal with 2nd '\\' char
-                if (atEscape) {
-                    result.append(c);
-                    atEscape = false;
-                    // set c to '\0' so that prevC doesn't match '\\'
-                    // the next time round
-                    c = '\0';
-                } else {
-                    atEscape = true;
-                }
-            } else if (atEscape) {
-                if (c == 'n') {
-                    result.append("\n");
-                } else {
-                    result.append(c);
-                }
-            } else {
-                result.append(c);
-            }
-            // unset atEscape flag if required
-            if (prevC == '\\') {
-                if (atEscape) {
-                    atEscape = false;
-                }
-            }
-        }
-        return result.toString();
     }
 
     private String decodeAssociationValue(String s) {
@@ -7049,7 +7008,7 @@ public class Bpmn2JsonUnmarshaller {
         }
         try {
             return URLDecoder.decode(s,
-                    "UTF-8");
+                                     "UTF-8");
         } catch (UnsupportedEncodingException e) {
             return s;
         }
@@ -7061,34 +7020,34 @@ public class Bpmn2JsonUnmarshaller {
             String[] parts = assignmentsinfo.split("\\|");
             if (parts.length > 0 && parts[0] != null && parts[0].length() > 0) {
                 properties.put("datainput",
-                        parts[0]);
+                               parts[0]);
                 if (parts.length > 4 && parts[4] != null && parts[4].length() > 0) {
                     properties.put("datainputassociations",
-                            parts[4]);
+                                   parts[4]);
                 }
             }
             if (parts.length > 1 && parts[1] != null && parts[1].length() > 0) {
                 properties.put("datainputset",
-                        parts[1]);
+                               parts[1]);
                 if (parts.length > 4 && parts[4] != null && parts[4].length() > 0) {
                     properties.put("assignments",
-                            parts[4]);
+                                   parts[4]);
                 }
             }
             if (parts.length > 2 && parts[2] != null && parts[2].length() > 0) {
                 properties.put("dataoutput",
-                        parts[2]);
+                               parts[2]);
                 if (parts.length > 4 && parts[4] != null && parts[4].length() > 0) {
                     properties.put("dataoutputassociations",
-                            parts[4]);
+                                   parts[4]);
                 }
             }
             if (parts.length > 3 && parts[3] != null && parts[3].length() > 0) {
                 properties.put("dataoutputset",
-                        parts[3]);
+                               parts[3]);
                 if (parts.length > 4 && parts[4] != null && parts[4].length() > 0) {
                     properties.put("assignments",
-                            parts[4]);
+                                   parts[4]);
                 }
             }
         }
