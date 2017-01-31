@@ -26,4 +26,54 @@ public class GuidedDecisionTableErraiConstants {
     @TranslationKey(defaultValue = "")
     public static final String PopOverViewImpl_Title = "PopOverViewImpl.title";
 
+    @TranslationKey(defaultValue = "")
+    public static final String EditMenu_title = "EditMenu.title";
+
+    @TranslationKey(defaultValue = "")
+    public static final String EditMenu_cut = "EditMenu.cut";
+
+    @TranslationKey(defaultValue = "")
+    public static final String EditMenu_copy = "EditMenu.copy";
+
+    @TranslationKey(defaultValue = "")
+    public static final String EditMenu_paste = "EditMenu.paste";
+
+    @TranslationKey(defaultValue = "")
+    public static final String EditMenu_deleteCells = "EditMenu.deleteCells";
+
+    @TranslationKey(defaultValue = "")
+    public static final String EditMenu_deleteColumns = "EditMenu.deleteColumns";
+
+    @TranslationKey(defaultValue = "")
+    public static final String EditMenu_deleteRows = "EditMenu.deleteRows";
+
+    @TranslationKey(defaultValue = "")
+    public static final String EditMenu_otherwise = "EditMenu.otherwise";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InsertMenu_title = "InsertMenu.title";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InsertMenu_appendRow = "InsertMenu.appendRow";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InsertMenu_insertRowAbove = "InsertMenu.insertRowAbove";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InsertMenu_insertRowBelow = "InsertMenu.insertRowBelow";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InsertMenu_insertColumn = "InsertMenu.insertColumn";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ViewMenu_title = "ViewMenu.title";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ViewMenu_zoom = "ViewMenu.zoom";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ViewMenu_merged = "ViewMenu.merged";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ViewMenu_auditLog = "ViewMenu.auditLog";
 }

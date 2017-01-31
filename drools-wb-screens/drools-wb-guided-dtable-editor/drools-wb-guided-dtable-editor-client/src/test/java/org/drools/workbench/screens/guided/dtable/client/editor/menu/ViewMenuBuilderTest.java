@@ -16,17 +16,34 @@
 
 package org.drools.workbench.screens.guided.dtable.client.editor.menu;
 
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTablePinnedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.ext.widgets.common.client.menu.MenuItemDivider;
+import org.uberfire.ext.widgets.common.client.menu.MenuItemDividerView;
+import org.uberfire.ext.widgets.common.client.menu.MenuItemFactory;
+import org.uberfire.ext.widgets.common.client.menu.MenuItemHeader;
+import org.uberfire.ext.widgets.common.client.menu.MenuItemHeaderView;
+import org.uberfire.ext.widgets.common.client.menu.MenuItemView;
+import org.uberfire.ext.widgets.common.client.menu.MenuItemWithIcon;
+import org.uberfire.ext.widgets.common.client.menu.MenuItemWithIconView;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -35,7 +52,22 @@ public class ViewMenuBuilderTest {
     private ViewMenuBuilder builder;
 
     @Mock
-    private ViewMenuView view;
+    private TranslationService ts;
+
+    @Mock
+    private ManagedInstance<MenuItemView> menuItemViewProducer;
+
+    @Mock
+    private ManagedInstance<MenuItemView> menuItemViewHeaderProducer;
+
+    @Mock
+    private ManagedInstance<MenuItemView> menuItemViewWithIconProducer;
+
+    @Mock
+    private ManagedInstance<MenuItemView> menuItemViewDividerProducer;
+
+    private MenuItemFactory menuItemFactory;
+    private Set<MenuItemView> menuItemFactoryViewMocks = new HashSet<>();
 
     @Mock
     private GuidedDecisionTableView.Presenter dtPresenter;
@@ -50,194 +82,240 @@ public class ViewMenuBuilderTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        builder = new ViewMenuBuilder( view );
-        builder.setup();
-        builder.setModeller( modeller );
+        menuItemFactory = new MenuItemFactory(menuItemViewProducer);
+        menuItemFactoryViewMocks.clear();
 
-        when( dtPresenter.getAccess() ).thenReturn( access );
+        when(dtPresenter.getAccess()).thenReturn(access);
+        when(ts.getTranslation(any(String.class))).thenReturn("i18n");
+        when(menuItemViewProducer.select(any(Annotation.class))).thenAnswer((o) -> {
+            final Annotation a = (Annotation) o.getArguments()[0];
+            if (a.annotationType().equals(MenuItemHeader.class)) {
+                return menuItemViewHeaderProducer;
+            } else if (a.annotationType().equals(MenuItemWithIcon.class)) {
+                return menuItemViewWithIconProducer;
+            } else if (a.annotationType().equals(MenuItemDivider.class)) {
+                return menuItemViewDividerProducer;
+            }
+            throw new IllegalArgumentException("Unexpected MenuItemView");
+        });
+        when(menuItemViewHeaderProducer.get()).then(invocation -> {
+            final MenuItemHeaderView v = mock(MenuItemHeaderView.class);
+            menuItemFactoryViewMocks.add(v);
+            return v;
+        });
+        when(menuItemViewWithIconProducer.get()).then(invocation -> {
+            final MenuItemWithIconView v = mock(MenuItemWithIconView.class);
+            menuItemFactoryViewMocks.add(v);
+            return v;
+        });
+        when(menuItemViewDividerProducer.get()).then(invocation -> {
+            final MenuItemDividerView v = mock(MenuItemDividerView.class);
+            menuItemFactoryViewMocks.add(v);
+            return v;
+        });
+
+        builder = new ViewMenuBuilder(ts,
+                                      menuItemFactory);
+        builder.setup();
+        builder.setModeller(modeller);
     }
 
     @Test
     public void testInitialSetup() {
-        verify( view,
-                times( 1 ) ).setZoom125( eq( false ) );
-        verify( view,
-                times( 1 ) ).setZoom100( eq( true ) );
-        verify( view,
-                times( 1 ) ).setZoom75( eq( false ) );
-        verify( view,
-                times( 1 ) ).setZoom50( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableToggleMergedStateMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableViewAuditLogMenuItem( eq( false ) );
+        assertTrue(builder.miZoom125pct.getMenuItem().isEnabled());
+        assertTrue(builder.miZoom100pct.getMenuItem().isEnabled());
+        assertTrue(builder.miZoom75pct.getMenuItem().isEnabled());
+        assertTrue(builder.miZoom50pct.getMenuItem().isEnabled());
+
+        verify(builder.miZoom125pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+        verify(builder.miZoom100pct.getMenuItemView(),
+               times(1)).setIconType(eq(IconType.CHECK));
+        verify(builder.miZoom75pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+        verify(builder.miZoom50pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+
+        assertFalse(builder.miToggleMergeState.getMenuItem().isEnabled());
+        assertFalse(builder.miViewAuditLog.getMenuItem().isEnabled());
     }
 
     @Test
     public void testOnDecisionTableSelectedEventWithNonOtherwiseColumnSelected() {
-        builder.onDecisionTableSelectedEvent( new DecisionTableSelectedEvent( dtPresenter ) );
+        builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
-        verify( view,
-                times( 1 ) ).enableToggleMergedStateMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableViewAuditLogMenuItem( eq( true ) );
+        assertTrue(builder.miToggleMergeState.getMenuItem().isEnabled());
+        assertTrue(builder.miViewAuditLog.getMenuItem().isEnabled());
     }
 
     @Test
     public void testOnZoom125() {
-        reset( view );
+        menuItemFactoryViewMocks.stream().forEach(Mockito::reset);
 
-        builder.onZoom( 125 );
+        builder.onZoom(125);
 
-        verify( view,
-                times( 1 ) ).setZoom125( eq( true ) );
-        verify( view,
-                times( 1 ) ).setZoom100( eq( false ) );
-        verify( view,
-                times( 1 ) ).setZoom75( eq( false ) );
-        verify( view,
-                times( 1 ) ).setZoom50( eq( false ) );
-        verify( modeller,
-                times( 1 ) ).setZoom( eq( 125 ) );
+        verify(builder.miZoom125pct.getMenuItemView(),
+               times(1)).setIconType(eq(IconType.CHECK));
+        verify(builder.miZoom100pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+        verify(builder.miZoom75pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+        verify(builder.miZoom50pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+        verify(modeller,
+               times(1)).setZoom(eq(125));
     }
 
     @Test
     public void testOnZoom100() {
-        reset( view );
+        menuItemFactoryViewMocks.stream().forEach(Mockito::reset);
 
-        builder.onZoom( 100 );
+        builder.onZoom(100);
 
-        verify( view,
-                times( 1 ) ).setZoom125( eq( false ) );
-        verify( view,
-                times( 1 ) ).setZoom100( eq( true ) );
-        verify( view,
-                times( 1 ) ).setZoom75( eq( false ) );
-        verify( view,
-                times( 1 ) ).setZoom50( eq( false ) );
-        verify( modeller,
-                times( 1 ) ).setZoom( eq( 100 ) );
+        verify(builder.miZoom125pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+        verify(builder.miZoom100pct.getMenuItemView(),
+               times(1)).setIconType(eq(IconType.CHECK));
+        verify(builder.miZoom75pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+        verify(builder.miZoom50pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+        verify(modeller,
+               times(1)).setZoom(eq(100));
     }
 
     @Test
     public void testOnZoom75() {
-        reset( view );
+        menuItemFactoryViewMocks.stream().forEach(Mockito::reset);
 
-        builder.onZoom( 75 );
+        builder.onZoom(75);
 
-        verify( view,
-                times( 1 ) ).setZoom125( eq( false ) );
-        verify( view,
-                times( 1 ) ).setZoom100( eq( false ) );
-        verify( view,
-                times( 1 ) ).setZoom75( eq( true ) );
-        verify( view,
-                times( 1 ) ).setZoom50( eq( false ) );
-        verify( modeller,
-                times( 1 ) ).setZoom( eq( 75 ) );
+        verify(builder.miZoom125pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+        verify(builder.miZoom100pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+        verify(builder.miZoom75pct.getMenuItemView(),
+               times(1)).setIconType(eq(IconType.CHECK));
+        verify(builder.miZoom50pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+        verify(modeller,
+               times(1)).setZoom(eq(75));
     }
 
     @Test
     public void testOnZoom50() {
-        reset( view );
+        menuItemFactoryViewMocks.stream().forEach(Mockito::reset);
 
-        builder.onZoom( 50 );
+        builder.onZoom(50);
 
-        verify( view,
-                times( 1 ) ).setZoom125( eq( false ) );
-        verify( view,
-                times( 1 ) ).setZoom100( eq( false ) );
-        verify( view,
-                times( 1 ) ).setZoom75( eq( false ) );
-        verify( view,
-                times( 1 ) ).setZoom50( eq( true ) );
-        verify( modeller,
-                times( 1 ) ).setZoom( eq( 50 ) );
+        verify(builder.miZoom125pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+        verify(builder.miZoom100pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+        verify(builder.miZoom75pct.getMenuItemView(),
+               times(1)).setIconType(eq(null));
+        verify(builder.miZoom50pct.getMenuItemView(),
+               times(1)).setIconType(eq(IconType.CHECK));
+        verify(modeller,
+               times(1)).setZoom(eq(50));
     }
 
     @Test
     public void testToggleMergeState() {
-        when( dtPresenter.isMerged() ).thenReturn( false );
+        when(dtPresenter.isMerged()).thenReturn(false);
 
-        builder.onDecisionTableSelectedEvent( new DecisionTableSelectedEvent( dtPresenter ) );
+        builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
-        verify( view,
-                times( 1 ) ).enableToggleMergedStateMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableViewAuditLogMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).setMerged( eq( false ) );
+        assertTrue(builder.miToggleMergeState.getMenuItem().isEnabled());
+        assertTrue(builder.miViewAuditLog.getMenuItem().isEnabled());
+        verify(builder.miToggleMergeState.getMenuItemView(),
+               times(1)).setIconType(eq(null));
 
         builder.onToggleMergeState();
 
-        verify( dtPresenter,
-                times( 1 ) ).setMerged( eq( true ) );
-        verify( view,
-                times( 1 ) ).setMerged( eq( true ) );
+        verify(dtPresenter,
+               times(1)).setMerged(eq(true));
+        verify(builder.miToggleMergeState.getMenuItemView(),
+               times(1)).setIconType(eq(IconType.CHECK));
     }
 
     @Test
     public void testViewAuditLog() {
-        builder.onDecisionTableSelectedEvent( new DecisionTableSelectedEvent( dtPresenter ) );
+        builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
         builder.onViewAuditLog();
 
-        verify( dtPresenter,
-                times( 1 ) ).showAuditLog();
+        verify(dtPresenter,
+               times(1)).showAuditLog();
     }
 
     @Test
     public void testEnableZoom_Pinned() {
-        builder.onDecisionTablePinnedEvent( new DecisionTablePinnedEvent( modeller,
-                                                                          true ) );
+        builder.onDecisionTablePinnedEvent(new DecisionTablePinnedEvent(modeller,
+                                                                        true));
 
-        verify( view,
-                times( 1 ) ).enableZoom( eq( false ) );
+        assertFalse(builder.miZoom125pct.getMenuItem().isEnabled());
+        assertFalse(builder.miZoom100pct.getMenuItem().isEnabled());
+        assertFalse(builder.miZoom75pct.getMenuItem().isEnabled());
+        assertFalse(builder.miZoom50pct.getMenuItem().isEnabled());
     }
 
     @Test
     public void testEnableZoom_Pinned_DifferentModeller() {
-        builder.onDecisionTablePinnedEvent( new DecisionTablePinnedEvent( mock( GuidedDecisionTableModellerView.Presenter.class ),
-                                                                          true ) );
+        builder.onDecisionTablePinnedEvent(new DecisionTablePinnedEvent(mock(GuidedDecisionTableModellerView.Presenter.class),
+                                                                        true));
 
-        verify( view,
-                never() ).enableZoom( any( Boolean.class ) );
+        verify(builder.miZoom125pct.getMenuItemView(),
+               never()).setEnabled(any(Boolean.class));
+        verify(builder.miZoom100pct.getMenuItemView(),
+               never()).setEnabled(any(Boolean.class));
+        verify(builder.miZoom75pct.getMenuItemView(),
+               never()).setEnabled(any(Boolean.class));
+        verify(builder.miZoom50pct.getMenuItemView(),
+               never()).setEnabled(any(Boolean.class));
     }
 
     @Test
     public void testEnableZoom_Unpinned() {
-        builder.onDecisionTablePinnedEvent( new DecisionTablePinnedEvent( modeller,
-                                                                          false ) );
+        builder.onDecisionTablePinnedEvent(new DecisionTablePinnedEvent(modeller,
+                                                                        false));
 
-        verify( view,
-                times( 1 ) ).enableZoom( eq( true ) );
+        verify(builder.miZoom125pct.getMenuItemView(),
+               times(1)).setEnabled(eq(true));
+        verify(builder.miZoom100pct.getMenuItemView(),
+               times(1)).setEnabled(eq(true));
+        verify(builder.miZoom75pct.getMenuItemView(),
+               times(1)).setEnabled(eq(true));
+        verify(builder.miZoom50pct.getMenuItemView(),
+               times(1)).setEnabled(eq(true));
     }
 
     @Test
     public void testEnableZoom_Unpinned_DifferentModeller() {
-        builder.onDecisionTablePinnedEvent( new DecisionTablePinnedEvent( mock( GuidedDecisionTableModellerView.Presenter.class ),
-                                                                          false ) );
+        builder.onDecisionTablePinnedEvent(new DecisionTablePinnedEvent(mock(GuidedDecisionTableModellerView.Presenter.class),
+                                                                        false));
 
-        verify( view,
-                never() ).enableZoom( any( Boolean.class ) );
+        verify(builder.miZoom125pct.getMenuItemView(),
+               never()).setEnabled(any(Boolean.class));
+        verify(builder.miZoom100pct.getMenuItemView(),
+               never()).setEnabled(any(Boolean.class));
+        verify(builder.miZoom75pct.getMenuItemView(),
+               never()).setEnabled(any(Boolean.class));
+        verify(builder.miZoom50pct.getMenuItemView(),
+               never()).setEnabled(any(Boolean.class));
     }
 
     @Test
     public void testOnDecisionTableSelectedEventReadOnly() {
         //ViewMenuBuilder.setup() called in @Setup disables view by default
-        verify( view,
-                times( 1 ) ).enableToggleMergedStateMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableViewAuditLogMenuItem( eq( false ) );
+        assertFalse(builder.miToggleMergeState.getMenuItem().isEnabled());
+        assertFalse(builder.miViewAuditLog.getMenuItem().isEnabled());
 
-        dtPresenter.getAccess().setReadOnly( true );
-        builder.onDecisionTableSelectedEvent( new DecisionTableSelectedEvent( dtPresenter ) );
+        dtPresenter.getAccess().setReadOnly(true);
+        builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
         //Verify selecting a read-only Decision Table also disables view
-        verify( view,
-                times( 2 ) ).enableToggleMergedStateMenuItem( eq( false ) );
-        verify( view,
-                times( 2 ) ).enableViewAuditLogMenuItem( eq( false ) );
+        assertFalse(builder.miToggleMergeState.getMenuItem().isEnabled());
+        assertFalse(builder.miViewAuditLog.getMenuItem().isEnabled());
     }
-
 }

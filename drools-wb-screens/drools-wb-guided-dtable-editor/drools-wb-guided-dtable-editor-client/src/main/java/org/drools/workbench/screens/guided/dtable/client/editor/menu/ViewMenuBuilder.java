@@ -16,157 +16,195 @@
 
 package org.drools.workbench.screens.guided.dtable.client.editor.menu;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTablePinnedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.uberfire.ext.widgets.common.client.menu.MenuItemDividerView;
+import org.uberfire.ext.widgets.common.client.menu.MenuItemFactory;
+import org.uberfire.ext.widgets.common.client.menu.MenuItemFactory.MenuItemViewHolder;
+import org.uberfire.ext.widgets.common.client.menu.MenuItemHeaderView;
+import org.uberfire.ext.widgets.common.client.menu.MenuItemWithIconView;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
 @Dependent
-public class ViewMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuBuilder,
-                                                         ViewMenuView.Presenter {
+public class ViewMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuBuilder {
 
     public interface SupportsZoom {
 
-        void setZoom( final int zoomLevel );
-
+        void setZoom(final int zoomLevel);
     }
 
     public interface HasMergedView {
 
-        void setMerged( final boolean merged );
+        void setMerged(final boolean merged);
 
         boolean isMerged();
-
     }
 
     public interface HasAuditLog {
 
         void showAuditLog();
-
     }
 
-    private ViewMenuView view;
+    private TranslationService ts;
+    private MenuItemFactory menuItemFactory;
     private GuidedDecisionTableModellerView.Presenter modeller;
 
+    MenuItemViewHolder<MenuItemHeaderView> miHeader;
+    MenuItemViewHolder<MenuItemWithIconView> miZoom125pct;
+    MenuItemViewHolder<MenuItemWithIconView> miZoom100pct;
+    MenuItemViewHolder<MenuItemWithIconView> miZoom75pct;
+    MenuItemViewHolder<MenuItemWithIconView> miZoom50pct;
+    MenuItemViewHolder<MenuItemDividerView> miSeparator;
+    MenuItemViewHolder<MenuItemWithIconView> miToggleMergeState;
+    MenuItemViewHolder<MenuItemWithIconView> miViewAuditLog;
+
     @Inject
-    public ViewMenuBuilder( final ViewMenuView view ) {
-        this.view = view;
+    public ViewMenuBuilder(final TranslationService ts,
+                           final MenuItemFactory menuItemFactory) {
+        this.ts = ts;
+        this.menuItemFactory = menuItemFactory;
     }
 
     @PostConstruct
-    void setup() {
-        view.init( this );
-        view.setZoom125( false );
-        view.setZoom100( true );
-        view.setZoom75( false );
-        view.setZoom50( false );
-        view.enableToggleMergedStateMenuItem( false );
-        view.enableViewAuditLogMenuItem( false );
+    public void setup() {
+        miHeader = menuItemFactory.makeMenuItemHeader(ts.getTranslation(GuidedDecisionTableErraiConstants.ViewMenu_zoom));
+
+        miZoom125pct = menuItemFactory.makeMenuItemWithIcon("125%",
+                                                            () -> onZoom(125));
+        miZoom100pct = menuItemFactory.makeMenuItemWithIcon("100%",
+                                                            () -> onZoom(100));
+        miZoom75pct = menuItemFactory.makeMenuItemWithIcon("75%",
+                                                           () -> onZoom(75));
+        miZoom50pct = menuItemFactory.makeMenuItemWithIcon("50%",
+                                                           () -> onZoom(50));
+        miSeparator = menuItemFactory.makeMenuItemDivider();
+        miToggleMergeState = menuItemFactory.makeMenuItemWithIcon(ts.getTranslation(GuidedDecisionTableErraiConstants.ViewMenu_merged),
+                                                                  this::onToggleMergeState);
+        miViewAuditLog = menuItemFactory.makeMenuItemWithIcon(ts.getTranslation(GuidedDecisionTableErraiConstants.ViewMenu_auditLog),
+                                                              this::onViewAuditLog);
+
+        miZoom125pct.getMenuItemView().setIconType(null);
+        miZoom100pct.getMenuItemView().setIconType(IconType.CHECK);
+        miZoom75pct.getMenuItemView().setIconType(null);
+        miZoom50pct.getMenuItemView().setIconType(null);
+
+        miToggleMergeState.getMenuItem().setEnabled(false);
+        miViewAuditLog.getMenuItem().setEnabled(false);
     }
 
-    @Override
-    public void setModeller( final GuidedDecisionTableModellerView.Presenter modeller ) {
+    public void setModeller(final GuidedDecisionTableModellerView.Presenter modeller) {
         this.modeller = modeller;
     }
 
     @Override
-    public void push( final MenuFactory.CustomMenuBuilder element ) {
+    public void push(final MenuFactory.CustomMenuBuilder element) {
     }
 
     @Override
     public MenuItem build() {
-        return new BaseMenuCustom<IsWidget>() {
-            @Override
-            public IsWidget build() {
-                return view;
-            }
+        return MenuFactory.newTopLevelMenu(ts.getTranslation(GuidedDecisionTableErraiConstants.ViewMenu_title))
+                .withItems(getEditMenuItems())
+                .endMenu()
+                .build()
+                .getItems()
+                .get(0);
+    }
 
-            @Override
-            public boolean isEnabled() {
-                return view.isEnabled();
-            }
-
-            @Override
-            public void setEnabled( final boolean enabled ) {
-                view.setEnabled( enabled );
-            }
-        };
+    List<MenuItem> getEditMenuItems() {
+        final ArrayList<MenuItem> menuItems = new ArrayList<>();
+        menuItems.add(miHeader.getMenuItem());
+        menuItems.add(miZoom125pct.getMenuItem());
+        menuItems.add(miZoom100pct.getMenuItem());
+        menuItems.add(miZoom75pct.getMenuItem());
+        menuItems.add(miZoom50pct.getMenuItem());
+        menuItems.add(miSeparator.getMenuItem());
+        menuItems.add(miToggleMergeState.getMenuItem());
+        menuItems.add(miViewAuditLog.getMenuItem());
+        return menuItems;
     }
 
     @Override
-    public void onDecisionTableSelectedEvent( final @Observes DecisionTableSelectedEvent event ) {
-        super.onDecisionTableSelectedEvent( event );
+    public void onDecisionTableSelectedEvent(final @Observes DecisionTableSelectedEvent event) {
+        super.onDecisionTableSelectedEvent(event);
+        enableZoomMenu(true);
     }
 
     @Override
     public void initialise() {
-        if ( activeDecisionTable == null || !activeDecisionTable.getAccess().isEditable() ) {
-            view.enableToggleMergedStateMenuItem( false );
-            view.enableViewAuditLogMenuItem( false );
-            view.setMerged( false );
+        if (activeDecisionTable == null || !activeDecisionTable.getAccess().isEditable()) {
+            miToggleMergeState.getMenuItem().setEnabled(false);
+            miToggleMergeState.getMenuItemView().setIconType(null);
+            miViewAuditLog.getMenuItem().setEnabled(false);
         } else {
-            view.enableToggleMergedStateMenuItem( true );
-            view.enableViewAuditLogMenuItem( true );
-            view.setMerged( activeDecisionTable.isMerged() );
+            miToggleMergeState.getMenuItem().setEnabled(true);
+            miToggleMergeState.getMenuItemView().setIconType(activeDecisionTable.isMerged() ? IconType.CHECK : null);
+            miViewAuditLog.getMenuItem().setEnabled(true);
         }
     }
 
-    public void onDecisionTablePinnedEvent( final @Observes DecisionTablePinnedEvent event ) {
+    public void onDecisionTablePinnedEvent(final @Observes DecisionTablePinnedEvent event) {
         final GuidedDecisionTableModellerView.Presenter modeller = event.getPresenter();
-        if ( modeller == null ) {
+        if (modeller == null) {
             return;
         }
-        if ( !modeller.equals( this.modeller ) ) {
+        if (!modeller.equals(this.modeller)) {
             return;
         }
-        view.enableZoom( !event.isPinned() );
+        enableZoomMenu(!event.isPinned());
     }
 
-    @Override
-    public void onZoom( final int zoom ) {
-        modeller.setZoom( zoom );
-        view.setZoom125( false );
-        view.setZoom100( false );
-        view.setZoom75( false );
-        view.setZoom50( false );
-        switch ( zoom ) {
+    private void enableZoomMenu(final boolean enabled) {
+        miZoom125pct.getMenuItem().setEnabled(enabled);
+        miZoom100pct.getMenuItem().setEnabled(enabled);
+        miZoom75pct.getMenuItem().setEnabled(enabled);
+        miZoom50pct.getMenuItem().setEnabled(enabled);
+    }
+
+    void onZoom(final int zoom) {
+        modeller.setZoom(zoom);
+        miZoom125pct.getMenuItemView().setIconType(null);
+        miZoom100pct.getMenuItemView().setIconType(null);
+        miZoom75pct.getMenuItemView().setIconType(null);
+        miZoom50pct.getMenuItemView().setIconType(null);
+        switch (zoom) {
             case 125:
-                view.setZoom125( true );
+                miZoom125pct.getMenuItemView().setIconType(IconType.CHECK);
                 break;
             case 100:
-                view.setZoom100( true );
+                miZoom100pct.getMenuItemView().setIconType(IconType.CHECK);
                 break;
             case 75:
-                view.setZoom75( true );
+                miZoom75pct.getMenuItemView().setIconType(IconType.CHECK);
                 break;
             case 50:
-                view.setZoom50( true );
+                miZoom50pct.getMenuItemView().setIconType(IconType.CHECK);
                 break;
         }
     }
 
-    @Override
-    public void onToggleMergeState() {
-        if ( activeDecisionTable != null ) {
+    void onToggleMergeState() {
+        if (activeDecisionTable != null) {
             final boolean newMergeState = !activeDecisionTable.isMerged();
-            activeDecisionTable.setMerged( newMergeState );
-            view.setMerged( newMergeState );
+            miToggleMergeState.getMenuItemView().setIconType(newMergeState ? IconType.CHECK : null);
+            activeDecisionTable.setMerged(newMergeState);
         }
     }
 
-    @Override
-    public void onViewAuditLog() {
-        if ( activeDecisionTable != null ) {
+    void onViewAuditLog() {
+        if (activeDecisionTable != null) {
             activeDecisionTable.showAuditLog();
         }
     }
-
 }
