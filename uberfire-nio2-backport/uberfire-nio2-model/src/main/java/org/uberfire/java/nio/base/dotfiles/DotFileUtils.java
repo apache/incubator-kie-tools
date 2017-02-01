@@ -36,68 +36,77 @@ public final class DotFileUtils {
 
     }
 
-    public static boolean buildDotFile( final Path path,
-                                        final OutputStream out,
-                                        final FileAttribute<?>... attrs ) {
+    public static boolean buildDotFile(final Path path,
+                                       final OutputStream out,
+                                       final FileAttribute<?>... attrs) {
         boolean hasContent = false;
-        if ( attrs != null && attrs.length > 0 ) {
+        if (attrs != null && attrs.length > 0) {
             final Properties properties = new Properties();
 
-            for ( final FileAttribute<?> attr : attrs ) {
-                if ( attr.value() instanceof Serializable ) {
+            for (final FileAttribute<?> attr : attrs) {
+                if (attr.value() instanceof Serializable) {
                     hasContent = true;
-                    properties.put( attr.name(), attr.value() );
+                    properties.put(attr.name(),
+                                   attr.value());
                 }
             }
 
-            if ( hasContent ) {
+            if (hasContent) {
                 try {
-                    properties.store( out );
-                } catch ( final Exception e ) {
-                    throw new IOException( e );
+                    properties.store(out);
+                } catch (final Exception e) {
+                    throw new IOException(e);
                 }
             }
 
-            if ( path instanceof AttrHolder ) {
-                ( (AttrHolder) path ).getAttrStorage().loadContent( properties );
+            if (path instanceof AttrHolder) {
+                ((AttrHolder) path).getAttrStorage().loadContent(properties);
             }
         } else {
-            path.getFileSystem().provider().deleteIfExists( dot( path ) );
+            path.getFileSystem().provider().deleteIfExists(dot(path));
         }
 
-        if ( !hasContent ) {
+        if (!hasContent) {
             try {
                 out.close();
-            } catch ( java.io.IOException e ) {
+            } catch (java.io.IOException e) {
             }
         }
 
         return hasContent;
     }
 
-    public static Path dot( final Path path ) {
-        if ( path.getFileName() == null ) {
-            return path.resolve( ".root" );
+    public static Path dot(final Path path) {
+        if (path.getFileName() == null) {
+            return path.resolve(".root");
         }
-        return path.resolveSibling( "." + path.getFileName() );
+        return path.resolveSibling("." + path.getFileName());
     }
 
-    public static FileAttribute<?>[] consolidate( final Map<String, Object> props,
-                                                  final FileAttribute<?>... attrs ) {
-        if ( props == null || props.size() == 0 ) {
+    public static Path undot(final Path path) {
+        if (!path.getFileName().toString().startsWith(".")) {
+            return path;
+        }
+        return path.resolveSibling(path.getFileName().toString().substring(1));
+    }
+
+    public static FileAttribute<?>[] consolidate(final Map<String, Object> props,
+                                                 final FileAttribute<?>... attrs) {
+        if (props == null || props.size() == 0) {
             return attrs;
         }
 
-        final Map<String, Object> temp = new HashMap<String, Object>( props );
+        final Map<String, Object> temp = new HashMap<String, Object>(props);
 
-        for ( final FileAttribute<?> attr : attrs ) {
-            temp.put( attr.name(), attr.value() );
+        for (final FileAttribute<?> attr : attrs) {
+            temp.put(attr.name(),
+                     attr.value());
         }
 
-        final FileAttribute<?>[] result = new FileAttribute<?>[ temp.size() ];
+        final FileAttribute<?>[] result = new FileAttribute<?>[temp.size()];
         int i = -1;
-        for ( final Map.Entry<String, Object> attr : temp.entrySet() ) {
-            result[ ++i ] = new FileAttribute<Object>() {
+        for (final Map.Entry<String, Object> attr : temp.entrySet()) {
+            result[++i] = new FileAttribute<Object>() {
                 @Override
                 public String name() {
                     return attr.getKey();

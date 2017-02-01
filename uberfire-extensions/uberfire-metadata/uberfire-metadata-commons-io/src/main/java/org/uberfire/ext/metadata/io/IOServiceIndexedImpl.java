@@ -16,14 +16,12 @@
 
 package org.uberfire.ext.metadata.io;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.java.nio.file.StandardWatchEventKind.ENTRY_CREATE;
-import static org.uberfire.java.nio.file.StandardWatchEventKind.ENTRY_MODIFY;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +39,7 @@ import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FSPath;
 import org.uberfire.java.nio.base.WatchContext;
+import org.uberfire.java.nio.base.dotfiles.DotFileUtils;
 import org.uberfire.java.nio.file.DeleteOption;
 import org.uberfire.java.nio.file.DirectoryNotEmptyException;
 import org.uberfire.java.nio.file.FileSystem;
@@ -56,9 +55,13 @@ import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.java.nio.file.StandardWatchEventKind.ENTRY_CREATE;
+import static org.uberfire.java.nio.file.StandardWatchEventKind.ENTRY_MODIFY;
+
 public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( IOServiceIndexedImpl.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger(IOServiceIndexedImpl.class);
 
     private final MetaIndexEngine indexEngine;
     private final BatchIndex batchIndex;
@@ -69,146 +72,147 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
     private final Observer observer;
 
-    public IOServiceIndexedImpl( final MetaIndexEngine indexEngine,
-                                 final Class<? extends FileAttributeView>... views ) {
-        this( indexEngine,
-              new NOPObserver(),
-              views );
+    public IOServiceIndexedImpl(final MetaIndexEngine indexEngine,
+                                final Class<? extends FileAttributeView>... views) {
+        this(indexEngine,
+             new NOPObserver(),
+             views);
     }
 
-    public IOServiceIndexedImpl( final String id,
-                                 final MetaIndexEngine indexEngine,
-                                 final Class<? extends FileAttributeView>... views ) {
-        this( id,
-              indexEngine,
-              new NOPObserver(),
-              views );
+    public IOServiceIndexedImpl(final String id,
+                                final MetaIndexEngine indexEngine,
+                                final Class<? extends FileAttributeView>... views) {
+        this(id,
+             indexEngine,
+             new NOPObserver(),
+             views);
     }
 
-    public IOServiceIndexedImpl( final IOWatchService watchService,
-                                 final MetaIndexEngine indexEngine,
-                                 final Class<? extends FileAttributeView>... views ) {
-        this( watchService,
-              indexEngine,
-              new NOPObserver(),
-              views );
+    public IOServiceIndexedImpl(final IOWatchService watchService,
+                                final MetaIndexEngine indexEngine,
+                                final Class<? extends FileAttributeView>... views) {
+        this(watchService,
+             indexEngine,
+             new NOPObserver(),
+             views);
     }
 
-    public IOServiceIndexedImpl( final String id,
-                                 final IOWatchService watchService,
-                                 final MetaIndexEngine indexEngine,
-                                 final Class<? extends FileAttributeView>... views ) {
-        this( id,
-              watchService,
-              indexEngine,
-              new NOPObserver(),
-              views );
+    public IOServiceIndexedImpl(final String id,
+                                final IOWatchService watchService,
+                                final MetaIndexEngine indexEngine,
+                                final Class<? extends FileAttributeView>... views) {
+        this(id,
+             watchService,
+             indexEngine,
+             new NOPObserver(),
+             views);
     }
 
-    public IOServiceIndexedImpl( final MetaIndexEngine indexEngine,
-                                 final Observer observer,
-                                 final Class<? extends FileAttributeView>... views ) {
+    public IOServiceIndexedImpl(final MetaIndexEngine indexEngine,
+                                final Observer observer,
+                                final Class<? extends FileAttributeView>... views) {
         super();
-        this.indexEngine = checkNotNull( "indexEngine",
-                                         indexEngine );
-        this.observer = checkNotNull( "observer",
-                                      observer );
-        this.batchIndex = new BatchIndex( indexEngine,
-                                          this,
-                                          observer,
-                                          views );
+        this.indexEngine = checkNotNull("indexEngine",
+                                        indexEngine);
+        this.observer = checkNotNull("observer",
+                                     observer);
+        this.batchIndex = new BatchIndex(indexEngine,
+                                         this,
+                                         observer,
+                                         views);
         this.views = views;
     }
 
-    public IOServiceIndexedImpl( final String id,
-                                 final MetaIndexEngine indexEngine,
-                                 final Observer observer,
-                                 final Class<? extends FileAttributeView>... views ) {
-        super( id );
-        this.indexEngine = checkNotNull( "indexEngine",
-                                         indexEngine );
-        this.observer = checkNotNull( "observer",
-                                      observer );
-        this.batchIndex = new BatchIndex( indexEngine,
-                                          this,
-                                          observer,
-                                          views );
+    public IOServiceIndexedImpl(final String id,
+                                final MetaIndexEngine indexEngine,
+                                final Observer observer,
+                                final Class<? extends FileAttributeView>... views) {
+        super(id);
+        this.indexEngine = checkNotNull("indexEngine",
+                                        indexEngine);
+        this.observer = checkNotNull("observer",
+                                     observer);
+        this.batchIndex = new BatchIndex(indexEngine,
+                                         this,
+                                         observer,
+                                         views);
         this.views = views;
     }
 
-    public IOServiceIndexedImpl( final IOWatchService watchService,
-                                 final MetaIndexEngine indexEngine,
-                                 final Observer observer,
-                                 final Class<? extends FileAttributeView>... views ) {
-        super( watchService );
-        this.indexEngine = checkNotNull( "indexEngine",
-                                         indexEngine );
-        this.observer = checkNotNull( "observer",
-                                      observer );
-        this.batchIndex = new BatchIndex( indexEngine,
-                                          this,
-                                          observer,
-                                          views );
+    public IOServiceIndexedImpl(final IOWatchService watchService,
+                                final MetaIndexEngine indexEngine,
+                                final Observer observer,
+                                final Class<? extends FileAttributeView>... views) {
+        super(watchService);
+        this.indexEngine = checkNotNull("indexEngine",
+                                        indexEngine);
+        this.observer = checkNotNull("observer",
+                                     observer);
+        this.batchIndex = new BatchIndex(indexEngine,
+                                         this,
+                                         observer,
+                                         views);
         this.views = views;
     }
 
-    public IOServiceIndexedImpl( final String id,
-                                 final IOWatchService watchService,
-                                 final MetaIndexEngine indexEngine,
-                                 final Observer observer,
-                                 final Class<? extends FileAttributeView>... views ) {
-        super( id,
-               watchService );
-        this.indexEngine = checkNotNull( "indexEngine",
-                                         indexEngine );
-        this.observer = checkNotNull( "observer",
-                                      observer );
-        this.batchIndex = new BatchIndex( indexEngine,
-                                          this,
-                                          observer,
-                                          views );
+    public IOServiceIndexedImpl(final String id,
+                                final IOWatchService watchService,
+                                final MetaIndexEngine indexEngine,
+                                final Observer observer,
+                                final Class<? extends FileAttributeView>... views) {
+        super(id,
+              watchService);
+        this.indexEngine = checkNotNull("indexEngine",
+                                        indexEngine);
+        this.observer = checkNotNull("observer",
+                                     observer);
+        this.batchIndex = new BatchIndex(indexEngine,
+                                         this,
+                                         observer,
+                                         views);
         this.views = views;
     }
 
     @Override
-    public FileSystem getFileSystem( final URI uri )
+    public FileSystem getFileSystem(final URI uri)
             throws IllegalArgumentException, FileSystemNotFoundException,
             ProviderNotFoundException, SecurityException {
         try {
-            final FileSystem fs = super.getFileSystem( uri );
-            indexIfFresh( fs );
-            setupWatchService( fs );
+            final FileSystem fs = super.getFileSystem(uri);
+            indexIfFresh(fs);
+            setupWatchService(fs);
             return fs;
-        } catch ( final IllegalArgumentException ex ) {
+        } catch (final IllegalArgumentException ex) {
             throw ex;
-        } catch ( final FileSystemNotFoundException ex ) {
+        } catch (final FileSystemNotFoundException ex) {
             throw ex;
-        } catch ( final ProviderNotFoundException ex ) {
+        } catch (final ProviderNotFoundException ex) {
             throw ex;
-        } catch ( final SecurityException ex ) {
+        } catch (final SecurityException ex) {
             throw ex;
         }
     }
 
     @Override
-    public FileSystem newFileSystem( final URI uri,
-                                     final Map<String, ?> env )
+    public FileSystem newFileSystem(final URI uri,
+                                    final Map<String, ?> env)
             throws IllegalArgumentException, FileSystemAlreadyExistsException,
             ProviderNotFoundException, IOException, SecurityException {
         try {
-            final FileSystem fs = super.newFileSystem( uri, env );
-            index( fs );
-            setupWatchService( fs );
+            final FileSystem fs = super.newFileSystem(uri,
+                                                      env);
+            index(fs);
+            setupWatchService(fs);
             return fs;
-        } catch ( final IllegalArgumentException ex ) {
+        } catch (final IllegalArgumentException ex) {
             throw ex;
-        } catch ( final FileSystemAlreadyExistsException ex ) {
+        } catch (final FileSystemAlreadyExistsException ex) {
             throw ex;
-        } catch ( final ProviderNotFoundException ex ) {
+        } catch (final ProviderNotFoundException ex) {
             throw ex;
-        } catch ( final IOException ex ) {
+        } catch (final IOException ex) {
             throw ex;
-        } catch ( final SecurityException ex ) {
+        } catch (final SecurityException ex) {
             throw ex;
         }
     }
@@ -220,24 +224,24 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
     @Override
     public void dispose() {
-        for ( final WatchService watchService : watchServices ) {
+        for (final WatchService watchService : watchServices) {
             watchService.close();
         }
         super.dispose();
     }
 
-    private void setupWatchService( final FileSystem fs ) {
-        if ( watchedList.contains( fs ) ) {
+    private void setupWatchService(final FileSystem fs) {
+        if (watchedList.contains(fs)) {
             return;
         }
         final WatchService ws = fs.newWatchService();
-        watchedList.add( fs );
-        watchServices.add( ws );
+        watchedList.add(fs);
+        watchServices.add(ws);
 
         final DisposableExecutor defaultInstance = SimpleAsyncExecutorService.getDefaultInstance();
         final DisposableExecutor unmanagedInstance = SimpleAsyncExecutorService.getUnmanagedInstance();
 
-        SimpleAsyncExecutorService.getUnmanagedInstance().execute( new DescriptiveRunnable() {
+        SimpleAsyncExecutorService.getUnmanagedInstance().execute(new DescriptiveRunnable() {
             @Override
             public String getDescription() {
                 return "IOServiceIndexedImpl(" + ws.toString() + ")";
@@ -245,11 +249,11 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
             @Override
             public void run() {
-                while ( !isDisposed && !ws.isClose() ) {
+                while (!isDisposed && !ws.isClose()) {
                     final WatchKey wk;
                     try {
                         wk = ws.take();
-                    } catch ( final Exception ex ) {
+                    } catch (final Exception ex) {
                         break;
                     }
 
@@ -262,84 +266,103 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
                         @Override
                         public void run() {
-                            for ( WatchEvent object : events ) {
-                                if ( isDisposed() ) {
+                            // Get a set of "real paths" to be indexed. The "dot path" associated with the "real path"
+                            // is automatically indexed because the "dot path" contains content for FileAttributeView(s)
+                            // linked to the "real path".
+                            final Set<Path> eventRealPaths = events.stream().map((event) -> {
+                                final WatchContext context = ((WatchContext) event.context());
+                                return context.getPath();
+                            }).filter((path) -> !path.getFileName().toString().startsWith(".")).collect(Collectors.toSet());
+
+                            for (WatchEvent object : events) {
+                                if (isDisposed()) {
                                     return;
                                 }
                                 try {
-                                    final WatchContext context = ( (WatchContext) object.context() );
-                                    if ( object.kind() == ENTRY_MODIFY || object.kind() == ENTRY_CREATE ) {
+                                    final WatchContext context = ((WatchContext) object.context());
+                                    if (object.kind() == ENTRY_MODIFY || object.kind() == ENTRY_CREATE) {
 
-                                        final Path path = context.getPath();
-
-                                        if ( !path.getFileName().toString().startsWith( "." ) ) {
-                                            //Default indexing
-                                            for ( final Class<? extends FileAttributeView> view : views ) {
-                                                getFileAttributeView( path,
-                                                                      view );
+                                        // If the path to be indexed is a "dot path" but does not have an associated
+                                        // "real path" index the "real path" instead. This ensures when only a
+                                        // "dot path" is updated the FileAttributeView(s) are re-indexed.
+                                        Path path = context.getPath();
+                                        if (path.getFileName().toString().startsWith(".")) {
+                                            final Path realPath = DotFileUtils.undot(path);
+                                            if (!eventRealPaths.contains(realPath)) {
+                                                path = realPath;
                                             }
-                                            final FileAttribute<?>[] allAttrs = convert( readAttributes( path ) );
-                                            indexEngine.index( KObjectUtil.toKObject( path,
-                                                                                      allAttrs ) );
+                                        }
+
+                                        if (!path.getFileName().toString().startsWith(".")) {
+
+                                            //Default indexing
+                                            for (final Class<? extends FileAttributeView> view : views) {
+                                                getFileAttributeView(path,
+                                                                     view);
+                                            }
+                                            final FileAttribute<?>[] allAttrs = convert(readAttributes(path));
+                                            indexEngine.index(KObjectUtil.toKObject(path,
+                                                                                    allAttrs));
 
                                             //Additional indexing
-                                            for ( Indexer indexer : IndexersFactory.getIndexers() ) {
-                                                if ( isDisposed() ) {
+                                            for (Indexer indexer : IndexersFactory.getIndexers()) {
+                                                if (isDisposed()) {
                                                     return;
                                                 }
-                                                if ( indexer.supportsPath( path ) ) {
-                                                    final KObject kObject = indexer.toKObject( path );
-                                                    if ( kObject != null ) {
-                                                        indexEngine.index( kObject );
+                                                if (indexer.supportsPath(path)) {
+                                                    final KObject kObject = indexer.toKObject(path);
+                                                    if (kObject != null) {
+                                                        indexEngine.index(kObject);
                                                     }
                                                 }
                                             }
                                         }
                                     }
-                                    if ( object.kind() == StandardWatchEventKind.ENTRY_RENAME ) {
+
+                                    if (object.kind() == StandardWatchEventKind.ENTRY_RENAME) {
                                         //Default indexing
                                         final Path sourcePath = context.getOldPath();
                                         final Path destinationPath = context.getPath();
-                                        indexEngine.rename( KObjectUtil.toKObjectKey( sourcePath ),
-                                                            KObjectUtil.toKObject( destinationPath ) );
+                                        indexEngine.rename(KObjectUtil.toKObjectKey(sourcePath),
+                                                           KObjectUtil.toKObject(destinationPath));
 
                                         //Additional indexing
-                                        for ( Indexer indexer : IndexersFactory.getIndexers() ) {
-                                            if ( isDisposed() ) {
+                                        for (Indexer indexer : IndexersFactory.getIndexers()) {
+                                            if (isDisposed()) {
                                                 return;
                                             }
-                                            if ( indexer.supportsPath( destinationPath ) ) {
-                                                final KObjectKey kObjectSource = indexer.toKObjectKey( sourcePath );
-                                                final KObject kObjectDestination = indexer.toKObject( destinationPath );
-                                                if ( kObjectSource != null && kObjectDestination != null ) {
-                                                    indexEngine.rename( kObjectSource,
-                                                                        kObjectDestination );
+                                            if (indexer.supportsPath(destinationPath)) {
+                                                final KObjectKey kObjectSource = indexer.toKObjectKey(sourcePath);
+                                                final KObject kObjectDestination = indexer.toKObject(destinationPath);
+                                                if (kObjectSource != null && kObjectDestination != null) {
+                                                    indexEngine.rename(kObjectSource,
+                                                                       kObjectDestination);
                                                 }
                                             }
                                         }
                                     }
 
-                                    if ( object.kind() == StandardWatchEventKind.ENTRY_DELETE ) {
+                                    if (object.kind() == StandardWatchEventKind.ENTRY_DELETE) {
                                         //Default indexing
                                         final Path oldPath = context.getOldPath();
-                                        indexEngine.delete( KObjectUtil.toKObjectKey( oldPath ) );
+                                        indexEngine.delete(KObjectUtil.toKObjectKey(oldPath));
 
                                         //Additional indexing
-                                        for ( Indexer indexer : IndexersFactory.getIndexers() ) {
-                                            if ( isDisposed() ) {
+                                        for (Indexer indexer : IndexersFactory.getIndexers()) {
+                                            if (isDisposed()) {
                                                 return;
                                             }
-                                            if ( indexer.supportsPath( oldPath ) ) {
-                                                final KObjectKey kObject = indexer.toKObjectKey( oldPath );
-                                                if ( kObject != null ) {
-                                                    indexEngine.delete( kObject );
+                                            if (indexer.supportsPath(oldPath)) {
+                                                final KObjectKey kObject = indexer.toKObjectKey(oldPath);
+                                                if (kObject != null) {
+                                                    indexEngine.delete(kObject);
                                                 }
                                             }
                                         }
                                     }
-
-                                } catch ( final Exception ex ) {
-                                    LOGGER.error( "Error during indexing. { " + object.toString() + " }", ex );
+                                } catch (final Exception ex) {
+                                    LOGGER.error("Error during indexing. { " + object.toString() + " }",
+                                                 ex);
                                 }
                             }
                         }
@@ -347,55 +370,54 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                         private boolean isDisposed() {
                             return isDisposed || ws.isClose();
                         }
-
                     };
-                    if ( defaultInstance.equals( unmanagedInstance ) ) {
+                    if (defaultInstance.equals(unmanagedInstance)) {
                         // if default and unmanaged are same instance simply run the job to avoid duplicated threads
                         job.run();
                     } else {
                         // whenever events are found submit the actual operation to the executor to avoid blocking thread
                         // and to have correct scope on application servers to gain access to CDI beans
-                        defaultInstance.execute( job );
+                        defaultInstance.execute(job);
                     }
                 }
             }
-        } );
+        });
     }
 
-    private synchronized void indexIfFresh( final FileSystem fs ) {
-        final KCluster cluster = KObjectUtil.toKCluster( fs );
-        if ( indexEngine.freshIndex( cluster ) ) {
+    private synchronized void indexIfFresh(final FileSystem fs) {
+        final KCluster cluster = KObjectUtil.toKCluster(fs);
+        if (indexEngine.freshIndex(cluster)) {
             // See https://bugzilla.redhat.com/show_bug.cgi?id=1288132
             // Record batch index as being started before the async indexing actually runs to
             // prevent multiple batch indexes for the same FileSystem being scheduled.
-            indexEngine.startBatch( cluster );
-            index( fs );
+            indexEngine.startBatch(cluster);
+            index(fs);
         }
     }
 
-    private void index( final FileSystem fs ) {
-        batchIndex.runAsync( fs );
+    private void index(final FileSystem fs) {
+        batchIndex.runAsync(fs);
     }
 
     @Override
-    public void delete( final Path path,
-                        final DeleteOption... options ) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
-        final KCluster cluster = KObjectUtil.toKCluster( path.getFileSystem() );
-        super.delete( path,
-                      options );
-        if ( path instanceof FSPath ) {
-            indexEngine.delete( cluster );
+    public void delete(final Path path,
+                       final DeleteOption... options) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
+        final KCluster cluster = KObjectUtil.toKCluster(path.getFileSystem());
+        super.delete(path,
+                     options);
+        if (path instanceof FSPath) {
+            indexEngine.delete(cluster);
         }
     }
 
     @Override
-    public boolean deleteIfExists( Path path,
-                                   DeleteOption... options ) throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
-        final KCluster cluster = KObjectUtil.toKCluster( path.getFileSystem() );
-        final boolean result = super.deleteIfExists( path,
-                                                     options );
-        if ( result && path instanceof FSPath ) {
-            indexEngine.delete( cluster );
+    public boolean deleteIfExists(Path path,
+                                  DeleteOption... options) throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
+        final KCluster cluster = KObjectUtil.toKCluster(path.getFileSystem());
+        final boolean result = super.deleteIfExists(path,
+                                                    options);
+        if (result && path instanceof FSPath) {
+            indexEngine.delete(cluster);
         }
         return result;
     }
@@ -410,19 +432,18 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     private static class NOPObserver implements Observer {
 
         @Override
-        public void information( final String message ) {
+        public void information(final String message) {
             //Do nothing.
         }
 
         @Override
-        public void warning( final String message ) {
+        public void warning(final String message) {
             //Do nothing.
         }
 
         @Override
-        public void error( final String message ) {
+        public void error(final String message) {
             //Do nothing.
         }
     }
-
 }
