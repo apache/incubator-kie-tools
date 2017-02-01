@@ -425,9 +425,9 @@ public class BPMNDiagramMarshallerTest {
         }
         assertEquals("BPSimple",
                      diagramProperties.getName().getValue());
-        assertEquals("\n" +
-                             "        This is a simple process\n" +
-                             "    ",
+        assertEquals("This is a\n" +
+                             "simple\n" +
+                             "process",
                      diagramProperties.getDocumentation().getValue());
         assertEquals("JDLProj.BPSimple",
                      diagramProperties.getId().getValue());
@@ -435,6 +435,13 @@ public class BPMNDiagramMarshallerTest {
                      diagramProperties.getPackageProperty().getValue());
         assertEquals(Boolean.valueOf(true),
                      diagramProperties.getExecutable().getValue());
+        assertEquals(Boolean.valueOf(true),
+                     diagramProperties.getAdHoc().getValue());
+        assertEquals("This is the\n" +
+                             "Process\n" +
+                             "Instance\n" +
+                             "Description",
+                     diagramProperties.getProcessInstanceDescription().getValue());
     }
 
     @Test
@@ -967,7 +974,14 @@ public class BPMNDiagramMarshallerTest {
                       1,
                       3,
                       2);
-        assertTrue(result.contains("bpmn2:process id=\"JDLProj.BPSimple\" drools:packageName=\"org.jbpm\" drools:version=\"1.0\" name=\"BPSimple\" isExecutable=\"true\""));
+        assertTrue(result.contains("bpmn2:process id=\"JDLProj.BPSimple\" drools:adHoc=\"true\" drools:packageName=\"org.jbpm\" drools:version=\"1.0\" name=\"BPSimple\" isExecutable=\"true\""));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[This is the\n" +
+                                           "Process\n" +
+                                           "Instance\n" +
+                                           "Description]]></drools:metaValue>"));
+        assertTrue(result.contains("<![CDATA[This is a\n" +
+                                           "simple\n" +
+                                           "process]]></bpmn2:documentation>"));
     }
 
     @Test

@@ -25,6 +25,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
@@ -83,6 +84,24 @@ public class DiagramSet {
     private Version version;
 
     @Property
+    @FormField(
+            type = CheckBoxFieldType.class,
+            labelKey = "adHoc",
+            afterElement = "version"
+    )
+    @Valid
+    private AdHoc adHoc;
+
+    @Property
+    @FormField(
+            type = TextAreaFieldType.class,
+            labelKey = "processInstanceDescription",
+            afterElement = "adHoc"
+    )
+    @Valid
+    private ProcessInstanceDescription processInstanceDescription;
+
+    @Property
     private Executable executable;
 
     public DiagramSet() {
@@ -91,6 +110,8 @@ public class DiagramSet {
              new Id(""),
              new Package(""),
              new Version(Version.defaultValue),
+             new AdHoc(),
+             new ProcessInstanceDescription(),
              new Executable());
     }
 
@@ -99,12 +120,16 @@ public class DiagramSet {
                       final @MapsTo("id") Id id,
                       final @MapsTo("packageProperty") Package packageProperty,
                       final @MapsTo("version") Version version,
+                      final @MapsTo("adHoc") AdHoc adHoc,
+                      final @MapsTo("processInstanceDescription") ProcessInstanceDescription processInstanceDescription,
                       final @MapsTo("executable") Executable executable) {
         this.name = name;
         this.documentation = documentation;
         this.id = id;
         this.packageProperty = packageProperty;
         this.version = version;
+        this.adHoc = adHoc;
+        this.processInstanceDescription = processInstanceDescription;
         this.executable = executable;
     }
 
@@ -114,6 +139,8 @@ public class DiagramSet {
              new Id(""),
              new Package(""),
              new Version(Version.defaultValue),
+             new AdHoc(AdHoc.defaultValue),
+             new ProcessInstanceDescription(),
              new Executable());
     }
 
@@ -141,6 +168,14 @@ public class DiagramSet {
         return version;
     }
 
+    public AdHoc getAdHoc() {
+        return adHoc;
+    }
+
+    public ProcessInstanceDescription getProcessInstanceDescription() {
+        return processInstanceDescription;
+    }
+
     public Executable getExecutable() {
         return executable;
     }
@@ -163,6 +198,14 @@ public class DiagramSet {
 
     public void setVersion(final Version version) {
         this.version = version;
+    }
+
+    public void setAdHoc(final AdHoc adHoc) {
+        this.adHoc = adHoc;
+    }
+
+    public void setProcessInstanceDescription(final ProcessInstanceDescription processInstanceDescription) {
+        this.processInstanceDescription = processInstanceDescription;
     }
 
     public void setExecutable(final Executable executable) {

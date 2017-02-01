@@ -38,6 +38,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Cond
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.ConditionExpressionLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Priority;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.TimeCycle;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.TimeCycleLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.TimeDate;
@@ -134,6 +136,10 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 "timecycle");
             put(TimeCycleLanguage.class,
                 "timecyclelanguage");
+            put(AdHoc.class,
+                "adhocprocess");
+            put(ProcessInstanceDescription.class,
+                "customdescription");
 
             // Simulation properties
             put(TimeUnit.class,
