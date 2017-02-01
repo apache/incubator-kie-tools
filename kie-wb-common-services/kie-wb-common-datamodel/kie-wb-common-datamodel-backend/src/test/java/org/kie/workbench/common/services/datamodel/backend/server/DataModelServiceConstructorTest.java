@@ -82,6 +82,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUProje
 import org.kie.workbench.common.services.datamodel.backend.server.cache.ProjectDataModelOracleBuilderProvider;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.shared.dependencies.DependencyService;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
@@ -183,6 +184,7 @@ public class DataModelServiceConstructorTest {
     @Test
     public void testConstructor()
             throws IllegalArgumentException, FileSystemNotFoundException, SecurityException, URISyntaxException {
+
         final URL packageUrl = this.getClass().getResource("/DataModelServiceConstructorTest/src/main/java/t1p1");
 
         IOService ioService = new IOServiceDotFileImpl();
@@ -267,7 +269,12 @@ public class DataModelServiceConstructorTest {
                                                                        configurationService,
                                                                        commentedOptionFactory,
                                                                        backward,
-                                                                       kModuleService);
+                                                                       kModuleService) {
+            @Override
+            protected void addSecurityGroups(final KieProject project) {
+                //Do nothing. This test demonstrating DMO usage without WELD does not use permissions.
+            }
+        };
         ProjectSaver projectSaver = null;
         projectService = new HackedKieProjectServiceImpl(ioService,
                                                          projectSaver,
