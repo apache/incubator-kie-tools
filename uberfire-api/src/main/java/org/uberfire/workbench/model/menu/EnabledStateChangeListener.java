@@ -15,12 +15,12 @@
  */
 package org.uberfire.workbench.model.menu;
 
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsFunction;
 
 /**
  * A Listener for changes in a Widget's enabled state
  */
-@JsType(isNative = true)
+@JsFunction
 public interface EnabledStateChangeListener {
 
     /**
