@@ -17,11 +17,23 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.wires.*;
+import com.ait.lienzo.client.core.shape.wires.PickerPart;
+import com.ait.lienzo.client.core.shape.wires.WiresContainer;
+import com.ait.lienzo.client.core.shape.wires.WiresLayer;
+import com.ait.lienzo.client.core.shape.wires.WiresManager;
+import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.WiresUtils;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingAndContainmentControl;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
-import com.ait.lienzo.client.core.types.*;
+import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.FillGradient;
+import com.ait.lienzo.client.core.types.LinearGradient;
+import com.ait.lienzo.client.core.types.PatternGradient;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.util.Geometry;
+import com.ait.lienzo.client.core.util.ScratchPad;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
 /**
  * This class handles parent and child docking snap. For each potential parent it generates a picker image. This image consists of three layers
@@ -91,6 +103,18 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
         return m_picker;
     }
 
+    protected ColorMapBackedPicker makeColorMapBackedPicker(NFastArrayList<WiresShape> children,
+                                                            ScratchPad scratchPad,
+                                                            WiresShape shape,
+                                                            boolean isDockingAllowed,
+                                                            int hotSpotSize)
+    {
+        return new ColorMapBackedPicker(children,
+                                        scratchPad,
+                                        shape,
+                                        isDockingAllowed,
+                                        hotSpotSize);
+    }
 
     @Override
     public void dragStart( final Context context ) {
@@ -109,11 +133,12 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
 
         m_parent = m_shape.getParent();
 
-        m_picker = new ColorMapBackedPicker( m_layer.getChildShapes(),
-                                             m_layer.getLayer().getScratchPad(),
-                                             m_shape,
-                                             m_shape.getDockingAcceptor().dockingAllowed( m_parent, m_shape ),
-                                             m_shape.getDockingAcceptor().getHotspotSize() );
+        m_picker = makeColorMapBackedPicker(m_layer.getChildShapes(),
+                                            m_layer.getLayer().getScratchPad(),
+                                            m_shape,
+                                            m_shape.getDockingAcceptor().dockingAllowed(m_parent,
+                                                                                        m_shape),
+                                            m_shape.getDockingAcceptor().getHotspotSize());
 
         if (m_parent != null && m_parent instanceof WiresShape)
         {
@@ -366,4 +391,5 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
         m_priorFillGradient = null;
         m_picker = null;
     }
+
 }
