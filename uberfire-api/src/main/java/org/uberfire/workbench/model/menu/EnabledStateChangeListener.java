@@ -20,7 +20,7 @@ import jsinterop.annotations.JsType;
 /**
  * A Listener for changes in a Widget's enabled state
  */
-@JsType
+@JsType(isNative = true)
 public interface EnabledStateChangeListener {
 
     /**

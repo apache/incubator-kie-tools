@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
+import static org.uberfire.plugin.PluginUtil.ensureIterable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -395,7 +397,7 @@ public class WorkbenchMenuBarPresenter implements WorkbenchMenuBar {
 
     //Force UI to update to state of MenuItems. Should be called after MenuItems are configured with EnabledStateChangeListener's.
     void synchronizeUIWithMenus( final List<MenuItem> menuItems ) {
-        for ( MenuItem menuItem : menuItems ) {
+        for ( MenuItem menuItem : ensureIterable ( menuItems ) ) {
             if ( menuItem instanceof MenuGroup ) {
                 synchronizeUIWithMenus( ( (MenuGroup) menuItem ).getItems() );
 
