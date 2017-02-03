@@ -18,10 +18,10 @@ package org.uberfire.ext.metadata.io;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -269,10 +269,16 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                             // Get a set of "real paths" to be indexed. The "dot path" associated with the "real path"
                             // is automatically indexed because the "dot path" contains content for FileAttributeView(s)
                             // linked to the "real path".
-                            final Set<Path> eventRealPaths = events.stream().map((event) -> {
+                            final Set<Path> eventRealPaths = new HashSet<>();
+                            for (WatchEvent event : events) {
                                 final WatchContext context = ((WatchContext) event.context());
-                                return context.getPath();
-                            }).filter((path) -> !path.getFileName().toString().startsWith(".")).collect(Collectors.toSet());
+                                if (event.kind() == ENTRY_MODIFY || event.kind() == ENTRY_CREATE) {
+                                    final Path path = context.getPath();
+                                    if (!path.getFileName().toString().startsWith(".")) {
+                                        eventRealPaths.add(path);
+                                    }
+                                }
+                            }
 
                             for (WatchEvent object : events) {
                                 if (isDisposed()) {
