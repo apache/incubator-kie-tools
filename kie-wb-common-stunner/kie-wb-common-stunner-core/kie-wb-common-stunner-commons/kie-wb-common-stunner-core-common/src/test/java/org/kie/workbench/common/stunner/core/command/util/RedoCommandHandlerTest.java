@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,6 +22,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandManager;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.CommandRegistryImpl;
@@ -36,20 +38,20 @@ import static org.mockito.Mockito.*;
 public class RedoCommandHandlerTest {
 
     @Mock
-    RegistryFactory registryFactory;
+    private RegistryFactory registryFactory;
 
     @Mock
-    CommandRegistry commandRegistry;
+    private CommandRegistry commandRegistry;
 
     @Mock
-    Command command1;
+    private Command command1;
 
     @Mock
-    Command command2;
+    private Command command2;
 
     private final List<Command> commands1 = new ArrayList<>(1);
     private final List<Command> commands2 = new ArrayList<>(1);
-    private final CommandRegistry commandRegistry1 = new CommandRegistryImpl();
+    private final CommandRegistry commandRegistry1 = spy(new CommandRegistryImpl());
 
     private RedoCommandHandler tested;
 
@@ -59,51 +61,77 @@ public class RedoCommandHandlerTest {
         commands1.add(command1);
         commands2.add(command2);
         when(registryFactory.newCommandRegistry()).thenReturn(commandRegistry);
-        ;
         this.tested = new RedoCommandHandler(registryFactory);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testCdiConstructor() {
+        new RedoCommandHandler<>();
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void tesUndoCommandExecuted() {
-        tested.onUndoCommandExecuted(command1);
-        verify(commandRegistry,
-               times(1)).register(eq(command1));
+    public void testUndoCommandExecuted() {
+        createRealRegistry();
+        assertTrue(tested.onUndoCommandExecuted(command1));
+        verify(commandRegistry1).register(eq(command1));
         assertTrue(tested.isEnabled());
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void tesExecute1() {
+    public void testExecute() {
+        Object obj = mock(Object.class);
+        CommandManager manager = mock(CommandManager.class);
+        CommandResult expectedResult = mock(CommandResult.class);
+        when(commandRegistry.peek()).thenReturn(command1);
+        when(manager.execute(obj,
+                             command1)).thenReturn(expectedResult);
+
+        CommandResult actualResult = tested.execute(obj,
+                                                    manager);
+        assertEquals(expectedResult,
+                     actualResult);
+        verify(manager).execute(eq(obj),
+                                eq(command1));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    @SuppressWarnings("unchecked")
+    public void testExecuteOnNull() {
+        Object obj = mock(Object.class);
+        CommandManager manager = mock(CommandManager.class);
+        when(registryFactory.newCommandRegistry()).thenReturn(commandRegistry);
+        when(commandRegistry.isEmpty()).thenReturn(true);
+
+        tested = new RedoCommandHandler(registryFactory);
+        tested.execute(obj,
+                       manager);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testExecuteJustRecentRedoCommand() {
         createRealRegistry();
-        tested.onCommandExecuted(command1);
+        assertTrue(tested.onUndoCommandExecuted(command1));
+        assertFalse(tested.onCommandExecuted(command1));
         assertFalse(tested.isEnabled());
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void tesExecuteJustRecentRedoCommand() {
-        createRealRegistry();
-        tested.onUndoCommandExecuted(command1);
-        tested.onCommandExecuted(command1);
-        assertFalse(tested.isEnabled());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void tesExecuteRemoveRedoCommands() {
+    public void testExecuteRemoveRedoCommands() {
         createRealRegistry();
         Command command3 = mock(Command.class);
-        tested.onUndoCommandExecuted(command1);
-        tested.onUndoCommandExecuted(command2);
-        tested.onCommandExecuted(command3);
+        assertTrue(tested.onUndoCommandExecuted(command1));
+        assertTrue(tested.onUndoCommandExecuted(command2));
+        assertFalse(tested.onCommandExecuted(command3));
         assertFalse(tested.isEnabled());
     }
 
     @SuppressWarnings("unchecked")
     private void createRealRegistry() {
         when(registryFactory.newCommandRegistry()).thenReturn(commandRegistry1);
-        ;
         this.tested = new RedoCommandHandler(registryFactory);
     }
 }

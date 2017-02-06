@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 /**
  * This handler is an util class that achieves command "re-do" features.
- * It's behaviour is to keep in a command registry ( usually a in-memory registry), the commands that have been
+ * It's behaviour is to keep in a command registry (usually a in-memory registry), the commands that have been
  * "undone" for a given context. It allows further re-do ( re-execution ) of that commands. If at some point
  * the user undo some commands and executes whatever new action that produces a new command, this registry is cleared
  * so you cannot redo older commands.
@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
  * <b>Inputs</b>
  * - Capture undo operations for commands and call the <code>onUndoCommandExecuted</code> method
  * - Capture regular command executions and call the <code>onCommandExecuted</code> method
- * <b>Ouput</b>
+ * <b>Output</b>
  * - Check <code>isEnabled</code> to figure out if a re-do operation can be done.
  * - Call <code>clear</code> to clear the internal commands registry and reset the re-do status.
  * - If <code>isEnabled</code> is <code>true</code>, you can run the <code>execute</code> method. It runs last undone command on found this handler's registry.
@@ -64,18 +64,31 @@ public class RedoCommandHandler<C extends Command> {
 
     @SuppressWarnings("unchecked")
     public boolean onCommandExecuted(final C command) {
-        return _onCommandExecuted(command);
+        if (isEnabled()) {
+            final C last = registry.peek();
+            if (last.equals(command)) {
+                // If the recently executed command is the same in this handler' registry, means it has been
+                // executed by this handler so it can be removed from the registry.
+                registry.pop();
+            } else {
+                // Any "new" ( e.g: not a previously undone command ) executed commands cleans the registry,
+                // no re-do is possible.
+                clear();
+            }
+        }
+        return isEnabled();
     }
 
     @SuppressWarnings("unchecked")
     public CommandResult<?> execute(final Object context,
                                     final CommandManager commandManager) {
-        if (!registry.isEmpty()) {
-            final C last = registry.peek();
-            return commandManager.execute(context,
-                                          last);
+        if (registry.isEmpty()) {
+            throw new IllegalStateException("Not possible to execute a command: no commands to redo.");
         }
-        return null;
+
+        final C last = registry.peek();
+        return commandManager.execute(context,
+                                      last);
     }
 
     public boolean isEnabled() {
@@ -84,21 +97,5 @@ public class RedoCommandHandler<C extends Command> {
 
     public void clear() {
         registry.clear();
-    }
-
-    private boolean _onCommandExecuted(final C command) {
-        if (!registry.isEmpty()) {
-            final C last = registry.peek();
-            if (null != last && last.equals(command)) {
-                // If the recently executed command is the same in this handler' registry, means it has been
-                // executed by this handler so it can be removed from the registry.
-                registry.pop();
-            } else {
-                // Any "new" ( e.g: not a previously undone command ) executed commands cleans the registry,
-                // no re-do is possible.
-                registry.clear();
-            }
-        }
-        return isEnabled();
     }
 }
