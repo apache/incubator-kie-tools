@@ -293,9 +293,11 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                         // "dot path" is updated the FileAttributeView(s) are re-indexed.
                                         Path path = context.getPath();
                                         if (path.getFileName().toString().startsWith(".")) {
-                                            final Path realPath = DotFileUtils.undot(path);
-                                            if (!eventRealPaths.contains(realPath)) {
-                                                path = realPath;
+                                            if (!IOServiceIndexedUtil.isBlackListed(path)) {
+                                                final Path realPath = DotFileUtils.undot(path);
+                                                if (!eventRealPaths.contains(realPath)) {
+                                                    path = realPath;
+                                                }
                                             }
                                         }
 
