@@ -39,6 +39,9 @@ public class Constants {
     public static final String ContainerRulesConfigView_UpgradeErrorMessage = "ContainerRulesConfigView.UpgradeErrorMessage";
 
     @TranslationKey(defaultValue = "")
+    public static final String ContainerRulesConfigView_UpgradeSuccessMessage = "ContainerRulesConfigView.UpgradeSuccessMessage";
+
+    @TranslationKey(defaultValue = "")
     public static final String ContainerView_RemoveContainerSuccessMessage = "ContainerView.RemoveContainerSuccessMessage";
 
     @TranslationKey(defaultValue = "")

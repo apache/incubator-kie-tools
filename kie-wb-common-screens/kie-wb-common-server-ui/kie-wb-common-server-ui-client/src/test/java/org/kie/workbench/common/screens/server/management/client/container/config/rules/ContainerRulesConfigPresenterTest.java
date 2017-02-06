@@ -33,7 +33,9 @@ import org.kie.workbench.common.screens.server.management.service.RuleCapabiliti
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
@@ -44,6 +46,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContainerRulesConfigPresenterTest {
+    private static final String SUCCESS_UPGRADE = "SUCCESS UPGRADE";
 
     Caller<RuleCapabilitiesService> ruleCapabilitiesServiceCaller;
 
@@ -59,7 +62,6 @@ public class ContainerRulesConfigPresenterTest {
     @Mock
     ContainerSpec containerSpec;
 
-    @Mock
     ReleaseId releaseId;
 
     @Mock
@@ -72,11 +74,20 @@ public class ContainerRulesConfigPresenterTest {
 
     @Before
     public void init() {
+        releaseId = new ReleaseId();
+        releaseId.setVersion( "0.1" );
         doNothing().when( notification ).fire( any( NotificationEvent.class ) );
         ruleCapabilitiesServiceCaller = new CallerMock<RuleCapabilitiesService>( ruleCapabilitiesService );
         when( containerSpec.getReleasedId() ).thenReturn( releaseId );
-        when( releaseId.getVersion() ).thenReturn( "0.1" );
+        when( view.getUpgradeSuccessMessage() ).thenReturn( SUCCESS_UPGRADE );
         presenter = new ContainerRulesConfigPresenter( logger, view, ruleCapabilitiesServiceCaller, notification );
+        doAnswer( new Answer() {
+            @Override
+            public Object answer( InvocationOnMock invocation ) throws Throwable {
+                releaseId.setVersion( invocation.getArgumentAt( 1, ReleaseId.class ).getVersion() );
+                return null;
+            }
+        }).when( ruleCapabilitiesService ).upgradeContainer( any( ContainerSpecKey.class ), any( ReleaseId.class ) );
     }
 
     @Test
@@ -91,7 +102,7 @@ public class ContainerRulesConfigPresenterTest {
     public void testSetup() {
         when( ruleConfig.getScannerStatus() ).thenReturn( KieScannerStatus.STOPPED );
         when( ruleConfig.getPollInterval() ).thenReturn( null );
-        when( containerSpec.getReleasedId().getVersion() ).thenReturn( "1.x" );
+        releaseId.setVersion( "1.x" );
         presenter.setup( containerSpec, ruleConfig );
 
         verify( view ).setContent( eq( "" ), eq( "1.x" ), eq( State.ENABLED ), eq( State.DISABLED ), eq( State.ENABLED ), eq( State.ENABLED ) );
@@ -120,6 +131,7 @@ public class ContainerRulesConfigPresenterTest {
         verify( view ).setStopScannerState( State.DISABLED );
         verify( view ).setScanNowState( State.ENABLED );
         verify( view ).setUpgradeState( State.ENABLED );
+        verify( notification ).fire( new NotificationEvent( SUCCESS_UPGRADE, NotificationEvent.NotificationType.SUCCESS ) );
     }
 
     @Test
@@ -132,6 +144,7 @@ public class ContainerRulesConfigPresenterTest {
         presenter.upgrade( "LATEST" );
 
         verify( notification ).fire( new NotificationEvent( "ERROR", NotificationEvent.NotificationType.ERROR ) );
+        verify( notification, never() ).fire( new NotificationEvent( SUCCESS_UPGRADE, NotificationEvent.NotificationType.SUCCESS ) );
 
         verify( view ).setStartScannerState( State.ENABLED );
         verify( view ).setStopScannerState( State.DISABLED );

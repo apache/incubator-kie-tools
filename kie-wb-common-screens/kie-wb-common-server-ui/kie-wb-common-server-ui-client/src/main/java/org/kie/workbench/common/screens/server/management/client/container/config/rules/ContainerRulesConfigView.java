@@ -275,6 +275,11 @@ public class ContainerRulesConfigView extends Composite
         return translationService.format( Constants.ContainerRulesConfigView_UpgradeErrorMessage );
     }
 
+    @Override
+    public String getUpgradeSuccessMessage() {
+        return translationService.format( Constants.ContainerRulesConfigView_UpgradeSuccessMessage, version.getText() );
+    }
+
     private String getVersionTextBoxPlaceholder() {
         return translationService.format( Constants.ContainerRulesConfigView_VersionTextBoxPlaceholder );
     }

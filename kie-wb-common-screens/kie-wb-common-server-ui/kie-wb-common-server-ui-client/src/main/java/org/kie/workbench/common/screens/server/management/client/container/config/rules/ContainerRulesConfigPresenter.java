@@ -76,6 +76,8 @@ public class ContainerRulesConfigPresenter {
         String getScanNowErrorMessage();
 
         String getUpgradeErrorMessage();
+
+        String getUpgradeSuccessMessage();
     }
 
     private final Logger logger;
@@ -192,6 +194,11 @@ public class ContainerRulesConfigPresenter {
         ruleCapabilitiesService.call( new RemoteCallback<Void>() {
             @Override
             public void callback( final Void response ) {
+                if( version != null && !version.isEmpty() &&
+                    version.compareTo( containerSpec.getReleasedId().getVersion() ) == 0 ) {
+                    notification.fire( new NotificationEvent( view.getUpgradeSuccessMessage(), NotificationEvent.NotificationType.SUCCESS ) );
+                }
+
                 updateViewState();
             }
         }, new ErrorCallback<Object>() {
