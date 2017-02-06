@@ -18,8 +18,6 @@ package org.uberfire.ext.widgets.common.client.common;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.HTMLElement;
 
 /**
  * Borrow from GWTBootstrap3 (https://github.com/gwtbootstrap3/gwtbootstrap3)
@@ -64,50 +62,6 @@ public final class StyleHelper {
 
         if (style != null && style.getCssName() != null && !style.getCssName().isEmpty()) {
             element.removeClassName(style.getCssName());
-        }
-    }
-
-    // --------------------------------
-    // Helpers for errai-ui HTMLElement
-    // --------------------------------
-
-    public static <E extends Style.HasCssName, F extends Enum<? extends Style.HasCssName>> void addUniqueEnumStyleName(final HTMLElement element,
-                                                                                                                       final Class<F> enumClass,
-                                                                                                                       final E style) {
-        removeEnumStyleNames(element,
-                             enumClass);
-        addEnumStyleName(element,
-                         style);
-    }
-
-    public static <E extends Enum<? extends Style.HasCssName>> void removeEnumStyleNames(final HTMLElement element,
-                                                                                         final Class<E> enumClass) {
-
-        for (final Enum<? extends Style.HasCssName> constant : enumClass.getEnumConstants()) {
-            final String cssClass = ((Style.HasCssName) constant).getCssName();
-
-            if (cssClass != null && !cssClass.isEmpty()) {
-                DOMUtil.removeCSSClass(element,
-                                       cssClass);
-            }
-        }
-    }
-
-    public static <E extends Style.HasCssName> void addEnumStyleName(final HTMLElement element,
-                                                                     final E style) {
-
-        if (style != null && style.getCssName() != null && !style.getCssName().isEmpty()) {
-            DOMUtil.addCSSClass(element,
-                                style.getCssName());
-        }
-    }
-
-    public static <E extends Style.HasCssName> void removeEnumStyleName(final HTMLElement element,
-                                                                        final E style) {
-
-        if (style != null && style.getCssName() != null && !style.getCssName().isEmpty()) {
-            DOMUtil.removeCSSClass(element,
-                                   style.getCssName());
         }
     }
 }

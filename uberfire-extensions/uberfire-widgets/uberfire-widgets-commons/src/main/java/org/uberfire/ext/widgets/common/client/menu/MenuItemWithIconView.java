@@ -27,7 +27,6 @@ import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.ext.widgets.common.client.common.StyleHelper;
 
 @Templated
 @MenuItemWithIcon
@@ -67,12 +66,12 @@ public class MenuItemWithIconView implements MenuItemView {
 
     public void setIconType(final IconType type) {
         if (type == null) {
-            StyleHelper.removeEnumStyleNames(icon,
-                                             IconType.class);
+            DOMUtil.removeEnumStyleNames(icon,
+                                         IconType.class);
         } else {
-            StyleHelper.addUniqueEnumStyleName(icon,
-                                               IconType.class,
-                                               type);
+            DOMUtil.addUniqueEnumStyleName(icon,
+                                           IconType.class,
+                                           type);
         }
     }
 
