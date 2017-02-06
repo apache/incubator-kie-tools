@@ -19,12 +19,11 @@ package org.kie.workbench.common.stunner.standalone.client.perspectives;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.client.widgets.palette.bs3.BS3PaletteWidgetImpl;
+import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidgetImpl;
 import org.kie.workbench.common.stunner.client.widgets.views.LoadingBox;
 import org.kie.workbench.common.stunner.standalone.client.screens.DiagramsNavigatorScreen;
 import org.kie.workbench.common.stunner.standalone.client.screens.NotificationsScreen;
 import org.kie.workbench.common.stunner.standalone.client.screens.SessionDiagramPreviewScreen;
-import org.kie.workbench.common.stunner.standalone.client.screens.SessionPaletteScreen;
 import org.kie.workbench.common.stunner.standalone.client.screens.SessionPropertiesScreen;
 import org.kie.workbench.common.stunner.standalone.client.screens.SessionTreeExplorerScreen;
 import org.uberfire.client.annotations.Perspective;
@@ -50,7 +49,6 @@ public class AuthoringPerspective {
     public static final int EAST_PANEL_WIDTH = 450;
     public static final int EAST_PANEL_HEIGHT = 300;
 
-    PanelDefinition palettePanel;
     PanelDefinition notificationsPanel;
     PanelDefinition propertiesPanel;
     PanelDefinition treeExplorerPanel;
@@ -75,9 +73,6 @@ public class AuthoringPerspective {
         PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
         perspective.setName("Authoring");
         perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest(DiagramsNavigatorScreen.SCREEN_ID)));
-        palettePanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        palettePanel.setWidth(WEST_PANEL_WIDTH);
-        palettePanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(SessionPaletteScreen.SCREEN_ID)));
         treeExplorerPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
         treeExplorerPanel.setWidth(EAST_PANEL_WIDTH);
         treeExplorerPanel.setHeight(EAST_PANEL_HEIGHT);
@@ -98,8 +93,6 @@ public class AuthoringPerspective {
         notificationsPanel.setWidth(400);
         notificationsPanel.setHeight(100);
         notificationsPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(NotificationsScreen.SCREEN_ID)));
-        perspective.getRoot().insertChild(CompassPosition.WEST,
-                                          palettePanel);
         perspective.getRoot().insertChild(CompassPosition.EAST,
                                           propertiesPanel);
         perspective.getRoot().insertChild(CompassPosition.SOUTH,

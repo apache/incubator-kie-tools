@@ -222,7 +222,7 @@ public class SessionDiagramEditorScreen {
                                                  screenPanelView.setWidget(presenter.getView());
                                                  presenter
                                                          .withToolbar(true)
-                                                         .withPalette(false)
+                                                         .withPalette(true)
                                                          .displayNotifications(true)
                                                          .displayErrors(true)
                                                          .open(diagram,
@@ -260,7 +260,7 @@ public class SessionDiagramEditorScreen {
                                           screenPanelView.setWidget(presenter.getView());
                                           presenter
                                                   .withToolbar(true)
-                                                  .withPalette(false)
+                                                  .withPalette(true)
                                                   .displayNotifications(true)
                                                   .displayErrors(true)
                                                   .open(diagram,

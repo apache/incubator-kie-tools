@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidgetFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -40,7 +41,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     private D diagram;
     private Toolbar<S> toolbar;
-    private PaletteWidget<DefinitionSetPalette, ?> palette;
+    private PaletteWidget<DefinitionSetPalette> palette;
     private boolean hasToolbar = false;
     private boolean hasPalette = false;
     private boolean displayNotifications = false;
@@ -206,7 +207,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     }
 
     @Override
-    public PaletteWidget<DefinitionSetPalette, ?> getPalette() {
+    public PaletteWidget<DefinitionSetPalette> getPalette() {
         return palette;
     }
 
@@ -232,7 +233,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         }
         if (hasPalette) {
             this.palette = buildPalette(session);
-            getView().setPaletteWidget(getPalette().getView());
+            getView().setPaletteWidget(ElementWrapperWidget.getWidget(getPalette().getElement()));
         }
         getView().setCanvasWidget(getDisplayer().getView());
         getView().showLoading(false);
@@ -245,7 +246,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         return toolbarFactory.build(session);
     }
 
-    private PaletteWidget<DefinitionSetPalette, ?> buildPalette(final S session) {
+    private PaletteWidget<DefinitionSetPalette> buildPalette(final S session) {
         if (null == paletteFactory) {
             throw new UnsupportedOperationException("This session presenter with type [" + this.getClass().getName() + "] does not supports the palette.");
         }

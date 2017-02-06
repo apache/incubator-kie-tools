@@ -21,28 +21,71 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.gwtbootstrap3.client.ui.Icon;
-import org.gwtbootstrap3.client.ui.constants.IconSize;
-import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
+import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.Categories;
-import org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory.BindableBS3PaletteGlyphViewFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.Lane;
+import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
+import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
+import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.client.widgets.palette.factory.BindableBS3PaletteGlyphViewFactory;
+import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
+import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconResource;
+import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.svg.SVGIconRenderer;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 
 @ApplicationScoped
-public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactory<Icon> {
+public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactory {
 
-    private final static Map<String, Icon> CATEGORY_VIEWS = new HashMap<String, Icon>() {{
+    private final static Map<String, IconResource> CATEGORY_RERNDERERS_SETTINGS = new HashMap<String, IconResource>() {{
         put(Categories.ACTIVITIES,
-            getIcon(IconType.SQUARE));
+            new IconResource(BPMNImageResources.INSTANCE.categoryActivity()));
         put(Categories.LANES,
-            getIcon(IconType.COPY));
+            new IconResource(BPMNImageResources.INSTANCE.categoryContainer()));
         put(Categories.GATEWAYS,
-            getIcon(IconType.ASTERISK));
+            new IconResource(BPMNImageResources.INSTANCE.categoryGateway()));
         put(Categories.EVENTS,
-            getIcon(IconType.CIRCLE));
+            new IconResource(BPMNImageResources.INSTANCE.circle()));
         put(Categories.CONNECTING_OBJECTS,
-            getIcon(IconType.LONG_ARROW_RIGHT));
+            new IconResource(BPMNImageResources.INSTANCE.categorySequence()));
+    }};
+
+    private final static Map<String, IconResource> DEFINITION_RERNDERERS_SETTINGS = new HashMap<String, IconResource>() {{
+        put(NoneTask.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.taskUser()));
+        put(UserTask.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.taskUser()));
+        put(ScriptTask.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.taskScript()));
+        put(BusinessRuleTask.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.taskBusinessRule()));
+        put(StartNoneEvent.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.eventStart()));
+        put(ExclusiveDatabasedGateway.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.cancel()));
+        put(EndNoneEvent.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.eventEnd()));
+        put(EndTerminateEvent.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.eventIntermediate()));
+        put(IntermediateTimerEvent.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.eventIntermediate()));
+        put(Lane.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.lane()));
+        put(ParallelGateway.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.gatewayParallelEvent()));
+        put(SequenceFlow.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.plusQuare()));
+        put(ReusableSubprocess.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.subProcess()));
     }};
 
     protected BpmnBS3PaletteViewFactory() {
@@ -60,25 +103,17 @@ public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactor
     }
 
     @Override
-    protected Map<Class<?>, Icon> getDefinitionViews() {
-        // Currently not using any bootstrap icons for the palette items.
-        return null;
+    protected Class<? extends IconRenderer> getPaletteIconRendererType() {
+        return SVGIconRenderer.class;
     }
 
     @Override
-    protected Map<String, Icon> getCategoryViews() {
-        return CATEGORY_VIEWS;
+    protected Map<String, IconResource> getCategoryIconResources() {
+        return CATEGORY_RERNDERERS_SETTINGS;
     }
 
     @Override
-    protected Icon resize(final Icon widget,
-                          final int width,
-                          final int height) {
-        widget.setSize(IconSize.LARGE);
-        return widget;
-    }
-
-    private static Icon getIcon(final IconType iconType) {
-        return new Icon(iconType);
+    protected Map<String, IconResource> getDefinitionIconResources() {
+        return DEFINITION_RERNDERERS_SETTINGS;
     }
 }

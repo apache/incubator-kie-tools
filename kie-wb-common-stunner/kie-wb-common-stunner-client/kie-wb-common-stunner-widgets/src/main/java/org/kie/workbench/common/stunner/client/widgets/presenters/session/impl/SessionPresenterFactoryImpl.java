@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
-import org.kie.workbench.common.stunner.client.widgets.palette.bs3.factory.BS3PaletteFactory;
+import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;

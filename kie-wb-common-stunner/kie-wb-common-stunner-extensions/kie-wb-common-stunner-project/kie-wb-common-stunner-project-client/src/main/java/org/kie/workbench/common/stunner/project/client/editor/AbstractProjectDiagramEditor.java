@@ -25,7 +25,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.stunner.client.widgets.palette.bs3.BS3PaletteWidget;
+import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
@@ -408,7 +408,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     protected void doLostFocus() {
-        hidePaletteFloatingView();
     }
 
     void onSessionErrorEvent(final @Observes OnSessionErrorEvent errorEvent) {
@@ -476,12 +475,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.title = title;
         changeTitleNotificationEvent.fire(new ChangeTitleWidgetEvent(this.place,
                                                                      this.title));
-    }
-
-    private void hidePaletteFloatingView() {
-        if (null != presenter) {
-            ((BS3PaletteWidget) presenter.getPalette()).getFloatingView().hide();
-        }
     }
 
     private void showError(final ClientRuntimeError error) {

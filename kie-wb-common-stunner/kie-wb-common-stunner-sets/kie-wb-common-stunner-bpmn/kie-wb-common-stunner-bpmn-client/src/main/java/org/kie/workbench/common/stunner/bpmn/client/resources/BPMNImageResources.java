@@ -31,18 +31,92 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
 
     // ******* BPMN Pictures/Icons *******
 
-    @ClientBundle.Source("images/task-user.svg")
+    // ******* Categories *******
+    @ClientBundle.Source("images/categories/activity.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categoryActivity();
+
+    @ClientBundle.Source("images/categories/container.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categoryContainer();
+
+    @ClientBundle.Source("images/categories/gateway.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categoryGateway();
+
+    @ClientBundle.Source("images/categories/library.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categoryLibrary();
+
+    @ClientBundle.Source("images/categories/sequence.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categorySequence();
+
+    // ******* Task *******
+    @ClientBundle.Source("images/task/task-user.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource taskUser();
 
-    @ClientBundle.Source("images/task-script.svg")
+    @ClientBundle.Source("images/task/task-script.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource taskScript();
 
-    @ClientBundle.Source("images/task-business-rule.svg")
+    @ClientBundle.Source("images/task/task-business-rule.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource taskBusinessRule();
 
+    @ClientBundle.Source("images/task/task-manual.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource taskManual();
+
+    @ClientBundle.Source("images/task/task-service.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource taskService();
+
+    // ******* Event *******
+    @ClientBundle.Source("images/event/event-end.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventEnd();
+
+    @ClientBundle.Source("images/event/event-intermediate.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventIntermediate();
+
+    @ClientBundle.Source("images/event/event-intermediate-non-interrupting.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventIntermediateNonInterrupting();
+
+    @ClientBundle.Source("images/event/event-start.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventStart();
+
+    @ClientBundle.Source("images/event/event-start-non-interrupting.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventStartNonInterrupting();
+
+    // ******* Gateway *******
+    @ClientBundle.Source("images/gateway/parallel-event.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource gatewayParallelEvent();
+
+    @ClientBundle.Source("images/gateway/parallel_multiple.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource gatewayParallelMultiple();
+
+    @ClientBundle.Source("images/gateway/complex.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource gatewayComplex();
+
+    @ClientBundle.Source("images/gateway/event.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource gatewayEvent();
+
+    @ClientBundle.Source("images/gateway/inclusive.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource gatewayInclusive();
+
+
+    // ******* Misc *******
     @ClientBundle.Source("images/cancel.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource cancel();
@@ -55,29 +129,9 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource clockO();
 
-    @ClientBundle.Source("images/event-end.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventEnd();
-
-    @ClientBundle.Source("images/event-intermediate.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventIntermediate();
-
-    @ClientBundle.Source("images/event-start.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventStart();
-
     @ClientBundle.Source("images/lane.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource lane();
-
-    @ClientBundle.Source("images/parallel-event.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource parallelEvent();
-
-    @ClientBundle.Source("images/parallel_multiple.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource parallelMultiple();
 
     @ClientBundle.Source("images/plus-square.svg")
     @DataResource.MimeType("image/svg+xml")

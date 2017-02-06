@@ -86,5 +86,5 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
 
     Toolbar<S> getToolbar();
 
-    PaletteWidget<DefinitionSetPalette, ?> getPalette();
+    PaletteWidget<DefinitionSetPalette> getPalette();
 }
