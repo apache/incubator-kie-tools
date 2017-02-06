@@ -182,14 +182,10 @@ public class FormPropertiesWidget implements IsWidget {
             final Object definition = element.getContent().getDefinition();
             BindableProxy proxy = (BindableProxy) BindableProxyFactory.getBindableProxy(definition);
             formRenderer.renderDefaultForm(proxy.deepUnwrap(),
+                                           renderMode,
                                            () -> {
                                                formRenderer.addFieldChangeHandler((fieldName, newValue) -> {
                                                    try {
-                                                       // TODO (Pere): We have to review this. Meanwhile, note that this is working only for properties
-                                                       // that are direct members of the definitions ( ex: Task#width or StartEvent#radius ).
-                                                       // But it's not working for the properties that are inside property sets, for example an error
-                                                       // occurs when updating "documentation", as thisl callback "fieldName" = "documentation", but
-                                                       // in order to obtain the property it should be "general.documentation".
                                                        final HasProperties hasProperties = (HasProperties) DataBinder.forModel(definition).getModel();
                                                        String pId = getModifiedPropertyId(hasProperties,
                                                                                           fieldName);
@@ -205,10 +201,6 @@ public class FormPropertiesWidget implements IsWidget {
                                                        }
                                                    }
                                                });
-                                               // TODO (Pere): When render mode is type PRETTY, and the user clicks
-                                               // on the canvas, an infinite recursive operations seems to be running
-                                               // and finally produces an error (and an error message on the UI as well).
-                                               // formRenderer.switchToMode(renderMode);
                                            });
             final String name = definitionUtils.getName(definition);
             propertiesOpenedEvent.fire(new FormPropertiesOpened(session,
@@ -283,8 +275,7 @@ public class FormPropertiesWidget implements IsWidget {
     }
 
     private void doClear() {
-        // TODO (Pere): formRenderer.unBind(); -> Produces NPE. Right now when closing a diagram, the forms
-        // for the latest selected element are still present. They should be removed here.
+        formRenderer.unBind();
     }
 
     @SuppressWarnings("unchecked")

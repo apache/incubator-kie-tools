@@ -46,6 +46,7 @@ public class ColorPickerWidget extends Composite implements HasValue<String> {
     private TextBox colorTextBox;
 
     private String color;
+    private boolean readOnly;
 
     @EventHandler("colorButton")
     public void onClickColorButton(final ClickEvent clickEvent) {
@@ -58,6 +59,9 @@ public class ColorPickerWidget extends Composite implements HasValue<String> {
     }
 
     protected void showColorDialog(final UIObject owner) {
+        if ( readOnly ) {
+            return;
+        }
         final ColorPickerDialog dlg = new ColorPickerDialog();
         dlg.getElement().getStyle().setZIndex(9999);
         dlg.addDialogClosedHandler(event -> {
@@ -107,5 +111,10 @@ public class ColorPickerWidget extends Composite implements HasValue<String> {
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
         return addHandler(handler,
                           ValueChangeEvent.getType());
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+        colorButton.setEnabled(!readOnly);
     }
 }

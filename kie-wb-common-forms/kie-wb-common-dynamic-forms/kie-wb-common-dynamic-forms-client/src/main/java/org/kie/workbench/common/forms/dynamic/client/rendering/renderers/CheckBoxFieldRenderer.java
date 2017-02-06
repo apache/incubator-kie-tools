@@ -36,7 +36,7 @@ public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition
     @Override
     public void initInputWidget() {
         checkbox = new CheckBox( field.getLabel() );
-        checkbox.setEnabled( !field.getReadOnly() || renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE ) );
+        checkbox.setEnabled( !field.getReadOnly() && renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE ) );
     }
 
     @Override

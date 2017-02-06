@@ -68,4 +68,9 @@ public class DynamicFormRendererViewImpl extends Composite implements DynamicFor
     public FieldLayoutComponent getFieldLayoutComponentForField( FieldDefinition field ) {
         return layoutGenerator.getFieldLayoutComponentForField( field );
     }
+
+    @Override
+    public void clear() {
+        formContent.clear();
+    }
 }

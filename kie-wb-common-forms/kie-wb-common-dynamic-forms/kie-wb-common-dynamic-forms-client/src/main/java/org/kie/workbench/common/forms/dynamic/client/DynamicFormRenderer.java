@@ -38,6 +38,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -50,6 +51,8 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
         void bind();
 
         FieldLayoutComponent getFieldLayoutComponentForField( FieldDefinition field );
+
+        void clear();
     }
 
     private DynamicFormRendererView view;
@@ -81,27 +84,42 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
     }
 
     public void renderDefaultForm( final Object model ) {
-        renderDefaultForm( model, null );
+        renderDefaultForm( model, RenderMode.EDIT_MODE, null );
+    }
+
+    public void renderDefaultForm( final Object model, RenderMode renderMode ) {
+        renderDefaultForm(model, renderMode, null);
     }
 
     public void renderDefaultForm( final Object model, final Command callback ) {
+        renderDefaultForm(model, RenderMode.EDIT_MODE, callback );
+    }
+
+    public void renderDefaultForm( final Object model, final RenderMode renderMode, final Command callback ) {
+        PortablePreconditions.checkNotNull("model", model);
         FormRenderingContext context = dynamicFormModelGenerator.getContextForModel( model );
         if ( context != null ) {
-            render( context );
-            if ( callback != null ) {
-                callback.execute();
-            }
+            doRenderDefaultForm(context, model, renderMode, callback);
         } else {
             transformerService.call( new RemoteCallback<FormRenderingContext>() {
                 @Override
                 public void callback( FormRenderingContext context ) {
-                    context.setModel( model );
-                    render( context );
-                    if ( callback != null ) {
-                        callback.execute();
-                    }
+                    doRenderDefaultForm(context, model, renderMode, callback);
                 }
             } ).createContext( model );
+        }
+    }
+
+    protected void doRenderDefaultForm( FormRenderingContext context, final Object model, final RenderMode renderMode, final Command callback ) {
+        if ( renderMode != null ) {
+            context.setRenderMode(renderMode);
+        }
+        if ( context.getModel() == null ) {
+            context.setModel(model);
+        }
+        render(context);
+        if ( callback != null ) {
+            callback.execute();
         }
     }
 
@@ -165,6 +183,7 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
                 }
             }
             formHandler.clear();
+            view.clear();
         }
     }
 

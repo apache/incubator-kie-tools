@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldDefinition;
 
 @Dependent
@@ -40,6 +41,7 @@ public class ColorPickerFieldRenderer extends FieldRenderer<ColorPickerFieldDefi
 
     @Override
     public void initInputWidget() {
+        colorPicker.setReadOnly( !renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
     }
 
     @Override

@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.dynamic.client.helper.MapModelBindingHelper;
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGeneratorManager;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
@@ -31,6 +30,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relatio
 import org.kie.workbench.common.forms.dynamic.client.test.TestDynamicFormRenderer;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
+import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.dynamic.test.model.Employee;
 import org.kie.workbench.common.forms.dynamic.test.util.TestFormGenerator;
 import org.kie.workbench.common.forms.model.FieldDefinition;
@@ -44,7 +44,7 @@ import org.uberfire.mvp.Command;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class DynamicFormRendererTest extends TestCase {
 
     private FieldLayoutComponent component;
@@ -75,32 +75,35 @@ public class DynamicFormRendererTest extends TestCase {
 
     @Before
     public void initTest() {
-        component = mock( FieldLayoutComponent.class );
-        view = mock( DynamicFormRenderer.DynamicFormRendererView.class );
-        fieldRenderer = mock( FieldRenderer.class );
-        formRenderingContextGeneratorService = mock( FormRenderingContextGeneratorService.class );
-        transformer = new CallerMock<FormRenderingContextGeneratorService>( formRenderingContextGeneratorService );
+        component = mock(FieldLayoutComponent.class);
+        view = mock(DynamicFormRenderer.DynamicFormRendererView.class);
+        fieldRenderer = mock(FieldRenderer.class);
+        formRenderingContextGeneratorService = mock(FormRenderingContextGeneratorService.class);
+        transformer = new CallerMock<FormRenderingContextGeneratorService>(formRenderingContextGeneratorService);
 
-        when( formRenderingContextGeneratorService.createContext( any( Employee.class ) ) ).thenAnswer( new Answer<FormRenderingContext>() {
+        when(formRenderingContextGeneratorService.createContext(any(Employee.class))).thenAnswer(new Answer<FormRenderingContext>() {
             @Override
-            public FormRenderingContext answer( InvocationOnMock invocationOnMock ) throws Throwable {
-                return TestFormGenerator.getContextForEmployee( employee );
+            public FormRenderingContext answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return TestFormGenerator.getContextForEmployee(employee);
             }
-        } );
+        });
 
-        when( view.getFieldLayoutComponentForField( any( FieldDefinition.class ) ) ).thenReturn( component );
+        when(view.getFieldLayoutComponentForField(any(FieldDefinition.class))).thenReturn(component);
 
-        when( component.getFieldRenderer() ).thenReturn( fieldRenderer );
-        when( fieldRenderer.getInputWidget() ).thenReturn( widget );
+        when(component.getFieldRenderer()).thenReturn(fieldRenderer);
+        when(fieldRenderer.getInputWidget()).thenReturn(widget);
 
-        FormHandlerGeneratorManager generatorManager = new FormHandlerGeneratorManager( context -> formHandler,
-                                                                                        context -> formHandler );
+        FormHandlerGeneratorManager generatorManager = new FormHandlerGeneratorManager(context -> formHandler,
+                                                                                       context -> formHandler);
 
-        renderer = new TestDynamicFormRenderer( view, transformer, generatorManager, mock( DynamicFormModelGenerator.class ) );
+        renderer = new TestDynamicFormRenderer(view,
+                                               transformer,
+                                               generatorManager,
+                                               mock(DynamicFormModelGenerator.class));
         renderer.init();
-        verify( view ).setPresenter( renderer );
+        verify(view).setPresenter(renderer);
         renderer.asWidget();
-        verify( view ).asWidget();
+        verify(view).asWidget();
     }
 
     @Test
@@ -114,32 +117,38 @@ public class DynamicFormRendererTest extends TestCase {
     public void testBindingAddingFieldChangeHandler() {
         doBind();
 
-        renderer.addFieldChangeHandler( changeHandler );
+        renderer.addFieldChangeHandler(changeHandler);
 
-        renderer.addFieldChangeHandler( "name", changeHandler );
+        renderer.addFieldChangeHandler("name",
+                                       changeHandler);
 
-        renderer.addFieldChangeHandler( "address", changeHandler );
+        renderer.addFieldChangeHandler("address",
+                                       changeHandler);
 
-        verify( formHandler ).addFieldChangeHandler( any() );
-        verify( formHandler, times( 2 ) ).addFieldChangeHandler( anyString(), any() );
+        verify(formHandler).addFieldChangeHandler(any());
+        verify(formHandler,
+               times(2)).addFieldChangeHandler(anyString(),
+                                               any());
 
         unBind();
     }
 
     protected void doBind() {
 
-        Command callback = mock( Command.class );
-        renderer.renderDefaultForm( employee, callback );
+        Command callback = mock(Command.class);
+        renderer.renderDefaultForm(employee,
+                                   callback);
 
-        verify( callback ).execute();
-        verify( view ).render( any() );
-        verify( view ).bind();
-        verify( formHandler ).setUp( any( Employee.class ) );
+        verify(callback).execute();
+        verify(view).render(any());
+        verify(view).bind();
+        verify(formHandler).setUp(any(Employee.class));
     }
 
     protected void unBind() {
         renderer.isValid();
         renderer.unBind();
-        verify( formHandler ).clear();
+        verify(formHandler).clear();
+        verify(view).clear();
     }
 }

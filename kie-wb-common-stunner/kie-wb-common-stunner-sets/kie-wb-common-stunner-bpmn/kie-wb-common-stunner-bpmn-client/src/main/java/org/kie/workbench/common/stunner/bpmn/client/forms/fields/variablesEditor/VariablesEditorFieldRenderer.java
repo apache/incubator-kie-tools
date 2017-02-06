@@ -72,7 +72,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     @Override
     public IsWidget getPrettyViewWidget() {
         initInputWidget();
-        return getPrettyViewWidget();
+        return getInputWidget();
     }
 
     @Override
