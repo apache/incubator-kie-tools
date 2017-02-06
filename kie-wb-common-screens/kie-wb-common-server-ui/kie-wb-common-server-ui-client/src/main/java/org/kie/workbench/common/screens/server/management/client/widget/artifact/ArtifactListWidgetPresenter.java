@@ -59,7 +59,7 @@ public class ArtifactListWidgetPresenter {
         artifactListPresenter.notifyOnRefresh( false );
         artifactListPresenter.setup( ColumnType.GAV );
         this.view.init( this );
-        artifactListPresenter.search( "" );
+        search( "" );
     }
 
     public View getView() {

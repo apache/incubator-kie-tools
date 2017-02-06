@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.server.management.client.widget.artifact;
 
 import java.util.Arrays;
+import java.util.List;
 import javax.enterprise.event.Event;
 
 import org.guvnor.m2repo.client.widgets.ArtifactListPresenter;
@@ -33,6 +34,8 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArtifactListWidgetPresenterTest {
+
+    private List<String> FORMATS = Arrays.asList( "*.jar" );
 
     @Mock
     ArtifactListWidgetPresenter.View view;
@@ -55,14 +58,14 @@ public class ArtifactListWidgetPresenterTest {
         assertEquals( artifactListPresenter.getView(), presenter.getArtifactListView() );
         verify( artifactListPresenter ).notifyOnRefresh( false );
         verify( artifactListPresenter ).setup( ColumnType.GAV );
-        verify( artifactListPresenter ).search( "" );
+        verify( artifactListPresenter ).search( "", FORMATS );
     }
 
     @Test
     public void testSearch() {
         presenter.search( "something" );
 
-        verify( artifactListPresenter ).search( "something", Arrays.asList( "*.jar" ) );
+        verify( artifactListPresenter ).search( "something", FORMATS );
     }
 
     @Test
