@@ -39,19 +39,21 @@ public abstract class AbstractAdapterGenerator {
     protected Configuration config;
 
     public AbstractAdapterGenerator() {
-        try {
-            this.config = new Configuration();
-            this.config.setClassForTemplateLoading(this.getClass(),
-                                                   "templates");
-            this.config.setObjectWrapper(new DefaultObjectWrapper());
-        } catch (NoClassDefFoundError var2) {
-            if (var2.getCause() == null) {
-                var2.initCause(INITIALIZER_EXCEPTION);
+        synchronized (AbstractAdapterGenerator.class) {
+            try {
+                this.config = new Configuration();
+                this.config.setClassForTemplateLoading(this.getClass(),
+                                                       "templates");
+                this.config.setObjectWrapper(new DefaultObjectWrapper());
+            } catch (NoClassDefFoundError var2) {
+                if (var2.getCause() == null) {
+                    var2.initCause(INITIALIZER_EXCEPTION);
+                }
+                throw var2;
+            } catch (ExceptionInInitializerError var3) {
+                INITIALIZER_EXCEPTION = var3;
+                throw var3;
             }
-            throw var2;
-        } catch (ExceptionInInitializerError var3) {
-            INITIALIZER_EXCEPTION = var3;
-            throw var3;
         }
     }
 
