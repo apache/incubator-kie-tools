@@ -166,6 +166,7 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
             view.disableMakeDefault();
             view.disableItemEditingButtons();
             form.clear();
+            form.makeReadOnly();
             selectedItemName = null;
         }
     }

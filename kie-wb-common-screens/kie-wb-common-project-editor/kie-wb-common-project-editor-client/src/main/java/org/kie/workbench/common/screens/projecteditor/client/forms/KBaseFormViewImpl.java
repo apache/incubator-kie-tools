@@ -189,6 +189,7 @@ public class KBaseFormViewImpl
     @Override
     public void clear() {
         nameLabel.setText( "" );
+        nameLabel.setSubText( "" );
         includesListBox.clear();
         packagesListBox.clear();
         equalsBehaviorIdentity.setValue( true );

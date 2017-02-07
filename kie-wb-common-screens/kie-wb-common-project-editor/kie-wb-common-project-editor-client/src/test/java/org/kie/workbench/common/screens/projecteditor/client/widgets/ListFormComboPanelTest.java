@@ -113,6 +113,7 @@ public class ListFormComboPanelTest {
         verify(view).disableItemEditingButtons();
         verify(view).remove("kbase");
         verify(form).clear();
+        verify(form).makeReadOnly();
 
         assertTrue(items.isEmpty());
     }
