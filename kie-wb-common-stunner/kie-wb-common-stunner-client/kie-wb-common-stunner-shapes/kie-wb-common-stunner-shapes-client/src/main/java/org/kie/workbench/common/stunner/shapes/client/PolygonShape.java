@@ -23,12 +23,12 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.shapes.client.view.PolygonView;
 import org.kie.workbench.common.stunner.shapes.def.PolygonShapeDef;
 
-public class PolygonShape<W> extends AbstractBasicShapeWithTitle<W, PolygonView, PolygonShapeDef<W>> {
+public class PolygonShape<W> extends BasicContainerShape<W, PolygonShapeDef<W>, PolygonView> {
 
-    public PolygonShape(final PolygonView view,
-                        final PolygonShapeDef<W> proxy) {
-        super(view,
-              proxy);
+    public PolygonShape(final PolygonShapeDef<W> shapeDef,
+                        final PolygonView view) {
+        super(shapeDef,
+              view);
     }
 
     @Override
@@ -37,14 +37,8 @@ public class PolygonShape<W> extends AbstractBasicShapeWithTitle<W, PolygonView,
         super.applyProperties(element,
                               mutationContext);
         // Radius.
-        final Double radius = proxy.getRadius(getDefinition(element));
-        _applyRadius(element,
-                     radius,
-                     mutationContext);
-    }
-
-    @Override
-    public String toString() {
-        return "PolygonShape{}";
+        final Double radius = getShapeDefinition().getRadius(getDefinition(element));
+        getDefViewHandler().getViewHandler().applyRadius(radius,
+                                                         mutationContext);
     }
 }

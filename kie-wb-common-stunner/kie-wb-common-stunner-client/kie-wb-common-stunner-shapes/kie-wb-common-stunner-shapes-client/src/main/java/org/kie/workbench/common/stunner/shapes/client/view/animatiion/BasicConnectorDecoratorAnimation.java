@@ -17,10 +17,9 @@
 package org.kie.workbench.common.stunner.shapes.client.view.animatiion;
 
 import com.ait.lienzo.client.core.shape.Shape;
-import org.kie.workbench.common.stunner.shapes.client.BasicConnector;
-import org.kie.workbench.common.stunner.shapes.client.view.BasicConnectorView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresConnectorViewExt;
 
-public final class BasicConnectorDecoratorAnimation extends BasicDecoratorAnimation<BasicConnector> {
+public final class BasicConnectorDecoratorAnimation extends BasicDecoratorAnimation<org.kie.workbench.common.stunner.core.client.shape.Shape> {
 
     public BasicConnectorDecoratorAnimation(final String color,
                                             final double strokeWidth,
@@ -35,7 +34,7 @@ public final class BasicConnectorDecoratorAnimation extends BasicDecoratorAnimat
         return getView().getLine();
     }
 
-    private BasicConnectorView<?> getView() {
-        return (BasicConnectorView<?>) getSource().getShapeView();
+    private WiresConnectorViewExt<?> getView() {
+        return (WiresConnectorViewExt<?>) getSource().getShapeView();
     }
 }

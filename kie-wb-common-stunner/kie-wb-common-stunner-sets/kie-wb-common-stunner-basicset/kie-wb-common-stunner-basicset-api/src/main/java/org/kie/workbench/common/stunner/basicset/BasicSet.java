@@ -23,16 +23,8 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.basicset.definition.BasicConnector;
 import org.kie.workbench.common.stunner.basicset.definition.Circle;
 import org.kie.workbench.common.stunner.basicset.definition.Polygon;
-import org.kie.workbench.common.stunner.basicset.definition.PolygonWithIcon;
 import org.kie.workbench.common.stunner.basicset.definition.Rectangle;
 import org.kie.workbench.common.stunner.basicset.definition.Ring;
-import org.kie.workbench.common.stunner.basicset.definition.icon.dynamics.MinusIcon;
-import org.kie.workbench.common.stunner.basicset.definition.icon.dynamics.PlusIcon;
-import org.kie.workbench.common.stunner.basicset.definition.icon.dynamics.XORIcon;
-import org.kie.workbench.common.stunner.basicset.definition.icon.statics.BusinessRuleIcon;
-import org.kie.workbench.common.stunner.basicset.definition.icon.statics.ScriptIcon;
-import org.kie.workbench.common.stunner.basicset.definition.icon.statics.TimerIcon;
-import org.kie.workbench.common.stunner.basicset.definition.icon.statics.UserIcon;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.ShapeSet;
@@ -50,18 +42,8 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
                 Circle.class,
                 Ring.class,
                 Polygon.class,
-                PolygonWithIcon.class,
                 // Connectors.
-                BasicConnector.class,
-                // Dynamic Icons.
-                MinusIcon.class,
-                PlusIcon.class,
-                XORIcon.class,
-                // Static Icons.
-                UserIcon.class,
-                ScriptIcon.class,
-                BusinessRuleIcon.class,
-                TimerIcon.class
+                BasicConnector.class
         },
         builder = BasicSet.BasicSetBuilder.class
 )

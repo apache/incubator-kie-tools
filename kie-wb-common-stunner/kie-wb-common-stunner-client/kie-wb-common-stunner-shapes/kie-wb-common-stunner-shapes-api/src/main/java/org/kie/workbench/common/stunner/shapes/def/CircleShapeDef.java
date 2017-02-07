@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.shapes.def;
 
-public interface CircleShapeDef<W> extends BasicShapeWithTitleDef<W> {
+import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+
+public interface CircleShapeDef<W> extends MutableShapeDef<W> {
 
     double getRadius(final W element);
 }

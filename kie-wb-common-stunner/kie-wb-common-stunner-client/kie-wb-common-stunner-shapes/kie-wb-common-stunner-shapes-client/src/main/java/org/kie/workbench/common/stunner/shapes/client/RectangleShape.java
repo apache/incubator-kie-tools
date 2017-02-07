@@ -23,12 +23,13 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.shapes.client.view.RectangleView;
 import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 
-public class RectangleShape<W> extends AbstractBasicShapeWithTitle<W, RectangleView, RectangleShapeDef<W>> {
+public class RectangleShape<W>
+        extends BasicContainerShape<W, RectangleShapeDef<W>, RectangleView> {
 
-    public RectangleShape(final RectangleView view,
-                          final RectangleShapeDef<W> proxy) {
-        super(view,
-              proxy);
+    public RectangleShape(final RectangleShapeDef<W> shapeDef,
+                          final RectangleView view) {
+        super(shapeDef,
+              view);
     }
 
     @Override
@@ -36,17 +37,11 @@ public class RectangleShape<W> extends AbstractBasicShapeWithTitle<W, RectangleV
                                 final MutationContext mutationContext) {
         super.applyProperties(element,
                               mutationContext);
-        // Width/Height.
-        final Double w = proxy.getWidth(getDefinition(element));
-        final Double h = proxy.getHeight(getDefinition(element));
-        _applyWidthAndHeight(element,
-                             w,
-                             h,
-                             mutationContext);
-    }
-
-    @Override
-    public String toString() {
-        return "RectangleShape{}";
+        // Apply rectangle attribute values for width and height.
+        final Double width = getShapeDefinition().getWidth(getDefinition(element));
+        final Double height = getShapeDefinition().getHeight(getDefinition(element));
+        getDefViewHandler().getViewHandler().applySize(width,
+                                                       height,
+                                                       mutationContext);
     }
 }

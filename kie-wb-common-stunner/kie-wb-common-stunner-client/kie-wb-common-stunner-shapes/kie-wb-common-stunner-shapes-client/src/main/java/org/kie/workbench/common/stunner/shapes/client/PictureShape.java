@@ -15,52 +15,13 @@
 
 package org.kie.workbench.common.stunner.shapes.client;
 
-import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeImpl;
 import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
-import org.kie.workbench.common.stunner.shapes.def.picture.PictureShapeDef;
 
-public class PictureShape<W> extends AbstractBasicShape<W, PictureShapeView, PictureShapeDef<W, ?>> {
+public class PictureShape<V>
+        extends ShapeImpl<PictureShapeView> {
 
-    public PictureShape(final PictureShapeView view,
-                        final PictureShapeDef<W, ?> proxy) {
-        super(view,
-              proxy);
-    }
-
-    @Override
-    protected String getBackgroundColor(final Node<View<W>, Edge> element) {
-        // Background color does not changes as model updates.
-        return null;
-    }
-
-    @Override
-    protected Double getBackgroundAlpha(final Node<View<W>, Edge> element) {
-        // Background alpha does not changes as model updates.
-        return null;
-    }
-
-    @Override
-    protected String getBorderColor(final Node<View<W>, Edge> element) {
-        // Border color does not changes as model updates.
-        return null;
-    }
-
-    @Override
-    protected Double getBorderSize(final Node<View<W>, Edge> element) {
-        // Border size does not changes as model updates.
-        return null;
-    }
-
-    @Override
-    protected Double getBorderAlpha(final Node<View<W>, Edge> element) {
-        // Border alpha does not changes as model updates.
-        return null;
-    }
-
-    @Override
-    public String toString() {
-        return "PictureShape{}";
+    public PictureShape(final PictureShapeView view) {
+        super(view);
     }
 }

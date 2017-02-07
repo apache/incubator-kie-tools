@@ -21,15 +21,15 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.shapes.client.AbstractBasicShapeWithTitle;
+import org.kie.workbench.common.stunner.shapes.client.BasicContainerShape;
 import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 
-public class ActivityShape<W> extends AbstractBasicShapeWithTitle<W, ActivityView, RectangleShapeDef<W>> {
+public class ActivityShape<W> extends BasicContainerShape<W, RectangleShapeDef<W>, ActivityView> {
 
-    public ActivityShape(final ActivityView view,
-                         final RectangleShapeDef<W> proxy) {
-        super(view,
-              proxy);
+    public ActivityShape(final RectangleShapeDef<W> shapeDef,
+                         final ActivityView view) {
+        super(shapeDef,
+              view);
     }
 
     @Override
@@ -37,17 +37,11 @@ public class ActivityShape<W> extends AbstractBasicShapeWithTitle<W, ActivityVie
                                 final MutationContext mutationContext) {
         super.applyProperties(element,
                               mutationContext);
-        // Width/Height.
-        final Double w = proxy.getWidth(getDefinition(element));
-        final Double h = proxy.getHeight(getDefinition(element));
-        _applyWidthAndHeight(element,
-                             w,
-                             h,
-                             mutationContext);
-    }
-
-    @Override
-    public String toString() {
-        return "ActivityShape{}";
+        // Apply activity attribute values for width and height.
+        final Double width = getShapeDefinition().getWidth(getDefinition(element));
+        final Double height = getShapeDefinition().getHeight(getDefinition(element));
+        getDefViewHandler().getViewHandler().applySize(width,
+                                                       height,
+                                                       mutationContext);
     }
 }

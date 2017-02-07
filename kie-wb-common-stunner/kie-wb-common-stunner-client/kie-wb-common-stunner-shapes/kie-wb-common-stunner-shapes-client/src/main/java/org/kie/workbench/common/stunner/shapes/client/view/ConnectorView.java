@@ -21,8 +21,10 @@ import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ColorName;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresConnectorViewExt;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
-public class ConnectorView extends BasicConnectorView<ConnectorView> {
+public class ConnectorView extends WiresConnectorViewExt<ConnectorView> {
 
     private static final double DECORATOR_WIDTH = 10;
     private static final double DECORATOR_HEIGHT = 15;
@@ -32,7 +34,7 @@ public class ConnectorView extends BasicConnectorView<ConnectorView> {
     }
 
     private ConnectorView(final Object[] line) {
-        super(BasicShapesSupportedEvents.DESKTOP_CONNECTOR_EVENT_TYPES,
+        super(ShapeViewSupportedEvents.DESKTOP_CONNECTOR_EVENT_TYPES,
               (OrthogonalPolyLine) line[0],
               (MultiPathDecorator) line[1],
               (MultiPathDecorator) line[2]);

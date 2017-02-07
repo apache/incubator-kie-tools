@@ -22,11 +22,11 @@ import java.util.Optional;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresShapeViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
-import org.kie.workbench.common.stunner.shapes.client.view.BasicShapeView;
 
-public abstract class AbstractCaseModellerShape<T> extends BasicShapeView<T> implements HasSize<T> {
+public abstract class AbstractCaseModellerShape<T> extends WiresShapeViewExt<T> implements HasSize<T> {
 
     private double currentWidth;
     private double currentHeight;

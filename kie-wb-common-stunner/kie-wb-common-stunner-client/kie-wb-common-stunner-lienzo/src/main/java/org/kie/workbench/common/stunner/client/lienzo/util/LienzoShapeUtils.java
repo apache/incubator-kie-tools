@@ -17,14 +17,46 @@
 package org.kie.workbench.common.stunner.client.lienzo.util;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.shape.wires.MagnetManager;
+import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.LinearGradient;
+import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 
 public class LienzoShapeUtils {
+
+    public static void scalePicture(final Picture picture,
+                                    final double width,
+                                    final double height) {
+        final BoundingBox bb = picture.getBoundingBox();
+        final double[] scale = LienzoUtils.getScaleFactor(bb.getWidth(),
+                                                          bb.getHeight(),
+                                                          width,
+                                                          height);
+        picture.setScale(scale[0],
+                         scale[1]);
+    }
+
+    public static WiresLayoutContainer.Layout getWiresLayout(final HasChildren.Layout layout) {
+        switch (layout) {
+            case CENTER:
+                return WiresLayoutContainer.Layout.CENTER;
+            case LEFT:
+                return WiresLayoutContainer.Layout.LEFT;
+            case RIGHT:
+                return WiresLayoutContainer.Layout.RIGHT;
+            case TOP:
+                return WiresLayoutContainer.Layout.TOP;
+            case BOTTOM:
+                return WiresLayoutContainer.Layout.BOTTOM;
+        }
+        throw new UnsupportedOperationException("Unsupported layout [" + layout.name() + "]");
+    }
 
     public static LinearGradient getLinearGradient(final String startColor,
                                                    final String endColor,

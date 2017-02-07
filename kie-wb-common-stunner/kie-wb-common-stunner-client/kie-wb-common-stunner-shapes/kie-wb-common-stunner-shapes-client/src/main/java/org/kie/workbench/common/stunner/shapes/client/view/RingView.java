@@ -26,15 +26,17 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresShapeViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
 /**
  * The lienzo view implementation for the Ring shape.
- * <p/>
+ * <p>
  * TODO: Disabling for now the resize for rings - ARC resize is not implemented yet on lienzo side.
  */
-public class RingView extends BasicShapeView<RingView>
+public class RingView extends WiresShapeViewExt<RingView>
         implements HasRadius<RingView> {
 
     private static final int INNER_RADIUS_FACTOR = 2;
@@ -43,7 +45,7 @@ public class RingView extends BasicShapeView<RingView>
     private final HandlerRegistrationImpl registrations = new HandlerRegistrationImpl();
 
     public RingView(final double radius) {
-        super(BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+        super(ShapeViewSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
               initPath(new MultiPath(),
                        radius));
         ring = new Ring(getInnerRadius(radius),
@@ -84,8 +86,8 @@ public class RingView extends BasicShapeView<RingView>
     }
 
     @Override
-    protected void doDestroy() {
-        super.doDestroy();
+    protected void preDestroy() {
+        super.preDestroy();
         registrations.removeHandler();
         ring.removeFromParent();
     }

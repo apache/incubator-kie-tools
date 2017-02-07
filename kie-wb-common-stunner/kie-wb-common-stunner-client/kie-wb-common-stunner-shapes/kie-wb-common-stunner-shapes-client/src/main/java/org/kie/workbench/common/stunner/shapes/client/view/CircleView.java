@@ -17,17 +17,19 @@
 package org.kie.workbench.common.stunner.shapes.client.view;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresShapeViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
 /**
  * The lienzo view implementation for the Circle shape.
  * TODO: Disabling for now the resize for circles - ARC resize is not implemented yet on lienzo side.
  */
-public class CircleView extends BasicShapeView<CircleView>
+public class CircleView extends WiresShapeViewExt<CircleView>
         implements HasRadius<CircleView> {
 
     public CircleView(final double radius) {
-        super(BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+        super(ShapeViewSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
               create(new MultiPath(),
                      radius));
     }

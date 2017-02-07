@@ -16,6 +16,18 @@
 
 package org.kie.workbench.common.stunner.core.definition.shape;
 
+/**
+ * The Shape Definition type.
+ * - Shape Definitions act as the bridge between the model structure and properties and a given Shape.
+ * - Provides a way for binding a the properties for concrete Definition bean to different kind of Shapes, so
+ * different kinds of ShapeViews as well.
+ * - Hides the graph complexity and processing behind the diagram to represent and it lets focusing
+ * on how the bean must be represented.
+ * - Subtypes can add additional methods for binding their beans to Shapes.
+ * - Shape Definitions are shared types for both client and server, they cannot contain view or server
+ * specific features.
+ * @param <W> The bean type.
+ */
 public interface ShapeDef<W> {
 
     GlyphDef<W> getGlyphDef();

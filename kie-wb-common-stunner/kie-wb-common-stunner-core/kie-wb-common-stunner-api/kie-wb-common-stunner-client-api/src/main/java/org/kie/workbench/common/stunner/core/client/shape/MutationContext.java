@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.shape;
 
+/**
+ * Defines the way shape view's attributes should be modified.
+ */
 public interface MutationContext {
 
     enum Type {

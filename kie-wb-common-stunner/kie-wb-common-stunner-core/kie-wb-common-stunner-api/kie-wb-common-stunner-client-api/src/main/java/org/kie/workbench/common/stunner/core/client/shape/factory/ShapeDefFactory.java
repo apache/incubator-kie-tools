@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
  */
 public interface ShapeDefFactory<W, C, S extends Shape, P extends ShapeDef<W>> extends ShapeFactory<W, C, S> {
 
+    // TODO: Rename by "registerShapedef" - term "add" is not the correct one.
     void addShapeDef(final Class<?> clazz,
                      final P def);
 }

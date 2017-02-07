@@ -77,12 +77,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-shapes-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- GWT and GWT Extensions -->
 
     <dependency>

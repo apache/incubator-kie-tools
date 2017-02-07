@@ -43,11 +43,6 @@ public final class RectangleShapeDefImpl
     }
 
     @Override
-    public String getNamePropertyValue(final Rectangle element) {
-        return element.getName().getValue();
-    }
-
-    @Override
     public String getBackgroundColor(final Rectangle element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }

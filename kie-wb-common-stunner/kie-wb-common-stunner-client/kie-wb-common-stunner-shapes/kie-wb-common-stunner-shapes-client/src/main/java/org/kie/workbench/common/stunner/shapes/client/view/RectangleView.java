@@ -17,17 +17,19 @@
 package org.kie.workbench.common.stunner.shapes.client.view;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresShapeViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 import org.kie.workbench.common.stunner.lienzo.util.LienzoPaths;
 
 /**
  * The lienzo view implementation for the Rectangle shape.
- * <p/>
+ * <p>
  * TODO: Disabling for now the resize for rectangles when they're using a corner radius value different
  * from zero - ARC resize is not implemented yet on lienzo side, and the corners are built using ARCs.
  * See <a>org.kie.workbench.common.stunner.lienzo.util.LienzoPaths#rectangle</a>.
  */
-public class RectangleView extends BasicShapeView<RectangleView>
+public class RectangleView extends WiresShapeViewExt<RectangleView>
         implements HasSize<RectangleView> {
 
     private final double corner_radius;
@@ -35,8 +37,8 @@ public class RectangleView extends BasicShapeView<RectangleView>
     public RectangleView(final double width,
                          final double height,
                          final double corner) {
-        super(corner == 0 ? BasicShapesSupportedEvents.ALL_DESKTOP_EVENT_TYPES :
-                      BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+        super(corner == 0 ? ShapeViewSupportedEvents.ALL_DESKTOP_EVENT_TYPES :
+                      ShapeViewSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
               create(new MultiPath(),
                      width,
                      height,

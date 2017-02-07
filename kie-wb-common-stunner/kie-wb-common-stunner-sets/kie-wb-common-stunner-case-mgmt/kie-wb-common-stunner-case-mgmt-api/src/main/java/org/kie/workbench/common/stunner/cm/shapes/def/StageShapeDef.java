@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.cm.shapes.def;
 
-import org.kie.workbench.common.stunner.shapes.def.BasicShapeWithTitleDef;
+import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
 
-public interface StageShapeDef<W> extends BasicShapeWithTitleDef<W> {
+public interface StageShapeDef<W> extends MutableShapeDef<W> {
 
     double getWidth(final W element);
 

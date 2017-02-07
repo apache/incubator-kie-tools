@@ -19,9 +19,11 @@ package org.kie.workbench.common.stunner.shapes.client.view;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresShapeViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
-public class PolygonView extends BasicShapeView<PolygonView>
+public class PolygonView extends WiresShapeViewExt<PolygonView>
         implements HasRadius<PolygonView> {
 
     private static final int SIDES = 4;
@@ -29,7 +31,7 @@ public class PolygonView extends BasicShapeView<PolygonView>
 
     public PolygonView(final double radius,
                        final String fillColor) {
-        super(BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+        super(ShapeViewSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
               create(new MultiPath(),
                      SIDES,
                      radius,

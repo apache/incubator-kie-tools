@@ -24,9 +24,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.basicset.BasicSet;
 import org.kie.workbench.common.stunner.basicset.definition.BasicConnector;
 import org.kie.workbench.common.stunner.basicset.definition.Categories;
-import org.kie.workbench.common.stunner.basicset.definition.PolygonWithIcon;
 import org.kie.workbench.common.stunner.basicset.definition.Rectangle;
-import org.kie.workbench.common.stunner.basicset.definition.icon.statics.UserIcon;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindableDefSetPaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
@@ -38,10 +36,6 @@ public class BasicSetPaletteDefinitionFactory extends BindableDefSetPaletteDefin
     private static final Map<String, String> CAT_TITLES = new HashMap<String, String>(6) {{
         put(Categories.BASIC,
             "Basic shapes");
-        put(Categories.BASIC_WITH_ICONS,
-            "Basic shapes with inner icons");
-        put(Categories.ICONS,
-            "Icons");
         put(Categories.CONNECTORS,
             "Connectors");
     }};
@@ -49,10 +43,6 @@ public class BasicSetPaletteDefinitionFactory extends BindableDefSetPaletteDefin
     private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>(1) {{
         put(Categories.BASIC,
             Rectangle.class);
-        put(Categories.BASIC_WITH_ICONS,
-            PolygonWithIcon.class);
-        put(Categories.ICONS,
-            UserIcon.class);
         put(Categories.CONNECTORS,
             BasicConnector.class);
     }};

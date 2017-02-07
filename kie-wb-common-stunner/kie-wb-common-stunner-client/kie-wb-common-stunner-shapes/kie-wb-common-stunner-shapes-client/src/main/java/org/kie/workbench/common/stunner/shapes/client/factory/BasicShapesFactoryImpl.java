@@ -23,10 +23,8 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.shape.AbstractCompositeShape;
-import org.kie.workbench.common.stunner.core.client.shape.AbstractShape;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
-import org.kie.workbench.common.stunner.core.client.shape.MutableShape;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.AbstractShapeDefFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
@@ -35,12 +33,10 @@ import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 import org.kie.workbench.common.stunner.shapes.client.CircleShape;
 import org.kie.workbench.common.stunner.shapes.client.ConnectorShape;
-import org.kie.workbench.common.stunner.shapes.client.DynamicIconShape;
 import org.kie.workbench.common.stunner.shapes.client.PictureShape;
 import org.kie.workbench.common.stunner.shapes.client.PolygonShape;
 import org.kie.workbench.common.stunner.shapes.client.RectangleShape;
 import org.kie.workbench.common.stunner.shapes.client.RingShape;
-import org.kie.workbench.common.stunner.shapes.client.StaticIconShape;
 import org.kie.workbench.common.stunner.shapes.client.view.CircleView;
 import org.kie.workbench.common.stunner.shapes.client.view.ConnectorView;
 import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
@@ -48,22 +44,18 @@ import org.kie.workbench.common.stunner.shapes.client.view.PolygonView;
 import org.kie.workbench.common.stunner.shapes.client.view.RectangleView;
 import org.kie.workbench.common.stunner.shapes.client.view.RingView;
 import org.kie.workbench.common.stunner.shapes.client.view.ShapeViewFactory;
-import org.kie.workbench.common.stunner.shapes.client.view.icon.dynamics.DynamicIconShapeView;
-import org.kie.workbench.common.stunner.shapes.client.view.icon.statics.StaticIconShapeView;
 import org.kie.workbench.common.stunner.shapes.def.CircleShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.HasChildShapeDefs;
 import org.kie.workbench.common.stunner.shapes.def.PolygonShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.RingShapeDef;
-import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
-import org.kie.workbench.common.stunner.shapes.def.icon.statics.IconShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureShapeDef;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 @ApplicationScoped
 public class BasicShapesFactoryImpl
-        extends AbstractShapeDefFactory<Object, ShapeView, MutableShape<Object, ShapeView>, ShapeDef<Object>>
+        extends AbstractShapeDefFactory<Object, ShapeView, Shape<ShapeView>, ShapeDef<Object>>
         implements BasicShapesFactory<Object, AbstractCanvasHandler> {
 
     private final ShapeViewFactory shapeViewFactory;
@@ -89,8 +81,8 @@ public class BasicShapesFactoryImpl
 
     @Override
     @SuppressWarnings("unchecked")
-    public MutableShape<Object, ShapeView> build(final Object definition,
-                                                 final AbstractCanvasHandler context) {
+    public Shape<ShapeView> build(final Object definition,
+                                  final AbstractCanvasHandler context) {
         final String id = definitionManager.adapters().forDefinition().getId(definition);
         final ShapeDef<Object> proxy = getShapeDef(id);
         return build(definition,
@@ -99,25 +91,25 @@ public class BasicShapesFactoryImpl
     }
 
     @SuppressWarnings("unchecked")
-    protected MutableShape<Object, ShapeView> build(final Object definition,
-                                                    final ShapeDef<Object> proxy,
-                                                    final AbstractCanvasHandler context) {
+    protected Shape<ShapeView> build(final Object definition,
+                                     final ShapeDef<Object> proxy,
+                                     final AbstractCanvasHandler context) {
         boolean found = false;
-        MutableShape<Object, ShapeView> shape = null;
+        Shape<ShapeView> shape = null;
         if (isCircle(proxy)) {
             final CircleShapeDef<Object> circleProxy = (CircleShapeDef<Object>) proxy;
             final double radius = circleProxy.getRadius(definition);
             final CircleView view = shapeViewFactory.circle(radius);
-            shape = new CircleShape(view,
-                                    circleProxy);
+            shape = new CircleShape(circleProxy,
+                                    view);
             found = true;
         }
         if (isRing(proxy)) {
             final RingShapeDef<Object> ringProxy = (RingShapeDef<Object>) proxy;
             final double oRadius = ringProxy.getOuterRadius(definition);
             final RingView view = shapeViewFactory.ring(oRadius);
-            shape = new RingShape(view,
-                                  ringProxy);
+            shape = new RingShape(ringProxy,
+                                  view);
             found = true;
         }
         if (isRectangle(proxy)) {
@@ -128,8 +120,8 @@ public class BasicShapesFactoryImpl
             final RectangleView view = shapeViewFactory.rectangle(width,
                                                                   height,
                                                                   cr);
-            shape = new RectangleShape(view,
-                                       rectangleProxy);
+            shape = new RectangleShape(rectangleProxy,
+                                       view);
             found = true;
         }
         if (isPolygon(proxy)) {
@@ -138,8 +130,8 @@ public class BasicShapesFactoryImpl
             final String fillColor = polygonProxy.getBackgroundColor(definition);
             final PolygonView view = shapeViewFactory.polygon(radius,
                                                               fillColor);
-            shape = new PolygonShape(view,
-                                     polygonProxy);
+            shape = new PolygonShape(polygonProxy,
+                                     view);
             found = true;
         }
         if (isConnector(proxy)) {
@@ -148,16 +140,8 @@ public class BasicShapesFactoryImpl
                                                                   0,
                                                                   100,
                                                                   100);
-            shape = new ConnectorShape(view,
-                                       polygonProxy);
-            found = true;
-        }
-        if (isStaticIcon(proxy)) {
-            final IconShapeDef<Object> iconProxy = (IconShapeDef<Object>) proxy;
-            final org.kie.workbench.common.stunner.shapes.def.icon.statics.Icons icon = iconProxy.getIcon(definition);
-            final StaticIconShapeView view = shapeViewFactory.staticIcon(icon);
-            shape = new StaticIconShape(view,
-                                        iconProxy);
+            shape = new ConnectorShape(polygonProxy,
+                                       view);
             found = true;
         }
         if (isPicture(proxy)) {
@@ -169,27 +153,13 @@ public class BasicShapesFactoryImpl
                 final PictureShapeView view = shapeViewFactory.picture(pictureSource,
                                                                        width,
                                                                        height);
-                shape = new PictureShape(view,
-                                         pictureProxy);
+                // shape = new PictureShape(pictureProxy, view);
+                shape = new PictureShape(view);
             }
-            found = true;
-        }
-        if (isDynamicIcon(proxy)) {
-            final org.kie.workbench.common.stunner.shapes.def.icon.dynamics.IconShapeDef iconProxy = (org.kie.workbench.common.stunner.shapes.def.icon.dynamics.IconShapeDef) proxy;
-            final Icons icon = DynamicIconShape.getIcon(definition,
-                                                        iconProxy);
-            final double width = iconProxy.getWidth(definition);
-            final double height = iconProxy.getHeight(definition);
-            final DynamicIconShapeView view = shapeViewFactory.dynamicIcon(icon,
-                                                                           width,
-                                                                           height);
-            shape = new DynamicIconShape(view,
-                                         iconProxy);
             found = true;
         }
         // Add children, if any.
         if (null != shape
-                && shape instanceof AbstractCompositeShape
                 && proxy instanceof HasChildShapeDefs) {
             final HasChildShapeDefs<Object> hasChildren = (HasChildShapeDefs<Object>) proxy;
             final Map<ShapeDef<Object>, HasChildren.Layout> childShapeDefs = hasChildren.getChildShapeDefs();
@@ -197,12 +167,12 @@ public class BasicShapesFactoryImpl
                 for (final Map.Entry<ShapeDef<Object>, HasChildren.Layout> entry : childShapeDefs.entrySet()) {
                     final ShapeDef<Object> child = entry.getKey();
                     final HasChildren.Layout layout = entry.getValue();
-                    final MutableShape<Object, ShapeView> childShape = this.build(definition,
-                                                                                  child,
-                                                                                  context);
+                    final Shape<ShapeView> childShape = this.build(definition,
+                                                                   child,
+                                                                   context);
                     if (null != childShape) {
-                        ((AbstractCompositeShape) shape).addChild((AbstractShape) childShape,
-                                                                  layout);
+                        ((HasChildren) shape).addChild(childShape,
+                                                       layout);
                     }
                 }
             }
@@ -232,14 +202,6 @@ public class BasicShapesFactoryImpl
 
     private boolean isConnector(final ShapeDef<Object> proxy) {
         return proxy instanceof ConnectorShapeDef;
-    }
-
-    private boolean isDynamicIcon(final ShapeDef<Object> proxy) {
-        return proxy instanceof org.kie.workbench.common.stunner.shapes.def.icon.dynamics.IconShapeDef;
-    }
-
-    private boolean isStaticIcon(final ShapeDef<Object> proxy) {
-        return proxy instanceof IconShapeDef;
     }
 
     private boolean isPicture(final ShapeDef<Object> proxy) {

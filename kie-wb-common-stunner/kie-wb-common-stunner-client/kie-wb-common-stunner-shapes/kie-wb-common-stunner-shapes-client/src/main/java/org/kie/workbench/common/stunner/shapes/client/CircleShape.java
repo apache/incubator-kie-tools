@@ -23,12 +23,12 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.shapes.client.view.CircleView;
 import org.kie.workbench.common.stunner.shapes.def.CircleShapeDef;
 
-public class CircleShape<W> extends AbstractBasicShapeWithTitle<W, CircleView, CircleShapeDef<W>> {
+public class CircleShape<W> extends BasicContainerShape<W, CircleShapeDef<W>, CircleView> {
 
-    public CircleShape(final CircleView view,
-                       final CircleShapeDef<W> proxy) {
-        super(view,
-              proxy);
+    public CircleShape(final CircleShapeDef<W> shapeDef,
+                       final CircleView view) {
+        super(shapeDef,
+              view);
     }
 
     @Override
@@ -37,14 +37,8 @@ public class CircleShape<W> extends AbstractBasicShapeWithTitle<W, CircleView, C
         super.applyProperties(element,
                               mutationContext);
         // Radius.
-        final Double radius = proxy.getRadius(getDefinition(element));
-        _applyRadius(element,
-                     radius,
-                     mutationContext);
-    }
-
-    @Override
-    public String toString() {
-        return "CircleShape{}";
+        final Double radius = getShapeDefinition().getRadius(getDefinition(element));
+        getDefViewHandler().getViewHandler().applyRadius(radius,
+                                                         mutationContext);
     }
 }

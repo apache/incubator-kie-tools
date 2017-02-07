@@ -66,11 +66,6 @@ public final class BPMNDiagramShapeDef
     }
 
     @Override
-    public String getNamePropertyValue(final BPMNDiagram element) {
-        return element.getDiagramSet().getName().getValue();
-    }
-
-    @Override
     public double getFontBorderSize(final BPMNDiagram element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }

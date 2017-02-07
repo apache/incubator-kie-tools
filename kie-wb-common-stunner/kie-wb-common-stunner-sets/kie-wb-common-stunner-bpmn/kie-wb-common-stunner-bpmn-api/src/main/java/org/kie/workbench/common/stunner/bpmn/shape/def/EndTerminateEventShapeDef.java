@@ -24,11 +24,11 @@ import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
 import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
+import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
-import org.kie.workbench.common.stunner.shapes.def.BasicShapeWithTitleDef;
+import org.kie.workbench.common.stunner.shapes.def.AbstractMutableShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.CircleShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.HasChildShapeDefs;
-import org.kie.workbench.common.stunner.shapes.def.WrappedBasicNamedShapeDef;
 
 public final class EndTerminateEventShapeDef
         extends AbstractShapeDef<EndTerminateEvent>
@@ -81,11 +81,6 @@ public final class EndTerminateEventShapeDef
     }
 
     @Override
-    public String getNamePropertyValue(final EndTerminateEvent element) {
-        return element.getGeneral().getName().getValue();
-    }
-
-    @Override
     public double getFontBorderSize(final EndTerminateEvent element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
@@ -115,12 +110,12 @@ public final class EndTerminateEventShapeDef
     }
 
     // The inner circle shape (child).
-    public final class InnerCircleShapeDef extends WrappedBasicNamedShapeDef<EndTerminateEvent>
+    public final class InnerCircleShapeDef extends AbstractMutableShapeDef<EndTerminateEvent>
             implements CircleShapeDef<EndTerminateEvent> {
 
         private static final String BG_COLOR = "#000000";
 
-        public InnerCircleShapeDef(final BasicShapeWithTitleDef<EndTerminateEvent> parent) {
+        public InnerCircleShapeDef(final MutableShapeDef<EndTerminateEvent> parent) {
             super(parent);
         }
 

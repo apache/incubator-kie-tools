@@ -27,16 +27,18 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.shape.GraphShape;
+import org.kie.workbench.common.stunner.core.client.shape.ElementShape;
 import org.kie.workbench.common.stunner.core.client.shape.Lifecycle;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.uberfire.mvp.Command;
@@ -189,13 +191,16 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
                                         final boolean applyPosition,
                                         final boolean applyProperties,
                                         final MutationContext mutationContext) {
-        if (shape instanceof GraphShape) {
-            final GraphShape graphShape = (GraphShape) shape;
+        if (shape instanceof ElementShape) {
+            final ElementShape graphShape = (ElementShape) shape;
             if (applyPosition) {
                 graphShape.applyPosition(candidate,
                                          mutationContext);
             }
             if (applyProperties) {
+                applyElementTitle(graphShape,
+                                  candidate,
+                                  mutationContext);
                 graphShape.applyProperties(candidate,
                                            mutationContext);
             }
@@ -209,6 +214,22 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
             notifyCanvasElementUpdated(candidate);
             afterElementUpdated(candidate,
                                 graphShape);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void applyElementTitle(final ElementShape shape,
+                                     final Element candidate,
+                                     final MutationContext mutationContext) {
+        final Definition<Object> content = (Definition<Object>) candidate.getContent();
+        final Object definition = content.getDefinition();
+        final Object nameProperty = getDefinitionManager().adapters().forDefinition().getMetaProperty(PropertyMetaTypes.NAME,
+                                                                                                      definition);
+        if (null != nameProperty) {
+            final String name = (String) getDefinitionManager().adapters().forProperty().getValue(nameProperty);
+            shape.applyTitle(name,
+                             candidate,
+                             mutationContext);
         }
     }
 

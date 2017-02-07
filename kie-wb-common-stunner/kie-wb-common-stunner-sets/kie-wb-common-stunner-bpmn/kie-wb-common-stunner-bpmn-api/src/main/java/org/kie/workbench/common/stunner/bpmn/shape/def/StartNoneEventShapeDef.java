@@ -73,11 +73,6 @@ public final class StartNoneEventShapeDef
     }
 
     @Override
-    public String getNamePropertyValue(final StartNoneEvent element) {
-        return element.getGeneral().getName().getValue();
-    }
-
-    @Override
     public double getFontBorderSize(final StartNoneEvent element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }

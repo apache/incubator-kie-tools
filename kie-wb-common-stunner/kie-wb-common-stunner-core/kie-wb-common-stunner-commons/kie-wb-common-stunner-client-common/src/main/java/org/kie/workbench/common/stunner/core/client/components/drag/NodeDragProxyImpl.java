@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
-import org.kie.workbench.common.stunner.core.client.shape.GraphShape;
+import org.kie.workbench.common.stunner.core.client.shape.ElementShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -70,9 +70,9 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
         final ShapeFactory<Object, AbstractCanvasHandler, ?> edgeShapeFactory = item.getInEdgeShapeFactory();
         final Shape nodeShape = nodeShapeFactory.build(node.getContent().getDefinition(),
                                                        canvasHandler);
-        if (nodeShape instanceof GraphShape) {
-            ((GraphShape) nodeShape).applyProperties(node,
-                                                     MutationContext.STATIC);
+        if (nodeShape instanceof ElementShape) {
+            ((ElementShape) nodeShape).applyProperties(node,
+                                                       MutationContext.STATIC);
         }
         this.transientEdgeShape = (EdgeShape) edgeShapeFactory.build(inEdge.getContent().getDefinition(),
                                                                      canvasHandler);

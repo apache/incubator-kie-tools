@@ -21,9 +21,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.shapes.client.factory.PictureProvidersManager;
-import org.kie.workbench.common.stunner.shapes.client.view.icon.dynamics.DynamicIconShapeView;
-import org.kie.workbench.common.stunner.shapes.client.view.icon.statics.StaticIconShapeView;
-import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -47,18 +44,6 @@ public class ShapeViewFactory {
         return new RectangleView(width,
                                  height,
                                  corner_radius);
-    }
-
-    public DynamicIconShapeView dynamicIcon(final Icons icon,
-                                            final double width,
-                                            final double height) {
-        return new DynamicIconShapeView(icon,
-                                        width,
-                                        height);
-    }
-
-    public StaticIconShapeView staticIcon(final org.kie.workbench.common.stunner.shapes.def.icon.statics.Icons icon) {
-        return new StaticIconShapeView(icon);
     }
 
     public PictureShapeView picture(final Object source,

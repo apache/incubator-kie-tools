@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.cm.shapes.def.CaseManagementTaskShapeDef
 import org.kie.workbench.common.stunner.cm.shapes.factory.CaseManagementShapesFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.shape.MutableShape;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
@@ -75,12 +75,12 @@ public class CaseManagementShapesFactoryImpl implements CaseManagementShapesFact
 
     @Override
     @SuppressWarnings("unchecked")
-    public MutableShape<Object, ShapeView> build(final Object definition,
-                                                 final AbstractCanvasHandler context) {
+    public Shape<ShapeView> build(final Object definition,
+                                  final AbstractCanvasHandler context) {
         final String id = definitionManager.adapters().forDefinition().getId(definition);
         final ShapeDef<?> proxy = delegate.getShapeDef(id);
 
-        MutableShape<Object, ShapeView> shape;
+        Shape<ShapeView> shape;
 
         if (isCaseManagementDiagram(proxy)) {
             final CaseManagementDiagramShapeDef diagramProxy = (CaseManagementDiagramShapeDef) proxy;
@@ -88,8 +88,8 @@ public class CaseManagementShapesFactoryImpl implements CaseManagementShapesFact
             final double height = diagramProxy.getHeight((CaseManagementDiagram) definition);
             final DiagramView view = new DiagramView(width,
                                                      height);
-            shape = new DiagramShape(view,
-                                     diagramProxy);
+            shape = new DiagramShape(diagramProxy,
+                                     view);
         } else if (isCaseManagementStage(proxy)) {
             final CaseManagementSubprocessShapeDef stageProxy = (CaseManagementSubprocessShapeDef) proxy;
             final double width = stageProxy.getWidth((CaseManagementBaseSubprocess) definition);
@@ -98,16 +98,16 @@ public class CaseManagementShapesFactoryImpl implements CaseManagementShapesFact
             final StageView view = new StageView(width,
                                                  height,
                                                  voffset);
-            shape = new StageShape(view,
-                                   stageProxy);
+            shape = new StageShape(stageProxy,
+                                   view);
         } else if (isCaseManagementActivity(proxy)) {
             final CaseManagementTaskShapeDef taskProxy = (CaseManagementTaskShapeDef) proxy;
             final double width = taskProxy.getWidth((CaseManagementBaseTask) definition);
             final double height = taskProxy.getHeight((CaseManagementBaseTask) definition);
             final ActivityView view = new ActivityView(width,
                                                        height);
-            shape = new ActivityShape(view,
-                                      taskProxy);
+            shape = new ActivityShape(taskProxy,
+                                      view);
         } else {
             shape = delegate.build(definition,
                                    context);

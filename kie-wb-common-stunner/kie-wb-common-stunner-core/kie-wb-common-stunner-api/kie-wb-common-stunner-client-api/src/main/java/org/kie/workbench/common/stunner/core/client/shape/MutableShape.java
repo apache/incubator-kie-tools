@@ -19,15 +19,21 @@ package org.kie.workbench.common.stunner.core.client.shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 /**
- * A shape that mutates according to a domain object.
+ * An extension of the Shape type that can be updated at runtime as per some bean.
+ * <p>
+ * Once the bean instance, which is being represented by this shape, is being
+ * updated, this shape can change its view attributes in order to display whatever new property values
+ * display.
+ * @param <W> The bean type.
+ * @param <V> The Shape View type.
  */
 public interface MutableShape<W, V extends ShapeView> extends Shape<V> {
 
+    /**
+     * Update shape view a atrributes as the bean's state.
+     * @param element The bean.
+     * @param mutationContext The mutation context.
+     */
     void applyProperties(final W element,
                          final MutationContext mutationContext);
-
-    void applyProperty(final W element,
-                       final String propertyId,
-                       final Object value,
-                       final MutationContext mutationContext);
 }

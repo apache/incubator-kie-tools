@@ -24,12 +24,12 @@ import org.kie.workbench.common.stunner.shapes.client.view.RingView;
 import org.kie.workbench.common.stunner.shapes.def.RingShapeDef;
 
 // TODO
-public class RingShape<W> extends AbstractBasicShapeWithTitle<W, RingView, RingShapeDef<W>> {
+public class RingShape<W> extends BasicContainerShape<W, RingShapeDef<W>, RingView> {
 
-    public RingShape(final RingView view,
-                     final RingShapeDef<W> proxy) {
-        super(view,
-              proxy);
+    public RingShape(final RingShapeDef<W> shapeDef,
+                     final RingView view) {
+        super(shapeDef,
+              view);
     }
 
     @Override
@@ -38,12 +38,12 @@ public class RingShape<W> extends AbstractBasicShapeWithTitle<W, RingView, RingS
         super.applyProperties(element,
                               mutationContext);
         // Outer Radius.
-        final Double outerRadius = proxy.getOuterRadius(getDefinition(element));
+        final Double outerRadius = getShapeDefinition().getOuterRadius(getDefinition(element));
         _applyOuterRadius(element,
                           outerRadius,
                           mutationContext);
         // Inner Radius.
-        final Double innerRadius = proxy.getInnerRadius(getDefinition(element));
+        final Double innerRadius = getShapeDefinition().getInnerRadius(getDefinition(element));
         _applyInnerRadius(element,
                           innerRadius,
                           mutationContext);

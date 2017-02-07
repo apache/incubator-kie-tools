@@ -82,11 +82,6 @@ public final class CaseManagementTaskShapeDef
     }
 
     @Override
-    public String getNamePropertyValue(final CaseManagementBaseTask element) {
-        return element.getGeneral().getName().getValue();
-    }
-
-    @Override
     public double getFontBorderSize(final CaseManagementBaseTask element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }

@@ -28,11 +28,6 @@ public final class RingShapeDefImpl
         implements RingShapeDef<Ring> {
 
     @Override
-    public String getNamePropertyValue(final Ring element) {
-        return element.getName().getValue();
-    }
-
-    @Override
     public String getBackgroundColor(final Ring element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }

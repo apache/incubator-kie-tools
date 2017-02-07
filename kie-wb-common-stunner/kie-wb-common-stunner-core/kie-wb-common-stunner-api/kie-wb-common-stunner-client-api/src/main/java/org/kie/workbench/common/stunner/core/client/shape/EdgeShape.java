@@ -22,11 +22,24 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 /**
- * A shape mutates according to a graph edge.
+ * A concrete extension of a Graph Shape type for Edges.
+ * <p>
+ * Notice that the canvas representations for edges are not just connectors, edges
+ * can be of other types, it depends on the graph element's content.
+ * @param <W> The edge type.
+ * @param <C> The edge's content type. It must be View or any subtype.
+ * @param <V> The Shape View type.
  */
 public interface EdgeShape<W, C extends View<W>, E extends Edge<C, Node>, V extends ShapeView>
-        extends GraphShape<W, C, E, V> {
+        extends ElementShape<W, C, E, V> {
 
+    /**
+     * Update the edge view's connections.
+     * @param element The edge instance.
+     * @param source The source node's view.
+     * @param target The target node's view.
+     * @param mutationContext The mutation context.
+     */
     void applyConnections(final E element,
                           final ShapeView<?> source,
                           final ShapeView<?> target,

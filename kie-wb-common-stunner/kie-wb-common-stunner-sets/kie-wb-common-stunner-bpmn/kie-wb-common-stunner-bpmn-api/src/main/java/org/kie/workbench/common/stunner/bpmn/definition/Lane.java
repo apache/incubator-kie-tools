@@ -108,7 +108,7 @@ public class Lane implements BPMNDefinition {
         public static final transient String COLOR = "#FFFFFF";
         public static final Double WIDTH = 450d;
         public static final Double HEIGHT = 250d;
-        public static final Double BORDER_SIZE = 1d;
+        public static final Double BORDER_SIZE = 1.5d;
         public static final String BORDER_COLOR = "#000000";
 
         @Override

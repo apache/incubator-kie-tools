@@ -24,13 +24,12 @@ import com.ait.lienzo.client.core.animation.AnimationProperty;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.Text;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresShapeViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
-import org.kie.workbench.common.stunner.shapes.client.BasicShape;
-import org.kie.workbench.common.stunner.shapes.client.view.BasicShapeView;
 
 public class BasicShapeAnimation
-        extends AbstractBasicAnimation<BasicShape> {
+        extends AbstractBasicAnimation<org.kie.workbench.common.stunner.core.client.shape.Shape> {
 
     private final List<AnimationProperty> shapeAnimationProperties = new LinkedList<>();
     private final List<AnimationProperty> decoratorAnimationProperties = new LinkedList<>();
@@ -42,7 +41,7 @@ public class BasicShapeAnimation
     @Override
     public void run() {
         final AnimationTweener tweener = AnimationTweener.LINEAR;
-        final BasicShapeView<?> view = getView();
+        final WiresShapeViewExt<?> view = getView();
         final Text text = view.getText();
         final long duration = getDuration();
         // Shape property animations.
@@ -80,8 +79,8 @@ public class BasicShapeAnimation
         return _ps;
     }
 
-    private BasicShapeView<?> getView() {
-        return (BasicShapeView<?>) getSource().getShapeView();
+    private WiresShapeViewExt<?> getView() {
+        return (WiresShapeViewExt<?>) getSource().getShapeView();
     }
 
     public void clear() {

@@ -82,11 +82,6 @@ public final class TaskShapeDef
     }
 
     @Override
-    public String getNamePropertyValue(final BaseTask element) {
-        return element.getGeneral().getName().getValue();
-    }
-
-    @Override
     public double getFontBorderSize(final BaseTask element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }

@@ -16,26 +16,17 @@
 
 package org.kie.workbench.common.stunner.bpmn.shape.def;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
-import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.AbstractShapeDef;
 import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
-import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
-import org.kie.workbench.common.stunner.shapes.def.HasChildShapeDefs;
 import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
-import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.DynamicIconShapeDef;
-import org.kie.workbench.common.stunner.shapes.def.icon.dynamics.Icons;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
 
 public final class SubprocessShapeDef
         extends AbstractShapeDef<ReusableSubprocess>
         implements
-        RectangleShapeDef<ReusableSubprocess>,
-        HasChildShapeDefs<ReusableSubprocess> {
+        RectangleShapeDef<ReusableSubprocess> {
 
     @Override
     public String getBackgroundColor(final ReusableSubprocess element) {
@@ -78,11 +69,6 @@ public final class SubprocessShapeDef
     }
 
     @Override
-    public String getNamePropertyValue(final ReusableSubprocess element) {
-        return element.getGeneral().getName().getValue();
-    }
-
-    @Override
     public double getFontBorderSize(final ReusableSubprocess element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
@@ -95,14 +81,6 @@ public final class SubprocessShapeDef
     @Override
     public double getFontRotation(final ReusableSubprocess element) {
         return 0;
-    }
-
-    @Override
-    public Map<ShapeDef<ReusableSubprocess>, HasChildren.Layout> getChildShapeDefs() {
-        return new HashMap<ShapeDef<ReusableSubprocess>, HasChildren.Layout>() {{
-            put(new ProcessIconProxy(),
-                HasChildren.Layout.TOP);
-        }};
     }
 
     @Override
@@ -137,52 +115,5 @@ public final class SubprocessShapeDef
     @Override
     public GlyphDef<ReusableSubprocess> getGlyphDef() {
         return SUBPROCESS_GLYPH_DEF;
-    }
-
-    public final class ProcessIconProxy
-            extends AbstractShapeDef<ReusableSubprocess>
-            implements DynamicIconShapeDef<ReusableSubprocess> {
-
-        private static final String BLACK = "#000000";
-
-        @Override
-        public double getWidth(final ReusableSubprocess element) {
-            return element.getDimensionsSet().getWidth().getValue() / 2;
-        }
-
-        @Override
-        public double getHeight(final ReusableSubprocess element) {
-            return element.getDimensionsSet().getHeight().getValue() / 2;
-        }
-
-        @Override
-        public String getBackgroundColor(final ReusableSubprocess element) {
-            return BLACK;
-        }
-
-        @Override
-        public double getBackgroundAlpha(final ReusableSubprocess element) {
-            return 1;
-        }
-
-        @Override
-        public String getBorderColor(final ReusableSubprocess element) {
-            return BLACK;
-        }
-
-        @Override
-        public double getBorderSize(final ReusableSubprocess element) {
-            return 0;
-        }
-
-        @Override
-        public double getBorderAlpha(final ReusableSubprocess element) {
-            return 1;
-        }
-
-        @Override
-        public Icons getIcon(final ReusableSubprocess definition) {
-            return Icons.PLUS;
-        }
     }
 }

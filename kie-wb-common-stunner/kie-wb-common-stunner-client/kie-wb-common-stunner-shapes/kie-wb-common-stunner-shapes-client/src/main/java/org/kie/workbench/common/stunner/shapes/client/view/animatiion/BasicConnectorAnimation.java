@@ -23,11 +23,11 @@ import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationProperty;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.shape.Group;
-import org.kie.workbench.common.stunner.shapes.client.BasicConnector;
-import org.kie.workbench.common.stunner.shapes.client.view.BasicConnectorView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresConnectorViewExt;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 
 public class BasicConnectorAnimation
-        extends AbstractBasicAnimation<BasicConnector> {
+        extends AbstractBasicAnimation<Shape> {
 
     private final List<AnimationProperty> decoratableLineAnimationProperties = new LinkedList<>();
 
@@ -37,7 +37,7 @@ public class BasicConnectorAnimation
     @Override
     public void run() {
         final AnimationTweener tweener = AnimationTweener.LINEAR;
-        final BasicConnectorView<?> view = (BasicConnectorView<?>) getSource().getShapeView();
+        final WiresConnectorViewExt<?> view = (WiresConnectorViewExt<?>) getSource().getShapeView();
         final Group group = view.getGroup();
         final long duration = getDuration();
         // Shape property animations.

@@ -73,11 +73,6 @@ public final class EndNoneEventShapeDef
     }
 
     @Override
-    public String getNamePropertyValue(final EndNoneEvent element) {
-        return element.getGeneral().getName().getValue();
-    }
-
-    @Override
     public double getFontBorderSize(final EndNoneEvent element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }

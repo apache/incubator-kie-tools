@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.shapes.def;
 
-public interface RectangleShapeDef<W> extends BasicShapeWithTitleDef<W> {
+import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+
+public interface RectangleShapeDef<W> extends MutableShapeDef<W> {
 
     double getWidth(final W element);
 

@@ -22,8 +22,11 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 /**
- * A shape mutates according to a graph node.
+ * A concrete extension of a Graph Shape type for Nodes.
+ * @param <W> The node type.
+ * @param <C> The node's content type. It must be View or any subtype.
+ * @param <V> The Shape View type.
  */
-public interface NodeShape<W, C extends View<W>, E extends Node<C, Edge>, V extends ShapeView> extends GraphShape<W, C, E, V> {
+public interface NodeShape<W, C extends View<W>, E extends Node<C, Edge>, V extends ShapeView> extends ElementShape<W, C, E, V> {
 
 }

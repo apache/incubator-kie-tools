@@ -26,11 +26,6 @@ public final class CaseManagementDiagramShapeDef
         implements RectangleShapeDef<CaseManagementDiagram> {
 
     @Override
-    public String getNamePropertyValue(final CaseManagementDiagram element) {
-        return element.getDiagramSet().getName().getValue();
-    }
-
-    @Override
     public String getBackgroundColor(final CaseManagementDiagram element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }

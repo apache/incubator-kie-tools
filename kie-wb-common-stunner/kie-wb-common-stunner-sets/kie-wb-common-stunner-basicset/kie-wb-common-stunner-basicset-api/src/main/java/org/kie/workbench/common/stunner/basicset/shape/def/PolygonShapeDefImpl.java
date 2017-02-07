@@ -33,11 +33,6 @@ public final class PolygonShapeDefImpl
     }
 
     @Override
-    public String getNamePropertyValue(final Polygon element) {
-        return element.getName().getValue();
-    }
-
-    @Override
     public String getBackgroundColor(final Polygon element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }

@@ -22,14 +22,14 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.shapes.client.AbstractBasicShapeWithTitle;
+import org.kie.workbench.common.stunner.shapes.client.BasicContainerShape;
 
-public class StageShape<W> extends AbstractBasicShapeWithTitle<W, StageView, StageShapeDef<W>> {
+public class StageShape<W> extends BasicContainerShape<W, StageShapeDef<W>, StageView> {
 
-    public StageShape(final StageView view,
-                      final StageShapeDef<W> proxy) {
-        super(view,
-              proxy);
+    public StageShape(final StageShapeDef<W> shapeDef,
+                      final StageView view) {
+        super(shapeDef,
+              view);
     }
 
     @Override
@@ -37,13 +37,12 @@ public class StageShape<W> extends AbstractBasicShapeWithTitle<W, StageView, Sta
                                 final MutationContext mutationContext) {
         super.applyProperties(element,
                               mutationContext);
-        // Width/Height.
-        final Double w = proxy.getWidth(getDefinition(element));
-        final Double h = proxy.getHeight(getDefinition(element));
-        _applyWidthAndHeight(element,
-                             w,
-                             h,
-                             mutationContext);
+        // Apply stage attribute values for width and height.
+        final Double width = getShapeDefinition().getWidth(getDefinition(element));
+        final Double height = getShapeDefinition().getHeight(getDefinition(element));
+        getDefViewHandler().getViewHandler().applySize(width,
+                                                       height,
+                                                       mutationContext);
     }
 
     @Override

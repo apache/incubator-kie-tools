@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.shapes.def;
 
-public interface RingShapeDef<W> extends BasicShapeWithTitleDef<W> {
+import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+
+public interface RingShapeDef<W> extends MutableShapeDef<W> {
 
     double getInnerRadius(final W element);
 

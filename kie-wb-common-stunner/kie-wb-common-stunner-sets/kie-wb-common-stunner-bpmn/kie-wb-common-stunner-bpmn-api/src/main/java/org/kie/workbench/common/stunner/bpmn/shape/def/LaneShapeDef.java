@@ -68,11 +68,6 @@ public final class LaneShapeDef
     }
 
     @Override
-    public String getNamePropertyValue(final Lane element) {
-        return element.getGeneral().getName().getValue();
-    }
-
-    @Override
     public double getFontBorderSize(final Lane element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }

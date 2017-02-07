@@ -36,10 +36,6 @@ public class BasicSetBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFa
     private final static Map<String, IconResource> CATEGORY_RERNDERERS_SETTINGS = new HashMap<String, IconResource>() {{
         put(Categories.BASIC,
             new IconResource<>(IconType.SQUARE));
-        put(Categories.BASIC_WITH_ICONS,
-            new IconResource(IconType.PLUS_SQUARE_O));
-        put(Categories.ICONS,
-            new IconResource(IconType.DASHBOARD));
         put(Categories.CONNECTORS,
             new IconResource(IconType.LONG_ARROW_RIGHT));
     }};

@@ -28,11 +28,6 @@ public final class CircleShapeDefImpl
         implements CircleShapeDef<Circle> {
 
     @Override
-    public String getNamePropertyValue(final Circle element) {
-        return element.getName().getValue();
-    }
-
-    @Override
     public String getBackgroundColor(final Circle element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }

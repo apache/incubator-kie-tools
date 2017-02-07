@@ -24,7 +24,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.AbstractConnectorView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresConnectorView;
 import org.kie.workbench.common.stunner.client.widgets.canvas.view.CanvasView;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
@@ -50,8 +50,8 @@ public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
         } else if (WiresUtils.isWiresConnector(shapeView)) {
             WiresConnector wiresConnector = (WiresConnector) shapeView;
             final WiresConnectorControl connectorControl = wiresManager.register(wiresConnector);
-            if (shapeView instanceof AbstractConnectorView) {
-                ((AbstractConnectorView) shapeView).setControl(connectorControl);
+            if (shapeView instanceof WiresConnectorView) {
+                ((WiresConnectorView) shapeView).setControl(connectorControl);
             }
             wiresConnector.getGroup().setUserData(WiresCanvas.WIRES_CANVAS_GROUP_ID);
         } else {

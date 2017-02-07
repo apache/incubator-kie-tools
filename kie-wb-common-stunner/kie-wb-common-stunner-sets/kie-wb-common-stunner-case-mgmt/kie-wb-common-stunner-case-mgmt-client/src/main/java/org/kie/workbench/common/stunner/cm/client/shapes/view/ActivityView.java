@@ -20,8 +20,8 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.cm.client.wires.AbstractCaseModellerShape;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 import org.kie.workbench.common.stunner.lienzo.util.LienzoPaths;
-import org.kie.workbench.common.stunner.shapes.client.view.BasicShapesSupportedEvents;
 
 /**
  * The Lienzo view implementation for the Activity shape.
@@ -30,7 +30,7 @@ public class ActivityView extends AbstractCaseModellerShape<ActivityView> {
 
     public ActivityView(final double width,
                         final double height) {
-        super(BasicShapesSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+        super(ShapeViewSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
               create(new MultiPath(),
                      width,
                      height),
