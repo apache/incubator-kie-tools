@@ -32,6 +32,10 @@
   <name>UberFire Dynamic Plugin</name>
   <description>UberFire Dynamic Plugin</description>
 
+  <properties>
+    <gwt.module.name>org.uberfire.UberfireDynamicPlugin</gwt.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -83,16 +87,28 @@
 
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/assembly/**</exclude>
+            <exclude>**/js/**</exclude>
+            <exclude>**/gwt-unitCache/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>        
         <configuration>
           <extraJvmArgs>-Xmx2G -Derrai.ioc.reachability=Aggressive -Duberfire.plugin.mode.active=true -Derrai.ioc.jsinterop.support=true</extraJvmArgs>          
           <logLevel>INFO</logLevel>
-          <module>org.uberfire.UberfireDynamicPlugin</module>           
+          <module>${gwt.module.name}</module>
           <runTarget>dynamic-plugin.html</runTarget>         
           <hostedWebapp>src/main/webapp</hostedWebapp>
           <generateJsInteropExports>true</generateJsInteropExports>  
-          <outputDirectory>${project.build.outputDirectory}/js</outputDirectory>          
+          <outputDirectory>${project.build.outputDirectory}/js</outputDirectory>
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
@@ -120,8 +136,28 @@
           </execution>
         </executions>
       </plugin>  
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+              <goals>
+                <goal>single</goal>
+              </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <finalName>${project.artifactId}</finalName>
+          <descriptors>
+            <descriptor>src/main/resources/assembly/assembly-webjar.xml</descriptor>
+          </descriptors>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
     </plugins>
-
   </build>
 
 </project>
