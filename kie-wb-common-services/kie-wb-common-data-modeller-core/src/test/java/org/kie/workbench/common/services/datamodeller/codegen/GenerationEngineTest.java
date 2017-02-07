@@ -16,11 +16,25 @@
 
 package org.kie.workbench.common.services.datamodeller.codegen;
 
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-
-import org.kie.workbench.common.services.datamodeller.core.*;
+import org.kie.workbench.common.services.datamodeller.core.Annotation;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.Method;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.Parameter;
+import org.kie.workbench.common.services.datamodeller.core.Type;
+import org.kie.workbench.common.services.datamodeller.core.Visibility;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.MethodImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
@@ -30,12 +44,7 @@ import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracl
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import static org.junit.Assert.*;
 
 public class GenerationEngineTest {
 
@@ -53,6 +62,13 @@ public class GenerationEngineTest {
             InputStream in = this.getClass().getResourceAsStream( "GenerationTestResults.properties" );
             results.load(in);
             in.close();
+            Set<String> propertyNames = results.stringPropertyNames();
+            for (String property : propertyNames) {
+                String newProperty = results.getProperty(property).replaceAll("\n",
+                                                                              System.getProperty("line.separator"));
+                results.setProperty(property,
+                                    newProperty);
+            }
 
             engine = GenerationEngine.getInstance();
             dataModelOracleDriver = DataModelOracleModelDriver.getInstance();

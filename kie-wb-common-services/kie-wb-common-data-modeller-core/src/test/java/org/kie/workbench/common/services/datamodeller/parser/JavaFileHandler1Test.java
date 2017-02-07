@@ -16,14 +16,17 @@
 
 package org.kie.workbench.common.services.datamodeller.parser;
 
-import org.junit.Test;
-import org.kie.workbench.common.services.datamodeller.parser.descr.*;
-import org.kie.workbench.common.services.datamodeller.parser.util.ParserUtil;
-
 import java.io.InputStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.Test;
+import org.kie.workbench.common.services.datamodeller.parser.descr.ClassDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.DescriptorFactoryImpl;
+import org.kie.workbench.common.services.datamodeller.parser.descr.FieldDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.MethodDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.TextTokenElementDescr;
+import org.kie.workbench.common.services.datamodeller.parser.util.ParserUtil;
+
+import static org.junit.Assert.*;
 
 public class JavaFileHandler1Test extends JavaFileHandlerBaseTest {
 
@@ -74,7 +77,8 @@ public class JavaFileHandler1Test extends JavaFileHandlerBaseTest {
             assertEquals( fileContents[ 3 ], fileHandler.buildResult( ) );
 
             fieldDescr = DescriptorFactoryImpl.getInstance( ).createFieldDescr( "public int field100 = 12;" );
-            StringBuilder indentStr = new StringBuilder( "\n\n    " );
+            StringBuilder indentStr = new StringBuilder(System.getProperty("line.separator") +
+                                                                System.getProperty("line.separator") + "    ");
             TextTokenElementDescr indent = new TextTokenElementDescr( "", 0, indentStr.length( ) - 1, 1, 0 );
             indent.setSourceBuffer( indentStr );
 
