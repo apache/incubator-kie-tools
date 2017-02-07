@@ -56,6 +56,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGr
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.WaitForCompletion;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
@@ -140,6 +141,8 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 "adhocprocess");
             put(ProcessInstanceDescription.class,
                 "customdescription");
+            put(WaitForCompletion.class,
+                "waitforcompletion");
 
             // Simulation properties
             put(TimeUnit.class,

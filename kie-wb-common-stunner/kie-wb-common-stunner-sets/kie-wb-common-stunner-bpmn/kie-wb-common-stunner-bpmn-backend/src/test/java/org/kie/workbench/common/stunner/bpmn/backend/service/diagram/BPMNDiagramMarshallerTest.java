@@ -62,7 +62,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Assign
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
@@ -883,11 +885,20 @@ public class BPMNDiagramMarshallerTest {
         assertNotNull(reusableSubprocess.getExecutionSet());
         assertNotNull(reusableSubprocess.getExecutionSet().getCalledElement());
         assertNotNull(reusableSubprocess.getGeneral());
-        assertNotNull(reusableSubprocess.getGeneral().getName());
+
+        BPMNGeneralSet generalSet = reusableSubprocess.getGeneral();
+        ReusableSubprocessTaskExecutionSet executionSet = reusableSubprocess.getExecutionSet();
+        assertNotNull(generalSet);
+        assertNotNull(executionSet);
+
         assertEquals("my subprocess",
-                     reusableSubprocess.getGeneral().getName().getValue());
+                     generalSet.getName().getValue());
         assertEquals("my-called-element",
-                     reusableSubprocess.getExecutionSet().getCalledElement().getValue());
+                     executionSet.getCalledElement().getValue());
+        assertEquals(false,
+                     executionSet.getIndependent().getValue());
+        assertEquals(false,
+                     executionSet.getWaitForCompletion().getValue());
 
         String assignmentsInfo = reusableSubprocess.getDataIOSet().getAssignmentsinfo().getValue();
         assertEquals("|input1:String,input2:Float||output1:String,output2:Float|[din]pv1->input1,[din]pv2->input2,[dout]output1->pv1,[dout]output2->pv2",
@@ -1063,7 +1074,7 @@ public class BPMNDiagramMarshallerTest {
                       3,
                       2);
 
-        assertTrue(result.contains("<bpmn2:callActivity id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB\" name=\"my subprocess\" calledElement=\"my-called-element\">"));
+        assertTrue(result.contains("<bpmn2:callActivity id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB\" drools:independent=\"false\" drools:waitForCompletion=\"false\" name=\"my subprocess\" calledElement=\"my-called-element\">"));
 
         assertTrue(result.contains("<bpmn2:dataInput id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB_input1InputX\" drools:dtype=\"String\" itemSubjectRef=\"__FC6D8570-8C67-40C2-8B7B-953DE15765FB_input1InputXItem\" name=\"input1\"/>"));
         assertTrue(result.contains("<bpmn2:dataOutput id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB_output2OutputX\" drools:dtype=\"Float\" itemSubjectRef=\"__FC6D8570-8C67-40C2-8B7B-953DE15765FB_output2OutputXItem\" name=\"output2\"/>"));
@@ -1071,6 +1082,11 @@ public class BPMNDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:targetRef>_FC6D8570-8C67-40C2-8B7B-953DE15765FB_input1InputX</bpmn2:targetRef>"));
         assertTrue(result.contains("<bpmn2:sourceRef>_FC6D8570-8C67-40C2-8B7B-953DE15765FB_output2OutputX</bpmn2:sourceRef>"));
         assertTrue(result.contains("<bpmn2:targetRef>pv2</bpmn2:targetRef>"));
+
+        String flatResult = result.replace('\n',
+                                           ' ').replaceAll("( )+",
+                                                           " ");
+        assertTrue(flatResult.contains("<drools:metaData name=\"elementname\"> <drools:metaValue><![CDATA[my subprocess]]></drools:metaValue> </drools:metaData>"));
     }
 
     @Test
