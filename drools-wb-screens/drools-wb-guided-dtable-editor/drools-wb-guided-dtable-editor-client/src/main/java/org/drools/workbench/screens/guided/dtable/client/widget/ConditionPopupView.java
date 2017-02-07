@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
@@ -500,5 +501,25 @@ public class ConditionPopupView extends FormStylePopup {
                     presenter.cancelFieldChangePopUp( pop );
                 } ) );
         pop.show();
+    }
+
+    public void warnAboutMissingColumnHeaderDescription() {
+        Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
+    }
+
+    public void warnAboutMissingFactField() {
+        Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseSelectOrEnterField() );
+    }
+
+    public void warnAboutMissingOperator() {
+        Window.alert( GuidedDecisionTableConstants.INSTANCE.NotifyNoSelectedOperator() );
+    }
+
+    public void warnAboutAlreadyUsedBinding() {
+        Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+    }
+
+    public void warnAboutAlreadyUsedColumnHeaderName() {
+        Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
     }
 }

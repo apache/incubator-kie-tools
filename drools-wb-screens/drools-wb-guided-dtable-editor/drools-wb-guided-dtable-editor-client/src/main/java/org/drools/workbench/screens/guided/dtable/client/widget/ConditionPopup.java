@@ -138,20 +138,20 @@ public class ConditionPopup {
 
     public void applyChanges() {
         if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
-            Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
+            view.warnAboutMissingColumnHeaderDescription();
             return;
         }
         if ( editingCol.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
 
             //Field mandatory for Literals and Formulae
             if ( null == editingCol.getFactField() || "".equals( editingCol.getFactField() ) ) {
-                Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseSelectOrEnterField() );
+                view.warnAboutMissingFactField();
                 return;
             }
 
             //Operator optional for Literals and Formulae
             if ( editingCol.getOperator() == null ) {
-                Window.alert( GuidedDecisionTableConstants.INSTANCE.NotifyNoSelectedOperator() );
+                view.warnAboutMissingOperator();
                 return;
             }
 
@@ -162,32 +162,25 @@ public class ConditionPopup {
         }
 
         //Check for unique binding
-        if ( isNew ) {
-            if ( editingCol.isBound() && !isBindingUnique( editingCol.getBinding() ) ) {
-                Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+        String factBinding = editingPattern.getBoundName();
+        String fieldBinding = editingCol.getBinding();
+        if( factBinding != null && fieldBinding != null ) {
+            if ( editingCol.isBound() && ( !isBindingUnique( fieldBinding ) || factBinding.compareTo( fieldBinding ) == 0 ) ) {
+                view.warnAboutAlreadyUsedBinding();
                 return;
-            }
-        } else {
-            if ( originalCol.isBound() && editingCol.isBound() ) {
-                if ( !originalCol.getBinding().equals( editingCol.getBinding() ) ) {
-                    if ( editingCol.isBound() && !isBindingUnique( editingCol.getBinding() ) ) {
-                        Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
-                        return;
-                    }
-                }
             }
         }
 
         //Check column header is unique
         if ( isNew ) {
             if ( !unique( editingCol.getHeader() ) ) {
-                Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                view.warnAboutAlreadyUsedColumnHeaderName();
                 return;
             }
         } else {
             if ( !originalCol.getHeader().equals( editingCol.getHeader() ) ) {
                 if ( !unique( editingCol.getHeader() ) ) {
-                    Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                    view.warnAboutAlreadyUsedColumnHeaderName();
                     return;
                 }
             }

@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -24,6 +25,8 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
@@ -52,6 +55,8 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub({ Text.class, GuidedDecisionTableImageResources508.class, CEPWindowOperatorsDropdown.class })
 public class ConditionPopupTest {
+
+    private static final String COLUMN_HEADER = "Some Column Header";
 
     @Mock
     private AsyncPackageDataModelOracle oracle;
@@ -86,6 +91,7 @@ public class ConditionPopupTest {
 
         pattern.setFactType( "Pattern" );
         pattern.setBoundName( "$p2" );
+        column.setHeader( COLUMN_HEADER );
         column.setFactField( "field2" );
         column.setBinding( "$p2" );
         column.setOperator( "==" );
@@ -96,6 +102,8 @@ public class ConditionPopupTest {
                     column,
                     false,
                     false );
+
+        popup.view = spy( new ConditionPopupView( popup ) ) ;
 
     }
 
@@ -176,8 +184,6 @@ public class ConditionPopupTest {
     public void testConfirmFieldChangePopUp() throws Exception {
         FormStylePopup fieldChangePopUp = mock( FormStylePopup.class );
 
-        popup.view = spy( new ConditionPopupView( popup ) ) ;
-
         popup.confirmFieldChangePopUp( fieldChangePopUp, "newSelectedField" );
 
         assertEquals( null, popup.getEditingCol().getOperator() );
@@ -211,8 +217,6 @@ public class ConditionPopupTest {
     @Test
     public void testConfirmFieldChangePopUpNoChange() throws Exception {
         FormStylePopup fieldChangePopUp = mock( FormStylePopup.class );
-
-        popup.view = spy( new ConditionPopupView( popup ) ) ;
 
         popup.confirmFieldChangePopUp( fieldChangePopUp, "field2" );
 
@@ -248,8 +252,6 @@ public class ConditionPopupTest {
     public void testCancelFieldChangePopUp() throws Exception {
         FormStylePopup fieldChangePopUp = mock( FormStylePopup.class );
 
-        popup.view = spy( new ConditionPopupView( popup ) ) ;
-
         popup.cancelFieldChangePopUp( fieldChangePopUp );
 
         assertEquals( "==", popup.getEditingCol().getOperator() );
@@ -278,4 +280,152 @@ public class ConditionPopupTest {
         verify( fieldChangePopUp ).hide();
         verify( popup.view ).enableFooter( true );
     }
+
+    @Test
+    public void testApplyChangesMissingHeader() {
+        column.setHeader( null );
+        setUpPopup( model,
+                    pattern,
+                    column,
+                    false,
+                    false );
+
+        popup.view = spy( new ConditionPopupView( popup ) ) ;
+
+        popup.applyChanges();
+        verify( popup.view ).warnAboutMissingColumnHeaderDescription();
+    }
+
+    @Test
+    public void testApplyChangesMissingFactField() {
+        column.setFactField( null );
+        setUpPopup( model,
+                    pattern,
+                    column,
+                    false,
+                    false );
+
+        popup.view = spy( new ConditionPopupView( popup ) ) ;
+
+        popup.applyChanges();
+        verify( popup.view ).warnAboutMissingFactField();
+    }
+
+    @Test
+    public void testApplyChangesMissingOperator() {
+        column.setOperator( null );
+        setUpPopup( model,
+                    pattern,
+                    column,
+                    false,
+                    false );
+
+        popup.view = spy( new ConditionPopupView( popup ) ) ;
+
+        popup.applyChanges();
+        verify( popup.view ).warnAboutMissingOperator();
+    }
+
+    @Test
+    public void testApplyChangesPredicate() {
+        column.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
+        setUpPopup( model,
+                    pattern,
+                    column,
+                    false,
+                    false );
+
+        popup.applyChanges();
+        assertNull( popup.getEditingCol().getOperator() );
+    }
+
+    @Test
+    public void testBindingSameFactAndField() {
+        popup.applyChanges();
+        verify( popup.view ).warnAboutAlreadyUsedBinding();
+    }
+
+    @Test
+    public void testBindingNullFact() {
+        pattern.setBoundName( null );
+        setUpPopup( model,
+                    pattern,
+                    column,
+                    false,
+                    false );
+
+        popup.view = spy( new ConditionPopupView( popup ) ) ;
+
+        popup.applyChanges();
+        verify( popup.view, never() ).warnAboutAlreadyUsedBinding();
+    }
+
+    @Test
+    public void testBindingNullField() {
+        column.setBinding( null );
+        setUpPopup( model,
+                    pattern,
+                    column,
+                    false,
+                    false );
+
+        popup.view = spy( new ConditionPopupView( popup ) ) ;
+
+        popup.applyChanges();
+        verify( popup.view, never() ).warnAboutAlreadyUsedBinding();
+    }
+
+    @Test
+    public void testBindingDifferentFactAndField() {
+        column.setBinding( "$field" );
+        setUpPopup( model,
+                    pattern,
+                    column,
+                    false,
+                    false );
+
+        popup.view = spy( new ConditionPopupView( popup ) ) ;
+
+        popup.applyChanges();
+        verify( popup.view, never() ).warnAboutAlreadyUsedBinding();
+    }
+
+    @Test
+    public void testDuplicateHeader() throws Exception {
+        column.setBinding( "$field" );
+
+        BaseColumn baseColumn = mock( BaseColumn.class );
+        when( baseColumn.getHeader() ).thenReturn( COLUMN_HEADER );
+        CompositeColumn compositeColumn = mock( CompositeColumn.class );
+        when( compositeColumn.getChildColumns() ).thenReturn(Arrays.asList( baseColumn ) );
+
+        model.getConditions().add( compositeColumn );
+
+        setUpPopup( model,
+                    pattern,
+                    column,
+                    true,
+                    false );
+
+        popup.view = spy( new ConditionPopupView( popup ) ) ;
+
+        popup.applyChanges();
+        verify( popup.view ).warnAboutAlreadyUsedColumnHeaderName();
+    }
+
+    @Test
+    public void testClearBindingWhenPredicate() throws Exception {
+        column.setBinding( "$field" );
+        column.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
+
+        setUpPopup( model,
+                    pattern,
+                    column,
+                    true,
+                    false );
+
+        popup.applyChanges();
+        assertNull( popup.getEditingCol().getBinding() );
+    }
+
 }
