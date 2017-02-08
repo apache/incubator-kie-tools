@@ -6,6 +6,9 @@
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[Javascript Script Task]]></drools:metaValue>
         </drools:metaData>
+        <drools:metaData name="customAsync">
+          <drools:metaValue><![CDATA[true]]></drools:metaValue>
+        </drools:metaData>
       </bpmn2:extensionElements>
       <bpmn2:incoming>_3A465005-E2CD-4387-A4C7-DCDA5135F5E3</bpmn2:incoming>
       <bpmn2:outgoing>_8D2B1B11-BC2C-4257-AB33-EDED8CAA0CA1</bpmn2:outgoing>
@@ -32,6 +35,9 @@
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[Java Script Task]]></drools:metaValue>
+        </drools:metaData>
+        <drools:metaData name="customAsync">
+          <drools:metaValue><![CDATA[true]]></drools:metaValue>
         </drools:metaData>
       </bpmn2:extensionElements>
       <bpmn2:incoming>_8D2B1B11-BC2C-4257-AB33-EDED8CAA0CA1</bpmn2:incoming>

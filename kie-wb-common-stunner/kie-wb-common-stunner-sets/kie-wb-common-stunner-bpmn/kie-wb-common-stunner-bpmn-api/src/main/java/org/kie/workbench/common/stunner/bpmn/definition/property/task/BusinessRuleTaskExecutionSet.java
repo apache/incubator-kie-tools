@@ -24,6 +24,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
@@ -52,12 +53,24 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
     @Valid
     protected RuleFlowGroup ruleFlowGroup;
 
+    @Property
+    @FormField(
+            type = CheckBoxFieldType.class,
+            labelKey = "isAsync",
+            afterElement = "ruleFlowGroup"
+    )
+    @Valid
+    private IsAsync isAsync;
+
     public BusinessRuleTaskExecutionSet() {
-        this(new RuleFlowGroup(""));
+        this(new RuleFlowGroup(""),
+             new IsAsync());
     }
 
-    public BusinessRuleTaskExecutionSet(final @MapsTo("ruleFlowGroup") RuleFlowGroup ruleFlowGroup) {
+    public BusinessRuleTaskExecutionSet(final @MapsTo("ruleFlowGroup") RuleFlowGroup ruleFlowGroup,
+                                        final @MapsTo("isAsync") IsAsync isAsync) {
         this.ruleFlowGroup = ruleFlowGroup;
+        this.isAsync = isAsync;
     }
 
     public String getPropertySetName() {
@@ -70,5 +83,13 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
 
     public void setRuleFlowGroup(final RuleFlowGroup ruleFlowGroup) {
         this.ruleFlowGroup = ruleFlowGroup;
+    }
+
+    public IsAsync getIsAsync() {
+        return isAsync;
+    }
+
+    public void setIsAsync(IsAsync isAsync) {
+        this.isAsync = isAsync;
     }
 }

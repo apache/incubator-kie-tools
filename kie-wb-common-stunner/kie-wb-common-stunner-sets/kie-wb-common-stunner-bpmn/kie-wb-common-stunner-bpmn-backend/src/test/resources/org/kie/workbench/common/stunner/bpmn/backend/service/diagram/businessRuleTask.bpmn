@@ -6,6 +6,9 @@
                 <drools:metaData name="elementname">
                     <drools:metaValue><![CDATA[my business rule task]]></drools:metaValue>
                 </drools:metaData>
+                <drools:metaData name="customAsync">
+                    <drools:metaValue><![CDATA[true]]></drools:metaValue>
+                </drools:metaData>
             </bpmn2:extensionElements>
         </bpmn2:businessRuleTask>
     </bpmn2:process>

@@ -23,6 +23,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -47,12 +48,24 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
     @Valid
     protected TaskName taskName;
 
+    @Property
+    @FormField(
+            type = CheckBoxFieldType.class,
+            labelKey = "isAsync",
+            afterElement = "taskName"
+    )
+    @Valid
+    private IsAsync isAsync;
+
     public UserTaskExecutionSet() {
-        this(new TaskName("Task"));
+        this(new TaskName("Task"),
+             new IsAsync());
     }
 
-    public UserTaskExecutionSet(final @MapsTo("taskName") TaskName taskName) {
+    public UserTaskExecutionSet(final @MapsTo("taskName") TaskName taskName,
+                                final @MapsTo("isAsync") IsAsync isAsync) {
         this.taskName = taskName;
+        this.isAsync = isAsync;
     }
 
     public String getPropertySetName() {
@@ -65,5 +78,13 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
 
     public void setTaskName(final TaskName taskName) {
         this.taskName = taskName;
+    }
+
+    public IsAsync getIsAsync() {
+        return isAsync;
+    }
+
+    public void setIsAsync(IsAsync isAsync) {
+        this.isAsync = isAsync;
     }
 }

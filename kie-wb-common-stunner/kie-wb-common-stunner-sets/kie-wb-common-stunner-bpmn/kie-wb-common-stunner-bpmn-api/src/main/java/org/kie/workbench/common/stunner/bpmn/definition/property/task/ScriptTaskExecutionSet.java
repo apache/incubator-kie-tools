@@ -25,6 +25,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
@@ -65,15 +66,27 @@ public class ScriptTaskExecutionSet implements BPMNPropertySet {
     @Valid
     protected ScriptLanguage scriptLanguage;
 
+    @Property
+    @FormField(
+            type = CheckBoxFieldType.class,
+            labelKey = "isAsync",
+            afterElement = "scriptLanguage"
+    )
+    @Valid
+    private IsAsync isAsync;
+
     public ScriptTaskExecutionSet() {
         this(new Script(""),
-             new ScriptLanguage(""));
+             new ScriptLanguage(""),
+             new IsAsync());
     }
 
     public ScriptTaskExecutionSet(final @MapsTo("script") Script script,
-                                  final @MapsTo("scriptLanguage") ScriptLanguage scriptLanguage) {
+                                  final @MapsTo("scriptLanguage") ScriptLanguage scriptLanguage,
+                                  final @MapsTo("isAsync") IsAsync isAsync) {
         this.script = script;
         this.scriptLanguage = scriptLanguage;
+        this.isAsync = isAsync;
     }
 
     public String getPropertySetName() {
@@ -94,5 +107,13 @@ public class ScriptTaskExecutionSet implements BPMNPropertySet {
 
     public void setScriptLanguage(final ScriptLanguage scriptLanguage) {
         this.scriptLanguage = scriptLanguage;
+    }
+
+    public IsAsync getIsAsync() {
+        return isAsync;
+    }
+
+    public void setIsAsync(IsAsync isAsync) {
+        this.isAsync = isAsync;
     }
 }

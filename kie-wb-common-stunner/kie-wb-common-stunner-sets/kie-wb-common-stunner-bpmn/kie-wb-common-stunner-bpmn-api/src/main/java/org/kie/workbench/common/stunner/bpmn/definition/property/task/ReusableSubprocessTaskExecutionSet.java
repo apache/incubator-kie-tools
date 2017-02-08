@@ -72,18 +72,30 @@ public class ReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
     @Valid
     private WaitForCompletion waitForCompletion;
 
+    @Property
+    @FormField(
+            type = CheckBoxFieldType.class,
+            labelKey = "isAsync",
+            afterElement = "waitForCompletion"
+    )
+    @Valid
+    private IsAsync isAsync;
+
     public ReusableSubprocessTaskExecutionSet() {
         this(new CalledElement(),
              new Independent(),
-             new WaitForCompletion());
+             new WaitForCompletion(),
+             new IsAsync());
     }
 
     public ReusableSubprocessTaskExecutionSet(final @MapsTo("calledElement") CalledElement calledElement,
                                               final @MapsTo("independent") Independent independent,
-                                              final @MapsTo("waitForCompletion") WaitForCompletion waitForCompletion) {
+                                              final @MapsTo("waitForCompletion") WaitForCompletion waitForCompletion,
+                                              final @MapsTo("isAsync") IsAsync isAsync) {
         this.calledElement = calledElement;
         this.independent = independent;
         this.waitForCompletion = waitForCompletion;
+        this.isAsync = isAsync;
     }
 
     public String getPropertySetName() {
@@ -112,5 +124,13 @@ public class ReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
 
     public void setWaitForCompletion(final WaitForCompletion waitForCompletion) {
         this.waitForCompletion = waitForCompletion;
+    }
+
+    public IsAsync getIsAsync() {
+        return isAsync;
+    }
+
+    public void setIsAsync(IsAsync isAsync) {
+        this.isAsync = isAsync;
     }
 }

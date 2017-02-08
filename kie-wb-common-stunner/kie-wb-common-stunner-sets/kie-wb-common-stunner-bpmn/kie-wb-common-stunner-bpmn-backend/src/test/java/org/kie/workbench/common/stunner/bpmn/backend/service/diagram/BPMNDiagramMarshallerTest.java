@@ -572,6 +572,8 @@ public class BPMNDiagramMarshallerTest {
         }
         assertEquals("MyUserTask",
                      userTaskExecutionSet.getTaskName().getValue());
+        assertEquals("true",
+                     userTaskExecutionSet.getIsAsync().getValue().toString());
     }
 
     @Test
@@ -718,6 +720,8 @@ public class BPMNDiagramMarshallerTest {
                      javascriptScriptTask.getExecutionSet().getScript().getValue());
         assertEquals("javascript",
                      javascriptScriptTask.getExecutionSet().getScriptLanguage().getValue());
+        assertEquals("true",
+                     javascriptScriptTask.getExecutionSet().getIsAsync().getValue().toString());
 
         assertNotNull(javaScriptTask);
         assertNotNull(javaScriptTask.getExecutionSet());
@@ -741,6 +745,8 @@ public class BPMNDiagramMarshallerTest {
                      javaScriptTask.getExecutionSet().getScript().getValue());
         assertEquals("java",
                      javaScriptTask.getExecutionSet().getScriptLanguage().getValue());
+        assertEquals("true",
+                     javaScriptTask.getExecutionSet().getIsAsync().getValue().toString());
     }
 
     @Test
@@ -828,6 +834,8 @@ public class BPMNDiagramMarshallerTest {
                      businessRuleTask.getGeneral().getName().getValue());
         assertEquals("my-ruleflow-group",
                      businessRuleTask.getExecutionSet().getRuleFlowGroup().getValue());
+        assertEquals("true",
+                     businessRuleTask.getExecutionSet().getIsAsync().getValue().toString());
     }
 
     @Test
@@ -903,6 +911,9 @@ public class BPMNDiagramMarshallerTest {
         String assignmentsInfo = reusableSubprocess.getDataIOSet().getAssignmentsinfo().getValue();
         assertEquals("|input1:String,input2:Float||output1:String,output2:Float|[din]pv1->input1,[din]pv2->input2,[dout]output1->pv1,[dout]output2->pv2",
                      assignmentsInfo);
+
+        assertEquals("true",
+                     reusableSubprocess.getExecutionSet().getIsAsync().getValue().toString());
     }
 
     @Test
@@ -1087,6 +1098,7 @@ public class BPMNDiagramMarshallerTest {
                                            ' ').replaceAll("( )+",
                                                            " ");
         assertTrue(flatResult.contains("<drools:metaData name=\"elementname\"> <drools:metaValue><![CDATA[my subprocess]]></drools:metaValue> </drools:metaData>"));
+        assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
     }
 
     @Test
@@ -1113,6 +1125,10 @@ public class BPMNDiagramMarshallerTest {
                       3,
                       2);
         assertTrue(result.contains("MyUserTask</bpmn2:from>"));
+        String flatResult = result.replace('\n',
+                                           ' ').replaceAll("( )+",
+                                                           " ");
+        assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
     }
 
     @Test
@@ -1175,6 +1191,11 @@ public class BPMNDiagramMarshallerTest {
                                            "\n" +
                                            "}\n" +
                                            "]]></bpmn2:script>"));
+
+        String flatResult = result.replace('\n',
+                                           ' ').replaceAll("( )+",
+                                                           " ");
+        assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
     }
 
     @Test
@@ -1200,6 +1221,10 @@ public class BPMNDiagramMarshallerTest {
                       2);
 
         assertTrue(result.contains("<bpmn2:businessRuleTask id=\"_16D006B5-3703-4A67-AE44-6483338E86C2\" drools:ruleFlowGroup=\"my-ruleflow-group\" name=\"my business rule task\">"));
+        String flatResult = result.replace('\n',
+                                           ' ').replaceAll("( )+",
+                                                           " ");
+        assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
     }
 
     @Test

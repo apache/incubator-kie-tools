@@ -15,6 +15,9 @@
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[MyTask]]></drools:metaValue>
         </drools:metaData>
+        <drools:metaData name="customAsync">
+          <drools:metaValue><![CDATA[true]]></drools:metaValue>
+        </drools:metaData>
       </bpmn2:extensionElements>
       <bpmn2:incoming>_3C96DEF4-3AFE-4D8A-914D-848E5613A2E7</bpmn2:incoming>
       <bpmn2:outgoing>_E6898A1D-C864-41F9-A606-5482AA19FA56</bpmn2:outgoing>

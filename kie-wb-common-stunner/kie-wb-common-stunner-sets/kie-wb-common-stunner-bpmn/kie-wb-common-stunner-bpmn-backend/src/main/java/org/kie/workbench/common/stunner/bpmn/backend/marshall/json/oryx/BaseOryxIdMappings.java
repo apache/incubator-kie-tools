@@ -52,6 +52,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Time
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.UnitCost;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.WorkingHours;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
@@ -143,6 +144,8 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 "customdescription");
             put(WaitForCompletion.class,
                 "waitforcompletion");
+            put(IsAsync.class,
+                "isasync");
 
             // Simulation properties
             put(TimeUnit.class,
