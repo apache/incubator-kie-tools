@@ -574,6 +574,28 @@ public class BPMNDiagramMarshallerTest {
                      userTaskExecutionSet.getTaskName().getValue());
         assertEquals("true",
                      userTaskExecutionSet.getIsAsync().getValue().toString());
+
+        // empty now until onEntry/Exit scripts are added
+        assertEquals("",
+                     userTaskExecutionSet.getScriptLanguage().getValue());
+
+        assertEquals("false",
+                     userTaskExecutionSet.getSkippable().getValue().toString());
+
+        assertEquals("my subject",
+                     userTaskExecutionSet.getSubject().getValue());
+
+        assertEquals("my content",
+                     userTaskExecutionSet.getContent().getValue());
+
+        assertEquals("admin",
+                     userTaskExecutionSet.getCreatedBy().getValue());
+
+        assertEquals("my description",
+                     userTaskExecutionSet.getDescription().getValue());
+
+        assertEquals("3",
+                     userTaskExecutionSet.getPriority().getValue());
     }
 
     @Test

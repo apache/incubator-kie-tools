@@ -51,10 +51,15 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Stan
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.TimeUnit;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.UnitCost;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.WorkingHours;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.CreatedBy;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.Description;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptLanguage;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.Skippable;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.Subject;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.WaitForCompletion;
@@ -146,6 +151,16 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 "waitforcompletion");
             put(IsAsync.class,
                 "isasync");
+            put(Skippable.class,
+                "skippable");
+            put(Subject.class,
+                "subject");
+            put(Description.class,
+                "description");
+            put(CreatedBy.class,
+                "createdby");
+            put(AdHocAutostart.class,
+                "customautostart");
 
             // Simulation properties
             put(TimeUnit.class,
