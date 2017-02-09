@@ -21,7 +21,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
-import org.kie.workbench.common.forms.jbpm.model.authoring.document.type.Document;
+import org.kie.workbench.common.forms.jbpm.model.authoring.document.type.DocumentFieldType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Portable
@@ -30,12 +30,12 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
         i18n = @I18nSettings( keyPreffix = "FieldProperties" ),
         startElement = "label"
 )
-public class DocumentFieldDefinition extends AbstractFieldDefinition<Document> {
+public class DocumentFieldDefinition extends AbstractFieldDefinition {
 
-    public static final Document FIELD_TYPE = new Document();
+    public static final DocumentFieldType FIELD_TYPE = new DocumentFieldType();
 
     @Override
-    public Document getFieldType() {
+    public DocumentFieldType getFieldType() {
         return FIELD_TYPE;
     }
 

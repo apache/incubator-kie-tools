@@ -27,7 +27,7 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Dependent
 public class SubFormFieldProvider
-        implements ModelTypeFieldProvider<SubFormFieldType, SubFormFieldDefinition> {
+        implements ModelTypeFieldProvider<SubFormFieldDefinition> {
 
     @Override
     public Class<SubFormFieldType> getFieldType() {

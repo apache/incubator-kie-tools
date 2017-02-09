@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.forms.meta.definition.ColorPicker;
 
 @Portable
 @Bindable
-public class ColorPickerFieldDefinition extends AbstractFieldDefinition<ColorPickerFieldType> {
+public class ColorPickerFieldDefinition extends AbstractFieldDefinition {
 
     public static final ColorPickerFieldType FIELD_TYPE = new ColorPickerFieldType();
 

@@ -26,7 +26,6 @@ import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.fieldInitializers.FieldInitializer;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.fieldInitializers.MultipleSubFormFieldInitializer;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.fieldInitializers.SubFormFieldInitializer;
-;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.processors.FieldAnnotationProcessor;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.processors.ListBoxFieldAnnotationProcessor;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.processors.RadioGroupFieldAnnotationProcessor;
@@ -39,7 +38,6 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.prov
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.provider.TextAreaFieldProvider;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.FieldType;
 import org.kie.workbench.common.forms.model.FormDefinition;
 
 import static org.junit.Assert.*;
@@ -47,7 +45,7 @@ import static org.mockito.Mockito.*;
 
 public abstract class AbstractFormRenderingContextGeneratorTest<T> {
 
-    protected Instance<FieldAnnotationProcessor<? extends FieldType, ? extends FieldDefinition>> annotationProcessors;
+    protected Instance<FieldAnnotationProcessor<? extends FieldDefinition>> annotationProcessors;
 
     protected Instance<FieldInitializer<? extends FieldDefinition>> fieldInitializers;
 

@@ -31,19 +31,18 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.kie.workbench.common.forms.commons.layout.Dynamic;
 import org.kie.workbench.common.forms.commons.layout.FormLayoutTemplateGenerator;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.fieldInitializers.FieldInitializer;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.fieldInitializers.FormAwareFieldInitializer;
-import org.kie.workbench.common.forms.dynamic.service.shared.DynamicContext;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.processors.FieldAnnotationProcessor;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.FormRenderingContextGenerator;
+import org.kie.workbench.common.forms.dynamic.service.shared.DynamicContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.StaticContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
 import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.FieldType;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.service.FieldManager;
-import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.fieldInitializers.FieldInitializer;
-import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl.processors.FieldAnnotationProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +51,7 @@ import org.slf4j.LoggerFactory;
 @Dependent
 public class FormRenderingContextGeneratorImpl implements FormRenderingContextGenerator<DMOBasedTransformerContext, StaticModelFormRenderingContext> {
 
-    private static final Logger logger = LoggerFactory.getLogger( FormRenderingContextGeneratorImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger(FormRenderingContextGeneratorImpl.class);
 
     private FieldManager fieldManager;
 
@@ -63,164 +62,171 @@ public class FormRenderingContextGeneratorImpl implements FormRenderingContextGe
     private List<FieldInitializer<? extends FieldDefinition>> fieldInitializers = new ArrayList<>();
 
     @Inject
-    public FormRenderingContextGeneratorImpl( Instance<FieldAnnotationProcessor<? extends FieldType, ? extends FieldDefinition>> installedProcessors,
-                                              Instance<FieldInitializer<? extends FieldDefinition>> installedInitializers,
-                                              @Dynamic FormLayoutTemplateGenerator layoutGenerator,
-                                              FieldManager fieldManager ) {
+    public FormRenderingContextGeneratorImpl(Instance<FieldAnnotationProcessor<? extends FieldDefinition>> installedProcessors,
+                                             Instance<FieldInitializer<? extends FieldDefinition>> installedInitializers,
+                                             @Dynamic FormLayoutTemplateGenerator layoutGenerator,
+                                             FieldManager fieldManager) {
         this.layoutGenerator = layoutGenerator;
         this.fieldManager = fieldManager;
 
-        for ( FieldAnnotationProcessor processor : installedProcessors ) {
-            processors.add( processor );
+        for (FieldAnnotationProcessor processor : installedProcessors) {
+            processors.add(processor);
         }
 
-        for( FieldInitializer initializer : installedInitializers ) {
-            if ( initializer instanceof FormAwareFieldInitializer ) {
-                ( (FormAwareFieldInitializer) initializer ).setTransformerService( this );
+        for (FieldInitializer initializer : installedInitializers) {
+            if (initializer instanceof FormAwareFieldInitializer) {
+                ((FormAwareFieldInitializer) initializer).setTransformerService(this);
             }
-            fieldInitializers.add( initializer );
+            fieldInitializers.add(initializer);
         }
     }
 
     @Override
-    public StaticModelFormRenderingContext createContext( Object model ) {
+    public StaticModelFormRenderingContext createContext(Object model) {
 
         try {
-            DMOBasedTransformerContext context = DMOBasedTransformerContext.getTransformerContextFor( model );
+            DMOBasedTransformerContext context = DMOBasedTransformerContext.getTransformerContextFor(model);
 
-            FormDefinition form = generateFormDefinition( context );
-            context.getRenderingContext().setRootForm( form );
+            FormDefinition form = generateFormDefinition(context);
+            context.getRenderingContext().setRootForm(form);
 
             return context.getRenderingContext();
-        } catch ( IOException e ) {
-            logger.warn( "Error creating context: ", e );
+        } catch (IOException e) {
+            logger.warn("Error creating context: ",
+                        e);
         }
         return null;
     }
 
-
-    public FormDefinition generateFormDefinition( DMOBasedTransformerContext context ) {
+    public FormDefinition generateFormDefinition(DMOBasedTransformerContext context) {
         FormDefinition form = new FormDefinition();
 
         final String modelType = context.getType();
 
-        form.setId( modelType );
+        form.setId(modelType);
 
-        Set<FieldSetting> settings = getClassFieldSettings( modelType, context );
+        Set<FieldSetting> settings = getClassFieldSettings(modelType,
+                                                           context);
 
-        for( FieldSetting setting : settings ) {
+        for (FieldSetting setting : settings) {
 
             FieldDefinition field = null;
 
-            for( Annotation annotation : setting.getAnnotations() ) {
-                for ( FieldAnnotationProcessor processor : processors ) {
-                    if ( processor.supportsAnnotation( annotation ) ) {
-                        field = processor.getFieldDefinition( setting, annotation, context );
+            for (Annotation annotation : setting.getAnnotations()) {
+                for (FieldAnnotationProcessor processor : processors) {
+                    if (processor.supportsAnnotation(annotation)) {
+                        field = processor.getFieldDefinition(setting,
+                                                             annotation,
+                                                             context);
                     }
                 }
             }
 
-            if ( field == null ) {
-                field = fieldManager.getDefinitionByDataType( setting.getTypeInfo() );
-                if ( field != null ) {
-                    field.setId( setting.getFieldName() );
-                    field.setName( setting.getFieldName() );
-                    field.setLabel( setting.getLabel() );
+            if (field == null) {
+                field = fieldManager.getDefinitionByDataType(setting.getTypeInfo());
+                if (field != null) {
+                    field.setId(setting.getFieldName());
+                    field.setName(setting.getFieldName());
+                    field.setLabel(setting.getLabel());
 
                     String binding = setting.getFieldName();
 
-                    if ( !StringUtils.isEmpty( setting.getProperty() ) ) {
+                    if (!StringUtils.isEmpty(setting.getProperty())) {
                         binding += "." + setting.getProperty();
                     }
 
-                    field.setBinding( binding );
+                    field.setBinding(binding);
                 }
             }
 
-            if ( field == null ) {
+            if (field == null) {
                 continue;
             }
 
-            for ( FieldInitializer initializer : fieldInitializers ) {
-                if ( initializer.supports( field ) ) {
-                    initializer.initializeField( field, setting, context );
+            for (FieldInitializer initializer : fieldInitializers) {
+                if (initializer.supports(field)) {
+                    initializer.initializeField(field,
+                                                setting,
+                                                context);
                 }
             }
 
-            form.getFields().add( field );
+            form.getFields().add(field);
         }
 
-        layoutGenerator.generateLayoutTemplate( form );
+        layoutGenerator.generateLayoutTemplate(form);
 
         return form;
     }
 
     @Override
-    public FormDefinition generateFormDefinitionForType( String type, DMOBasedTransformerContext context ) {
+    public FormDefinition generateFormDefinitionForType(String type,
+                                                        DMOBasedTransformerContext context) {
 
-        if ( !context.getType().equals( type ) ) {
-            context = context.copyFor( type );
+        if (!context.getType().equals(type)) {
+            context = context.copyFor(type);
         }
 
-        return generateFormDefinition( context );
+        return generateFormDefinition(context);
     }
 
-    protected Set<FieldSetting> getClassFieldSettings( String modelType, DMOBasedTransformerContext context ) {
+    protected Set<FieldSetting> getClassFieldSettings(String modelType,
+                                                      DMOBasedTransformerContext context) {
         TreeSet<FieldSetting> settings = new TreeSet<FieldSetting>();
 
-        ModelField[] modelFields = context.getOracle().getProjectModelFields().get( modelType );
+        ModelField[] modelFields = context.getOracle().getProjectModelFields().get(modelType);
 
-        for( ModelField modelField : modelFields ) {
+        for (ModelField modelField : modelFields) {
 
             final String fieldName = modelField.getName();
 
-            if ( fieldName.equals( "this" ) ) {
+            if (fieldName.equals("this")) {
                 continue;
             }
 
-            Set<Annotation> annotations = context.getOracle().getProjectTypeFieldsAnnotations().get( modelType ).get( fieldName );
+            Set<Annotation> annotations = context.getOracle().getProjectTypeFieldsAnnotations().get(modelType).get(fieldName);
 
-            if ( annotations == null || annotations.isEmpty() ) {
+            if (annotations == null || annotations.isEmpty()) {
                 continue;
             }
 
-            for ( Annotation annotation : annotations ) {
-                if ( annotation.getQualifiedTypeName().equals( FieldDef.class.getName() ) ) {
+            for (Annotation annotation : annotations) {
+                if (annotation.getQualifiedTypeName().equals(FieldDef.class.getName())) {
 
                     String fieldModelType = modelType;
                     String fieldClassName = modelField.getClassName();
 
-                    boolean isEnunm = context.getOracle().getProjectJavaEnumDefinitions().get( modelType + "#" + modelField.getName() ) != null;
+                    boolean isEnunm = context.getOracle().getProjectJavaEnumDefinitions().get(modelType + "#" + modelField.getName()) != null;
 
                     // here we store final field we want to generate the Form Field for.
                     ModelField finalModelField = modelField;
 
                     // If field is collection check for the generic type
-                    if ( isCollection( modelField ) ) {
+                    if (isCollection(modelField)) {
                         fieldModelType = modelType;
                     } else {
 
-                        String property = annotation.getParameters().get( "property" ).toString();
+                        String property = annotation.getParameters().get("property").toString();
 
                         /*
                             if the annotation has property let's get the nested field and overwrite the finalField value
                             in order to generate a Form Field with the right type.
                         */
-                        if ( property != null && !property.isEmpty() ) {
-                            ModelField[] fields = context.getOracle().getProjectModelFields().get( fieldClassName );
+                        if (property != null && !property.isEmpty()) {
+                            ModelField[] fields = context.getOracle().getProjectModelFields().get(fieldClassName);
 
-                            for ( int i = 0; i < fields.length; i++ ) {
-                                if ( fields[i].getName().equals( property ) ) {
+                            for (int i = 0; i < fields.length; i++) {
+                                if (fields[i].getName().equals(property)) {
                                     finalModelField = fields[i];
 
                                     // check if the nested value is an Enum
-                                    isEnunm = context.getOracle().getProjectJavaEnumDefinitions().get( fieldClassName + "#" + property ) != null;
+                                    isEnunm = context.getOracle().getProjectJavaEnumDefinitions().get(fieldClassName + "#" + property) != null;
 
                                     /*
                                      if field isn't a collection let's get the real className, if it is a collection
                                       we'll use the type to get the generic type later.
                                     */
-                                    if ( !isCollection( finalModelField ) )  {
+                                    if (!isCollection(finalModelField)) {
                                         fieldClassName = finalModelField.getClassName();
                                     } else {
                                         fieldModelType = fieldClassName;
@@ -230,16 +236,21 @@ public class FormRenderingContextGeneratorImpl implements FormRenderingContextGe
                         }
                     }
 
-                    boolean isCollection = isCollection( finalModelField );
+                    boolean isCollection = isCollection(finalModelField);
 
-                    if ( isCollection ) {
+                    if (isCollection) {
                         // if field is a collection let's get the generic type of it.
-                        fieldClassName = context.getOracle().getProjectFieldParametersType().get( fieldModelType + "#" + finalModelField.getName() );
+                        fieldClassName = context.getOracle().getProjectFieldParametersType().get(fieldModelType + "#" + finalModelField.getName());
                     }
 
-                    if ( fieldClassName != null ) {
-                        FieldSetting setting = new FieldSetting( fieldName, new FieldDataType( fieldClassName, isCollection, isEnunm ), annotation, annotations );
-                        settings.add( setting );
+                    if (fieldClassName != null) {
+                        FieldSetting setting = new FieldSetting(fieldName,
+                                                                new FieldDataType(fieldClassName,
+                                                                                  isCollection,
+                                                                                  isEnunm),
+                                                                annotation,
+                                                                annotations);
+                        settings.add(setting);
                     }
                 }
             }
@@ -248,7 +259,7 @@ public class FormRenderingContextGeneratorImpl implements FormRenderingContextGe
         return settings;
     }
 
-    private boolean isCollection( ModelField modelField ) {
-        return DataType.TYPE_COLLECTION.equals( modelField.getType() );
+    private boolean isCollection(ModelField modelField) {
+        return DataType.TYPE_COLLECTION.equals(modelField.getType());
     }
 }

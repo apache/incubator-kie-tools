@@ -33,8 +33,8 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
         i18n = @I18nSettings(keyPreffix = "FieldProperties"),
         startElement = "label"
 )
-public class ObjectSelectorFieldDefinition extends AbstractFieldDefinition<ObjectSelectorFieldType> implements EntityRelationField,
-                                                                                                               HasMask {
+public class ObjectSelectorFieldDefinition extends AbstractFieldDefinition implements EntityRelationField,
+                                                                                      HasMask {
 
     public static final ObjectSelectorFieldType FIELD_TYPE = new ObjectSelectorFieldType();
 

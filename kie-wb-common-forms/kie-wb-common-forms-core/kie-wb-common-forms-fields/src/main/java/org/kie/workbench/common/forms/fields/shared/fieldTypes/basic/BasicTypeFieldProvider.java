@@ -24,9 +24,8 @@ import org.jboss.errai.common.client.api.Assert;
 import org.kie.workbench.common.forms.fields.shared.FieldProvider;
 import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.FieldType;
 
-public abstract class BasicTypeFieldProvider<FIELD_TYPE extends FieldType, FIELD extends FieldDefinition<FIELD_TYPE>> implements FieldProvider<FIELD_TYPE, FIELD> {
+public abstract class BasicTypeFieldProvider<FIELD extends FieldDefinition> implements FieldProvider<FIELD> {
 
     protected List<String> supportedTypes = new ArrayList<>();
 

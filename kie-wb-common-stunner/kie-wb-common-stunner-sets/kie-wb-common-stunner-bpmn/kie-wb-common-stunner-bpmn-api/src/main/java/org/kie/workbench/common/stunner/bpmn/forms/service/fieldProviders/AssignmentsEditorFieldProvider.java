@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldD
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldType;
 
 @Model
-public class AssignmentsEditorFieldProvider extends BasicTypeFieldProvider<AssignmentsEditorFieldType, AssignmentsEditorFieldDefinition> {
+public class AssignmentsEditorFieldProvider extends BasicTypeFieldProvider<AssignmentsEditorFieldDefinition> {
 
     @Override
     public int getPriority() {

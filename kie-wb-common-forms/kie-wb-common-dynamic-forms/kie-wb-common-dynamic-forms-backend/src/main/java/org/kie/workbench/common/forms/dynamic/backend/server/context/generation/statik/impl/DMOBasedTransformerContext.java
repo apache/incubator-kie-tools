@@ -41,7 +41,10 @@ public class DMOBasedTransformerContext implements TransformerContext<StaticMode
 
     private Map<String, FactBuilder> factBuilders;
 
-    private DMOBasedTransformerContext( Object model, ProjectDataModelOracle oracle, Map<String, FactBuilder> factBuilders, StaticModelFormRenderingContext context ) {
+    private DMOBasedTransformerContext(Object model,
+                                       ProjectDataModelOracle oracle,
+                                       Map<String, FactBuilder> factBuilders,
+                                       StaticModelFormRenderingContext context) {
         this.model = model;
         this.type = model.getClass().getName();
         this.oracle = oracle;
@@ -49,7 +52,11 @@ public class DMOBasedTransformerContext implements TransformerContext<StaticMode
         this.renderingContext = context;
     }
 
-    private DMOBasedTransformerContext( Object model, String type, ProjectDataModelOracle oracle, Map<String, FactBuilder> factBuilders, StaticModelFormRenderingContext context ) {
+    private DMOBasedTransformerContext(Object model,
+                                       String type,
+                                       ProjectDataModelOracle oracle,
+                                       Map<String, FactBuilder> factBuilders,
+                                       StaticModelFormRenderingContext context) {
         this.model = model;
         this.type = type;
         this.oracle = oracle;
@@ -58,12 +65,16 @@ public class DMOBasedTransformerContext implements TransformerContext<StaticMode
     }
 
     @Override
-    public DMOBasedTransformerContext copyFor( String type ) {
-        if ( this.getType().equals( type ) ) {
+    public DMOBasedTransformerContext copyFor(String type) {
+        if (this.getType().equals(type)) {
             return this;
         }
 
-        return new DMOBasedTransformerContext( model, type, oracle, factBuilders, renderingContext );
+        return new DMOBasedTransformerContext(model,
+                                              type,
+                                              oracle,
+                                              factBuilders,
+                                              renderingContext);
     }
 
     @Override
@@ -85,27 +96,36 @@ public class DMOBasedTransformerContext implements TransformerContext<StaticMode
         return oracle;
     }
 
-    public static DMOBasedTransformerContext getTransformerContextFor( Object model ) throws IOException {
-        Assert.notNull( "Model cannot be null", model );
+    public static DMOBasedTransformerContext getTransformerContextFor(Object model) throws IOException {
+        Assert.notNull("Model cannot be null",
+                       model);
 
         final ProjectDataModelOracleBuilder builder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
 
-        final ClassFactBuilder modelFactBuilder = new ClassFactBuilder( builder, model.getClass(), false, TypeSource.JAVA_PROJECT );
+        final ClassFactBuilder modelFactBuilder = new ClassFactBuilder(builder,
+                                                                       model.getClass(),
+                                                                       false,
+                                                                       TypeSource.JAVA_PROJECT);
 
         ProjectDataModelOracle oracle = modelFactBuilder.getDataModelBuilder().build();
 
         Map<String, FactBuilder> builders = new HashMap<>();
 
-        for ( FactBuilder factBuilder : modelFactBuilder.getInternalBuilders().values() ) {
-            if ( factBuilder instanceof ClassFactBuilder ) {
-                builders.put( ( (ClassFactBuilder) factBuilder ).getType(), factBuilder );
-                factBuilder.build( (ProjectDataModelOracleImpl) oracle );
+        for (FactBuilder factBuilder : modelFactBuilder.getInternalBuilders().values()) {
+            if (factBuilder instanceof ClassFactBuilder) {
+                builders.put(((ClassFactBuilder) factBuilder).getType(),
+                             factBuilder);
+                factBuilder.build((ProjectDataModelOracleImpl) oracle);
             }
         }
-        builders.put( modelFactBuilder.getType(), modelFactBuilder );
+        builders.put(modelFactBuilder.getType(),
+                     modelFactBuilder);
 
-        modelFactBuilder.build( (ProjectDataModelOracleImpl) oracle );
+        modelFactBuilder.build((ProjectDataModelOracleImpl) oracle);
 
-        return new DMOBasedTransformerContext( model, oracle, builders, new StaticModelFormRenderingContext() );
+        return new DMOBasedTransformerContext(model,
+                                              oracle,
+                                              builders,
+                                              new StaticModelFormRenderingContext());
     }
 }

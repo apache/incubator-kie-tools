@@ -35,8 +35,8 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
         i18n = @I18nSettings(keyPreffix = "FieldProperties"),
         startElement = "label"
 )
-public class TextAreaFieldDefinition extends AbstractFieldDefinition<TextAreaFieldType> implements HasRows,
-                                                                                                   HasPlaceHolder {
+public class TextAreaFieldDefinition extends AbstractFieldDefinition implements HasRows,
+                                                                                HasPlaceHolder {
 
     public static final TextAreaFieldType FIELD_TYPE = new TextAreaFieldType();
 

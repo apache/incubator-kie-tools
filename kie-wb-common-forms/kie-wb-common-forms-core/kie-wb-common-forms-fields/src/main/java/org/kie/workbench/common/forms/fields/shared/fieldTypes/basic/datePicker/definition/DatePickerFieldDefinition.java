@@ -32,7 +32,7 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
         i18n = @I18nSettings(keyPreffix = "FieldProperties"),
         startElement = "label"
 )
-public class DatePickerFieldDefinition extends AbstractFieldDefinition<DatePickerFieldType> implements HasPlaceHolder {
+public class DatePickerFieldDefinition extends AbstractFieldDefinition implements HasPlaceHolder {
 
     public static final DatePickerFieldType FIELD_TYPE = new DatePickerFieldType();
 

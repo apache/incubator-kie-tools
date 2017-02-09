@@ -19,7 +19,7 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.def
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 
-public abstract class SliderBaseDefinition<T extends Number> extends AbstractFieldDefinition<SliderFieldType> {
+public abstract class SliderBaseDefinition<T extends Number> extends AbstractFieldDefinition {
 
     public static final SliderFieldType FIELD_TYPE = new SliderFieldType();
 

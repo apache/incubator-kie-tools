@@ -24,7 +24,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.ty
 import org.kie.workbench.common.forms.model.FieldDataType;
 
 @Dependent
-public class TextAreaFieldProvider extends BasicTypeFieldProvider<TextAreaFieldType, TextAreaFieldDefinition> {
+public class TextAreaFieldProvider extends BasicTypeFieldProvider<TextAreaFieldDefinition> {
 
     @Override
     public Class<TextAreaFieldType> getFieldType() {

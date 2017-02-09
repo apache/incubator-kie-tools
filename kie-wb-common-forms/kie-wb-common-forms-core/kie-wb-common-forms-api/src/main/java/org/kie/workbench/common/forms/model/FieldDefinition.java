@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.forms.model;
 
-public interface FieldDefinition<FIELD_TYPE extends FieldType> {
+public interface FieldDefinition {
 
     String getId();
 
     void setId( String id );
 
-    FIELD_TYPE getFieldType();
+    FieldType getFieldType();
 
     String getName();
 

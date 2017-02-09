@@ -20,9 +20,9 @@ import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
 
-public interface FieldProvider<FIELD_TYPE extends FieldType, FIELD extends FieldDefinition<FIELD_TYPE>> {
+public interface FieldProvider<FIELD extends FieldDefinition> {
 
-    Class<FIELD_TYPE> getFieldType();
+    Class<? extends FieldType> getFieldType();
 
     String getFieldTypeName();
 

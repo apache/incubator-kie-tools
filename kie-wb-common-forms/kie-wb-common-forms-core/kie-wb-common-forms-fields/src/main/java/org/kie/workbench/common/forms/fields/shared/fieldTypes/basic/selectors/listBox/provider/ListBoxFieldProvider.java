@@ -19,7 +19,6 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorFieldProvider;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.EnumListBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.ListBoxBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.StringListBoxFieldDefinition;
@@ -27,7 +26,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.l
 import org.kie.workbench.common.forms.model.FieldDataType;
 
 @Dependent
-public class ListBoxFieldProvider extends SelectorFieldProvider<ListBoxFieldType, ListBoxBaseDefinition<? extends SelectorOption>> {
+public class ListBoxFieldProvider extends SelectorFieldProvider<ListBoxBaseDefinition> {
 
     @Override
     public Class<ListBoxFieldType> getFieldType() {

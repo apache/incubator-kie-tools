@@ -39,7 +39,7 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
         i18n = @I18nSettings(keyPreffix = "FieldProperties.multipleSubform"),
         startElement = "label"
 )
-public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition<MultipleSubFormFieldType> implements IsCRUDDefinition {
+public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition implements IsCRUDDefinition {
 
     public static final MultipleSubFormFieldType FIELD_TYPE = new MultipleSubFormFieldType();
 

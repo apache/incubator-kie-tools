@@ -19,18 +19,16 @@ package org.kie.workbench.common.forms.dynamic.backend.server.context.generation
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.ListBoxBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.provider.ListBoxFieldProvider;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.metaModel.ListBox;
 
 @Dependent
-public class ListBoxFieldAnnotationProcessor extends AbstractSelectorAnnotationProcessor<ListBoxFieldType, ListBoxBaseDefinition<? extends SelectorOption>, ListBoxFieldProvider> {
+public class ListBoxFieldAnnotationProcessor extends AbstractSelectorAnnotationProcessor<ListBoxBaseDefinition, ListBoxFieldProvider> {
 
     @Inject
-    public ListBoxFieldAnnotationProcessor( ListBoxFieldProvider fieldProvider ) {
-        super( fieldProvider );
+    public ListBoxFieldAnnotationProcessor(ListBoxFieldProvider fieldProvider) {
+        super(fieldProvider);
     }
 
     @Override

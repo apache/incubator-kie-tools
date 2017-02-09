@@ -21,14 +21,13 @@ import java.math.BigInteger;
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorFieldProvider;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.RadioGroupBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.StringRadioGroupFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.type.RadioGroupFieldType;
 import org.kie.workbench.common.forms.model.FieldDataType;
 
 @Dependent
-public class RadioGroupFieldProvider extends SelectorFieldProvider<RadioGroupFieldType, RadioGroupBaseDefinition<? extends SelectorOption>> {
+public class RadioGroupFieldProvider extends SelectorFieldProvider<RadioGroupBaseDefinition> {
 
     @Override
     public Class<RadioGroupFieldType> getFieldType() {

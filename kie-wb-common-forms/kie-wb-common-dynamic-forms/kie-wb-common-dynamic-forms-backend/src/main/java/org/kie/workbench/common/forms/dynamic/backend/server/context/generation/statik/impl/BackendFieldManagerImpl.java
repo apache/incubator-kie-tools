@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.forms.dynamic.backend.server.context.generation.statik.impl;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -24,22 +23,14 @@ import javax.inject.Inject;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldManager;
 import org.kie.workbench.common.forms.fields.shared.FieldProvider;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.FieldType;
 
 @ApplicationScoped
 public class BackendFieldManagerImpl extends AbstractFieldManager {
 
-    private Instance<FieldProvider<? extends FieldType, ? extends FieldDefinition>> providers;
-
     @Inject
-    public BackendFieldManagerImpl( Instance<FieldProvider<? extends FieldType, ? extends FieldDefinition>> providers ) {
-        this.providers = providers;
-    }
-
-    @PostConstruct
-    protected void init() {
-        for ( FieldProvider provider : providers ) {
-            registerFieldProvider( provider );
+    public BackendFieldManagerImpl(Instance<FieldProvider<? extends FieldDefinition>> providers) {
+        for (FieldProvider provider : providers) {
+            registerFieldProvider(provider);
         }
     }
 }

@@ -24,7 +24,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.image.type.
 import org.kie.workbench.common.forms.model.FieldDataType;
 
 @Dependent
-public class PictureFieldProvider extends BasicTypeFieldProvider<PictureFieldType, PictureFieldDefinition> {
+public class PictureFieldProvider extends BasicTypeFieldProvider<PictureFieldDefinition> {
 
     @Override
     public Class<PictureFieldType> getFieldType() {

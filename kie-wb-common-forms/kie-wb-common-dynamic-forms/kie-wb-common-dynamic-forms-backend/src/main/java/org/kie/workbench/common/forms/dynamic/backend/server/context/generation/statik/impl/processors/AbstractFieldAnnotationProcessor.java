@@ -24,50 +24,54 @@ import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.
 import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
 import org.kie.workbench.common.forms.fields.shared.FieldProvider;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.FieldType;
 
-public abstract class AbstractFieldAnnotationProcessor<FIELD_TYPE extends FieldType, FIELD extends FieldDefinition<FIELD_TYPE>, PROVIDER extends FieldProvider<FIELD_TYPE, FIELD>> implements FieldAnnotationProcessor<FIELD_TYPE, FIELD> {
+public abstract class AbstractFieldAnnotationProcessor<FIELD extends FieldDefinition, PROVIDER extends FieldProvider<FIELD>> implements FieldAnnotationProcessor<FIELD> {
 
     protected PROVIDER fieldProvider;
 
     @Inject
-    public AbstractFieldAnnotationProcessor( PROVIDER fieldProvider ) {
+    public AbstractFieldAnnotationProcessor(PROVIDER fieldProvider) {
         this.fieldProvider = fieldProvider;
     }
 
     @Override
-    public FIELD getFieldDefinition( FieldSetting setting, Annotation annotation, TransformerContext context ) {
-        FIELD field = fieldProvider.getFieldByType( setting.getTypeInfo() );
+    public FIELD getFieldDefinition(FieldSetting setting,
+                                    Annotation annotation,
+                                    TransformerContext context) {
+        FIELD field = fieldProvider.getFieldByType(setting.getTypeInfo());
 
-        if ( field == null ) {
+        if (field == null) {
             return null;
         }
 
-        field.setId( setting.getFieldName() );
-        field.setName( setting.getFieldName() );
-        field.setLabel( setting.getLabel() );
+        field.setId(setting.getFieldName());
+        field.setName(setting.getFieldName());
+        field.setLabel(setting.getLabel());
 
         String binding = setting.getFieldName();
-        if ( ! StringUtils.isEmpty( setting.getProperty() ) ) {
+        if (!StringUtils.isEmpty(setting.getProperty())) {
             binding += "." + setting.getProperty();
         }
 
-        field.setBinding( binding );
+        field.setBinding(binding);
 
-        initField( field, annotation, setting, context );
+        initField(field,
+                  annotation,
+                  setting,
+                  context);
 
         return field;
     }
 
     @Override
-    public boolean supportsAnnotation( Annotation annotation ) {
-        return annotation.getQualifiedTypeName().equals( getSupportedAnnotation().getName() );
+    public boolean supportsAnnotation(Annotation annotation) {
+        return annotation.getQualifiedTypeName().equals(getSupportedAnnotation().getName());
     }
 
-    protected abstract void initField( FIELD field,
-                                       Annotation annotation,
-                                       FieldSetting fieldSetting,
-                                       TransformerContext context );
+    protected abstract void initField(FIELD field,
+                                      Annotation annotation,
+                                      FieldSetting fieldSetting,
+                                      TransformerContext context);
 
     protected abstract Class<? extends java.lang.annotation.Annotation> getSupportedAnnotation();
 }

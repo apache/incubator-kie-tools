@@ -31,7 +31,7 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
         i18n = @I18nSettings(keyPreffix = "FieldProperties"),
         startElement = "label"
 )
-public class PictureFieldDefinition extends AbstractFieldDefinition<PictureFieldType> {
+public class PictureFieldDefinition extends AbstractFieldDefinition {
 
     public static final PictureFieldType FIELD_TYPE = new PictureFieldType();
 

@@ -36,7 +36,7 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
         i18n = @I18nSettings(keyPreffix = "FieldProperties"),
         startElement = "label"
 )
-public class SubFormFieldDefinition extends AbstractFieldDefinition<SubFormFieldType> implements HasNestedForm {
+public class SubFormFieldDefinition extends AbstractFieldDefinition implements HasNestedForm {
 
     public static final SubFormFieldType FIELD_TYPE = new SubFormFieldType();
 

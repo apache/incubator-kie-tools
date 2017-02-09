@@ -26,7 +26,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type
 import org.kie.workbench.common.forms.model.FieldDataType;
 
 @Dependent
-public class SliderFieldProvider extends BasicTypeFieldProvider<SliderFieldType, SliderBaseDefinition<?>> {
+public class SliderFieldProvider extends BasicTypeFieldProvider<SliderBaseDefinition> {
 
     @Override
     public Class<SliderFieldType> getFieldType() {

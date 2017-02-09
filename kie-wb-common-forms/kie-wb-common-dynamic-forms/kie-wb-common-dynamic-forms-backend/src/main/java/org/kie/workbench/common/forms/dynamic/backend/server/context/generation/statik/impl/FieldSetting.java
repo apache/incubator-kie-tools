@@ -21,6 +21,7 @@ import java.util.Set;
 import org.kie.workbench.common.forms.model.FieldDataType;
 
 public class FieldSetting implements Comparable<FieldSetting> {
+
     private String fieldName;
     private String property;
     private String label;
@@ -29,13 +30,16 @@ public class FieldSetting implements Comparable<FieldSetting> {
     private Set<org.drools.workbench.models.datamodel.oracle.Annotation> annotations;
     private FieldDataType typeInfo;
 
-    public FieldSetting( String fieldName, FieldDataType typeInfo, org.drools.workbench.models.datamodel.oracle.Annotation annotation, Set<org.drools.workbench.models.datamodel.oracle.Annotation> annotations ) {
+    public FieldSetting(String fieldName,
+                        FieldDataType typeInfo,
+                        org.drools.workbench.models.datamodel.oracle.Annotation annotation,
+                        Set<org.drools.workbench.models.datamodel.oracle.Annotation> annotations) {
         this.fieldName = fieldName;
         this.typeInfo = typeInfo;
         this.type = typeInfo.getType();
-        this.label = annotation.getParameters().get( "label" ).toString();
-        this.position = Integer.valueOf( annotation.getParameters().get( "position" ).toString() );
-        this.property = annotation.getParameters().get( "property" ).toString();
+        this.label = annotation.getParameters().get("label").toString();
+        this.position = Integer.valueOf(annotation.getParameters().get("position").toString());
+        this.property = annotation.getParameters().get("property").toString();
         this.annotations = annotations;
     }
 
@@ -43,7 +47,7 @@ public class FieldSetting implements Comparable<FieldSetting> {
         return fieldName;
     }
 
-    public void setFieldName( String fieldName ) {
+    public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
 
@@ -72,9 +76,13 @@ public class FieldSetting implements Comparable<FieldSetting> {
     }
 
     @Override
-    public int compareTo( FieldSetting o ) {
-        if ( position == -1 ) return 1;
-        if ( o.getPosition() == -1 ) return -1;
+    public int compareTo(FieldSetting o) {
+        if (position == -1) {
+            return 1;
+        }
+        if (o.getPosition() == -1) {
+            return -1;
+        }
 
         return position - o.getPosition();
     }

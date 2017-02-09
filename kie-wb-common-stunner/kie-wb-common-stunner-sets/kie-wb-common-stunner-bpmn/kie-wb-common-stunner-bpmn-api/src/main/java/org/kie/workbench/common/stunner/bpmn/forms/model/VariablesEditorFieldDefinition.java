@@ -23,7 +23,7 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Portable
 @Bindable
-public class VariablesEditorFieldDefinition extends AbstractFieldDefinition<VariablesEditorFieldType> {
+public class VariablesEditorFieldDefinition extends AbstractFieldDefinition {
 
     public static final VariablesEditorFieldType FIELD_TYPE = new VariablesEditorFieldType();
 

@@ -25,11 +25,10 @@ import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.
 import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
 import org.kie.workbench.common.stunner.bpmn.forms.meta.definition.AssignmentsEditor;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldDefinition;
-import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders.AssignmentsEditorFieldProvider;
 
 @Dependent
-public class AssignmentsEditorAnnotationProcessor extends AbstractFieldAnnotationProcessor<AssignmentsEditorFieldType, AssignmentsEditorFieldDefinition, AssignmentsEditorFieldProvider> {
+public class AssignmentsEditorAnnotationProcessor extends AbstractFieldAnnotationProcessor<AssignmentsEditorFieldDefinition, AssignmentsEditorFieldProvider> {
 
     @Inject
     public AssignmentsEditorAnnotationProcessor(final AssignmentsEditorFieldProvider fieldProvider) {

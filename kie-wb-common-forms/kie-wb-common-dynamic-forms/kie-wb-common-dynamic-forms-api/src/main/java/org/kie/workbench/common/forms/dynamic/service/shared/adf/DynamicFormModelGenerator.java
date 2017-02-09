@@ -82,7 +82,7 @@ public class DynamicFormModelGenerator {
                 IsCRUDDefinition isCRUDDefinitionField = (IsCRUDDefinition) field;
 
                 if ( !context.getAvailableForms().containsKey( isCRUDDefinitionField.getCreationForm() ) ){
-                    addNestedForm( model, isCRUDDefinitionField.getCreationForm(), field.getName(), context );
+                    addNestedForm( field.getStandaloneClassName(), context );
                 }
 
                 if ( isCRUDDefinitionField.getColumnMetas() == null || isCRUDDefinitionField.getColumnMetas().isEmpty() ) {

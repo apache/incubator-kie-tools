@@ -27,23 +27,23 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.prov
 import org.kie.workbench.common.forms.metaModel.Slider;
 
 @Dependent
-public class SliderAnnotationProcessor extends AbstractFieldAnnotationProcessor<org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType, SliderBaseDefinition<?>, SliderFieldProvider> {
+public class SliderAnnotationProcessor extends AbstractFieldAnnotationProcessor<SliderBaseDefinition, SliderFieldProvider> {
 
     @Inject
-    public SliderAnnotationProcessor( SliderFieldProvider fieldProvider ) {
-        super( fieldProvider );
+    public SliderAnnotationProcessor(SliderFieldProvider fieldProvider) {
+        super(fieldProvider);
     }
 
     @Override
-    protected void initField( SliderBaseDefinition field,
-                              Annotation annotation,
-                              FieldSetting fieldSetting,
-                              TransformerContext context ) {
+    protected void initField(SliderBaseDefinition field,
+                             Annotation annotation,
+                             FieldSetting fieldSetting,
+                             TransformerContext context) {
 
-        field.setMin( ( (Number) annotation.getParameters().get( "min" ) ).doubleValue() );
-        field.setMax( ( (Number) annotation.getParameters().get( "max" ) ).doubleValue() );
-        field.setPrecision( ( (Number) annotation.getParameters().get( "precision" ) ).doubleValue() );
-        field.setStep( ( (Number) annotation.getParameters().get( "step" ) ).doubleValue() );
+        field.setMin(((Number) annotation.getParameters().get("min")).doubleValue());
+        field.setMax(((Number) annotation.getParameters().get("max")).doubleValue());
+        field.setPrecision(((Number) annotation.getParameters().get("precision")).doubleValue());
+        field.setStep(((Number) annotation.getParameters().get("step")).doubleValue());
     }
 
     @Override

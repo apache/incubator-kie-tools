@@ -18,7 +18,7 @@ package org.kie.workbench.common.forms.jbpm.model.authoring.document.type;
 
 import org.kie.workbench.common.forms.model.FieldType;
 
-public class Document implements FieldType {
+public class DocumentFieldType implements FieldType {
 
     public static final String NAME = "Document";
 

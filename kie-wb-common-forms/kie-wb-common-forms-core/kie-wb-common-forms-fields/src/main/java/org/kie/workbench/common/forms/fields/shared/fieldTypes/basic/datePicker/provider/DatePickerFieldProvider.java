@@ -25,7 +25,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.
 import org.kie.workbench.common.forms.model.FieldDataType;
 
 @Dependent
-public class DatePickerFieldProvider extends BasicTypeFieldProvider<DatePickerFieldType, DatePickerFieldDefinition> {
+public class DatePickerFieldProvider extends BasicTypeFieldProvider<DatePickerFieldDefinition> {
 
     @Override
     public Class<DatePickerFieldType> getFieldType() {

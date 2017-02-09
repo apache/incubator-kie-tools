@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldDef
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 
 @Model
-public class VariablesEditorFieldProvider extends BasicTypeFieldProvider<VariablesEditorFieldType, VariablesEditorFieldDefinition> {
+public class VariablesEditorFieldProvider extends BasicTypeFieldProvider<VariablesEditorFieldDefinition> {
 
     @Override
     public Class<VariablesEditorFieldType> getFieldType() {

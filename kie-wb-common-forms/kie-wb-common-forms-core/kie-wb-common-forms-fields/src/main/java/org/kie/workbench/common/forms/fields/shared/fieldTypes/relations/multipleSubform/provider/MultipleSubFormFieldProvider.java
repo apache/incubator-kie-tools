@@ -28,7 +28,7 @@ import org.kie.workbench.common.forms.service.MultipleFieldProvider;
 
 @Dependent
 public class MultipleSubFormFieldProvider
-        implements ModelTypeFieldProvider<MultipleSubFormFieldType, MultipleSubFormFieldDefinition>,
+        implements ModelTypeFieldProvider<MultipleSubFormFieldDefinition>,
                    MultipleFieldProvider<MultipleSubFormFieldDefinition> {
 
     @Override

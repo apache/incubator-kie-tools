@@ -29,7 +29,7 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 @FormDefinition(
         i18n = @I18nSettings(keyPreffix = "FieldProperties"),
         startElement = "label")
-public class CheckBoxFieldDefinition extends AbstractFieldDefinition<CheckBoxFieldType> {
+public class CheckBoxFieldDefinition extends AbstractFieldDefinition {
 
     public static final CheckBoxFieldType FIELD_TYPE = new CheckBoxFieldType();
 

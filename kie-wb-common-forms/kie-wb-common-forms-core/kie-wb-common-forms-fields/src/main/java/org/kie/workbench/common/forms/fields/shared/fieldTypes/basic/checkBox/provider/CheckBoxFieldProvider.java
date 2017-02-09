@@ -24,7 +24,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.ty
 import org.kie.workbench.common.forms.model.FieldDataType;
 
 @Dependent
-public class CheckBoxFieldProvider extends BasicTypeFieldProvider<CheckBoxFieldType, CheckBoxFieldDefinition> {
+public class CheckBoxFieldProvider extends BasicTypeFieldProvider<CheckBoxFieldDefinition> {
 
     @Override
     public Class<CheckBoxFieldType> getFieldType() {

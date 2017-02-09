@@ -24,24 +24,26 @@ import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.
 import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.RadioGroupBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.provider.RadioGroupFieldProvider;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.type.RadioGroupFieldType;
 import org.kie.workbench.common.forms.metaModel.RadioGroup;
 
 @Dependent
-public class RadioGroupFieldAnnotationProcessor extends AbstractSelectorAnnotationProcessor<RadioGroupFieldType, RadioGroupBaseDefinition<?>, RadioGroupFieldProvider> {
+public class RadioGroupFieldAnnotationProcessor extends AbstractSelectorAnnotationProcessor<RadioGroupBaseDefinition, RadioGroupFieldProvider> {
 
     @Inject
-    public RadioGroupFieldAnnotationProcessor( RadioGroupFieldProvider fieldProvider ) {
-        super( fieldProvider );
+    public RadioGroupFieldAnnotationProcessor(RadioGroupFieldProvider fieldProvider) {
+        super(fieldProvider);
     }
 
     @Override
-    protected void initField( RadioGroupBaseDefinition field,
-                              Annotation annotation,
-                              FieldSetting fieldSetting,
-                              TransformerContext context ) {
-        super.initField( field, annotation, fieldSetting, context );
-        field.setInline( Boolean.TRUE.equals( annotation.getParameters().get( "inline" ) ) );
+    protected void initField(RadioGroupBaseDefinition field,
+                             Annotation annotation,
+                             FieldSetting fieldSetting,
+                             TransformerContext context) {
+        super.initField(field,
+                        annotation,
+                        fieldSetting,
+                        context);
+        field.setInline(Boolean.TRUE.equals(annotation.getParameters().get("inline")));
     }
 
     @Override

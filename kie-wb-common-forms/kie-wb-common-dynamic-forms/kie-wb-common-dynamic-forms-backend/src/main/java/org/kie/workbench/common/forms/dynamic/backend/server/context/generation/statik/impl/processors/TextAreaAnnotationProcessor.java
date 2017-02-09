@@ -24,27 +24,26 @@ import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.
 import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.provider.TextAreaFieldProvider;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.forms.metaModel.TextArea;
 
 @Dependent
-public class TextAreaAnnotationProcessor extends AbstractFieldAnnotationProcessor<TextAreaFieldType, TextAreaFieldDefinition, TextAreaFieldProvider> {
+public class TextAreaAnnotationProcessor extends AbstractFieldAnnotationProcessor<TextAreaFieldDefinition, TextAreaFieldProvider> {
 
     @Inject
-    public TextAreaAnnotationProcessor( TextAreaFieldProvider fieldProvider ) {
-        super( fieldProvider );
+    public TextAreaAnnotationProcessor(TextAreaFieldProvider fieldProvider) {
+        super(fieldProvider);
     }
 
     @Override
-    protected void initField( TextAreaFieldDefinition field,
-                              Annotation annotation,
-                              FieldSetting fieldSetting,
-                              TransformerContext context ) {
-        String placeHolder = annotation.getParameters().get( "placeHolder" ).toString();
-        if ( ! placeHolder.isEmpty() ) {
-            field.setPlaceHolder( placeHolder );
+    protected void initField(TextAreaFieldDefinition field,
+                             Annotation annotation,
+                             FieldSetting fieldSetting,
+                             TransformerContext context) {
+        String placeHolder = annotation.getParameters().get("placeHolder").toString();
+        if (!placeHolder.isEmpty()) {
+            field.setPlaceHolder(placeHolder);
         }
-        field.setRows( (Integer) annotation.getParameters().get( "rows" ) );
+        field.setRows((Integer) annotation.getParameters().get("rows"));
     }
 
     @Override

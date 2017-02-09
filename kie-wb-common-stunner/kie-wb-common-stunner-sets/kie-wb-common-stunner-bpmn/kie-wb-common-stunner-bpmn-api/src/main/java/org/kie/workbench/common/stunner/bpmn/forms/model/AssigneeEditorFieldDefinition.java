@@ -23,7 +23,7 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Portable
 @Bindable
-public class AssigneeEditorFieldDefinition extends AbstractFieldDefinition<AssigneeEditorFieldType> {
+public class AssigneeEditorFieldDefinition extends AbstractFieldDefinition {
 
     public static final AssigneeEditorFieldType FIELD_TYPE = new AssigneeEditorFieldType();
 

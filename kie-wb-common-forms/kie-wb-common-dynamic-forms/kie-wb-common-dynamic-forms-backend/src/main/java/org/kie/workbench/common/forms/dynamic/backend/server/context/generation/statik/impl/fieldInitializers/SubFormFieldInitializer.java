@@ -28,18 +28,22 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 public class SubFormFieldInitializer extends FormAwareFieldInitializer<SubFormFieldDefinition> {
 
     @Override
-    public boolean supports( FieldDefinition field ) {
+    public boolean supports(FieldDefinition field) {
         return field instanceof SubFormFieldDefinition;
     }
 
     @Override
-    public void initializeField( SubFormFieldDefinition field, FieldSetting setting, DMOBasedTransformerContext context ) {
-        FormDefinition form = context.getRenderingContext().getAvailableForms().get( field.getStandaloneClassName() );
-        if ( form == null ) {
-            form = formGenerator.generateFormDefinitionForType( setting.getType(), context );
-            context.getRenderingContext().getAvailableForms().put( field.getStandaloneClassName(), form );
+    public void initializeField(SubFormFieldDefinition field,
+                                FieldSetting setting,
+                                DMOBasedTransformerContext context) {
+        FormDefinition form = context.getRenderingContext().getAvailableForms().get(field.getStandaloneClassName());
+        if (form == null) {
+            form = formGenerator.generateFormDefinitionForType(setting.getType(),
+                                                               context);
+            context.getRenderingContext().getAvailableForms().put(field.getStandaloneClassName(),
+                                                                  form);
         }
 
-        field.setNestedForm( form.getId() );
+        field.setNestedForm(form.getId());
     }
 }

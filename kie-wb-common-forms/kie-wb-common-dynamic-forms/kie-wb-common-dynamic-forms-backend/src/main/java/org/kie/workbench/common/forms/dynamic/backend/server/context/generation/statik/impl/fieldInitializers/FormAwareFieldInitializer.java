@@ -23,7 +23,7 @@ public abstract class FormAwareFieldInitializer<T extends FieldDefinition> imple
 
     protected FormRenderingContextGenerator formGenerator;
 
-    public void setTransformerService( FormRenderingContextGenerator formGenerator ) {
+    public void setTransformerService(FormRenderingContextGenerator formGenerator) {
         this.formGenerator = formGenerator;
     }
 }

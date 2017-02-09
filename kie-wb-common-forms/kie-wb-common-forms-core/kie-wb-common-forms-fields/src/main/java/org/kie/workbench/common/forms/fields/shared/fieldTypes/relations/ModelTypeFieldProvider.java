@@ -18,8 +18,7 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.relations;
 
 import org.kie.workbench.common.forms.fields.shared.FieldProvider;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.FieldType;
 
-public interface ModelTypeFieldProvider<FIELD_TYPE extends FieldType, DEFINITION extends FieldDefinition<FIELD_TYPE>> extends FieldProvider<FIELD_TYPE, DEFINITION> {
+public interface ModelTypeFieldProvider<DEFINITION extends FieldDefinition> extends FieldProvider<DEFINITION> {
 
 }

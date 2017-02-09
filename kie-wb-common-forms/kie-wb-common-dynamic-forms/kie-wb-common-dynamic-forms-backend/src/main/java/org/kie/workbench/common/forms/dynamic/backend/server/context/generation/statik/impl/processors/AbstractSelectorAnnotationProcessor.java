@@ -29,36 +29,38 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.S
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.StringSelectorOption;
 import org.kie.workbench.common.forms.metaModel.Option;
 import org.kie.workbench.common.forms.metaModel.SelectorDataProvider;
-import org.kie.workbench.common.forms.model.FieldType;
 
-public abstract class AbstractSelectorAnnotationProcessor<FIELD_TYPE extends FieldType, FIELD extends SelectorFieldBaseDefinition<FIELD_TYPE, ? extends SelectorOption>, PROVIDER extends SelectorFieldProvider<FIELD_TYPE, FIELD>>
-        extends AbstractFieldAnnotationProcessor<FIELD_TYPE, FIELD, PROVIDER> {
+public abstract class AbstractSelectorAnnotationProcessor<FIELD extends SelectorFieldBaseDefinition, PROVIDER extends SelectorFieldProvider<FIELD>>
+        extends AbstractFieldAnnotationProcessor<FIELD, PROVIDER> {
 
-    public AbstractSelectorAnnotationProcessor( PROVIDER fieldProvider ) {
-        super( fieldProvider );
+    public AbstractSelectorAnnotationProcessor(PROVIDER fieldProvider) {
+        super(fieldProvider);
     }
 
     @Override
-    protected void initField( FIELD field, Annotation annotation, FieldSetting fieldSetting, TransformerContext context ) {
+    protected void initField(FIELD field,
+                             Annotation annotation,
+                             FieldSetting fieldSetting,
+                             TransformerContext context) {
         List<SelectorOption> options = new ArrayList<>();
         Annotation selectorProvider = null;
-        for ( Annotation settingAnnotation : fieldSetting.getAnnotations() ) {
-            if ( settingAnnotation.getQualifiedTypeName().equals( Option.class.getName() ) ) {
+        for (Annotation settingAnnotation : fieldSetting.getAnnotations()) {
+            if (settingAnnotation.getQualifiedTypeName().equals(Option.class.getName())) {
                 StringSelectorOption selectorOption = new StringSelectorOption();
-                selectorOption.setValue( settingAnnotation.getParameters().get( "value" ).toString() );
-                selectorOption.setText( settingAnnotation.getParameters().get( "text" ).toString() );
-                selectorOption.setDefaultValue( (Boolean) settingAnnotation.getParameters().get( "isDefault" ) );
-                options.add( selectorOption );
-            } else if ( settingAnnotation.getQualifiedTypeName().equals( SelectorDataProvider.class.getName() ) ) {
+                selectorOption.setValue(settingAnnotation.getParameters().get("value").toString());
+                selectorOption.setText(settingAnnotation.getParameters().get("text").toString());
+                selectorOption.setDefaultValue((Boolean) settingAnnotation.getParameters().get("isDefault"));
+                options.add(selectorOption);
+            } else if (settingAnnotation.getQualifiedTypeName().equals(SelectorDataProvider.class.getName())) {
                 selectorProvider = settingAnnotation;
             }
         }
 
-        //field.setOptions( options );
+        field.setOptions(options);
 
-        if ( options.isEmpty() && selectorProvider != null ) {
-            String providerId = selectorProvider.getParameters().get( "type" ) + SelectorDataProviderManager.SEPARATOR + selectorProvider.getParameters().get( "className" );
-            field.setDataProvider( providerId );
+        if (options.isEmpty() && selectorProvider != null) {
+            String providerId = selectorProvider.getParameters().get("type") + SelectorDataProviderManager.SEPARATOR + selectorProvider.getParameters().get("className");
+            field.setDataProvider(providerId);
         }
     }
 }

@@ -30,30 +30,32 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 public class EnumSelectorFieldInitializer implements FieldInitializer<SelectorFieldBaseDefinition> {
 
     @Override
-    public boolean supports( FieldDefinition field ) {
+    public boolean supports(FieldDefinition field) {
         return field instanceof SelectorFieldBaseDefinition && field.getFieldTypeInfo().isEnum();
     }
 
     @Override
-    public void initializeField( SelectorFieldBaseDefinition field, FieldSetting setting, DMOBasedTransformerContext context ) {
+    public void initializeField(SelectorFieldBaseDefinition field,
+                                FieldSetting setting,
+                                DMOBasedTransformerContext context) {
 
         try {
-            Enum[] enumValues = (Enum[]) Class.forName( setting.getType() ).getEnumConstants();
+            Enum[] enumValues = (Enum[]) Class.forName(setting.getType()).getEnumConstants();
 
-            if ( enumValues != null && ( field.getOptions() == null || field.getOptions().isEmpty() ) ) {
+            if (enumValues != null && (field.getOptions() == null || field.getOptions().isEmpty())) {
                 List<DefaultSelectorOption<Enum>> options = new ArrayList<>();
-                for ( Enum enumConstant : enumValues ) {
+                for (Enum enumConstant : enumValues) {
                     DefaultSelectorOption<Enum> selectorOption = new DefaultSelectorOption<>(
-                            enumConstant, enumConstant.toString(), false );
+                            enumConstant,
+                            enumConstant.toString(),
+                            false);
 
-                    options.add( selectorOption );
+                    options.add(selectorOption);
                 }
-                field.setOptions( options );
+                field.setOptions(options);
             }
-
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }

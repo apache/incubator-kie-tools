@@ -23,8 +23,8 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHol
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.type.TextBoxFieldType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
-public abstract class TextBoxBaseDefinition extends AbstractFieldDefinition<TextBoxFieldType> implements HasMaxLength,
-                                                                                                         HasPlaceHolder {
+public abstract class TextBoxBaseDefinition extends AbstractFieldDefinition implements HasMaxLength,
+                                                                                       HasPlaceHolder {
 
     public static TextBoxFieldType FIELD_TYPE = new TextBoxFieldType();
 

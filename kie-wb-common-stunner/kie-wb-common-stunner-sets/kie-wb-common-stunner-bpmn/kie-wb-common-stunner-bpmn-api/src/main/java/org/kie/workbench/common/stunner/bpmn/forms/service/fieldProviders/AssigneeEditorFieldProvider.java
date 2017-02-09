@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldDefi
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldType;
 
 @Model
-public class AssigneeEditorFieldProvider extends BasicTypeFieldProvider<AssigneeEditorFieldType, AssigneeEditorFieldDefinition> {
+public class AssigneeEditorFieldProvider extends BasicTypeFieldProvider<AssigneeEditorFieldDefinition> {
 
     @Override
     public Class<AssigneeEditorFieldType> getFieldType() {

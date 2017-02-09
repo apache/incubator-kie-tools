@@ -32,29 +32,33 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 public class MultipleSubFormFieldInitializer extends FormAwareFieldInitializer<MultipleSubFormFieldDefinition> {
 
     @Override
-    public boolean supports( FieldDefinition field ) {
+    public boolean supports(FieldDefinition field) {
         return field instanceof MultipleSubFormFieldDefinition;
     }
 
     @Override
-    public void initializeField( MultipleSubFormFieldDefinition field, FieldSetting setting, DMOBasedTransformerContext context ) {
-        FormDefinition form = context.getRenderingContext().getAvailableForms().get( field.getStandaloneClassName() );
-        if ( form == null ) {
-            form = formGenerator.generateFormDefinitionForType( setting.getType(), context );
-            context.getRenderingContext().getAvailableForms().put( field.getStandaloneClassName(), form );
+    public void initializeField(MultipleSubFormFieldDefinition field,
+                                FieldSetting setting,
+                                DMOBasedTransformerContext context) {
+        FormDefinition form = context.getRenderingContext().getAvailableForms().get(field.getStandaloneClassName());
+        if (form == null) {
+            form = formGenerator.generateFormDefinitionForType(setting.getType(),
+                                                               context);
+            context.getRenderingContext().getAvailableForms().put(field.getStandaloneClassName(),
+                                                                  form);
         }
 
         List<TableColumnMeta> metas = new ArrayList<TableColumnMeta>();
-        for ( FieldDefinition fieldDefinition : form.getFields() ) {
-            if ( ! ( fieldDefinition instanceof EntityRelationField ) ) {
-                metas.add( new TableColumnMeta( fieldDefinition.getLabel(),
-                        fieldDefinition.getBinding() ) );
+        for (FieldDefinition fieldDefinition : form.getFields()) {
+            if (!(fieldDefinition instanceof EntityRelationField)) {
+                metas.add(new TableColumnMeta(fieldDefinition.getLabel(),
+                                              fieldDefinition.getBinding()));
             }
         }
 
-        field.setCreationForm( form.getId() );
-        field.setEditionForm( form.getId() );
-        field.setColumnMetas( metas );
-        field.setReadOnly( setting.getTypeInfo().isEnum() );
+        field.setCreationForm(form.getId());
+        field.setEditionForm(form.getId());
+        field.setColumnMetas(metas);
+        field.setReadOnly(setting.getTypeInfo().isEnum());
     }
 }

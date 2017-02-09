@@ -67,7 +67,9 @@ public class BindableTypeAheadViewImpl<T> extends Composite implements BindableT
 
     @Override
     public void setValue( T value ) {
-        typeahead.setValue( interpreter.render( value ) );
+        if ( typeahead != null ) {
+            typeahead.setValue(interpreter.render(value));
+        }
     }
 
     @Override

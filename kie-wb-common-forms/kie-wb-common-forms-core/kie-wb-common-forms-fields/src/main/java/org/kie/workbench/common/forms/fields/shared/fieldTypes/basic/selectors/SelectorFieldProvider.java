@@ -18,9 +18,8 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.FieldType;
 
-public abstract class SelectorFieldProvider<FIELD_TYPE extends FieldType, DEFINITION extends SelectorFieldBaseDefinition<FIELD_TYPE, ?>> extends BasicTypeFieldProvider<FIELD_TYPE, DEFINITION> {
+public abstract class SelectorFieldProvider<DEFINITION extends SelectorFieldBaseDefinition> extends BasicTypeFieldProvider<DEFINITION> {
 
     @Override
     public boolean isCompatible(FieldDefinition field) {

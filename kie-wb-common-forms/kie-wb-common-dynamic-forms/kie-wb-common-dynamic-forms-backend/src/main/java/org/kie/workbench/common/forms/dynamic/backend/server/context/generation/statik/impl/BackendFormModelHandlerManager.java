@@ -32,15 +32,16 @@ public class BackendFormModelHandlerManager implements FormModelHandlerManager {
     protected Map<Class<? extends FormModel>, FormModelHandler> handlers = new HashMap<>();
 
     @Inject
-    public BackendFormModelHandlerManager( Instance<FormModelHandler<? extends FormModel>> instances ) {
-        instances.forEach( handler -> handlers.put( handler.getModelType(), handler ) );
+    public BackendFormModelHandlerManager(Instance<FormModelHandler<? extends FormModel>> instances) {
+        instances.forEach(handler -> handlers.put(handler.getModelType(),
+                                                  handler));
     }
 
     @Override
-    public FormModelHandler getFormModelHandler( Class<? extends FormModel> clazz ) {
-        FormModelHandler handler = handlers.get( clazz );
+    public FormModelHandler getFormModelHandler(Class<? extends FormModel> clazz) {
+        FormModelHandler handler = handlers.get(clazz);
 
-        if ( handler != null ) {
+        if (handler != null) {
             return handler.newInstance();
         }
 

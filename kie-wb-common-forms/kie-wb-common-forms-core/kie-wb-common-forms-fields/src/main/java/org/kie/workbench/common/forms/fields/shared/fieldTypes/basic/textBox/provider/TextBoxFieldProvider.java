@@ -28,7 +28,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.typ
 import org.kie.workbench.common.forms.model.FieldDataType;
 
 @Dependent
-public class TextBoxFieldProvider extends BasicTypeFieldProvider<TextBoxFieldType, TextBoxBaseDefinition> {
+public class TextBoxFieldProvider extends BasicTypeFieldProvider<TextBoxBaseDefinition> {
 
     @Override
     public Class<TextBoxFieldType> getFieldType() {

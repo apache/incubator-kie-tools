@@ -21,15 +21,15 @@ import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.definition.DocumentFieldDefinition;
-import org.kie.workbench.common.forms.jbpm.model.authoring.document.type.Document;
+import org.kie.workbench.common.forms.jbpm.model.authoring.document.type.DocumentFieldType;
 import org.kie.workbench.common.forms.model.FieldDataType;
 
 @Dependent
-public class DocumentFieldProvider extends BasicTypeFieldProvider<Document, DocumentFieldDefinition> {
+public class DocumentFieldProvider extends BasicTypeFieldProvider<DocumentFieldDefinition> {
 
     @Override
-    public Class<Document> getFieldType() {
-        return Document.class;
+    public Class<DocumentFieldType> getFieldType() {
+        return DocumentFieldType.class;
     }
 
     @Override

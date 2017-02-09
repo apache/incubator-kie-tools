@@ -20,9 +20,8 @@ import java.util.List;
 import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.FieldType;
 
-public abstract class SelectorFieldBaseDefinition<FIELD_TYPE extends FieldType, OPTION extends SelectorOption> extends AbstractFieldDefinition<FIELD_TYPE> {
+public abstract class SelectorFieldBaseDefinition<OPTION extends SelectorOption> extends AbstractFieldDefinition {
 
     @SkipFormField
     protected String dataProvider = "";

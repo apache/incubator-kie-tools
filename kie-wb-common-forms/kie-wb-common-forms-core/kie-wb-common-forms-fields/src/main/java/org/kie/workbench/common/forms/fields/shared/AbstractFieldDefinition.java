@@ -20,11 +20,10 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.FieldType;
 import org.kie.workbench.common.forms.model.util.IDGenerator;
 import org.kie.workbench.common.forms.service.FieldManager;
 
-public abstract class AbstractFieldDefinition<FIELD_TYPE extends FieldType> implements FieldDefinition<FIELD_TYPE> {
+public abstract class AbstractFieldDefinition implements FieldDefinition {
 
     public static final String ID_PREFFIX = "field" + FieldManager.FIELD_NAME_SEPARATOR;
 

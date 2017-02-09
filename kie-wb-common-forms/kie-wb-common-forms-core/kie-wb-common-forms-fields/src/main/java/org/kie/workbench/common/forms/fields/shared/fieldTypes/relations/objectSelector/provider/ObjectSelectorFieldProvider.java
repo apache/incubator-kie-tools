@@ -26,7 +26,7 @@ import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Dependent
-public class ObjectSelectorFieldProvider implements ModelTypeFieldProvider<ObjectSelectorFieldType, ObjectSelectorFieldDefinition> {
+public class ObjectSelectorFieldProvider implements ModelTypeFieldProvider<ObjectSelectorFieldDefinition> {
 
     @Override
     public Class<ObjectSelectorFieldType> getFieldType() {
