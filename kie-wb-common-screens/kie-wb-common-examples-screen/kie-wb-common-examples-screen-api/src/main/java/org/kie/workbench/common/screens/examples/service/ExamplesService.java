@@ -35,6 +35,8 @@ public interface ExamplesService extends PriorityDisposable {
 
     ExamplesMetaData getMetaData();
 
+    ExampleRepository getPlaygroundRepository();
+
     Set<ExampleProject> getProjects( final ExampleRepository repository );
 
     boolean validateRepositoryName( final String name );

@@ -77,7 +77,7 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
         defaultValue.projectVersion = "1.0.0";
         defaultValue.projectDescription = "default description";
         defaultValue.projectDefaultBranch = "master";
-        defaultValue.importProjectsUrl = "https://github.com/droolsjbpm/kie-wb-playground.git";
+        defaultValue.importProjectsUrl = "";
         defaultValue.projectExplorerExpanded = false;
         return defaultValue;
     }

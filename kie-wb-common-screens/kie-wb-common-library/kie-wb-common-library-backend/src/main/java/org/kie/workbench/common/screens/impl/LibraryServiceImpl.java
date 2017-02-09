@@ -202,7 +202,9 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public Set<ExampleProject> getExampleProjects() {
         final String importProjectsUrl = getPreferences().getImportProjectsUrl();
-        final ExampleRepository repository = new ExampleRepository( importProjectsUrl );
+        final ExampleRepository repository = importProjectsUrl == null  || importProjectsUrl.isEmpty()
+                ? examplesService.getPlaygroundRepository()
+                : new ExampleRepository( importProjectsUrl );
 
         return examplesService.getProjects( repository );
     }

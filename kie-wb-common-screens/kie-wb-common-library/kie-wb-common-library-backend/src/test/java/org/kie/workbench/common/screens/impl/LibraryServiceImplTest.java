@@ -289,7 +289,7 @@ public class LibraryServiceImplTest {
     }
 
     @Test
-    public void getExampleProjectsTest() {
+    public void getExampleProjectsImportUrlDefinedTest() {
         final Set<ExampleProject> exampleProjects = new HashSet<>();
         exampleProjects.add( mock( ExampleProject.class ) );
 
@@ -299,6 +299,18 @@ public class LibraryServiceImplTest {
         final Set<ExampleProject> loadedExampleProjects = libraryService.getExampleProjects();
 
         assertEquals( exampleProjects, loadedExampleProjects );
+    }
+
+    @Test
+    public void getExampleProjectsImportUrlNotDefinedTest() {
+        final ExampleRepository playgroundRepository = new ExampleRepository( "playgroundRepositoryUrl" );
+
+        when( preferences.getImportProjectsUrl() ).thenReturn( "" );
+        doReturn( playgroundRepository ).when( examplesService ).getPlaygroundRepository();
+
+        libraryService.getExampleProjects();
+
+        verify( examplesService, times( 1 ) ).getProjects( playgroundRepository );
     }
 
     @Test

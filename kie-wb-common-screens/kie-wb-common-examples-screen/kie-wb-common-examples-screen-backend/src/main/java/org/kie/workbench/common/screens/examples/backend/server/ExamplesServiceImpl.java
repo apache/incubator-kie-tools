@@ -195,7 +195,8 @@ public class ExamplesServiceImpl implements ExamplesService {
                                      getExampleOrganizationalUnits() );
     }
 
-    ExampleRepository getPlaygroundRepository() {
+    @Override
+    public ExampleRepository getPlaygroundRepository() {
         return playgroundRepository;
     }
 
