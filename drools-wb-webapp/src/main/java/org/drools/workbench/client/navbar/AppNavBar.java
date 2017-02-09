@@ -15,6 +15,9 @@
 
 package org.drools.workbench.client.navbar;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
@@ -22,9 +25,6 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.workbench.Header;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import static java.lang.Integer.MAX_VALUE;
 
@@ -40,8 +40,9 @@ public class AppNavBar implements Header {
     private WorkbenchMenuBarPresenter menuBarPresenter;
 
     @AfterInitialization
-    public void setup(){
-        DOMUtil.appendWidgetToElement( header, menuBarPresenter.getView().asWidget() );
+    public void setup() {
+        DOMUtil.appendWidgetToElement(header,
+                                      menuBarPresenter.getView().asWidget());
     }
 
     @Override
@@ -51,6 +52,6 @@ public class AppNavBar implements Header {
 
     @Override
     public int getOrder() {
-        return MAX_VALUE;
+        return MAX_VALUE - 1;
     }
 }
