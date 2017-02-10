@@ -19,16 +19,12 @@ package org.uberfire.ext.metadata.io;
 import java.io.IOException;
 import java.util.List;
 
-import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.uberfire.ext.metadata.search.IOSearchService;
 import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.*;
 
-@RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
-@BMScript(value = "byteman/index.btm")
 public class IOSearchServiceImplTest extends BaseIndexTest {
 
     @Override
@@ -38,7 +34,6 @@ public class IOSearchServiceImplTest extends BaseIndexTest {
 
     @Test
     public void testFullTextSearch() throws IOException, InterruptedException {
-        setupCountDown( 3 );
 
         final IOSearchServiceImpl searchIndex = new IOSearchServiceImpl( config.getSearchIndex(), ioService() );
 
@@ -56,7 +51,7 @@ public class IOSearchServiceImplTest extends BaseIndexTest {
 
         final Path root = path1.getRoot();
 
-        waitForCountDown( 5000 );
+        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         {
             final List<Path> result = searchIndex.fullTextSearch( "g",

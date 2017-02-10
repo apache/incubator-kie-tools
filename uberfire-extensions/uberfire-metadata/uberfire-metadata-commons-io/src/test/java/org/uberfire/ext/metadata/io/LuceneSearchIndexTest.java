@@ -21,9 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.search.ClusterSegment;
 import org.uberfire.ext.metadata.search.IOSearchService;
@@ -33,8 +31,6 @@ import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.*;
 
-@RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
-@BMScript(value = "byteman/index.btm")
 public class LuceneSearchIndexTest extends BaseIndexTest {
 
     @Override
@@ -44,7 +40,6 @@ public class LuceneSearchIndexTest extends BaseIndexTest {
 
     @Test
     public void testClusterSegments() throws IOException, InterruptedException {
-        setupCountDown( 2 );
         //Add test files
         final Path path1 = getBasePath( this.getClass().getSimpleName() + "_1" ).resolve( "indexedFile1.txt" );
         ioService().write( path1,
@@ -77,7 +72,7 @@ public class LuceneSearchIndexTest extends BaseIndexTest {
             }
         };
 
-        waitForCountDown( 5000 );
+        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         final Map<String, Object> attributes = new HashMap<String, Object>() {{
             put( "filename",

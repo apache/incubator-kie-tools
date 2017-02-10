@@ -24,9 +24,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
-import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.model.KObject;
@@ -38,8 +36,6 @@ import static org.junit.Assert.*;
 import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.toKObject;
 import static org.uberfire.ext.metadata.io.KObjectUtil.toKCluster;
 
-@RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
-@BMScript(value = "byteman/index.btm")
 public class IOServiceIndexedDotFileGitInternalImplTest extends BaseIndexTest {
 
     @Override
@@ -49,7 +45,6 @@ public class IOServiceIndexedDotFileGitInternalImplTest extends BaseIndexTest {
 
     @Test
     public void testIndexedGitInternalDotFile() throws IOException, InterruptedException {
-        setupCountDown( 1 );
         final Path path1 = getBasePath(this.getClass().getSimpleName()).resolve(".gitkeep");
         ioService().write(path1,
                           "ooooo!",
@@ -62,7 +57,7 @@ public class IOServiceIndexedDotFileGitInternalImplTest extends BaseIndexTest {
                           Collections.<OpenOption>emptySet(),
                           getFileAttributes());
 
-        waitForCountDown( 5000 );
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         final Index index = config.getIndexManager().get(toKCluster(path1.getFileSystem()));
 

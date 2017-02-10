@@ -23,11 +23,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
-import org.jboss.byteman.contrib.bmunit.BMScript;
-import org.jboss.byteman.contrib.bmunit.BMUnitConfig;
-import org.jboss.byteman.contrib.bmunit.BMUnitRunner;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.java.nio.file.OpenOption;
@@ -35,72 +31,65 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 
 import static org.junit.Assert.*;
-import static org.uberfire.ext.metadata.io.KObjectUtil.*;
+import static org.uberfire.ext.metadata.io.KObjectUtil.toKCluster;
 
-@RunWith(BMUnitRunner.class)
-@BMUnitConfig(debug = true)
-@BMScript(value = "byteman/index.btm")
 public class IOServiceIndexedDeleteFileTest extends BaseIndexTest {
 
     @Override
     protected String[] getRepositoryNames() {
-        return new String[]{ this.getClass().getSimpleName() };
+        return new String[]{this.getClass().getSimpleName()};
     }
 
     @Test
     public void testDeleteFile() throws IOException, InterruptedException {
-        setupCountDown( 1 );
-        final Path path = getBasePath( this.getClass().getSimpleName() ).resolve( "delete-me.txt" );
-        ioService().write( path,
-                           "content",
-                           Collections.<OpenOption>emptySet(),
-                           new FileAttribute<Object>() {
-                               @Override
-                               public String name() {
-                                   return "delete";
-                               }
+        final Path path = getBasePath(this.getClass().getSimpleName()).resolve("delete-me.txt");
+        ioService().write(path,
+                          "content",
+                          Collections.<OpenOption>emptySet(),
+                          new FileAttribute<Object>() {
+                              @Override
+                              public String name() {
+                                  return "delete";
+                              }
 
-                               @Override
-                               public Object value() {
-                                   return "me";
-                               }
-                           } );
+                              @Override
+                              public Object value() {
+                                  return "me";
+                              }
+                          });
 
-        waitForCountDown( 5000 );
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = config.getIndexManager().get( toKCluster( path.getFileSystem() ) );
+        final Index index = config.getIndexManager().get(toKCluster(path.getFileSystem()));
 
-        final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
+        final IndexSearcher searcher = ((LuceneIndex) index).nrtSearcher();
 
-        final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
+        final TopScoreDocCollector collector = TopScoreDocCollector.create(10);
 
         //Check the file has been indexed
-        searcher.search( new TermQuery( new Term( "delete",
-                                                  "me" ) ),
-                         collector );
+        searcher.search(new TermQuery(new Term("delete",
+                                               "me")),
+                        collector);
 
         ScoreDoc[] hits = collector.topDocs().scoreDocs;
-        listHitPaths( searcher,
-                      hits );
-        assertEquals( 1,
-                      hits.length );
-
-        setupCountDown( 2 );
+        listHitPaths(searcher,
+                     hits);
+        assertEquals(1,
+                     hits.length);
 
         //Delete and re-check the index
-        ioService().delete( path );
+        ioService().delete(path);
 
-        waitForCountDown( 5000 );
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        searcher.search( new TermQuery( new Term( "delete",
-                                                  "me" ) ),
-                         collector );
+        searcher.search(new TermQuery(new Term("delete",
+                                               "me")),
+                        collector);
 
         hits = collector.topDocs().scoreDocs;
-        assertEquals( 0,
-                      hits.length );
+        assertEquals(0,
+                     hits.length);
 
-        ( (LuceneIndex) index ).nrtRelease( searcher );
+        ((LuceneIndex) index).nrtRelease(searcher);
     }
-
 }
