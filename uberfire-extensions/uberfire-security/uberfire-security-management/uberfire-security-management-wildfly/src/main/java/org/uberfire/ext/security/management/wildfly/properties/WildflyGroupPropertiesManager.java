@@ -21,7 +21,6 @@ import org.jboss.as.domain.management.security.PropertiesFileLoader;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.GroupImpl;
 import org.jboss.errai.security.shared.api.Role;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.config.ConfigProperties;
@@ -170,18 +169,20 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
     public void delete(String... identifiers) throws SecurityManagementException {
         if (identifiers == null) throw new NullPointerException();
         try {
-            Set<Map.Entry<Object, Object>> propertiesSet = groupsPropertiesFileLoader.getProperties().entrySet();
-            if (!propertiesSet.isEmpty()) {
-                for (Map.Entry<Object, Object> entry : propertiesSet) {
-                    final String username = entry.getKey().toString();
-                    final String groupsStr = entry.getValue().toString();
+            Set<Object> keysToRemove = new HashSet<>(groupsPropertiesFileLoader.getProperties().keySet());
+            keysToRemove.forEach(key -> {
+                final String username = (String) key;
+                try {
+                    final String groupsStr = groupsPropertiesFileLoader.getProperties().getProperty(username);
                     if (groupsStr != null && groupsStr.trim().length() > 0) {
                         final String newGroupsStr = deleteGroupsFromSerliazedValue(groupsStr, identifiers);
                         final String errorMsg = "Error deleting groups for user " + username;
                         updateGroupProperty(username, newGroupsStr, errorMsg);
                     }
+                } catch (final IOException e) {
+                    throw new SecurityManagementException(e);
                 }
-            }
+            });
         } catch (Exception e) {
             LOG.error("Error removing the folowing group names: " + identifiers, e);
             throw new SecurityManagementException(e);
