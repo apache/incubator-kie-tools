@@ -30,7 +30,6 @@ import org.junit.Test;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
-import org.uberfire.ext.metadata.engine.Observer;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
@@ -42,25 +41,6 @@ import static org.junit.Assert.*;
 import static org.uberfire.ext.metadata.io.KObjectUtil.*;
 
 public class BatchIndexTest extends BaseIndexTest {
-
-    public static Observer observer() {
-        return new Observer() {
-            @Override
-            public void information( final String message ) {
-                //Do nothing
-            }
-
-            @Override
-            public void warning( final String message ) {
-                //Do nothing
-            }
-
-            @Override
-            public void error( final String message ) {
-                //Do nothing
-            }
-        };
-    }
 
     @Override
     protected IOService ioService() {
@@ -119,7 +99,7 @@ public class BatchIndexTest extends BaseIndexTest {
                                        return "initial document version, should be revised later.";
                                    }
                                }
-                             );
+            );
         }
         {
             final Path file = ioService().get( "git://temp-repo-test/path/to/some/complex/file.txt" );
@@ -159,7 +139,7 @@ public class BatchIndexTest extends BaseIndexTest {
                                        return "important document, should be used right now.";
                                    }
                                }
-                             );
+            );
         }
         {
             final Path file = ioService().get( "git://temp-repo-test/simple.doc" );
@@ -199,7 +179,7 @@ public class BatchIndexTest extends BaseIndexTest {
                                        return "unlock document updated, should be checked by boss.";
                                    }
                                }
-                             );
+            );
         }
 
         {
@@ -210,52 +190,47 @@ public class BatchIndexTest extends BaseIndexTest {
 
         new BatchIndex( config.getIndexEngine(),
                         ioService(),
-                        observer(),
                         DublinCoreView.class ).run( ioService().get( "git://temp-repo-test/" ),
-                                                    new Runnable() {
+                                                    () -> {
+                                                        try {
+                                                            final Index index = config.getIndexManager().get( toKCluster( ioService().get( "git://temp-repo-test/" ).getFileSystem() ) );
 
-                                                        @Override
-                                                        public void run() {
-                                                            try {
-                                                                final Index index = config.getIndexManager().get( toKCluster( ioService().get( "git://temp-repo-test/" ).getFileSystem() ) );
+                                                            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
+                                                            {
+                                                                final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
 
-                                                                final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-                                                                {
-                                                                    final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
+                                                                searcher.search( new MatchAllDocsQuery(), collector );
 
-                                                                    searcher.search( new MatchAllDocsQuery(), collector );
+                                                                final ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
-                                                                    final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
-                                                                    assertEquals( 4, hits.length );
-                                                                }
-
-                                                                {
-                                                                    final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
-
-                                                                    searcher.search( new TermQuery( new Term( "dcore.author", "name" ) ), collector );
-
-                                                                    final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
-                                                                    assertEquals( 2, hits.length );
-                                                                }
-
-                                                                {
-                                                                    final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
-
-                                                                    searcher.search( new TermQuery( new Term( "dcore.author", "second" ) ), collector );
-
-                                                                    final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
-                                                                    assertEquals( 1, hits.length );
-                                                                }
-
-                                                                ( (LuceneIndex) index ).nrtRelease( searcher );
-
-                                                            } catch ( Exception ex ) {
-                                                                ex.printStackTrace();
-                                                                fail();
+                                                                assertEquals( 4, hits.length );
                                                             }
+
+                                                            {
+                                                                final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
+
+                                                                searcher.search( new TermQuery( new Term( "dcore.author", "name" ) ), collector );
+
+                                                                final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+
+                                                                assertEquals( 2, hits.length );
+                                                            }
+
+                                                            {
+                                                                final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
+
+                                                                searcher.search( new TermQuery( new Term( "dcore.author", "second" ) ), collector );
+
+                                                                final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+
+                                                                assertEquals( 1, hits.length );
+                                                            }
+
+                                                            ( (LuceneIndex) index ).nrtRelease( searcher );
+
+                                                        } catch ( Exception ex ) {
+                                                            ex.printStackTrace();
+                                                            fail();
                                                         }
                                                     } );
 

@@ -26,7 +26,9 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
+import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.model.KObject;
@@ -38,6 +40,8 @@ import static org.junit.Assert.*;
 import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.toKObject;
 import static org.uberfire.ext.metadata.io.KObjectUtil.*;
 
+@RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
+@BMScript(value = "byteman/index.btm")
 public class IOServiceIndexedGitImplTest extends BaseIndexTest {
 
     protected final Date dateValue = new Date();
@@ -49,6 +53,7 @@ public class IOServiceIndexedGitImplTest extends BaseIndexTest {
 
     @Test
     public void testIndexedFile() throws IOException, InterruptedException {
+        setupCountDown( 2 );
         final Path path1 = getBasePath( this.getClass().getSimpleName() ).resolve( "myIndexedFile.txt" );
         ioService().write( path1,
                            "ooooo!",
@@ -104,7 +109,8 @@ public class IOServiceIndexedGitImplTest extends BaseIndexTest {
                                }
                            } );
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        waitForCountDown( 5000 );
+
         assertNotNull( config.getMetaModelStore().getMetaObject( Path.class.getName() ) );
 
         assertNotNull( config.getMetaModelStore().getMetaObject( Path.class.getName() ).getProperty( "int" ) );

@@ -24,7 +24,6 @@ import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.ext.metadata.engine.Indexer;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
-import org.uberfire.ext.metadata.engine.Observer;
 import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.io.IOService;
@@ -52,18 +51,14 @@ public final class BatchIndex {
     private final IOService ioService;
     private final Class<? extends FileAttributeView>[] views;
     private final AtomicBoolean indexDisposed = new AtomicBoolean( false );
-    private final Observer observer;
 
     public BatchIndex( final MetaIndexEngine indexEngine,
                        final IOService ioService,
-                       final Observer observer,
                        final Class<? extends FileAttributeView>... views ) {
         this.indexEngine = checkNotNull( "indexEngine",
                                          indexEngine );
         this.ioService = checkNotNull( "ioService",
                                        ioService );
-        this.observer = checkNotNull( "observer",
-                                      observer );
         this.views = views;
     }
 
@@ -150,7 +145,7 @@ public final class BatchIndex {
                                                     attrs );
 
                                       if ( !file.getFileName().toString().startsWith( "." ) ) {
-                                          
+
                                           LOG.debug( "Indexing " + file.toUri() );
 
                                           //Default indexing
@@ -227,18 +222,15 @@ public final class BatchIndex {
     }
 
     private void logInformation( final String message ) {
-        observer.information( message );
         LOG.info( message );
     }
 
     private void logWarning( final String message ) {
-        observer.warning( message );
         LOG.warn( message );
     }
 
     private void logError( final String message,
                            final Throwable throwable ) {
-        observer.error( message );
         LOG.error( message,
                    throwable );
     }
