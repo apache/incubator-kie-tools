@@ -24,23 +24,16 @@ import java.util.Set;
 @Portable
 public class TestScenarioResult {
 
-    private String identifier;
     private Scenario scenario;
     private Set<String> log;
 
     public TestScenarioResult() {
     }
 
-    public TestScenarioResult(String identifier,
-                              Scenario scenario,
+    public TestScenarioResult(Scenario scenario,
                               Set<String> log) {
-        this.identifier = identifier;
         this.scenario = scenario;
         this.log = log;
-    }
-
-    public String getIdentifier() {
-        return identifier;
     }
 
     public Scenario getScenario() {

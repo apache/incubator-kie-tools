@@ -210,8 +210,7 @@ public class ScenarioEditorPresenterTest {
             }
 
             @Override public TestScenarioResult runScenario(Path path, Scenario scenario) {
-                TestScenarioResult result = new TestScenarioResult("user",
-                                                                   scenarioRunResult,
+                TestScenarioResult result = new TestScenarioResult(scenarioRunResult,
                                                                    new HashSet<String>());
                 remoteCallback.callback(result);
                 return null;

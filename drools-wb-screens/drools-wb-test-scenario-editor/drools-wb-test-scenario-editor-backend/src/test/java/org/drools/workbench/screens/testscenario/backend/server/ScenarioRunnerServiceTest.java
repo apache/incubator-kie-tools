@@ -60,7 +60,6 @@ public class ScenarioRunnerServiceTest {
     public void setUp() throws Exception {
         ConfigurationService configurationService = mock(ConfigurationService.class);
         KieProjectService projectService = mock(KieProjectService.class);
-        User identity = mock(User.class);
 
         defaultTestResultMessageEvent = spy(new TestResultMessageEventMock());
 
@@ -68,11 +67,9 @@ public class ScenarioRunnerServiceTest {
                                             defaultTestResultMessageEvent,
                                             sessionService,
                                             projectService,
-                                            scenarioLoader,
-                                            identity);
+                                            scenarioLoader);
 
         when(sessionService.newDefaultKieSessionWithPseudoClock(any(KieProject.class))).thenReturn(defaultPseudoClockKieSession);
-        when(identity.getIdentifier()).thenReturn("testUser");
 
     }
 
@@ -86,7 +83,7 @@ public class ScenarioRunnerServiceTest {
 
         ArgumentCaptor<TestResultMessage> argumentCaptor = ArgumentCaptor.forClass(TestResultMessage.class);
         verify(defaultTestResultMessageEvent).fire(argumentCaptor.capture());
-        assertEquals("testUser", argumentCaptor.getValue().getIdentifier());
+        assertEquals(ScenarioRunnerService.TEST_SCENARIO_SERVICE_ID, argumentCaptor.getValue().getIdentifier());
     }
 
     @Test
@@ -104,7 +101,7 @@ public class ScenarioRunnerServiceTest {
 
         ArgumentCaptor<TestResultMessage> argumentCaptor = ArgumentCaptor.forClass(TestResultMessage.class);
         verify(defaultTestResultMessageEvent).fire(argumentCaptor.capture());
-        assertEquals("testUser", argumentCaptor.getValue().getIdentifier());
+        assertEquals(ScenarioRunnerService.TEST_SCENARIO_SERVICE_ID, argumentCaptor.getValue().getIdentifier());
     }
 
     private Scenario makeScenario(String name) {

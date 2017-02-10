@@ -36,7 +36,6 @@ import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
@@ -55,12 +54,12 @@ import static org.drools.workbench.screens.testscenario.backend.server.ScenarioU
 public class ScenarioRunnerService
         implements TestService {
 
+    public static final String TEST_SCENARIO_SERVICE_ID = "test-scenario-service";
     protected KieProjectService        projectService;
     private   ScenarioLoader           scenarioLoader;
     private   SessionService           sessionService;
     private   Event<TestResultMessage> defaultTestResultMessageEvent;
     private   ConfigurationService     configurationService;
-    protected User                     identity;
 
     public ScenarioRunnerService() {
     }
@@ -70,14 +69,12 @@ public class ScenarioRunnerService
                                  final Event<TestResultMessage> defaultTestResultMessageEvent,
                                  final SessionService sessionService,
                                  final KieProjectService projectService,
-                                 final ScenarioLoader scenarioLoader,
-                                 final User identity) {
+                                 final ScenarioLoader scenarioLoader) {
         this.configurationService = configurationService;
         this.defaultTestResultMessageEvent = defaultTestResultMessageEvent;
         this.sessionService = sessionService;
         this.projectService = projectService;
         this.scenarioLoader = scenarioLoader;
-        this.identity = identity;
     }
 
     public TestScenarioResult run(final Scenario scenario,
@@ -97,7 +94,7 @@ public class ScenarioRunnerService
 
             run(scenarioRunner, defaultTestResultMessageEvent);
 
-            return new TestScenarioResult(identity.getIdentifier(), scenario, auditLogger.getLog());
+            return new TestScenarioResult(scenario, auditLogger.getLog());
 
         } catch (InitializationError initializationError) {
             throw new GenericPortableException(initializationError.getMessage());
@@ -146,7 +143,7 @@ public class ScenarioRunnerService
 
         testResultMessageEvent.fire(
                 new TestResultMessage(
-                        identity.getIdentifier(),
+                        TEST_SCENARIO_SERVICE_ID,
                         result.getRunCount(),
                         result.getRunTime(),
                         failures));
