@@ -127,9 +127,29 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField(
+            type = TextAreaFieldType.class,
+            labelKey = "onentryaction",
+            afterElement = "adHocAutostart",
+            settings = {@FieldParam(name = "rows", value = "5")}
+    )
+    @Valid
+    private OnEntryAction onEntryAction;
+
+    @Property
+    @FormField(
+            type = TextAreaFieldType.class,
+            labelKey = "onexitaction",
+            afterElement = "onEntryAction",
+            settings = {@FieldParam(name = "rows", value = "5")}
+    )
+    @Valid
+    private OnExitAction onExitAction;
+
+    @Property
+    @FormField(
             type = ListBoxFieldType.class,
             labelKey = "scriptLanguage",
-            afterElement = "adHocAutostart"
+            afterElement = "onExitAction"
     )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
@@ -147,6 +167,8 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
              new Description(""),
              new CreatedBy(),
              new AdHocAutostart(),
+             new OnEntryAction(""),
+             new OnExitAction(""),
              new ScriptLanguage(""));
     }
 
@@ -159,6 +181,8 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
                                 final @MapsTo("description") Description description,
                                 final @MapsTo("createdBy") CreatedBy createdBy,
                                 final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
+                                final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
+                                final @MapsTo("onExitAction") OnExitAction onExitAction,
                                 final @MapsTo("scriptLanguage") ScriptLanguage scriptLanguage) {
         this.taskName = taskName;
         this.isAsync = isAsync;
@@ -169,6 +193,8 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.description = description;
         this.createdBy = createdBy;
         this.adHocAutostart = adHocAutostart;
+        this.onEntryAction = onEntryAction;
+        this.onExitAction = onExitAction;
         this.scriptLanguage = scriptLanguage;
     }
 
@@ -246,6 +272,22 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
 
     public void setAdHocAutostart(AdHocAutostart adHocAutostart) {
         this.adHocAutostart = adHocAutostart;
+    }
+
+    public OnEntryAction getOnEntryAction() {
+        return onEntryAction;
+    }
+
+    public void setOnEntryAction(OnEntryAction onEntryAction) {
+        this.onEntryAction = onEntryAction;
+    }
+
+    public OnExitAction getOnExitAction() {
+        return onExitAction;
+    }
+
+    public void setOnExitAction(OnExitAction onExitAction) {
+        this.onExitAction = onExitAction;
     }
 
     public ScriptLanguage getScriptLanguage() {

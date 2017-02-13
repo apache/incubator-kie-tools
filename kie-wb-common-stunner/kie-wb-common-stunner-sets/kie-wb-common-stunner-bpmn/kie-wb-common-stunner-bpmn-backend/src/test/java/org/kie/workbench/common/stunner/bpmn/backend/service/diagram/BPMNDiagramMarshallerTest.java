@@ -575,10 +575,6 @@ public class BPMNDiagramMarshallerTest {
         assertEquals("true",
                      userTaskExecutionSet.getIsAsync().getValue().toString());
 
-        // empty now until onEntry/Exit scripts are added
-        assertEquals("",
-                     userTaskExecutionSet.getScriptLanguage().getValue());
-
         assertEquals("false",
                      userTaskExecutionSet.getSkippable().getValue().toString());
 
@@ -596,6 +592,15 @@ public class BPMNDiagramMarshallerTest {
 
         assertEquals("3",
                      userTaskExecutionSet.getPriority().getValue());
+
+        assertEquals("System.out.println(\"Hello\");",
+                     userTaskExecutionSet.getOnEntryAction().getValue());
+
+        assertEquals("System.out.println(\"Bye\");",
+                     userTaskExecutionSet.getOnExitAction().getValue());
+
+        assertEquals("java",
+                     userTaskExecutionSet.getScriptLanguage().getValue());
     }
 
     @Test
@@ -745,6 +750,15 @@ public class BPMNDiagramMarshallerTest {
         assertEquals("true",
                      javascriptScriptTask.getExecutionSet().getIsAsync().getValue().toString());
 
+        assertEquals("alert(\"hello\");",
+                     javascriptScriptTask.getExecutionSet().getOnEntryAction().getValue());
+
+        assertEquals("alert(\"bye\");",
+                     javascriptScriptTask.getExecutionSet().getOnExitAction().getValue());
+
+        assertEquals("true",
+                     javascriptScriptTask.getExecutionSet().getIsAsync().getValue().toString());
+
         assertNotNull(javaScriptTask);
         assertNotNull(javaScriptTask.getExecutionSet());
         assertNotNull(javaScriptTask.getExecutionSet().getScript());
@@ -767,6 +781,15 @@ public class BPMNDiagramMarshallerTest {
                      javaScriptTask.getExecutionSet().getScript().getValue());
         assertEquals("java",
                      javaScriptTask.getExecutionSet().getScriptLanguage().getValue());
+        assertEquals("true",
+                     javaScriptTask.getExecutionSet().getIsAsync().getValue().toString());
+
+        assertEquals("System.out.println(\"Hello\");",
+                     javaScriptTask.getExecutionSet().getOnEntryAction().getValue());
+
+        assertEquals("System.out.println(\"Bye\");",
+                     javaScriptTask.getExecutionSet().getOnExitAction().getValue());
+
         assertEquals("true",
                      javaScriptTask.getExecutionSet().getIsAsync().getValue().toString());
     }
@@ -858,6 +881,18 @@ public class BPMNDiagramMarshallerTest {
                      businessRuleTask.getExecutionSet().getRuleFlowGroup().getValue());
         assertEquals("true",
                      businessRuleTask.getExecutionSet().getIsAsync().getValue().toString());
+
+        assertEquals("true",
+                     businessRuleTask.getExecutionSet().getIsAsync().getValue().toString());
+
+        assertEquals("System.out.println(\"Hello\");",
+                     businessRuleTask.getExecutionSet().getOnEntryAction().getValue());
+
+        assertEquals("System.out.println(\"Bye\");",
+                     businessRuleTask.getExecutionSet().getOnExitAction().getValue());
+
+        assertEquals("java",
+                     businessRuleTask.getExecutionSet().getScriptLanguage().getValue());
     }
 
     @Test
@@ -1151,6 +1186,10 @@ public class BPMNDiagramMarshallerTest {
                                            ' ').replaceAll("( )+",
                                                            " ");
         assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
+
+        assertTrue(flatResult.contains("<drools:onEntry-script scriptFormat=\"http://www.java.com/java\">"));
+        assertTrue(flatResult.contains("<drools:script><![CDATA[System.out.println(\"Hello\");]]></drools:script>"));
+        assertTrue(flatResult.contains("<drools:script><![CDATA[System.out.println(\"Bye\");]]></drools:script>"));
     }
 
     @Test
@@ -1218,6 +1257,14 @@ public class BPMNDiagramMarshallerTest {
                                            ' ').replaceAll("( )+",
                                                            " ");
         assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
+
+        assertTrue(flatResult.contains("<drools:onEntry-script scriptFormat=\"http://www.javascript.com/javascript\">"));
+        assertTrue(flatResult.contains("<drools:script><![CDATA[alert(\"hello\");]]></drools:script>"));
+        assertTrue(flatResult.contains("<drools:script><![CDATA[alert(\"bye\");]]></drools:script>"));
+
+        assertTrue(flatResult.contains("<drools:onEntry-script scriptFormat=\"http://www.java.com/java\">"));
+        assertTrue(flatResult.contains("<drools:script><![CDATA[System.out.println(\"Hello\");]]></drools:script>"));
+        assertTrue(flatResult.contains("<drools:script><![CDATA[System.out.println(\"Bye\");]]></drools:script>"));
     }
 
     @Test
@@ -1242,11 +1289,17 @@ public class BPMNDiagramMarshallerTest {
         assertDiagram(diagram,
                       2);
 
-        assertTrue(result.contains("<bpmn2:businessRuleTask id=\"_16D006B5-3703-4A67-AE44-6483338E86C2\" drools:ruleFlowGroup=\"my-ruleflow-group\" name=\"my business rule task\">"));
+        assertTrue(result.contains("<bpmn2:businessRuleTask "));
         String flatResult = result.replace('\n',
                                            ' ').replaceAll("( )+",
                                                            " ");
         assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
+
+        assertTrue(flatResult.contains("<drools:onEntry-script scriptFormat=\"http://www.java.com/java\">"));
+
+        assertTrue(flatResult.contains("<drools:script><![CDATA[System.out.println(\"Hello\");]]></drools:script>"));
+
+        assertTrue(flatResult.contains("<drools:script><![CDATA[System.out.println(\"Bye\");]]></drools:script>"));
     }
 
     @Test

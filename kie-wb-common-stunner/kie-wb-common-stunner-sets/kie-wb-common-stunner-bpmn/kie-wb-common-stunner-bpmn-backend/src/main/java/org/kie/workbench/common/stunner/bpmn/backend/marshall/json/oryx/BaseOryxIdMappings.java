@@ -56,6 +56,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElem
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CreatedBy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Description;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Skippable;
@@ -161,6 +163,10 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 "createdby");
             put(AdHocAutostart.class,
                 "customautostart");
+            put(OnEntryAction.class,
+                "onentryactions");
+            put(OnExitAction.class,
+                "onexitactions");
 
             // Simulation properties
             put(TimeUnit.class,

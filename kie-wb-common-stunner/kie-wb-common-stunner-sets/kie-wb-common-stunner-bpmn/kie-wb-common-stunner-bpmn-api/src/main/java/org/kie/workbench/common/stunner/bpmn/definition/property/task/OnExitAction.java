@@ -1,11 +1,11 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,41 +31,41 @@ import org.kie.workbench.common.stunner.core.definition.annotation.property.Read
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-import org.kie.workbench.common.stunner.core.definition.property.type.BooleanType;
+import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
 
 @Portable
 @Bindable
 @Property
 @FieldDefinition
-public class AdHocAutostart implements BPMNProperty {
+public class OnExitAction implements BPMNProperty {
 
     @Caption
-    public static final transient String caption = "AdHoc Autostart";
+    public static final transient String caption = "On Exit Action";
 
     @Description
-    public static final transient String description = "AdHoc Autostart";
+    public static final transient String description = "On Exit Action";
 
     @ReadOnly
     @FieldReadOnly
-    public Boolean readOnly = false;
+    private Boolean readOnly = false;
 
     @Optional
     public static final Boolean optional = false;
 
     @Type
-    public static final PropertyType type = new BooleanType();
+    public static final PropertyType type = new StringType();
 
     @DefaultValue
-    public static final Boolean defaultValue = false;
+    public static final transient String defaultValue = "";
 
     @Value
     @FieldValue
-    private Boolean value = defaultValue;
+    private String value = defaultValue;
 
-    public AdHocAutostart() {
+    public OnExitAction() {
     }
 
-    public AdHocAutostart(final Boolean value) {
+    public OnExitAction(final String value) {
         this.value = value;
     }
 
@@ -89,15 +89,15 @@ public class AdHocAutostart implements BPMNProperty {
         return type;
     }
 
-    public Boolean getDefaultValue() {
+    public String getDefaultValue() {
         return defaultValue;
     }
 
-    public Boolean getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(final Boolean value) {
+    public void setValue(final String value) {
         this.value = value;
     }
 }

@@ -68,9 +68,29 @@ public class ScriptTaskExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField(
+            type = TextAreaFieldType.class,
+            labelKey = "onentryaction",
+            afterElement = "scriptLanguage",
+            settings = {@FieldParam(name = "rows", value = "5")}
+    )
+    @Valid
+    private OnEntryAction onEntryAction;
+
+    @Property
+    @FormField(
+            type = TextAreaFieldType.class,
+            labelKey = "onexitaction",
+            afterElement = "onEntryAction",
+            settings = {@FieldParam(name = "rows", value = "5")}
+    )
+    @Valid
+    private OnExitAction onExitAction;
+
+    @Property
+    @FormField(
             type = CheckBoxFieldType.class,
             labelKey = "isAsync",
-            afterElement = "scriptLanguage"
+            afterElement = "onExitAction"
     )
     @Valid
     private IsAsync isAsync;
@@ -78,14 +98,20 @@ public class ScriptTaskExecutionSet implements BPMNPropertySet {
     public ScriptTaskExecutionSet() {
         this(new Script(""),
              new ScriptLanguage(""),
+             new OnEntryAction(""),
+             new OnExitAction(""),
              new IsAsync());
     }
 
     public ScriptTaskExecutionSet(final @MapsTo("script") Script script,
                                   final @MapsTo("scriptLanguage") ScriptLanguage scriptLanguage,
+                                  final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
+                                  final @MapsTo("onExitAction") OnExitAction onExitAction,
                                   final @MapsTo("isAsync") IsAsync isAsync) {
         this.script = script;
         this.scriptLanguage = scriptLanguage;
+        this.onEntryAction = onEntryAction;
+        this.onExitAction = onExitAction;
         this.isAsync = isAsync;
     }
 
@@ -107,6 +133,22 @@ public class ScriptTaskExecutionSet implements BPMNPropertySet {
 
     public void setScriptLanguage(final ScriptLanguage scriptLanguage) {
         this.scriptLanguage = scriptLanguage;
+    }
+
+    public OnEntryAction getOnEntryAction() {
+        return onEntryAction;
+    }
+
+    public void setOnEntryAction(OnEntryAction onEntryAction) {
+        this.onEntryAction = onEntryAction;
+    }
+
+    public OnExitAction getOnExitAction() {
+        return onExitAction;
+    }
+
+    public void setOnExitAction(OnExitAction onExitAction) {
+        this.onExitAction = onExitAction;
     }
 
     public IsAsync getIsAsync() {
