@@ -39,7 +39,6 @@
     <module>uberfire-security-management-client</module>
     <module>uberfire-widgets-security-management</module>
     <module>uberfire-security-management-client-wb</module>
-    <module>uberfire-security-management-webapp</module>
   </modules>
 
   <dependencyManagement>
