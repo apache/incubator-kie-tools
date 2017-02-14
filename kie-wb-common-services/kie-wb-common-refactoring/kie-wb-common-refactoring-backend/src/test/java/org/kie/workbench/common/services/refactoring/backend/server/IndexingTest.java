@@ -66,7 +66,7 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
     protected static final Logger logger = LoggerFactory.getLogger( IndexingTest.class );
 
     public static final String TEST_PROJECT_ROOT = "/a/mock/project/root";
-    public static final String TEST_PROJECT_NAME = "mockProject";
+    public static final String TEST_PROJECT_NAME = "mock-project";
 
     public static final String TEST_PACKAGE_NAME = "org.kie.workbench.mock.package";
 

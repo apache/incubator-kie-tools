@@ -15,10 +15,6 @@
  */
 package org.kie.workbench.common.screens.datamodeller.backend.server.indexing;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
@@ -53,6 +49,8 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
+
+import static org.junit.Assert.*;
 
 /**
  * This annotation is used by the {{@link #testReferenceQueryInfrastructure()} method.
@@ -130,56 +128,64 @@ public class ImpactAnalysisJavaFileTest extends BaseIndexingTest<JavaResourceTyp
     @Test
     public void testReferenceQueryInfrastructure() throws Exception {
         Class referencedClass = AnnotationValuesAnnotation.class;
-        // build request
-        // @formatter:off
         QueryOperationRequest queryOpRequest = QueryOperationRequest
-                .references(referencedClass.getName(), ResourceType.JAVA)
+                .references( referencedClass.getName(),
+                             ResourceType.JAVA )
                 .inAllProjects()
-                .onBranch("master");
-        // @formatter:on
-
-        List<RefactoringPageRow> response = service.queryToList(queryOpRequest);
-        assertNotNull("Null PageResonse", response);
-        assertNotNull("Null PageRefactoringRow list", response );
-        for( RefactoringPageRow row : response ) {
-           org.uberfire.backend.vfs.Path rowPath = (org.uberfire.backend.vfs.Path) row.getValue();
-           logger.debug( rowPath.toURI() );
-        }
-        assertEquals("Objects referencing " + AnnotationValuesAnnotation.class.getName(), 1, response.size() );
-
-        Object pageRowValue = response.get(0).getValue();
-        assertTrue( "Expected a " + org.uberfire.backend.vfs.Path.class.getName() + ", not a " + pageRowValue.getClass().getSimpleName(),
-               org.uberfire.backend.vfs.Path.class.isAssignableFrom(pageRowValue.getClass()) );
-        String fileName = ((org.uberfire.backend.vfs.Path) pageRowValue).getFileName();
-        assertTrue( "File does not end with '.java'", fileName.endsWith(".java"));
-        assertEquals( "File name", this.getClass().getSimpleName(), fileName.subSequence(0, fileName.indexOf(".java")));
-
-
-        // build request
-        // @formatter:off
-        queryOpRequest = QueryOperationRequest
-                .references(referencedClass.getName(), ResourceType.JAVA)
-                .inProject(TEST_PROJECT_NAME)
                 .onAllBranches();
-        // @formatter:on
 
-        response = service.queryToList(queryOpRequest);
-        assertNotNull("Null PageResonse", response);
-        assertNotNull("Null PageRefactoringRow list", response );
-        assertEquals("Objects referencing " + AnnotationValuesAnnotation.class.getName(), 1, response.size() );
+        testQueryOperationRequest( queryOpRequest );
 
-        for( RefactoringPageRow row : response ) {
+        queryOpRequest = QueryOperationRequest
+                .references( referencedClass.getName(),
+                             ResourceType.JAVA )
+                .inProject( TEST_PROJECT_NAME )
+                .onAllBranches();
+
+        testQueryOperationRequest( queryOpRequest );
+
+        queryOpRequest = QueryOperationRequest
+                .references( referencedClass.getName(),
+                             ResourceType.JAVA )
+                .inProjectRootPathURI( TEST_PROJECT_ROOT )
+                .onAllBranches();
+
+        testQueryOperationRequest( queryOpRequest );
+
+        queryOpRequest = QueryOperationRequest
+                .references( referencedClass.getName(),
+                             ResourceType.JAVA )
+                .inAllProjects()
+                .onBranch( "master" );
+
+        testQueryOperationRequest( queryOpRequest );
+    }
+
+    private void testQueryOperationRequest( QueryOperationRequest queryOpRequest ) {
+        List<RefactoringPageRow> response = service.queryToList( queryOpRequest );
+        assertNotNull( "Null PageResonse",
+                       response );
+        assertNotNull( "Null PageRefactoringRow list",
+                       response );
+        assertEquals( "Objects referencing " + AnnotationValuesAnnotation.class.getName(),
+                      1,
+                      response.size() );
+
+        for ( RefactoringPageRow row : response ) {
             org.uberfire.backend.vfs.Path rowPath = (org.uberfire.backend.vfs.Path) row.getValue();
             logger.debug( rowPath.toURI() );
         }
 
-        pageRowValue = response.get(0).getValue();
+        Object pageRowValue = response.get( 0 ).getValue();
         assertTrue( "Expected a " + org.uberfire.backend.vfs.Path.class.getName() + ", not a " + pageRowValue.getClass().getSimpleName(),
-               org.uberfire.backend.vfs.Path.class.isAssignableFrom(pageRowValue.getClass()) );
-        fileName = ((org.uberfire.backend.vfs.Path) pageRowValue).getFileName();
-        assertTrue( "File does not end with '.java'", fileName.endsWith(".java"));
-        assertEquals( "File name", this.getClass().getSimpleName(), fileName.subSequence(0, fileName.indexOf(".java")));
-
+                    org.uberfire.backend.vfs.Path.class.isAssignableFrom( pageRowValue.getClass() ) );
+        String fileName = ( (org.uberfire.backend.vfs.Path) pageRowValue ).getFileName();
+        assertTrue( "File does not end with '.java'",
+                    fileName.endsWith( ".java" ) );
+        assertEquals( "File name",
+                      this.getClass().getSimpleName(),
+                      fileName.subSequence( 0,
+                                            fileName.indexOf( ".java" ) ) );
     }
 
     private String getLocationOfTestClass( String fileName ) throws Exception {

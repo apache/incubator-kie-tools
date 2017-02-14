@@ -42,6 +42,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.standa
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueBranchNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
@@ -220,6 +221,14 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
         String projectName = refOpRequest.getProjectName();
         if( projectName != null && projectName != QueryOperationRequest.ALL ) {
             ValueProjectNameIndexTerm  valueIndexTerm = new ValueProjectNameIndexTerm(projectName);
+            Set<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>(1);
+            queryTerms.add(valueIndexTerm);
+            request.getQueryTerms().addAll(queryTerms);
+        }
+
+        String projectRootPathURI = refOpRequest.getProjectRootPathURI();
+        if( projectRootPathURI != null && projectRootPathURI != QueryOperationRequest.ALL ) {
+            ValueProjectRootPathIndexTerm valueIndexTerm = new ValueProjectRootPathIndexTerm( projectRootPathURI );
             Set<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>(1);
             queryTerms.add(valueIndexTerm);
             request.getQueryTerms().addAll(queryTerms);

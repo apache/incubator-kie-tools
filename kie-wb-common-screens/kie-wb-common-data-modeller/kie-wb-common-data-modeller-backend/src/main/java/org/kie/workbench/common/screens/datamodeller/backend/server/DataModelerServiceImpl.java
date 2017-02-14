@@ -1062,7 +1062,6 @@ public class DataModelerServiceImpl
                                        String className ) {
 
         KieProject project = projectService.resolveProject(currentPath);
-        String projectName = project.getProjectName();
 
         String branch = "master";
         if( currentPath instanceof SegmentedPath ) {
@@ -1071,7 +1070,7 @@ public class DataModelerServiceImpl
 
         QueryOperationRequest request = QueryOperationRequest
                 .references(className, ResourceType.JAVA)
-                .inProject(projectName)
+                .inProjectRootPathURI( project.getRootPath().toURI() )
                 .onBranch(branch);
         return executeReferencesQuery( request );
     }
@@ -1082,7 +1081,6 @@ public class DataModelerServiceImpl
                                        String fieldName ) {
 
         KieProject project = projectService.resolveProject(currentPath);
-        String projectName = project.getProjectName();
 
         String branch = "master";
         if( currentPath instanceof SegmentedPath ) {
@@ -1091,7 +1089,7 @@ public class DataModelerServiceImpl
 
         QueryOperationRequest request = QueryOperationRequest
                 .referencesPart(className, fieldName, PartType.FIELD)
-                .inProject(projectName)
+                .inProjectRootPathURI( project.getRootPath().toURI() )
                 .onBranch(branch);
         return executeReferencesQuery( request );
     }

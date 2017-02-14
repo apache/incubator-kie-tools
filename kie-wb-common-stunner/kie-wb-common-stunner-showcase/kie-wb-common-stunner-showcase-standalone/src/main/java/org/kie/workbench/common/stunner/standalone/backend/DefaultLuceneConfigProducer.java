@@ -27,6 +27,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.LowerCaseOnlyAnalyzer;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
@@ -62,6 +63,8 @@ public class DefaultLuceneConfigProducer {
         return new HashMap<String, Analyzer>() {{
             put(ProjectRootPathIndexTerm.TERM,
                 new FilenameAnalyzer());
+            put( ProjectNameIndexTerm.TERM,
+                 new LowerCaseOnlyAnalyzer());
             put(PackageNameIndexTerm.TERM,
                 new LowerCaseOnlyAnalyzer());
         }};

@@ -40,6 +40,7 @@ public class RefactorOperationBuilder<R extends AbstractOperationRequest> extend
         this.request.setPageSize(pageSize);
 
         this.request.setProjectName(projectName);
+        this.request.setProjectRootPathURI( projectRootPathURI );
         this.request.setBranchName(branchName);
 
         return this.request;
@@ -128,8 +129,14 @@ public class RefactorOperationBuilder<R extends AbstractOperationRequest> extend
             return new RequiresBranch(delegate);
         }
 
+        public RequiresBranch inProjectRootPathURI( String projectRootPathURI ) {
+            this.delegate.projectRootPathURI = projectRootPathURI;
+            return new RequiresBranch(delegate);
+        }
+
         public RequiresBranch inAllProjects() {
             this.delegate.projectName = ALL;
+            this.delegate.projectRootPathURI = ALL;
             return new RequiresBranch(delegate);
         }
     }

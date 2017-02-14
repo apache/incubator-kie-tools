@@ -34,6 +34,7 @@ public class AbstractOperationRequest extends PageRequest {
     protected OperationType changeType;
 
     protected String projectName = ALL;
+    protected String projectRootPathURI = ALL;
     protected String branchName = ALL;
 
     // git branch names may not contain ".."
@@ -50,6 +51,14 @@ public class AbstractOperationRequest extends PageRequest {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getProjectRootPathURI() {
+        return projectRootPathURI;
+    }
+
+    public void setProjectRootPathURI( String projectRootPathURI ) {
+        this.projectRootPathURI = projectRootPathURI;
     }
 
     public String getBranchName() {

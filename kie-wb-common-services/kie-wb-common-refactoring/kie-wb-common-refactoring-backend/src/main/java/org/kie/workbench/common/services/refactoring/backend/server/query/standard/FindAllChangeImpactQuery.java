@@ -27,6 +27,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.respon
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValuePartReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueBranchNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
@@ -69,7 +70,8 @@ public class FindAllChangeImpactQuery extends AbstractFindQuery implements Named
                 ValuePartReferenceIndexTerm.class,
                 ValueSharedPartIndexTerm.class,
                 ValueBranchNameIndexTerm.class,
-                ValueProjectNameIndexTerm.class
+                ValueProjectNameIndexTerm.class,
+                ValueProjectRootPathIndexTerm.class
         };
 
         // check invalid

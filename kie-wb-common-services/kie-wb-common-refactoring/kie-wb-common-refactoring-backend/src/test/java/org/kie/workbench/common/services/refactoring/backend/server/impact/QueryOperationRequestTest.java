@@ -155,19 +155,30 @@ public class QueryOperationRequestTest extends BaseIndexingTest<TestDrlFileTypeD
     public void exampleCode() {
         String className = this.getClass().getName();
         String projectName = "org.my.package:my-project:1.0";
+        String projectRootPathURI = "default://repo/my-project";
         String newClassName = Random.class.getName();
 
         DeleteOperationRequest delReq = DeleteOperationRequest.deleteReferences(className, ResourceType.JAVA).inProject(projectName).onAllBranches();
 
+        delReq = DeleteOperationRequest.deleteReferences(className, ResourceType.JAVA).inProjectRootPathURI( projectRootPathURI ).onAllBranches();
+
         delReq = DeleteOperationRequest.deletePartReferences(className, "setAge(long)", PartType.METHOD).inProject(projectName).onAllBranches();
+
+        delReq = DeleteOperationRequest.deletePartReferences(className, "setAge(long)", PartType.METHOD).inProjectRootPathURI( projectRootPathURI ).onAllBranches();
 
         RefactorOperationRequest refOp = RefactorOperationRequest.refactorReferences(className, ResourceType.JAVA, newClassName).inProject(projectName).onBranch("branch-name");
 
+        refOp = RefactorOperationRequest.refactorReferences(className, ResourceType.JAVA, newClassName).inProjectRootPathURI( projectRootPathURI ).onBranch("branch-name");
+
         refOp = RefactorOperationRequest.refactorPartReferences(className, "toName(int)", PartType.METHOD, "toSurName(int)").inProject(projectName).onAllBranches();
+
+        refOp = RefactorOperationRequest.refactorPartReferences(className, "toName(int)", PartType.METHOD, "toSurName(int)").inProjectRootPathURI( projectRootPathURI ).onAllBranches();
 
         refOp = RefactorOperationRequest.refactorPartReferences(className, "toName(int)", PartType.METHOD, "toSurName(int)").inProject(projectName).onBranch("branch-name");
 
         QueryOperationRequest queOp = QueryOperationRequest.references(className, ResourceType.JAVA).inProject(projectName).onBranch("branch-name");
+
+        queOp = QueryOperationRequest.references(className, ResourceType.JAVA).inProjectRootPathURI( projectRootPathURI ).onBranch("branch-name");
     }
 
 }
