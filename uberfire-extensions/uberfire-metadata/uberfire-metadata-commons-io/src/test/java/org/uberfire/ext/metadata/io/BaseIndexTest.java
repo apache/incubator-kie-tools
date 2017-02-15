@@ -143,4 +143,18 @@ public abstract class BaseIndexTest {
         return dir;
     }
 
+    public void setupCountDown( final int i ) {
+        // do nothing -- Byteman will inject code here
+    }
+
+    public void waitForCountDown( final int timout ) {
+        // do nothing -- Byteman will inject code here
+    }
+
+    public int getStartBatchCount() {
+        // do nothing -- Byteman will inject code here
+        return 0;
+    }
+
+
 }

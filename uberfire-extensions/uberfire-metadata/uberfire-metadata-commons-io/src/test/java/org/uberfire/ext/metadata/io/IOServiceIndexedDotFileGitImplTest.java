@@ -24,7 +24,9 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
+import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.model.schema.MetaObject;
@@ -33,57 +35,60 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 
 import static org.junit.Assert.*;
-import static org.uberfire.ext.metadata.io.KObjectUtil.toKCluster;
+import static org.uberfire.ext.metadata.io.KObjectUtil.*;
 
+@RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
+@BMScript(value = "byteman/index.btm")
 public class IOServiceIndexedDotFileGitImplTest extends BaseIndexTest {
 
     @Override
     protected String[] getRepositoryNames() {
-        return new String[]{this.getClass().getSimpleName()};
+        return new String[]{ this.getClass().getSimpleName() };
     }
 
     @Test
     public void testIndexedDotFile() throws IOException, InterruptedException {
-        final Path path = getBasePath(this.getClass().getSimpleName()).resolve("dotFile.txt");
+        setupCountDown( 2 );
+        final Path path = getBasePath( this.getClass().getSimpleName() ).resolve( "dotFile.txt" );
         //Write the "real path" with no attributes and hence no "dot file"
-        ioService().write(path,
-                          "ooooo!",
-                          Collections.<OpenOption>emptySet());
+        ioService().write( path,
+                           "ooooo!",
+                           Collections.<OpenOption>emptySet() );
 
         //Write an unmodified "real path" with attributes. This leads to only the "dot path" being indexed.
-        ioService().write(path,
-                          "ooooo!",
-                          Collections.<OpenOption>emptySet(),
-                          getFileAttributes());
+        ioService().write( path,
+                           "ooooo!",
+                           Collections.<OpenOption>emptySet(),
+                           getFileAttributes() );
 
-        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        waitForCountDown( 5000 );
 
-        final MetaObject mo = config.getMetaModelStore().getMetaObject(Path.class.getName());
+        final MetaObject mo = config.getMetaModelStore().getMetaObject( Path.class.getName() );
 
-        assertNotNull(mo);
-        assertNotNull(mo.getProperty("name"));
-        assertEquals(1,
-                     mo.getProperty("name").getTypes().size());
-        assertTrue(mo.getProperty("name").getTypes().contains(String.class));
+        assertNotNull( mo );
+        assertNotNull( mo.getProperty( "name" ) );
+        assertEquals( 1,
+                      mo.getProperty( "name" ).getTypes().size() );
+        assertTrue( mo.getProperty( "name" ).getTypes().contains( String.class ) );
 
-        final Index index = config.getIndexManager().get(toKCluster(path.getFileSystem()));
+        final Index index = config.getIndexManager().get( toKCluster( path.getFileSystem() ) );
 
-        final IndexSearcher searcher = ((LuceneIndex) index).nrtSearcher();
+        final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
 
-        final TopScoreDocCollector collector = TopScoreDocCollector.create(10);
+        final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
 
-        searcher.search(new TermQuery(new Term("name",
-                                               "value")),
-                        collector);
+        searcher.search( new TermQuery( new Term( "name",
+                                                  "value" ) ),
+                         collector );
 
         final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-        listHitPaths(searcher,
-                     hits);
+        listHitPaths( searcher,
+                      hits );
 
-        assertEquals(1,
-                     hits.length);
+        assertEquals( 1,
+                      hits.length );
 
-        ((LuceneIndex) index).nrtRelease(searcher);
+        ( (LuceneIndex) index ).nrtRelease( searcher );
     }
 
     private FileAttribute<?>[] getFileAttributes() {
@@ -98,6 +103,6 @@ public class IOServiceIndexedDotFileGitImplTest extends BaseIndexTest {
                     public String value() {
                         return "value";
                     }
-                }};
+                } };
     }
 }

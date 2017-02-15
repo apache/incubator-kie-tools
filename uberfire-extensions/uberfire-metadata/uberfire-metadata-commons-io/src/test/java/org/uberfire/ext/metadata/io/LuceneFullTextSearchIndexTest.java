@@ -23,7 +23,9 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.WildcardQuery;
+import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.engine.Index;
@@ -41,6 +43,8 @@ import static org.junit.Assert.*;
 import static org.uberfire.ext.metadata.engine.MetaIndexEngine.*;
 import static org.uberfire.ext.metadata.io.KObjectUtil.*;
 
+@RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
+@BMScript(value = "byteman/index.btm")
 public class LuceneFullTextSearchIndexTest extends BaseIndexTest {
 
     @Override
@@ -138,11 +142,12 @@ public class LuceneFullTextSearchIndexTest extends BaseIndexTest {
 
     @Test
     public void testFullTextIndexedFile() throws IOException, InterruptedException {
+        setupCountDown( 2 );
         final Path path1 = getBasePath( this.getClass().getSimpleName() ).resolve( "mydrlfile1.drl" );
         ioService().write( path1,
                            "Some cheese" );
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        waitForCountDown( 5000 );
 
         final Index index = config.getIndexManager().get( toKCluster( path1.getFileSystem() ) );
 
@@ -174,10 +179,13 @@ public class LuceneFullTextSearchIndexTest extends BaseIndexTest {
                           hits.length );
         }
 
+        setupCountDown( 2 );
 
         final Path path2 = getBasePath( this.getClass().getSimpleName() ).resolve( "a.drl" );
         ioService().write( path2,
                            "Some cheese" );
+
+        waitForCountDown( 5000 );
 
         {
             final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
