@@ -28,67 +28,86 @@ public class SpecManagementServiceCDITest {
 
     @Test
     public void testIsContainerIdValid() {
-        final SpecManagementServiceCDI specManagementService = spy( new SpecManagementServiceCDI() );
+        final SpecManagementServiceCDI specManagementService = spy(new SpecManagementServiceCDI());
 
-        final ServerTemplate serverTemplate = mock( ServerTemplate.class );
-        when( serverTemplate.getContainerSpec( any() ) ).thenReturn( null );
-        when( specManagementService.getServerTemplate( "templateId" ) ).thenReturn( serverTemplate );
+        final ServerTemplate serverTemplate = mock(ServerTemplate.class);
+        when(serverTemplate.getContainerSpec(any())).thenReturn(null);
+        when(specManagementService.getServerTemplate("templateId")).thenReturn(serverTemplate);
 
-        assertTrue( specManagementService.isContainerIdValid( "templateId", "111" ) );
-        assertTrue( specManagementService.isContainerIdValid( "templateId", "xxx" ) );
-        assertTrue( specManagementService.isContainerIdValid( "templateId", "aaa:bbb:ccc" ) );
-        assertTrue( specManagementService.isContainerIdValid( "templateId", "org.jbpm:Evaluation:1.0" ) );
-        assertTrue( specManagementService.isContainerIdValid( "templateId", "org.jbpm:Evaluation:1.0-SNAPSHOT" ) );
+        assertTrue(specManagementService.isContainerIdValid("templateId",
+                                                            "111"));
+        assertTrue(specManagementService.isContainerIdValid("templateId",
+                                                            "xxx"));
+        assertTrue(specManagementService.isContainerIdValid("templateId",
+                                                            "aaa:bbb:ccc"));
+        assertTrue(specManagementService.isContainerIdValid("templateId",
+                                                            "org.jbpm:Evaluation:1.0"));
+        assertTrue(specManagementService.isContainerIdValid("templateId",
+                                                            "org.jbpm:Evaluation:1.0-SNAPSHOT"));
+        assertTrue(specManagementService.isContainerIdValid("templateId",
+                                                            "org.jbpm:Evaluation:1.0_demo"));
 
-        assertFalse( specManagementService.isContainerIdValid( "templateId", "org.jbpm:Evaluation:1.0/SNAPSHOT" ) );
-        assertFalse( specManagementService.isContainerIdValid( "templateId", "org.jbpm:Evaluation:1.0&SNAPSHOT" ) );
-        assertFalse( specManagementService.isContainerIdValid( "templateId", "org.jbpm:Evaluation:1.0+SNAPSHOT" ) );
-        assertFalse( specManagementService.isContainerIdValid( "templateId", "org.jbpm:Evaluation:1.0`SNAPSHOT" ) );
-        assertFalse( specManagementService.isContainerIdValid( "templateId", "org.jbpm:Evaluation:1.0~SNAPSHOT" ) );
-        assertFalse( specManagementService.isContainerIdValid( "templateId", "aa&&aa" ) );
+        assertFalse(specManagementService.isContainerIdValid("templateId",
+                                                             "org.jbpm:Evaluation:1.0/SNAPSHOT"));
+        assertFalse(specManagementService.isContainerIdValid("templateId",
+                                                             "org.jbpm:Evaluation:1.0&SNAPSHOT"));
+        assertFalse(specManagementService.isContainerIdValid("templateId",
+                                                             "org.jbpm:Evaluation:1.0+SNAPSHOT"));
+        assertFalse(specManagementService.isContainerIdValid("templateId",
+                                                             "org.jbpm:Evaluation:1.0`SNAPSHOT"));
+        assertFalse(specManagementService.isContainerIdValid("templateId",
+                                                             "org.jbpm:Evaluation:1.0~SNAPSHOT"));
+        assertFalse(specManagementService.isContainerIdValid("templateId",
+                                                             "aa&&aa"));
     }
 
     @Test
     public void testValidContainerIdWhenContainerIdIsValidInTheFirstAttempt() {
-        final SpecManagementServiceCDI service = spy( new SpecManagementServiceCDI() );
-        final ServerTemplate template = mock( ServerTemplate.class );
+        final SpecManagementServiceCDI service = spy(new SpecManagementServiceCDI());
+        final ServerTemplate template = mock(ServerTemplate.class);
 
-        when( template.getContainerSpec( "org.jbpm:Evaluation:1.0" ) ).thenReturn( null );
-        when( service.getServerTemplate( "templateId" ) ).thenReturn( template );
+        when(template.getContainerSpec("org.jbpm:Evaluation:1.0")).thenReturn(null);
+        when(service.getServerTemplate("templateId")).thenReturn(template);
 
-        final String containerId = service.validContainerId( "templateId", "org.jbpm:Evaluation:1.0" );
+        final String containerId = service.validContainerId("templateId",
+                                                            "org.jbpm:Evaluation:1.0");
 
-        assertEquals( containerId, "org.jbpm:Evaluation:1.0" );
+        assertEquals(containerId,
+                     "org.jbpm:Evaluation:1.0");
     }
 
     @Test
     public void testValidContainerIdWhenContainerIdIsValidInTheSecondAttempt() {
-        final SpecManagementServiceCDI service = spy( new SpecManagementServiceCDI() );
-        final ServerTemplate template = mock( ServerTemplate.class );
-        final ContainerSpec containerSpec = mock( ContainerSpec.class );
+        final SpecManagementServiceCDI service = spy(new SpecManagementServiceCDI());
+        final ServerTemplate template = mock(ServerTemplate.class);
+        final ContainerSpec containerSpec = mock(ContainerSpec.class);
 
-        when( template.getContainerSpec( "org.jbpm:Evaluation:1.0" ) ).thenReturn( containerSpec );
-        when( template.getContainerSpec( "org.jbpm:Evaluation:1.0-2" ) ).thenReturn( null );
-        when( service.getServerTemplate( "templateId" ) ).thenReturn( template );
+        when(template.getContainerSpec("org.jbpm:Evaluation:1.0")).thenReturn(containerSpec);
+        when(template.getContainerSpec("org.jbpm:Evaluation:1.0-2")).thenReturn(null);
+        when(service.getServerTemplate("templateId")).thenReturn(template);
 
-        final String containerId = service.validContainerId( "templateId", "org.jbpm:Evaluation:1.0" );
+        final String containerId = service.validContainerId("templateId",
+                                                            "org.jbpm:Evaluation:1.0");
 
-        assertEquals( containerId, "org.jbpm:Evaluation:1.0-2" );
+        assertEquals(containerId,
+                     "org.jbpm:Evaluation:1.0-2");
     }
 
     @Test
     public void testValidContainerIdWhenContainerIdIsValidInTheThirdAttempt() {
-        final SpecManagementServiceCDI service = spy( new SpecManagementServiceCDI() );
-        final ServerTemplate template = mock( ServerTemplate.class );
-        final ContainerSpec containerSpec = mock( ContainerSpec.class );
+        final SpecManagementServiceCDI service = spy(new SpecManagementServiceCDI());
+        final ServerTemplate template = mock(ServerTemplate.class);
+        final ContainerSpec containerSpec = mock(ContainerSpec.class);
 
-        when( template.getContainerSpec( "org.jbpm:Evaluation:1.0" ) ).thenReturn( containerSpec );
-        when( template.getContainerSpec( "org.jbpm:Evaluation:1.0-2" ) ).thenReturn( containerSpec );
-        when( template.getContainerSpec( "org.jbpm:Evaluation:1.0-3" ) ).thenReturn( null );
-        when( service.getServerTemplate( "templateId" ) ).thenReturn( template );
+        when(template.getContainerSpec("org.jbpm:Evaluation:1.0")).thenReturn(containerSpec);
+        when(template.getContainerSpec("org.jbpm:Evaluation:1.0-2")).thenReturn(containerSpec);
+        when(template.getContainerSpec("org.jbpm:Evaluation:1.0-3")).thenReturn(null);
+        when(service.getServerTemplate("templateId")).thenReturn(template);
 
-        final String containerId = service.validContainerId( "templateId", "org.jbpm:Evaluation:1.0" );
+        final String containerId = service.validContainerId("templateId",
+                                                            "org.jbpm:Evaluation:1.0");
 
-        assertEquals( containerId, "org.jbpm:Evaluation:1.0-3" );
+        assertEquals(containerId,
+                     "org.jbpm:Evaluation:1.0-3");
     }
 }

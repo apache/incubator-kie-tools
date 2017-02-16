@@ -27,7 +27,7 @@ import org.kie.server.controller.impl.KieServerInstanceManager;
 import org.kie.server.controller.rest.RestSpecManagementServiceImpl;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Service
 @ApplicationScoped
@@ -35,86 +35,84 @@ public class SpecManagementServiceCDI extends RestSpecManagementServiceImpl impl
 
     @Inject
     @Override
-    public void setKieServerInstanceManager( KieServerInstanceManager kieServerInstanceManager ) {
-        super.setKieServerInstanceManager( kieServerInstanceManager );
+    public void setKieServerInstanceManager(KieServerInstanceManager kieServerInstanceManager) {
+        super.setKieServerInstanceManager(kieServerInstanceManager);
     }
 
     @Inject
     @Override
-    public void setNotificationService( org.kie.server.controller.api.service.NotificationService notificationService ) {
-        super.setNotificationService( notificationService );
+    public void setNotificationService(org.kie.server.controller.api.service.NotificationService notificationService) {
+        super.setNotificationService(notificationService);
     }
 
     @Inject
     @Override
-    public void setTemplateStorage( org.kie.server.controller.api.storage.KieServerTemplateStorage templateStorage ) {
-        super.setTemplateStorage( templateStorage );
+    public void setTemplateStorage(org.kie.server.controller.api.storage.KieServerTemplateStorage templateStorage) {
+        super.setTemplateStorage(templateStorage);
     }
 
     @Override
-    public void deleteServerInstance( final ServerInstanceKey serverInstanceKey ) {
-        checkNotNull( "serverInstanceKey", serverInstanceKey );
-        if ( getKieServerInstanceManager().isAlive( serverInstanceKey ) ) {
-            throw new RuntimeException( "Can't delete live instance." );
+    public void deleteServerInstance(final ServerInstanceKey serverInstanceKey) {
+        checkNotNull("serverInstanceKey",
+                     serverInstanceKey);
+        if (getKieServerInstanceManager().isAlive(serverInstanceKey)) {
+            throw new RuntimeException("Can't delete live instance.");
         } else {
             final String serverInstanceId = serverInstanceKey.getServerInstanceId();
-            final ServerTemplate serverTemplate = getServerTemplate( serverInstanceKey.getServerTemplateId() );
-            if ( serverTemplate != null ) {
-                serverTemplate.deleteServerInstance( serverInstanceId );
-                getTemplateStorage().update( serverTemplate );
-                getNotificationService().notify( new ServerInstanceDeleted( serverInstanceId ) );
+            final ServerTemplate serverTemplate = getServerTemplate(serverInstanceKey.getServerTemplateId());
+            if (serverTemplate != null) {
+                serverTemplate.deleteServerInstance(serverInstanceId);
+                getTemplateStorage().update(serverTemplate);
+                getNotificationService().notify(new ServerInstanceDeleted(serverInstanceId));
             }
         }
     }
 
     @Override
-    public boolean isContainerIdValid( String serverTemplateId,
-                                       String containerId ) {
-        if ( !isValidIdentifier( containerId ) ) {
+    public boolean isContainerIdValid(String serverTemplateId,
+                                      String containerId) {
+        if (!isValidIdentifier(containerId)) {
             return false;
         }
-        final ServerTemplate template = getServerTemplate( serverTemplateId );
-        if ( template == null ) {
-            throw new RuntimeException( "Server template doesn't exists" );
+        final ServerTemplate template = getServerTemplate(serverTemplateId);
+        if (template == null) {
+            throw new RuntimeException("Server template doesn't exists");
         }
 
-        return template.getContainerSpec( containerId ) == null;
+        return template.getContainerSpec(containerId) == null;
     }
 
     @Override
-    public String validContainerId( final String serverTemplateId,
-                                    final String containerId ) {
+    public String validContainerId(final String serverTemplateId,
+                                   final String containerId) {
 
-        if ( isContainerIdValid( serverTemplateId, containerId ) ) {
+        if (isContainerIdValid(serverTemplateId,
+                               containerId)) {
             return containerId;
         }
 
-        return validContainerIdWithSuffix( serverTemplateId, containerId );
+        return validContainerIdWithSuffix(serverTemplateId,
+                                          containerId);
     }
 
     @Override
-    public boolean isNewServerTemplateIdValid( String serverTemplateId ) {
-        return !getTemplateStorage().exists( serverTemplateId );
+    public boolean isNewServerTemplateIdValid(String serverTemplateId) {
+        return !getTemplateStorage().exists(serverTemplateId);
     }
 
-    private String validContainerIdWithSuffix( final String serverTemplateId,
-                                               final String containerId ) {
+    private String validContainerIdWithSuffix(final String serverTemplateId,
+                                              final String containerId) {
         int attemptNumber = 2;
 
-        while ( !isContainerIdValid( serverTemplateId, containerId + "-" + attemptNumber ) ) {
+        while (!isContainerIdValid(serverTemplateId,
+                                   containerId + "-" + attemptNumber)) {
             attemptNumber++;
         }
 
         return containerId + "-" + attemptNumber;
     }
 
-    private boolean isValidIdentifier( final String s ) {
-        for ( char c : s.toCharArray() ) {
-            if ( !( Character.isLetterOrDigit( c ) ||
-                    c == ':' || c == '-' || c == '.' ) ) {
-                return false;
-            }
-        }
-        return true;
+    private boolean isValidIdentifier(final String identifier) {
+        return identifier != null && identifier.matches("[A-Za-z0-9_\\-.:]+");
     }
 }
