@@ -139,7 +139,7 @@ public class DefaultWorkbenchFeaturesMenusHelper {
         final List<MenuItem> result = new ArrayList<>( 2 );
 
         result.add( MenuFactory.newSimpleItem( constants.ProcessDefinitions() ).perspective( PROCESS_DEFINITIONS ).endMenu().build().getItems().get( 0 ) );
-        result.add( MenuFactory.newSimpleItem( constants.ProcessInstances() ).perspective( DATASET_PROC_INST_VARS ).endMenu().build().getItems().get( 0 ) );
+        result.add( MenuFactory.newSimpleItem( constants.ProcessInstances() ).perspective(PROCESS_INSTANCES).endMenu().build().getItems().get( 0 ) );
 
         return result;
     }

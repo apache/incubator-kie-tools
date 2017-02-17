@@ -70,7 +70,7 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.setPerspectiveName(DROOLS_ADMIN, i18n.DroolsAdministration());
         perspectiveTreeProvider.setPerspectiveName(PLANNER_ADMIN, i18n.PlannerAdministration());
         perspectiveTreeProvider.setPerspectiveName(PROCESS_DEFINITIONS, i18n.ProcessDefinitions());
-        perspectiveTreeProvider.setPerspectiveName(DATASET_PROC_INST_VARS, i18n.ProcessInstances());
+        perspectiveTreeProvider.setPerspectiveName(PROCESS_INSTANCES, i18n.ProcessInstances());
         perspectiveTreeProvider.setPerspectiveName(PLUGIN_AUTHORING, i18n.Plugins());
         perspectiveTreeProvider.setPerspectiveName(APPS, i18n.Apps());
         perspectiveTreeProvider.setPerspectiveName(DATASET_AUTHORING, i18n.DataSets());
@@ -78,7 +78,7 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.setPerspectiveName(DEPLOYMENTS, i18n.Process_Deployments());
         perspectiveTreeProvider.setPerspectiveName(SERVER_MANAGEMENT, i18n.Rule_Deployments());
         perspectiveTreeProvider.setPerspectiveName(JOBS, i18n.Jobs());
-        perspectiveTreeProvider.setPerspectiveName(DATASET_TASKS, i18n.Tasks());
+        perspectiveTreeProvider.setPerspectiveName(TASKS, i18n.Tasks());
         perspectiveTreeProvider.setPerspectiveName(PROCESS_DASHBOARD, i18n.Process_Dashboard());
 
         // Exclude some perspectives
