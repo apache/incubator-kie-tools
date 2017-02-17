@@ -34,6 +34,30 @@
             </includes>
             <filtered>true</filtered>
         </fileSet>
+        <fileSet>
+            <directory>${project.build.outputDirectory}/plugins/</directory>
+            <outputDirectory>META-INF/resources/webjars/${project.artifactId}/${project.version}</outputDirectory>
+            <includes>
+                <include>*.js</include>
+            </includes>
+            <filtered>true</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>${project.build.outputDirectory}/plugins/</directory>
+            <outputDirectory>META-INF/resources/webjars/${project.artifactId}/${project.version}</outputDirectory>
+            <includes>
+                <include>*.json</include>
+            </includes>
+            <filtered>true</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>${project.build.outputDirectory}/plugins/</directory>
+            <outputDirectory>META-INF/resources/webjars/${project.artifactId}/${project.version}</outputDirectory>
+            <includes>
+                <include>*.html</include>
+            </includes>
+            <filtered>true</filtered>
+        </fileSet>
     </fileSets>
 
 </assembly>

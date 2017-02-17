@@ -18,10 +18,13 @@ package org.uberfire.backend.server.impl;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.backend.server.IOWatchServiceAllImpl;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
@@ -35,6 +38,9 @@ public class ApplicationScopedProducer {
     @Inject
     private IOWatchServiceAllImpl watchService;
 
+    @Inject
+    private AuthenticationService authenticationService;
+
     private IOService ioService;
 
     @PostConstruct
@@ -46,6 +52,12 @@ public class ApplicationScopedProducer {
     @Named("ioStrategy")
     public IOService ioService() {
         return ioService;
+    }
+
+    @Produces
+    @RequestScoped
+    public User getIdentity() {
+        return authenticationService.getUser();
     }
 
 }

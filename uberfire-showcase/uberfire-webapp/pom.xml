@@ -37,15 +37,66 @@
   </properties>
 
   <dependencies>
-                
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-all</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-backend-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-service-backend</artifactId>
+    </dependency>
+
+    <!-- dependencies added because of new illegal transitive dependency check -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-ioc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-io</artifactId>
+    </dependency>
+
+    <!--Logs-->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-ext</artifactId>
+    </dependency>
+
+    <!-- This is a war file, so logback is not in scope test, but in scope compile -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-all</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -55,8 +106,18 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-cdi</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-api</artifactId>
     </dependency>
 
     <dependency>
@@ -104,27 +165,21 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-security-server</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.resteasy</groupId>
-          <artifactId>resteasy-cdi</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jboss.resteasy</groupId>
-          <artifactId>jaxrs-api</artifactId>
-        </exclusion>
-      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.picketlink</groupId>
+      <artifactId>picketlink-idm-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.picketlink</groupId>
+      <artifactId>picketlink-api</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-security-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-codegen-gwt</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -146,6 +201,24 @@
     </dependency>
 
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-properties-editor-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-commons</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-table</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-server</artifactId>
     </dependency>
@@ -161,47 +234,87 @@
       <scope>provided</scope>
     </dependency>
 
+
+    <!-- UberFire Preferences -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-ui-client</artifactId>
+      <!--<scope>provided</scope>-->
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-processors</artifactId>
       <scope>provided</scope>
     </dependency>
 
+    <!-- UberFire Plugins Extension -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-ext</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-runtime-plugins-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-runtime-plugins-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-runtime-plugins-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
+    <!-- UberFire Commons Editor -->
     <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons-editor-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons-editor-backend</artifactId>
+    </dependency>
+
+    <!-- Layout Editor API -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-layout-editor-api</artifactId>
+    </dependency>
+
+    <!-- UberFire Apps -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-apps-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>log4j-over-slf4j</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-apps-client</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-apps-backend</artifactId>
     </dependency>
 
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>de.benediktmeurer.gwt-slf4j</groupId>
-      <artifactId>gwt-slf4j</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -217,27 +330,46 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-codegen-gwt</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
     </dependency>
 
-    <!-- JAXB -->
+    <!-- Uberfire Docks -->
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-simple-docks-client</artifactId>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-xjc</artifactId>
-      <scope>provided</scope>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-social-activities-api</artifactId>
     </dependency>
+
     <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-      <scope>provided</scope>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-social-activities-client</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-social-activities-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+
   </dependencies>
 
   <build>
@@ -274,6 +406,27 @@
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-backend</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
+
+            <!-- UF-ext -->
+            <compileSourcesArtifact>org.uberfire:uberfire-preferences-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-preferences-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-preferences-ui-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-apps-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-apps-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-social-activities-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-social-activities-api</compileSourcesArtifact>
+
+            <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-widgets-service-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>
+
           </compileSourcesArtifacts>
         </configuration>
         <executions>

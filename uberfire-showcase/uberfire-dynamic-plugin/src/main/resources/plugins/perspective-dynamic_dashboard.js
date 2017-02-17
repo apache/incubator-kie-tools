@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 $registerPerspective({
-    id: "Dashboard",
+    id: "DashboardFromDynamicPlugin",
     roles: [ "director", "manager" ],
     panel_type: "org.uberfire.client.workbench.panels.impl.ClosableSimpleWorkbenchPanelPresenter",
     view: {

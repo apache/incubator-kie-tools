@@ -629,9 +629,9 @@
     <module>uberfire-testing-utils</module>
     <module>uberfire-workbench</module>
     <module>uberfire-packaging</module>
-    <module>uberfire-showcase</module>
     <module>uberfire-preferences</module>
     <module>uberfire-extensions</module>
+    <module>uberfire-showcase</module>
   </modules>
 
   <dependencyManagement>

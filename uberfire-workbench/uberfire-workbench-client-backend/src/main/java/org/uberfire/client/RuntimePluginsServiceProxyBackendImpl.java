@@ -52,7 +52,7 @@ public class RuntimePluginsServiceProxyBackendImpl implements RuntimePluginsServ
             public void callback( Collection<String> o ) {
                 command.execute( o );
             }
-        } ).listFramworksContent();
+        } ).listFrameworksContent();
     }
 
     @Override

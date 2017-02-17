@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.backend.server.plugin;
+package org.uberfire.backend.server.plugins.engine;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -36,13 +36,13 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class GwtRuntimePluginWatcherTest extends AbstractGwtRuntimePluginTest {
+public class PluginWatcherTest extends AbstractPluginsTest {
 
     @Spy
-    private GwtRuntimePluginWatcher pluginWatcher;
+    private PluginWatcher pluginWatcher;
     
     @Mock
-    private GwtRuntimePluginLoader pluginLoader;
+    private PluginJarProcessor pluginJarProcessor;
 
     @Mock
     private ExecutorService executor;
@@ -61,26 +61,26 @@ public class GwtRuntimePluginWatcherTest extends AbstractGwtRuntimePluginTest {
     
     @Test
     public void startSubmitsWatcherThread() throws Exception {
-        pluginWatcher.start( pluginDir, executor, pluginLoader );
+        pluginWatcher.start( pluginDir, executor, pluginJarProcessor);
         verify( executor, times( 1 ) ).submit( any( Runnable.class ) );
     }
 
     @Test
     public void startDoesNotSubmitWatcherThreadIfPluginDirDoesNotExist() throws Exception {
-        pluginWatcher.start( pluginDir + "invalid", executor, pluginLoader );
+        pluginWatcher.start( pluginDir + "invalid", executor, pluginJarProcessor);
         verify( executor, never() ).submit( any( Runnable.class ) );
     }
 
     @Test
     public void startOnlyOnce() throws Exception {
-        pluginWatcher.start( pluginDir, executor, pluginLoader );
-        pluginWatcher.start( pluginDir, executor, pluginLoader );
+        pluginWatcher.start( pluginDir, executor, pluginJarProcessor);
+        pluginWatcher.start( pluginDir, executor, pluginJarProcessor);
         verify( executor, times( 1 ) ).submit( any( Runnable.class ) );
     }
 
     @Test
     public void stopEndsWatcherThread() throws Exception {
-        pluginWatcher.start( pluginDir, executor, pluginLoader );
+        pluginWatcher.start( pluginDir, executor, pluginJarProcessor);
         assertTrue( pluginWatcher.active );
         pluginWatcher.stop();
         assertFalse( pluginWatcher.active );
@@ -89,36 +89,36 @@ public class GwtRuntimePluginWatcherTest extends AbstractGwtRuntimePluginTest {
 
     @Test
     public void loadPluginLogsError() throws Exception {
-        pluginWatcher.start( pluginDir, executor, pluginLoader );
+        pluginWatcher.start( pluginDir, executor, pluginJarProcessor);
         
         when( fileName.toString() ).thenReturn( "fileName.jar" );
         when( plugin.getFileName() ).thenReturn( fileName );
 
         Exception e = new RuntimeException();
-        doThrow( e ).when( pluginLoader ).loadPlugin( any( Path.class ), any( Boolean.class ) );
-        pluginWatcher.loadPlugin( plugin );
-        verify( pluginWatcher, times( 1 ) ).logPluginWatcherError( "Failed to process new plugin fileName.jar", e, false );
+        doThrow( e ).when(pluginJarProcessor).loadPlugins( any( Path.class ), any( Boolean.class ) );
+        pluginWatcher.loadPlugins( plugin );
+        verify( pluginWatcher, times( 1 ) ).logPluginsWatcherError( "Failed to process new plugin fileName.jar", e, false );
         
         pluginWatcher.stop();
-        pluginWatcher.loadPlugin( plugin );
-        verify( pluginWatcher, times( 1 ) ).logPluginWatcherError( "Failed to process new plugin fileName.jar", e, true );
+        pluginWatcher.loadPlugins( plugin );
+        verify( pluginWatcher, times( 1 ) ).logPluginsWatcherError( "Failed to process new plugin fileName.jar", e, true );
     }
 
     @Test
     public void reloadPluginsLogsError() throws Exception {
-        pluginWatcher.start( pluginDir, executor, pluginLoader );
+        pluginWatcher.start( pluginDir, executor, pluginJarProcessor);
         
         when( fileName.toString() ).thenReturn( "fileName.js" );
         when( plugin.getFileName() ).thenReturn( fileName );
 
         Exception e = new RuntimeException();
-        doThrow( e ).when( pluginLoader ).reload();
+        doThrow( e ).when(pluginJarProcessor).reload();
         pluginWatcher.reloadPlugins( plugin );
-        verify( pluginWatcher, times( 1 ) ).logPluginWatcherError( "Failed to delete plugin fileName.js", e, false );
+        verify( pluginWatcher, times( 1 ) ).logPluginsWatcherError( "Failed to delete plugin fileName.js", e, false );
         
         pluginWatcher.stop();
         pluginWatcher.reloadPlugins( plugin );
-        verify( pluginWatcher, times( 1 ) ).logPluginWatcherError( "Failed to delete plugin fileName.js", e, true );
+        verify( pluginWatcher, times( 1 ) ).logPluginsWatcherError( "Failed to delete plugin fileName.js", e, true );
     }
     
 }

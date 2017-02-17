@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.uberfire.backend.server.plugin;
+package org.uberfire.backend.server.plugins.engine;
 
 import java.io.File;
 
 import org.junit.Before;
 import static org.junit.Assert.fail;
 
-public abstract class AbstractGwtRuntimePluginTest {
+public abstract class AbstractPluginsTest {
 
-    String contextRootDir;
-    String pluginDir;
-    String pluginDeploymentDir;
+    protected String contextRootDir;
+    protected String pluginDir;
+    protected String pluginDeploymentDir;
     
     @Before
     public void setup() {
         try {
-            contextRootDir = new File( getClass().getClassLoader().getResource( "test-app" ).getFile() ).getParentFile().getAbsolutePath();
-            pluginDir = new File( getClass().getClassLoader().getResource( "plugins" ).getFile() ).getAbsolutePath();
-            pluginDeploymentDir = new File( getClass().getClassLoader().getResource( "test-app/test-app.nocache.js" ).getFile() ).getParentFile().getAbsolutePath();
+            contextRootDir = new File( getClass().getClassLoader().getResource("test-app").getFile() ).getParentFile().getAbsolutePath();
+            pluginDir = new File( getClass().getClassLoader().getResource("plugins").getFile() ).getAbsolutePath();
+            pluginDeploymentDir = new File( getClass().getClassLoader().getResource("test-app/test-app.nocache.js").getFile() ).getParentFile().getAbsolutePath();
         }
         catch (Exception e) {
             e.printStackTrace();

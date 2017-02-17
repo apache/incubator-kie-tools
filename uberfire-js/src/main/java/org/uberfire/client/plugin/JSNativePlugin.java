@@ -16,8 +16,6 @@
 
 package org.uberfire.client.plugin;
 
-import java.util.Collection;
-import java.util.Collections;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.JavaScriptObject;

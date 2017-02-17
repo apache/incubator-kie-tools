@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package org.uberfire.backend.server.plugin;
+package org.uberfire.backend.server.plugins;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import org.uberfire.backend.plugin.RuntimePluginService;
 
 /**
- * Initializes the {@link RuntimePluginService} when the web application starts
+ * Initializes the {@link PluginService} when the web application starts
  * up.
  */
 @WebListener
-public class PluginServletContextListener implements ServletContextListener {
+public class PluginStartup implements ServletContextListener {
 
     @Override
     public void contextInitialized( ServletContextEvent sce ) {
-        RuntimePluginServiceImpl.getInstance().init( sce.getServletContext() );
+        PluginService.getInstance().init( sce.getServletContext() );
     }
 
     @Override

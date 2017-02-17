@@ -29,6 +29,7 @@ import javax.inject.Inject;
 
 import com.google.common.collect.Sets;
 import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Window;
@@ -67,6 +68,7 @@ import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.mvp.Commands;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.PluginAddedEvent;
+import org.uberfire.workbench.events.PluginUpdatedEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -126,88 +128,88 @@ public class ShowcaseEntryPoint {
         hideLoadingPopup();
     }
 
-    private void setupMenu( @Observes final ApplicationReadyEvent event ) {
+    private void setupMenu(@Observes final ApplicationReadyEvent event) {
         final PerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
 
         final Menus menus =
-                         newTopLevelMenu( "Home" )
-                            .perspective( defaultPerspective.getIdentifier() )
+                newTopLevelMenu("Home")
+                        .perspective(defaultPerspective.getIdentifier())
                         .endMenu()
-                        .newTopLevelMenu( "Perspectives" )
-                            .withItems( getPerspectives() )
+                        .newTopLevelMenu("Perspectives")
+                        .withItems(getPerspectives())
                         .endMenu()
-                        .newTopLevelMenu( "Screens" )
-                            .withItems( getScreens() )
+                        .newTopLevelMenu("Screens")
+                        .withItems(getScreens())
                         .endMenu()
-                        .newTopLevelCustomMenu( searchMenuBuilder )
+                        .newTopLevelCustomMenu(searchMenuBuilder)
                         .endMenu()
                         .build();
 
-        menubar.addMenus( menus );
+        menubar.addMenus(menus);
 
         userMenu.addMenus(
-                newTopLevelMenu( "Logout" ).respondsWith( () -> {
+                newTopLevelMenu("Logout").respondsWith(() -> {
                     authService.call().logout();
-                } ).endMenu()
-                        .newTopLevelMenu( "My roles" ).respondsWith(() -> {
-                            final Set<Role> roles = user.getRoles();
-                            if ( roles == null || roles.isEmpty() ) {
-                                Window.alert( "You have no roles assigned" );
-                            } else {
-                                Window.alert( "Currently logged in using roles: " + roles );
-                            }
-                        } )
+                }).endMenu()
+                        .newTopLevelMenu("My roles").respondsWith(() -> {
+                    final Set<Role> roles = user.getRoles();
+                    if (roles == null || roles.isEmpty()) {
+                        Window.alert("You have no roles assigned");
+                    } else {
+                        Window.alert("Currently logged in using roles: " + roles);
+                    }
+                })
                         .endMenu()
-                        .newTopLevelCustomMenu( manager.lookupBean( WorkbenchViewModeSwitcherMenuBuilder.class ).getInstance() )
+                        .newTopLevelCustomMenu(manager.lookupBean(WorkbenchViewModeSwitcherMenuBuilder.class).getInstance())
                         .endMenu()
-                        .build() );
+                        .build());
 
         utilityMenu.addMenus(
-                newTopLevelCustomMenu( userMenu ).endMenu()
-                        .newTopLevelMenu( "Status" )
-                        .identifier( "usermenu.status" )
-                        .respondsWith( () -> {
-                            Window.alert( "Hello from status!" );
-                        } )
-                .endMenu()
-                .newTopLevelCustomMenu( manager.lookupBean( CustomSplashHelp.class ).getInstance() )
-                .endMenu()
-                .newTopLevelMenu( "Simple Popup" )
-                    .respondsWith(() -> placeManager.goTo(new DefaultPlaceRequest(SimplePopUp.SCREEN_ID)))
-                .endMenu()
-                .newTopLevelMenu( "Error Popup" )
-                    .respondsWith(() -> errorPopupView.showMessage("Something went wrong!", Commands.DO_NOTHING, Commands.DO_NOTHING))
-                .endMenu()
-                .build() );
+                newTopLevelCustomMenu(userMenu).endMenu()
+                        .newTopLevelMenu("Status")
+                        .identifier("usermenu.status")
+                        .respondsWith(() -> {
+                            Window.alert("Hello from status!");
+                        })
+                        .endMenu()
+                        .newTopLevelCustomMenu(manager.lookupBean(CustomSplashHelp.class).getInstance())
+                        .endMenu()
+                        .newTopLevelMenu("Simple Popup")
+                        .respondsWith(() -> placeManager.goTo(new DefaultPlaceRequest(SimplePopUp.SCREEN_ID)))
+                        .endMenu()
+                        .newTopLevelMenu("Error Popup")
+                        .respondsWith(() -> errorPopupView.showMessage("Something went wrong!", Commands.DO_NOTHING, Commands.DO_NOTHING))
+                        .endMenu()
+                        .build());
     }
 
     public static List<MenuItem> getScreens() {
         final List<MenuItem> screens = new ArrayList<MenuItem>();
         final List<String> names = new ArrayList<String>();
 
-        for ( final IOCBeanDef<WorkbenchScreenActivity> _menuItem : IOC.getBeanManager().lookupBeans( WorkbenchScreenActivity.class ) ) {
+        for (final IOCBeanDef<WorkbenchScreenActivity> _menuItem : IOC.getBeanManager().lookupBeans(WorkbenchScreenActivity.class)) {
             final String name;
-            if ( _menuItem.getBeanClass().equals( JSWorkbenchScreenActivity.class ) ) {
+            if (_menuItem.getBeanClass().equals(JSWorkbenchScreenActivity.class)) {
                 name = _menuItem.getName();
             } else {
-                name = IOC.getBeanManager().lookupBean( _menuItem.getBeanClass() ).getName();
+                name = IOC.getBeanManager().lookupBean(_menuItem.getBeanClass()).getName();
             }
 
-            if ( !menuItemsToRemove.contains( name ) ) {
-                names.add( name );
+            if (!menuItemsToRemove.contains(name)) {
+                names.add(name);
             }
         }
 
-        Collections.sort( names );
+        Collections.sort(names);
 
-        final PlaceManager placeManager = IOC.getBeanManager().lookupBean( PlaceManager.class ).getInstance();
-        for ( final String name : names ) {
-            final MenuItem item = MenuFactory.newSimpleItem( name )
-                    .identifier( "screen.read." + name )
-                    .respondsWith( () -> {
-                        placeManager.goTo( new DefaultPlaceRequest( name ) );
-                    } ).endMenu().build().getItems().get( 0 );
-            screens.add( item );
+        final PlaceManager placeManager = IOC.getBeanManager().lookupBean(PlaceManager.class).getInstance();
+        for (final String name : names) {
+            final MenuItem item = MenuFactory.newSimpleItem(name)
+                    .identifier("screen.read." + name)
+                    .respondsWith(() -> {
+                        placeManager.goTo(new DefaultPlaceRequest(name));
+                    }).endMenu().build().getItems().get(0);
+            screens.add(item);
         }
 
         return screens;
@@ -215,13 +217,13 @@ public class ShowcaseEntryPoint {
 
     private List<MenuItem> getPerspectives() {
         final List<MenuItem> perspectives = new ArrayList<MenuItem>();
-        for ( final PerspectiveActivity perspective : getPerspectiveActivities() ) {
+        for (final PerspectiveActivity perspective : getPerspectiveActivities()) {
             if (SimplePerspectiveNoContext.SIMPLE_PERSPECTIVE_NO_CONTEXT.equals(perspective.getIdentifier())) {
                 continue;
             }
             final String name = perspective.getName();
-            final MenuItem item = MenuFactory.newSimpleItem( name ).perspective( perspective.getIdentifier() ).endMenu().build().getItems().get( 0 );
-            perspectives.add( item );
+            final MenuItem item = MenuFactory.newSimpleItem(name).perspective(perspective.getIdentifier()).endMenu().build().getItems().get(0);
+            perspectives.add(item);
         }
 
         return perspectives;
@@ -229,17 +231,17 @@ public class ShowcaseEntryPoint {
 
     private PerspectiveActivity getDefaultPerspectiveActivity() {
         PerspectiveActivity defaultPerspective = null;
-        final Collection<SyncBeanDef<PerspectiveActivity>> perspectives = manager.lookupBeans( PerspectiveActivity.class );
+        final Collection<SyncBeanDef<PerspectiveActivity>> perspectives = manager.lookupBeans(PerspectiveActivity.class);
         final Iterator<SyncBeanDef<PerspectiveActivity>> perspectivesIterator = perspectives.iterator();
 
-        while ( perspectivesIterator.hasNext() ) {
+        while (perspectivesIterator.hasNext()) {
             final SyncBeanDef<PerspectiveActivity> perspective = perspectivesIterator.next();
             final PerspectiveActivity instance = perspective.getInstance();
-            if ( instance.isDefault() ) {
+            if (instance.isDefault()) {
                 defaultPerspective = instance;
                 break;
             } else {
-                manager.destroyBean( instance );
+                manager.destroyBean(instance);
             }
         }
         return defaultPerspective;
@@ -248,29 +250,29 @@ public class ShowcaseEntryPoint {
     private List<PerspectiveActivity> getPerspectiveActivities() {
 
         //Get Perspective Providers
-        final Set<PerspectiveActivity> activities = activityManager.getActivities( PerspectiveActivity.class );
+        final Set<PerspectiveActivity> activities = activityManager.getActivities(PerspectiveActivity.class);
 
         //Remove default perspective to avoid duplicate menu
         final Iterator<PerspectiveActivity> iterator = activities.iterator();
-        while( iterator.hasNext() ){
+        while (iterator.hasNext()) {
             final PerspectiveActivity activity = iterator.next();
-            if( activity.isDefault() ){
+            if (activity.isDefault()) {
                 iterator.remove();
             }
         }
 
         //Sort Perspective Providers so they're always in the same sequence!
-        List<PerspectiveActivity> sortedActivities = new ArrayList<PerspectiveActivity>( activities );
-        Collections.sort( sortedActivities,
+        List<PerspectiveActivity> sortedActivities = new ArrayList<PerspectiveActivity>(activities);
+        Collections.sort(sortedActivities,
                 new Comparator<PerspectiveActivity>() {
 
                     @Override
-                    public int compare( PerspectiveActivity o1,
-                                        PerspectiveActivity o2 ) {
-                        return o1.getName().compareTo( o2.getName() );
+                    public int compare(PerspectiveActivity o1,
+                                       PerspectiveActivity o2) {
+                        return o1.getName().compareTo(o2.getName());
                     }
 
-                } );
+                });
 
         return sortedActivities;
     }
@@ -278,25 +280,25 @@ public class ShowcaseEntryPoint {
     private Collection<WorkbenchScreenActivity> getScreenActivities() {
 
         //Get Perspective Providers
-        return activityManager.getActivities( WorkbenchScreenActivity.class );
+        return activityManager.getActivities(WorkbenchScreenActivity.class);
     }
 
     //Fade out the "Loading application" pop-up
     private void hideLoadingPopup() {
-        final Element e = RootPanel.get( "loading" ).getElement();
+        final Element e = RootPanel.get("loading").getElement();
 
         new Animation() {
 
             @Override
-            protected void onUpdate( double progress ) {
-                e.getStyle().setOpacity( 1.0 - progress );
+            protected void onUpdate(double progress) {
+                e.getStyle().setOpacity(1.0 - progress);
             }
 
             @Override
             protected void onComplete() {
-                e.getStyle().setVisibility( Style.Visibility.HIDDEN );
+                e.getStyle().setVisibility(Style.Visibility.HIDDEN);
             }
-        }.run( 500 );
+        }.run(500);
     }
 
     @Produces
@@ -312,12 +314,25 @@ public class ShowcaseEntryPoint {
         };
     }
 
-    private void onPluginAvailable(@Observes PluginAddedEvent pluginEvent) {
-        Bs3Modal modal = new Bs3Modal();
-        modal.setContent( new Text("Plugin " + pluginEvent.getName() +
-                                    " has been installed. \n A reload is required to activate it.") );
-        modal.setTitle( "Plugin available" );
-        modal.addHiddenHandler( evt -> Window.Location.reload());
+    private void onPluginAdded(@Observes PluginAddedEvent pluginEvent) {
+        String title = "Plugin available";
+        String message = "Plugin " + pluginEvent.getName() +
+                " has been installed. \n A reload is required to activate it.";
+        createPluginModal(title, message);
+    }
+
+    private void onPluginUpdated(@Observes PluginUpdatedEvent pluginEvent) {
+        String title = "Plugin updated";
+        String message = "Plugin " + pluginEvent.getName() +
+                " has been updated. \n A reload is required to activate it.";
+        createPluginModal(title, message);
+    }
+
+    private void createPluginModal(String title, String message) {
+        Bs3Modal modal = GWT.create(Bs3Modal.class);
+        modal.setContent(new Text(message));
+        modal.setTitle(title);
+        modal.addHiddenHandler(evt -> Window.Location.reload());
         modal.show();
     }
 
