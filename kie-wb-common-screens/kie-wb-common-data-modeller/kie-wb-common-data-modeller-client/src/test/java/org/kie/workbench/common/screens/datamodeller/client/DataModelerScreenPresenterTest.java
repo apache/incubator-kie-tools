@@ -16,12 +16,21 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
 import org.junit.Test;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
+import org.kie.workbench.common.screens.datamodeller.client.validation.JavaFileNameValidator;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -245,5 +254,129 @@ public class DataModelerScreenPresenterTest
         verify( dataModelerWBContext, times( 1 ) ).setActiveContext( context );
         //and notifications should have been sent.
         verify( dataModelerFocusEvent, times( 1 ) ).fire( any( DataModelerWorkbenchFocusEvent.class ) );
+    }
+
+    @Test
+    public void onSaveValidationFailedTest() {
+        when( validationService.validateForSave( any( Path.class ),
+                                                 any( DataObject.class ) ) ).thenReturn( Arrays.asList( new ValidationMessage() ) );
+        presenter.context = mock( DataModelerContext.class );
+
+        presenter.save();
+
+        verify( savePopUpPresenter,
+                never() ).show( any( Path.class ),
+                                any( ParameterizedCommand.class ) );
+        verify( validationPopup,
+                times( 1 ) ).showSaveValidationMessages( any( Command.class ),
+                                                         any( Command.class ),
+                                                         anyListOf( ValidationMessage.class ) );
+    }
+
+    @Test
+    public void onSaveValidationSucceededTest() {
+        when( validationService.validateForSave( any( Path.class ),
+                                                 any( DataObject.class ) ) ).thenReturn( Collections.emptyList() );
+        presenter.context = mock( DataModelerContext.class );
+
+        presenter.save();
+
+        verify( savePopUpPresenter,
+                times( 1 ) ).show( any( Path.class ),
+                                   any( ParameterizedCommand.class ) );
+        verify( validationPopup,
+                never() ).showCopyValidationMessages( any( Command.class ),
+                                                      any( Command.class ),
+                                                      anyListOf( ValidationMessage.class ) );
+    }
+
+    @Test
+    public void renameValidationSucceededTest() {
+        presenter.context = mock( DataModelerContext.class );
+        // Make sure the context is dirty
+        presenter.setOriginalHash( 0 );
+
+        presenter.rename();
+
+        verify( view,
+                times( 1 ) ).showYesNoCancelPopup( anyString(),
+                                                   anyString(),
+                                                   any( Command.class ),
+                                                   any( Command.class ) );
+
+        // Simulate "yes" action in YesNoCancelPopup, with no validation issues detected
+        presenter.getRenameValidationCallback().callback( Collections.emptyList() );
+
+        verify( renamePopUpPresenter,
+                times( 1 ) ).show( any( Path.class ),
+                                   any( JavaFileNameValidator.class ),
+                                   any( CommandWithFileNameAndCommitMessage.class ) );
+        verify( validationPopup,
+                never() ).showSaveValidationMessages( any( Command.class ),
+                                                      any( Command.class ),
+                                                      anyListOf( ValidationMessage.class ) );
+    }
+
+    @Test
+    public void renameValidationFailedTest() {
+        presenter.context = mock( DataModelerContext.class );
+        // Make sure the context is dirty
+        presenter.setOriginalHash( 0 );
+
+        presenter.rename();
+
+        verify( view,
+                times( 1 ) ).showYesNoCancelPopup( anyString(),
+                                                   anyString(),
+                                                   any( Command.class ),
+                                                   any( Command.class ) );
+
+        // Simulate "yes" action in YesNoCancelPopup, with validation issues detected
+        presenter.getRenameValidationCallback().callback( Arrays.asList( new ValidationMessage() ) );
+
+        verify( renamePopUpPresenter,
+                never() ).show( any( Path.class ),
+                                any( JavaFileNameValidator.class ),
+                                any( CommandWithFileNameAndCommitMessage.class ) );
+        verify( validationPopup,
+                times( 1 ) ).showSaveValidationMessages( any( Command.class ),
+                                                         any( Command.class ),
+                                                         anyListOf( ValidationMessage.class ) );
+    }
+
+    @Test
+    public void onCopyValidationSucceededTest() {
+        when( validationService.validateForCopy( any( Path.class ),
+                                                 any( DataObject.class ) ) ).thenReturn( Collections.emptyList() );
+        presenter.context = mock( DataModelerContext.class );
+
+        presenter.onCopy();
+
+        verify( copyPopUpPresenter,
+                times( 1 ) ).show( any( Path.class ),
+                                   any( JavaFileNameValidator.class ),
+                                   any( CommandWithFileNameAndCommitMessage.class ) );
+        verify( validationPopup,
+                never() ).showCopyValidationMessages( any( Command.class ),
+                                                      any( Command.class ),
+                                                      anyListOf( ValidationMessage.class ) );
+    }
+
+    @Test
+    public void onCopyValidationFailedTest() {
+        when( validationService.validateForCopy( any( Path.class ),
+                                                 any( DataObject.class ) ) ).thenReturn( Arrays.asList( new ValidationMessage() ) );
+        presenter.context = mock( DataModelerContext.class );
+
+        presenter.onCopy();
+
+        verify( copyPopUpPresenter,
+                never() ).show( any( Path.class ),
+                                any( JavaFileNameValidator.class ),
+                                any( CommandWithFileNameAndCommitMessage.class ) );
+        verify( validationPopup,
+                times( 1 ) ).showCopyValidationMessages( any( Command.class ),
+                                                         any( Command.class ),
+                                                         anyListOf( ValidationMessage.class ) );
     }
 }

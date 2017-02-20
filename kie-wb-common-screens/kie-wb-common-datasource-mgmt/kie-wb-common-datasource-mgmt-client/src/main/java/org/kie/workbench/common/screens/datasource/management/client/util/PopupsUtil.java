@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.datasource.management.client.util;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -28,6 +29,9 @@ import org.uberfire.mvp.Command;
 
 @ApplicationScoped
 public class PopupsUtil {
+
+    @Inject
+    private ValidationPopup validationPopup;
 
     public PopupsUtil() {
     }
@@ -83,6 +87,6 @@ public class PopupsUtil {
     }
 
     public void showValidationMessages( final List<ValidationMessage> messages ) {
-        ValidationPopup.showMessages( messages );
+        validationPopup.showMessages( messages );
     }
 }

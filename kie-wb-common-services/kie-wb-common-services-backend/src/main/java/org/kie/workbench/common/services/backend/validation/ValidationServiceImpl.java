@@ -15,14 +15,21 @@
  */
 package org.kie.workbench.common.services.backend.validation;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.shared.validation.CopyValidator;
+import org.kie.workbench.common.services.shared.validation.SaveValidator;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -40,6 +47,8 @@ public class ValidationServiceImpl
     private PackageNameValidator packageNameValidator;
     private ProjectNameValidator projectNameValidator;
     private JavaFileNameValidator javaFileNameValidator;
+    private Collection<SaveValidator> saveValidators = new ArrayList<>();
+    private Collection<CopyValidator> copyValidators = new ArrayList<>();
 
     public ValidationServiceImpl() {
     }
@@ -48,11 +57,16 @@ public class ValidationServiceImpl
     public ValidationServiceImpl( final org.uberfire.ext.editor.commons.service.ValidationService validationService,
                                   final PackageNameValidator packageNameValidator,
                                   final ProjectNameValidator projectNameValidator,
-                                  final JavaFileNameValidator javaFileNameValidator ) {
+                                  final JavaFileNameValidator javaFileNameValidator,
+                                  final Instance<SaveValidator<?>> preSaveCheckInstance,
+                                  final Instance<CopyValidator<?>> preCopyCheckInstance ) {
         this.validationService = validationService;
         this.packageNameValidator = packageNameValidator;
         this.projectNameValidator = projectNameValidator;
         this.javaFileNameValidator = javaFileNameValidator;
+
+        preSaveCheckInstance.forEach( saveValidators::add );
+        preCopyCheckInstance.forEach( copyValidators::add );
     }
 
     @Override
@@ -152,5 +166,24 @@ public class ValidationServiceImpl
     public boolean validateGAVVersion( final String version ) {
         final boolean validVersion = !(version == null || version.isEmpty() || !version.matches( "^[a-zA-Z0-9\\.\\-_]+$" ));
         return validVersion;
+    }
+
+    @Override
+    public <T> Collection<ValidationMessage> validateForSave( final Path path,
+                                                              final T content ) {
+        return (Collection<ValidationMessage>) saveValidators.stream().filter( v -> v.accept( path ) ).flatMap( c -> c.validate( path,
+                                                                                                                                 content ).stream() ).collect( Collectors.toList() );
+    }
+
+    @Override
+    public <T> Collection<ValidationMessage> validateForCopy( final Path path,
+                                                              final T content ) {
+        return (Collection<ValidationMessage>) copyValidators.stream().filter( v -> v.accept( path ) ).flatMap( c -> c.validate( path,
+                                                                                                                                 content ).stream() ).collect( Collectors.toList() );
+    }
+
+    @Override
+    public Collection<ValidationMessage> validateForCopy( final Path path ) {
+        return (Collection<ValidationMessage>) copyValidators.stream().filter( v -> v.accept( path ) ).flatMap( c -> c.validate( path ).stream() ).collect( Collectors.toList() );
     }
 }

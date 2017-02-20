@@ -15,9 +15,11 @@
  */
 package org.kie.workbench.common.services.shared.validation;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 
@@ -71,5 +73,13 @@ public interface ValidationService {
      * @return true if valid
      */
     boolean validateGAVVersion( final String version );
+
+    <T> Collection<ValidationMessage> validateForSave( final Path path,
+                                                       final T content );
+
+    <T> Collection<ValidationMessage> validateForCopy( final Path path,
+                                                       final T content );
+
+    Collection<ValidationMessage> validateForCopy( final Path path );
 
 }

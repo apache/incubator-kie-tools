@@ -44,6 +44,7 @@ import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.CommonAnnotations;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.commons.data.Pair;
 
 public class DataModelerEditorsTestHelper {
@@ -122,6 +123,7 @@ public class DataModelerEditorsTestHelper {
 
         EditorModelContent content = new EditorModelContent();
         content.setDataModel( createTestModel() );
+        content.setCurrentProject( new KieProject() );
         context.setEditorModelContent( content );
 
         return context;

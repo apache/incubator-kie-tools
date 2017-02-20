@@ -62,6 +62,7 @@ import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.JavaTypeInfo;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.JavaTypeInfoImpl;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
@@ -162,7 +163,13 @@ public class DataModelerScreenPresenter
     protected Caller<DataModelerService> modelerService;
 
     @Inject
+    protected ValidationPopup validationPopup;
+
+    @Inject
     protected ValidatorService validatorService;
+
+    @Inject
+    protected Caller<ValidationService> validationService;
 
     @Inject
     protected JavaFileNameValidator javaFileNameValidator;
@@ -355,21 +362,33 @@ public class DataModelerScreenPresenter
         } );
     }
 
-    private void onCopy() {
+    void onCopy() {
+        validationService.call( checkMessages -> {
+            if ( ( (List<ValidationMessage>) checkMessages ).isEmpty() ) {
+                showCopyPopup();
+            } else {
+                validationPopup.showCopyValidationMessages( () -> showCopyPopup(),
+                                                            () -> {},
+                                                            ( (List<ValidationMessage>) checkMessages ) );
+            }
+        } ).validateForCopy( versionRecordManager.getPathToLatest(),
+                             context.getDataObject() );
+
+
+    }
+
+    private void showCopyPopup() {
         copyPopUpPresenter.show( versionRecordManager.getCurrentPath(),
                                  javaFileNameValidator,
-                                 new CommandWithFileNameAndCommitMessage() {
-                                     @Override
-                                     public void execute( final FileNameAndCommitMessage details ) {
-                                         view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Copying() );
-                                         modelerService.call( getCopySuccessCallback( copyPopUpPresenter.getView() ),
-                                                              getCopyErrorCallback( copyPopUpPresenter.getView() ) ).copy( versionRecordManager.getCurrentPath(),
-                                                                                                                           details.getNewFileName(),
-                                                                                                                           copyPopUpPresenter.getView().getPackageName(),
-                                                                                                                           copyPopUpPresenter.getView().getTargetPath(),
-                                                                                                                           details.getCommitMessage(),
-                                                                                                                           true );
-                                     }
+                                 details -> {
+                                     view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Copying() );
+                                     modelerService.call( getCopySuccessCallback( copyPopUpPresenter.getView() ),
+                                                          getCopyErrorCallback( copyPopUpPresenter.getView() ) ).copy( versionRecordManager.getCurrentPath(),
+                                                                                                                       details.getNewFileName(),
+                                                                                                                       copyPopUpPresenter.getView().getPackageName(),
+                                                                                                                       copyPopUpPresenter.getView().getTargetPath(),
+                                                                                                                       details.getCommitMessage(),
+                                                                                                                       true );
                                  } );
     }
 
@@ -436,23 +455,26 @@ public class DataModelerScreenPresenter
     protected void rename() {
         if ( isDirty() ) {
             view.showYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                    Constants.INSTANCE.modelEditor_confirm_save_before_rename(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            rename( true );
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            rename( false );
-                        }
-                    } );
+                                       Constants.INSTANCE.modelEditor_confirm_save_before_rename(),
+                                       () -> validationService.call( getRenameValidationCallback() ).validateForSave( versionRecordManager.getPathToLatest(),
+                                                                                                                      context.getDataObject() ),
+                                       () -> rename( false ) );
         } else {
             //just rename.
             rename( false );
         }
+    }
+
+    RemoteCallback<List<ValidationMessage>> getRenameValidationCallback() {
+        return checkMessages -> {
+            if ( checkMessages.isEmpty() ) {
+                rename( true );
+            } else {
+                validationPopup.showSaveValidationMessages( () -> rename( true ),
+                                                            () -> {},
+                                                            checkMessages );
+            }
+        };
     }
 
     protected Command onValidate() {
@@ -476,14 +498,14 @@ public class DataModelerScreenPresenter
                     }
                 }
 
-                modelerService.call( new RemoteCallback<List<ValidationMessage>>() {
+                modelerService.call( new RemoteCallback<List<org.guvnor.common.services.shared.validation.model.ValidationMessage>>() {
                     @Override
-                    public void callback( final List<ValidationMessage> results ) {
+                    public void callback( final List<org.guvnor.common.services.shared.validation.model.ValidationMessage> results ) {
                         if ( results == null || results.isEmpty() ) {
                             notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages( results );
+                            validationPopup.showMessages( results );
                         }
                     }
                 } ).validate( getSource(), versionRecordManager.getCurrentPath(), modifiedDataObject[ 0 ] );
@@ -541,7 +563,19 @@ public class DataModelerScreenPresenter
     }
 
     protected void save() {
+        validationService.call( checkMessages -> {
+            if ( ( (List<ValidationMessage>) checkMessages ).isEmpty() ) {
+                checkDirtyAndSaveFile();
+            } else {
+                validationPopup.showSaveValidationMessages( () -> checkDirtyAndSaveFile(),
+                                                            () -> {},
+                                                            ( List<ValidationMessage>) checkMessages );
+            }
+        } ).validateForSave( versionRecordManager.getPathToLatest(),
+                             context.getDataObject() );
+    }
 
+    private void checkDirtyAndSaveFile() {
         final JavaTypeInfoImpl newTypeInfo = new JavaTypeInfoImpl();
         if ( isDirty() ) {
             if ( context.isEditorChanged() ) {
@@ -847,7 +881,7 @@ public class DataModelerScreenPresenter
 
     private void addSourceEditorPage() {
         addPage( new PageImpl( javaSourceEditor,
-                org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.SourceTabTitle() ) {
+                               org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
                 if ( uiStarted ) {
@@ -1128,7 +1162,7 @@ public class DataModelerScreenPresenter
 
     protected void onDataObjectChangeEvent( @Observes DataObjectChangeEvent event ) {
         if ( isFromThisContext( event ) ) {
-            notifyLock( );
+            notifyLock();
             refreshTitle( event.getCurrentDataObject() );
             updateChangeStatus( event );
         }
@@ -1152,7 +1186,7 @@ public class DataModelerScreenPresenter
         }
     }
 
-    private void notifyLock( ) {
+    private void notifyLock() {
         lockRequired.fire( new LockRequiredEvent() );
     }
 

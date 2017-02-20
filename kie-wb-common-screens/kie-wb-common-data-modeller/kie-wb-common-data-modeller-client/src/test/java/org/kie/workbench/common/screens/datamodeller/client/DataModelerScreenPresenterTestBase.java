@@ -51,11 +51,16 @@ import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.LockRequiredEvent;
+import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
@@ -96,6 +101,12 @@ public abstract class DataModelerScreenPresenterTestBase {
     protected DataModelerService modelerService;
 
     @Mock
+    protected ValidationPopup validationPopup;
+
+    @Mock
+    protected ValidationService validationService;
+
+    @Mock
     protected ValidatorService validatorService;
 
     @Mock
@@ -117,6 +128,15 @@ public abstract class DataModelerScreenPresenterTestBase {
 
     @Mock
     protected PlaceRequest placeRequest;
+
+    @Mock
+    protected SavePopUpPresenter savePopUpPresenter;
+
+    @Mock
+    protected RenamePopUpPresenter renamePopUpPresenter;
+
+    @Mock
+    protected CopyPopUpPresenter copyPopUpPresenter;
 
     protected DataModelerScreenPresenter presenter;
 
@@ -184,6 +204,9 @@ public abstract class DataModelerScreenPresenterTestBase {
                 this.versionRecordManager = DataModelerScreenPresenterTestBase.this.versionRecordManager;
                 this.authorizationManager = DataModelerScreenPresenterTestBase.this.authorizationManager;
                 overviewWidget = mock( OverviewWidgetPresenter.class );
+                savePopUpPresenter = DataModelerScreenPresenterTestBase.this.savePopUpPresenter;
+                renamePopUpPresenter = DataModelerScreenPresenterTestBase.this.renamePopUpPresenter;
+                copyPopUpPresenter = DataModelerScreenPresenterTestBase.this.copyPopUpPresenter;
 
                 javaSourceEditor = DataModelerScreenPresenterTestBase.this.javaSourceEditor;
                 dataModelerEvent = DataModelerScreenPresenterTestBase.this.dataModelerEvent;
@@ -191,8 +214,9 @@ public abstract class DataModelerScreenPresenterTestBase {
                 publishBatchMessagesEvent = DataModelerScreenPresenterTestBase.this.publishBatchMessagesEvent;
                 lockRequired = DataModelerScreenPresenterTestBase.this.lockRequired;
                 dataModelerFocusEvent = DataModelerScreenPresenterTestBase.this.dataModelerFocusEvent;
-                modelerService = new CallerMock<DataModelerService>(
-                        DataModelerScreenPresenterTestBase.this.modelerService );
+                modelerService = new CallerMock<>( DataModelerScreenPresenterTestBase.this.modelerService );
+                validationPopup = DataModelerScreenPresenterTestBase.this.validationPopup;
+                validationService = new CallerMock<>( DataModelerScreenPresenterTestBase.this.validationService );
                 validatorService = DataModelerScreenPresenterTestBase.this.validatorService;
                 javaFileNameValidator = DataModelerScreenPresenterTestBase.this.javaFileNameValidator;
                 resourceType = DataModelerScreenPresenterTestBase.this.resourceType;

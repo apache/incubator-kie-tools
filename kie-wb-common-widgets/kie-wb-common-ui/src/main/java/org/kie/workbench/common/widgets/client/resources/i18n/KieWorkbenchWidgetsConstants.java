@@ -40,4 +40,16 @@ public interface KieWorkbenchWidgetsConstants {
 
     @TranslationKey( defaultValue = "Path in which to create new resource is missing. Please enter.")
     String NewResourceViewMissingPath = "NewResourceViewImpl.MissingPath";
+
+    @TranslationKey( defaultValue = "" )
+    String ValidationPopup_YesSaveAnyway = "ValidationPopup.YesSaveAnyway";
+
+    @TranslationKey( defaultValue = "" )
+    String ValidationPopup_YesCopyAnyway = "ValidationPopup.YesCopyAnyway";
+
+    @TranslationKey( defaultValue = "" )
+    String ValidationPopup_Cancel = "ValidationPopup.Cancel";
+
+    @TranslationKey( defaultValue = "" )
+    String ValidationPopupViewImpl_ValidationErrors = "ValidationPopupViewImpl.ValidationErrors";
 }

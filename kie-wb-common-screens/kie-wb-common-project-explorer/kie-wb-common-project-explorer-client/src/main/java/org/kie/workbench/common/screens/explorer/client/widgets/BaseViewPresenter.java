@@ -24,6 +24,7 @@ import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.social.ProjectEventType;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -42,6 +43,7 @@ import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.library.api.LibraryContextSwitchEvent;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
@@ -121,6 +123,9 @@ public abstract class BaseViewPresenter
 
     @Inject
     protected CopyPopUpPresenter copyPopUpPresenter;
+
+    @Inject
+    protected ValidationPopup validationPopup;
 
     private boolean isOnLoading = false;
 
@@ -289,6 +294,20 @@ public abstract class BaseViewPresenter
 
     public void copyItem( final FolderItem folderItem ) {
         final Path path = getFolderItemPath( folderItem );
+
+        validationService.call( messages -> {
+            if ( ( (List<ValidationMessage>) messages).isEmpty() ) {
+                showCopyPopup( folderItem, path );
+            } else {
+                validationPopup.showCopyValidationMessages( () -> showCopyPopup( folderItem, path ),
+                                                            () -> {},
+                                                            ( List<ValidationMessage>) messages );
+            }
+        } ).validateForCopy( path );
+    }
+
+    private void showCopyPopup( final FolderItem folderItem,
+                                final Path path ) {
         copyPopUpPresenter.show( path,
                                  new Validator() {
                                      @Override
@@ -320,7 +339,7 @@ public abstract class BaseViewPresenter
                                                             details.getCommitMessage() );
                                      }
                                  }
-                               );
+        );
     }
 
     protected RemoteCallback<Void> getCopySuccessCallback( final CopyPopUpPresenter.View copyPopupView ) {

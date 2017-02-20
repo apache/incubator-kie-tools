@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.services.backend.validation;
 
+import javax.enterprise.inject.Instance;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.shared.validation.CopyValidator;
+import org.kie.workbench.common.services.shared.validation.SaveValidator;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -38,6 +42,10 @@ public class ValidationServiceImplTest {
     private ProjectNameValidator projectValidator;
     @Mock
     private JavaFileNameValidator javaValidator;
+    @Mock
+    private Instance<SaveValidator> saveValidatorInstance;
+    @Mock
+    private Instance<CopyValidator> copyValidatorInstance;
 
     @InjectMocks
     private ValidationServiceImpl validationService;
