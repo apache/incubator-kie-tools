@@ -71,6 +71,8 @@ public class DecisionTableXLSEditorPresenter
 
     private Event<NotificationEvent> notification;
 
+    private ValidationPopup validationPopup;
+
     private BusyIndicatorView busyIndicatorView;
 
     private DecisionTableXLSResourceType decisionTableXLSResourceType;
@@ -85,6 +87,7 @@ public class DecisionTableXLSEditorPresenter
                                             final DecisionTableXLSXResourceType decisionTableXLSXResourceType,
                                             final BusyIndicatorView busyIndicatorView,
                                             final Event<NotificationEvent> notification,
+                                            final ValidationPopup validationPopup,
                                             final Caller<DecisionTableXLSService> decisionTableXLSService ) {
         super( baseView );
         view = baseView;
@@ -93,6 +96,7 @@ public class DecisionTableXLSEditorPresenter
         this.decisionTableXLSService = decisionTableXLSService;
         this.busyIndicatorView = busyIndicatorView;
         this.notification = notification;
+        this.validationPopup = validationPopup;
     }
 
     @OnStartup
@@ -202,7 +206,7 @@ public class DecisionTableXLSEditorPresenter
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages( results );
+                            validationPopup.showMessages( results );
                         }
                     }
                 } ).validate( versionRecordManager.getCurrentPath(),

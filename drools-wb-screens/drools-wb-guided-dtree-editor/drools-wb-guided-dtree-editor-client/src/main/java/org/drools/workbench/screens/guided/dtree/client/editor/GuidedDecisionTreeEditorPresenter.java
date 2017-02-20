@@ -83,6 +83,9 @@ public class GuidedDecisionTreeEditorPresenter
     private Event<NotificationEvent> notification;
 
     @Inject
+    private ValidationPopup validationPopup;
+
+    @Inject
     private GuidedDTreeResourceType type;
 
     @Inject
@@ -191,7 +194,7 @@ public class GuidedDecisionTreeEditorPresenter
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages( results );
+                            validationPopup.showMessages( results );
                         }
                     }
                 } ).validate( versionRecordManager.getCurrentPath(),

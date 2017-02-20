@@ -59,6 +59,8 @@ public class EnumEditorPresenter
 
     private EnumResourceType type;
 
+    private ValidationPopup validationPopup;
+
     public EnumEditorPresenter() {
         //Zero-parameter constructor for CDI proxies
     }
@@ -66,11 +68,13 @@ public class EnumEditorPresenter
     @Inject
     public EnumEditorPresenter( final EnumEditorView baseView,
                                 final Caller<EnumService> enumService,
-                                final EnumResourceType type ) {
+                                final EnumResourceType type,
+                                final ValidationPopup validationPopup ) {
         super( baseView );
         this.view = baseView;
         this.enumService = enumService;
         this.type = type;
+        this.validationPopup = validationPopup;
     }
 
     @OnStartup
@@ -120,7 +124,7 @@ public class EnumEditorPresenter
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages( results );
+                            validationPopup.showMessages( results );
                         }
                     }
                 } ).validate( versionRecordManager.getCurrentPath(),

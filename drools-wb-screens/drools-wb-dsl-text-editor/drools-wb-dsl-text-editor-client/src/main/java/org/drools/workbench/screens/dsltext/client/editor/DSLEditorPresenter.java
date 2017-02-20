@@ -60,6 +60,9 @@ public class DSLEditorPresenter
     @Inject
     private Event<NotificationEvent> notification;
 
+    @Inject
+    private ValidationPopup validationPopup;
+
     private DSLEditorView view;
 
     @Inject
@@ -119,7 +122,7 @@ public class DSLEditorPresenter
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages( results );
+                            validationPopup.showMessages( results );
                         }
                     }
                 } ).validate( versionRecordManager.getCurrentPath(),

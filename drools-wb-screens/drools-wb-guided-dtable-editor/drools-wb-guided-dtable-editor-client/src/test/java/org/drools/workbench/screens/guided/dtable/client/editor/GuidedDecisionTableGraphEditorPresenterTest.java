@@ -170,6 +170,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                             notification,
                                                             saveInProgressEvent,
                                                             decisionTableSelectedEvent,
+                                                            validationPopup,
                                                             dtGraphResourceType,
                                                             editMenuBuilder,
                                                             viewMenuBuilder,

@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuBuilder;
@@ -102,6 +103,9 @@ public class GuidedDecisionTableEditorMenusTest {
 
     @Mock
     protected EventSourceMock<DecisionTableSelectedEvent> decisionTableSelectedEvent;
+
+    @Mock
+    protected ValidationPopup validationPopup;
 
     @Mock
     protected Clipboard clipboard;
@@ -288,6 +292,7 @@ public class GuidedDecisionTableEditorMenusTest {
                                                                                                   dtServiceCaller,
                                                                                                   notification,
                                                                                                   decisionTableSelectedEvent,
+                                                                                                  validationPopup,
                                                                                                   resourceType,
                                                                                                   editMenuBuilder,
                                                                                                   viewMenuBuilder,

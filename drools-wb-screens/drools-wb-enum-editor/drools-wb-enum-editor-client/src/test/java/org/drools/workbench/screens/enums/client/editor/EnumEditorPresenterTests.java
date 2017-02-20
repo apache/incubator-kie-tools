@@ -34,6 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
@@ -86,6 +87,9 @@ public class EnumEditorPresenterTests {
 
     @Mock
     private Overview overview;
+
+    @Mock
+    private ValidationPopup validationPopup;
 
     @GwtMock
     private ViewDRLSourceWidget sourceWidget;
@@ -144,7 +148,8 @@ public class EnumEditorPresenterTests {
 
         this.presenter = new EnumEditorPresenter( view,
                                                   enumServiceCaller,
-                                                  type ) {
+                                                  type,
+                                                  validationPopup ) {
             {
                 //Yuck, yuck, yuck... the class hierarchy is really a mess
                 this.kieView = mockKieView;

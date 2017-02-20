@@ -62,6 +62,9 @@ public class GlobalsEditorPresenter
     private Event<NotificationEvent> notification;
 
     @Inject
+    private ValidationPopup validationPopup;
+
+    @Inject
     private GlobalResourceType type;
 
     private GlobalsModel model;
@@ -127,7 +130,7 @@ public class GlobalsEditorPresenter
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages( results );
+                            validationPopup.showMessages( results );
                         }
                     }
                 } ).validate( versionRecordManager.getCurrentPath(),

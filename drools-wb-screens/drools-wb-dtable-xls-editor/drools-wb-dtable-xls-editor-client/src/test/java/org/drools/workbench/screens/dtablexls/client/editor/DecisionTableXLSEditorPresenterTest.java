@@ -36,6 +36,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.Mock;
@@ -91,6 +92,9 @@ public class DecisionTableXLSEditorPresenterTest {
     @Mock
     EventSourceMock<NotificationEvent> notification;
 
+    @Mock
+    ValidationPopup validationPopup;
+
     DecisionTableXLSEditorPresenter presenter;
 
     @Before
@@ -109,6 +113,7 @@ public class DecisionTableXLSEditorPresenterTest {
                                                          decisionTableXLSXResourceType,
                                                          busyIndicatorView,
                                                          notification,
+                                                         validationPopup,
                                                          new ServiceMock()
         ) {
             {
@@ -161,7 +166,7 @@ public class DecisionTableXLSEditorPresenterTest {
 
     @Test
     public void testOnUploadWhenConcurrentUpdateSessionInfoIsNotNull() {
-        presenter = spy( new DecisionTableXLSEditorPresenter( null, null, null, busyIndicatorView, null, null ) {
+        presenter = spy( new DecisionTableXLSEditorPresenter( null, null, null, busyIndicatorView, null, null, null ) {
             {
                 concurrentUpdateSessionInfo = mock( ObservablePath.OnConcurrentUpdateEvent.class );
             }

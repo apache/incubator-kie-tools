@@ -90,6 +90,9 @@ public class GuidedRuleEditorPresenter
     @Inject
     private AsyncPackageDataModelOracleFactory oracleFactory;
 
+    @Inject
+    private ValidationPopup validationPopup;
+
     private boolean isDSLEnabled;
 
     private RuleModel model;
@@ -191,7 +194,7 @@ public class GuidedRuleEditorPresenter
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages( results );
+                            validationPopup.showMessages( results );
                         }
                     }
                 } ).validate( versionRecordManager.getCurrentPath(),

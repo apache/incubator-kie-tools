@@ -68,6 +68,9 @@ public class WorkItemsEditorPresenter
     private Event<ChangeTitleWidgetEvent> changeTitleNotification;
 
     @Inject
+    private ValidationPopup validationPopup;
+
+    @Inject
     private PlaceManager placeManager;
 
     private WorkItemsEditorView view;
@@ -136,7 +139,7 @@ public class WorkItemsEditorPresenter
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages( results );
+                            validationPopup.showMessages( results );
                         }
                     }
                 } ).validate( versionRecordManager.getCurrentPath(),

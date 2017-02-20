@@ -44,6 +44,7 @@ import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleB
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuBuilder;
@@ -102,6 +103,9 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
             //Do nothing
         }
     } );
+
+    @Mock
+    protected ValidationPopup validationPopup;
 
     @Mock
     protected EditMenuBuilder editMenuBuilder;

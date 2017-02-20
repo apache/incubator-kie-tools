@@ -68,6 +68,9 @@ public class GuidedScoreCardEditorPresenter
     private Event<NotificationEvent> notification;
 
     @Inject
+    private ValidationPopup validationPopup;
+
+    @Inject
     private GuidedScoreCardResourceType type;
 
     @Inject
@@ -157,7 +160,7 @@ public class GuidedScoreCardEditorPresenter
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages( results );
+                            validationPopup.showMessages( results );
                         }
                     }
                 } ).validate( versionRecordManager.getCurrentPath(),

@@ -79,6 +79,9 @@ public class GuidedRuleTemplateEditorPresenter
     private Event<NotificationEvent> notification;
 
     @Inject
+    private ValidationPopup validationPopup;
+
+    @Inject
     private GuidedRuleTemplateResourceType type;
 
     @Inject
@@ -190,7 +193,7 @@ public class GuidedRuleTemplateEditorPresenter
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages( results );
+                            validationPopup.showMessages( results );
                         }
                     }
                 } ).validate( versionRecordManager.getCurrentPath(),

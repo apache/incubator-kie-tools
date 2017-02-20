@@ -78,6 +78,7 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
     protected Caller<GuidedDecisionTableEditorService> service;
     protected Event<NotificationEvent> notification;
     protected Event<DecisionTableSelectedEvent> decisionTableSelectedEvent;
+    protected ValidationPopup validationPopup;
     protected ClientResourceType resourceType;
     protected EditMenuBuilder editMenuBuilder;
     protected ViewMenuBuilder viewMenuBuilder;
@@ -100,6 +101,7 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
                                                    final Caller<GuidedDecisionTableEditorService> service,
                                                    final Event<NotificationEvent> notification,
                                                    final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
+                                                   final ValidationPopup validationPopup,
                                                    final ClientResourceType resourceType,
                                                    final EditMenuBuilder editMenuBuilder,
                                                    final ViewMenuBuilder viewMenuBuilder,
@@ -113,6 +115,7 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
         this.service = service;
         this.notification = notification;
         this.decisionTableSelectedEvent = decisionTableSelectedEvent;
+        this.validationPopup = validationPopup;
         this.resourceType = resourceType;
         this.editMenuBuilder = editMenuBuilder;
         this.viewMenuBuilder = viewMenuBuilder;
@@ -338,7 +341,7 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
     }
 
     void showValidationPopup( final List<ValidationMessage> results ) {
-        ValidationPopup.showMessages( results );
+        validationPopup.showMessages( results );
     }
 
     @Override

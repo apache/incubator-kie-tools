@@ -46,6 +46,7 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                                                        dtServiceCaller,
                                                        notification,
                                                        decisionTableSelectedEvent,
+                                                       validationPopup,
                                                        resourceType,
                                                        editMenuBuilder,
                                                        viewMenuBuilder,

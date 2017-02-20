@@ -58,6 +58,9 @@ public class ScoreCardXLSEditorPresenter
     private Event<NotificationEvent> notification;
 
     @Inject
+    private ValidationPopup validationPopup;
+
+    @Inject
     private BusyIndicatorView busyIndicatorView;
 
     @Inject
@@ -110,7 +113,7 @@ public class ScoreCardXLSEditorPresenter
                             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                       NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages( results );
+                            validationPopup.showMessages( results );
                         }
                     }
                 } ).validate( versionRecordManager.getCurrentPath(),

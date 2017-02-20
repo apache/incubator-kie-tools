@@ -56,6 +56,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -314,6 +315,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                                     final Event<NotificationEvent> notification,
                                                     final Event<SaveInProgressEvent> saveInProgressEvent,
                                                     final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
+                                                    final ValidationPopup validationPopup,
                                                     final GuidedDTableGraphResourceType dtGraphResourceType,
                                                     final EditMenuBuilder editMenuBuilder,
                                                     final ViewMenuBuilder viewMenuBuilder,
@@ -329,6 +331,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                service,
                notification,
                decisionTableSelectedEvent,
+               validationPopup,
                dtGraphResourceType,
                editMenuBuilder,
                viewMenuBuilder,

@@ -38,6 +38,7 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEdi
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -68,6 +69,7 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                                                final Caller<GuidedDecisionTableEditorService> service,
                                                final Event<NotificationEvent> notification,
                                                final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
+                                               final ValidationPopup validationPopup,
                                                final GuidedDTableResourceType resourceType,
                                                final EditMenuBuilder editMenuBuilder,
                                                final ViewMenuBuilder viewMenuBuilder,
@@ -80,6 +82,7 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                service,
                notification,
                decisionTableSelectedEvent,
+               validationPopup,
                resourceType,
                editMenuBuilder,
                viewMenuBuilder,
