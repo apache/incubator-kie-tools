@@ -16,8 +16,12 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -42,6 +46,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
@@ -68,222 +73,227 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
 
     private final Map<ActionFieldValue, ActionValueEditor> actionValueEditors = new HashMap<ActionFieldValue, ActionValueEditor>();
 
-    public ActionInsertFactWidget( final RuleModeller mod,
-                                   final EventBus eventBus,
-                                   final ActionInsertFact set,
-                                   final Boolean readOnly ) {
-        super( mod,
-               eventBus );
+    public ActionInsertFactWidget(final RuleModeller mod,
+                                  final EventBus eventBus,
+                                  final ActionInsertFact set,
+                                  final Boolean readOnly) {
+        super(mod,
+              eventBus);
         this.model = set;
         this.layout = new FlexTable();
         this.factType = set.getFactType();
 
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
-        oracle.getFieldCompletions( set.getFactType(),
-                                    FieldAccessorsAndMutators.MUTATOR,
-                                    new Callback<ModelField[]>() {
-                                        @Override
-                                        public void callback( final ModelField[] fields ) {
-                                            fieldCompletions = fields;
-                                        }
-                                    } );
+        oracle.getFieldCompletions(set.getFactType(),
+                                   FieldAccessorsAndMutators.MUTATOR,
+                                   new Callback<ModelField[]>() {
+                                       @Override
+                                       public void callback(final ModelField[] fields) {
+                                           fieldCompletions = fields;
+                                       }
+                                   });
 
-        this.isFactTypeKnown = oracle.isFactTypeRecognized( set.getFactType() );
-        if ( readOnly == null ) {
+        this.isFactTypeKnown = oracle.isFactTypeRecognized(set.getFactType());
+        if (readOnly == null) {
             this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
 
-        if ( this.readOnly ) {
-            layout.addStyleName( "editor-disabled-widget" );
+        if (this.readOnly) {
+            layout.addStyleName("editor-disabled-widget");
         }
 
         doLayout();
 
-        initWidget( this.layout );
-
+        initWidget(this.layout);
     }
 
     private void doLayout() {
         layout.clear();
-        layout.setWidget( 0,
-                          0,
-                          getAssertLabel() );
-        layout.setWidget( 1,
-                          0,
-                          new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
-        layout.getFlexCellFormatter().setColSpan( 0,
-                                                  0,
-                                                  2 );
+        layout.setWidget(0,
+                         0,
+                         getAssertLabel());
+        layout.setWidget(1,
+                         0,
+                         new HTML("&nbsp;&nbsp;&nbsp;&nbsp;"));
+        layout.getFlexCellFormatter().setColSpan(0,
+                                                 0,
+                                                 2);
 
         FlexTable inner = new FlexTable();
         int col = 0;
 
-        for ( int i = 0; i < model.getFieldValues().length; i++ ) {
-            ActionFieldValue val = model.getFieldValues()[ i ];
+        for (int i = 0; i < model.getFieldValues().length; i++) {
+            ActionFieldValue val = model.getFieldValues()[i];
 
-            inner.setWidget( i,
-                             0 + col,
-                             fieldSelector( val ) );
-            inner.setWidget( i,
-                             1 + col,
-                             valueEditor( val ) );
+            inner.setWidget(i,
+                            0 + col,
+                            fieldSelector(val));
+            inner.setWidget(i,
+                            1 + col,
+                            valueEditor(val));
             final int idx = i;
             Image remove = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
-            remove.addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent event ) {
-                    if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisItem() ) ) {
-                        model.removeField( idx );
-                        setModified( true );
+            remove.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    if (Window.confirm(GuidedRuleEditorResources.CONSTANTS.RemoveThisItem())) {
+                        model.removeField(idx);
+                        setModified(true);
                         getModeller().refreshWidget();
 
                         //Signal possible change in Template variables
-                        TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( getModeller().getModel() );
-                        getEventBus().fireEventFromSource( tvce,
-                                                           getModeller().getModel() );
+                        TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent(getModeller().getModel());
+                        getEventBus().fireEventFromSource(tvce,
+                                                          getModeller().getModel());
                     }
                 }
-            } );
-            if ( !this.readOnly ) {
-                inner.setWidget( i,
-                                 2 + col,
-                                 remove );
+            });
+            if (!this.readOnly) {
+                inner.setWidget(i,
+                                2 + col,
+                                remove);
             }
-
         }
 
-        layout.setWidget( 1,
-                          1,
-                          inner );
-
+        layout.setWidget(1,
+                         1,
+                         inner);
     }
 
-    private Widget valueEditor( final ActionFieldValue val ) {
-        ActionValueEditor actionValueEditor = new ActionValueEditor( factType,
-                                                                     val,
-                                                                     model.getFieldValues(),
-                                                                     this.getModeller(),
-                                                                     this.getEventBus(),
-                                                                     val.getType(),
-                                                                     this.readOnly );
+    private Widget valueEditor(final ActionFieldValue val) {
+        ActionValueEditor actionValueEditor = new ActionValueEditor(factType,
+                                                                    val,
+                                                                    model.getFieldValues(),
+                                                                    this.getModeller(),
+                                                                    this.getEventBus(),
+                                                                    val.getType(),
+                                                                    this.readOnly);
 
-        actionValueEditor.setOnChangeCommand( new Command() {
+        actionValueEditor.setOnChangeCommand(new Command() {
             public void execute() {
-                refreshActionValueEditorsDropDownData( val );
-                setModified( true );
+                refreshActionValueEditorsDropDownData(val);
+                setModified(true);
             }
-        } );
+        });
 
         //Keep a reference to the value editors so they can be refreshed for dependent enums
-        actionValueEditors.put( val,
-                                actionValueEditor );
+        actionValueEditors.put(val,
+                               actionValueEditor);
 
         return actionValueEditor;
     }
 
-    private void refreshActionValueEditorsDropDownData( final ActionFieldValue modifiedField ) {
-        for ( Map.Entry<ActionFieldValue, ActionValueEditor> e : actionValueEditors.entrySet() ) {
+    private void refreshActionValueEditorsDropDownData(final ActionFieldValue modifiedField) {
+        for (Map.Entry<ActionFieldValue, ActionValueEditor> e : actionValueEditors.entrySet()) {
             final ActionFieldValue afv = e.getKey();
-            if ( afv.getNature() == FieldNatureType.TYPE_LITERAL || afv.getNature() == FieldNatureType.TYPE_ENUM ) {
-                if ( !afv.equals( modifiedField ) ) {
+            if (afv.getNature() == FieldNatureType.TYPE_LITERAL || afv.getNature() == FieldNatureType.TYPE_ENUM) {
+                if (!afv.equals(modifiedField)) {
                     e.getValue().refresh();
                 }
             }
         }
     }
 
-    private Widget fieldSelector( final ActionFieldValue val ) {
-        return new SmallLabel( val.getField() );
+    private Widget fieldSelector(final ActionFieldValue val) {
+        return new SmallLabel(val.getField());
     }
 
     private Widget getAssertLabel() {
 
         ClickHandler cl = new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 Widget w = (Widget) event.getSource();
-                showAddFieldPopup( w );
-
+                showAddFieldPopup(w);
             }
         };
 
         String assertType = "assert"; //NON-NLS
-        if ( this.model instanceof ActionInsertLogicalFact ) {
+        if (this.model instanceof ActionInsertLogicalFact) {
             assertType = "assertLogical"; //NON-NLS
         }
 
-        String lbl = ( model.isBound() == false ) ? HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.getFactType() + "</b>" : HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.getFactType() + "</b>" + " <b>["
+        String lbl = (model.isBound() == false) ? HumanReadable.getActionDisplayName(assertType) + " <b>" + this.model.getFactType() + "</b>" : HumanReadable.getActionDisplayName(assertType) + " <b>" + this.model.getFactType() + "</b>" + " <b>["
                 + model.getBoundName() + "]</b>";
-        if ( this.model.getFieldValues() != null && model.getFieldValues().length > 0 ) {
+        if (this.model.getFieldValues() != null && model.getFieldValues().length > 0) {
             lbl = lbl + ":";
         }
-        return new ClickableLabel( lbl,
-                                   cl,
-                                   !this.readOnly );
-
+        return new ClickableLabel(lbl,
+                                  cl,
+                                  !this.readOnly);
     }
 
-    protected void showAddFieldPopup( Widget w ) {
+    protected void showAddFieldPopup(Widget w) {
         final AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
 
-        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                         GuidedRuleEditorResources.CONSTANTS.AddAField() );
+        final FormStylePopup popup = new FormStylePopup(GuidedRuleEditorImages508.INSTANCE.Wizard(),
+                                                        GuidedRuleEditorResources.CONSTANTS.AddAField());
         final ListBox box = new ListBox();
-        box.addItem( "..." );
+        box.addItem("...");
 
-        for ( int i = 0; i < fieldCompletions.length; i++ ) {
-            box.addItem( fieldCompletions[ i ].getName() );
+        final ModelField[] availableFieldCompletions = ModelFieldUtil.getAvailableFieldCompletions(fieldCompletions,
+                                                                                                   model);
+        final boolean isEnabled = !isReadOnly() && availableFieldCompletions.length > 0;
+        if (availableFieldCompletions.length > 0) {
+            for (int i = 0; i < availableFieldCompletions.length; i++) {
+                box.addItem(availableFieldCompletions[i].getName());
+            }
         }
 
-        box.setSelectedIndex( 0 );
+        box.setSelectedIndex(0);
 
-        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.AddField(),
-                            box );
-        box.addChangeHandler( new ChangeHandler() {
-            public void onChange( ChangeEvent event ) {
-                String fieldName = box.getItemText( box.getSelectedIndex() );
-                String fieldType = oracle.getFieldType( model.getFactType(),
-                                                        fieldName );
-                model.addFieldValue( new ActionFieldValue( fieldName,
-                                                           "",
-                                                           fieldType ) );
-                setModified( true );
+        popup.addAttribute(GuidedRuleEditorResources.CONSTANTS.AddField(),
+                           box);
+        box.addChangeHandler(new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                String fieldName = box.getItemText(box.getSelectedIndex());
+                String fieldType = oracle.getFieldType(model.getFactType(),
+                                                       fieldName);
+                model.addFieldValue(new ActionFieldValue(fieldName,
+                                                         "",
+                                                         fieldType));
+                setModified(true);
                 getModeller().refreshWidget();
                 popup.hide();
             }
-        } );
+        });
         /*
          * Propose a textBox to the user to make him set a variable name
          */
         final HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new TextBox();
-        if ( this.model.getBoundName() != null ) {
-            varName.setText( this.model.getBoundName() );
+        if (this.model.getBoundName() != null) {
+            varName.setText(this.model.getBoundName());
         }
-        final Button ok = new Button( HumanReadableConstants.INSTANCE.Set() );
-        vn.add( varName );
-        vn.add( ok );
-        ok.addClickHandler( new ClickHandler() {
+        final Button ok = new Button(HumanReadableConstants.INSTANCE.Set());
+        vn.add(varName);
+        vn.add(ok);
+        ok.addClickHandler(new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 String var = varName.getText();
-                if ( getModeller().isVariableNameUsed( var ) && ( ( model.getBoundName() != null && model.getBoundName().equals( var ) == false ) || model.getBoundName() == null ) ) {
-                    Window.alert( GuidedRuleEditorResources.CONSTANTS.TheVariableName0IsAlreadyTaken( var ) );
+                if (getModeller().isVariableNameUsed(var) && ((model.getBoundName() != null && model.getBoundName().equals(var) == false) || model.getBoundName() == null)) {
+                    Window.alert(GuidedRuleEditorResources.CONSTANTS.TheVariableName0IsAlreadyTaken(var));
                     return;
                 }
-                model.setBoundName( var );
-                setModified( true );
+                model.setBoundName(var);
+                setModified(true);
                 getModeller().refreshWidget();
                 popup.hide();
             }
-        } );
+        });
 
-        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.BoundVariable(),
-                            vn );
+        popup.addAttribute(GuidedRuleEditorResources.CONSTANTS.BoundVariable(),
+                           vn);
+
+        box.setEnabled(isEnabled);
+        varName.setEnabled(isEnabled);
+        ok.setEnabled(isEnabled);
+
         popup.show();
-
     }
+
 
     @Override
     public boolean isReadOnly() {
@@ -294,5 +304,4 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     public boolean isFactTypeKnown() {
         return this.isFactTypeKnown;
     }
-
 }
