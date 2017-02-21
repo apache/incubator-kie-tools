@@ -35,6 +35,18 @@ public class ProjectDiagramImpl extends AbstractDiagram<Graph, ProjectMetadata> 
               metadata);
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ProjectDiagramImpl)) {
+            return false;
+        }
+        ProjectDiagramImpl that = (ProjectDiagramImpl) o;
+        return getGraph() != null && getGraph().equals(that.getGraph());
+    }
+
     /**
      * Currently diagram's name and metadata are not updated, just rely on the graph instance.
      * Improve this later if necessary.
