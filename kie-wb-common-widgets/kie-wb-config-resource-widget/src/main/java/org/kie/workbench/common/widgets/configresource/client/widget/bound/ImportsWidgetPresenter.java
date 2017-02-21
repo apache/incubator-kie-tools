@@ -29,7 +29,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
                                                IsWidget {
@@ -39,6 +39,10 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
     private Event<ImportAddedEvent> importAddedEvent;
     private Event<ImportRemovedEvent> importRemovedEvent;
 
+    private final List<Import> internalFactTypes = new ArrayList<>();
+    private final List<Import> externalFactTypes = new ArrayList<>();
+    private final List<Import> modelFactTypes = new ArrayList<>();
+
     private AsyncPackageDataModelOracle dmo;
     private Imports importTypes;
 
@@ -46,72 +50,77 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
     }
 
     @Inject
-    public ImportsWidgetPresenter( final ImportsWidgetView view,
-                                   final Event<ImportAddedEvent> importAddedEvent,
-                                   final Event<ImportRemovedEvent> importRemovedEvent ) {
+    public ImportsWidgetPresenter(final ImportsWidgetView view,
+                                  final Event<ImportAddedEvent> importAddedEvent,
+                                  final Event<ImportRemovedEvent> importRemovedEvent) {
         this.view = view;
         this.importAddedEvent = importAddedEvent;
         this.importRemovedEvent = importRemovedEvent;
-        view.init( this );
+        view.init(this);
     }
 
     @Override
-    public void setContent( final AsyncPackageDataModelOracle dmo,
-                            final Imports importTypes,
-                            final boolean isReadOnly ) {
-        this.dmo = checkNotNull( "dmo",
-                                 dmo );
-        this.importTypes = checkNotNull( "importTypes",
-                                         importTypes );
+    public void setContent(final AsyncPackageDataModelOracle dmo,
+                           final Imports importTypes,
+                           final boolean isReadOnly) {
+        this.dmo = checkNotNull("dmo",
+                                dmo);
+        this.importTypes = checkNotNull("importTypes",
+                                        importTypes);
+
+        internalFactTypes.clear();
+        externalFactTypes.clear();
+        modelFactTypes.clear();
 
         //Get list of types within the package
-        final List<Import> internalFactTypes = new ArrayList<Import>();
-        for ( String importType : dmo.getInternalFactTypes() ) {
-            internalFactTypes.add( new Import( importType.replaceAll( "\\$",
-                                                                      "." ) ) );
+        for (String importType : dmo.getInternalFactTypes()) {
+            internalFactTypes.add(new Import(importType.replaceAll("\\$",
+                                                                   ".")));
         }
 
         //Get list of potential imports
-        final List<Import> externalFactTypes = new ArrayList<Import>();
-        for ( String importType : dmo.getExternalFactTypes() ) {
-            externalFactTypes.add( new Import( importType.replaceAll( "\\$",
-                                                                      "." ) ) );
+        for (String importType : dmo.getExternalFactTypes()) {
+            externalFactTypes.add(new Import(importType.replaceAll("\\$",
+                                                                   ".")));
         }
 
         //Remove internal imports from model's imports (this should never be the case, but it exists "in the wild")
-        final List<Import> modelFactTypes = new ArrayList<Import>();
-        modelFactTypes.addAll( importTypes.getImports() );
-        modelFactTypes.removeAll( internalFactTypes );
+        modelFactTypes.addAll(importTypes.getImports());
+        modelFactTypes.removeAll(internalFactTypes);
 
-        view.setContent( internalFactTypes,
-                         externalFactTypes,
-                         modelFactTypes,
-                         isReadOnly );
+        view.setContent(internalFactTypes,
+                        externalFactTypes,
+                        modelFactTypes,
+                        isReadOnly);
     }
 
     @Override
-    public void onAddImport( final Import importType ) {
-        importTypes.getImports().add( importType );
-        dmo.filter();
-
-        //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
-        importAddedEvent.fire( new ImportAddedEvent( dmo,
-                                                     importType ) );
+    public boolean isInternalImport(final Import importType) {
+        return internalFactTypes.contains(importType);
     }
 
     @Override
-    public void onRemoveImport( final Import importType ) {
-        importTypes.getImports().remove( importType );
+    public void onAddImport(final Import importType) {
+        importTypes.getImports().add(importType);
         dmo.filter();
 
         //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
-        importRemovedEvent.fire( new ImportRemovedEvent( dmo,
-                                                         importType ) );
+        importAddedEvent.fire(new ImportAddedEvent(dmo,
+                                                   importType));
+    }
+
+    @Override
+    public void onRemoveImport(final Import importType) {
+        importTypes.getImports().remove(importType);
+        dmo.filter();
+
+        //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
+        importRemovedEvent.fire(new ImportRemovedEvent(dmo,
+                                                       importType));
     }
 
     @Override
     public Widget asWidget() {
         return view.asWidget();
     }
-
 }

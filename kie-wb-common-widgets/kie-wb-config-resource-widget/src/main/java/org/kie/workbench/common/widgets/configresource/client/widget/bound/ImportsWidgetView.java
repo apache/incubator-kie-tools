@@ -29,21 +29,21 @@ public interface ImportsWidgetView
 
     interface Presenter {
 
-        void setContent( final AsyncPackageDataModelOracle dmo,
-                         final Imports resourceImports,
-                         final boolean isReadOnly );
+        void setContent(final AsyncPackageDataModelOracle dmo,
+                        final Imports resourceImports,
+                        final boolean isReadOnly);
 
-        void onAddImport( final Import importType );
+        boolean isInternalImport(final Import importType);
 
-        void onRemoveImport( final Import importType );
+        void onAddImport(final Import importType);
+
+        void onRemoveImport(final Import importType);
 
         Widget asWidget();
-
     }
 
-    void setContent( final List<Import> internalFactTypes,
-                     final List<Import> externalFactTypes,
-                     final List<Import> importTypes,
-                     final boolean isReadOnly );
-
+    void setContent(final List<Import> internalFactTypes,
+                    final List<Import> externalFactTypes,
+                    final List<Import> importTypes,
+                    final boolean isReadOnly);
 }
