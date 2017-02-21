@@ -23,7 +23,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
@@ -37,18 +37,17 @@ import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 @PropertySet
 @FormDefinition(
         policy = FieldPolicy.ONLY_MARKED,
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "bgColor"
 )
 public class BackgroundSet implements BPMNPropertySet {
 
     @Name
+    @FieldLabel
     public static final transient String propertySetName = "Background Set";
 
     @Property
     @FormField(
-            type = ColorPickerFieldType.class,
-            labelKey = "bgColor"
+            type = ColorPickerFieldType.class
     )
     @Valid
     private BgColor bgColor;
@@ -56,7 +55,6 @@ public class BackgroundSet implements BPMNPropertySet {
     @Property
     @FormField(
             type = ColorPickerFieldType.class,
-            labelKey = "borderColor",
             afterElement = "bgColor"
     )
     @Valid
@@ -65,7 +63,6 @@ public class BackgroundSet implements BPMNPropertySet {
     @Property
     @FormField(
             type = SliderFieldType.class,
-            labelKey = "borderSize",
             afterElement = "borderColor",
             settings = {
                     @FieldParam(name = "min", value = "0.0"),

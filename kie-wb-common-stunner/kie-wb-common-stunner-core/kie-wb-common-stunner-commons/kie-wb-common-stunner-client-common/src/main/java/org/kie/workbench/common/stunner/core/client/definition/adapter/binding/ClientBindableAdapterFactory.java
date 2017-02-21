@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.Bindable
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertySetAdapter;
+import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
@@ -31,28 +32,34 @@ public class ClientBindableAdapterFactory implements BindableAdapterFactory {
 
     DefinitionUtils definitionUtils;
 
+    StunnerTranslationService translationService;
+
     protected ClientBindableAdapterFactory() {
-        this(null);
+        this(null,
+             null);
     }
 
     @Inject
-    public ClientBindableAdapterFactory(final DefinitionUtils definitionUtils) {
+    public ClientBindableAdapterFactory(final DefinitionUtils definitionUtils,
+                                        StunnerTranslationService translationService) {
         this.definitionUtils = definitionUtils;
+        this.translationService = translationService;
     }
 
     public BindableDefinitionAdapter newBindableDefinitionAdapter() {
-        return new ClientBindableDefinitionAdapter(definitionUtils);
+        return new ClientBindableDefinitionAdapter(definitionUtils,
+                                                   translationService);
     }
 
     public BindableDefinitionSetAdapter newBindableDefinitionSetAdapter() {
-        return new ClientBindableDefinitionSetAdapter();
+        return new ClientBindableDefinitionSetAdapter(translationService);
     }
 
     public BindablePropertyAdapter newBindablePropertyAdapter() {
-        return new ClientBindablePropertyAdapter();
+        return new ClientBindablePropertyAdapter(translationService);
     }
 
     public BindablePropertySetAdapter<Object> newBindablePropertySetAdapter() {
-        return new ClientBindablePropertySetAdapter();
+        return new ClientBindablePropertySetAdapter(translationService);
     }
 }

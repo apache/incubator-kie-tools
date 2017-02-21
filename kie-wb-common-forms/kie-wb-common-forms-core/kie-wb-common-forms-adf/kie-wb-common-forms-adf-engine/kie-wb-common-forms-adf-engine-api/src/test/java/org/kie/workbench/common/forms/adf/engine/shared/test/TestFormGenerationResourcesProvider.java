@@ -45,7 +45,7 @@ public class TestFormGenerationResourcesProvider implements FormGenerationResour
     public TestFormGenerationResourcesProvider() {
         FormDefinitionSettings settings = new FormDefinitionSettings(Person.class.getName());
 
-        settings.getI18nSettings().setKeyPreffix("Person");
+        settings.getI18nSettings();
 
         settings.setLayout(new LayoutDefinition(new LayoutColumnDefinition(ColSpan.AUTO)));
 

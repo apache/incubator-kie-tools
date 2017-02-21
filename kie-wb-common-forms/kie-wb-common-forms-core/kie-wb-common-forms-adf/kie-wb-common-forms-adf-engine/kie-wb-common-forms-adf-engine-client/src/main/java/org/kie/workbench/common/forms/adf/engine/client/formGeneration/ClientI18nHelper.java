@@ -31,7 +31,7 @@ public class ClientI18nHelper extends AbstractI18nHelper {
     }
 
     @Override
-    protected String translate(String key) {
+    public String getTranslation(String key) {
         return translationService.getTranslation(key);
     }
 }

@@ -21,6 +21,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+
 /**
  * Indicates to the ADF engine that the annotated class must be used as a meta-fieldDefinition
  */
@@ -28,4 +31,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 public @interface FieldDefinition {
 
+    /**
+     * Specifies how the Field Label should be calculated. By default let's the engine calculate it using the
+     * {@link I18nSettings} specified on the {@link FormDefinition}
+     */
+    LabelMode labelMode() default LabelMode.DONT_OVERRIDE;
 }

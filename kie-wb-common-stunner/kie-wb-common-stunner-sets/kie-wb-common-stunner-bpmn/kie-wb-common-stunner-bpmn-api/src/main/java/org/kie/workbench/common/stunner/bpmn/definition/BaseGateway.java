@@ -40,26 +40,21 @@ public abstract class BaseGateway implements BPMNDefinition {
     public static final transient String category = Categories.GATEWAYS;
 
     @PropertySet
-    @FormField(
-            labelKey = "general"
-    )
+    @FormField
     @Valid
     protected BPMNGeneralSet general;
 
     @PropertySet
     @FormField(
-            labelKey = "backgroundSet",
             afterElement = "general"
     )
     @Valid
     protected BackgroundSet backgroundSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_FONT_SETTINGS )
     protected FontSet fontSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 5 )
     protected CircleDimensionSet dimensionsSet;
 
     @Labels

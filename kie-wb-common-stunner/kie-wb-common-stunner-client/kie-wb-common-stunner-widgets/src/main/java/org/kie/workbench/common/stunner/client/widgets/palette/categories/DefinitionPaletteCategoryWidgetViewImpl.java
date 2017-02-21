@@ -23,6 +23,7 @@ import com.google.gwt.event.dom.client.MouseDownEvent;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Document;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -77,6 +78,11 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
 
     @Override
     public void addGroup(DefinitionPaletteGroupWidget groupWidget) {
+        HTMLElement groupHeader = document.createElement("h5");
+
+        groupHeader.setTextContent(groupWidget.getItem().getTitle());
+        floatingPanel.appendChild(groupHeader);
+
         floatingPanel.appendChild(groupWidget.getElement());
     }
 

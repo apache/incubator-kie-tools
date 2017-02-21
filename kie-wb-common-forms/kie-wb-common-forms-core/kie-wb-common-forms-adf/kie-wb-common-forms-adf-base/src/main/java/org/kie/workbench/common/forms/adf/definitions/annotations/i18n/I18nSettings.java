@@ -28,7 +28,8 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 public @interface I18nSettings {
 
     /**
-     * The bundle source of the i18n translations (only for backend)
+     * The bundle source of the i18n translations (only for backend). If no bundle is provided the engine will take the
+     * Full Qualified Name of the class annotated as {@link FormDefinition}
      */
     String bundle() default "";
 

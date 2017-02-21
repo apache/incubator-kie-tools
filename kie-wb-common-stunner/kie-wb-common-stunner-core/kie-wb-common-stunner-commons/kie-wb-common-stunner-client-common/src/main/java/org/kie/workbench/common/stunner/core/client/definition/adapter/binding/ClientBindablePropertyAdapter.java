@@ -22,6 +22,7 @@ import java.util.Map;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
+import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 
 class ClientBindablePropertyAdapter extends AbstractClientBindableAdapter<Object> implements BindablePropertyAdapter<Object, Object> {
 
@@ -33,6 +34,10 @@ class ClientBindablePropertyAdapter extends AbstractClientBindableAdapter<Object
     private Map<Class, String> propertyValueFieldNames;
     private Map<Class, String> propertyDefaultValueFieldNames;
     private Map<Class, String> propertyAllowedValuesFieldNames;
+
+    public ClientBindablePropertyAdapter(StunnerTranslationService translationService) {
+        super(translationService);
+    }
 
     @Override
     public void setBindings(final Map<Class, String> propertyTypeFieldNames,
@@ -66,12 +71,20 @@ class ClientBindablePropertyAdapter extends AbstractClientBindableAdapter<Object
 
     @Override
     public String getCaption(final Object pojo) {
+        String caption = translationService.getPropertyCaption(pojo.getClass().getName());
+        if (caption != null) {
+            return caption;
+        }
         return getProxiedValue(pojo,
                                getPropertyCaptionFieldNames().get(pojo.getClass()));
     }
 
     @Override
     public String getDescription(final Object pojo) {
+        String description = translationService.getPropertyDescription(pojo.getClass().getName());
+        if (description != null) {
+            return description;
+        }
         return getProxiedValue(pojo,
                                getPropertyDescriptionFieldNames().get(pojo.getClass()));
     }

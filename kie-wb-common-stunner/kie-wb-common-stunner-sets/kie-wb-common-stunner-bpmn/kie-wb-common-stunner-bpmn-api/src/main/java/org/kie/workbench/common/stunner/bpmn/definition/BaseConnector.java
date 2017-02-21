@@ -45,9 +45,7 @@ public abstract class BaseConnector implements BPMNDefinition {
     public static final transient String description = "A Connecting Object";
 
     @PropertySet
-    @FormField(
-            labelKey = "general"
-    )
+    @FormField
     @Valid
     protected BPMNGeneralSet general;
 

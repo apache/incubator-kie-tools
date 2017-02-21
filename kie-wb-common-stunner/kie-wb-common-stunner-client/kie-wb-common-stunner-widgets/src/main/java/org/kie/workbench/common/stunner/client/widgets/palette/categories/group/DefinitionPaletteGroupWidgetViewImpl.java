@@ -38,15 +38,6 @@ public class DefinitionPaletteGroupWidgetViewImpl implements DefinitionPaletteGr
                                                              IsElement {
 
     @Inject
-    @Named("h5")
-    @DataField
-    private Heading header;
-
-    @Inject
-    @DataField
-    private UnorderedList groupContent;
-
-    @Inject
     @DataField
     private ListItem moreAnchor;
 
@@ -63,16 +54,14 @@ public class DefinitionPaletteGroupWidgetViewImpl implements DefinitionPaletteGr
 
     @Override
     public void initView() {
-        DOMUtil.removeAllChildren(groupContent);
-        header.setTextContent(presenter.getItem().getTitle());
+        DOMUtil.removeAllChildren(this.getElement());
     }
 
     @Override
     public void addItem(DefinitionPaletteItemWidget categoryItem) {
         PortablePreconditions.checkNotNull("categoryItem",
                                            categoryItem);
-
-        groupContent.appendChild(categoryItem.getElement());
+        this.getElement().appendChild(categoryItem.getElement());
     }
 
     @Override
@@ -81,8 +70,8 @@ public class DefinitionPaletteGroupWidgetViewImpl implements DefinitionPaletteGr
                                           "none");
         lessAnchor.getStyle().setProperty("display",
                                           "none");
-        groupContent.appendChild(moreAnchor);
-        groupContent.appendChild(lessAnchor);
+        this.getElement().appendChild(moreAnchor);
+        this.getElement().appendChild(lessAnchor);
     }
 
     @Override

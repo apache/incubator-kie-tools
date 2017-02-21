@@ -24,7 +24,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
@@ -45,21 +44,19 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 @CanContain(roles = {"activity"})
 @Definition(graphFactory = NodeFactory.class, builder = CaseManagementReusableSubprocess.ReusableSubprocessBuilder.class)
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED
 )
 public class CaseManagementReusableSubprocess extends CaseManagementBaseSubprocess {
 
     @Title
-    public static final transient String title = "Reusable Subprocess";
+    public static final transient String title = "Reusable Sub-Process";
 
     @Description
-    public static final transient String description = "A reusable subprocess. It can be used to invoke another process.";
+    public static final transient String description = "A reusable Sub-Process. It can be used to invoke another process.";
 
     @PropertySet
     @FormField(
-            labelKey = "executionSet",
             afterElement = "general"
     )
     @Valid
@@ -67,7 +64,6 @@ public class CaseManagementReusableSubprocess extends CaseManagementBaseSubproce
 
     @PropertySet
     @FormField(
-            labelKey = "dataIOSet",
             afterElement = "executionSet"
     )
     @Valid

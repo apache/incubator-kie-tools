@@ -23,6 +23,7 @@ import java.util.Set;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
+import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 
 class ClientBindableDefinitionSetAdapter extends AbstractClientBindableAdapter<Object> implements BindableDefinitionSetAdapter<Object> {
 
@@ -30,6 +31,10 @@ class ClientBindableDefinitionSetAdapter extends AbstractClientBindableAdapter<O
     private Map<Class, Class> graphFactoryTypes;
     private Set<String> definitionIds;
     private Map<Class, Annotation> qualifiers;
+
+    public ClientBindableDefinitionSetAdapter(StunnerTranslationService translationService) {
+        super(translationService);
+    }
 
     @Override
     public void setBindings(final Map<Class, String> propertyDescriptionFieldNames,
@@ -62,6 +67,10 @@ class ClientBindableDefinitionSetAdapter extends AbstractClientBindableAdapter<O
 
     @Override
     public String getDescription(final Object pojo) {
+        String description = translationService.getDefinitionSetDescription(pojo.getClass().getName());
+        if (description != null) {
+            return description;
+        }
         return getProxiedValue(pojo,
                                getPropertyDescriptionFieldNames().get(pojo.getClass()));
     }

@@ -21,35 +21,46 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_BACKGROUND_COLOR;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_BORDER_COLOR;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_BORDER_SIZE;
+import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 
 @Portable
 @Bindable
 @PropertySet
+@FormDefinition(startElement = "bgColor")
 public class BackgroundAndBorderSet {
 
     @Name
+    @FieldLabel
     public static final transient String propertySetName = "Background And Borders";
 
     @Property
-    @FieldDef(label = FIELDDEF_BACKGROUND_COLOR, property = "value")
+    @FormField(type = ColorPickerFieldType.class)
     @Valid
     private BgColor bgColor;
 
     @Property
-    @FieldDef(label = FIELDDEF_BORDER_COLOR, property = "value")
+    @FormField(type = ColorPickerFieldType.class, afterElement = "bgColor")
     @Valid
     private BorderColor borderColor;
 
     @Property
-    @FieldDef(label = FIELDDEF_BORDER_SIZE, property = "value")
+    @FormField(
+            type = SliderFieldType.class,
+            afterElement = "borderColor",
+            settings = {
+                    @FieldParam(name = "min", value = "0.0"),
+                    @FieldParam(name = "max", value = "5.0"),
+                    @FieldParam(name = "step", value = "0.5")
+            }
+    )
     @Valid
     private BorderSize borderSize;
 

@@ -35,5 +35,6 @@
   <source path="rule"/>
   <source path="validation"/>
   <source path="util"/>
+  <source path="i18n"/>
 
 </module>

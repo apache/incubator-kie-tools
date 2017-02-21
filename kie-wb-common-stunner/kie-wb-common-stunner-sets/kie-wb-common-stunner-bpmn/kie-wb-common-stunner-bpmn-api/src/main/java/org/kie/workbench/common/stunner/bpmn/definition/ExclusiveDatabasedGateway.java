@@ -24,7 +24,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
@@ -48,21 +47,19 @@ import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 @Shape(factory = BasicShapesFactory.class, def = ExclusiveDatabasedGatewayShapeDef.class)
 @Morph(base = BaseGateway.class)
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED
 )
 public class ExclusiveDatabasedGateway extends BaseGateway {
 
     @Title
-    public static final transient String title = "Exclusive Data-based Gateway";
+    public static final transient String title = "Exclusive Gateway";
 
     @Description
-    public static final transient String description = "Exclusive Data-based Gateway";
+    public static final transient String description = "Exclusive Gateway";
 
     @PropertySet
     @FormField(
-            labelKey = "executionSet",
             afterElement = "general"
     )
     @Valid

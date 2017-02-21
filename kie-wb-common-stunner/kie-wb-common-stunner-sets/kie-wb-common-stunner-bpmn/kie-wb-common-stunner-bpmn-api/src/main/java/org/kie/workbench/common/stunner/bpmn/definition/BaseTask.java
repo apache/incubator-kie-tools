@@ -55,7 +55,7 @@ public abstract class BaseTask implements BPMNDefinition {
     public static final transient String description = "A task is a unit of work - the job to be performed";
 
     @PropertySet
-    @FormField(labelKey = "general")
+    @FormField
     @Valid
     protected TaskGeneralSet general;
 
@@ -65,22 +65,18 @@ public abstract class BaseTask implements BPMNDefinition {
 
     @PropertySet
     @FormField(
-            labelKey = "backgroundSet",
             afterElement = "general"
     )
     @Valid
     protected BackgroundSet backgroundSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_FONT_SETTINGS, position = 5 )
     protected FontSet fontSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_PROCESS_SIMULATION, position = 6 )
     protected SimulationSet simulationSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 7 )
     protected RectangleDimensionsSet dimensionsSet;
 
     public static class TaskTypeMorphPropertyBinding implements MorphPropertyValueBinding<TaskType, TaskTypes> {

@@ -25,7 +25,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.SequenceFlowExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -53,7 +52,6 @@ import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 // A single outgoing sequence flows for messageflow_start roles, such as Tasks or Subprocess.
 @EdgeOccurrences(role = "messageflow_start", type = EdgeOccurrences.EdgeType.OUTGOING, max = 1)
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "general"
 )
 public class SequenceFlow extends BaseConnector {
@@ -63,7 +61,6 @@ public class SequenceFlow extends BaseConnector {
 
     @PropertySet
     @FormField(
-            labelKey = "executionSet",
             afterElement = "general"
     )
     @Valid

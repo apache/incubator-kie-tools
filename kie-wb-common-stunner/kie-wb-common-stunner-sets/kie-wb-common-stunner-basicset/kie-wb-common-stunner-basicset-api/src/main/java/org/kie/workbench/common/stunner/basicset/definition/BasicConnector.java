@@ -24,7 +24,8 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.basicset.definition.property.Name;
 import org.kie.workbench.common.stunner.basicset.definition.property.background.BackgroundAndBorderSet;
 import org.kie.workbench.common.stunner.basicset.shape.def.BasicConnectorDefImpl;
@@ -41,14 +42,12 @@ import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_BACKGROUND_AND_BORDERS;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_NAME;
-
 @Portable
 @Bindable
 @Definition(graphFactory = EdgeFactory.class, builder = BasicConnector.BasicConnectorBuilder.class)
 @CanConnect(startRole = "all", endRole = "all")
 @Shape(factory = BasicShapesFactory.class, def = BasicConnectorDefImpl.class)
+@FormDefinition(startElement = "backgroundSet")
 public class BasicConnector {
 
     @Category
@@ -61,12 +60,12 @@ public class BasicConnector {
     public static final transient String description = "A Basic Connector";
 
     @Property
-    @FieldDef(label = FIELDDEF_NAME, property = "value")
+    @FormField(afterElement = "backgroundSet")
     @Valid
     private Name name;
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_BACKGROUND_AND_BORDERS, position = 0)
+    @FormField
     @Valid
     private BackgroundAndBorderSet backgroundSet;
 

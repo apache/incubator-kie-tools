@@ -24,7 +24,10 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.basicset.definition.property.Name;
 import org.kie.workbench.common.stunner.basicset.definition.property.Radius;
 import org.kie.workbench.common.stunner.basicset.definition.property.background.BackgroundAndBorderSet;
@@ -42,15 +45,11 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_BACKGROUND_AND_BORDERS;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_FONT;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_NAME;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_RADIUS;
-
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = Polygon.PolygonBuilder.class)
 @Shape(factory = BasicShapesFactory.class, def = PolygonShapeDefImpl.class)
+@FormDefinition(startElement = "backgroundSet")
 public class Polygon {
 
     @Category
@@ -63,22 +62,31 @@ public class Polygon {
     public static final transient String description = "A polygon";
 
     @Property
-    @FieldDef(label = FIELDDEF_NAME, property = "value")
+    @FormField(afterElement = "fontSet")
     @Valid
     private Name name;
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_BACKGROUND_AND_BORDERS, position = 0)
+    @FormField
     @Valid
     private BackgroundAndBorderSet backgroundSet;
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_FONT, position = 1)
+    @FormField(afterElement = "backgroundSet")
     @Valid
     private FontSet fontSet;
 
     @Property
-    @FieldDef(label = FIELDDEF_RADIUS, property = "value")
+    @FormField(
+            type = SliderFieldType.class,
+            afterElement = "name",
+            settings = {
+                    @FieldParam(name = "min", value = "25.0"),
+                    @FieldParam(name = "max", value = "50.0"),
+                    @FieldParam(name = "step", value = "1.0"),
+                    @FieldParam(name = "precision", value = "0.0")
+            }
+    )
     @Valid
     private Radius radius;
 

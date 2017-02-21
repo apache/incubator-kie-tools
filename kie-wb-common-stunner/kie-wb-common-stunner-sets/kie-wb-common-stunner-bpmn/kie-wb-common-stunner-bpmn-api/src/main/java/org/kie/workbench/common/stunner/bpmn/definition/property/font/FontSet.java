@@ -22,7 +22,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
@@ -34,22 +34,21 @@ import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 @Bindable
 @PropertySet
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "fontFamily"
 )
 public class FontSet implements BPMNPropertySet {
 
     @Name
+    @FieldLabel
     public static final transient String propertySetName = "Font";
 
     @Property
-    @FormField(labelKey = "fontFamily")
+    @FormField
     private FontFamily fontFamily;
 
     @Property
     @FormField(
             type = ColorPickerFieldType.class,
-            labelKey = "fontColor",
             afterElement = "fontFamily"
     )
     private FontColor fontColor;
@@ -57,7 +56,6 @@ public class FontSet implements BPMNPropertySet {
     @Property
     @FormField(
             type = SliderFieldType.class,
-            labelKey = "fontSize",
             afterElement = "fontColor",
             settings = {
                     @FieldParam(name = "min", value = "8.0"),
@@ -70,7 +68,6 @@ public class FontSet implements BPMNPropertySet {
     @Property
     @FormField(
             type = SliderFieldType.class,
-            labelKey = "fontBorderSize",
             afterElement = "fontSize",
             settings = {
                     @FieldParam(name = "min", value = "0.0"),

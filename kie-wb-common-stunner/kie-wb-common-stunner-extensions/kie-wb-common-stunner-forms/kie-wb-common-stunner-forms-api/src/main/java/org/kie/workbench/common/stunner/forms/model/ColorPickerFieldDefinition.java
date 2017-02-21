@@ -21,7 +21,6 @@ import javax.validation.constraints.Pattern;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.stunner.forms.meta.definition.ColorPicker;
 
@@ -31,7 +30,6 @@ public class ColorPickerFieldDefinition extends AbstractFieldDefinition {
 
     public static final ColorPickerFieldType FIELD_TYPE = new ColorPickerFieldType();
 
-    @FieldDef(label = "Default value")
     @ColorPicker
     @Pattern(regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message = "Invalid color code")
     private String defaultValue;

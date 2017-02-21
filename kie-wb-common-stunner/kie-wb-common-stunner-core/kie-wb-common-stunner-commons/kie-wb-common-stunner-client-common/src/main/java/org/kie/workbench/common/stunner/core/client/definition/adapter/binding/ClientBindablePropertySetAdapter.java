@@ -21,11 +21,16 @@ import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertySetAdapter;
+import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 
 class ClientBindablePropertySetAdapter extends AbstractClientBindableAdapter<Object> implements BindablePropertySetAdapter<Object> {
 
     private Map<Class, String> propertyNameFieldNames;
     private Map<Class, Set<String>> propertiesFieldNames;
+
+    public ClientBindablePropertySetAdapter(StunnerTranslationService translationService) {
+        super(translationService);
+    }
 
     @Override
     public void setBindings(final Map<Class, String> propertyNameFieldNames,
@@ -41,6 +46,10 @@ class ClientBindablePropertySetAdapter extends AbstractClientBindableAdapter<Obj
 
     @Override
     public String getName(final Object pojo) {
+        String name = translationService.getPropertySetName(pojo.getClass().getName());
+        if (name != null) {
+            return name;
+        }
         return getProxiedValue(pojo,
                                getPropertyNameFieldNames().get(pojo.getClass()));
     }

@@ -24,7 +24,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
@@ -50,7 +49,6 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 @Morph(base = BaseTask.class)
 @FormDefinition(
         policy = FieldPolicy.ONLY_MARKED,
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "general"
 )
 public class ScriptTask extends BaseTask {
@@ -60,7 +58,6 @@ public class ScriptTask extends BaseTask {
 
     @PropertySet
     @FormField(
-            labelKey = "executionSet",
             afterElement = "general"
     )
     @Valid

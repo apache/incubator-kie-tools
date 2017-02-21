@@ -26,7 +26,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.Categories;
@@ -54,7 +53,6 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 @Definition(graphFactory = NodeFactory.class, builder = CaseManagementDiagram.CaseManagementDiagramBuilder.class)
 @Shape(factory = CaseManagementShapesFactory.class, def = CaseManagementDiagramShapeDef.class)
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "diagramSet",
         policy = FieldPolicy.ONLY_MARKED
 )
@@ -70,15 +68,12 @@ public class CaseManagementDiagram implements BPMNDefinition {
     public static final transient String description = "Case Management Diagram";
 
     @PropertySet
-    @FormField(
-            labelKey = "diagramSet"
-    )
+    @FormField
     @Valid
     private DiagramSet diagramSet;
 
     @PropertySet
     @FormField(
-            labelKey = "processData",
             afterElement = "diagramSet"
     )
     @Valid
@@ -92,7 +87,6 @@ public class CaseManagementDiagram implements BPMNDefinition {
 
     @PropertySet
     @FormField(
-            labelKey = "dimensionsSet",
             afterElement = "processData"
     )
     protected RectangleDimensionsSet dimensionsSet;

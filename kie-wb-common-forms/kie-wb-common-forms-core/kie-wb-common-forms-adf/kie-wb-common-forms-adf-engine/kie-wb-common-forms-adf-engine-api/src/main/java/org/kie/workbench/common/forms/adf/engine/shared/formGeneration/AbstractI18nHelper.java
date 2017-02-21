@@ -20,21 +20,9 @@ import org.kie.workbench.common.forms.adf.service.definitions.I18nSettings;
 
 public abstract class AbstractI18nHelper implements I18nHelper {
 
-    private static final String defaultSeparator = ".";
+    protected I18nSettings settings;
 
-    private String keyPreffix = "";
-
-    public AbstractI18nHelper(I18nSettings settings) {
-        if (settings.getKeyPreffix() != null && !settings.getKeyPreffix().isEmpty()) {
-            String separator = settings.getSeparator() != null ? settings.getSeparator() : defaultSeparator;
-            this.keyPreffix = settings.getKeyPreffix() + separator;
-        }
+    protected AbstractI18nHelper(I18nSettings settings) {
+        this.settings = settings;
     }
-
-    @Override
-    public String getTranslation(String key) {
-        return translate(keyPreffix + key);
-    }
-
-    protected abstract String translate(String key);
 }

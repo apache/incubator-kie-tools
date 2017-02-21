@@ -18,6 +18,11 @@ package org.kie.workbench.common.stunner.basicset.definition.property.font;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.LabelMode;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Caption;
@@ -32,15 +37,18 @@ import org.kie.workbench.common.stunner.core.definition.property.type.StringType
 @Portable
 @Bindable
 @Property
+@FieldDefinition(labelMode = LabelMode.OVERRIDE_I18N_KEY)
 public class FontFamily {
 
     @Caption
+    @FieldLabel
     public static final transient String caption = "Font Family";
 
     @Description
     public static final transient String description = "The Font Family";
 
     @ReadOnly
+    @FieldReadOnly
     public static final Boolean readOnly = false;
 
     @Optional
@@ -53,6 +61,7 @@ public class FontFamily {
     public static final transient String defaultValue = "Verdana";
 
     @Value
+    @FieldValue
     private String value = defaultValue;
 
     public FontFamily() {

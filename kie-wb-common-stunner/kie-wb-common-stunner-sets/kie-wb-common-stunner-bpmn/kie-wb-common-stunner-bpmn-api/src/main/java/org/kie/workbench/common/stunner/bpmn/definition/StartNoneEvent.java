@@ -21,7 +21,6 @@ import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
@@ -45,14 +44,13 @@ import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 @Shape(factory = BasicShapesFactory.class, def = StartNoneEventShapeDef.class)
 @Morph(base = BaseStartEvent.class)
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED
 )
 public class StartNoneEvent extends BaseStartEvent {
 
     @Title
-    public static final transient String title = "Start None Event";
+    public static final transient String title = "Start Event";
 
     @Description
     public static final transient String description = "Untyped start event";

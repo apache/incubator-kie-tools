@@ -18,6 +18,11 @@ package org.kie.workbench.common.stunner.basicset.definition.property.background
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.LabelMode;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Caption;
@@ -32,15 +37,18 @@ import org.kie.workbench.common.stunner.core.definition.property.type.ColorType;
 @Portable
 @Bindable
 @Property
+@FieldDefinition(labelMode = LabelMode.OVERRIDE_I18N_KEY)
 public class BorderColor {
 
     @Caption
+    @FieldLabel
     public static final transient String caption = "Border Color";
 
     @Description
     public static final transient String description = "The Border Color";
 
     @ReadOnly
+    @FieldReadOnly
     public static final Boolean readOnly = false;
 
     @Optional
@@ -53,6 +61,7 @@ public class BorderColor {
     public static final transient String defaultValue = "#000000";
 
     @Value
+    @FieldValue
     private String value = defaultValue;
 
     public BorderColor() {

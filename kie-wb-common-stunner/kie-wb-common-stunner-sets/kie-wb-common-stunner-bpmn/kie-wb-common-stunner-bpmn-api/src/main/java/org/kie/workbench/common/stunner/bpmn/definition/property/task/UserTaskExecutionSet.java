@@ -24,8 +24,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
@@ -39,25 +38,21 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 @Bindable
 @PropertySet
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "taskName"
 )
 public class UserTaskExecutionSet implements BPMNPropertySet {
 
     @Name
+    @FieldLabel
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FormField(
-            labelKey = "taskName"
-    )
+    @FormField
     @Valid
     protected TaskName taskName;
 
     @Property
     @FormField(
-            type = CheckBoxFieldType.class,
-            labelKey = "isAsync",
             afterElement = "taskName"
     )
     @Valid
@@ -65,8 +60,6 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField(
-            type = CheckBoxFieldType.class,
-            labelKey = "skippable",
             afterElement = "isAsync"
     )
     @Valid
@@ -74,7 +67,6 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField(
-            labelKey = "priority",
             afterElement = "skippable"
     )
     @Valid
@@ -83,7 +75,6 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
     @Property
     @FormField(
             type = TextAreaFieldType.class,
-            labelKey = "subject",
             afterElement = "skippable"
     )
     @Valid
@@ -92,7 +83,6 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
     @Property
     @FormField(
             type = TextAreaFieldType.class,
-            labelKey = "content",
             afterElement = "subject"
     )
     @Valid
@@ -100,7 +90,6 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField(
-            labelKey = "description",
             afterElement = "content"
     )
     @Valid
@@ -109,7 +98,6 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
     @Property
     @FormField(
             type = AssigneeEditorFieldType.class,
-            labelKey = "createdBy",
             afterElement = "description",
             settings = @FieldParam(name = "type", value = "USER")
     )
@@ -118,8 +106,6 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField(
-            type = CheckBoxFieldType.class,
-            labelKey = "adHocAutostart",
             afterElement = "createdBy"
     )
     @Valid
@@ -128,7 +114,6 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
     @Property
     @FormField(
             type = TextAreaFieldType.class,
-            labelKey = "onentryaction",
             afterElement = "adHocAutostart",
             settings = {@FieldParam(name = "rows", value = "5")}
     )
@@ -138,7 +123,6 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
     @Property
     @FormField(
             type = TextAreaFieldType.class,
-            labelKey = "onexitaction",
             afterElement = "onEntryAction",
             settings = {@FieldParam(name = "rows", value = "5")}
     )
@@ -148,7 +132,6 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
     @Property
     @FormField(
             type = ListBoxFieldType.class,
-            labelKey = "scriptLanguage",
             afterElement = "onExitAction"
     )
     @SelectorDataProvider(

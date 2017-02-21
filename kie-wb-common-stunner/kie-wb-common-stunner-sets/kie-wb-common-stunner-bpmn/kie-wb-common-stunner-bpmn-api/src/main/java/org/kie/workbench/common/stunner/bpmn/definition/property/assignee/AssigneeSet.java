@@ -24,7 +24,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
@@ -35,18 +35,17 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 @Bindable
 @PropertySet
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "actors"
 )
 public class AssigneeSet implements BPMNPropertySet {
 
     @Name
+    @FieldLabel
     public static final transient String propertySetName = "Assigned to";
 
     @Property
     @FormField(
             type = AssigneeEditorFieldType.class,
-            labelKey = "actors",
             settings = @FieldParam(name = "type", value = "USER")
     )
     @Valid
@@ -55,7 +54,6 @@ public class AssigneeSet implements BPMNPropertySet {
     @Property
     @FormField(
             type = AssigneeEditorFieldType.class,
-            labelKey = "groupid",
             afterElement = "actors",
             settings = @FieldParam(name = "type", value = "GROUP")
     )

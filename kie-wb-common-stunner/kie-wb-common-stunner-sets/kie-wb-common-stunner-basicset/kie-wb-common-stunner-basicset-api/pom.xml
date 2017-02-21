@@ -81,9 +81,18 @@
 
     <dependency>
       <groupId>org.kie.workbench.forms</groupId>
-      <artifactId>kie-wb-common-dynamic-forms-api</artifactId>
+      <artifactId>kie-wb-common-forms-fields</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.forms</groupId>
+      <artifactId>kie-wb-common-forms-adf-base</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.forms</groupId>
+      <artifactId>kie-wb-common-forms-adf-processors</artifactId>
+    </dependency>
     <!-- Uberfire & Errai. -->
 
     <dependency>
@@ -115,7 +124,6 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons</artifactId>
     </dependency>
-
   </dependencies>
 
 </project>

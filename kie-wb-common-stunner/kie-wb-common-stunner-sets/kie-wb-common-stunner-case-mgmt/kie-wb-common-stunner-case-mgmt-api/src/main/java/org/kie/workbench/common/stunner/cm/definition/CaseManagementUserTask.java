@@ -24,7 +24,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.AssigneeSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
@@ -48,7 +47,6 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 @Definition(graphFactory = NodeFactory.class, builder = CaseManagementUserTask.UserTaskBuilder.class)
 @FormDefinition(
         policy = FieldPolicy.ONLY_MARKED,
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "general"
 )
 public class CaseManagementUserTask extends CaseManagementBaseTask {
@@ -58,7 +56,6 @@ public class CaseManagementUserTask extends CaseManagementBaseTask {
 
     @PropertySet
     @FormField(
-            labelKey = "executionSet",
             afterElement = "general"
     )
     @Valid
@@ -66,14 +63,12 @@ public class CaseManagementUserTask extends CaseManagementBaseTask {
 
     @PropertySet
     @FormField(
-            labelKey = "assigneeSet",
             afterElement = "executionSet"
     )
     protected AssigneeSet assigneeSet;
 
     @PropertySet
     @FormField(
-            labelKey = "dataIOSet",
             afterElement = "assigneeSet"
     )
     @Valid

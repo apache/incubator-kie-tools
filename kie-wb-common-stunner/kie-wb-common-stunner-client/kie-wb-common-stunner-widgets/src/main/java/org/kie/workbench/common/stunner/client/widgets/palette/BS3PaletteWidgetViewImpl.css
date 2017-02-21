@@ -74,6 +74,7 @@
     border: 1px solid #bbb;
     height: auto;
     width: auto;
+    min-width: 12em;
 }
 
 .kie-palette .list-group-item:hover > a {
@@ -96,7 +97,7 @@
     height: 100%;
     left: 0;
     top: 0;
-    width: 5px;
+    width: 0px;
     float: left;
 }
 
@@ -171,6 +172,7 @@
     float: none;
     border-color: #fff;
     padding-left: calc(24px);
+    padding-right: calc(24px);
     margin-bottom: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -185,6 +187,8 @@
 }
 
 .kie-palette-flyout .list-group-item > a .fa,
+.kie-palette-flyout .list-group-item > a .bs3-icon-renderer-svg-content,
+.kie-palette-flyout .list-group-item > a .bs3-lienzo-icon-renderer-content,
 .kie-palette-flyout .list-group-item > a .glyphicon,
 .kie-palette-flyout .list-group-item > a .pficon {
     font-size: calc(13.999992px);

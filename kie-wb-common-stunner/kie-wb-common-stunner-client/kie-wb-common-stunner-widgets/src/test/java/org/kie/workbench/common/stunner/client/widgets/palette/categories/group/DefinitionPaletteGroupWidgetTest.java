@@ -133,7 +133,8 @@ public class DefinitionPaletteGroupWidgetTest extends AbstractPaletteRenderingTe
                times(2)).get();
         verify(view,
                times(2)).addItem(any());
-        verify(view).addAnchors();
+        verify(view,
+               never()).addAnchors();
         verify(view,
                never()).showMoreAnchor();
         assertEquals(2,

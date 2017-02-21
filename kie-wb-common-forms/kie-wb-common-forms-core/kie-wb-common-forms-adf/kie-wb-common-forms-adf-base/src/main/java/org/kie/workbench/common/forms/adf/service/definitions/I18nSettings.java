@@ -22,19 +22,12 @@ package org.kie.workbench.common.forms.adf.service.definitions;
 public class I18nSettings {
 
     private String bundle;
-    private String keyPreffix;
-    private String separator = ".";
-
-    public I18nSettings(String bundle,
-                        String keyPreffix,
-                        String separator) {
-        this.bundle = bundle;
-        this.keyPreffix = keyPreffix;
-        this.separator = separator;
-    }
 
     public I18nSettings() {
+    }
 
+    public I18nSettings(String bundle) {
+        this.bundle = bundle;
     }
 
     public String getBundle() {
@@ -43,21 +36,5 @@ public class I18nSettings {
 
     public void setBundle(String bundle) {
         this.bundle = bundle;
-    }
-
-    public String getKeyPreffix() {
-        return keyPreffix;
-    }
-
-    public void setKeyPreffix(String keyPreffix) {
-        this.keyPreffix = keyPreffix;
-    }
-
-    public String getSeparator() {
-        return separator;
-    }
-
-    public void setSeparator(String separator) {
-        this.separator = separator;
     }
 }

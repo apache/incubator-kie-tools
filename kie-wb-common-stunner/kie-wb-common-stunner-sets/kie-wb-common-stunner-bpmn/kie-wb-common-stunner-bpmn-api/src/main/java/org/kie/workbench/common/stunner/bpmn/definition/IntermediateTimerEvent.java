@@ -26,7 +26,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
@@ -51,7 +50,6 @@ import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 @Definition(graphFactory = NodeFactory.class, builder = IntermediateTimerEvent.IntermediateTimerEventBuilder.class)
 @Shape(factory = BasicShapesFactory.class, def = IntermediateTimerEventShapeDef.class)
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         policy = FieldPolicy.ONLY_MARKED,
         startElement = "general"
 )
@@ -68,15 +66,12 @@ public class IntermediateTimerEvent implements BPMNDefinition {
             "is reached or a particular duration is over.";
 
     @PropertySet
-    @FormField(
-            labelKey = "general"
-    )
+    @FormField
     @Valid
     private BPMNGeneralSet general;
 
     @PropertySet
     @FormField(
-            labelKey = "executionSet",
             afterElement = "general"
     )
     @Valid
@@ -84,18 +79,15 @@ public class IntermediateTimerEvent implements BPMNDefinition {
 
     @PropertySet
     @FormField(
-            labelKey = "backgroundSet",
             afterElement = "executionSet"
     )
     @Valid
     private BackgroundSet backgroundSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_FONT_SETTINGS )
     private FontSet fontSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 3 )
     private CircleDimensionSet dimensionsSet;
 
     @Labels

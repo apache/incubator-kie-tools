@@ -18,6 +18,11 @@ package org.kie.workbench.common.stunner.basicset.definition.property;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.LabelMode;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Caption;
@@ -33,15 +38,18 @@ import org.kie.workbench.common.stunner.core.definition.property.type.StringType
 @Portable
 @Bindable
 @Property(meta = PropertyMetaTypes.NAME)
+@FieldDefinition(labelMode = LabelMode.OVERRIDE_I18N_KEY)
 public class Name {
 
     @Caption
+    @FieldLabel
     public static final transient String caption = "Name";
 
     @Description
     public static final transient String description = "The name";
 
     @ReadOnly
+    @FieldReadOnly
     public static final Boolean readOnly = false;
 
     @Optional
@@ -54,6 +62,7 @@ public class Name {
     public static final transient String defaultValue = "My name";
 
     @Value
+    @FieldValue
     private String value = defaultValue;
 
     public Name() {

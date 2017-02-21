@@ -22,7 +22,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
@@ -33,13 +33,13 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 @Bindable
 @PropertySet
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "timeUnit",
         policy = FieldPolicy.ONLY_MARKED
 )
 public class SimulationSet implements BPMNPropertySet {
 
     @Name
+    @FieldLabel
     public static final transient String propertySetName = "Process Simulation";
 
     @Property
@@ -52,50 +52,42 @@ public class SimulationSet implements BPMNPropertySet {
     protected Mean mean;
 
     @Property
-    @FormField(
-            labelKey = "timeUnit"
-    )
+    @FormField
     @Valid
     protected TimeUnit timeUnit;
 
     @Property
     @FormField(
-            labelKey = "standardDeviation",
             afterElement = "timeUnit"
     )
     protected StandardDeviation standardDeviation;
 
     @Property
     @FormField(
-            labelKey = "distributionType",
             afterElement = "standardDeviation"
     )
     protected DistributionType distributionType;
 
     @Property
     @FormField(
-            labelKey = "quantity",
             afterElement = "distributionType"
     )
     protected Quantity quantity;
 
     @Property
     @FormField(
-            labelKey = "workingHours",
             afterElement = "quantity"
     )
     protected WorkingHours workingHours;
 
     @Property
     @FormField(
-            labelKey = "unitCost",
             afterElement = "workingHours"
     )
     protected UnitCost unitCost;
 
     @Property
     @FormField(
-            labelKey = "currency",
             afterElement = "unitCost"
     )
     protected Currency currency;

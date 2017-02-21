@@ -105,8 +105,8 @@ public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidge
             }
             view.addItem(categoryItemWidget);
         }
-        view.addAnchors();
         if (!hiddenList.isEmpty()) {
+            view.addAnchors();
             view.showMoreAnchor();
         }
     }

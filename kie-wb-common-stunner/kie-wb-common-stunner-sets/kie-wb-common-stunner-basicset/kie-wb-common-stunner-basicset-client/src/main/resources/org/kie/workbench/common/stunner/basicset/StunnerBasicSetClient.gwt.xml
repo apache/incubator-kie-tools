@@ -25,5 +25,5 @@
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
 
   <source path="client"/>
-
+  <source path="" includes="BasicSetEntryPoint.java"/>
 </module>

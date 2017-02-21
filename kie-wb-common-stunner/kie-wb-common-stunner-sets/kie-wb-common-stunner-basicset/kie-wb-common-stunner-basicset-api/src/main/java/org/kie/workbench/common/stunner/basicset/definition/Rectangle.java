@@ -24,7 +24,10 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.basicset.definition.property.Height;
 import org.kie.workbench.common.stunner.basicset.definition.property.Name;
 import org.kie.workbench.common.stunner.basicset.definition.property.Width;
@@ -43,16 +46,11 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_BACKGROUND_AND_BORDERS;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_FONT;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_HEIGHT;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_NAME;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_WIDTH;
-
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = Rectangle.RectangleBuilder.class)
 @Shape(factory = BasicShapesFactory.class, def = RectangleShapeDefImpl.class)
+@FormDefinition(startElement = "backgroundSet")
 public class Rectangle {
 
     @Category
@@ -65,27 +63,45 @@ public class Rectangle {
     public static final transient String description = "A rectangle";
 
     @Property
-    @FieldDef(label = FIELDDEF_NAME, property = "value")
+    @FormField(afterElement = "fontSet")
     @Valid
     private Name name;
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_BACKGROUND_AND_BORDERS, position = 0)
+    @FormField
     @Valid
     private BackgroundAndBorderSet backgroundSet;
 
     @PropertySet
-    @FieldDef(label = FIELDDEF_FONT, position = 1)
+    @FormField(afterElement = "backgroundSet")
     @Valid
     private FontSet fontSet;
 
     @Property
-    @FieldDef(label = FIELDDEF_WIDTH, property = "value")
+    @FormField(
+            type = SliderFieldType.class,
+            afterElement = "name",
+            settings = {
+                    @FieldParam(name = "min", value = "100.0"),
+                    @FieldParam(name = "max", value = "300.0"),
+                    @FieldParam(name = "step", value = "10.0"),
+                    @FieldParam(name = "precision", value = "0.0")
+            }
+    )
     @Valid
     private Width width;
 
     @Property
-    @FieldDef(label = FIELDDEF_HEIGHT, property = "value")
+    @FormField(
+            type = SliderFieldType.class,
+            afterElement = "width",
+            settings = {
+                    @FieldParam(name = "min", value = "40.0"),
+                    @FieldParam(name = "max", value = "100.0"),
+                    @FieldParam(name = "step", value = "5.0"),
+                    @FieldParam(name = "precision", value = "0.0")
+            }
+    )
     @Valid
     private Height height;
 

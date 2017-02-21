@@ -21,7 +21,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
@@ -31,18 +31,16 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 @Portable
 @Bindable
 @PropertySet
-@FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties")
-)
+@FormDefinition
 public class CircleDimensionSet implements BPMNPropertySet {
 
     @Name
+    @FieldLabel
     public static final transient String propertySetName = "Shape Dimensions";
 
     @Property
     @FormField(
             type = SliderFieldType.class,
-            labelKey = "radius",
             settings = {
                     @FieldParam(name = "min", value = "25.0"),
                     @FieldParam(name = "max", value = "50.0"),

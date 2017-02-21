@@ -21,41 +21,60 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.metaModel.FieldDef;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_FONT_BORDER_SIZE;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_FONT_COLOR;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_FONT_FAMILY;
-import static org.kie.workbench.common.stunner.basicset.util.FieldDefLabelConstants.FIELDDEF_FONT_SIZE;
+import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 
 @Portable
 @Bindable
 @PropertySet
+@FormDefinition(startElement = "fontFamily")
 public class FontSet {
 
     @Name
     public static final transient String propertySetName = "Font";
 
     @Property
-    @FieldDef(label = FIELDDEF_FONT_FAMILY, property = "value")
+    @FormField
     @Valid
     private FontFamily fontFamily;
 
     @Property
-    @FieldDef(label = FIELDDEF_FONT_COLOR, property = "value")
+    @FormField(
+            type = ColorPickerFieldType.class,
+            afterElement = "fontFamily"
+    )
     @Valid
     private FontColor fontColor;
 
     @Property
-    @FieldDef(label = FIELDDEF_FONT_SIZE, property = "value")
+    @FormField(
+            type = SliderFieldType.class,
+            afterElement = "fontColor",
+            settings = {
+                    @FieldParam(name = "min", value = "8.0"),
+                    @FieldParam(name = "max", value = "24.0"),
+                    @FieldParam(name = "step", value = "1.0")
+            }
+    )
     @Valid
     private FontSize fontSize;
 
     @Property
-    @FieldDef(label = FIELDDEF_FONT_BORDER_SIZE, property = "value")
+    @FormField(
+            type = SliderFieldType.class,
+            afterElement = "fontSize",
+            settings = {
+                    @FieldParam(name = "min", value = "0.0"),
+                    @FieldParam(name = "max", value = "5.0"),
+                    @FieldParam(name = "step", value = "1.0")
+            }
+    )
     @Valid
     private FontBorderSize fontBorderSize;
 

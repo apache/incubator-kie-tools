@@ -23,7 +23,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
@@ -50,7 +49,6 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 @CanDock(roles = {"IntermediateEventOnActivityBoundary"})
 @Morph(base = BaseTask.class)
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED
 )
@@ -61,7 +59,6 @@ public class BusinessRuleTask extends BaseTask implements DataIOModel {
 
     @PropertySet
     @FormField(
-            labelKey = "executionSet",
             afterElement = "general"
     )
     @Valid
@@ -69,7 +66,6 @@ public class BusinessRuleTask extends BaseTask implements DataIOModel {
 
     @PropertySet
     @FormField(
-            labelKey = "dataIOSet",
             afterElement = "executionSet"
     )
     @Valid

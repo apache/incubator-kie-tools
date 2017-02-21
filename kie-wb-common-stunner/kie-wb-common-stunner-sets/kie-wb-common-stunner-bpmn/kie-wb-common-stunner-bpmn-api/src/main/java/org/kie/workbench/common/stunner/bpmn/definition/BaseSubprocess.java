@@ -48,30 +48,24 @@ public abstract class BaseSubprocess implements BPMNDefinition {
     public static final transient String description = "A subprocess is a decomposable activity.";
 
     @PropertySet
-    @FormField(
-            labelKey = "general"
-    )
+    @FormField
     @Valid
     protected BPMNGeneralSet general;
 
     @PropertySet
     @FormField(
-            labelKey = "backgroundSet",
             afterElement = "general"
     )
     @Valid
     protected BackgroundSet backgroundSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_FONT_SETTINGS, position = 4 )
     protected FontSet fontSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_PROCESS_SIMULATION, position = 5 )
     protected SimulationSet simulationSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 6 )
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels

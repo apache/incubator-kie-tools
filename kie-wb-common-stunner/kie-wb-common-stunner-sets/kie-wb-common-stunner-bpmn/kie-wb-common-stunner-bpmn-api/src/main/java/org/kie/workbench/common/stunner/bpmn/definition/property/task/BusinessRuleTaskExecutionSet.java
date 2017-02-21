@@ -24,8 +24,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
@@ -36,18 +35,16 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 @Portable
 @Bindable
 @PropertySet
-@FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties")
-)
+@FormDefinition
 public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
 
     @Name
+    @FieldLabel
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
     @FormField(
-            type = ListBoxFieldType.class,
-            labelKey = "ruleFlowGroup"
+            type = ListBoxFieldType.class
     )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
@@ -58,7 +55,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
     @Property
     @FormField(
             type = TextAreaFieldType.class,
-            labelKey = "onentryaction",
             afterElement = "ruleFlowGroup",
             settings = {@FieldParam(name = "rows", value = "5")}
     )
@@ -68,7 +64,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
     @Property
     @FormField(
             type = TextAreaFieldType.class,
-            labelKey = "onexitaction",
             afterElement = "onEntryAction",
             settings = {@FieldParam(name = "rows", value = "5")}
     )
@@ -78,7 +73,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
     @Property
     @FormField(
             type = ListBoxFieldType.class,
-            labelKey = "scriptLanguage",
             afterElement = "onExitAction"
     )
     @SelectorDataProvider(
@@ -89,8 +83,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField(
-            type = CheckBoxFieldType.class,
-            labelKey = "isAsync",
             afterElement = "scriptLanguage"
     )
     @Valid
@@ -98,8 +90,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField(
-            type = CheckBoxFieldType.class,
-            labelKey = "adHocAutostart",
             afterElement = "isAsync"
     )
     @Valid

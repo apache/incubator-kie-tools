@@ -78,6 +78,10 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource eventEnd();
 
+    @ClientBundle.Source("images/event/event-terminating-end.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventTerminatingEnd();
+
     @ClientBundle.Source("images/event/event-intermediate.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource eventIntermediate();

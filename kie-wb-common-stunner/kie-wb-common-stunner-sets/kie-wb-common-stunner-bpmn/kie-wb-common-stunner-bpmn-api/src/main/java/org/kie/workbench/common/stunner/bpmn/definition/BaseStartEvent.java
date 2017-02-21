@@ -47,15 +47,12 @@ public abstract class BaseStartEvent implements BPMNDefinition,
     public static final transient String category = Categories.EVENTS;
 
     @PropertySet
-    @FormField(
-            labelKey = "general"
-    )
+    @FormField
     @Valid
     protected BPMNGeneralSet general;
 
     @PropertySet
     @FormField(
-            labelKey = "dataIOSet",
             afterElement = "general"
     )
     @Valid
@@ -63,22 +60,18 @@ public abstract class BaseStartEvent implements BPMNDefinition,
 
     @PropertySet
     @FormField(
-            labelKey = "backgroundSet",
             afterElement = "dataIOSet"
     )
     @Valid
     protected BackgroundSet backgroundSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_FONT_SETTINGS )
     protected FontSet fontSet;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_CATCH_EVENT_ATTRIBUTES )
     protected CatchEventAttributes catchEventAttributes;
 
     @PropertySet
-    //@FieldDef( label = FIELDDEF_SHAPE_DIMENSIONS, position = 3 )
     private CircleDimensionSet dimensionsSet;
 
     @Labels

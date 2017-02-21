@@ -46,15 +46,12 @@ public abstract class BaseEndEvent implements BPMNDefinition,
     public static final transient String category = Categories.EVENTS;
 
     @PropertySet
-    @FormField(
-            labelKey = "general"
-    )
+    @FormField
     @Valid
     protected BPMNGeneralSet general;
 
     @PropertySet
     @FormField(
-            labelKey = "dataIOSet",
             afterElement = "general"
     )
     @Valid
@@ -62,7 +59,6 @@ public abstract class BaseEndEvent implements BPMNDefinition,
 
     @PropertySet
     @FormField(
-            labelKey = "backgroundSet",
             afterElement = "dataIOSet"
     )
     @Valid

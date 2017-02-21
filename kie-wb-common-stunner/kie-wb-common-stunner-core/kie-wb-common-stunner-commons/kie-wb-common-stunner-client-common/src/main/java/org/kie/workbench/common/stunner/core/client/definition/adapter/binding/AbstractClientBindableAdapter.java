@@ -21,8 +21,15 @@ import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.PriorityAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
+import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 
 public abstract class AbstractClientBindableAdapter<T> implements PriorityAdapter {
+
+    protected StunnerTranslationService translationService;
+
+    public AbstractClientBindableAdapter(StunnerTranslationService translationService) {
+        this.translationService = translationService;
+    }
 
     @SuppressWarnings("unchecked")
     protected <R> R getProxiedValue(final T pojo,

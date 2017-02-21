@@ -21,26 +21,43 @@ import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.AbstractBindableDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionAdapter;
+import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 class ClientBindableDefinitionAdapter extends AbstractBindableDefinitionAdapter<Object>
         implements BindableDefinitionAdapter<Object> {
 
-    ClientBindableDefinitionAdapter(final DefinitionUtils definitionUtils) {
+    private StunnerTranslationService translationService;
+
+    ClientBindableDefinitionAdapter(final DefinitionUtils definitionUtils,
+                                    StunnerTranslationService translationService) {
         super(definitionUtils);
+        this.translationService = translationService;
     }
 
     public String getCategory(final Object pojo) {
+        String category = translationService.getDefinitionCategory(pojo.getClass().getName());
+        if (category != null) {
+            return category;
+        }
         return getProxiedValue(pojo,
                                getPropertyCategoryFieldNames().get(pojo.getClass()));
     }
 
     public String getTitle(final Object pojo) {
+        String title = translationService.getDefinitionTitle(pojo.getClass().getName());
+        if (title != null) {
+            return title;
+        }
         return getProxiedValue(pojo,
                                getPropertyTitleFieldNames().get(pojo.getClass()));
     }
 
     public String getDescription(final Object pojo) {
+        String description = translationService.getDefinitionDescription(pojo.getClass().getName());
+        if (description != null) {
+            return description;
+        }
         return getProxiedValue(pojo,
                                getPropertyDescriptionFieldNames().get(pojo.getClass()));
     }
