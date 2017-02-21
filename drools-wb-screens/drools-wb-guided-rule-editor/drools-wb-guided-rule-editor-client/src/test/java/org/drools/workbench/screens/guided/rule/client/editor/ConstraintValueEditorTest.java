@@ -15,17 +15,10 @@
  */
 package org.drools.workbench.screens.guided.rule.client.editor;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.kie.workbench.common.services.shared.preferences.ApplicationPreferences.DATE_FORMAT;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.HashMap;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -36,11 +29,20 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.LiteralTextBox;
+import org.mockito.InOrder;
 import org.mockito.Mock;
+
+import static org.junit.Assert.*;
+import static org.kie.workbench.common.services.shared.preferences.ApplicationPreferences.DATE_FORMAT;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @WithClassesToStub(AddConstraintButton.class)
 @RunWith(GwtMockitoTestRunner.class)
@@ -48,21 +50,29 @@ public class ConstraintValueEditorTest {
 
     @Mock
     private AsyncPackageDataModelOracle oracle;
+
     @Mock
     private SingleFieldConstraint constraint;
+
     @Mock
     private WorkingSetManager wsManager;
+
     @GwtMock
     private RuleModeller ruleModeller;
+
+    @Mock
+    private TemplateKeyTextBox templateKeyTextBox;
 
     @Before
     public void setup() {
         HashMap<String, String> map = new HashMap<>();
-        map.put(DATE_FORMAT, "dd MMM yyyy");
+        map.put(DATE_FORMAT,
+                "dd MMM yyyy");
         ApplicationPreferences.setUp(map);
 
         when(ruleModeller.getDataModelOracle()).thenReturn(oracle);
-        when(oracle.getFieldType(anyString(), anyString())).thenReturn(DataType.TYPE_STRING);
+        when(oracle.getFieldType(anyString(),
+                                 anyString())).thenReturn(DataType.TYPE_STRING);
         when(constraint.getConstraintValueType()).thenReturn(SingleFieldConstraint.TYPE_LITERAL);
     }
 
@@ -86,6 +96,39 @@ public class ConstraintValueEditorTest {
         assertTrue(editor.getConstraintWidget() instanceof LiteralTextBox);
     }
 
+    @Test
+    public void defaultTextBoxHasHandlersAttachedInCorrectOrder() {
+        final TextBox defaultTextBox = mock(TextBox.class);
+        final ConstraintValueEditor editor = spy(createEditor());
+        final InOrder inOrder = inOrder(editor);
+
+        doReturn(defaultTextBox).when(editor).getDefaultTextBox(any(String.class));
+
+        editor.getNewTextBox(DataType.TYPE_STRING);
+
+        inOrder.verify(editor).setUpTextBoxStyleAndHandlers(eq(defaultTextBox),
+                                                            any(Command.class));
+        verify(defaultTextBox,
+               times(1)).setText(any(String.class));
+        inOrder.verify(editor).attachDisplayLengthHandler(eq(defaultTextBox));
+    }
+
+    @Test
+    public void templateKeyEditorHasHandlersAttachedInCorrectOrder() {
+        final ConstraintValueEditor editor = spy(createEditor());
+
+        final InOrder inOrder = inOrder(editor);
+
+        editor.templateKeyEditor();
+
+        inOrder.verify(editor).setUpTextBoxStyleAndHandlers(eq(templateKeyTextBox),
+                                                            any(Command.class));
+        verify(templateKeyTextBox,
+               times(1)).setValue(any(String.class),
+                                  any(Boolean.class));
+        inOrder.verify(editor).attachDisplayLengthHandler(eq(templateKeyTextBox));
+    }
+
     private ConstraintValueEditor createEditor() {
         return new ConstraintValueEditor(constraint,
                                          mock(CompositeFieldConstraint.class),
@@ -98,7 +141,7 @@ public class ConstraintValueEditorTest {
             }
 
             @Override
-            Widget wrap( Widget widget ) {
+            Widget wrap(Widget widget) {
                 return widget;
             }
 
@@ -106,6 +149,11 @@ public class ConstraintValueEditorTest {
             WorkingSetManager getWorkingSetManager() {
                 return wsManager;
             }
-         };
+
+            @Override
+            TemplateKeyTextBox getTemplateKeyTextBox() {
+                return templateKeyTextBox;
+            }
+        };
     }
 }

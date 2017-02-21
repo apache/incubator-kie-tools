@@ -28,8 +28,6 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -88,7 +86,7 @@ public class ConstraintValueEditor
         extends Composite {
 
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
-    private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat( DATE_FORMAT );
+    private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat(DATE_FORMAT);
 
     private final ConstraintValueEditorHelper helper;
     private WorkingSetManager workingSetManager = null;
@@ -114,17 +112,17 @@ public class ConstraintValueEditor
     private Widget constraintWidget = null;
     private AddConstraintButton addConstraintButton = new AddConstraintButton(
             new ClickHandler() {
-                public void onClick( ClickEvent event ) {
-                    showTypeChoice( (Widget) event.getSource(),
-                                    constraint );
+                public void onClick(ClickEvent event) {
+                    showTypeChoice((Widget) event.getSource(),
+                                   constraint);
                 }
-            } );
+            });
 
-    public ConstraintValueEditor( BaseSingleFieldConstraint con,
-                                  CompositeFieldConstraint constraintList,
-                                  RuleModeller modeller,
-                                  EventBus eventBus,
-                                  boolean readOnly ) {
+    public ConstraintValueEditor(BaseSingleFieldConstraint con,
+                                 CompositeFieldConstraint constraintList,
+                                 RuleModeller modeller,
+                                 EventBus eventBus,
+                                 boolean readOnly) {
         this.constraint = con;
         this.constraintList = constraintList;
         this.oracle = modeller.getDataModelOracle();
@@ -136,46 +134,44 @@ public class ConstraintValueEditor
 
         setUpConstraint();
 
-        helper = new ConstraintValueEditorHelper( model,
-                                                  oracle,
-                                                  factType,
-                                                  fieldName,
-                                                  constraint,
-                                                  fieldType,
-                                                  dropDownData );
+        helper = new ConstraintValueEditorHelper(model,
+                                                 oracle,
+                                                 factType,
+                                                 fieldName,
+                                                 constraint,
+                                                 fieldType,
+                                                 dropDownData);
 
         refreshEditor();
-        initWidget( panel );
+        initWidget(panel);
     }
 
     private void setUpConstraint() {
-        if ( constraint instanceof SingleFieldConstraintEBLeftSide ) {
-            setUpSingleFieldConstraintEBLeftSide( (SingleFieldConstraintEBLeftSide) constraint );
-
-        } else if ( constraint instanceof ConnectiveConstraint ) {
-            setUpConnectiveConstraint( (ConnectiveConstraint) constraint );
-
-        } else if ( constraint instanceof SingleFieldConstraint ) {
-            setUpSingleFieldConstraint( (SingleFieldConstraint) constraint );
+        if (constraint instanceof SingleFieldConstraintEBLeftSide) {
+            setUpSingleFieldConstraintEBLeftSide((SingleFieldConstraintEBLeftSide) constraint);
+        } else if (constraint instanceof ConnectiveConstraint) {
+            setUpConnectiveConstraint((ConnectiveConstraint) constraint);
+        } else if (constraint instanceof SingleFieldConstraint) {
+            setUpSingleFieldConstraint((SingleFieldConstraint) constraint);
         }
     }
 
-    private void setUpSingleFieldConstraint( SingleFieldConstraint sfc ) {
+    private void setUpSingleFieldConstraint(SingleFieldConstraint sfc) {
         this.factType = sfc.getFactType();
         this.fieldName = sfc.getFieldName();
-        this.fieldType = oracle.getFieldType( factType,
-                                              fieldName );
+        this.fieldType = oracle.getFieldType(factType,
+                                             fieldName);
     }
 
-    private void setUpConnectiveConstraint( ConnectiveConstraint cc ) {
+    private void setUpConnectiveConstraint(ConnectiveConstraint cc) {
         this.factType = cc.getFactType();
         this.fieldName = cc.getFieldName();
         this.fieldType = cc.getFieldType();
     }
 
-    private void setUpSingleFieldConstraintEBLeftSide( SingleFieldConstraintEBLeftSide sfexp ) {
+    private void setUpSingleFieldConstraintEBLeftSide(SingleFieldConstraintEBLeftSide sfexp) {
         this.factType = sfexp.getExpressionLeftSide().getPreviousClassType();
-        if ( this.factType == null ) {
+        if (this.factType == null) {
             this.factType = sfexp.getExpressionLeftSide().getClassType();
         }
         this.fieldName = sfexp.getExpressionLeftSide().getFieldName();
@@ -193,40 +189,40 @@ public class ConstraintValueEditor
         //Expressions' fieldName and hence fieldType can change without creating a new ConstraintValueEditor. 
         //SingleFieldConstraints and their ConnectiveConstraints cannot have the fieldName or fieldType changed 
         //without first deleting and re-creating.
-        if ( this.constraint instanceof SingleFieldConstraintEBLeftSide ) {
-            setUpSingleFieldConstraintEBLeftSide( (SingleFieldConstraintEBLeftSide) this.constraint );
+        if (this.constraint instanceof SingleFieldConstraintEBLeftSide) {
+            setUpSingleFieldConstraintEBLeftSide((SingleFieldConstraintEBLeftSide) this.constraint);
         }
 
         //Initialise drop-down data
         getDropDownData();
 
         //Show an editor for the constraint value type
-        if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_UNDEFINED ) {
+        if (constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_UNDEFINED) {
             addAddConstraintButton();
         } else {
             addConstraintWidget();
         }
 
-        panel.add( constraintWidget );
+        panel.add(constraintWidget);
     }
 
     private void addConstraintWidget() {
-        switch ( constraint.getConstraintValueType() ) {
+        switch (constraint.getConstraintValueType()) {
             case SingleFieldConstraint.TYPE_LITERAL:
             case SingleFieldConstraint.TYPE_ENUM:
-                constraintWidget = wrap( literalEditor() );
+                constraintWidget = wrap(literalEditor());
                 break;
             case SingleFieldConstraint.TYPE_RET_VALUE:
-                constraintWidget = wrap( returnValueEditor() );
+                constraintWidget = wrap(returnValueEditor());
                 break;
             case SingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE:
-                constraintWidget = wrap( expressionEditor() );
+                constraintWidget = wrap(expressionEditor());
                 break;
             case SingleFieldConstraint.TYPE_VARIABLE:
-                constraintWidget = wrap( variableEditor() );
+                constraintWidget = wrap(variableEditor());
                 break;
             case BaseSingleFieldConstraint.TYPE_TEMPLATE:
-                constraintWidget = wrap( templateKeyEditor() );
+                constraintWidget = wrap(templateKeyEditor());
                 break;
             default:
                 break;
@@ -234,7 +230,7 @@ public class ConstraintValueEditor
     }
 
     private void addAddConstraintButton() {
-        addConstraintButton.setEnabled( !this.readOnly );
+        addConstraintButton.setEnabled(!this.readOnly);
         constraintWidget = addConstraintButton;
     }
 
@@ -247,53 +243,51 @@ public class ConstraintValueEditor
     }
 
     //Wrap a Constraint Value Editor with an icon to remove the type 
-    Widget wrap( Widget widget ) {
-        if ( this.readOnly ) {
+    Widget wrap(Widget widget) {
+        if (this.readOnly) {
             return widget;
         }
         HorizontalPanel wrapper = new HorizontalPanel();
         Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
-        clear.setTitle( GuidedRuleEditorResources.CONSTANTS.RemoveConstraintValueDefinition() );
-        clear.addClickHandler( new ClickHandler() {
+        clear.setTitle(GuidedRuleEditorResources.CONSTANTS.RemoveConstraintValueDefinition());
+        clear.addClickHandler(new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 //Reset Constraint's value and value type
-                if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveConstraintValueDefinitionQuestion() ) ) {
-                    constraint.setConstraintValueType( BaseSingleFieldConstraint.TYPE_UNDEFINED );
-                    constraint.setValue( null );
+                if (Window.confirm(GuidedRuleEditorResources.CONSTANTS.RemoveConstraintValueDefinitionQuestion())) {
+                    constraint.setConstraintValueType(BaseSingleFieldConstraint.TYPE_UNDEFINED);
+                    constraint.setValue(null);
                     constraint.clearParameters();
-                    constraint.setExpressionValue( new ExpressionFormLine() );
+                    constraint.setExpressionValue(new ExpressionFormLine());
                     doTypeChosen();
                 }
             }
+        });
 
-        } );
-
-        wrapper.add( widget );
-        if ( !this.readOnly ) {
-            wrapper.add( clear );
-            wrapper.setCellVerticalAlignment( clear,
-                                              HasVerticalAlignment.ALIGN_MIDDLE );
+        wrapper.add(widget);
+        if (!this.readOnly) {
+            wrapper.add(clear);
+            wrapper.setCellVerticalAlignment(clear,
+                                             HasVerticalAlignment.ALIGN_MIDDLE);
         }
         return wrapper;
     }
 
     private String getSanitizedValue() {
-        if ( constraint.getValue() == null ) {
+        if (constraint.getValue() == null) {
             return "";
         }
         return constraint.getValue();
     }
 
     private Date getSanitizedDateValue() {
-        if ( constraint.getValue() == null ) {
+        if (constraint.getValue() == null) {
             return null;
         }
 
         try {
-            return DATE_FORMATTER.parse( constraint.getValue() );
-
-        } catch ( IllegalArgumentException iae ) {
+            return DATE_FORMATTER.parse(constraint.getValue());
+        } catch (IllegalArgumentException iae) {
             return null;
         }
     }
@@ -301,144 +295,150 @@ public class ConstraintValueEditor
     private Widget literalEditor() {
 
         //Custom screen
-        if ( this.constraint instanceof SingleFieldConstraint ) {
+        if (this.constraint instanceof SingleFieldConstraint) {
             final SingleFieldConstraint con = (SingleFieldConstraint) this.constraint;
-            CustomFormConfiguration customFormConfiguration = getWorkingSetManager().getCustomFormConfiguration( modeller.getPath(),
-                                                                                                                 factType,
-                                                                                                                 fieldName );
-            if ( customFormConfiguration != null ) {
-                Button btnCustom = new Button( con.getValue(),
-                                               new ClickHandler() {
+            CustomFormConfiguration customFormConfiguration = getWorkingSetManager().getCustomFormConfiguration(modeller.getPath(),
+                                                                                                                factType,
+                                                                                                                fieldName);
+            if (customFormConfiguration != null) {
+                Button btnCustom = new Button(con.getValue(),
+                                              new ClickHandler() {
 
-                                                   public void onClick( ClickEvent event ) {
-                                                       showTypeChoice( (Widget) event.getSource(),
-                                                                       constraint );
-                                                   }
-                                               } );
-                btnCustom.setEnabled( !this.readOnly );
+                                                  public void onClick(ClickEvent event) {
+                                                      showTypeChoice((Widget) event.getSource(),
+                                                                     constraint);
+                                                  }
+                                              });
+                btnCustom.setEnabled(!this.readOnly);
                 return btnCustom;
             }
         }
 
         //Label if read-only
-        if ( this.readOnly ) {
-            return new SmallLabel( getSanitizedValue() );
+        if (this.readOnly) {
+            return new SmallLabel(getSanitizedValue());
         }
 
         //Enumeration (these support multi-select for "in" and "not in", so check before comma separated lists) 
-        if ( this.dropDownData != null ) {
+        if (this.dropDownData != null) {
             final String operator = constraint.getOperator();
-            final boolean multipleSelect = OperatorsOracle.operatorRequiresList( operator );
-            EnumDropDown enumDropDown = new EnumDropDown( constraint.getValue(),
-                                                          new DropDownValueChanged() {
+            final boolean multipleSelect = OperatorsOracle.operatorRequiresList(operator);
+            EnumDropDown enumDropDown = new EnumDropDown(constraint.getValue(),
+                                                         new DropDownValueChanged() {
 
-                                                              public void valueChanged( String newText,
-                                                                                        String newValue ) {
+                                                             public void valueChanged(String newText,
+                                                                                      String newValue) {
 
-                                                                  //Prevent recursion once value change has been applied
-                                                                  if ( !newValue.equals( constraint.getValue() ) ) {
-                                                                      constraint.setValue( newValue );
-                                                                      executeOnValueChangeCommand();
-                                                                  }
-                                                              }
-                                                          },
-                                                          dropDownData,
-                                                          multipleSelect,
-                                                          modeller.getPath() );
+                                                                 //Prevent recursion once value change has been applied
+                                                                 if (!newValue.equals(constraint.getValue())) {
+                                                                     constraint.setValue(newValue);
+                                                                     executeOnValueChangeCommand();
+                                                                 }
+                                                             }
+                                                         },
+                                                         dropDownData,
+                                                         multipleSelect,
+                                                         modeller.getPath());
             return enumDropDown;
         }
 
         //Comma separated value list (this will become a dedicated Widget but for now a TextBox suffices)
         String operator = null;
-        if ( this.constraint instanceof SingleFieldConstraint ) {
+        if (this.constraint instanceof SingleFieldConstraint) {
             SingleFieldConstraint sfc = (SingleFieldConstraint) this.constraint;
             operator = sfc.getOperator();
         }
-        if ( OperatorsOracle.operatorRequiresList( operator ) ) {
-            return getNewTextBox( DataType.TYPE_STRING );
+        if (OperatorsOracle.operatorRequiresList(operator)) {
+            return getNewTextBox(DataType.TYPE_STRING);
         }
 
         //Date picker
-        boolean isCEPOperator = CEPOracle.isCEPOperator( ( this.constraint ).getOperator() );
-        if ( DataType.TYPE_DATE.equals( this.fieldType ) || ( DataType.TYPE_THIS.equals( this.fieldName ) && isCEPOperator ) ) {
-            if ( this.readOnly ) {
-                return new SmallLabel( constraint.getValue() );
+        boolean isCEPOperator = CEPOracle.isCEPOperator((this.constraint).getOperator());
+        if (DataType.TYPE_DATE.equals(this.fieldType) || (DataType.TYPE_THIS.equals(this.fieldName) && isCEPOperator)) {
+            if (this.readOnly) {
+                return new SmallLabel(constraint.getValue());
             }
 
-            final DatePicker datePicker = new DatePicker( false );
+            final DatePicker datePicker = new DatePicker(false);
 
             // Wire up update handler
-            datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
+            datePicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
                 @Override
-                public void onValueChange( final ValueChangeEvent<Date> event ) {
+                public void onValueChange(final ValueChangeEvent<Date> event) {
                     final Date date = datePicker.getValue();
-                    final String sDate = ( date == null ? null : DATE_FORMATTER.format( datePicker.getValue() ) );
-                    boolean update = constraint.getValue() == null || !constraint.getValue().equals( sDate );
+                    final String sDate = (date == null ? null : DATE_FORMATTER.format(datePicker.getValue()));
+                    boolean update = constraint.getValue() == null || !constraint.getValue().equals(sDate);
 
-                    constraint.setValue( sDate );
+                    constraint.setValue(sDate);
 
-                    if ( update ) {
+                    if (update) {
                         executeOnValueChangeCommand();
                     }
                 }
-            } );
+            });
 
-            datePicker.setFormat( DATE_FORMAT );
-            datePicker.setValue( getSanitizedDateValue() );
+            datePicker.setFormat(DATE_FORMAT);
+            datePicker.setValue(getSanitizedDateValue());
 
             return datePicker;
         }
 
         //Default editor for all other literals
-        return getNewTextBox( fieldType );
+        return getNewTextBox(fieldType);
     }
 
-    private TextBox getNewTextBox( String fieldType ) {
-        final TextBox box = TextBoxFactory.getTextBox( fieldType );
-        setUpTextBoxStyleAndHandlers(box, onValueChangeCommand);
-        box.setText( getSanitizedValue() );
+    TextBox getNewTextBox(final String fieldType) {
+        final TextBox box = getDefaultTextBox(fieldType);
+        setUpTextBoxStyleAndHandlers(box,
+                                     onValueChangeCommand);
+        box.setText(getSanitizedValue());
+        attachDisplayLengthHandler(box);
         return box;
+    }
+
+    TextBox getDefaultTextBox(final String fieldType) {
+        return TextBoxFactory.getTextBox(fieldType);
     }
 
     private Widget variableEditor() {
 
-        if ( this.readOnly ) {
-            return new SmallLabel( this.constraint.getValue() );
+        if (this.readOnly) {
+            return new SmallLabel(this.constraint.getValue());
         }
 
         final ListBox box = new ListBox();
-        box.addItem( GuidedRuleEditorResources.CONSTANTS.Choose() );
+        box.addItem(GuidedRuleEditorResources.CONSTANTS.Choose());
 
-        List<String> bindingsInScope = this.model.getBoundVariablesInScope( this.constraint );
+        List<String> bindingsInScope = this.model.getBoundVariablesInScope(this.constraint);
 
-        for ( String var : bindingsInScope ) {
+        for (String var : bindingsInScope) {
             final String binding = var;
-            helper.isApplicableBindingsInScope( var,
-                                                new Callback<Boolean>() {
-                                                    @Override
-                                                    public void callback( final Boolean result ) {
-                                                        if ( Boolean.TRUE.equals( result ) ) {
-                                                            box.addItem( binding );
-                                                            if ( ConstraintValueEditor.this.constraint.getValue() != null && ConstraintValueEditor.this.constraint.getValue().equals( binding ) ) {
-                                                                box.setSelectedIndex( box.getItemCount() - 1 );
-                                                            }
-                                                        }
-                                                    }
-                                                } );
+            helper.isApplicableBindingsInScope(var,
+                                               new Callback<Boolean>() {
+                                                   @Override
+                                                   public void callback(final Boolean result) {
+                                                       if (Boolean.TRUE.equals(result)) {
+                                                           box.addItem(binding);
+                                                           if (ConstraintValueEditor.this.constraint.getValue() != null && ConstraintValueEditor.this.constraint.getValue().equals(binding)) {
+                                                               box.setSelectedIndex(box.getItemCount() - 1);
+                                                           }
+                                                       }
+                                                   }
+                                               });
         }
 
-        box.addChangeHandler( new ChangeHandler() {
+        box.addChangeHandler(new ChangeHandler() {
 
-            public void onChange( ChangeEvent event ) {
+            public void onChange(ChangeEvent event) {
                 executeOnValueChangeCommand();
                 int selectedIndex = box.getSelectedIndex();
-                if ( selectedIndex > 0 ) {
-                    constraint.setValue( box.getItemText( selectedIndex ) );
+                if (selectedIndex > 0) {
+                    constraint.setValue(box.getItemText(selectedIndex));
                 } else {
-                    constraint.setValue( null );
+                    constraint.setValue(null);
                 }
             }
-        } );
+        });
 
         return box;
     }
@@ -447,257 +447,254 @@ public class ConstraintValueEditor
      * An editor for the retval "formula" (expression).
      */
     private Widget returnValueEditor() {
-        TextBox box = new BoundTextBox( constraint );
+        TextBox box = new BoundTextBox(constraint);
 
-        if ( this.readOnly ) {
-            return new SmallLabel( box.getText() );
+        if (this.readOnly) {
+            return new SmallLabel(box.getText());
         }
 
         String msg = GuidedRuleEditorResources.CONSTANTS.FormulaEvaluateToAValue();
-        Image img = new Image( GuidedRuleEditorResources.INSTANCE.images().functionAssets() );
-        img.setTitle( msg );
-        box.setTitle( msg );
-        box.addValueChangeHandler( new ValueChangeHandler<String>() {
+        Image img = new Image(GuidedRuleEditorResources.INSTANCE.images().functionAssets());
+        img.setTitle(msg);
+        box.setTitle(msg);
+        box.addValueChangeHandler(new ValueChangeHandler<String>() {
 
-            public void onValueChange( final ValueChangeEvent event ) {
+            public void onValueChange(final ValueChangeEvent event) {
                 executeOnValueChangeCommand();
             }
-        } );
+        });
 
-        Widget ed = widgets( img,
-                             box );
+        Widget ed = widgets(img,
+                            box);
         return ed;
     }
 
     private Widget expressionEditor() {
         ExpressionBuilder builder = null;
-        builder = new ExpressionBuilder( this.modeller,
-                                         this.eventBus,
-                                         this.constraint.getExpressionValue(),
-                                         this.readOnly );
+        builder = new ExpressionBuilder(this.modeller,
+                                        this.eventBus,
+                                        this.constraint.getExpressionValue(),
+                                        this.readOnly);
 
-        builder.addOnModifiedCommand( new Command() {
+        builder.addOnModifiedCommand(new Command() {
 
             public void execute() {
                 executeOnValueChangeCommand();
             }
-        } );
-        Widget ed = widgets( new HTML( "&nbsp;" ),
-                             builder );
+        });
+        Widget ed = widgets(new HTML("&nbsp;"),
+                            builder);
         return ed;
     }
 
     /**
      * An editor for Template Keys
      */
-    private Widget templateKeyEditor() {
-        if ( this.readOnly ) {
-            return new SmallLabel( getSanitizedValue() );
+    Widget templateKeyEditor() {
+        if (this.readOnly) {
+            return new SmallLabel(getSanitizedValue());
         }
 
-        TemplateKeyTextBox box = new TemplateKeyTextBox();
-        setUpTextBoxStyleAndHandlers(box, onTemplateValueChangeCommand);
+        TemplateKeyTextBox box = getTemplateKeyTextBox();
+        setUpTextBoxStyleAndHandlers(box,
+                                     onTemplateValueChangeCommand);
         //FireEvents as the box could assume a default value
-        box.setValue( getSanitizedValue(),
-                      true );
+        box.setValue(getSanitizedValue(),
+                     true);
+        attachDisplayLengthHandler(box);
         return box;
     }
 
-    private void setUpTextBoxStyleAndHandlers( final TextBox box, Command onChangeCommand ) {
-        box.setStyleName( "constraint-value-Editor" );
-        box.addValueChangeHandler( new ValueChangeHandler<String>() {
+    TemplateKeyTextBox getTemplateKeyTextBox() {
+        return new TemplateKeyTextBox();
+    }
 
-            @Override
-            public void onValueChange( final ValueChangeEvent<String> event ) {
-                constraint.setValue( event.getValue() );
-                if ( onChangeCommand != null ) {
-                    onChangeCommand.execute();
-                }
+    void setUpTextBoxStyleAndHandlers(final TextBox box,
+                                      final Command onChangeCommand) {
+        box.setStyleName("constraint-value-Editor");
+        box.addValueChangeHandler((e) -> {
+            constraint.setValue(e.getValue());
+            if (onChangeCommand != null) {
+                onChangeCommand.execute();
             }
-
-        } );
-        attachDisplayLengthHandler( box );
+        });
     }
 
     //Only display the number of characters that have been entered
-    private void attachDisplayLengthHandler( final TextBox box ) {
-        setBoxSize( box );
-        box.addKeyUpHandler( new KeyUpHandler() {
-
-            public void onKeyUp( KeyUpEvent event ) {
-                setBoxSize( box );
-            }
-        } );
+    void attachDisplayLengthHandler(final TextBox box) {
+        setBoxSize(box);
+        box.addKeyUpHandler((e) -> setBoxSize(box));
     }
 
-    void setBoxSize( final TextBox box ) {
+    void setBoxSize(final TextBox box) {
         int length = box.getText().length();
-        ( (InputElement) box.getElement().cast() ).setSize( length > 0 ? length : 1 );
+        ((InputElement) box.getElement().cast()).setSize(length > 0 ? length : 1);
     }
 
     /**
      * Show a list of possibilities for the value type.
      */
-    private void showTypeChoice( Widget w,
-                                 final BaseSingleFieldConstraint con ) {
+    private void showTypeChoice(Widget w,
+                                final BaseSingleFieldConstraint con) {
 
-        CustomFormConfiguration customFormConfiguration = getWorkingSetManager().getCustomFormConfiguration( modeller.getPath(),
-                                                                                                             factType,
-                                                                                                             fieldName );
+        CustomFormConfiguration customFormConfiguration = getWorkingSetManager().getCustomFormConfiguration(modeller.getPath(),
+                                                                                                            factType,
+                                                                                                            fieldName);
 
-        if ( customFormConfiguration != null ) {
-            if ( !( con instanceof SingleFieldConstraint ) ) {
-                Window.alert( "Unexpected constraint type!" );
+        if (customFormConfiguration != null) {
+            if (!(con instanceof SingleFieldConstraint)) {
+                Window.alert("Unexpected constraint type!");
                 return;
             }
-            final CustomFormPopUp customFormPopUp = new CustomFormPopUp( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                                         GuidedRuleEditorResources.CONSTANTS.FieldValue(),
-                                                                         customFormConfiguration );
+            final CustomFormPopUp customFormPopUp = new CustomFormPopUp(GuidedRuleEditorImages508.INSTANCE.Wizard(),
+                                                                        GuidedRuleEditorResources.CONSTANTS.FieldValue(),
+                                                                        customFormConfiguration);
 
             final SingleFieldConstraint sfc = (SingleFieldConstraint) con;
 
-            customFormPopUp.addOkButtonHandler( new ClickHandler() {
+            customFormPopUp.addOkButtonHandler(new ClickHandler() {
 
-                public void onClick( ClickEvent event ) {
-                    sfc.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
-                    sfc.setId( customFormPopUp.getFormId() );
-                    sfc.setValue( customFormPopUp.getFormValue() );
-                    doTypeChosen( customFormPopUp );
+                public void onClick(ClickEvent event) {
+                    sfc.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+                    sfc.setId(customFormPopUp.getFormId());
+                    sfc.setValue(customFormPopUp.getFormValue());
+                    doTypeChosen(customFormPopUp);
                 }
-            } );
+            });
 
-            customFormPopUp.show( sfc.getId(),
-                                  sfc.getValue() );
+            customFormPopUp.show(sfc.getId(),
+                                 sfc.getValue());
             return;
         }
 
-        final FormStylePopup form = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                        GuidedRuleEditorResources.CONSTANTS.FieldValue() );
+        final FormStylePopup form = new FormStylePopup(GuidedRuleEditorImages508.INSTANCE.Wizard(),
+                                                       GuidedRuleEditorResources.CONSTANTS.FieldValue());
 
-        Button lit = new Button( GuidedRuleEditorResources.CONSTANTS.LiteralValue() );
+        Button lit = new Button(GuidedRuleEditorResources.CONSTANTS.LiteralValue());
         int litValueType = isDropDownDataEnum && dropDownData != null ? SingleFieldConstraint.TYPE_ENUM : SingleFieldConstraint.TYPE_LITERAL;
-        lit.addClickHandler( getValueTypeFormOnClickHandler( con,
-                                                             form,
-                                                             litValueType ) );
+        lit.addClickHandler(getValueTypeFormOnClickHandler(con,
+                                                           form,
+                                                           litValueType));
 
         boolean showLiteralSelector = true;
-        boolean showFormulaSelector = !OperatorsOracle.operatorRequiresList( con.getOperator() );
-        boolean showVariableSelector = !OperatorsOracle.operatorRequiresList( con.getOperator() );
-        boolean showExpressionSelector = !OperatorsOracle.operatorRequiresList( con.getOperator() );
+        boolean showFormulaSelector = !OperatorsOracle.operatorRequiresList(con.getOperator());
+        boolean showVariableSelector = !OperatorsOracle.operatorRequiresList(con.getOperator());
+        boolean showExpressionSelector = !OperatorsOracle.operatorRequiresList(con.getOperator());
 
-        if ( con instanceof SingleFieldConstraint ) {
+        if (con instanceof SingleFieldConstraint) {
             SingleFieldConstraint sfc = (SingleFieldConstraint) con;
             String fieldName = sfc.getFieldName();
-            if ( fieldName.equals( DataType.TYPE_THIS ) ) {
-                showLiteralSelector = CEPOracle.isCEPOperator( sfc.getOperator() );
+            if (fieldName.equals(DataType.TYPE_THIS)) {
+                showLiteralSelector = CEPOracle.isCEPOperator(sfc.getOperator());
                 showFormulaSelector = showFormulaSelector && showLiteralSelector;
             }
-        } else if ( con instanceof ConnectiveConstraint ) {
+        } else if (con instanceof ConnectiveConstraint) {
             ConnectiveConstraint cc = (ConnectiveConstraint) con;
             String fieldName = cc.getFieldName();
-            if ( fieldName.equals( DataType.TYPE_THIS ) ) {
-                showLiteralSelector = CEPOracle.isCEPOperator( cc.getOperator() );
+            if (fieldName.equals(DataType.TYPE_THIS)) {
+                showLiteralSelector = CEPOracle.isCEPOperator(cc.getOperator());
                 showFormulaSelector = showFormulaSelector && showLiteralSelector;
             }
         }
 
         //Literal value selector
-        if ( showLiteralSelector ) {
-            form.addAttribute( GuidedRuleEditorResources.CONSTANTS.LiteralValue() + ":",
-                               widgets( lit,
-                                        new InfoPopup( GuidedRuleEditorResources.CONSTANTS.LiteralValue(),
-                                                       GuidedRuleEditorResources.CONSTANTS.LiteralValTip() ) ) );
+        if (showLiteralSelector) {
+            form.addAttribute(GuidedRuleEditorResources.CONSTANTS.LiteralValue() + ":",
+                              widgets(lit,
+                                      new InfoPopup(GuidedRuleEditorResources.CONSTANTS.LiteralValue(),
+                                                    GuidedRuleEditorResources.CONSTANTS.LiteralValTip())));
         }
 
         //Template key selector
-        if ( modeller.isTemplate() ) {
+        if (modeller.isTemplate()) {
             String templateKeyLabel = GuidedRuleEditorResources.CONSTANTS.TemplateKey();
-            Button templateKeyButton = new Button( templateKeyLabel );
-            templateKeyButton.addClickHandler( getValueTypeFormOnClickHandler( con,
-                                                                               form,
-                                                                               SingleFieldConstraint.TYPE_TEMPLATE ) );
+            Button templateKeyButton = new Button(templateKeyLabel);
+            templateKeyButton.addClickHandler(getValueTypeFormOnClickHandler(con,
+                                                                             form,
+                                                                             SingleFieldConstraint.TYPE_TEMPLATE));
 
-            form.addAttribute( templateKeyLabel + ":",
-                               widgets( templateKeyButton,
-                                        new InfoPopup( templateKeyLabel,
-                                                       GuidedRuleEditorResources.CONSTANTS.LiteralValTip() ) ) );
+            form.addAttribute(templateKeyLabel + ":",
+                              widgets(templateKeyButton,
+                                      new InfoPopup(templateKeyLabel,
+                                                    GuidedRuleEditorResources.CONSTANTS.LiteralValTip())));
         }
 
         //Divider, if we have any advanced options
-        if ( showVariableSelector || showFormulaSelector || showExpressionSelector ) {
-            form.addRow( new HTML( "<hr/>" ) );
-            form.addRow( new SmallLabel( GuidedRuleEditorResources.CONSTANTS.AdvancedOptions() ) );
+        if (showVariableSelector || showFormulaSelector || showExpressionSelector) {
+            form.addRow(new HTML("<hr/>"));
+            form.addRow(new SmallLabel(GuidedRuleEditorResources.CONSTANTS.AdvancedOptions()));
         }
 
         //Show variables selector, if there are any variables in scope
-        if ( showVariableSelector ) {
-            List<String> bindingsInScope = this.model.getBoundVariablesInScope( this.constraint );
-            if ( bindingsInScope.size() > 0 || DataType.TYPE_COLLECTION.equals( this.fieldType ) ) {
+        if (showVariableSelector) {
+            List<String> bindingsInScope = this.model.getBoundVariablesInScope(this.constraint);
+            if (bindingsInScope.size() > 0 || DataType.TYPE_COLLECTION.equals(this.fieldType)) {
 
-                final Button bindingButton = new Button( GuidedRuleEditorResources.CONSTANTS.BoundVariable() );
+                final Button bindingButton = new Button(GuidedRuleEditorResources.CONSTANTS.BoundVariable());
 
                 //This Set is used as a 1flag to know whether the button has been added; due to use of callbacks
                 final Set<Button> bindingButtonContainer = new HashSet<Button>();
 
-                for ( String var : bindingsInScope ) {
-                    helper.isApplicableBindingsInScope( var,
-                                                        new Callback<Boolean>() {
-                                                            @Override
-                                                            public void callback( final Boolean result ) {
-                                                                if ( Boolean.TRUE.equals( result ) ) {
-                                                                    if ( !bindingButtonContainer.contains( bindingButton ) ) {
-                                                                        bindingButtonContainer.add( bindingButton );
-                                                                        bindingButton.addClickHandler( getValueTypeFormOnClickHandler( con,
-                                                                                                                                       form,
-                                                                                                                                       SingleFieldConstraint.TYPE_VARIABLE ) );
-                                                                        form.addAttribute( GuidedRuleEditorResources.CONSTANTS.AVariable(),
-                                                                                           widgets( bindingButton,
-                                                                                                    new InfoPopup( GuidedRuleEditorResources.CONSTANTS.ABoundVariable(),
-                                                                                                                   GuidedRuleEditorResources.CONSTANTS.BoundVariableTip() ) ) );
-                                                                    }
-                                                                }
-                                                            }
-                                                        } );
-
+                for (String var : bindingsInScope) {
+                    helper.isApplicableBindingsInScope(var,
+                                                       new Callback<Boolean>() {
+                                                           @Override
+                                                           public void callback(final Boolean result) {
+                                                               if (Boolean.TRUE.equals(result)) {
+                                                                   if (!bindingButtonContainer.contains(bindingButton)) {
+                                                                       bindingButtonContainer.add(bindingButton);
+                                                                       bindingButton.addClickHandler(getValueTypeFormOnClickHandler(con,
+                                                                                                                                    form,
+                                                                                                                                    SingleFieldConstraint.TYPE_VARIABLE));
+                                                                       form.addAttribute(GuidedRuleEditorResources.CONSTANTS.AVariable(),
+                                                                                         widgets(bindingButton,
+                                                                                                 new InfoPopup(GuidedRuleEditorResources.CONSTANTS.ABoundVariable(),
+                                                                                                               GuidedRuleEditorResources.CONSTANTS.BoundVariableTip())));
+                                                                   }
+                                                               }
+                                                           }
+                                                       });
                 }
             }
         }
 
         //Formula selector
-        if ( showFormulaSelector ) {
-            Button formula = new Button( GuidedRuleEditorResources.CONSTANTS.NewFormula() );
-            formula.addClickHandler( getValueTypeFormOnClickHandler( con,
-                                                                     form,
-                                                                     SingleFieldConstraint.TYPE_RET_VALUE ) );
+        if (showFormulaSelector) {
+            Button formula = new Button(GuidedRuleEditorResources.CONSTANTS.NewFormula());
+            formula.addClickHandler(getValueTypeFormOnClickHandler(con,
+                                                                   form,
+                                                                   SingleFieldConstraint.TYPE_RET_VALUE));
 
-            form.addAttribute( GuidedRuleEditorResources.CONSTANTS.AFormula() + ":",
-                               widgets( formula,
-                                        new InfoPopup( GuidedRuleEditorResources.CONSTANTS.AFormula(),
-                                                       GuidedRuleEditorResources.CONSTANTS.FormulaExpressionTip() ) ) );
+            form.addAttribute(GuidedRuleEditorResources.CONSTANTS.AFormula() + ":",
+                              widgets(formula,
+                                      new InfoPopup(GuidedRuleEditorResources.CONSTANTS.AFormula(),
+                                                    GuidedRuleEditorResources.CONSTANTS.FormulaExpressionTip())));
         }
 
         //Expression selector
-        if ( showExpressionSelector ) {
-            Button expression = new Button( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() );
-            expression.addClickHandler( getValueTypeFormOnClickHandler( con,
-                                                                        form,
-                                                                        SingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE ) );
+        if (showExpressionSelector) {
+            Button expression = new Button(GuidedRuleEditorResources.CONSTANTS.ExpressionEditor());
+            expression.addClickHandler(getValueTypeFormOnClickHandler(con,
+                                                                      form,
+                                                                      SingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE));
 
-            form.addAttribute( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() + ":",
-                               widgets( expression,
-                                        new InfoPopup( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor(),
-                                                       GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() ) ) );
+            form.addAttribute(GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() + ":",
+                              widgets(expression,
+                                      new InfoPopup(GuidedRuleEditorResources.CONSTANTS.ExpressionEditor(),
+                                                    GuidedRuleEditorResources.CONSTANTS.ExpressionEditor())));
         }
 
         form.show();
     }
 
-    private ClickHandler getValueTypeFormOnClickHandler( BaseSingleFieldConstraint con, FormStylePopup form, int type ) {
+    private ClickHandler getValueTypeFormOnClickHandler(BaseSingleFieldConstraint con,
+                                                        FormStylePopup form,
+                                                        int type) {
         return new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
-                con.setConstraintValueType( type );
-                doTypeChosen( form );
+            public void onClick(ClickEvent event) {
+                con.setConstraintValueType(type);
+                doTypeChosen(form);
             }
         };
     }
@@ -708,72 +705,73 @@ public class ConstraintValueEditor
         refreshEditor();
     }
 
-    private void doTypeChosen( final FormStylePopup form ) {
+    private void doTypeChosen(final FormStylePopup form) {
         doTypeChosen();
         form.hide();
     }
 
-    private Panel widgets( IsWidget left,
-                           IsWidget right ) {
+    private Panel widgets(IsWidget left,
+                          IsWidget right) {
         HorizontalPanel panel = new HorizontalPanel();
-        panel.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
-        panel.add( left );
-        panel.add( right );
-        panel.setWidth( "100%" );
+        panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+        panel.add(left);
+        panel.add(right);
+        panel.setWidth("100%");
         return panel;
     }
 
-    public void setOnValueChangeCommand( Command onValueChangeCommand ) {
+    public void setOnValueChangeCommand(Command onValueChangeCommand) {
         this.onValueChangeCommand = onValueChangeCommand;
     }
 
     private void executeOnValueChangeCommand() {
-        if ( this.onValueChangeCommand != null ) {
+        if (this.onValueChangeCommand != null) {
             this.onValueChangeCommand.execute();
         }
     }
 
-    public void setOnTemplateValueChangeCommand( Command onTemplateValueChangeCommand ) {
+    public void setOnTemplateValueChangeCommand(Command onTemplateValueChangeCommand) {
         this.onTemplateValueChangeCommand = onTemplateValueChangeCommand;
     }
 
     private DropDownData getDropDownData() {
         //Set applicable flags and reference data depending upon type
-        if ( DataType.TYPE_BOOLEAN.equals( this.fieldType ) ) {
+        if (DataType.TYPE_BOOLEAN.equals(this.fieldType)) {
             this.isDropDownDataEnum = false;
-            this.dropDownData = DropDownData.create( new String[]{ "true", "false" } );
+            this.dropDownData = DropDownData.create(new String[]{"true", "false"});
         } else {
             this.isDropDownDataEnum = true;
 
             final Map<String, String> currentValueMap = new HashMap<String, String>();
 
-            if ( constraintList != null && constraintList.getConstraints() != null ) {
-                for ( FieldConstraint con : constraintList.getConstraints() ) {
-                    if ( con instanceof SingleFieldConstraint ) {
+            if (constraintList != null && constraintList.getConstraints() != null) {
+                for (FieldConstraint con : constraintList.getConstraints()) {
+                    if (con instanceof SingleFieldConstraint) {
                         SingleFieldConstraint sfc = (SingleFieldConstraint) con;
                         String fieldName = sfc.getFieldName();
-                        currentValueMap.put( fieldName,
-                                             sfc.getValue() );
+                        currentValueMap.put(fieldName,
+                                            sfc.getValue());
                     }
                 }
             }
 
-            this.dropDownData = oracle.getEnums( this.factType,
-                                                 fieldName,
-                                                 currentValueMap );
+            this.dropDownData = oracle.getEnums(this.factType,
+                                                fieldName,
+                                                currentValueMap);
         }
         return dropDownData;
     }
 
     //Signal (potential) change in Template variables
     private void executeOnTemplateVariablesChange() {
-        TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
-        eventBus.fireEventFromSource( tvce, model );
+        TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent(model);
+        eventBus.fireEventFromSource(tvce,
+                                     model);
     }
 
     WorkingSetManager getWorkingSetManager() {
-        if ( workingSetManager == null ) {
-            workingSetManager = IOC.getBeanManager().lookupBean( WorkingSetManager.class ).getInstance();
+        if (workingSetManager == null) {
+            workingSetManager = IOC.getBeanManager().lookupBean(WorkingSetManager.class).getInstance();
         }
         return workingSetManager;
     }
