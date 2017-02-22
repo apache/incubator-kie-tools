@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.serialization.impl;
 
 import junit.framework.TestCase;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,9 +32,9 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class FormDefinitionSerializerImplTest extends TestCase {
 
     private TestFieldManager fieldManager;
@@ -46,61 +47,61 @@ public class FormDefinitionSerializerImplTest extends TestCase {
     public void initTest() {
         fieldManager = new TestFieldManager();
 
-        definitionSerializer = new FormDefinitionSerializerImpl( new FieldSerializer(),
-                new FormModelSerializer() );
+        definitionSerializer = new FormDefinitionSerializerImpl(new FieldSerializer(),
+                                                                new FormModelSerializer());
 
         formDefinition = new FormDefinition();
-        formDefinition.setId( "testForm" );
-        formDefinition.setName( "testForm" );
+        formDefinition.setId("testForm");
+        formDefinition.setName("testForm");
 
-        formDefinition.setLayoutTemplate( new LayoutTemplate(  ) );
+        formDefinition.setLayoutTemplate(new LayoutTemplate());
 
-        for ( BasicTypeFieldProvider provider : fieldManager.getAllBasicTypeProviders() ) {
-            for ( String type : provider.getSupportedTypes() ) {
-                FieldDefinition field = provider.getFieldByType( new FieldDataType( type ) );
+        for (BasicTypeFieldProvider provider : fieldManager.getAllBasicTypeProviders()) {
+            for (String type : provider.getSupportedTypes()) {
+                FieldDefinition field = provider.getFieldByType(new FieldDataType(type));
 
-                assertNotNull( field );
+                assertNotNull(field);
 
                 String fieldDescription = provider.getFieldTypeName() + "_" + type;
 
-                field.setName( fieldDescription );
-                field.setLabel( fieldDescription );
+                field.setName(fieldDescription);
+                field.setLabel(fieldDescription);
 
-                field.setStandaloneClassName( type );
+                field.setStandaloneClassName(type);
 
-                field.setBinding( fieldDescription );
+                field.setBinding(fieldDescription);
 
-                formDefinition.getFields().add( field );
+                formDefinition.getFields().add(field);
             }
         }
 
         SubFormFieldDefinition subForm = new SubFormFieldDefinition();
 
-        subForm.setLabel( "SubForm" );
-        subForm.setNestedForm( "" );
-        subForm.setBinding( "model" );
-        subForm.setStandaloneClassName( "org.test.MyTestModel" );
-        subForm.setBinding( "SubForm" );
+        subForm.setLabel("SubForm");
+        subForm.setNestedForm("");
+        subForm.setBinding("model");
+        subForm.setStandaloneClassName("org.test.MyTestModel");
+        subForm.setBinding("SubForm");
 
-        formDefinition.getFields().add( subForm );
+        formDefinition.getFields().add(subForm);
 
         MultipleSubFormFieldDefinition multipleSubForm = new MultipleSubFormFieldDefinition();
 
-        multipleSubForm.setLabel( "MultipleSubForm" );
-        multipleSubForm.setCreationForm( "" );
-        multipleSubForm.setEditionForm( "" );
-        multipleSubForm.setStandaloneClassName( "org.test.MyTestModel" );
-        multipleSubForm.setBinding( "MultipleSubForm" );
+        multipleSubForm.setLabel("MultipleSubForm");
+        multipleSubForm.setCreationForm("");
+        multipleSubForm.setEditionForm("");
+        multipleSubForm.setStandaloneClassName("org.test.MyTestModel");
+        multipleSubForm.setBinding("MultipleSubForm");
 
-        formDefinition.getFields().add( multipleSubForm );
+        formDefinition.getFields().add(multipleSubForm);
 
         EnumListBoxFieldDefinition enumListBox = new EnumListBoxFieldDefinition();
 
-        enumListBox.setLabel( "EnumListBox" );
-        enumListBox.setBinding( "EnumListBox" );
-        enumListBox.setStandaloneClassName( "org.test.MyTestModel" );
+        enumListBox.setLabel("EnumListBox");
+        enumListBox.setBinding("EnumListBox");
+        enumListBox.setStandaloneClassName("org.test.MyTestModel");
 
-        formDefinition.getFields().add( enumListBox );
+        formDefinition.getFields().add(enumListBox);
     }
 
     @Test
@@ -109,10 +110,14 @@ public class FormDefinitionSerializerImplTest extends TestCase {
     }
 
     protected String doSerializationTest() {
-        String serializedForm = definitionSerializer.serialize( formDefinition );
+        String serializedForm = definitionSerializer.serialize(formDefinition);
 
-        assertNotNull( serializedForm );
-        assertNotEquals( 0, serializedForm.length() );
+        assertEquals(formDefinition.getFields().size(),
+                     StringUtils.countMatches(serializedForm,
+                                              "\"code\""));
+        assertNotNull(serializedForm);
+        assertNotEquals(0,
+                        serializedForm.length());
 
         return serializedForm;
     }
@@ -121,20 +126,25 @@ public class FormDefinitionSerializerImplTest extends TestCase {
     public void testFormDeSerialization() {
         String serializedForm = doSerializationTest();
 
-        FormDefinition deSerializedForm = definitionSerializer.deserialize( serializedForm );
+        FormDefinition deSerializedForm = definitionSerializer.deserialize(serializedForm);
 
-        assertNotNull( deSerializedForm );
+        assertNotNull(deSerializedForm);
 
-        assertEquals( formDefinition.getFields().size(), deSerializedForm.getFields().size() );
+        assertEquals(formDefinition.getFields().size(),
+                     deSerializedForm.getFields().size());
 
-        for ( FieldDefinition originalField : formDefinition.getFields() ) {
-            FieldDefinition resultField = deSerializedForm.getFieldById( originalField.getId() );
+        for (FieldDefinition originalField : formDefinition.getFields()) {
+            FieldDefinition resultField = deSerializedForm.getFieldById(originalField.getId());
 
-            assertNotNull( resultField );
-            assertEquals( originalField.getClass(), resultField.getClass() );
-            assertEquals( originalField.getName(), resultField.getName() );
-            assertEquals( originalField.getLabel(), resultField.getLabel() );
-            assertEquals( originalField.getStandaloneClassName(), resultField.getStandaloneClassName() );
+            assertNotNull(resultField);
+            assertEquals(originalField.getClass(),
+                         resultField.getClass());
+            assertEquals(originalField.getName(),
+                         resultField.getName());
+            assertEquals(originalField.getLabel(),
+                         resultField.getLabel());
+            assertEquals(originalField.getStandaloneClassName(),
+                         resultField.getStandaloneClassName());
         }
     }
 }

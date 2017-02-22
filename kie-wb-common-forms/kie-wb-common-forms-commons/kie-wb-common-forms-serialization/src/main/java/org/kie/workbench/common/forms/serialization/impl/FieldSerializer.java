@@ -30,31 +30,42 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FieldSerializer implements JsonSerializer<FieldDefinition>, JsonDeserializer<FieldDefinition> {
+public class FieldSerializer implements JsonSerializer<FieldDefinition>,
+                                        JsonDeserializer<FieldDefinition> {
 
-    private Logger log = LoggerFactory.getLogger( FieldSerializer.class );
+    private Logger log = LoggerFactory.getLogger(FieldSerializer.class);
 
     @Override
-    public JsonElement serialize( FieldDefinition field, Type type, JsonSerializationContext context ) {
-        JsonElement serializedField = context.serialize( field, field.getClass() );
+    public JsonElement serialize(FieldDefinition field,
+                                 Type type,
+                                 JsonSerializationContext context) {
+        JsonElement serializedField = context.serialize(field,
+                                                        field.getClass());
 
-        serializedField.getAsJsonObject().addProperty( "serializedFieldClassName", field.getClass().getName() );
+        serializedField.getAsJsonObject().addProperty("code",
+                                                      field.getFieldType().getTypeName());
+        serializedField.getAsJsonObject().addProperty("serializedFieldClassName",
+                                                      field.getClass().getName());
 
         return serializedField;
     }
 
     @Override
-    public FieldDefinition deserialize( JsonElement json, Type typeOfT, JsonDeserializationContext context ) throws JsonParseException {
+    public FieldDefinition deserialize(JsonElement json,
+                                       Type typeOfT,
+                                       JsonDeserializationContext context) throws JsonParseException {
 
-        JsonObject jsonField =  json.getAsJsonObject();
+        JsonObject jsonField = json.getAsJsonObject();
 
-        JsonElement jsonClassName = jsonField.get( "serializedFieldClassName" );
+        JsonElement jsonClassName = jsonField.get("serializedFieldClassName");
 
-        if ( jsonClassName != null && !StringUtils.isEmpty( jsonClassName.getAsString() ) ) {
+        if (jsonClassName != null && !StringUtils.isEmpty(jsonClassName.getAsString())) {
             try {
-                return context.deserialize( json, Class.forName( jsonClassName.getAsString() ) );
-            } catch ( Exception ex ) {
-                log.error( "Error deserializing field", ex );
+                return context.deserialize(json,
+                                           Class.forName(jsonClassName.getAsString()));
+            } catch (Exception ex) {
+                log.error("Error deserializing field",
+                          ex);
             }
         }
 
