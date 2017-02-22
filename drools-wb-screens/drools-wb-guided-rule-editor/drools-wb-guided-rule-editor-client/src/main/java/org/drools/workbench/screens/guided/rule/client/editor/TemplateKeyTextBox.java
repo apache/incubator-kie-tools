@@ -25,50 +25,55 @@ public class TemplateKeyTextBox
         extends AbstractRestrictedEntryTextBox {
 
     // A valid Template Key. This is more restrictive than that in ColumnFactory but the extension is for more advanced use
-    private final static RegExp VALID = RegExp.compile( "(^((\\$)*([a-zA-Z0-9_]+))$)" );
+    private final static RegExp VALID_FOR_LOST_FOCUS = RegExp.compile("^\\$*[a-zA-Z0-9_]+$");
+
+    //A partially valid Template Key during keyboard entry. It is not valid as a whole when focus is lost.
+    private final static RegExp VALID_FOR_KEYPRESS = RegExp.compile("^\\$*[a-zA-Z0-9_]*$");
 
     private final static String DEFAULT_KEY = "$default";
 
     @Override
-    public void setText( String text ) {
-        if ( text == null || text.isEmpty() ) {
+    public void setText(String text) {
+        if (text == null || text.isEmpty()) {
             text = DEFAULT_KEY;
         }
-        super.setText( text );
+        super.setText(text);
     }
 
     @Override
-    public void setValue( String value ) {
-        if ( value == null || value.isEmpty() ) {
+    public void setValue(String value) {
+        if (value == null || value.isEmpty()) {
             value = DEFAULT_KEY;
         }
-        super.setValue( value );
+        super.setValue(value);
     }
 
     @Override
-    public void setValue( String value,
-                          boolean fireEvents ) {
-        if ( value == null || value.isEmpty() ) {
+    public void setValue(String value,
+                         boolean fireEvents) {
+        if (value == null || value.isEmpty()) {
             value = DEFAULT_KEY;
         }
-        super.setValue( value,
-                        fireEvents );
+        super.setValue(value,
+                       fireEvents);
     }
 
     @Override
-    public boolean isValidValue( String value,
-                                 boolean isOnFocusLost ) {
+    public boolean isValidValue(String value,
+                                boolean isOnFocusLost) {
         try {
-            Double.valueOf( value );
-        } catch ( NumberFormatException nfe ) {
-            return VALID.test( value );
+            Double.valueOf(value);
+        } catch (NumberFormatException nfe) {
+            if (isOnFocusLost) {
+                return VALID_FOR_LOST_FOCUS.test(value);
+            }
+            return VALID_FOR_KEYPRESS.test(value);
         }
         return false;
     }
 
     @Override
-    protected String makeValidValue( String value ) {
+    protected String makeValidValue(String value) {
         return DEFAULT_KEY;
     }
-
 }
