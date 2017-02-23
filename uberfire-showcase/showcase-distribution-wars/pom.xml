@@ -119,19 +119,8 @@
       <artifactId>weld-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.weld</groupId>
-      <artifactId>weld-core</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.weld.servlet</groupId>
       <artifactId>weld-servlet-core</artifactId>
-      <exclusions>
-        <!-- Classes from weld-core-impl are already in weld-core -->
-        <exclusion>
-          <groupId>org.jboss.weld</groupId>
-          <artifactId>weld-core-impl</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>

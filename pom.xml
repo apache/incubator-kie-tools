@@ -22,7 +22,7 @@
     <groupId>org.jboss.integration-platform</groupId>
     <artifactId>jboss-integration-platform-bom</artifactId>
     <!-- Keep in sync with the parent version of uberfire-bom/pom.xml -->
-    <version>7.0.0.CR6</version>
+    <version>7.0.0.CR7</version>
   </parent>
 
   <groupId>org.uberfire</groupId>
@@ -59,7 +59,6 @@
     <version.javax.validation>1.0.0.GA</version.javax.validation>
 
     <version.org.jboss.errai>4.0.0-SNAPSHOT</version.org.jboss.errai>
-    <version.org.jboss.keycloak>1.9.0.Final</version.org.jboss.keycloak>
     <version.org.webjars.bower.org.patternfly>3.18.1</version.org.webjars.bower.org.patternfly>
     <version.org.webjars.bower.google-code-prettify>1.0.4</version.org.webjars.bower.google-code-prettify>
     <version.org.gwtbootstrap3>0.9.3</version.org.gwtbootstrap3>
@@ -68,12 +67,8 @@
 
     <version.org.picketlink>2.6.0.Final</version.org.picketlink>
     <!-- WildFly version used together with the GWT's Super Dev Mode -->
-    <version.org.wildfly.gwt.sdm>10.0.0.Final</version.org.wildfly.gwt.sdm>
-    <version.org.wildfly.core>2.1.0.Final</version.org.wildfly.core>
+    <version.org.wildfly.gwt.sdm>10.1.0.Final</version.org.wildfly.gwt.sdm>
 
-    <!-- Override version 2.5.4 coming from jboss-parent:19 as it forks executions, which is a bug.
-         See https://issues.apache.org/jira/browse/FELIX-4882 for more details. -->
-    <version.bundle.plugin>3.0.1</version.bundle.plugin>
     <!-- Make OSGi happy -->
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
     <!-- TODO fix all the modules to have all direct dependencies specified, then remove this property -->
@@ -663,12 +658,6 @@
         <artifactId>errai-jaxrs-client</artifactId>
         <type>test-jar</type>
         <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-core</artifactId>
-        <version>${version.org.jboss.keycloak}</version>
       </dependency>
 
       <dependency>
