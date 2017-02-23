@@ -23,7 +23,7 @@ import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationProperty;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.shape.Group;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresConnectorViewExt;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 
 public class BasicConnectorAnimation

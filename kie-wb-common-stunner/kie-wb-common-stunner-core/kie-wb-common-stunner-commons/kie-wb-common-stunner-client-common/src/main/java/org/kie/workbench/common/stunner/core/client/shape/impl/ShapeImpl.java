@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.impl;
 
-import java.util.logging.Logger;
-
 import org.kie.workbench.common.stunner.core.client.shape.Lifecycle;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
@@ -26,9 +24,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 /**
  * A default Shape implementation.
- * <p>
- * This shape view's attributes are not being updated since it gets rendered for fist time,
- * as this implementation does not provide any visual update for the different shape states.
+ * This shape view's attributes are not being updated as with any model updates.
  * @param <V> The Shape View type.
  */
 public class ShapeImpl<V extends ShapeView>
@@ -36,13 +32,19 @@ public class ShapeImpl<V extends ShapeView>
         Shape<V>,
         Lifecycle {
 
-    private static Logger LOGGER = Logger.getLogger(ShapeImpl.class.getName());
-
     private final V view;
+    private final ShapeStateHelper<V, Shape<V>> shapeStateHelper;
     private String uuid;
 
     public ShapeImpl(final V view) {
         this.view = view;
+        this.shapeStateHelper = new ShapeStateHelper<V, Shape<V>>(this);
+    }
+
+    public ShapeImpl(final V view,
+                     final ShapeStateHelper<V, Shape<V>> shapeStateHelper) {
+        this.view = view;
+        this.shapeStateHelper = shapeStateHelper;
     }
 
     public void setUUID(final String uuid) {
@@ -67,7 +69,11 @@ public class ShapeImpl<V extends ShapeView>
 
     @Override
     public void applyState(final ShapeState shapeState) {
-        // No implementation by default.
+        shapeStateHelper.applyState(shapeState);
+    }
+
+    public ShapeStateHelper<V, Shape<V>> getShapeStateHelper() {
+        return shapeStateHelper;
     }
 
     @Override

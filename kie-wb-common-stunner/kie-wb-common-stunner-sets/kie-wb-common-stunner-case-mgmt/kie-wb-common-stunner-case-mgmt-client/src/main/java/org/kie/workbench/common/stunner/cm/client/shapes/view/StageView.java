@@ -45,7 +45,6 @@ public class StageView extends AbstractCaseModellerShape<StageView> {
         this.voffset = voffset;
         setLayoutHandler(new VerticalStackLayoutManager());
         setResizable(false);
-        setZIndex(1);
     }
 
     @Override

@@ -49,13 +49,17 @@ public class ShapeDefViewHandler<W, V extends ShapeView, D extends MutableShapeD
 
     public void applyProperties(final W element,
                                 final MutationContext mutationContext) {
+        // Shape alpha.
+        final double alpha = getAlpha(element);
+        viewHandler.applyAlpha(alpha,
+                               mutationContext);
         // Fill color.
         final String color = getBackgroundColor(element);
         viewHandler.applyFillColor(color,
                                    mutationContext);
         // Fill alpha.
-        final double alpha = getBackgroundAlpha(element);
-        viewHandler.applyFillAlpha(alpha,
+        final double fillAlpha = getBackgroundAlpha(element);
+        viewHandler.applyFillAlpha(fillAlpha,
                                    mutationContext);
         // Apply border styles.
         final String _strokeColor = getBorderColor(element);
@@ -105,6 +109,10 @@ public class ShapeDefViewHandler<W, V extends ShapeView, D extends MutableShapeD
                               position,
                               rotation,
                               mutationContext);
+    }
+
+    private double getAlpha(final W element) {
+        return shapeDefinition.getAlpha(element);
     }
 
     private String getBackgroundColor(final W element) {

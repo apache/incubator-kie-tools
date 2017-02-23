@@ -18,25 +18,29 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
-import org.kie.workbench.common.stunner.core.client.canvas.DefaultCanvasGrid;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-public class SwitchGridSessionCommand extends AbstractClientSessionCommand<ClientSession> {
+public class SwitchGridSessionCommand extends AbstractClientSessionCommand<AbstractClientSession> {
 
-    private CanvasGrid grid;
+    public final static CanvasGrid[] GRIDS = new CanvasGrid[]{
+            CanvasGrid.SMALL_POINT_GRID, CanvasGrid.DEFAULT_GRID,
+            CanvasGrid.DRAG_GRID, null
+    };
+    private static final byte DEFAULT_GRID_INDEX = 0;
+    private byte gridIndex;
 
     public SwitchGridSessionCommand() {
         super(true);
     }
 
     @Override
-    public SwitchGridSessionCommand bind(final ClientSession session) {
+    public SwitchGridSessionCommand bind(final AbstractClientSession session) {
         super.bind(session);
-        hideGrid();
+        resetGrid();
         return this;
     }
 
@@ -44,26 +48,20 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Clien
     public <T> void execute(final Callback<T> callback) {
         checkNotNull("callback",
                      callback);
-        if (isGridVisible()) {
-            hideGrid();
-        } else {
-            showGrid();
+        if (++gridIndex == GRIDS.length) {
+            gridIndex = 0;
         }
+        updateGrid();
         // Run the callback.
         callback.onSuccess(null);
     }
 
-    private void showGrid() {
-        this.grid = DefaultCanvasGrid.INSTANCE;
-        getSession().getCanvas().setGrid(this.grid);
+    private void resetGrid() {
+        this.gridIndex = DEFAULT_GRID_INDEX;
+        updateGrid();
     }
 
-    private void hideGrid() {
-        this.grid = null;
-        getSession().getCanvas().setGrid(this.grid);
-    }
-
-    private boolean isGridVisible() {
-        return null != grid;
+    private void updateGrid() {
+        getSession().getCanvas().setGrid(GRIDS[gridIndex]);
     }
 }

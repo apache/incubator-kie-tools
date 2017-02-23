@@ -19,7 +19,6 @@ import javax.annotation.PostConstruct;
 
 import com.ait.lienzo.client.core.shape.GridLayer;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.shared.core.types.ColorName;
@@ -27,6 +26,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoGridLayerBuilder;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -167,25 +167,7 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
     @Override
     public AbstractCanvas.View setGrid(final CanvasGrid grid) {
         if (null != grid) {
-            // Grid.
-            Line line1 = new Line(0,
-                                  0,
-                                  0,
-                                  0)
-                    .setStrokeColor(grid.getPrimaryColor())
-                    .setAlpha(grid.getPrimaryAlpha());
-            Line line2 = new Line(0,
-                                  0,
-                                  0,
-                                  0)
-                    .setStrokeColor(grid.getSecondaryColor())
-                    .setAlpha(grid.getSecondaryAlpha());
-            line2.setDashArray(2,
-                               2);
-            GridLayer gridLayer = new GridLayer(grid.getPrimarySize(),
-                                                line1,
-                                                grid.getSecondarySize(),
-                                                line2);
+            GridLayer gridLayer = LienzoGridLayerBuilder.getLienzoGridFor(grid);
             panel.setBackgroundLayer(gridLayer);
         } else {
             panel.setBackgroundLayer(null);

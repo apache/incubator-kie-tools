@@ -41,7 +41,6 @@ public class WiresConnectorView<T> extends WiresConnector
         HasControlPoints<T> {
 
     protected String uuid;
-    private int zindex;
     private WiresConnectorControl connectorControl;
     private final HandlerRegistrationImpl handlerRegistration = new HandlerRegistrationImpl();
 
@@ -82,18 +81,6 @@ public class WiresConnectorView<T> extends WiresConnector
     @Override
     public String getUUID() {
         return uuid;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public T setZIndex(final int zindez) {
-        this.zindex = zindez;
-        return (T) this;
-    }
-
-    @Override
-    public int getZIndex() {
-        return zindex;
     }
 
     @SuppressWarnings("unchecked")
@@ -165,6 +152,18 @@ public class WiresConnectorView<T> extends WiresConnector
     @SuppressWarnings("unchecked")
     public T setShapeY(final double y) {
         getGroup().setY(y);
+        return (T) this;
+    }
+
+    @Override
+    public double getAlpha() {
+        return getGroup().getAlpha();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public T setAlpha(final double alpha) {
+        getGroup().setAlpha(alpha);
         return (T) this;
     }
 

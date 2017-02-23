@@ -30,6 +30,11 @@ public abstract class AbstractMutableShapeDef<W>
     }
 
     @Override
+    public double getAlpha(final W element) {
+        return 1d;
+    }
+
+    @Override
     public String getFontFamily(final W element) {
         return parent.getFontFamily(element);
     }

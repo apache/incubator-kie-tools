@@ -26,6 +26,11 @@ public final class BasicConnectorDefImpl
         implements ConnectorShapeDef<BasicConnector> {
 
     @Override
+    public double getAlpha(final BasicConnector element) {
+        return 1d;
+    }
+
+    @Override
     public String getBackgroundColor(final BasicConnector element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }

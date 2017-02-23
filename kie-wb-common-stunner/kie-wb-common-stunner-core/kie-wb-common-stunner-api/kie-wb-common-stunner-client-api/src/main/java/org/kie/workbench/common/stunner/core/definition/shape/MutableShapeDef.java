@@ -24,6 +24,8 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
  */
 public interface MutableShapeDef<W> extends ShapeDef<W> {
 
+    double getAlpha(final W element);
+
     String getBackgroundColor(final W element);
 
     double getBackgroundAlpha(final W element);

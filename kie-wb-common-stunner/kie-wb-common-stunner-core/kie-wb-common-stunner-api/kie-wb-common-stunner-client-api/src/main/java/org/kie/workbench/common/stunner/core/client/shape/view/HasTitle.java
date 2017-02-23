@@ -44,5 +44,4 @@ public interface HasTitle<T> {
 
     T moveTitleToTop();
 
-    T refreshTitle();
 }

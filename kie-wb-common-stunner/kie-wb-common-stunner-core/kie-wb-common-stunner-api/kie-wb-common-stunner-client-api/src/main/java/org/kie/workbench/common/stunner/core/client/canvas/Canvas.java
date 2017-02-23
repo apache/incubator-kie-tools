@@ -42,11 +42,6 @@ public interface Canvas<S extends Shape> {
     Canvas draw();
 
     /**
-     * Set the background grid for the canvas.
-     */
-    Canvas setGrid(final CanvasGrid grid);
-
-    /**
      * Get a list of all Shapes on the Canvas
      */
     List<S> getShapes();

@@ -59,8 +59,8 @@ public class ShapeManagerImpl implements ShapeManager {
     @Inject
     public ShapeManagerImpl(final DefinitionUtils definitionUtils,
                             final @Any ManagedInstance<CanvasFactory> canvasFactoriesInstances,
-                            final ManagedInstance<ShapeSet> shapeSetsInstances,
-                            final ManagedInstance<ShapeSetThumbProvider> thumbProvidersInstances) {
+                            final @Any ManagedInstance<ShapeSet> shapeSetsInstances,
+                            final @Any ManagedInstance<ShapeSetThumbProvider> thumbProvidersInstances) {
         this.definitionUtils = definitionUtils;
         this.canvasFactoriesInstances = canvasFactoriesInstances;
         this.shapeSetsInstances = shapeSetsInstances;
@@ -107,6 +107,7 @@ public class ShapeManagerImpl implements ShapeManager {
                      defSetId);
         return shapeSets.stream()
                 .filter(s -> defSetId.equals(s.getDefinitionSetId()))
+                .filter(ShapeSet::isDefault)
                 .findFirst()
                 .orElse(null);
     }

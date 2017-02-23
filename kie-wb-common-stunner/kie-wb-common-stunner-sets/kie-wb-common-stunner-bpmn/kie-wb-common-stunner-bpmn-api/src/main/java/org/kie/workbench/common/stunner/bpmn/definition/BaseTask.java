@@ -31,20 +31,16 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
-import org.kie.workbench.common.stunner.bpmn.shape.def.TaskShapeDef;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.Shape;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphPropertyValueBinding;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
-import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
-@Shape(factory = BasicShapesFactory.class, def = TaskShapeDef.class)
 @MorphBase(defaultType = NoneTask.class, targets = {ReusableSubprocess.class})
 public abstract class BaseTask implements BPMNDefinition {
 

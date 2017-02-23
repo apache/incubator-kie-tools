@@ -36,6 +36,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
 import org.kie.workbench.common.stunner.standalone.client.perspectives.AuthoringPerspective;
+import org.kie.workbench.common.stunner.standalone.client.perspectives.CanvasPerspective;
 import org.kie.workbench.common.stunner.standalone.client.perspectives.HomePerspective;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
@@ -133,6 +134,9 @@ public class ShowcaseEntryPoint {
                 .endMenu()
                 .newTopLevelMenu("Authoring")
                 .perspective(AuthoringPerspective.PERSPECTIVE_ID)
+                .endMenu()
+                .newTopLevelMenu("Canvas only")
+                .perspective(CanvasPerspective.PERSPECTIVE_ID)
                 .endMenu()
                 .build();
     }

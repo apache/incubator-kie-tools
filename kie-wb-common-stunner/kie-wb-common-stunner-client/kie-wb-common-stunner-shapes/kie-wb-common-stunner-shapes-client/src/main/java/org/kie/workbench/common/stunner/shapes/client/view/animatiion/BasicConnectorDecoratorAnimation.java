@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.shapes.client.view.animatiion;
 
 import com.ait.lienzo.client.core.shape.Shape;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresConnectorViewExt;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.ext.WiresConnectorViewExt;
 
 public final class BasicConnectorDecoratorAnimation extends BasicDecoratorAnimation<org.kie.workbench.common.stunner.core.client.shape.Shape> {
 

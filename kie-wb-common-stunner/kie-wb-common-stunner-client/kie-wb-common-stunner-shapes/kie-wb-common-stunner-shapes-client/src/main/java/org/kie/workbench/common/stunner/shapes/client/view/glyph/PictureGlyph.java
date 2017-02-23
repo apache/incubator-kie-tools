@@ -21,7 +21,7 @@ import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.glyph.AbstractLienzoShapeGlyph;
 
-import static org.kie.workbench.common.stunner.shapes.client.util.BasicShapesUtils.scalePicture;
+import static org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils.scalePicture;
 
 public final class PictureGlyph extends AbstractLienzoShapeGlyph {
 

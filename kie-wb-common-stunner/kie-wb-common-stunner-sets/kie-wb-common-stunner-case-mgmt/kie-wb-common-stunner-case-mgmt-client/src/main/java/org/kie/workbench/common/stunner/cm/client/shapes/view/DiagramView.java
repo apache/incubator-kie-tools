@@ -37,7 +37,6 @@ public class DiagramView extends AbstractCaseModellerShape<DiagramView> {
         setLayoutHandler(new HorizontalStackLayoutManager());
         setResizable(false);
         setDraggable(false);
-        setZIndex(0);
     }
 
     @Override

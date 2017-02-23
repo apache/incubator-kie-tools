@@ -64,7 +64,6 @@ public class AuthoringPerspective {
 
     @OnStartup
     public void onStartup(final PlaceRequest placeRequest) {
-        // if ( null == this.placeRequest ) {
         this.placeRequest = placeRequest;
     }
 

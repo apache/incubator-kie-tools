@@ -64,6 +64,21 @@ public interface ShapeView<T> {
      */
     T setShapeY(final double y);
 
+
+    /**
+     * Returns the shape's opacity.
+     */
+    double getAlpha();
+
+    /**
+     * Set the shape's opacity.
+     * This opacity value apply to fill and
+     * borders, so setting a value of
+     * <code>0</code> will produce the shape being
+     * not visible at all.
+     */
+    T setAlpha(final double alpha);
+
     /**
      * Returns the RGB fill color value.
      */
@@ -141,16 +156,6 @@ public interface ShapeView<T> {
      * Move shape view down.
      */
     T moveDown();
-
-    /**
-     * Set the ordering index value.
-     */
-    T setZIndex(final int zindez);
-
-    /**
-     * Returns ordering index value.
-     */
-    int getZIndex();
 
     /**
      * Removes this shape view from the parent.

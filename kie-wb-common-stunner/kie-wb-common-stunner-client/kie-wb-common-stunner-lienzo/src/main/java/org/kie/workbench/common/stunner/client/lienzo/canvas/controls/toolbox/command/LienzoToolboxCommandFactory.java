@@ -23,8 +23,6 @@ import com.ait.lienzo.client.core.shape.Shape;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.util.SVGUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.ToolboxCommandFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.MoveShapeDownToolboxCommand;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.MoveShapeUpToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.RemoveToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder.NewConnectorCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.builder.NewNodeCommand;
@@ -33,20 +31,14 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.comm
 public class LienzoToolboxCommandFactory extends ToolboxCommandFactory {
 
     private final ManagedInstance<RemoveToolboxCommand> removeToolboxCommands;
-    private final ManagedInstance<MoveShapeUpToolboxCommand> moveShapeUpToolboxCommands;
-    private final ManagedInstance<MoveShapeDownToolboxCommand> moveShapeDownToolboxCommands;
 
     @Inject
     public LienzoToolboxCommandFactory(final ManagedInstance<RemoveToolboxCommand> removeToolboxCommands,
-                                       final ManagedInstance<MoveShapeUpToolboxCommand> moveShapeUpToolboxCommands,
-                                       final ManagedInstance<MoveShapeDownToolboxCommand> moveShapeDownToolboxCommands,
                                        final ManagedInstance<NewNodeCommand> newNodeCommands,
                                        final ManagedInstance<NewConnectorCommand> newConnectorCommands) {
         super(newNodeCommands,
               newConnectorCommands);
         this.removeToolboxCommands = removeToolboxCommands;
-        this.moveShapeUpToolboxCommands = moveShapeUpToolboxCommands;
-        this.moveShapeDownToolboxCommands = moveShapeDownToolboxCommands;
     }
 
     @Override
@@ -57,19 +49,4 @@ public class LienzoToolboxCommandFactory extends ToolboxCommandFactory {
         return c;
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public MoveShapeUpToolboxCommand<?> newMoveShapeUpToolboxCommand() {
-        final MoveShapeUpToolboxCommand<Shape<?>> c = moveShapeUpToolboxCommands.get();
-        c.setIcon(SVGUtils.createSVGIcon(SVGUtils.getMoveUpIcon()));
-        return c;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public MoveShapeDownToolboxCommand<?> newMoveShapeDownToolboxCommand() {
-        final MoveShapeDownToolboxCommand<Shape<?>> c = moveShapeDownToolboxCommands.get();
-        c.setIcon(SVGUtils.createSVGIcon(SVGUtils.getMoveDownIcon()));
-        return c;
-    }
 }

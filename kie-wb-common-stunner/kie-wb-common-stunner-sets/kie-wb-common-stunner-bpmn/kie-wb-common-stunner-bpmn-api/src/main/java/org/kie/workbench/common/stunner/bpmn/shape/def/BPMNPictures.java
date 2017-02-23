@@ -15,6 +15,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.shape.def;
 
+// TODO: Can be moved to client if CM shape defs are placed into client side as well.
 public enum BPMNPictures {
     TASK_USER,
     TASK_SCRIPT,
@@ -28,6 +29,7 @@ public enum BPMNPictures {
     LANE,
     PARALLEL_EVENT,
     PARALLEL_MULTIPLE,
+    EXCLUSIVE,
     PLUS_QUARE,
     SUB_PROCESS
 }

@@ -95,15 +95,16 @@ public class SessionTreeExplorerScreen extends AbstractSessionScreen {
 
     @Override
     protected void doOpenSession() {
-        if (null != getCanvasHandler()) {
-            treeExplorer.show(getCanvasHandler());
-            view.showScreenView(treeExplorer);
-        }
+        // No need to initialize state or views until a diagram is present.
     }
 
     @Override
     protected void doOpenDiagram() {
         // No need to initialize state or views.
+        if (null != getCanvasHandler()) {
+            treeExplorer.show(getCanvasHandler());
+            view.showScreenView(treeExplorer);
+        }
     }
 
     @Override

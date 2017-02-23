@@ -37,7 +37,6 @@ public class ActivityView extends AbstractCaseModellerShape<ActivityView> {
               width,
               height);
         setResizable(false);
-        setZIndex(1);
     }
 
     @Override

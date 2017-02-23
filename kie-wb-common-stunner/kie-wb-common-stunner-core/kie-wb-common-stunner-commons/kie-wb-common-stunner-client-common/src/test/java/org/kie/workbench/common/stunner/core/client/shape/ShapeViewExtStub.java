@@ -83,11 +83,6 @@ public class ShapeViewExtStub
     }
 
     @Override
-    public Object refreshTitle() {
-        return this;
-    }
-
-    @Override
     public Object setRadius(final double radius) {
         return this;
     }

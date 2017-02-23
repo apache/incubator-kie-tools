@@ -96,75 +96,15 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
         canvasHandler.getAbstractCanvas().addControl(CanvasToolboxControl.this.asWidget());
     }
 
-    /**
-     * Once an element has been updated, the toolbox/es should be re-built, as
-     * rule evaluations have to be evaluated against latest status
-     * and latest graph structure.
-     * <p>
-     * TODO:
-     * - bug -> applies the new toolbox buttons after any further op with the node, but not the 1st time.
-     * - improve by not recreating instances, just adding/removing buttons.
-     */
-    @Override
-    public void update(Element element) {
-        super.update(element);
-        this.deregister(element);
-        this.register(element);
-        canvasHandler.getCanvas().draw();
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public void register(final Element element) {
-        if (checkNotRegistered(element)) {
+        if (checkNotRegistered(element) && hasToolboxControls(element)) {
+            // Register the element's identifier for further toolbox lazy loading.
+            toolboxMap.put(element.getUUID(), new LinkedList<>());
+            // If shape view can be drag, hide the shape's toolbox/es when drag starts.
             final Shape shape = canvasHandler.getCanvas().getShape(element.getUUID());
             if (shape instanceof NodeShape) {
-                final List<ToolboxControlProvider<AbstractCanvasHandler, Element>> toolboxControlProviders = getToolboxProviders(element);
-                if (null != toolboxControlProviders && !toolboxControlProviders.isEmpty()) {
-                    for (final ToolboxControlProvider<AbstractCanvasHandler, Element> toolboxControlProvider : toolboxControlProviders) {
-                        final List<ToolboxCommand<AbstractCanvasHandler, ?>> commands = toolboxControlProvider.getCommands(canvasHandler,
-                                                                                                                           element);
-                        if (null != commands && !commands.isEmpty()) {
-                            final ToolboxBuilder<?, ToolboxButtonGrid, ?> toolboxBuilder = (ToolboxBuilder<?, ToolboxButtonGrid, ?>) toolboxFactory.toolboxBuilder();
-                            final ToolboxButtonGrid grid = toolboxControlProvider.getGrid(canvasHandler,
-                                                                                          element);
-                            toolboxBuilder.forLayer(canvasHandler.getCanvas().getLayer());
-                            toolboxBuilder.forView(shape.getShapeView());
-                            toolboxBuilder.direction(toolboxControlProvider.getOn(),
-                                                     toolboxControlProvider.getTowards());
-                            toolboxBuilder.grid(grid);
-                            final ToolboxButtonBuilder<Object> buttonBuilder = (ToolboxButtonBuilder<Object>) toolboxFactory.toolboxButtonBuilder();
-                            for (final ToolboxCommand<AbstractCanvasHandler, ?> command : commands) {
-                                // TODO: Use command title (tooltip).
-                                final ToolboxButton button = buttonBuilder.setIcon(command.getIcon(canvasHandler,
-                                                                                                   grid.getButtonSize(),
-                                                                                                   grid.getButtonSize()))
-                                        .setClickHandler(event -> fireCommandExecutionAndHideToolbox(element,
-                                                                                                     command,
-                                                                                                     event,
-                                                                                                     Context.EventType.CLICK))
-                                        .setMouseEnterHandler(event -> fireCommandExecution(element,
-                                                                                            command,
-                                                                                            event,
-                                                                                            Context.EventType.MOUSE_ENTER))
-                                        .setMouseExitHandler(event -> fireCommandExecution(element,
-                                                                                           command,
-                                                                                           event,
-                                                                                           Context.EventType.MOUSE_EXIT))
-                                        .setMouseDownHandler(event -> fireCommandExecutionAndHideToolbox(element,
-                                                                                                         command,
-                                                                                                         event,
-                                                                                                         Context.EventType.MOUSE_DOWN))
-                                        .build();
-                                toolboxBuilder.add(button);
-                            }
-                            final Toolbox toolbox = toolboxBuilder.build();
-                            addToolbox(element.getUUID(),
-                                       toolbox);
-                        }
-                    }
-                }
-                // If shape view can be drag, hide the shape's toolbox/es when drag starts.
                 final HasEventHandlers hasEventHandlers = (HasEventHandlers) shape.getShapeView();
                 if (hasEventHandlers.supports(ViewEventType.DRAG)) {
                     final DragHandler handler = new DragHandler() {
@@ -186,6 +126,90 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
                                                 handler);
                     registerHandler(element.getUUID(),
                                     handler);
+                }
+            }
+        }
+    }
+
+    /**
+     * Once an element has been updated, the toolbox/es should be re-built, as
+     * rule evaluations have to be evaluated against latest status
+     * and latest graph structure.
+     * <p>
+     * TODO:
+     * - bug -> applies the new toolbox buttons after any further op with the node, but not the 1st time.
+     * - improve by not recreating instances, just adding/removing buttons.
+     */
+    @Override
+    public void update(Element element) {
+        super.update(element);
+        this.deregister(element);
+        this.register(element);
+        canvasHandler.getCanvas().draw();
+    }
+
+    protected boolean hasToolboxControls(final Element element) {
+        final List<ToolboxControlProvider<AbstractCanvasHandler, Element>> toolboxControlProviders = getToolboxProviders(element);
+        return null != toolboxControlProviders && !toolboxControlProviders.isEmpty();
+    }
+
+    protected List<Toolbox> lazyLoad(final String uuid) {
+        final List<Toolbox> t = toolboxMap.get(uuid);
+        if (null != t && t.isEmpty()) {
+            // Lazy loading.
+            load(canvasHandler.getGraphIndex().getNode(uuid));
+        }
+        return toolboxMap.get(uuid);
+
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void load(final Element element) {
+        final Shape shape = canvasHandler.getCanvas().getShape(element.getUUID());
+        if (shape instanceof NodeShape) {
+            final List<ToolboxControlProvider<AbstractCanvasHandler, Element>> toolboxControlProviders = getToolboxProviders(element);
+            if (null != toolboxControlProviders && !toolboxControlProviders.isEmpty()) {
+                for (final ToolboxControlProvider<AbstractCanvasHandler, Element> toolboxControlProvider : toolboxControlProviders) {
+                    final List<ToolboxCommand<AbstractCanvasHandler, ?>> commands = toolboxControlProvider.getCommands(canvasHandler,
+                                                                                                                       element);
+                    if (null != commands && !commands.isEmpty()) {
+                        final ToolboxBuilder<?, ToolboxButtonGrid, ?> toolboxBuilder = (ToolboxBuilder<?, ToolboxButtonGrid, ?>) toolboxFactory.toolboxBuilder();
+                        final ToolboxButtonGrid grid = toolboxControlProvider.getGrid(canvasHandler,
+                                                                                      element);
+                        toolboxBuilder.forLayer(canvasHandler.getCanvas().getLayer());
+                        toolboxBuilder.forView(shape.getShapeView());
+                        toolboxBuilder.direction(toolboxControlProvider.getOn(),
+                                                 toolboxControlProvider.getTowards());
+                        toolboxBuilder.grid(grid);
+                        final ToolboxButtonBuilder<Object> buttonBuilder = (ToolboxButtonBuilder<Object>) toolboxFactory.toolboxButtonBuilder();
+                        for (final ToolboxCommand<AbstractCanvasHandler, ?> command : commands) {
+                            // TODO: Use command title (tooltip).
+                            final ToolboxButton button = buttonBuilder.setIcon(command.getIcon(canvasHandler,
+                                                                                               grid.getButtonSize(),
+                                                                                               grid.getButtonSize()))
+                                    .setClickHandler(event -> fireCommandExecutionAndHideToolbox(element,
+                                                                                                 command,
+                                                                                                 event,
+                                                                                                 Context.EventType.CLICK))
+                                    .setMouseEnterHandler(event -> fireCommandExecution(element,
+                                                                                        command,
+                                                                                        event,
+                                                                                        Context.EventType.MOUSE_ENTER))
+                                    .setMouseExitHandler(event -> fireCommandExecution(element,
+                                                                                       command,
+                                                                                       event,
+                                                                                       Context.EventType.MOUSE_EXIT))
+                                    .setMouseDownHandler(event -> fireCommandExecutionAndHideToolbox(element,
+                                                                                                     command,
+                                                                                                     event,
+                                                                                                     Context.EventType.MOUSE_DOWN))
+                                    .build();
+                            toolboxBuilder.add(button);
+                        }
+                        final Toolbox toolbox = toolboxBuilder.build();
+                        addToolbox(element.getUUID(),
+                                   toolbox);
+                    }
                 }
             }
         }
@@ -338,7 +362,7 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
 
     private void setVisible(final String uuid,
                             final boolean visible) {
-        final List<Toolbox> toolboxes = getToolboxes(uuid);
+        final List<Toolbox> toolboxes = loadToolboxes(uuid);
         if (null != toolboxes) {
             for (final Toolbox toolbox : toolboxes) {
                 if (visible) {
@@ -360,6 +384,10 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
     private List<Toolbox> getToolboxes(final Element<?> element) {
         final String uuid = null != element ? element.getUUID() : null;
         return null != uuid ? getToolboxes(uuid) : null;
+    }
+
+    private List<Toolbox> loadToolboxes(final String uuid) {
+        return lazyLoad(uuid);
     }
 
     private List<Toolbox> getToolboxes(final String uuid) {

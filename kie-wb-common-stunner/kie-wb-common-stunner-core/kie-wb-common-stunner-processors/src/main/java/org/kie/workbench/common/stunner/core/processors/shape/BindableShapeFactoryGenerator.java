@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.Messager;
 
-import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactoryWrapper;
+import org.kie.workbench.common.stunner.core.client.shape.factory.DelegateShapeFactory;
 import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.MainProcessor;
 import org.kie.workbench.common.stunner.core.processors.ProcessingDefinitionAnnotations;
@@ -50,7 +50,7 @@ public class BindableShapeFactoryGenerator extends AbstractBindableAdapterGenera
         root.put("generatedByClassName",
                  BindableShapeFactoryGenerator.class.getName());
         root.put("parentClassName",
-                 ShapeFactoryWrapper.class.getName());
+                 DelegateShapeFactory.class.getName());
         Map<String, String[]> shapeDefs = processingDefinitionAnnotations.getShapeDefinitions();
         Set<String> definitionClasses = shapeDefs.keySet();
         Collection<String[]> values = shapeDefs.values();

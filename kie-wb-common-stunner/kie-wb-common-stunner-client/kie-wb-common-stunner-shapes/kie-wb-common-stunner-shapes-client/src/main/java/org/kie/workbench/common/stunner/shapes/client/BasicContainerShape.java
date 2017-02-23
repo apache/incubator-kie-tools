@@ -43,12 +43,10 @@ public class BasicContainerShape<W, D extends MutableShapeDef<W>, V extends Shap
     /**
      * Use Lienzo animations for decorator updates.
      */
-    protected void applyNoneState(final String color,
-                                  final double width,
-                                  final double alpha) {
-        new BasicShapeDecoratorAnimation<BasicContainerShape>(color,
-                                                              width,
-                                                              alpha)
+    protected void applyNoneState() {
+        new BasicShapeDecoratorAnimation<BasicContainerShape>(_strokeColor,
+                                                              _strokeWidth,
+                                                              _strokeAlpha)
                 .forShape(this)
                 .run();
     }

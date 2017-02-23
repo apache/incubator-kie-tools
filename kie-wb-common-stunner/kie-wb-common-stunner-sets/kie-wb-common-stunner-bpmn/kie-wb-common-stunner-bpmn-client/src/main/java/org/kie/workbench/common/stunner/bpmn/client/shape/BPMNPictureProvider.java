@@ -52,13 +52,15 @@ public class BPMNPictureProvider implements PictureProvider<BPMNPictures> {
                 put(BPMNPictures.LANE,
                     BPMNImageResources.INSTANCE.lane().getSafeUri());
                 put(BPMNPictures.PLUS_QUARE,
-                    BPMNImageResources.INSTANCE.plusQuare().getSafeUri());
+                    BPMNImageResources.INSTANCE.plusSquare().getSafeUri());
                 put(BPMNPictures.SUB_PROCESS,
                     BPMNImageResources.INSTANCE.subProcess().getSafeUri());
                 put(BPMNPictures.PARALLEL_EVENT,
                     BPMNImageResources.INSTANCE.gatewayParallelEvent().getSafeUri());
                 put(BPMNPictures.PARALLEL_MULTIPLE,
                     BPMNImageResources.INSTANCE.gatewayParallelMultiple().getSafeUri());
+                put(BPMNPictures.EXCLUSIVE,
+                    BPMNImageResources.INSTANCE.gatewayExclusive().getSafeUri());
             }};
 
     @Override

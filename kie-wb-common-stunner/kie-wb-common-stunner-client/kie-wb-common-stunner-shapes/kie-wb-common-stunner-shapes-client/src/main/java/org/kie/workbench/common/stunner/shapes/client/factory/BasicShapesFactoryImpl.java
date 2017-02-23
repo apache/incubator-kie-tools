@@ -95,7 +95,7 @@ public class BasicShapesFactoryImpl
                                      final ShapeDef<Object> proxy,
                                      final AbstractCanvasHandler context) {
         boolean found = false;
-        Shape<ShapeView> shape = null;
+        Shape<? extends ShapeView> shape = null;
         if (isCircle(proxy)) {
             final CircleShapeDef<Object> circleProxy = (CircleShapeDef<Object>) proxy;
             final double radius = circleProxy.getRadius(definition);
@@ -181,7 +181,7 @@ public class BasicShapesFactoryImpl
             final String id = definitionManager.adapters().forDefinition().getId(definition);
             throw new RuntimeException("This factory supports [" + id + "] but cannot built a shape for it.");
         }
-        return shape;
+        return (Shape<ShapeView>) shape;
     }
 
     private boolean isCircle(final ShapeDef<Object> proxy) {

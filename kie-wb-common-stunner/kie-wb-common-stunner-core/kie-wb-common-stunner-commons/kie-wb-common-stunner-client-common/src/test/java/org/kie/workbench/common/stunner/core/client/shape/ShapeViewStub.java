@@ -60,6 +60,16 @@ public class ShapeViewStub implements ShapeView<Object> {
     }
 
     @Override
+    public double getAlpha() {
+        return 0;
+    }
+
+    @Override
+    public Object setAlpha(final double alpha) {
+        return this;
+    }
+
+    @Override
     public String getFillColor() {
         return "#000000";
     }
@@ -135,16 +145,6 @@ public class ShapeViewStub implements ShapeView<Object> {
     @Override
     public Object moveDown() {
         return this;
-    }
-
-    @Override
-    public Object setZIndex(final int zindez) {
-        return this;
-    }
-
-    @Override
-    public int getZIndex() {
-        return 0;
     }
 
     @Override

@@ -22,6 +22,11 @@ import org.kie.workbench.common.stunner.core.definition.shape.AbstractGlyphShape
 public abstract class AbstractConnectorDef<W> extends AbstractGlyphShapeDef<W> implements ConnectorShapeDef<W> {
 
     @Override
+    public double getAlpha(W element) {
+        return 1d;
+    }
+
+    @Override
     public String getNamePropertyValue(final W element) {
         return null;
     }

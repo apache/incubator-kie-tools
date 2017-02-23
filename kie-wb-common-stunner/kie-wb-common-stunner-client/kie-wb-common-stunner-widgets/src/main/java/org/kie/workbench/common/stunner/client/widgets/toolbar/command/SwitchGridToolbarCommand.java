@@ -23,9 +23,10 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 
 @Dependent
-public class SwitchGridToolbarCommand extends AbstractToolbarCommand<ClientSession, SwitchGridSessionCommand> {
+public class SwitchGridToolbarCommand extends AbstractToolbarCommand<AbstractClientSession, SwitchGridSessionCommand> {
 
     @Inject
     public SwitchGridToolbarCommand(final SessionCommandFactory sessionCommandFactory) {

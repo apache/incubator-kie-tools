@@ -140,7 +140,6 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         this.view = view;
         this.uuid = UUID.uuid();
     }
-
     @SuppressWarnings("unchecked")
     protected <P> void show(final P panel,
                             final int width,
@@ -256,7 +255,6 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         return view.getAbsoluteY();
     }
 
-    @Override
     public Canvas setGrid(final CanvasGrid grid) {
         this.grid = grid;
         view.setGrid(grid);
@@ -291,7 +289,6 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
 
     @Override
     public AbstractCanvas draw() {
-        applyShapesDraw();
         view.getLayer().draw();
         return this;
     }
@@ -356,21 +353,6 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     protected void fireCanvasClear() {
         for (final CanvasShapeListener instance : listeners) {
             instance.clear();
-        }
-    }
-
-    protected void applyShapesDraw() {
-        for (final Shape shape : shapes) {
-            // Zindex.
-            applyShapeZIndex(shape);
-        }
-    }
-
-    protected void applyShapeZIndex(final Shape shape) {
-        final int order = shape.getShapeView().getZIndex();
-        shape.getShapeView().moveToBottom();
-        for (int x = 0; x < order; x++) {
-            shape.getShapeView().moveUp();
         }
     }
 

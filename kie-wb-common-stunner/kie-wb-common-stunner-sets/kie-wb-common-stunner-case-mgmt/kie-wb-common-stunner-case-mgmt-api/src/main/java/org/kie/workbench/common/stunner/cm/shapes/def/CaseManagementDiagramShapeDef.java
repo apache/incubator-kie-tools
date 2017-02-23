@@ -26,6 +26,11 @@ public final class CaseManagementDiagramShapeDef
         implements RectangleShapeDef<CaseManagementDiagram> {
 
     @Override
+    public double getAlpha(final CaseManagementDiagram element) {
+        return 1d;
+    }
+
+    @Override
     public String getBackgroundColor(final CaseManagementDiagram element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
@@ -72,7 +77,7 @@ public final class CaseManagementDiagramShapeDef
 
     @Override
     public HasTitle.Position getFontPosition(final CaseManagementDiagram element) {
-        return HasTitle.Position.BOTTOM;
+        return HasTitle.Position.CENTER;
     }
 
     @Override

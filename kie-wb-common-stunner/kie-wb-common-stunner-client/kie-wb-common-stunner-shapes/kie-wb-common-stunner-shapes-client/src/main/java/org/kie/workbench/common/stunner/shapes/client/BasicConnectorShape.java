@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.shapes.client;
 
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresConnectorViewExt;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;

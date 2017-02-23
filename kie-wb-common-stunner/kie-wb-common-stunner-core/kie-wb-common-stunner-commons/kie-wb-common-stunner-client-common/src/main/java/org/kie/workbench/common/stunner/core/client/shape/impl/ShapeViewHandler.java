@@ -43,7 +43,13 @@ public class ShapeViewHandler<V extends ShapeView> {
         if (title != null && getShapeView() instanceof HasTitle) {
             final HasTitle hasTitle = (HasTitle) getShapeView();
             hasTitle.setTitle(title);
-            hasTitle.refreshTitle();
+        }
+    }
+
+    public void applyAlpha(final Double alpha,
+                               final MutationContext mutationContext) {
+        if (null != alpha) {
+            getShapeView().setAlpha(alpha);
         }
     }
 
@@ -116,8 +122,6 @@ public class ShapeViewHandler<V extends ShapeView> {
         if (null != rotationDegrees) {
             hasTitle.setTitleRotation(rotationDegrees);
         }
-        // Refresh to update size changes etc.
-        hasTitle.refreshTitle();
     }
 
     public void applySize(final double width,

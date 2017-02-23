@@ -28,6 +28,11 @@ public final class CaseManagementSubprocessShapeDef
         implements StageShapeDef<CaseManagementBaseSubprocess> {
 
     @Override
+    public double getAlpha(final CaseManagementBaseSubprocess element) {
+        return 1d;
+    }
+
+    @Override
     public String getBackgroundColor(final CaseManagementBaseSubprocess element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }

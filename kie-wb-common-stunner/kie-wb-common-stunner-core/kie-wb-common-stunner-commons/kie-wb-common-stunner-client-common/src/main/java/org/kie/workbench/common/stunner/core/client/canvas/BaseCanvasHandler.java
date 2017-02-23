@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.ShapeSet;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -135,9 +136,12 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     @Override
     @SuppressWarnings("unchecked")
     protected ShapeFactory<Object, AbstractCanvasHandler, Shape> getShapeFactory(final String shapeSetId) {
-        return shapeManager
-                .getShapeSet(shapeSetId)
-                .getShapeFactory();
+        ShapeSet<?> shapeSet = shapeManager.getShapeSet(shapeSetId);
+        if (null == shapeSet) {
+            LOGGER.log(Level.SEVERE, "ShapeSet [" + shapeSetId + "] not found. Using the default one,.");
+        }
+        shapeSet = shapeManager.getDefaultShapeSet(diagram.getMetadata().getDefinitionSetId());
+        return shapeSet.getShapeFactory();
     }
 
     @Override
@@ -176,7 +180,6 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     }
 
     public void addShape(final Shape shape) {
-        shape.getShapeView().setZIndex(0);
         getCanvas().addShape(shape);
     }
 
@@ -256,11 +259,6 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
         final Shape childShape = getCanvas().getShape(child.getUUID());
         if (!isCanvasRoot(parent)) {
             final Shape parentShape = getCanvas().getShape(parent.getUUID());
-            handleParentChildZIndex(parent,
-                                    child,
-                                    parentShape,
-                                    childShape,
-                                    true);
             getCanvas().addChildShape(parentShape,
                                       childShape);
         } else {
@@ -280,11 +278,6 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
         final Shape childShape = getCanvas().getShape(childUUID);
         if (!isCanvasRoot(parentUUID)) {
             final Shape parentShape = getCanvas().getShape(parentUUID);
-            handleParentChildZIndex(null,
-                                    null,
-                                    parentShape,
-                                    childShape,
-                                    false);
             getCanvas().deleteChildShape(parentShape,
                                          childShape);
         } else {
@@ -306,11 +299,6 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
         if (!isCanvasRoot(parent)) {
             final Shape parentShape = getCanvas().getShape(parent.getUUID());
             final Shape childShape = getCanvas().getShape(child.getUUID());
-            handleParentChildZIndex(parent,
-                                    child,
-                                    parentShape,
-                                    childShape,
-                                    true);
             getCanvas().dock(parentShape,
                              childShape);
         }
@@ -324,11 +312,6 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
         if (!isCanvasRoot(parentUUID)) {
             final Shape parentShape = getCanvas().getShape(parentUUID);
             final Shape childShape = getCanvas().getShape(childUUID);
-            handleParentChildZIndex(null,
-                                    null,
-                                    parentShape,
-                                    childShape,
-                                    false);
             getCanvas().undock(parentShape,
                                childShape);
         }
@@ -357,63 +340,6 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     protected void afterElementUpdated(final Element element,
                                        final Shape shape) {
         // Implementations can do post operations here.
-    }
-
-    protected void handleParentChildZIndex(final Element parent,
-                                           final Element child,
-                                           final Shape parentShape,
-                                           final Shape childShape,
-                                           final boolean add) {
-        if (add) {
-            handleZIndex(childShape,
-                         parentShape.getShapeView().getZIndex() + 1);
-            handleZIndex(child,
-                         parentShape.getShapeView().getZIndex() + 1);
-        } else {
-            handleZIndex(childShape,
-                         0);
-            final Element element = getGraphIndex().get(childShape.getUUID());
-            if (null != element) {
-                handleZIndex(element,
-                             0);
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    protected void handleZIndex(final Element child,
-                                final int zindex) {
-        // ZIndex for child shape's outgoing connectors.
-        if (child instanceof Node) {
-            final Node childNode = (Node) child;
-            final List<Edge> outEdges = childNode.getOutEdges();
-            if (null != outEdges && !outEdges.isEmpty()) {
-                final Set<String> suuids = new LinkedHashSet<>();
-                for (final Edge edge : outEdges) {
-                    if (edge.getContent() instanceof View) {
-                        suuids.add(edge.getUUID());
-                    }
-                }
-                handleZIndex(suuids,
-                             zindex);
-            }
-        }
-    }
-
-    protected void handleZIndex(final Set<String> shapeUUIDs,
-                                final int zindex) {
-        for (final String suuid : shapeUUIDs) {
-            final Shape edgeShape = getCanvas().getShape(suuid);
-            handleZIndex(edgeShape,
-                         zindex);
-        }
-    }
-
-    protected void handleZIndex(final Shape shape,
-                                final int zindex) {
-        if (null != shape) {
-            shape.getShapeView().setZIndex(zindex);
-        }
     }
 
     @Override

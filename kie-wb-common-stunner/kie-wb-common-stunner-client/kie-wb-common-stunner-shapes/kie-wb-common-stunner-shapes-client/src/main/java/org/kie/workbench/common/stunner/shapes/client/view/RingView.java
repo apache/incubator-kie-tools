@@ -26,7 +26,7 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresShapeViewExt;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresContainerShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
@@ -36,7 +36,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSu
  * <p>
  * TODO: Disabling for now the resize for rings - ARC resize is not implemented yet on lienzo side.
  */
-public class RingView extends WiresShapeViewExt<RingView>
+public class RingView extends WiresContainerShapeView<RingView>
         implements HasRadius<RingView> {
 
     private static final int INNER_RADIUS_FACTOR = 2;

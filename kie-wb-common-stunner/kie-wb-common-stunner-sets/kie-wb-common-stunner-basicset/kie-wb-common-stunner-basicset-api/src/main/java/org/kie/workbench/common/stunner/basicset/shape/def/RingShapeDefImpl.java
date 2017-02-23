@@ -28,6 +28,11 @@ public final class RingShapeDefImpl
         implements RingShapeDef<Ring> {
 
     @Override
+    public double getAlpha(final Ring element) {
+        return 1d;
+    }
+
+    @Override
     public String getBackgroundColor(final Ring element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
@@ -74,7 +79,7 @@ public final class RingShapeDefImpl
 
     @Override
     public HasTitle.Position getFontPosition(final Ring element) {
-        return HasTitle.Position.BOTTOM;
+        return HasTitle.Position.CENTER;
     }
 
     @Override

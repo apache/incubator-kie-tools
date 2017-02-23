@@ -19,11 +19,11 @@ package org.kie.workbench.common.stunner.shapes.client.view;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresShapeViewExt;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresContainerShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
-public class PolygonView extends WiresShapeViewExt<PolygonView>
+public class PolygonView extends WiresContainerShapeView<PolygonView>
         implements HasRadius<PolygonView> {
 
     private static final int SIDES = 4;

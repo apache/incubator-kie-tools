@@ -65,4 +65,11 @@ public class ContainerShape<W, D extends MutableShapeDef<W>, V extends ShapeView
     public Iterable<S> getChildren() {
         return children;
     }
+
+    public S getChild(final String uuid) {
+        return children.stream()
+                .filter(c -> c.getUUID().equals(uuid))
+                .findFirst()
+                .orElse(null);
+    }
 }

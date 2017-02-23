@@ -56,15 +56,16 @@ public class NodeShapeImpl<W, D extends MutableShapeDef<W>, V extends ShapeView<
         back to NONE state, it just reverts the border attributes
         to these private instance members.
      */
-    private double _strokeWidth = 1;
-    private double _strokeAlpha = 0;
-    private String _strokeColor = null;
-    private ShapeState state = ShapeState.NONE;
+    protected double _strokeWidth = 1;
+    protected double _strokeAlpha = 0;
+    protected String _strokeColor = null;
+    private ShapeState state;
 
     public NodeShapeImpl(final D shapeDef,
                          final V view) {
         super(shapeDef,
               view);
+        this.state = ShapeState.NONE;
     }
 
     @Override
@@ -90,13 +91,21 @@ public class NodeShapeImpl<W, D extends MutableShapeDef<W>, V extends ShapeView<
     public void applyState(final ShapeState shapeState) {
         if (!this.state.equals(shapeState)) {
             this.state = shapeState;
-            switch (this.state) {
-                case NONE:
-                    applyNoneState();
-                    break;
-                default:
-                    applyActiveState(shapeState.getColor());
-            }
+            switchState();
+        }
+    }
+
+    public ShapeState getState() {
+        return state;
+    }
+
+    protected void switchState() {
+        switch (this.state) {
+            case NONE:
+                applyNoneState();
+                break;
+            default:
+                applyActiveState(this.state.getColor());
         }
     }
 
@@ -111,4 +120,5 @@ public class NodeShapeImpl<W, D extends MutableShapeDef<W>, V extends ShapeView<
         getShapeView().setStrokeWidth(_strokeWidth);
         getShapeView().setStrokeAlpha(_strokeAlpha);
     }
+
 }

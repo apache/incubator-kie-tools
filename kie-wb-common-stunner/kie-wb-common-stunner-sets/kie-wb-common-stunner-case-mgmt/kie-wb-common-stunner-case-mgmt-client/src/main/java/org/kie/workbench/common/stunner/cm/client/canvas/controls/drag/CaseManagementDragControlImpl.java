@@ -39,12 +39,6 @@ public class CaseManagementDragControlImpl extends DragControlImpl {
     }
 
     @Override
-    public DragControl<AbstractCanvasHandler, Element> setDragGrid(final CanvasGrid grid) {
-        //Case Management doesn't show a "Drag Grid" when shapes are moved
-        return this;
-    }
-
-    @Override
     protected void doDragStart(final Element element) {
         final double[] size = GraphUtils.getNodeSize((View) element.getContent());
         dragShapeSize[0] = size[0];

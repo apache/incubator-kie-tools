@@ -83,7 +83,7 @@ public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactor
         put(ParallelGateway.class.getName(),
             new IconResource(BPMNImageResources.INSTANCE.gatewayParallelEvent()));
         put(SequenceFlow.class.getName(),
-            new IconResource(BPMNImageResources.INSTANCE.plusQuare()));
+            new IconResource(BPMNImageResources.INSTANCE.plusSquare()));
         put(ReusableSubprocess.class.getName(),
             new IconResource(BPMNImageResources.INSTANCE.subProcess()));
     }};

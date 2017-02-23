@@ -287,44 +287,30 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
         final DefinitionAdapter<Object> adapter =
                 canvasHandler.getDefinitionManager()
                         .adapters().registry().getDefinitionAdapter(def.getClass());
-        final ShapeView<?> shapeView = shape.getShapeView();
         final List<Command<AbstractCanvasHandler, CanvasViolation>> result =
                 new LinkedList<>();
-        if (shapeView instanceof HasSize) {
-            final Object width = adapter.getMetaProperty(PropertyMetaTypes.WIDTH,
-                                                         def);
-            final Object height = adapter.getMetaProperty(PropertyMetaTypes.HEIGHT,
-                                                          def);
-            final String wId = null != width ? canvasHandler.getDefinitionManager().adapters().forProperty().getId(width) : null;
-            final String hId = null != width ? canvasHandler.getDefinitionManager().adapters().forProperty().getId(height) : null;
-            if (null != wId && null != hId) {
-                result.add(canvasCommandFactory.updatePropertyValue(element,
-                                                                    wId,
-                                                                    w));
-                result.add(canvasCommandFactory.updatePropertyValue(element,
-                                                                    hId,
-                                                                    h));
-            } else {
-                LOGGER.log(Level.WARNING,
-                           "Not width/height properties found for element [" + element.getUUID()
-                                   + "], but the shape for it supports size.");
-            }
-        } else if (shapeView instanceof HasRadius) {
-            final Object radius = adapter.getMetaProperty(PropertyMetaTypes.RADIUS,
-                                                          def);
-            final String rId = null != radius ? canvasHandler.getDefinitionManager().adapters().forProperty().getId(radius) : null;
-            if (null != rId) {
-                final double r = w > h ? (h / 2) : (w / 2);
-                result.add(canvasCommandFactory.updatePropertyValue(element,
-                                                                    rId,
-                                                                    r));
-            } else {
-                LOGGER.log(Level.WARNING,
-                           "Not radius property found for element [" + element.getUUID()
-                                   + "], but the shape for it supports radius.");
-            }
+        final Object width = adapter.getMetaProperty(PropertyMetaTypes.WIDTH, def);
+        if (null != width) {
+            appendCommandForModelProperty(element, width, w, result);
+        }
+        final Object height = adapter.getMetaProperty(PropertyMetaTypes.HEIGHT, def);
+        if (null != height) {
+            appendCommandForModelProperty(element, height, h, result);
+        }
+        final Object radius = adapter.getMetaProperty(PropertyMetaTypes.RADIUS, def);
+        if (null != radius) {
+            final double r = w > h ? (h / 2) : (w / 2);
+            appendCommandForModelProperty(element, radius, r, result);
         }
         return result;
+    }
+
+    private void appendCommandForModelProperty(final Element<? extends Definition<?>> element,
+                                              final Object property,
+                                              final Object value,
+                                              final List<Command<AbstractCanvasHandler, CanvasViolation>> result ) {
+        final String id = canvasHandler.getDefinitionManager().adapters().forProperty().getId(property);
+        result.add(canvasCommandFactory.updatePropertyValue(element, id, value));
     }
 
     private CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {

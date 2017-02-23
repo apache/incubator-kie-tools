@@ -28,6 +28,11 @@ public final class CircleShapeDefImpl
         implements CircleShapeDef<Circle> {
 
     @Override
+    public double getAlpha(final Circle element) {
+        return 1d;
+    }
+
+    @Override
     public String getBackgroundColor(final Circle element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
@@ -64,7 +69,7 @@ public final class CircleShapeDefImpl
 
     @Override
     public HasTitle.Position getFontPosition(final Circle element) {
-        return HasTitle.Position.BOTTOM;
+        return HasTitle.Position.CENTER;
     }
 
     @Override

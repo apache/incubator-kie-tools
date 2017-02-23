@@ -34,24 +34,20 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontColor;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontFamily;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
-import org.kie.workbench.common.stunner.bpmn.shape.def.LaneShapeDef;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.Shape;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
-import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = Lane.LaneBuilder.class)
 @CanContain(roles = {"all"})
-@Shape(factory = BasicShapesFactory.class, def = LaneShapeDef.class)
 @FormDefinition(
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED

@@ -26,4 +26,6 @@ public interface ShapeDefFactory<W, C, S extends Shape, P extends ShapeDef<W>> e
     // TODO: Rename by "registerShapedef" - term "add" is not the correct one.
     void addShapeDef(final Class<?> clazz,
                      final P def);
+
+    // TODO: Add method build(instance, def, context)
 }

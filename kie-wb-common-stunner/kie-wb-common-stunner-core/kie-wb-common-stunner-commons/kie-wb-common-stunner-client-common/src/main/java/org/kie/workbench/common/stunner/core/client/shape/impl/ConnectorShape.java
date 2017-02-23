@@ -65,10 +65,6 @@ public class ConnectorShape<W, D extends MutableShapeDef<W>, V extends ShapeView
         final ViewConnector connectionContent = (ViewConnector) element.getContent();
         final int sourceMagnet = connectionContent.getSourceMagnetIndex();
         final int targetMagnet = connectionContent.getTargetMagnetIndex();
-        if (null != source) {
-            final int z = source.getZIndex();
-            getShapeView().setZIndex(z);
-        }
         if (null != source && null != target) {
             ((IsConnector) getShapeView()).connect(source,
                                                    sourceMagnet,

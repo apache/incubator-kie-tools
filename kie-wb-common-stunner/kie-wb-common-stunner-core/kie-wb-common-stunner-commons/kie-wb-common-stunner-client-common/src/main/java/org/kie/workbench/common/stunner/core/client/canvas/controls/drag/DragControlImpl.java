@@ -23,7 +23,6 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
@@ -56,9 +55,7 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
     private final CanvasCommandFactory canvasCommandFactory;
     private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
-    protected CanvasGrid dragGrid;
     protected final double[] dragShapeSize = new double[]{0, 0};
-    protected CanvasGrid originalGrid = null;
 
     protected DragControlImpl() {
         this(null);
@@ -112,12 +109,6 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
         final double[] size = GraphUtils.getNodeSize((View) element.getContent());
         dragShapeSize[0] = size[0];
         dragShapeSize[1] = size[1];
-        if (isDragGridEnabled()) {
-            this.originalGrid = canvas.getGrid();
-            if (null == originalGrid) {
-                canvas.setGrid(dragGrid);
-            }
-        }
     }
 
     protected void doDragUpdate(final Element element) {
@@ -134,17 +125,8 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
         move(element,
              x,
              y);
-        if (isDragGridEnabled()) {
-            canvas.setGrid(originalGrid);
-            originalGrid = null;
-        }
     }
 
-    @Override
-    public DragControl<AbstractCanvasHandler, Element> setDragGrid(final CanvasGrid grid) {
-        this.dragGrid = grid;
-        return this;
-    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -245,7 +227,4 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
         return commandManagerProvider.getCommandManager();
     }
 
-    private boolean isDragGridEnabled() {
-        return null != dragGrid;
-    }
 }

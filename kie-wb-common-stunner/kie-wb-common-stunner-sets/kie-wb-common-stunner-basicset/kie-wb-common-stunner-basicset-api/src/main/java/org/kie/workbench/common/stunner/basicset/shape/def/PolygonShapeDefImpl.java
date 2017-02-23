@@ -33,6 +33,11 @@ public final class PolygonShapeDefImpl
     }
 
     @Override
+    public double getAlpha(final Polygon element) {
+        return 1d;
+    }
+
+    @Override
     public String getBackgroundColor(final Polygon element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
@@ -79,7 +84,7 @@ public final class PolygonShapeDefImpl
 
     @Override
     public HasTitle.Position getFontPosition(final Polygon element) {
-        return HasTitle.Position.BOTTOM;
+        return HasTitle.Position.CENTER;
     }
 
     @Override

@@ -17,17 +17,17 @@ package org.kie.workbench.common.stunner.shapes.client.view;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Picture;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresShapeViewExt;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresContainerShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
-import static org.kie.workbench.common.stunner.shapes.client.util.BasicShapesUtils.scalePicture;
+import static org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils.scalePicture;
 
 /**
  * The lienzo view implementation for the Picture shape.
  * Note that this view impl does not support resize.
  */
 public class PictureShapeView<T extends PictureShapeView>
-        extends WiresShapeViewExt<T> {
+        extends WiresContainerShapeView<T> {
 
     private Picture picture;
 

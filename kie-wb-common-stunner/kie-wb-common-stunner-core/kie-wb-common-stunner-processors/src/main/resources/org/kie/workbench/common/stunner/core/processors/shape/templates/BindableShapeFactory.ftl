@@ -30,6 +30,7 @@ import ${pc};
 import ${pc.className};
 </#list>
 
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -45,16 +46,19 @@ public class ${className} extends ${parentClassName} {
 <#list shapeDefFactoryEntities as pc>
 ${pc.className} ${pc.id};
 </#list>
+DefinitionManager definitionManager;
 
 protected ${className}() {
 }
 
 @Inject
 public ${className}(
+final DefinitionManager definitionManager,
 <#list shapeDefFactoryEntities as pc>
 final ${pc.className} ${pc.id}
 </#list>) {
 
+this.definitionManager = definitionManager;
 <#list shapeDefFactoryEntities as pc>
 this.${pc.id} = ${pc.id};
 </#list>
@@ -64,18 +68,20 @@ this.${pc.id} = ${pc.id};
 @PostConstruct
 @SuppressWarnings("unchecked")
 public void init() {
-
+// Register the factories to delegate.
+<#list shapeDefFactoryEntities as pc>
+addDelegate(this.${pc.id});
+</#list>
+// Register the shapes definition bindings.
 <#list addProxySentences as ps>
 ${ps}
 </#list>
 
 }
 
-<#list shapeDefFactoryEntities as pc>
 @Override
-protected ShapeFactory getFactory() {
-return this.${pc.id};
+protected DefinitionManager getDefinitionManager() {
+return definitionManager;
 }
-</#list>
 
 }

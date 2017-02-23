@@ -24,8 +24,6 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.ToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.ToolboxCommandFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.MoveShapeDownToolboxCommand;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.MoveShapeUpToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.actions.RemoveToolboxCommand;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxButtonGrid;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxFactory;
@@ -46,8 +44,6 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 public class ActionsToolboxControlProvider extends AbstractToolboxControlProvider {
 
     private RemoveToolboxCommand removeToolboxCommand;
-    private MoveShapeUpToolboxCommand moveShapeUpToolboxCommand;
-    private MoveShapeDownToolboxCommand moveShapeDownToolboxCommand;
 
     protected ActionsToolboxControlProvider() {
         this(null,
@@ -59,8 +55,6 @@ public class ActionsToolboxControlProvider extends AbstractToolboxControlProvide
                                          final ToolboxCommandFactory toolboxCommandFactory) {
         super(toolboxFactory);
         this.removeToolboxCommand = toolboxCommandFactory.newRemoveToolboxCommand();
-        this.moveShapeUpToolboxCommand = toolboxCommandFactory.newMoveShapeUpToolboxCommand();
-        this.moveShapeDownToolboxCommand = toolboxCommandFactory.newMoveShapeDownToolboxCommand();
     }
 
     @Override
@@ -95,8 +89,6 @@ public class ActionsToolboxControlProvider extends AbstractToolboxControlProvide
                                                                       final Element item) {
         return new LinkedList<ToolboxCommand<AbstractCanvasHandler, ?>>() {{
             add(removeToolboxCommand);
-            add(moveShapeUpToolboxCommand);
-            add(moveShapeDownToolboxCommand);
         }};
     }
 }

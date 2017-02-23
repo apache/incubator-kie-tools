@@ -42,6 +42,11 @@ public final class CaseManagementTaskShapeDef
                    HasChildShapeDefs<CaseManagementBaseTask> {
 
     @Override
+    public double getAlpha(final CaseManagementBaseTask element) {
+        return 1d;
+    }
+
+    @Override
     public String getBackgroundColor(final CaseManagementBaseTask element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
@@ -88,7 +93,7 @@ public final class CaseManagementTaskShapeDef
 
     @Override
     public HasTitle.Position getFontPosition(final CaseManagementBaseTask element) {
-        return HasTitle.Position.BOTTOM;
+        return HasTitle.Position.CENTER;
     }
 
     @Override

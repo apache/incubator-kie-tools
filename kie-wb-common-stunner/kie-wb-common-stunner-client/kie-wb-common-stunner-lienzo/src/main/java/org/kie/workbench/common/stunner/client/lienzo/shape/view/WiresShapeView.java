@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.view;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
+import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.DragBounds;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
@@ -29,10 +31,17 @@ public class WiresShapeView<T> extends WiresShape
         ShapeView<T> {
 
     private String uuid;
-    private int zindex;
 
     public WiresShapeView(final MultiPath path) {
-        super(path);
+        this(path,
+             null);
+    }
+
+    public WiresShapeView(final MultiPath path,
+                          final LayoutContainer layoutContainer) {
+        super(path,
+              null != layoutContainer ? layoutContainer : new WiresLayoutContainer());
+        initialize();
     }
 
     public Shape<?> getShape() {
@@ -50,18 +59,6 @@ public class WiresShapeView<T> extends WiresShape
     @Override
     public String getUUID() {
         return uuid;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public T setZIndex(final int zindez) {
-        this.zindex = zindez;
-        return (T) this;
-    }
-
-    @Override
-    public int getZIndex() {
-        return zindex;
     }
 
     @Override
@@ -85,6 +82,18 @@ public class WiresShapeView<T> extends WiresShape
     @SuppressWarnings("unchecked")
     public T setShapeY(final double y) {
         getContainer().getAttributes().setY(y);
+        return (T) this;
+    }
+
+    @Override
+    public double getAlpha() {
+        return getContainer().getAttributes().getAlpha();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public T setAlpha(final double alpha) {
+        getContainer().getAttributes().setAlpha(alpha);
         return (T) this;
     }
 
@@ -198,5 +207,8 @@ public class WiresShapeView<T> extends WiresShape
     @Override
     public void destroy() {
         super.destroy();
+    }
+
+    protected void initialize() {
     }
 }

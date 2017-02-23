@@ -214,6 +214,16 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
         }
 
         @Override
+        public double getAlpha() {
+            return 0;
+        }
+
+        @Override
+        public DummyShapeView setAlpha(final double alpha) {
+            return this;
+        }
+
+        @Override
         public Point2D getShapeAbsoluteLocation() {
             return new Point2D(0,
                                0);
@@ -295,16 +305,6 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
         @Override
         public DummyShapeView moveDown() {
             return null;
-        }
-
-        @Override
-        public DummyShapeView setZIndex(final int zindez) {
-            return null;
-        }
-
-        @Override
-        public int getZIndex() {
-            return 0;
         }
 
         @Override

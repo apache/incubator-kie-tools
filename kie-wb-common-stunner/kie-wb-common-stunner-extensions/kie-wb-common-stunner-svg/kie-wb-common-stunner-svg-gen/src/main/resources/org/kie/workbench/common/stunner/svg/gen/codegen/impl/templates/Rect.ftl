@@ -1,0 +1,1 @@
+new com.ait.lienzo.client.core.shape.Rectangle(${width}, ${height}).setCornerRadius(${radius})

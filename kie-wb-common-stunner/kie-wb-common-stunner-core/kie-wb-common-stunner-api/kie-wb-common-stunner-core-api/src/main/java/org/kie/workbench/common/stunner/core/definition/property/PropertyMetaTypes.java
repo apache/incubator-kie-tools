@@ -31,21 +31,19 @@ public enum PropertyMetaTypes {
      */
     NAME,
     /**
-     * Use it for the Definition's property used as the width value of the shape for this bean.
-     * The ShapeView instance resolved for the definition should
-     * be a subtype of <code>org.kie.workbench.common.stunner.core.client.shape.view.HasSize</code>
+     * Whatever shape is being representing some Definition bean instance, Stunner considers
+     * the size for the shape as the area of its bounding box.
+     * These properties indicate the width and height (in pixels) of the bounding box for any shape
+     * which represents the bean.
+     * If the shape supports resize and it is resized on client side, these properties will be
+     * updated with the values for the new bounding box area.
      */
-    WIDTH,
+    WIDTH, HEIGHT,
     /**
-     * Use it for the Definition's property used as the height value  of the shape for this bean.
-     * The ShapeView instance resolved for the definition should
-     * be a subtype of <code>org.kie.workbench.common.stunner.core.client.shape.view.HasSize</code>
-     */
-    HEIGHT,
-    /**
-     * Use it for the Definition's property used as the radius value of the shape for this bean.
-     * The ShapeView instance resolved for the definition should
-     * be a subtype of <code>org.kie.workbench.common.stunner.core.client.shape.view.HasRadius</code>
+     * Whatever shape is being representing some Definition bean instance, Stunner considers
+     * the size for the shape as the area of its bounding box.
+     * If the shape supports resize and it is resized on client side, these properties will be
+     * updated with the radius value of an arc that produces the new bounding box size.
      */
     RADIUS
 }

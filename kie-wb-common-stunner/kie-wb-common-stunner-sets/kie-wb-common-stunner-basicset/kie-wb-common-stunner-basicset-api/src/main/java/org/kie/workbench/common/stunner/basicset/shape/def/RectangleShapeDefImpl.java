@@ -43,6 +43,11 @@ public final class RectangleShapeDefImpl
     }
 
     @Override
+    public double getAlpha(final Rectangle element) {
+        return 1d;
+    }
+
+    @Override
     public String getBackgroundColor(final Rectangle element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
@@ -89,7 +94,7 @@ public final class RectangleShapeDefImpl
 
     @Override
     public HasTitle.Position getFontPosition(final Rectangle element) {
-        return HasTitle.Position.BOTTOM;
+        return HasTitle.Position.CENTER;
     }
 
     @Override

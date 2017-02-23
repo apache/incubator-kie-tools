@@ -64,4 +64,9 @@ public abstract class AbstractBindableShapeSet<F extends ShapeFactory> implement
     public F getShapeFactory() {
         return factory;
     }
+
+    @Override
+    public boolean isDefault() {
+        return true;
+    }
 }

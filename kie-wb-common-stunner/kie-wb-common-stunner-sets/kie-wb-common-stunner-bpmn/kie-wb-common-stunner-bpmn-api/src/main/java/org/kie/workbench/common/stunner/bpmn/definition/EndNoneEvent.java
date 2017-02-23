@@ -29,19 +29,15 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radi
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.ThrowEventAttributes;
-import org.kie.workbench.common.stunner.bpmn.shape.def.EndNoneEventShapeDef;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
-import org.kie.workbench.common.stunner.core.definition.annotation.Shape;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
-import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = EndNoneEvent.EndNoneEventBuilder.class)
-@Shape(factory = BasicShapesFactory.class, def = EndNoneEventShapeDef.class)
 @Morph(base = BaseEndEvent.class)
 @FormDefinition(
         startElement = "general",
@@ -62,7 +58,7 @@ public class EndNoneEvent extends BaseEndEvent {
         public EndNoneEvent build() {
             return new EndNoneEvent(new BPMNGeneralSet("End"),
                                     new DataIOSet(),
-                                    new BackgroundSet(BG_COLOR,
+                                    new BackgroundSet("#000000",
                                                       BORDER_COLOR,
                                                       BORDER_SIZE),
                                     new FontSet(),
