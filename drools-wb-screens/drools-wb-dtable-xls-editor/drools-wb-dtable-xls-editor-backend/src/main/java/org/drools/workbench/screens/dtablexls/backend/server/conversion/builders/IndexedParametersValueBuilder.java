@@ -29,7 +29,7 @@ public class IndexedParametersValueBuilder
         implements
         ParameterizedValueBuilder {
 
-    private static final Pattern delimiter = Pattern.compile( "(.*?[^\\\\])(,|\\z)" );
+    private static final Pattern delimiter = Pattern.compile("(.*?[^\\\\])(,|\\z)");
 
     private final String template;
 
@@ -37,32 +37,32 @@ public class IndexedParametersValueBuilder
 
     private List<List<DTCellValue52>> values = new ArrayList<List<DTCellValue52>>();
 
-    public IndexedParametersValueBuilder( final String template,
-                                          final ParameterUtilities parameterUtilities,
-                                          final Part part ) {
-        this.template = parameterUtilities.convertIndexedParametersToTemplateKeys( template,
-                                                                                   part );
-        this.parameters.addAll( parameterUtilities.extractTemplateKeys( this.template ) );
+    public IndexedParametersValueBuilder(final String template,
+                                         final ParameterUtilities parameterUtilities,
+                                         final Part part) {
+        this.template = parameterUtilities.convertIndexedParametersToTemplateKeys(template,
+                                                                                  part);
+        this.parameters.addAll(parameterUtilities.extractTemplateKeys(this.template));
     }
 
-    public void addCellValue( final int row,
-                              final int column,
-                              final String value ) {
-        final List<String> cellVals = split( value );
+    public void addCellValue(final int row,
+                             final int column,
+                             final String value) {
+        final List<String> cellVals = split(value);
         final List<DTCellValue52> rowValues = new ArrayList<DTCellValue52>();
-        for ( int parameterIndex = 0; parameterIndex < getParameters().size(); parameterIndex++ ) {
-            final String cv = cellVals.size() > parameterIndex ? cellVals.get( parameterIndex ) : "";
-            rowValues.add( new DTCellValue52( cv ) );
+        for (int parameterIndex = 0; parameterIndex < getParameters().size(); parameterIndex++) {
+            final String cv = cellVals.size() > parameterIndex ? cellVals.get(parameterIndex).trim() : "";
+            rowValues.add(new DTCellValue52(cv));
         }
-        this.values.add( rowValues );
+        this.values.add(rowValues);
     }
 
-    private List<String> split( final String input ) {
-        final Matcher m = delimiter.matcher( input );
+    private List<String> split(final String input) {
+        final Matcher m = delimiter.matcher(input);
         final List<String> result = new ArrayList<String>();
-        while ( m.find() ) {
-            result.add( m.group( 1 ).replaceAll( "\\\\,",
-                                                 "," ) );
+        while (m.find()) {
+            result.add(m.group(1).replaceAll("\\\\,",
+                                             ","));
         }
         return result;
     }
@@ -81,5 +81,4 @@ public class IndexedParametersValueBuilder
     public List<List<DTCellValue52>> getColumnData() {
         return this.values;
     }
-
 }
