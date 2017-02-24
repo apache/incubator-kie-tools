@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Label;
+import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 import org.uberfire.ext.widgets.table.client.resources.UFTableResources;
 
 import com.google.gwt.core.client.GWT;
@@ -135,6 +136,8 @@ public class UberfireSimpleTable<T>
     }
 
     protected void setupDataGrid() {
+        PatternFlyBootstrapper.ensurejQueryIsAvailable();
+
         dataGrid.setSkipRowHoverCheck( false );
         dataGrid.setSkipRowHoverStyleUpdate( false );
         dataGrid.addStyleName( UFTableResources.INSTANCE.CSS().dataGridMain() );
