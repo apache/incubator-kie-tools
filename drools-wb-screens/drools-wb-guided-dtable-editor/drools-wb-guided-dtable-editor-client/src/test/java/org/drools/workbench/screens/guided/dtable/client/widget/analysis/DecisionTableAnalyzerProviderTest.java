@@ -20,10 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwtmockito.GwtMock;
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerController;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerControllerImpl;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
@@ -32,18 +30,16 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.mock;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class DecisionTableAnalyzerProviderTest {
-
-    @GwtMock
-    DateTimeFormat dateTimeFormat;
-
 
     @Mock
     private AnalysisReportScreen analysisReportScreen;
@@ -61,11 +57,7 @@ public class DecisionTableAnalyzerProviderTest {
         ApplicationPreferences.setUp( preferences );
 
 
-        assertTrue( new DecisionTableAnalyzerProvider( analysisReportScreen,
-                                                       placeManager ).newAnalyzer( mock( PlaceRequest.class ),
-                                                                                           mock( AsyncPackageDataModelOracleImpl.class ),
-                                                                                           mock( GuidedDecisionTable52.class ),
-                                                                                           mock( EventBus.class ) ) instanceof AnalyzerControllerImpl );
+        assertTrue( constructAnalyzer() instanceof AnalyzerControllerImpl );
 
     }
 
@@ -81,11 +73,23 @@ public class DecisionTableAnalyzerProviderTest {
 
         ApplicationPreferences.setUp( preferences );
 
-        assertFalse( new DecisionTableAnalyzerProvider( analysisReportScreen,
-                                                        placeManager  ).newAnalyzer( mock( PlaceRequest.class ),
-                                                                                            mock( AsyncPackageDataModelOracleImpl.class ),
-                                                                                            mock( GuidedDecisionTable52.class ),
-                                                                                            mock( EventBus.class ) ) instanceof AnalyzerControllerImpl );
+        assertFalse( constructAnalyzer() instanceof AnalyzerControllerImpl );
+
+    }
+
+    @Test
+    public void verificationEnabledByWrongSetting() throws
+            Exception {
+        final Map<String, String> preferences = new HashMap<String, String>() {{
+            put( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED,
+                 "nonBooleanValue" );
+            put( ApplicationPreferences.DATE_FORMAT,
+                 "dd-MMM-yyyy" );
+        }};
+
+        ApplicationPreferences.setUp( preferences );
+
+        assertTrue( constructAnalyzer() instanceof AnalyzerControllerImpl );
 
     }
 
@@ -101,11 +105,15 @@ public class DecisionTableAnalyzerProviderTest {
 
         ApplicationPreferences.setUp( preferences );
 
-        assertTrue( new DecisionTableAnalyzerProvider( analysisReportScreen,
-                                                       placeManager  ).newAnalyzer( mock( PlaceRequest.class ),
-                                                                                           mock( AsyncPackageDataModelOracleImpl.class ),
-                                                                                           mock( GuidedDecisionTable52.class ),
-                                                                                           mock( EventBus.class ) ) instanceof AnalyzerControllerImpl );
+        assertTrue( constructAnalyzer() instanceof AnalyzerControllerImpl );
 
+    }
+
+    private AnalyzerController constructAnalyzer() {
+        return new DecisionTableAnalyzerProvider( analysisReportScreen,
+                                                  placeManager  ).newAnalyzer( mock( PlaceRequest.class ),
+                                                                               mock( AsyncPackageDataModelOracleImpl.class ),
+                                                                               mock( GuidedDecisionTable52.class ),
+                                                                               mock( EventBus.class ) );
     }
 }
