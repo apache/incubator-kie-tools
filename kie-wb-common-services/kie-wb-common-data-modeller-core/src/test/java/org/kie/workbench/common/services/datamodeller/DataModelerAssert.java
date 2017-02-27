@@ -24,6 +24,7 @@ import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.Import;
 import org.kie.workbench.common.services.datamodeller.core.Method;
 import org.kie.workbench.common.services.datamodeller.core.JavaEnum;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
@@ -73,6 +74,24 @@ public class DataModelerAssert {
             assertEqualsAnnotations( property1.getAnnotations(), property2.getAnnotations() );
         } else {
             assertNull( property2 );
+        }
+    }
+
+    public static void assertEqualsImports( List<Import> imports1, List<Import> imports2 ) {
+        if ( imports1 != null ) {
+            assertNotNull( imports2 );
+            assertEquals( imports1.size(), imports2.size() );
+
+            Map<String, Import> importMap = new HashMap<>();
+            for ( Import _import : imports2 ) {
+                importMap.put( _import.getName(), _import );
+            }
+
+            for ( Import _import : imports1 ) {
+                assertEquals( _import, importMap.get( _import.getName() ) );
+            }
+        } else {
+            assertNull( imports2 );
         }
     }
 

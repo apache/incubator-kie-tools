@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,9 @@ package org.kie.workbench.common.services.datamodeller.core;
 
 import java.util.List;
 
-public interface JavaClass extends JavaType, HasSuperClass, HasInterfaces, HasMethods, HasImports {
+public interface HasImports {
 
-    boolean isAbstract();
+    void addImport( Import _import );
 
-    boolean isFinal();
-
-    boolean isStatic();
-
-    List<JavaClass> getNestedClasses();
-
-    JavaClass addNestedClass( JavaClass javaClass );
-
-    JavaClass removeNestedClass( JavaClass javaClass );
-
+    List<Import> getImports();
 }

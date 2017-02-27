@@ -212,6 +212,20 @@ public abstract class BaseViewPresenter
     }
 
     public void deleteItem( final FolderItem folderItem ) {
+        final Path path = getFolderItemPath( folderItem );
+
+        validationService.call( messages -> {
+            if ( ( (List<ValidationMessage>) messages ).isEmpty() ) {
+                showDeletePopup( folderItem );
+            } else {
+                validationPopup.showDeleteValidationMessages( () -> showDeletePopup( folderItem ),
+                                                              () -> {},
+                                                              (List<ValidationMessage>) messages );
+            }
+        } ).validateForDelete( path );
+    }
+
+    private void showDeletePopup( final FolderItem folderItem ) {
         deletePopUpPresenter.show( new ParameterizedCommand<String>() {
             @Override
             public void execute( final String comment ) {

@@ -24,6 +24,7 @@ import static org.mockito.Mockito.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.validation.CopyValidator;
+import org.kie.workbench.common.services.shared.validation.DeleteValidator;
 import org.kie.workbench.common.services.shared.validation.SaveValidator;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -46,6 +47,8 @@ public class ValidationServiceImplTest {
     private Instance<SaveValidator> saveValidatorInstance;
     @Mock
     private Instance<CopyValidator> copyValidatorInstance;
+    @Mock
+    private Instance<DeleteValidator> deleteValidatorInstance;
 
     @InjectMocks
     private ValidationServiceImpl validationService;

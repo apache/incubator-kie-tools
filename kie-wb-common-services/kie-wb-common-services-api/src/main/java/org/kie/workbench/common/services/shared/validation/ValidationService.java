@@ -82,4 +82,9 @@ public interface ValidationService {
 
     Collection<ValidationMessage> validateForCopy( final Path path );
 
+    <T> Collection<ValidationMessage> validateForDelete( final Path path,
+                                                         final T content );
+
+    Collection<ValidationMessage> validateForDelete( final Path path );
+
 }

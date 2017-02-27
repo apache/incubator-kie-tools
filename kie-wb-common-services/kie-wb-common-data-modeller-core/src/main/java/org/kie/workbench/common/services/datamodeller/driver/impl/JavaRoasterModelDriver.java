@@ -57,6 +57,7 @@ import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.Visibility;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.ImportImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.JavaClassImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.JavaEnumImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.JavaTypeInfoImpl;
@@ -492,7 +493,6 @@ public class JavaRoasterModelDriver implements ModelDriver {
             }
 
             List<FieldSource<JavaClassSource>> fields = javaClassSource.getFields();
-
             if ( fields != null ) {
                 for ( FieldSource<JavaClassSource> field : fields ) {
                     if ( DriverUtils.isManagedType( field.getType(), classTypeResolver ) ) {
@@ -503,6 +503,14 @@ public class JavaRoasterModelDriver implements ModelDriver {
                     }
                 }
             }
+
+            List<Import> imports = javaClassSource.getImports();
+            if ( imports != null ) {
+                for ( Import _import : imports ) {
+                    dataObject.addImport( new ImportImpl( _import.getQualifiedName() ) );
+                }
+            }
+
             return new Pair<DataObject, List<ObjectProperty>>( dataObject, unmanagedProperties );
         } catch ( ClassNotFoundException e ) {
             logger.error( errorMessage( DATA_OBJECT_LOAD_ERROR, qualifiedName ), e );
@@ -696,6 +704,41 @@ public class JavaRoasterModelDriver implements ModelDriver {
         }
     }
 
+    public void updateImports( JavaClassSource javaClassSource, List<org.kie.workbench.common.services.datamodeller.core.Import> dataObjectImports, UpdateInfo updateInfo ) {
+
+        List<Import> imports = javaClassSource.getImports();
+
+        if ( imports != null ) {
+            for ( Import _import : imports ) {
+                javaClassSource.removeImport( _import );
+            }
+        }
+
+        if ( dataObjectImports != null ) {
+            for ( org.kie.workbench.common.services.datamodeller.core.Import _import : dataObjectImports ) {
+                javaClassSource.addImport( _import.getName() );
+            }
+        }
+
+        String newClassName;
+        String currentPackage = javaClassSource.isDefaultPackage() ? null : javaClassSource.getPackage();
+
+        if ( imports != null ) {
+            for ( Import currentImport : imports ) {
+                if ( !currentImport.isWildcard() && !currentImport.isStatic() ) {
+                    if ( ( newClassName = updateInfo.getRenamedClasses().get( currentImport.getQualifiedName() ) ) != null ) {
+                        javaClassSource.removeImport( currentImport );
+                        if ( !StringUtils.equals( currentPackage, NamingUtils.extractPackageName( newClassName ) ) ) {
+                            javaClassSource.addImport( newClassName );
+                        }
+                    } else if ( updateInfo.getDeletedClasses().contains( currentImport.getQualifiedName() ) ) {
+                        javaClassSource.removeImport( currentImport );
+                    }
+                }
+            }
+        }
+    }
+
     public void updateImports( JavaClassSource javaClassSource, Map<String, String> renamedClasses, List<String> deletedClasses ) {
 
         List<Import> imports = javaClassSource.getImports();
@@ -743,7 +786,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
         //update package, class name, and super class name if needed.
         updatePackage( javaClassSource, dataObject.getPackageName() );
-        updateImports( javaClassSource, updateInfo.getRenamedClasses(), updateInfo.getDeletedClasses() );
+        updateImports( javaClassSource, dataObject.getImports(), updateInfo );
         updateAnnotations( javaClassSource, dataObject.getAnnotations(), classTypeResolver );
         updateMethods( javaClassSource, dataObject.getMethods(), classTypeResolver );
         updateClassName( javaClassSource, dataObject.getName() );

@@ -48,6 +48,9 @@ public interface KieWorkbenchWidgetsConstants {
     String ValidationPopup_YesCopyAnyway = "ValidationPopup.YesCopyAnyway";
 
     @TranslationKey( defaultValue = "" )
+    String ValidationPopup_YesDeleteAnyway = "ValidationPopup.YesDeleteAnyway";
+
+    @TranslationKey( defaultValue = "" )
     String ValidationPopup_Cancel = "ValidationPopup.Cancel";
 
     @TranslationKey( defaultValue = "" )

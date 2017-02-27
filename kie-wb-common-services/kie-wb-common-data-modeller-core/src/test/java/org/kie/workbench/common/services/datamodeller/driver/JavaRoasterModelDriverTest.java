@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -77,6 +78,7 @@ import org.kie.workbench.common.services.datamodeller.core.Visibility;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataModelImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.ImportImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.JavaClassImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.MethodImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ParameterImpl;
@@ -549,6 +551,57 @@ public class JavaRoasterModelDriverTest {
 
     }
 
+    @Test
+    public void importsUpdateTest() throws Exception {
+        String uriToResource = this.getClass().getResource( "projectRoot.txt" ).toURI().toString();
+        URI uriToRootPath = URI.create( uriToResource.substring( 0, uriToResource.length() - "projectRoot.txt".length() ) );
+        Path rootPath = simpleFileSystemProvider.getPath( uriToRootPath );
+
+        Path importsUpdateTestFilePath =  rootPath.resolve( "package6" ).resolve( "ImportsUpdateTest.java" );
+        String source = ioService.readAllString( importsUpdateTestFilePath );
+        JavaClassSource importsUpdateTestJavaClassSource = (JavaClassSource)Roaster.parse( source );
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        ClassTypeResolver classTypeResolver = DriverUtils.createClassTypeResolver( importsUpdateTestJavaClassSource, classLoader );
+
+        final SourceFilter pojo1Filter = javaType -> false;
+        final NestedClassFilter nestedClassFilter = javaType -> javaType.isClass() && javaType.getAnnotation( Generated.class ) != null;
+        final MethodFilter methodFilter = method -> !method.isConstructor() && method.getAnnotation( Generated.class ) != null;
+
+        FilterHolder filterHolder = mock( FilterHolder.class );
+        when( filterHolder.getSourceFilters() ).thenReturn( Collections.singleton( pojo1Filter ) );
+        when( filterHolder.getNestedClassFilters() ).thenReturn( Collections.singleton( nestedClassFilter ) );
+        when( filterHolder.getMethodFilters() ).thenReturn( Collections.singleton( methodFilter ) );
+
+        JavaRoasterModelDriver javaRoasterModelDriver = new JavaRoasterModelDriver( ioService,
+                                                                                    rootPath,
+                                                                                    classLoader,
+                                                                                    filterHolder );
+
+        ModelDriverResult result = javaRoasterModelDriver.loadDataObject( source, importsUpdateTestFilePath );
+
+        DataObject importsUpdateTest = result.getDataModel().getDataObject( "org.kie.workbench.common.services.datamodeller.driver.package6.ImportsUpdateTest" );
+
+        importsUpdateTest.addImport( new ImportImpl( List.class.getName() ) );
+        importsUpdateTest.addImport( new ImportImpl( ArrayList.class.getName() ) );
+
+        importsUpdateTest.setName( "ImportsUpdateTestResult" );
+
+        Path expectedFilePath =  rootPath.resolve( "package6" ).resolve( "ImportsUpdateTestResult.java" );
+        String expectedSource = ioService.readAllString( expectedFilePath );
+
+        ModelDriverResult expectedResult = javaRoasterModelDriver.loadDataObject( expectedSource, expectedFilePath );
+        DataObject importsUpdateTestResult = expectedResult.getDataModel().getDataObject( "org.kie.workbench.common.services.datamodeller.driver.package6.ImportsUpdateTestResult" );
+
+        DataModelerAssert.assertEqualsDataObject( importsUpdateTestResult, importsUpdateTest );
+        DataModelerAssert.assertEqualsImports( importsUpdateTestResult.getImports(), importsUpdateTest.getImports() );
+
+        javaRoasterModelDriver.updateSource( importsUpdateTestJavaClassSource, importsUpdateTest, new UpdateInfo(), classTypeResolver );
+        ModelDriverResult updatedResult = javaRoasterModelDriver.loadDataObject( importsUpdateTestJavaClassSource.toString(), importsUpdateTestFilePath );
+        DataModelerAssert.assertEqualsDataObject( importsUpdateTestResult, updatedResult.getDataModel().getDataObject( "org.kie.workbench.common.services.datamodeller.driver.package6.ImportsUpdateTestResult" ) );
+        DataModelerAssert.assertEqualsImports( importsUpdateTestResult.getImports(), updatedResult.getDataModel().getDataObject( "org.kie.workbench.common.services.datamodeller.driver.package6.ImportsUpdateTestResult" ).getImports() );
+    }
+
     class MockIOService extends IOServiceMock {
 
         @Override
@@ -575,6 +628,8 @@ public class JavaRoasterModelDriverTest {
         dataModel.addDataObject( createNestedClassUpdateTestResult() );
         dataModel.addDataObject( createMethodsUpdateTest() );
         dataModel.addDataObject( createMethodsUpdateTestResult() );
+        dataModel.addDataObject( createImportsUpdateTest() );
+        dataModel.addDataObject( createImportsUpdateTestResult() );
 
         return dataModel;
     }
@@ -1101,6 +1156,24 @@ public class JavaRoasterModelDriverTest {
         methodImpl.addAnnotation( testAnnotation2 );
 
         dataObject.addMethod( methodImpl );
+
+        return dataObject;
+    }
+
+    private DataObject createImportsUpdateTest() {
+        DataObject dataObject = createDataObject( "org.kie.workbench.common.services.datamodeller.driver.package6", "ImportsUpdateTest", null );
+
+        dataObject.addImport( new ImportImpl( Generated.class.getName() ) );
+
+        return dataObject;
+    }
+
+    private DataObject createImportsUpdateTestResult() {
+        DataObject dataObject = createDataObject( "org.kie.workbench.common.services.datamodeller.driver.package6", "ImportsUpdateTestResult", null );
+
+        dataObject.addImport( new ImportImpl( Generated.class.getName() ) );
+        dataObject.addImport( new ImportImpl( List.class.getName() ) );
+        dataObject.addImport( new ImportImpl( ArrayList.class.getName() ) );
 
         return dataObject;
     }

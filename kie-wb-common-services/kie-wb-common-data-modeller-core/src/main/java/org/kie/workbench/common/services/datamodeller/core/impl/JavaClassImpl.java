@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.kie.workbench.common.services.datamodeller.core.Import;
 import org.kie.workbench.common.services.datamodeller.core.JavaClass;
 import org.kie.workbench.common.services.datamodeller.core.JavaTypeKind;
 import org.kie.workbench.common.services.datamodeller.core.Method;
@@ -37,6 +38,8 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
     private List<JavaClass> nestedClasses = new ArrayList<>(  );
 
     private List<Method> methods = new ArrayList<>(  );
+
+    private List<Import> imports = new ArrayList<>(  );
 
     boolean _static = false;
 
@@ -166,6 +169,16 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
     @Override
     public void addInterface( String interfaceDefinition ) {
         interfaces.add( interfaceDefinition );
+    }
+
+    @Override
+    public void addImport( Import _import ) {
+        imports.add( _import );
+    }
+
+    @Override
+    public List<Import> getImports() {
+        return imports;
     }
 
     @Override public boolean equals( Object o ) {

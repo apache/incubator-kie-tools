@@ -29,6 +29,7 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.shared.validation.CopyValidator;
+import org.kie.workbench.common.services.shared.validation.DeleteValidator;
 import org.kie.workbench.common.services.shared.validation.SaveValidator;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.backend.vfs.Path;
@@ -49,6 +50,7 @@ public class ValidationServiceImpl
     private JavaFileNameValidator javaFileNameValidator;
     private Collection<SaveValidator> saveValidators = new ArrayList<>();
     private Collection<CopyValidator> copyValidators = new ArrayList<>();
+    private Collection<DeleteValidator> deleteValidators = new ArrayList<>();
 
     public ValidationServiceImpl() {
     }
@@ -58,15 +60,17 @@ public class ValidationServiceImpl
                                   final PackageNameValidator packageNameValidator,
                                   final ProjectNameValidator projectNameValidator,
                                   final JavaFileNameValidator javaFileNameValidator,
-                                  final Instance<SaveValidator<?>> preSaveCheckInstance,
-                                  final Instance<CopyValidator<?>> preCopyCheckInstance ) {
+                                  final Instance<SaveValidator<?>> saveValidatorInstance,
+                                  final Instance<CopyValidator<?>> copyValidatorInstance,
+                                  final Instance<DeleteValidator<?>> deleteValidatorInstance ) {
         this.validationService = validationService;
         this.packageNameValidator = packageNameValidator;
         this.projectNameValidator = projectNameValidator;
         this.javaFileNameValidator = javaFileNameValidator;
 
-        preSaveCheckInstance.forEach( saveValidators::add );
-        preCopyCheckInstance.forEach( copyValidators::add );
+        saveValidatorInstance.forEach( saveValidators::add );
+        copyValidatorInstance.forEach( copyValidators::add );
+        deleteValidatorInstance.forEach( deleteValidators::add );
     }
 
     @Override
@@ -185,5 +189,17 @@ public class ValidationServiceImpl
     @Override
     public Collection<ValidationMessage> validateForCopy( final Path path ) {
         return (Collection<ValidationMessage>) copyValidators.stream().filter( v -> v.accept( path ) ).flatMap( c -> c.validate( path ).stream() ).collect( Collectors.toList() );
+    }
+
+    @Override
+    public <T> Collection<ValidationMessage> validateForDelete( final Path path,
+                                                                final T content ) {
+        return (Collection<ValidationMessage>) deleteValidators.stream().filter( v -> v.accept( path ) ).flatMap( c -> c.validate( path,
+                                                                                                                                   content ).stream() ).collect( Collectors.toList() );
+    }
+
+    @Override
+    public Collection<ValidationMessage> validateForDelete( final Path path ) {
+        return (Collection<ValidationMessage>) deleteValidators.stream().filter( v -> v.accept( path ) ).flatMap( c -> c.validate( path ).stream() ).collect( Collectors.toList() );
     }
 }

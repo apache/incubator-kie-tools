@@ -94,6 +94,21 @@ public class ValidationPopup implements ValidationPopupView.Presenter {
                           validationMessages );
     }
 
+    public void showDeleteValidationMessages( final Command yesCommand,
+                                              final Command cancelCommand,
+                                              final List<ValidationMessage> validationMessages ) {
+        clear();
+        view.setYesButtonText( translationService.getTranslation( KieWorkbenchWidgetsConstants.ValidationPopup_YesDeleteAnyway ) );
+        view.showYesButton( true );
+
+        view.setCancelButtonText( translationService.getTranslation( KieWorkbenchWidgetsConstants.ValidationPopup_Cancel ) );
+        view.showCancelButton( true );
+
+        initAndShowModal( yesCommand,
+                          cancelCommand,
+                          validationMessages );
+    }
+
     private void initAndShowModal( final Command yesCommand,
                                    final Command cancelCommand,
                                    final List<ValidationMessage> validationMessages ) {

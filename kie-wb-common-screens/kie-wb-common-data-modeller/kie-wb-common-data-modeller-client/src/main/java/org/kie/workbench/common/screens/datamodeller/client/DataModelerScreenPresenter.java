@@ -352,6 +352,19 @@ public class DataModelerScreenPresenter
     }
 
     private void onDelete( final Path path ) {
+        validationService.call( validationMessages -> {
+            if ( ( (List<ValidationMessage>) validationMessages ).isEmpty() ) {
+                showDeletePopup( path );
+            } else {
+                validationPopup.showDeleteValidationMessages( () -> showDeletePopup( path ),
+                                                              () -> {},
+                                                              ( List<ValidationMessage> ) validationMessages );
+            }
+        } ).validateForDelete( versionRecordManager.getPathToLatest(),
+                                   context.getDataObject() );
+    }
+
+    private void showDeletePopup( final Path path ) {
         deletePopUpPresenter.show( new ParameterizedCommand<String>() {
             @Override
             public void execute( final String comment ) {

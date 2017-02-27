@@ -121,7 +121,6 @@ public class PackageDescrIndexVisitorIndexingTest
                 "  num   : int = 111\n" +
                 "  pers  : Person \n" +
                 "end\n\n" +
-
                 // NOTE: it looks like Window.pattern object type name resolution requires compile time information
                 // (Trace why this test fails, to see why.. )
                  "declare window " + windowName + "\n" +
@@ -187,7 +186,7 @@ public class PackageDescrIndexVisitorIndexingTest
 
         Object pageRowValue = response.get(0).getValue();
         assertTrue( "Expected a " + org.uberfire.backend.vfs.Path.class.getName() + ", not a " + pageRowValue.getClass().getSimpleName(),
-               org.uberfire.backend.vfs.Path.class.isAssignableFrom(pageRowValue.getClass()) );
+                    org.uberfire.backend.vfs.Path.class.isAssignableFrom(pageRowValue.getClass()) );
         String fileName = ((org.uberfire.backend.vfs.Path) pageRowValue).getFileName();
         assertTrue( "File does not end with '.java'", fileName.endsWith(".java"));
         assertEquals( "File name", className, fileName.subSequence(0, fileName.indexOf(".java")));

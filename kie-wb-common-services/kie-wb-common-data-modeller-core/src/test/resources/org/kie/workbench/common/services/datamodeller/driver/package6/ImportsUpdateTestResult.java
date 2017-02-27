@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.workbench.common.services.datamodeller.driver.package6;
 
-package org.kie.workbench.common.services.datamodeller.core;
-
+import javax.annotation.Generated;
 import java.util.List;
+import java.util.ArrayList;
 
-public interface JavaClass extends JavaType, HasSuperClass, HasInterfaces, HasMethods, HasImports {
+public class ImportsUpdateTestResult
+{
 
-    boolean isAbstract();
-
-    boolean isFinal();
-
-    boolean isStatic();
-
-    List<JavaClass> getNestedClasses();
-
-    JavaClass addNestedClass( JavaClass javaClass );
-
-    JavaClass removeNestedClass( JavaClass javaClass );
+    public ImportsUpdateTestResult()
+    {
+    }
 
 }
