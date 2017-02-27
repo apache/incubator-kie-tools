@@ -48,12 +48,6 @@
       <artifactId>uberfire-io</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- EJB for AsyncDispatcher -->
     <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>

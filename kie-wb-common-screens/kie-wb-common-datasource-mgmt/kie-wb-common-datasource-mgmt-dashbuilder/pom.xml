@@ -12,7 +12,7 @@
 
   <artifactId>kie-wb-common-datasource-mgmt-dashbuilder</artifactId>
 
-  <name>Kie Workbench - Common - Data Source Mgmt Wildfly</name>
+  <name>Kie Workbench - Common - Data Source Mgmt Dashbuilder</name>
   <description>Kie Workbench - Common - Data Source Mgmt Dashbuilder</description>
 
   <dependencies>

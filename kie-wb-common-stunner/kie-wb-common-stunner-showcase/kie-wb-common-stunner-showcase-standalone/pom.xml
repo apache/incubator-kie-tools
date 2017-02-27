@@ -694,12 +694,6 @@
       <artifactId>uberfire-apps-backend</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- GWT and extensions. -->
 
     <dependency>

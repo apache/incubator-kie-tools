@@ -91,11 +91,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-bpmn-backend</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.kie.workbench.forms</groupId>
       <artifactId>kie-wb-common-forms-api</artifactId>
     </dependency>
@@ -236,7 +231,6 @@
     </dependency>
 
     <!-- powermock -->
-
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4</artifactId>

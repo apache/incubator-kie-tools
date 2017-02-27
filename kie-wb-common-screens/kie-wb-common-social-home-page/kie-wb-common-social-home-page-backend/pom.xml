@@ -96,12 +96,6 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-message-console-api</artifactId>
     </dependency>

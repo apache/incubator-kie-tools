@@ -16,6 +16,10 @@
   <name>Kie Workbench - Common</name>
   <description>Kie Workbench - Common</description>
 
+  <properties>
+    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
+  </properties>
+
   <modules>
     <module>kie-wb-common-widgets</module>
     <module>kie-wb-common-screens</module>
@@ -104,9 +108,39 @@
   </repositories>
 
   <build>
-
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>ban-duplicated-classes</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <banDuplicateClasses>
+                    <dependencies>
+                      <dependency>
+                        <groupId>org.elasticsearch</groupId>
+                        <artifactId>elasticsearch</artifactId>
+                        <ignoreClasses>
+                          <!-- For performance reasons bundled inside the elasticsearch. -->
+                          <ignoreClass>org.joda.time.base.BaseDateTime</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                    </dependencies>
+                  </banDuplicateClasses>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
-
       <!--Fix translations from Zanata -->
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>

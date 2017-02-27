@@ -30,6 +30,12 @@
   <name>Kie Workbench - Common - Stunner - Showcase</name>
   <description>Kie Workbench - Common - Stunner - Showcase</description>
 
+  <properties>
+    <!-- Showcase modules depend on both -client and -server jars, which makes it impossible to clean-up the
+         duplicated classes. -->
+    <enforcer.failOnDuplicatedClasses>false</enforcer.failOnDuplicatedClasses>
+  </properties>
+
   <modules>
     <module>kie-wb-common-stunner-showcase-standalone</module>
     <module>kie-wb-common-stunner-showcase-project</module>

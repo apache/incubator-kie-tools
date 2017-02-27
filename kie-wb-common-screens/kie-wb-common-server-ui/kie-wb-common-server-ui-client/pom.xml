@@ -22,6 +22,12 @@
     <dependency>
       <groupId>org.kie.server</groupId>
       <artifactId>kie-server-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.optaplanner</groupId>
+          <artifactId>optaplanner-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

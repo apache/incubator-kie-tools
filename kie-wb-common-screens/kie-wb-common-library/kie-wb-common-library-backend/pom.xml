@@ -79,11 +79,6 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-security-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <!-- Errai Core -->
     <dependency>
       <groupId>org.jboss.errai</groupId>

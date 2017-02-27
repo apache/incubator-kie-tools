@@ -16,10 +16,6 @@
   <description>Kie Workbench - Common - Forms - Dynamic Forms - Backend</description>
 
   <dependencies>
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-    </dependency>
 
     <!-- jbpm document integration -->
     <dependency>
