@@ -40,7 +40,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.client.history.VersionHistoryPresenter;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -50,16 +49,13 @@ public class OverviewWidgetViewImpl
         implements OverviewScreenView {
 
     private static final int VERSION_HISTORY_TAB = 0;
-
-    private Presenter presenter;
+    private static Binder uiBinder = GWT.create(Binder.class);
 
     interface Binder
             extends
             UiBinder<Widget, OverviewWidgetViewImpl> {
 
     }
-
-    private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField
     TextArea description;
@@ -87,121 +83,125 @@ public class OverviewWidgetViewImpl
 
     VersionHistoryPresenter versionHistory;
     MetadataWidget metadata;
+    private Presenter presenter;
 
     public OverviewWidgetViewImpl() {
     }
 
     @Inject
-    public OverviewWidgetViewImpl( final BusyIndicatorView busyIndicatorView,
-                                   final DiscussionWidgetPresenter discussionArea,
-                                   final VersionHistoryPresenter versionHistory ) {
+    public OverviewWidgetViewImpl(final MetadataWidget metadata,
+                                  final DiscussionWidgetPresenter discussionArea,
+                                  final VersionHistoryPresenter versionHistory) {
 
-        this.metadata = new MetadataWidget( busyIndicatorView );
+        this.metadata = metadata;
 
         this.discussionArea = discussionArea;
 
         this.versionHistory = versionHistory;
 
-        versionHistory.setOnCurrentVersionRefreshed( new ParameterizedCommand<VersionRecord>() {
+        versionHistory.setOnCurrentVersionRefreshed(new ParameterizedCommand<VersionRecord>() {
             @Override
-            public void execute( VersionRecord record ) {
-                metadata.setNote( record.comment() );
-                setLastModified( record.author(), record.date() );
+            public void execute(VersionRecord record) {
+                metadata.setNote(record.comment());
+                setLastModified(record.author(),
+                                record.date());
             }
-        } );
+        });
 
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
         final TabPane versionHistoryPane = new TabPane() {{
-            add( versionHistory );
+            add(versionHistory);
         }};
 
         final TabPane metadataPane = new TabPane() {{
-            add( metadata );
+            add(metadata);
         }};
 
-        tabContent.add( versionHistoryPane );
-        tabContent.add( metadataPane );
+        tabContent.add(versionHistoryPane);
+        tabContent.add(metadataPane);
 
-        navTabs.add( new TabListItem( MetadataConstants.INSTANCE.VersionHistory() ) {{
-            addStyleName( "uf-dropdown-tab-list-item" );
-            setDataTargetWidget( versionHistoryPane );
-            setActive( true );
-        }} );
+        navTabs.add(new TabListItem(MetadataConstants.INSTANCE.VersionHistory()) {{
+            addStyleName("uf-dropdown-tab-list-item");
+            setDataTargetWidget(versionHistoryPane);
+            setActive(true);
+        }});
 
-        navTabs.add( new TabListItem( MetadataConstants.INSTANCE.Metadata() ) {{
-            addStyleName( "uf-dropdown-tab-list-item" );
-            setDataTargetWidget( metadataPane );
-        }} );
+        navTabs.add(new TabListItem(MetadataConstants.INSTANCE.Metadata()) {{
+            addStyleName("uf-dropdown-tab-list-item");
+            setDataTargetWidget(metadataPane);
+        }});
 
-        navTabs.getElement().setAttribute( "data-uf-lock", "false" );
-        versionHistoryPane.setActive( true );
+        navTabs.getElement().setAttribute("data-uf-lock",
+                                          "false");
+        versionHistoryPane.setActive(true);
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setReadOnly( boolean isReadOnly ) {
-        description.setEnabled( !isReadOnly );
+    public void setReadOnly(boolean isReadOnly) {
+        description.setEnabled(!isReadOnly);
     }
 
     @Override
-    public void setVersionHistory( Path path ) {
-        versionHistory.init( path );
+    public void setVersionHistory(Path path) {
+        versionHistory.init(path);
     }
 
     @Override
-    public void setDescription( String description ) {
-        this.description.setText( description );
+    public void setDescription(String description) {
+        this.description.setText(description);
     }
 
     @UiHandler("description")
-    public void onDescriptionChange( KeyUpEvent event ) {
-        presenter.onDescriptionEdited( description.getText() );
+    public void onDescriptionChange(KeyUpEvent event) {
+        presenter.onDescriptionEdited(description.getText());
     }
 
     @Override
-    public void setResourceType( ClientResourceType type ) {
-        resourceType.setText( type.getDescription() );
+    public void setResourceType(ClientResourceType type) {
+        resourceType.setText(type.getDescription());
     }
 
     @Override
-    public void setProject( String project ) {
-        projects.setText( project );
+    public void setProject(String project) {
+        projects.setText(project);
     }
 
     @Override
-    public void setLastModified( String lastContributor,
-                                 Date lastModified ) {
-        lastModifiedLabel.setText( MetadataConstants.INSTANCE.ByAOnB( lastContributor,
-                                                                      DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( lastModified ) ) );
+    public void setLastModified(String lastContributor,
+                                Date lastModified) {
+        lastModifiedLabel.setText(MetadataConstants.INSTANCE.ByAOnB(lastContributor,
+                                                                    DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(lastModified)));
     }
 
     @Override
-    public void setCreated( String creator,
-                            Date dateCreated ) {
-        createdLabel.setText( MetadataConstants.INSTANCE.ByAOnB( creator,
-                                                                 DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( dateCreated ) ) );
+    public void setCreated(String creator,
+                           Date dateCreated) {
+        createdLabel.setText(MetadataConstants.INSTANCE.ByAOnB(creator,
+                                                               DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(dateCreated)));
     }
 
     @Override
     public void showVersionHistory() {
-        ( (TabListItem) navTabs.getWidget( VERSION_HISTORY_TAB ) ).setActive( true );
+        ((TabListItem) navTabs.getWidget(VERSION_HISTORY_TAB)).setActive(true);
     }
 
     @Override
-    public void setMetadata( Metadata metadata,
-                             boolean isReadOnly ) {
-        this.metadata.setContent( metadata, isReadOnly );
-        this.discussionArea.setContent( metadata );
+    public void setMetadata(Metadata metadata,
+                            boolean isReadOnly) {
+        this.metadata.setContent(metadata,
+                                 isReadOnly);
+        this.discussionArea.setContent(metadata);
     }
 
     @Override
-    public void showBusyIndicator( String message ) {
-        BusyPopup.showMessage( message );
+    public void showBusyIndicator(String message) {
+        BusyPopup.showMessage(message);
     }
 
     @Override
@@ -215,22 +215,21 @@ public class OverviewWidgetViewImpl
     }
 
     @Override
-    public void refresh( String version ) {
-        versionHistory.refresh( version );
+    public void refresh(String version) {
+        versionHistory.refresh(version);
     }
 
-    public void setForceUnlockHandler( final Runnable handler ) {
-        this.metadata.setForceUnlockHandler( handler );
+    public void setForceUnlockHandler(final Runnable handler) {
+        this.metadata.setForceUnlockHandler(handler);
     }
 
     @Override
-    public void setCurrentUser( String currentUser ) {
-        metadata.setCurrentUser( currentUser );
+    public void setCurrentUser(String currentUser) {
+        metadata.setCurrentUser(currentUser);
     }
-    
+
     @Override
-    public void setLockStatus( final LockInfo lockInfo ) {
-        metadata.setLockStatus( lockInfo );
+    public void setLockStatus(final LockInfo lockInfo) {
+        metadata.setLockStatus(lockInfo);
     }
-    
 }

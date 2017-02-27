@@ -77,27 +77,13 @@ public class ProjectScreenViewImpl
     private static final int IMPORTS_METADATA_PANEL_INDEX = 6;
     private static final int REPOSITORIES_PANEL_INDEX = 7;
 
-    private POMEditorPanel pomEditorPanel;
-
-    private MetadataWidget pomMetadataWidget;
-    private Presenter presenter;
-    private KModuleEditorPanel kModuleEditorPanel;
-    private MetadataWidget kModuleMetaDataPanel;
-    private ImportsWidgetPresenter importsWidgetPresenter;
-    private MetadataWidget importsPageMetadata;
-    private RepositoriesWidgetPresenter repositoriesWidgetPresenter;
-    private DependencyGrid dependencyGrid;
-    private Boolean isGAVCheckDisabled = Boolean.FALSE;
-    private Widget projectScreen;
-    private SimplePanel layout;
+    private static ProjectScreenViewImplBinder uiBinder = GWT.create(ProjectScreenViewImplBinder.class);
 
     interface ProjectScreenViewImplBinder
             extends
             UiBinder<Widget, ProjectScreenViewImpl> {
 
     }
-
-    private static ProjectScreenViewImplBinder uiBinder = GWT.create( ProjectScreenViewImplBinder.class );
 
     @UiField
     Button dropDownButton;
@@ -129,21 +115,37 @@ public class ProjectScreenViewImpl
     @Inject
     BusyIndicatorView busyIndicatorView;
 
+    private POMEditorPanel pomEditorPanel;
+    private MetadataWidget pomMetadataWidget;
+    private Presenter presenter;
+    private KModuleEditorPanel kModuleEditorPanel;
+    private MetadataWidget kModuleMetaDataPanel;
+    private ImportsWidgetPresenter importsWidgetPresenter;
+    private MetadataWidget importsPageMetadata;
+    private RepositoriesWidgetPresenter repositoriesWidgetPresenter;
+    private DependencyGrid dependencyGrid;
+    private Boolean isGAVCheckDisabled = Boolean.FALSE;
+    private Widget projectScreen;
+    private SimplePanel layout;
+
     public ProjectScreenViewImpl() {
     }
 
     @Inject
-    public ProjectScreenViewImpl( POMEditorPanel pomEditorPanel,
-                                  KModuleEditorPanel kModuleEditorPanel,
-                                  ImportsWidgetPresenter importsWidgetPresenter,
-                                  RepositoriesWidgetPresenter repositoriesWidgetPresenter,
-                                  DependencyGrid dependencyGrid ) {
+    public ProjectScreenViewImpl(final POMEditorPanel pomEditorPanel,
+                                 final KModuleEditorPanel kModuleEditorPanel,
+                                 final ImportsWidgetPresenter importsWidgetPresenter,
+                                 final RepositoriesWidgetPresenter repositoriesWidgetPresenter,
+                                 final DependencyGrid dependencyGrid,
+                                 final MetadataWidget pomMetadataWidget,
+                                 final MetadataWidget kModuleMetaDataPanel,
+                                 final MetadataWidget importsPageMetadata) {
 
-        projectScreen = uiBinder.createAndBindUi( this );
+        projectScreen = uiBinder.createAndBindUi(this);
 
         layout = new SimplePanel();
-        layout.setWidget( projectScreen );
-        initWidget( this.layout );
+        layout.setWidget(projectScreen);
+        initWidget(this.layout);
 
         this.pomEditorPanel = pomEditorPanel;
         this.kModuleEditorPanel = kModuleEditorPanel;
@@ -151,167 +153,170 @@ public class ProjectScreenViewImpl
         this.repositoriesWidgetPresenter = repositoriesWidgetPresenter;
         this.dependencyGrid = dependencyGrid;
 
-        deckPanel.add( pomEditorPanel );
+        deckPanel.add(pomEditorPanel);
 
-        deckPanel.add( dependencyGrid );
+        deckPanel.add(dependencyGrid);
 
-        this.pomMetadataWidget = new MetadataWidget( busyIndicatorView );
-        deckPanel.add( pomMetadataWidget );
+        this.pomMetadataWidget = pomMetadataWidget;
+        deckPanel.add(pomMetadataWidget);
 
-        deckPanel.add( kModuleEditorPanel );
+        deckPanel.add(kModuleEditorPanel);
 
-        this.kModuleMetaDataPanel = new MetadataWidget( busyIndicatorView );
-        deckPanel.add( kModuleMetaDataPanel );
+        this.kModuleMetaDataPanel = kModuleMetaDataPanel;
+        deckPanel.add(kModuleMetaDataPanel);
 
-        deckPanel.add( importsWidgetPresenter );
+        deckPanel.add(importsWidgetPresenter);
 
-        this.importsPageMetadata = new MetadataWidget( busyIndicatorView );
-        deckPanel.add( importsPageMetadata );
+        this.importsPageMetadata = importsPageMetadata;
+        deckPanel.add(importsPageMetadata);
 
-        deckPanel.add( repositoriesWidgetPresenter );
+        deckPanel.add(repositoriesWidgetPresenter);
 
         addPOMEditorChangeHandlers();
     }
 
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
     public void showGAVPanel() {
-        deckPanel.showWidget( GAV_PANEL_INDEX );
-        setGAVDropboxTitle( ProjectEditorResources.CONSTANTS.ProjectGeneralSettings() );
+        deckPanel.showWidget(GAV_PANEL_INDEX);
+        setGAVDropboxTitle(ProjectEditorResources.CONSTANTS.ProjectGeneralSettings());
     }
 
     @Override
     public void showGAVMetadataPanel() {
-        deckPanel.showWidget( GAV_METADATA_PANEL_INDEX );
-        setGAVDropboxTitle( ProjectEditorResources.CONSTANTS.Metadata() );
+        deckPanel.showWidget(GAV_METADATA_PANEL_INDEX);
+        setGAVDropboxTitle(ProjectEditorResources.CONSTANTS.Metadata());
     }
 
     @UiHandler(value = "generalSettingsButton")
-    public void onGeneralSettingsButtonClick( ClickEvent clickEvent ) {
+    public void onGeneralSettingsButtonClick(ClickEvent clickEvent) {
         presenter.onGAVPanelSelected();
     }
 
     @UiHandler(value = "gavMetadataButton")
-    public void onGAVMetadataButtonClick( ClickEvent clickEvent ) {
+    public void onGAVMetadataButtonClick(ClickEvent clickEvent) {
         presenter.onGAVMetadataPanelSelected();
     }
 
     @UiHandler(value = "projectPreferencesButton")
-    public void onProjectPreferencesClick( ClickEvent clickEvent ) {
+    public void onProjectPreferencesClick(ClickEvent clickEvent) {
         presenter.onProjectPreferencesSelected();
     }
 
-    private void setGAVDropboxTitle( String subItem ) {
-        dropDownButton.setText( ProjectEditorResources.CONSTANTS.ProjectSettings() + ": " + subItem );
+    private void setGAVDropboxTitle(String subItem) {
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.ProjectSettings() + ": " + subItem);
     }
 
     @UiHandler(value = "dependenciesButton")
-    public void onDependenciesButtonClick( ClickEvent clickEvent ) {
+    public void onDependenciesButtonClick(ClickEvent clickEvent) {
         presenter.onDependenciesSelected();
     }
 
     @UiHandler(value = "kbaseButton")
-    public void onKbaseButtonClick( ClickEvent clickEvent ) {
+    public void onKbaseButtonClick(ClickEvent clickEvent) {
         presenter.onKBasePanelSelected();
     }
 
     @UiHandler(value = "kbaseMetadataButton")
-    public void onKbaseMetadataButtonClick( ClickEvent clickEvent ) {
+    public void onKbaseMetadataButtonClick(ClickEvent clickEvent) {
         presenter.onKBaseMetadataPanelSelected();
     }
 
     @Override
     public void showKBasePanel() {
-        deckPanel.showWidget( KBASE_PANEL_INDEX );
-        dropDownButton.setText( ProjectEditorResources.CONSTANTS.KnowledgeBaseSettings() + ": " + ProjectEditorResources.CONSTANTS.KnowledgeBasesAndSessions() );
+        deckPanel.showWidget(KBASE_PANEL_INDEX);
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.KnowledgeBaseSettings() + ": " + ProjectEditorResources.CONSTANTS.KnowledgeBasesAndSessions());
         kModuleEditorPanel.refresh();
     }
 
     @Override
     public void showKBaseMetadataPanel() {
-        deckPanel.showWidget( KBASE_METADATA_PANEL_INDEX );
-        dropDownButton.setText( ProjectEditorResources.CONSTANTS.KnowledgeBaseSettings() + ": " + ProjectEditorResources.CONSTANTS.Metadata() );
+        deckPanel.showWidget(KBASE_METADATA_PANEL_INDEX);
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.KnowledgeBaseSettings() + ": " + ProjectEditorResources.CONSTANTS.Metadata());
     }
 
     @UiHandler(value = "importsButton")
-    public void onImportsButtonClick( ClickEvent clickEvent ) {
+    public void onImportsButtonClick(ClickEvent clickEvent) {
         presenter.onImportsPanelSelected();
     }
 
     @UiHandler(value = "importsMetadataButton")
-    public void onImportsMetadataButtonClick( ClickEvent clickEvent ) {
+    public void onImportsMetadataButtonClick(ClickEvent clickEvent) {
         presenter.onImportsMetadataPanelSelected();
     }
 
     @UiHandler(value = "repositoriesButton")
-    public void onRepositoriesButtonClick( ClickEvent clickEvent ) {
-        if ( isGAVCheckDisabled ) {
+    public void onRepositoriesButtonClick(ClickEvent clickEvent) {
+        if (isGAVCheckDisabled) {
             return;
         }
         presenter.onRepositoriesPanelSelected();
     }
 
     @UiHandler(value = "deploymentDescriptorButton")
-    public void onDeploymentDescriptorButtonClick( ClickEvent clickEvent ) {
+    public void onDeploymentDescriptorButtonClick(ClickEvent clickEvent) {
         presenter.onDeploymentDescriptorSelected();
     }
 
     @UiHandler(value = "persistenceDescriptorButton")
-    public void onPersistenceDescriptorDescriptorButtonClick( ClickEvent clickEvent ) {
+    public void onPersistenceDescriptorDescriptorButtonClick(ClickEvent clickEvent) {
         presenter.onPersistenceDescriptorSelected();
     }
 
     @Override
-    public void setImports( ProjectImports projectImports ) {
-        importsWidgetPresenter.setContent( projectImports, false );
+    public void setImports(ProjectImports projectImports) {
+        importsWidgetPresenter.setContent(projectImports,
+                                          false);
     }
 
     @Override
-    public void setImportsMetadata( Metadata projectImportsMetadata ) {
-        importsPageMetadata.setContent( projectImportsMetadata, false );
+    public void setImportsMetadata(Metadata projectImportsMetadata) {
+        importsPageMetadata.setContent(projectImportsMetadata,
+                                       false);
     }
 
     @Override
-    public void setImportsMetadataUnlockHandler( Runnable unlockHandler ) {
-        importsPageMetadata.setForceUnlockHandler( unlockHandler );
+    public void setImportsMetadataUnlockHandler(Runnable unlockHandler) {
+        importsPageMetadata.setForceUnlockHandler(unlockHandler);
     }
 
     @Override
-    public void setRepositories( ProjectRepositories repositories ) {
-        repositoriesWidgetPresenter.setContent( repositories.getRepositories(), false );
+    public void setRepositories(ProjectRepositories repositories) {
+        repositoriesWidgetPresenter.setContent(repositories.getRepositories(),
+                                               false);
     }
 
     @Override
     public void showDependenciesPanel() {
-        dropDownButton.setText( ProjectEditorResources.CONSTANTS.Dependencies() + ": " + ProjectEditorResources.CONSTANTS.DependenciesList() );
-        deckPanel.showWidget( DEPENDENCY_PANEL_INDEX );
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Dependencies() + ": " + ProjectEditorResources.CONSTANTS.DependenciesList());
+        deckPanel.showWidget(DEPENDENCY_PANEL_INDEX);
         dependencyGrid.show();
     }
 
     @Override
     public void showImportsPanel() {
-        dropDownButton.setText( ProjectEditorResources.CONSTANTS.Imports() + ": " + ProjectEditorResources.CONSTANTS.ExternalDataObjects() );
-        deckPanel.showWidget( IMPORTS_PANEL_INDEX );
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Imports() + ": " + ProjectEditorResources.CONSTANTS.ExternalDataObjects());
+        deckPanel.showWidget(IMPORTS_PANEL_INDEX);
     }
 
     @Override
     public void showImportsMetadataPanel() {
-        dropDownButton.setText( ProjectEditorResources.CONSTANTS.Imports() + ": " + ProjectEditorResources.CONSTANTS.Metadata() );
-        deckPanel.showWidget( IMPORTS_METADATA_PANEL_INDEX );
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Imports() + ": " + ProjectEditorResources.CONSTANTS.Metadata());
+        deckPanel.showWidget(IMPORTS_METADATA_PANEL_INDEX);
     }
 
     @Override
     public void showRepositoriesPanel() {
-        dropDownButton.setText( ProjectEditorResources.CONSTANTS.Repositories() + ": " + ProjectEditorResources.CONSTANTS.RepositoriesValidation() );
-        deckPanel.showWidget( REPOSITORIES_PANEL_INDEX );
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Repositories() + ": " + ProjectEditorResources.CONSTANTS.RepositoriesValidation());
+        deckPanel.showWidget(REPOSITORIES_PANEL_INDEX);
     }
 
     @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
+    public void showBusyIndicator(final String message) {
+        BusyPopup.showMessage(message);
     }
 
     @Override
@@ -321,99 +326,102 @@ public class ProjectScreenViewImpl
 
     @Override
     public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
+        return Window.confirm(CommonConstants.INSTANCE.DiscardUnsavedData());
     }
 
     @Override
-    public void setPOM( POM pom ) {
-        pomEditorPanel.setPOM( pom, false );
+    public void setPOM(POM pom) {
+        pomEditorPanel.setPOM(pom,
+                              false);
     }
 
     @Override
-    public void setDependencies( final POM pom,
-                                 final WhiteList whiteList ) {
-        dependencyGrid.setDependencies( pom,
-                                        whiteList );
+    public void setDependencies(final POM pom,
+                                final WhiteList whiteList) {
+        dependencyGrid.setDependencies(pom,
+                                       whiteList);
     }
 
     @Override
-    public void setPomMetadata( Metadata pomMetaData ) {
-        pomMetadataWidget.setContent( pomMetaData, false );
+    public void setPomMetadata(Metadata pomMetaData) {
+        pomMetadataWidget.setContent(pomMetaData,
+                                     false);
     }
 
     @Override
-    public void setPomMetadataUnlockHandler( Runnable unlockHandler ) {
-        pomMetadataWidget.setForceUnlockHandler( unlockHandler );
+    public void setPomMetadataUnlockHandler(Runnable unlockHandler) {
+        pomMetadataWidget.setForceUnlockHandler(unlockHandler);
     }
 
     @Override
-    public void setKModule( KModuleModel kModule ) {
-        kModuleEditorPanel.setData( kModule, false );
+    public void setKModule(KModuleModel kModule) {
+        kModuleEditorPanel.setData(kModule,
+                                   false);
     }
 
     @Override
-    public void setKModuleMetadata( Metadata kModuleMetaData ) {
-        kModuleMetaDataPanel.setContent( kModuleMetaData, false );
+    public void setKModuleMetadata(Metadata kModuleMetaData) {
+        kModuleMetaDataPanel.setContent(kModuleMetaData,
+                                        false);
     }
 
     @Override
-    public void setKModuleMetadataUnlockHandler( Runnable unlockHandler ) {
-        kModuleMetaDataPanel.setForceUnlockHandler( unlockHandler );
+    public void setKModuleMetadataUnlockHandler(Runnable unlockHandler) {
+        kModuleMetaDataPanel.setForceUnlockHandler(unlockHandler);
     }
 
     @Override
     public void showNoProjectSelected() {
         layout.clear();
         InfoWidget infoWidget = new InfoWidget();
-        infoWidget.setText( ProjectEditorResources.CONSTANTS.NoProjectSelected() );
-        layout.setWidget( infoWidget );
+        infoWidget.setText(ProjectEditorResources.CONSTANTS.NoProjectSelected());
+        layout.setWidget(infoWidget);
     }
 
     @Override
     public void showProjectEditor() {
         layout.clear();
-        layout.setWidget( projectScreen );
+        layout.setWidget(projectScreen);
     }
 
     @Override
-    public void switchBusyIndicator( String newMessage ) {
-        BusyPopup.showMessage( newMessage );
+    public void switchBusyIndicator(String newMessage) {
+        BusyPopup.showMessage(newMessage);
     }
 
     @Override
     public void showABuildIsAlreadyRunning() {
-        ErrorPopup.showMessage( ProjectEditorResources.CONSTANTS.ABuildIsAlreadyRunning() );
+        ErrorPopup.showMessage(ProjectEditorResources.CONSTANTS.ABuildIsAlreadyRunning());
     }
 
     @Override
     public ButtonGroup getBuildButtons() {
         return new ButtonGroup() {{
-            add( new Button( ProjectEditorResources.CONSTANTS.Build() ) {{
-                setSize( ButtonSize.SMALL );
-                setDataToggle( Toggle.DROPDOWN );
-            }} );
+            add(new Button(ProjectEditorResources.CONSTANTS.Build()) {{
+                setSize(ButtonSize.SMALL);
+                setDataToggle(Toggle.DROPDOWN);
+            }});
 
-            add( new DropDownMenu() {{
-                addStyleName( "pull-right" );
-                add( new AnchorListItem( ProjectEditorResources.CONSTANTS.Compile() ) {{
-                    addClickHandler( new ClickHandler() {
+            add(new DropDownMenu() {{
+                addStyleName("pull-right");
+                add(new AnchorListItem(ProjectEditorResources.CONSTANTS.Compile()) {{
+                    addClickHandler(new ClickHandler() {
                         @Override
-                        public void onClick( ClickEvent event ) {
+                        public void onClick(ClickEvent event) {
                             presenter.triggerBuild();
                         }
-                    } );
-                }} );
+                    });
+                }});
 
-                add( new AnchorListItem( ProjectEditorResources.CONSTANTS.BuildAndDeploy() ) {{
-                    addClickHandler( new ClickHandler() {
+                add(new AnchorListItem(ProjectEditorResources.CONSTANTS.BuildAndDeploy()) {{
+                    addClickHandler(new ClickHandler() {
                         @Override
-                        public void onClick( ClickEvent event ) {
+                        public void onClick(ClickEvent event) {
                             presenter.triggerBuildAndDeploy();
                         }
-                    } );
-                }} );
-
-            }} );
+                    });
+                }});
+            }});
         }};
     }
 
@@ -424,49 +432,49 @@ public class ProjectScreenViewImpl
     }
 
     @Override
-    public void setGAVCheckDisabledSetting( Boolean disabled ) {
+    public void setGAVCheckDisabledSetting(Boolean disabled) {
         this.isGAVCheckDisabled = disabled;
 
-        if ( disabled != null ) {
-            repositoriesHeader.setVisible( !disabled.booleanValue() );
-            repositoriesButton.setVisible( !disabled.booleanValue() );
+        if (disabled != null) {
+            repositoriesHeader.setVisible(!disabled.booleanValue());
+            repositoriesButton.setVisible(!disabled.booleanValue());
         }
     }
 
     private void addPOMEditorChangeHandlers() {
-        this.pomEditorPanel.addGroupIdChangeHandler( new GroupIdChangeHandler() {
+        this.pomEditorPanel.addGroupIdChangeHandler(new GroupIdChangeHandler() {
             @Override
-            public void onChange( String newGroupId ) {
-                presenter.validateGroupID( newGroupId );
+            public void onChange(String newGroupId) {
+                presenter.validateGroupID(newGroupId);
             }
-        } );
-        this.pomEditorPanel.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
+        });
+        this.pomEditorPanel.addArtifactIdChangeHandler(new ArtifactIdChangeHandler() {
             @Override
-            public void onChange( String newArtifactId ) {
-                presenter.validateArtifactID( newArtifactId );
+            public void onChange(String newArtifactId) {
+                presenter.validateArtifactID(newArtifactId);
             }
-        } );
-        this.pomEditorPanel.addVersionChangeHandler( new VersionChangeHandler() {
+        });
+        this.pomEditorPanel.addVersionChangeHandler(new VersionChangeHandler() {
             @Override
-            public void onChange( String newVersion ) {
-                presenter.validateVersion( newVersion );
+            public void onChange(String newVersion) {
+                presenter.validateVersion(newVersion);
             }
-        } );
+        });
     }
 
     @Override
-    public void setValidGroupID( final boolean isValid ) {
-        pomEditorPanel.setValidGroupID( isValid );
+    public void setValidGroupID(final boolean isValid) {
+        pomEditorPanel.setValidGroupID(isValid);
     }
 
     @Override
-    public void setValidArtifactID( final boolean isValid ) {
-        pomEditorPanel.setValidArtifactID( isValid );
+    public void setValidArtifactID(final boolean isValid) {
+        pomEditorPanel.setValidArtifactID(isValid);
     }
 
     @Override
-    public void setValidVersion( final boolean isValid ) {
-        pomEditorPanel.setValidVersion( isValid );
+    public void setValidVersion(final boolean isValid) {
+        pomEditorPanel.setValidVersion(isValid);
     }
 
     @Override
@@ -550,14 +558,14 @@ public class ProjectScreenViewImpl
     }
 
     @Override
-    public void showUnexpectedErrorPopup( String error ) {
-        ErrorPopup.showMessage( "Unexpected error encountered : " + error );
+    public void showUnexpectedErrorPopup(String error) {
+        ErrorPopup.showMessage("Unexpected error encountered : " + error);
     }
 
     @Override
-    public void showSaveBeforeContinue( org.uberfire.mvp.Command yesCommand,
-                                        org.uberfire.mvp.Command noCommand,
-                                        org.uberfire.mvp.Command cancelCommand ) {
+    public void showSaveBeforeContinue(org.uberfire.mvp.Command yesCommand,
+                                       org.uberfire.mvp.Command noCommand,
+                                       org.uberfire.mvp.Command cancelCommand) {
         YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup(
                 org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.Information(),
                 ProjectEditorResources.CONSTANTS.SaveBeforeBuildAndDeploy(),
@@ -575,8 +583,8 @@ public class ProjectScreenViewImpl
                 org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.Cancel(),
                 ButtonType.DEFAULT,
                 null
-                                                                     );
-        popup.setClosable( false );
+        );
+        popup.setClosable(false);
         popup.show();
     }
 

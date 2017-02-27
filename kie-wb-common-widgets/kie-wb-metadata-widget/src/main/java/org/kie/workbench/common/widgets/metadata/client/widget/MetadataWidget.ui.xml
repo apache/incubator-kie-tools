@@ -74,7 +74,7 @@
                         <b:FormGroup>
                             <b:FormLabel text="{i18n.ExternalLinkMetaData}" addStyleNames="col-md-3"/>
                             <b:Column size="MD_9">
-                                <b:TextBox ui:field="external" title='{i18n.ExternalLinkTip}'/>
+                                <widget:ExternalLinkPresenter ui:field="external" />
                             </b:Column>
                         </b:FormGroup>
                         <b:FormGroup>
