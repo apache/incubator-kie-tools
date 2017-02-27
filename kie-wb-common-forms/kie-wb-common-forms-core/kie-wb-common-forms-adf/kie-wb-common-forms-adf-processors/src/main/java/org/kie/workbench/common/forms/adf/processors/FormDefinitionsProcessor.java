@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.adf.processors;
 import java.beans.Introspector;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -661,11 +662,17 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
         //Generate code
         final StringWriter sw = new StringWriter();
         final BufferedWriter bw = new BufferedWriter(sw);
-        try {
+
+        // The code used to contain 'new InputStreamReader(this.getClass().getResourceAsStream(templateName))' which for
+        // some reason was causing issues during concurrent invocation of this method (e.g. in parallel Maven build).
+        // The stream returned by 'getResourceAsStream(templateName)' was sometimes already closed (!) and as the
+        // Template class tried to read from the stream it resulted in IOException. Changing the code to
+        // 'getResource(templateName).openStream()' seems to be a sensible workaround
+        try(InputStream templateIs = this.getClass().getResource(templateName).openStream()) {
             Configuration config = new Configuration();
 
             Template template = new Template("",
-                                             new InputStreamReader(this.getClass().getResourceAsStream(templateName)),
+                                             new InputStreamReader(templateIs),
                                              config);
 
             template.process(context,
