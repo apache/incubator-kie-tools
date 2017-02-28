@@ -201,8 +201,8 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
     }
 
     @Override
-    public void newAttributeOrMetaDataColumn() {
-        new GuidedDecisionTableAttributeSelectorPopup( presenter.getExistingAttributeNames().toArray( new String[ 0 ] ),
+    public void newAttributeOrMetaDataColumn( final Set<String> reservedAttributeNames ) {
+        new GuidedDecisionTableAttributeSelectorPopup( reservedAttributeNames.toArray( new String[0] ),
                                                        presenter ).show();
     }
 

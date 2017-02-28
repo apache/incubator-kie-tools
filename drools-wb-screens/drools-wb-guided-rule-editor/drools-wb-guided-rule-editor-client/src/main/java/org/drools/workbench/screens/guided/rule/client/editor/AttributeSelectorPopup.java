@@ -70,15 +70,7 @@ public abstract class AttributeSelectorPopup extends FormStylePopup {
             list.addItem( item );
         }
 
-        // Remove any attributes already added
-        for ( String at : getDuplicates() ) {
-            for ( int iItem = 0; iItem < list.getItemCount(); iItem++ ) {
-                if ( list.getItemText( iItem ).equals( at ) ) {
-                    list.removeItem( iItem );
-                    break;
-                }
-            }
-        }
+        removeReservedAttributes();
 
         list.setSelectedIndex( 0 );
 
@@ -88,9 +80,20 @@ public abstract class AttributeSelectorPopup extends FormStylePopup {
 
     }
 
+    private void removeReservedAttributes() {
+        for ( final String reservedAttribute : getReservedAttributes() ) {
+            for ( int iItem = 0; iItem < list.getItemCount(); iItem++ ) {
+                if ( list.getItemText( iItem ).equals( reservedAttribute ) ) {
+                    list.removeItem( iItem );
+                    break;
+                }
+            }
+        }
+    }
+
     protected abstract String[] getAttributes();
 
-    protected abstract String[] getDuplicates();
+    protected abstract String[] getReservedAttributes();
 
     private ChangeHandler getListHandler( final ListBox list ) {
         return (ChangeEvent event) -> {

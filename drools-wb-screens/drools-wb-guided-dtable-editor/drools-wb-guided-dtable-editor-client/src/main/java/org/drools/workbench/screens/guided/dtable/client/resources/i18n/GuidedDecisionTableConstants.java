@@ -530,4 +530,20 @@ public interface GuidedDecisionTableConstants
 
     String DataCopiedToClipboardMessage();
 
+    String HitPolicy();
+
+    String NoneHitPolicy();
+
+    String UniqueHitPolicy();
+
+    String FirstHitPolicy();
+
+    String RuleOrderHitPolicy();
+
+    String None();
+
+    String HasPriorityOverRow();
+
+    String ResolvedHitPolicy();
+
 }

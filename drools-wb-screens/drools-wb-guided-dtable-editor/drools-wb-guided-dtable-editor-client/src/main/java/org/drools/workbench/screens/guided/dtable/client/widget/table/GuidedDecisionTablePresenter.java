@@ -64,6 +64,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLCon
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.models.guided.dtable.shared.validation.HitPolicyValidation;
 import org.drools.workbench.screens.guided.dtable.client.GuidedDecisionTable;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipboard;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.impl.DefaultClipboard;
@@ -787,11 +788,19 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         if ( isReadOnly() ) {
             return;
         }
-        view.newAttributeOrMetaDataColumn();
+        view.newAttributeOrMetaDataColumn( getReservedAttributeNames() );
     }
 
-    @Override
-    public Set<String> getExistingAttributeNames() {
+    private Set<String> getReservedAttributeNames() {
+        final Set<String> result = new HashSet<>();
+
+        result.addAll( getExistingAttributeNames() );
+        result.addAll( HitPolicyValidation.getReservedAttributes( model.getHitPolicy() ) );
+
+        return result;
+    }
+
+    private Set<String> getExistingAttributeNames() {
         final Set<String> existingAttributeNames = new HashSet<String>();
         for ( AttributeCol52 attributeCol : model.getAttributeCols() ) {
             existingAttributeNames.add( attributeCol.getAttribute() );

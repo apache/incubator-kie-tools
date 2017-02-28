@@ -19,6 +19,7 @@ package org.drools.workbench.services.verifier.core.checks;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
@@ -28,8 +29,10 @@ import org.drools.workbench.services.verifier.core.checks.base.SingleCheck;
 public class DetectMissingConditionCheck
         extends SingleCheck {
 
-    public DetectMissingConditionCheck( final RuleInspector ruleInspector ) {
+    public DetectMissingConditionCheck( final RuleInspector ruleInspector,
+                                        final AnalyzerConfiguration configuration ) {
         super( ruleInspector,
+               configuration,
                CheckType.MISSING_RESTRICTION );
     }
 
@@ -43,8 +46,14 @@ public class DetectMissingConditionCheck
     }
 
     @Override
-    public Issue getIssue() {
-        return new Issue( Severity.NOTE,
+    protected Severity getDefaultSeverity() {
+        return Severity.NOTE;
+    }
+
+    @Override
+    protected Issue makeIssue( final Severity severity,
+                               final CheckType checkType ) {
+        return new Issue( severity,
                           checkType,
                           new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) )
         );

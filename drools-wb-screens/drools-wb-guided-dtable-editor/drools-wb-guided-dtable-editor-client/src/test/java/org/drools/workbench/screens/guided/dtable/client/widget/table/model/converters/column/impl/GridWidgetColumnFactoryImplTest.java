@@ -79,6 +79,8 @@ public class GridWidgetColumnFactoryImplTest extends BaseConverterTest {
         factory = new GridWidgetColumnFactoryImpl();
         factory.setConverters( getConverters() );
 
+        when( model.getHitPolicy() ).thenReturn( GuidedDecisionTable52.HitPolicy.NONE );
+
         access = new GuidedDecisionTablePresenter.Access();
     }
 

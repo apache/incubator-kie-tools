@@ -75,13 +75,17 @@ public class DetectDeficientRowsCheck
     }
 
     @Override
-    public Issue getIssue() {
-        Issue issue = new Issue( Severity.WARNING,
-                                 checkType,
-                                 new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) )
-        );
+    protected Severity getDefaultSeverity() {
+        return Severity.WARNING;
+    }
 
-        return issue;
+    @Override
+    protected Issue makeIssue( final Severity severity,
+                               final CheckType checkType ) {
+        return new Issue( severity,
+                          checkType,
+                          new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) )
+        );
     }
 
 }

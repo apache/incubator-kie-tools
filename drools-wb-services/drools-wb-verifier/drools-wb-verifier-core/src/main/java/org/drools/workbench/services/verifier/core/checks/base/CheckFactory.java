@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
-import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckConfiguration;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.workbench.services.verifier.core.checks.DetectConflictingRowsCheck;
 import org.drools.workbench.services.verifier.core.checks.DetectDeficientRowsCheck;
@@ -44,40 +44,51 @@ import org.uberfire.commons.validation.PortablePreconditions;
  */
 public class CheckFactory {
 
-    private final CheckWhiteList checkWhiteList;
+    private final CheckConfiguration checkConfiguration;
     private final AnalyzerConfiguration configuration;
 
     public CheckFactory( final AnalyzerConfiguration configuration ) {
         this.configuration = PortablePreconditions.checkNotNull( "configuration",
                                                                  configuration );
-        checkWhiteList = PortablePreconditions.checkNotNull( "checkWhiteList",
-                                                             configuration.getCheckWhiteList() );
+        checkConfiguration = PortablePreconditions.checkNotNull( "checkWhiteList",
+                                                                 configuration.getCheckConfiguration() );
     }
 
     protected Set<Check> makeSingleChecks( final RuleInspector ruleInspector ) {
-        return new HashSet<>( filter( new DetectImpossibleMatchCheck( ruleInspector ),
-                                      new DetectMultipleValuesForOneActionCheck( ruleInspector ),
-                                      new DetectEmptyRowCheck( ruleInspector ),
-                                      new DetectMissingActionCheck( ruleInspector ),
-                                      new DetectMissingConditionCheck( ruleInspector ),
+        return new HashSet<>( filter( new DetectImpossibleMatchCheck( ruleInspector,
+                                                                      configuration ),
+                                      new DetectMultipleValuesForOneActionCheck( ruleInspector,
+                                                                                 configuration  ),
+                                      new DetectEmptyRowCheck( ruleInspector,
+                                                               configuration  ),
+                                      new DetectMissingActionCheck( ruleInspector,
+                                                                    configuration ),
+                                      new DetectMissingConditionCheck( ruleInspector,
+                                                                       configuration  ),
                                       new DetectDeficientRowsCheck( ruleInspector,
                                                      configuration ),
                                       new RangeCheck( ruleInspector,
                                                       configuration ),
-                                      new DetectRedundantActionFactFieldCheck( ruleInspector ),
-                                      new DetectRedundantActionValueCheck( ruleInspector ),
-                                      new DetectRedundantConditionsCheck( ruleInspector ) ) );
+                                      new DetectRedundantActionFactFieldCheck( ruleInspector,
+                                                                               configuration  ),
+                                      new DetectRedundantActionValueCheck( ruleInspector,
+                                                                           configuration  ),
+                                      new DetectRedundantConditionsCheck( ruleInspector,
+                                                                          configuration  ) ) );
     }
 
     protected Optional<PairCheckBundle> makePairRowCheck( final RuleInspector ruleInspector,
-                                                final RuleInspector other ) {
+                                                          final RuleInspector other ) {
 
         final List<Check> filteredSet = filter( new DetectConflictingRowsCheck( ruleInspector,
-                                                                                other ),
+                                                                                other,
+                                                                                configuration  ),
                                                 new DetectRedundantRowsCheck( ruleInspector,
-                                                                              other ),
+                                                                              other,
+                                                                              configuration  ),
                                                 new SingleHitCheck( ruleInspector,
-                                                                    other ) );
+                                                                    other,
+                                                                    configuration ) );
 
         if ( filteredSet.isEmpty() ) {
             return Optional.empty();
@@ -92,7 +103,7 @@ public class CheckFactory {
         final ArrayList<Check> checkHashSet = new ArrayList<>();
 
         for ( final Check check : checks ) {
-            if ( check.isActive( checkWhiteList ) ) {
+            if ( check.isActive( checkConfiguration ) ) {
                 checkHashSet.add( check );
             }
         }

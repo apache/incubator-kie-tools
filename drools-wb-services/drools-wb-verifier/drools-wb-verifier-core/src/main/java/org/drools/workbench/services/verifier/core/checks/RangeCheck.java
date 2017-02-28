@@ -126,8 +126,14 @@ public class RangeCheck
     }
 
     @Override
-    public Issue getIssue() {
-        return new Issue( Severity.NOTE,
+    protected Severity getDefaultSeverity() {
+        return Severity.NOTE;
+    }
+
+    @Override
+    protected Issue makeIssue( final Severity severity,
+                               final CheckType checkType ) {
+        return new Issue( severity,
                           checkType,
                           new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) )
         );

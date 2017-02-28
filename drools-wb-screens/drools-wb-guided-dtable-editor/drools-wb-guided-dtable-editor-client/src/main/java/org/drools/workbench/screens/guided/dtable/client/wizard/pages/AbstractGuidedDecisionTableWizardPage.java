@@ -42,10 +42,11 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     protected AsyncPackageDataModelOracle oracle;
     protected CellUtilities cellUtilities;
     protected ColumnUtilities columnUtilities;
-
     protected Path contextPath;
+
     protected String baseFileName;
     protected GuidedDecisionTable52.TableFormat tableFormat;
+    protected GuidedDecisionTable52.HitPolicy hitPolicy;
 
     @Override
     public Widget asWidget() {
@@ -55,12 +56,14 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     public void setContent( final Path contextPath,
                             final String baseFileName,
                             final GuidedDecisionTable52.TableFormat tableFormat,
+                            final GuidedDecisionTable52.HitPolicy hitPolicy,
                             final AsyncPackageDataModelOracle oracle,
                             final GuidedDecisionTable52 model,
                             final Validator validator ) {
         this.contextPath = contextPath;
         this.baseFileName = baseFileName;
         this.tableFormat = tableFormat;
+        this.hitPolicy = hitPolicy;
         this.oracle = oracle;
         this.model = model;
         this.validator = validator;

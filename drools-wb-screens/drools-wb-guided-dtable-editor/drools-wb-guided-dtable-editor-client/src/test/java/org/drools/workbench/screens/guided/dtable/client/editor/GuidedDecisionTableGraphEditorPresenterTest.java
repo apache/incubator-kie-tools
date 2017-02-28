@@ -269,6 +269,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                 times( 1 ) ).createNewGuidedDecisionTable( eq( activePackageResourcesPath ),
                                                            eq( "" ),
                                                            eq( GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY ),
+                                                           eq( GuidedDecisionTable52.HitPolicy.NONE ),
                                                            eq( view ),
                                                            onSaveSuccessCallbackCaptor.capture() );
 

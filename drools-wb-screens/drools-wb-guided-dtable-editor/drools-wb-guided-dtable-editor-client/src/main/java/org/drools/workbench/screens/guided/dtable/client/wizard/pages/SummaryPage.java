@@ -61,6 +61,7 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
         view.setBaseFileName( baseFileName );
         view.setContextPath( contextPath );
         view.setTableFormat( tableFormat );
+        view.setHitPolicy( hitPolicy );
         content.setWidget( view );
         stateChanged();
     }

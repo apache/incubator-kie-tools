@@ -26,6 +26,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.resources.HitPolicyInternationalizer;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.gwtbootstrap3.client.ui.FormControlStatic;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -58,6 +59,9 @@ public class SummaryPageViewImpl extends Composite
 
     @UiField
     FormControlStatic lblTableFormat;
+
+    @UiField
+    FormControlStatic lblHitPolicy;
 
     private String baseFileName;
 
@@ -122,7 +126,7 @@ public class SummaryPageViewImpl extends Composite
     }
 
     @Override
-    public void setTableFormat( GuidedDecisionTable52.TableFormat tableFormat ) {
+    public void setTableFormat( final GuidedDecisionTable52.TableFormat tableFormat ) {
         switch ( tableFormat ) {
             case EXTENDED_ENTRY:
                 lblTableFormat.setText( GuidedDecisionTableConstants.INSTANCE.TableFormatExtendedEntry() );
@@ -131,6 +135,11 @@ public class SummaryPageViewImpl extends Composite
                 lblTableFormat.setText( GuidedDecisionTableConstants.INSTANCE.TableFormatLimitedEntry() );
                 break;
         }
+    }
+
+    @Override
+    public void setHitPolicy( final GuidedDecisionTable52.HitPolicy hitPolicy ) {
+        lblHitPolicy.setText( HitPolicyInternationalizer.internationalize( hitPolicy ) );
     }
 
 }

@@ -15,10 +15,14 @@
  */
 package org.drools.workbench.services.verifier.api.client.reporting;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public enum CheckType {
+
     CONFLICTING_ROWS,
     DEFICIENT_ROW,
     IMPOSSIBLE_MATCH,
@@ -32,6 +36,15 @@ public enum CheckType {
     SUBSUMPTANT_ROWS,
     MISSING_RANGE,
     SINGLE_HIT_LOST,
-    EMPTY_RULE
+    EMPTY_RULE;
 
+
+    public static Set<CheckType> getRowLevelCheckTypes() {
+        return EnumSet.of(
+                CONFLICTING_ROWS,
+                DEFICIENT_ROW,
+                REDUNDANT_ROWS,
+                SUBSUMPTANT_ROWS,
+                SINGLE_HIT_LOST );
+    }
 }

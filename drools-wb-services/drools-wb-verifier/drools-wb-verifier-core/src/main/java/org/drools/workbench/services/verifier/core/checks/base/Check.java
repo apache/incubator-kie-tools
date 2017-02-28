@@ -16,7 +16,7 @@
 
 package org.drools.workbench.services.verifier.core.checks.base;
 
-import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckConfiguration;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 
 public interface Check {
@@ -27,6 +27,6 @@ public interface Check {
 
     boolean hasIssues();
 
-    boolean isActive( final CheckWhiteList whiteList );
+    boolean isActive( final CheckConfiguration checkConfiguration );
 
 }

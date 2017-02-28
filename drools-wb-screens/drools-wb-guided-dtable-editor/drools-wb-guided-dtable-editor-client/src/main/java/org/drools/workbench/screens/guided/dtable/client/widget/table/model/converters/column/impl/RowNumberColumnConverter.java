@@ -47,7 +47,7 @@ public class RowNumberColumnConverter extends BaseColumnConverterImpl {
     @Override
     public List<GridColumn.HeaderMetaData> makeHeaderMetaData( final BaseColumn column ) {
         return new ArrayList<GridColumn.HeaderMetaData>() {{
-            add( new BaseHeaderMetaData( "#",
+            add( new BaseHeaderMetaData( model.getHitPolicy().getId(),
                                          RowNumberCol52.class.getName() ) );
         }};
     }

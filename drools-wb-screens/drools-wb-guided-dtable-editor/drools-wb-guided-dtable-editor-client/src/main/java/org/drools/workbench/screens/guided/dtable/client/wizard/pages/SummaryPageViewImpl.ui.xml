@@ -49,6 +49,12 @@
           <b:FormControlStatic ui:field="lblTableFormat"/>
         </gwt:FlowPanel>
       </b:FormGroup>
+      <b:FormGroup>
+        <b:FormLabel for="lblHitPolicy" addStyleNames="col-lg-2" text="{i18n.HitPolicy}"/>
+        <gwt:FlowPanel addStyleNames="col-lg-9">
+          <b:FormControlStatic ui:field="lblHitPolicy"/>
+        </gwt:FlowPanel>
+      </b:FormGroup>
     </b:Form>
   </gwt:VerticalPanel>
 

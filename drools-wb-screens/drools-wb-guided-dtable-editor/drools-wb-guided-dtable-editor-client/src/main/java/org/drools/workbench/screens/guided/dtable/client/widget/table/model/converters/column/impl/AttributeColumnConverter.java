@@ -22,10 +22,13 @@ import javax.enterprise.context.Dependent;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.DialectUiColumn;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.SalienceUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.ListBoxStringSingletonDOMElementFactory;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxIntegerSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
@@ -45,9 +48,9 @@ public class AttributeColumnConverter extends BaseColumnConverterImpl {
         final AttributeCol52 attributeColumn = (AttributeCol52) column;
         final String attributeName = attributeColumn.getAttribute();
         if ( attributeName.equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
-            return newSalienceColumn( makeHeaderMetaData( column ),
+            return newSalienceColumn( makeSalienceHeaderMetaData( column ),
                                       Math.max( column.getWidth(),
-                                                DEFAULT_COLUMN_WIDTH ),
+                                                DEFAULT_COLUMN_WIDTH + 30 ),
                                       true,
                                       !column.isHideColumn(),
                                       access,
@@ -160,6 +163,39 @@ public class AttributeColumnConverter extends BaseColumnConverterImpl {
                                 !column.isHideColumn(),
                                 access,
                                 gridWidget );
+    }
+
+    private List<GridColumn.HeaderMetaData> makeSalienceHeaderMetaData( final BaseColumn column ) {
+        final List<GridColumn.HeaderMetaData> headerMetaData;
+
+        if ( model.getHitPolicy()
+                .equals( GuidedDecisionTable52.HitPolicy.RESOLVED_HIT ) ) {
+            headerMetaData = new ArrayList<GridColumn.HeaderMetaData>() {{
+                add( new BaseHeaderMetaData( GuidedDecisionTableConstants.INSTANCE.HasPriorityOverRow(),
+                                             AttributeCol52.class.getName() ) );
+            }};
+        } else {
+            headerMetaData = makeHeaderMetaData( column );
+        }
+        return headerMetaData;
+    }
+
+    protected GridColumn<?> newSalienceColumn( final List<GridColumn.HeaderMetaData> headerMetaData,
+                                               final double width,
+                                               final boolean isResizable,
+                                               final boolean isVisible,
+                                               final GuidedDecisionTablePresenter.Access access,
+                                               final boolean useRowNumber,
+                                               final GuidedDecisionTableView gridWidget ) {
+        return new SalienceUiColumn( headerMetaData,
+                                     width,
+                                     isResizable,
+                                     isVisible,
+                                     access,
+                                     useRowNumber,
+                                     new TextBoxIntegerSingletonDOMElementFactory( gridPanel,
+                                                                                   gridLayer,
+                                                                                   gridWidget ) );
     }
 
     protected GridColumn<String> newDialectColumn( final List<GridColumn.HeaderMetaData> headerMetaData,

@@ -16,6 +16,9 @@
 
 package org.drools.workbench.services.verifier.core.checks;
 
+import java.util.Optional;
+
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.Field;
 import org.drools.workbench.services.verifier.api.client.relations.Conflict;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
@@ -35,8 +38,10 @@ public class DetectImpossibleMatchCheck
 
     private Conflict conflict = Conflict.EMPTY;
 
-    public DetectImpossibleMatchCheck( final RuleInspector ruleInspector ) {
+    public DetectImpossibleMatchCheck( final RuleInspector ruleInspector,
+                                       final AnalyzerConfiguration configuration ) {
         super( ruleInspector,
+               configuration,
                CheckType.IMPOSSIBLE_MATCH );
     }
 
@@ -57,28 +62,56 @@ public class DetectImpossibleMatchCheck
     }
 
     @Override
-    public Issue getIssue() {
-        String fieldName = "";
-        String fieldFactType = "";
+    protected Severity getDefaultSeverity() {
+        return Severity.ERROR;
+    }
 
-        if ( conflict.getOrigin()
-                .getConflictedItem() instanceof ComparableConditionInspector ) {
-            final Field field = ( (ComparableConditionInspector) conflict.getOrigin()
-                    .getConflictedItem() ).getField();
-            fieldName = field.getName();
-            fieldFactType = field.getFactType();
-        }
-
-        return new ImpossibleMatchIssue( Severity.ERROR,
+    @Override
+    protected Issue makeIssue( final Severity severity,
+                               final CheckType checkType ) {
+        return new ImpossibleMatchIssue( severity,
                                          checkType,
                                          Integer.toString( ruleInspector.getRowIndex() + 1 ),
-                                         fieldFactType,
-                                         fieldName,
+                                         getFactType(),
+                                         getFieldName(),
                                          toHumanReadableString( conflict.getOrigin()
                                                                         .getConflictedItem() ),
                                          toHumanReadableString( conflict.getOrigin()
                                                                         .getConflictingItem() ),
                                          ruleInspector.getRowIndex() + 1 );
+    }
+
+    private String getFactType() {
+        final Optional<Field> field = getField();
+        if ( field.isPresent() ) {
+            return field.get()
+                    .getName();
+        } else {
+            return "";
+        }
+    }
+
+    private String getFieldName() {
+        final Optional<Field> field = getField();
+        if ( field.isPresent() ) {
+            return field.get()
+                    .getFactType();
+        } else {
+            return "";
+        }
+    }
+
+    private Optional<Field> getField() {
+        if ( conflict.getOrigin()
+                .getConflictedItem() instanceof ComparableConditionInspector ) {
+
+            final Field field = ( (ComparableConditionInspector) conflict.getOrigin()
+                    .getConflictedItem() ).getField();
+
+            return Optional.of( field );
+        } else {
+            return Optional.empty();
+        }
     }
 
 }

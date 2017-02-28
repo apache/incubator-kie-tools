@@ -19,6 +19,7 @@ package org.drools.workbench.services.verifier.core.checks;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.ObjectField;
 import org.drools.workbench.services.verifier.api.client.maps.util.RedundancyResult;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
@@ -36,8 +37,10 @@ public class DetectRedundantConditionsCheck
 
     private RedundancyResult<ObjectField, ConditionInspector> result;
 
-    public DetectRedundantConditionsCheck( final RuleInspector ruleInspector ) {
+    public DetectRedundantConditionsCheck( final RuleInspector ruleInspector,
+                                           final AnalyzerConfiguration configuration ) {
         super( ruleInspector,
+               configuration,
                CheckType.REDUNDANT_CONDITIONS_TITLE );
     }
 
@@ -56,17 +59,24 @@ public class DetectRedundantConditionsCheck
     }
 
     @Override
-    public Issue getIssue() {
-        return new RedundantConditionsIssue( Severity.NOTE,
-                                                    checkType,
-                                                    result.getParent()
-                                                            .getFactType(),
-                                                    result.getParent()
-                                                            .getName(),
-                                                    result.get( 0 )
-                                                            .toHumanReadableString(),
-                                                    result.get( 1 )
-                                                            .toHumanReadableString(),
-                                                    new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() +1 )));
+    protected Severity getDefaultSeverity() {
+        return Severity.NOTE;
+    }
+
+    @Override
+    protected Issue makeIssue( final Severity severity,
+                               final CheckType checkType ) {
+        return new RedundantConditionsIssue( severity,
+                                             checkType,
+                                             result.getParent()
+                                                     .getFactType(),
+                                             result.getParent()
+                                                     .getName(),
+                                             result.get( 0 )
+                                                     .toHumanReadableString(),
+                                             result.get( 1 )
+                                                     .toHumanReadableString(),
+                                             new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) ) );
     }
 }
+

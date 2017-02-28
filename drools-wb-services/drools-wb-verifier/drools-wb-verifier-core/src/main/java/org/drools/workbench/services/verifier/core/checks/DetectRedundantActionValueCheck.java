@@ -19,21 +19,21 @@ package org.drools.workbench.services.verifier.core.checks;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import org.drools.workbench.services.verifier.api.client.index.ObjectField;
-import org.drools.workbench.services.verifier.api.client.maps.util.RedundancyResult;
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.api.client.reporting.ValueForActionIsSetTwiceIssue;
 import org.drools.workbench.services.verifier.core.cache.inspectors.PatternInspector;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
-import org.drools.workbench.services.verifier.core.cache.inspectors.action.ActionInspector;
 
 public class DetectRedundantActionValueCheck
         extends DetectRedundantActionBase {
 
-    public DetectRedundantActionValueCheck( final RuleInspector ruleInspector ) {
+    public DetectRedundantActionValueCheck( final RuleInspector ruleInspector,
+                                            final AnalyzerConfiguration configuration ) {
         super( ruleInspector,
+               configuration,
                CheckType.VALUE_FOR_ACTION_IS_SET_TWICE );
     }
 
@@ -55,8 +55,14 @@ public class DetectRedundantActionValueCheck
     }
 
     @Override
-    public Issue getIssue() {
-        return new ValueForActionIsSetTwiceIssue( Severity.WARNING,
+    protected Severity getDefaultSeverity() {
+        return Severity.WARNING;
+    }
+
+    @Override
+    protected Issue makeIssue( final Severity severity,
+                               final CheckType checkType ) {
+        return new ValueForActionIsSetTwiceIssue( severity,
                                                   checkType,
                                                   result.get( 0 )
                                                           .toHumanReadableString(),

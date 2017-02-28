@@ -90,7 +90,7 @@ public class AttributeSelectorPopupTest {
     @Test
     public void alreadyUsedAttributesRemoved() {
         verify(popup).getAttributes();
-        verify(popup).getDuplicates();
+        verify(popup).getReservedAttributes();
         verify(popup.list, times(4)).addItem(anyString());
         verify(popup.list, times(2)).removeItem(1);
     }
@@ -125,7 +125,7 @@ public class AttributeSelectorPopupTest {
         }
 
         @Override
-        protected String[] getDuplicates() {
+        protected String[] getReservedAttributes() {
             return duplicates;
         }
 

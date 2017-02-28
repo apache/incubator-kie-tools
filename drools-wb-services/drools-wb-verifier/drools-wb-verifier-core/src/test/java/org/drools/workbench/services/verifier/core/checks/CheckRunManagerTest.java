@@ -174,13 +174,13 @@ public class CheckRunManagerTest {
     }
 
     private void assertHasIssues( final RuleInspector ruleInspector ) {
-        for ( Check check : ruleInspector.getChecks() ) {
+        for ( final Check check : ruleInspector.getChecks() ) {
             assertTrue( check.hasIssues() );
         }
     }
 
     private void assertNoIssues( final RuleInspector ruleInspector ) {
-        for ( Check check : ( ruleInspector.getChecks() ) ) {
+        for ( final Check check : ( ruleInspector.getChecks() ) ) {
             assertFalse( check.hasIssues() );
         }
     }
@@ -190,6 +190,7 @@ public class CheckRunManagerTest {
 
         public MockSingleCheck( RuleInspector ruleInspector ) {
             super( ruleInspector,
+                   CheckRunManagerTest.this.configuration,
                    CheckType.REDUNDANT_ROWS );
         }
 
@@ -199,8 +200,14 @@ public class CheckRunManagerTest {
         }
 
         @Override
-        public Issue getIssue() {
-            return new Issue( Severity.NOTE,
+        protected Severity getDefaultSeverity() {
+            return Severity.NOTE;
+        }
+
+        @Override
+        protected Issue makeIssue( final Severity severity,
+                                   final CheckType checkType ) {
+            return new Issue( severity,
                               checkType,
                               Collections.emptySet() );
         }

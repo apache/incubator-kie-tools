@@ -27,12 +27,12 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidge
 
 public class GuidedDecisionTableAttributeSelectorPopup extends AttributeSelectorPopup {
 
-    private final String[] existingAttributeNames;
+    private final String[] reservedAttributeNames;
     private final GuidedDecisionTableView.Presenter presenter;
 
-    public GuidedDecisionTableAttributeSelectorPopup( String[] existingAttributeNames,
-                                                      GuidedDecisionTableView.Presenter presenter ) {
-        this.existingAttributeNames = existingAttributeNames;
+    public GuidedDecisionTableAttributeSelectorPopup( final String[] reservedAttributeNames,
+                                                      final GuidedDecisionTableView.Presenter presenter ) {
+        this.reservedAttributeNames = reservedAttributeNames;
         this.presenter = presenter;
 
         initialize();
@@ -47,8 +47,8 @@ public class GuidedDecisionTableAttributeSelectorPopup extends AttributeSelector
     }
 
     @Override
-    protected String[] getDuplicates() {
-        return existingAttributeNames;
+    protected String[] getReservedAttributes() {
+        return reservedAttributeNames;
     }
 
     @Override

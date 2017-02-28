@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.services.verifier.core.checks.base;
 
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckConfiguration;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 
 /**
@@ -27,9 +29,13 @@ public abstract class PairCheck
     protected final RuleInspector other;
 
     public PairCheck( final RuleInspector ruleInspector,
-                      final RuleInspector other ) {
+                      final RuleInspector other,
+                      final AnalyzerConfiguration configuration ) {
+        super( configuration );
+
         this.ruleInspector = ruleInspector;
         this.other = other;
     }
+
 }
 

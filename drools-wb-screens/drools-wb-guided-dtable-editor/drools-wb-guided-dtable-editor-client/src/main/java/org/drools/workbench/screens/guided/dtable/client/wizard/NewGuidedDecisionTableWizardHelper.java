@@ -73,6 +73,7 @@ public class NewGuidedDecisionTableWizardHelper {
     public void createNewGuidedDecisionTable( final Path contextPath,
                                               final String baseFileName,
                                               final GuidedDecisionTable52.TableFormat tableFormat,
+                                              final GuidedDecisionTable52.HitPolicy hitPolicy,
                                               final HasBusyIndicator view,
                                               final RemoteCallback<Path> onSaveSuccessCallback ) {
         PortablePreconditions.checkNotNull( "contextPath",
@@ -81,6 +82,8 @@ public class NewGuidedDecisionTableWizardHelper {
                                             baseFileName );
         PortablePreconditions.checkNotNull( "tableFormat",
                                             tableFormat );
+        PortablePreconditions.checkNotNull( "hitPolicy",
+                                            hitPolicy );
         PortablePreconditions.checkNotNull( "view",
                                             view );
         PortablePreconditions.checkNotNull( "onSaveSuccessCallback",
@@ -101,6 +104,7 @@ public class NewGuidedDecisionTableWizardHelper {
                 wizard.setContent( contextPath,
                                    baseFileName,
                                    tableFormat,
+                                   hitPolicy,
                                    oracle,
                                    new NewGuidedDecisionTableWizard.GuidedDecisionTableWizardHandler() {
 

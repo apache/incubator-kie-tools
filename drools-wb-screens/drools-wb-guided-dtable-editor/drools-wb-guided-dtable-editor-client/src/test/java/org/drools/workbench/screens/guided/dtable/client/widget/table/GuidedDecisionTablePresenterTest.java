@@ -660,41 +660,6 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void newAttributeOrMetaDataColumn() {
-        dtPresenter.newAttributeOrMetaDataColumn();
-
-        verify( view,
-                times( 1 ) ).newAttributeOrMetaDataColumn();
-    }
-
-    @Test
-    public void getExistingAttributeNames() {
-        final AttributeCol52 attribute1 = new AttributeCol52();
-        attribute1.setAttribute( RuleAttributeWidget.ENABLED_ATTR );
-        final AttributeCol52 attribute2 = new AttributeCol52();
-        attribute2.setAttribute( RuleAttributeWidget.AUTO_FOCUS_ATTR );
-        dtPresenter.getModel().getAttributeCols().add( attribute1 );
-        dtPresenter.getModel().getAttributeCols().add( attribute2 );
-
-        final Set<String> existingAttributeNames = dtPresenter.getExistingAttributeNames();
-
-        assertEquals( 2,
-                      existingAttributeNames.size() );
-        assertTrue( existingAttributeNames.contains( RuleAttributeWidget.ENABLED_ATTR ) );
-        assertTrue( existingAttributeNames.contains( RuleAttributeWidget.AUTO_FOCUS_ATTR ) );
-    }
-
-    @Test
-    public void isMetaDataUnique() {
-        final MetadataCol52 metadata = new MetadataCol52();
-        metadata.setMetadata( "metadata" );
-        dtPresenter.getModel().getMetadataCols().add( metadata );
-
-        assertFalse( dtPresenter.isMetaDataUnique( "metadata" ) );
-        assertTrue( dtPresenter.isMetaDataUnique( "cheese" ) );
-    }
-
-    @Test
     public void newConditionColumn() {
         dtPresenter.getModel().setTableFormat( GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY );
 
@@ -1069,40 +1034,6 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void appendAttributeColumn() throws ModelSynchronizer.MoveColumnVetoException {
-        reset( modellerPresenter );
-
-        final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute( RuleAttributeWidget.AUTO_FOCUS_ATTR );
-
-        dtPresenter.appendColumn( column );
-
-        verify( synchronizer,
-                times( 1 ) ).appendColumn( eq( column ) );
-        verify( refreshAttributesPanelEvent,
-                times( 1 ) ).fire( any( RefreshAttributesPanelEvent.class ) );
-        verify( modellerPresenter,
-                times( 1 ) ).updateLinks();
-    }
-
-    @Test
-    public void appendMetadataColumn() throws ModelSynchronizer.MoveColumnVetoException {
-        reset( modellerPresenter );
-
-        final MetadataCol52 column = new MetadataCol52();
-        column.setMetadata( "metadata" );
-
-        dtPresenter.appendColumn( column );
-
-        verify( synchronizer,
-                times( 1 ) ).appendColumn( eq( column ) );
-        verify( refreshMetaDataPanelEvent,
-                times( 1 ) ).fire( any( RefreshMetaDataPanelEvent.class ) );
-        verify( modellerPresenter,
-                times( 1 ) ).updateLinks();
-    }
-
-    @Test
     public void appendPatternAndConditionColumn() throws ModelSynchronizer.MoveColumnVetoException {
         reset( modellerPresenter );
 
@@ -1177,36 +1108,6 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void deleteAttributeColumn() throws ModelSynchronizer.MoveColumnVetoException {
-        final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute( RuleAttributeWidget.AUTO_FOCUS_ATTR );
-        dtPresenter.appendColumn( column );
-        reset( modellerPresenter );
-
-        dtPresenter.deleteColumn( column );
-
-        verify( synchronizer,
-                times( 1 ) ).deleteColumn( eq( column ) );
-        verify( modellerPresenter,
-                times( 1 ) ).updateLinks();
-    }
-
-    @Test
-    public void deleteMetadataColumn() throws ModelSynchronizer.MoveColumnVetoException {
-        final MetadataCol52 column = new MetadataCol52();
-        column.setMetadata( "metadata" );
-        dtPresenter.appendColumn( column );
-        reset( modellerPresenter );
-
-        dtPresenter.deleteColumn( column );
-
-        verify( synchronizer,
-                times( 1 ) ).deleteColumn( eq( column ) );
-        verify( modellerPresenter,
-                times( 1 ) ).updateLinks();
-    }
-
-    @Test
     public void deleteConditionColumn() throws ModelSynchronizer.MoveColumnVetoException {
         final Pattern52 pattern = new Pattern52();
         pattern.setFactType( "FactType" );
@@ -1240,46 +1141,6 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         verify( synchronizer,
                 times( 1 ) ).deleteColumn( eq( column ) );
-        verify( modellerPresenter,
-                times( 1 ) ).updateLinks();
-    }
-
-    @Test
-    public void updateAttributeColumn() throws ModelSynchronizer.MoveColumnVetoException {
-        final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute( RuleAttributeWidget.AUTO_FOCUS_ATTR );
-        dtPresenter.appendColumn( column );
-        reset( modellerPresenter );
-
-        final AttributeCol52 update = new AttributeCol52();
-        update.setAttribute( RuleAttributeWidget.ENABLED_ATTR );
-
-        dtPresenter.updateColumn( column,
-                                  update );
-
-        verify( synchronizer,
-                times( 1 ) ).updateColumn( eq( column ),
-                                           eq( update ) );
-        verify( modellerPresenter,
-                times( 1 ) ).updateLinks();
-    }
-
-    @Test
-    public void updateMetadataColumn() throws ModelSynchronizer.MoveColumnVetoException {
-        final MetadataCol52 column = new MetadataCol52();
-        column.setMetadata( "metadata" );
-        dtPresenter.appendColumn( column );
-        reset( modellerPresenter );
-
-        final MetadataCol52 update = new MetadataCol52();
-        column.setMetadata( "update" );
-
-        dtPresenter.updateColumn( column,
-                                  update );
-
-        verify( synchronizer,
-                times( 1 ) ).updateColumn( eq( column ),
-                                           eq( update ) );
         verify( modellerPresenter,
                 times( 1 ) ).updateLinks();
     }

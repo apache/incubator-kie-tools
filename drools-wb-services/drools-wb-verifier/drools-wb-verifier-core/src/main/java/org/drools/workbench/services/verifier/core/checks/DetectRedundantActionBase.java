@@ -16,6 +16,7 @@
 
 package org.drools.workbench.services.verifier.core.checks;
 
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.ObjectField;
 import org.drools.workbench.services.verifier.api.client.maps.util.RedundancyResult;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
@@ -32,8 +33,10 @@ public abstract class DetectRedundantActionBase
     protected RedundancyResult<ObjectField, ActionInspector> result;
 
     DetectRedundantActionBase( final RuleInspector ruleInspector,
+                               final AnalyzerConfiguration configuration,
                                final CheckType checkType ) {
         super( ruleInspector,
+               configuration,
                checkType );
     }
 

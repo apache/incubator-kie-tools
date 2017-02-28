@@ -27,13 +27,13 @@ public class AnalyzerConfiguration {
     private final UUIDKeyProvider uuidKeyProvider;
     private final String webWorkerUUID;
     private final DateTimeFormatProvider dateTimeFormatter;
-    private final CheckWhiteList checkWhiteList;
+    private final CheckConfiguration checkConfiguration;
     private final RunnerType runnerType;
 
     public AnalyzerConfiguration( final String webWorkerUUID,
                                   final DateTimeFormatProvider dateTimeFormatter,
                                   final UUIDKeyProvider uuidKeyProvider,
-                                  final CheckWhiteList checkWhiteList,
+                                  final CheckConfiguration checkConfiguration,
                                   final RunnerType runnerType ) {
         this.webWorkerUUID = PortablePreconditions.checkNotNull( "webWorkerUUID",
                                                                  webWorkerUUID );
@@ -41,8 +41,8 @@ public class AnalyzerConfiguration {
                                                                      dateTimeFormatter );
         this.uuidKeyProvider = PortablePreconditions.checkNotNull( "uuidKeyProvider",
                                                                    uuidKeyProvider );
-        this.checkWhiteList = PortablePreconditions.checkNotNull( "checkWhiteList",
-                                                                  checkWhiteList );
+        this.checkConfiguration = PortablePreconditions.checkNotNull( "checkConfiguration",
+                                                                      checkConfiguration );
         this.runnerType = PortablePreconditions.checkNotNull( "runnerType",
                                                               runnerType );
     }
@@ -59,8 +59,8 @@ public class AnalyzerConfiguration {
         return dateTimeFormatter.format( dateValue );
     }
 
-    public CheckWhiteList getCheckWhiteList() {
-        return checkWhiteList;
+    public CheckConfiguration getCheckConfiguration() {
+        return checkConfiguration;
     }
 
     public RunnerType getRunnerType() {

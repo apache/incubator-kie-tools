@@ -15,7 +15,8 @@
  */
 package org.drools.workbench.services.verifier.core.checks;
 
-import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckConfiguration;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
@@ -26,12 +27,17 @@ import org.drools.workbench.services.verifier.core.checks.base.PairCheck;
 public class SingleHitCheck
         extends PairCheck {
 
-    private static final CheckType CHECK_TYPE = CheckType.SINGLE_HIT_LOST;
-
     public SingleHitCheck( final RuleInspector ruleInspector,
-                           final RuleInspector other ) {
+                           final RuleInspector other,
+                           final AnalyzerConfiguration configuration ) {
         super( ruleInspector,
-               other );
+               other,
+               configuration );
+    }
+
+    @Override
+    protected CheckType getCheckType() {
+        return CheckType.SINGLE_HIT_LOST;
     }
 
     @Override
@@ -45,16 +51,17 @@ public class SingleHitCheck
     }
 
     @Override
-    public Issue getIssue() {
-        return new SingleHitLostIssue( Severity.NOTE,
-                                       CHECK_TYPE,
+    protected Severity getDefaultSeverity() {
+        return Severity.NOTE;
+    }
+
+    @Override
+    protected Issue makeIssue( final Severity severity,
+                               final CheckType checkType ) {
+        return new SingleHitLostIssue( severity,
+                                       checkType,
                                        Integer.toString( ruleInspector.getRowIndex() + 1 ),
                                        Integer.toString( other.getRowIndex() + 1 ) );
     }
 
-    @Override
-    public boolean isActive( final CheckWhiteList whiteList ) {
-        return whiteList.getAllowedCheckTypes()
-                .contains( CHECK_TYPE );
-    }
 }

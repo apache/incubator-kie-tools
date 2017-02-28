@@ -19,6 +19,7 @@ package org.drools.workbench.services.verifier.core.checks;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.relations.Conflict;
 import org.drools.workbench.services.verifier.api.client.relations.HumanReadable;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
@@ -34,8 +35,10 @@ public class DetectMultipleValuesForOneActionCheck
 
     private Conflict conflict = Conflict.EMPTY;
 
-    public DetectMultipleValuesForOneActionCheck( final RuleInspector ruleInspector ) {
+    public DetectMultipleValuesForOneActionCheck( final RuleInspector ruleInspector,
+                                                  final AnalyzerConfiguration configuration ) {
         super( ruleInspector,
+               configuration,
                CheckType.MULTIPLE_VALUES_FOR_ONE_ACTION );
     }
 
@@ -59,8 +62,14 @@ public class DetectMultipleValuesForOneActionCheck
     }
 
     @Override
-    public Issue getIssue() {
-        return new MultipleValuesForOneActionIssue( Severity.WARNING,
+    protected Severity getDefaultSeverity() {
+        return Severity.WARNING;
+    }
+
+    @Override
+    protected Issue makeIssue( final Severity severity,
+                               final CheckType checkType ) {
+        return new MultipleValuesForOneActionIssue( severity,
                                                     checkType,
                                                     HumanReadable.toHumanReadableString( conflict.getConflictedItem() ),
                                                     HumanReadable.toHumanReadableString( conflict.getConflictingItem() ),

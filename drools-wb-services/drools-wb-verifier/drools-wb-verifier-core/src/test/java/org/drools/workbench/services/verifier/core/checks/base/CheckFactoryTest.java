@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.services.verifier.core.checks.base;
 
-import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckConfiguration;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.workbench.services.verifier.core.checks.AnalyzerConfigurationMock;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class CheckFactoryTest {
     public void emptyWhiteList() throws
                                  Exception {
 
-        final AnalyzerConfigurationMock configuration = new AnalyzerConfigurationMock( CheckWhiteList.newEmpty() );
+        final AnalyzerConfigurationMock configuration = new AnalyzerConfigurationMock( CheckConfiguration.newEmpty() );
 
         assertTrue( new CheckFactory( configuration ).makeSingleChecks( mock( RuleInspector.class ) )
                             .isEmpty() );
@@ -42,7 +42,7 @@ public class CheckFactoryTest {
     public void defaultWhiteList() throws
                                    Exception {
 
-        final AnalyzerConfigurationMock configuration = new AnalyzerConfigurationMock( CheckWhiteList.newDefault() );
+        final AnalyzerConfigurationMock configuration = new AnalyzerConfigurationMock( CheckConfiguration.newDefault() );
 
         assertFalse( new CheckFactory( configuration ).makeSingleChecks( mock( RuleInspector.class ) )
                              .isEmpty() );

@@ -57,7 +57,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
         dtPresenter.newAttributeOrMetaDataColumn();
 
         verify( view,
-                never() ).newAttributeOrMetaDataColumn();
+                never() ).newAttributeOrMetaDataColumn( any() );
     }
 
     @Test

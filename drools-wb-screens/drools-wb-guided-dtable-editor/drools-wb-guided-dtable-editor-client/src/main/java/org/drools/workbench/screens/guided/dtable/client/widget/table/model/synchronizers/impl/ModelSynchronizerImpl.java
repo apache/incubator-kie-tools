@@ -33,11 +33,11 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AfterColumnDeleted;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AfterColumnInserted;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.ValidateEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.SalienceUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.GridWidgetCellFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.GridWidgetColumnFactory;
@@ -46,11 +46,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.sync
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
-import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AfterColumnDeleted;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AfterColumnInserted;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AppendRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
@@ -82,6 +79,8 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
     private DependentEnumsUtilities dependentEnumsUtilities;
     private GridWidgetCellFactory gridWidgetCellFactory;
     private EventBus eventBus;
+
+    private SystemControlledColumnValuesSynchronizer systemControlledColumnValuesSynchronizer;
 
     private final List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> synchronizers = new ArrayList<>();
 
@@ -125,6 +124,12 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                                                                          gridWidgetCellFactory );
         this.eventBus = PortablePreconditions.checkNotNull( "eventBus",
                                                             eventBus );
+
+        this.systemControlledColumnValuesSynchronizer = new SystemControlledColumnValuesSynchronizer( model,
+                                                                                                      uiModel,
+                                                                                                      gridWidgetCellFactory,
+                                                                                                      cellUtilities,
+                                                                                                      columnUtilities );
 
         for ( Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData> synchronizer : synchronizers ) {
             synchronizer.initialise( model,
@@ -277,7 +282,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
                 final boolean isSalienceUseReverseOrderUpdated = BaseColumnFieldDiffImpl.hasChanged( AttributeCol52.FIELD_REVERSE_ORDER,
                                                                                                      diffs );
                 if ( isSalienceUseRowNumberUpdated || isSalienceUseReverseOrderUpdated ) {
-                    updateSystemControlledColumnValues();
+                    systemControlledColumnValuesSynchronizer.updateSystemControlledColumnValues();
                 }
                 return diffs;
             }
@@ -296,7 +301,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
             }
         }
         fireAppendRowEvent();
-        updateSystemControlledColumnValues();
+        systemControlledColumnValuesSynchronizer.appendRow();
         fireUpdateColumnDataEvent();
     }
 
@@ -310,7 +315,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
             }
         }
         fireInsertRowEvent( rowIndex );
-        updateSystemControlledColumnValues();
+        systemControlledColumnValuesSynchronizer.insertRow( rowIndex );
         fireUpdateColumnDataEvent();
     }
 
@@ -325,7 +330,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
             }
         }
         fireDeleteRowEvent( rowIndex );
-        updateSystemControlledColumnValues();
+        systemControlledColumnValuesSynchronizer.deleteRow( rowIndex );
         fireUpdateColumnDataEvent();
     }
 
@@ -435,69 +440,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
 
     @Override
     public void updateSystemControlledColumnValues() {
-        for ( BaseColumn column : model.getExpandedColumns() ) {
-            if ( column instanceof RowNumberCol52 ) {
-                updateRowNumberColumnValues( (RowNumberCol52) column );
-
-            } else if ( column instanceof AttributeCol52 ) {
-                final AttributeCol52 attrCol = (AttributeCol52) column;
-                if ( attrCol.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
-                    updateSalienceColumnValues( attrCol );
-                }
-            }
-        }
-    }
-
-    // Update Row Number column values
-    private void updateRowNumberColumnValues( final RowNumberCol52 modelColumn ) {
-        final int iModelColumn = model.getExpandedColumns().indexOf( modelColumn );
-        for ( int rowNumber = 0; rowNumber < model.getData().size(); rowNumber++ ) {
-            final List<DTCellValue52> modelRow = model.getData().get( rowNumber );
-            final DTCellValue52 modelCell = modelRow.get( iModelColumn );
-            modelCell.setNumericValue( rowNumber + 1 );
-
-            uiModel.setCellInternal( rowNumber,
-                                     iModelColumn,
-                                     gridWidgetCellFactory.convertCell( modelCell,
-                                                                        modelColumn,
-                                                                        cellUtilities,
-                                                                        columnUtilities ) );
-        }
-    }
-
-    // Update Salience column definition and values
-    private void updateSalienceColumnValues( final AttributeCol52 modelColumn ) {
-        final int iModelColumn = model.getExpandedColumns().indexOf( modelColumn );
-        final GridColumn<?> uiColumn = uiModel.getColumns().get( iModelColumn );
-        if ( uiColumn instanceof SalienceUiColumn ) {
-            ( (SalienceUiColumn) uiColumn ).setUseRowNumber( modelColumn.isUseRowNumber() );
-        }
-
-        //If Salience values are-user defined, exit
-        if ( !modelColumn.isUseRowNumber() ) {
-            return;
-        }
-
-        //If Salience values are reverse order derive them and update column
-        int salience = ( modelColumn.isReverseOrder() ? model.getData().size() : 1 );
-        for ( int rowNumber = 0; rowNumber < model.getData().size(); rowNumber++ ) {
-            final List<DTCellValue52> modelRow = model.getData().get( rowNumber );
-            final DTCellValue52 modelCell = modelRow.get( iModelColumn );
-            modelCell.setNumericValue( salience );
-
-            uiModel.setCellInternal( rowNumber,
-                                     iModelColumn,
-                                     gridWidgetCellFactory.convertCell( modelCell,
-                                                                        modelColumn,
-                                                                        cellUtilities,
-                                                                        columnUtilities ) );
-            if ( modelColumn.isReverseOrder() ) {
-                salience--;
-            } else {
-                salience++;
-            }
-        }
-        uiModel.indexColumn( iModelColumn );
+        systemControlledColumnValuesSynchronizer.updateSystemControlledColumnValues();
     }
 
     @Override

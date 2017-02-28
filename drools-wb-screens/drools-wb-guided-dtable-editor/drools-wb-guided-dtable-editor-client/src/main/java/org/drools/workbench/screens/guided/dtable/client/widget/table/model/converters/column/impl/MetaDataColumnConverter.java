@@ -20,14 +20,19 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.PriorityListUiColumn;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.ListBoxStringSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 
 @Dependent
-public class MetaDataColumnConverter extends BaseColumnConverterImpl {
+public class MetaDataColumnConverter
+        extends BaseColumnConverterImpl {
 
     @Override
     public boolean handles( final BaseColumn column ) {
@@ -38,13 +43,32 @@ public class MetaDataColumnConverter extends BaseColumnConverterImpl {
     public GridColumn<?> convertColumn( final BaseColumn column,
                                         final GuidedDecisionTablePresenter.Access access,
                                         final GuidedDecisionTableView gridWidget ) {
-        return newStringColumn( makeHeaderMetaData( column ),
-                                Math.max( column.getWidth(),
-                                          DEFAULT_COLUMN_WIDTH ),
-                                true,
-                                !column.isHideColumn(),
-                                access,
-                                gridWidget );
+        final MetadataCol52 metadataCol = (MetadataCol52) column;
+
+        if ( GuidedDecisionTable52.HitPolicy.RESOLVED_HIT_METADATA_NAME.equals( metadataCol.getMetadata() ) ) {
+            return new PriorityListUiColumn( makePriorityHeaderMetaData(),
+                                             Math.max( column.getWidth(),
+                                                       DEFAULT_COLUMN_WIDTH + 20 ),
+                                             access,
+                                             new ListBoxStringSingletonDOMElementFactory( gridPanel,
+                                                                                          gridLayer,
+                                                                                          gridWidget ));
+        } else {
+            return newStringColumn( makeHeaderMetaData( column ),
+                                    Math.max( column.getWidth(),
+                                              DEFAULT_COLUMN_WIDTH ),
+                                    true,
+                                    !column.isHideColumn(),
+                                    access,
+                                    gridWidget );
+        }
+    }
+
+    private List<GridColumn.HeaderMetaData> makePriorityHeaderMetaData() {
+        return new ArrayList<GridColumn.HeaderMetaData>() {{
+            add( new BaseHeaderMetaData( GuidedDecisionTableConstants.INSTANCE.HasPriorityOverRow(),
+                                         MetadataCol52.class.getName() ) );
+        }};
     }
 
     @Override

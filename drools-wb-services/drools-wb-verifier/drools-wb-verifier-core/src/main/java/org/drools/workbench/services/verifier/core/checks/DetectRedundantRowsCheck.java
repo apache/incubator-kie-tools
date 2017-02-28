@@ -18,7 +18,8 @@ package org.drools.workbench.services.verifier.core.checks;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckConfiguration;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
@@ -34,30 +35,44 @@ public class DetectRedundantRowsCheck
     private boolean allowSubsumptionReporting = true;
 
     public DetectRedundantRowsCheck( final RuleInspector ruleInspector,
-                                     final RuleInspector other ) {
+                                     final RuleInspector other,
+                                     final AnalyzerConfiguration configuration ) {
         super( ruleInspector,
-               other );
+               other,
+               configuration );
     }
 
+
     @Override
-    public Issue getIssue() {
-        return new Issue( Severity.WARNING,
-                          issueType,
+    protected Issue makeIssue( final Severity severity,
+                               final CheckType checkType ) {
+        return new Issue( severity,
+                          checkType,
                           new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1,
                                                         other.getRowIndex() + 1 ) )
         );
     }
 
     @Override
-    public boolean isActive( final CheckWhiteList whiteList ) {
+    public boolean isActive( final CheckConfiguration checkConfiguration ) {
 
-        allowRedundancyReporting = whiteList.getAllowedCheckTypes()
+        allowRedundancyReporting = checkConfiguration.getCheckConfiguration()
                 .contains( CheckType.REDUNDANT_ROWS );
 
-        allowSubsumptionReporting = whiteList.getAllowedCheckTypes()
+        allowSubsumptionReporting = checkConfiguration.getCheckConfiguration()
                 .contains( CheckType.SUBSUMPTANT_ROWS );
 
         return allowRedundancyReporting || allowSubsumptionReporting;
+    }
+
+    @Override
+    protected CheckType getCheckType() {
+        return issueType;
+    }
+
+    @Override
+    protected Severity getDefaultSeverity() {
+        return Severity.WARNING;
     }
 
     @Override

@@ -19,7 +19,8 @@ package org.drools.workbench.services.verifier.core.checks;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckConfiguration;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
@@ -30,12 +31,22 @@ import org.drools.workbench.services.verifier.core.checks.base.PairCheck;
 public class DetectConflictingRowsCheck
         extends PairCheck {
 
-    private final static CheckType CHECK_TYPE = CheckType.CONFLICTING_ROWS;
-
     public DetectConflictingRowsCheck( final RuleInspector ruleInspector,
-                                       final RuleInspector other ) {
+                                       final RuleInspector other,
+                                       final AnalyzerConfiguration configuration ) {
         super( ruleInspector,
-               other );
+               other,
+               configuration );
+    }
+
+    @Override
+    protected CheckType getCheckType() {
+        return CheckType.CONFLICTING_ROWS;
+    }
+
+    @Override
+    protected Severity getDefaultSeverity() {
+        return Severity.WARNING;
     }
 
     @Override
@@ -47,15 +58,10 @@ public class DetectConflictingRowsCheck
     }
 
     @Override
-    public boolean isActive( final CheckWhiteList whiteList ) {
-        return whiteList.getAllowedCheckTypes()
-                .contains( CHECK_TYPE );
-    }
-
-    @Override
-    public Issue getIssue() {
-        final Issue issue = new Issue( Severity.WARNING,
-                                       CHECK_TYPE,
+    protected Issue makeIssue( final Severity severity,
+                               final CheckType checkType ) {
+        final Issue issue = new Issue( severity,
+                                       checkType,
                                        new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1,
                                                                      other.getRowIndex() + 1 ) )
         );

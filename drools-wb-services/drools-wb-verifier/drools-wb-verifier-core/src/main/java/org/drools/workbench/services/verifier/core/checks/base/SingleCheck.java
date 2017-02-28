@@ -17,7 +17,8 @@
 package org.drools.workbench.services.verifier.core.checks.base;
 
 
-import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckConfiguration;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 
@@ -26,18 +27,20 @@ public abstract class SingleCheck
         implements Comparable<SingleCheck> {
 
     protected final RuleInspector ruleInspector;
-    protected final CheckType checkType;
+    private final CheckType checkType;
 
     public SingleCheck( final RuleInspector ruleInspector,
+                        final AnalyzerConfiguration configuration,
                         final CheckType checkType ) {
+        super( configuration );
         this.ruleInspector = ruleInspector;
         this.checkType = checkType;
     }
 
+
     @Override
-    public boolean isActive( final CheckWhiteList whiteList ) {
-        return whiteList.getAllowedCheckTypes()
-                .contains( checkType );
+    protected CheckType getCheckType() {
+        return checkType;
     }
 
     public RuleInspector getRuleInspector() {

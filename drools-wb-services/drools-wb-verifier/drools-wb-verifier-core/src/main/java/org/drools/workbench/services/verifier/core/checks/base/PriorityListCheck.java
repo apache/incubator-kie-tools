@@ -2,7 +2,7 @@ package org.drools.workbench.services.verifier.core.checks.base;
 
 import java.util.List;
 
-import org.drools.workbench.services.verifier.api.client.configuration.CheckWhiteList;
+import org.drools.workbench.services.verifier.api.client.configuration.CheckConfiguration;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 
 /**
@@ -37,7 +37,7 @@ public class PriorityListCheck
     }
 
     @Override
-    public boolean isActive( final CheckWhiteList whiteList ) {
+    public boolean isActive( final CheckConfiguration checkConfiguration ) {
         return !filteredSet.isEmpty();
     }
 

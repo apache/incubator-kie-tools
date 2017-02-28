@@ -42,6 +42,7 @@ public abstract class OneToManyCheck
                            final AnalyzerConfiguration configuration,
                            final CheckType checkType ) {
         super( ruleInspector,
+               configuration,
                checkType );
         ruleInspectors = new InspectorList<>( configuration );
     }

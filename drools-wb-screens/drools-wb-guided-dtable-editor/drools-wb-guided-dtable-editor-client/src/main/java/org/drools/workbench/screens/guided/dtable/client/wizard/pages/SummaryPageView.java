@@ -45,4 +45,6 @@ public interface SummaryPageView
 
     void setTableFormat( GuidedDecisionTable52.TableFormat tableFormat );
 
+    void setHitPolicy( GuidedDecisionTable52.HitPolicy hitPolicy );
+
 }

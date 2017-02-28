@@ -78,6 +78,8 @@ public class NewGuidedDecisionTableWizardHelperTest {
 
     private GuidedDecisionTable52.TableFormat tableFormat = GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY;
 
+    private GuidedDecisionTable52.HitPolicy hitPolicy = GuidedDecisionTable52.HitPolicy.NONE;
+
     @Mock
     private HasBusyIndicator view;
 
@@ -104,6 +106,7 @@ public class NewGuidedDecisionTableWizardHelperTest {
         dtServiceCaller = new CallerMock<>( dtService );
         model = new GuidedDecisionTable52();
         model.setTableFormat( tableFormat );
+        model.setHitPolicy( hitPolicy );
 
         helper = new NewGuidedDecisionTableWizardHelper( dtServiceCaller,
                                                          oracleFactory,
@@ -136,6 +139,7 @@ public class NewGuidedDecisionTableWizardHelperTest {
         helper.createNewGuidedDecisionTable( null,
                                              baseFileName,
                                              tableFormat,
+                                             hitPolicy,
                                              view,
                                              onSaveSuccessCallback );
     }
@@ -148,6 +152,7 @@ public class NewGuidedDecisionTableWizardHelperTest {
         helper.createNewGuidedDecisionTable( contextPath,
                                              null,
                                              tableFormat,
+                                             hitPolicy,
                                              view,
                                              onSaveSuccessCallback );
     }
@@ -159,6 +164,20 @@ public class NewGuidedDecisionTableWizardHelperTest {
 
         helper.createNewGuidedDecisionTable( contextPath,
                                              baseFileName,
+                                             null,
+                                             hitPolicy,
+                                             view,
+                                             onSaveSuccessCallback );
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkNullHitPolicy() {
+        rule.expect( IllegalArgumentException.class );
+
+        helper.createNewGuidedDecisionTable( contextPath,
+                                             baseFileName,
+                                             tableFormat,
                                              null,
                                              view,
                                              onSaveSuccessCallback );
@@ -172,6 +191,7 @@ public class NewGuidedDecisionTableWizardHelperTest {
         helper.createNewGuidedDecisionTable( contextPath,
                                              baseFileName,
                                              tableFormat,
+                                             hitPolicy,
                                              null,
                                              onSaveSuccessCallback );
     }
@@ -183,6 +203,7 @@ public class NewGuidedDecisionTableWizardHelperTest {
         helper.createNewGuidedDecisionTable( contextPath,
                                              baseFileName,
                                              tableFormat,
+                                             hitPolicy,
                                              view,
                                              null );
     }
@@ -193,6 +214,7 @@ public class NewGuidedDecisionTableWizardHelperTest {
         helper.createNewGuidedDecisionTable( contextPath,
                                              baseFileName,
                                              tableFormat,
+                                             hitPolicy,
                                              view,
                                              onSaveSuccessCallback );
 
@@ -200,6 +222,7 @@ public class NewGuidedDecisionTableWizardHelperTest {
                 times( 1 ) ).setContent( eq( contextPath ),
                                          eq( baseFileName ),
                                          eq( tableFormat ),
+                                         eq( hitPolicy ),
                                          eq( oracle ),
                                          any( GuidedDecisionTableWizardHandler.class ) );
     }
@@ -209,6 +232,7 @@ public class NewGuidedDecisionTableWizardHelperTest {
         helper.createNewGuidedDecisionTable( contextPath,
                                              baseFileName,
                                              tableFormat,
+                                             hitPolicy,
                                              view,
                                              onSaveSuccessCallback );
 
@@ -216,6 +240,7 @@ public class NewGuidedDecisionTableWizardHelperTest {
                 times( 1 ) ).setContent( eq( contextPath ),
                                          eq( baseFileName ),
                                          eq( tableFormat ),
+                                         eq( hitPolicy ),
                                          eq( oracle ),
                                          wizardHandlerCaptor.capture() );
 
@@ -253,6 +278,7 @@ public class NewGuidedDecisionTableWizardHelperTest {
         helper.createNewGuidedDecisionTable( contextPath,
                                              baseFileName,
                                              tableFormat,
+                                             hitPolicy,
                                              view,
                                              onSaveSuccessCallback );
 
@@ -260,6 +286,7 @@ public class NewGuidedDecisionTableWizardHelperTest {
                 times( 1 ) ).setContent( eq( contextPath ),
                                          eq( baseFileName ),
                                          eq( tableFormat ),
+                                         eq( hitPolicy ),
                                          eq( oracle ),
                                          wizardHandlerCaptor.capture() );
 

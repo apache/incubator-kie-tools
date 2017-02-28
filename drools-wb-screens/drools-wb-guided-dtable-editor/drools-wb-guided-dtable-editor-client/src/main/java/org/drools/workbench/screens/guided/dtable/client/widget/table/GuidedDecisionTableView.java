@@ -63,7 +63,7 @@ public interface GuidedDecisionTableView extends GridWidget,
     void setLocation( final double x,
                       final double y );
 
-    void newAttributeOrMetaDataColumn();
+    void newAttributeOrMetaDataColumn( final Set<String> reservedAttributeNames );
 
     void newExtendedEntryConditionColumn();
 
@@ -184,8 +184,6 @@ public interface GuidedDecisionTableView extends GridWidget,
                              final Callback<Map<String, String>> callback );
 
         void newAttributeOrMetaDataColumn();
-
-        Set<String> getExistingAttributeNames();
 
         boolean isMetaDataUnique( final String metaDataName );
 

@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.handlers;
 
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -41,13 +43,22 @@ public class GuidedDecisionTableOptions extends Composite {
     @UiField
     CheckBox chkUseWizard;
 
+    @UiField(provided = true)
+    HitPolicySelector hitPolicySelector;
+
     private boolean isUsingWizard = false;
 
     private GuidedDecisionTable52.TableFormat tableFormat = GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY;
+    private GuidedDecisionTable52.HitPolicy hitPolicy = GuidedDecisionTable52.HitPolicy.NONE;
 
-    public GuidedDecisionTableOptions() {
+    @Inject
+    public GuidedDecisionTableOptions( final HitPolicySelector hitPolicySelector ) {
+        this.hitPolicySelector = hitPolicySelector;
         initWidget( uiBinder.createAndBindUi( this ) );
+
+        hitPolicySelector.addValueChangeHandler( result -> GuidedDecisionTableOptions.this.hitPolicy = result );
     }
+
 
     public boolean isUsingWizard() {
         return this.isUsingWizard;
@@ -56,6 +67,11 @@ public class GuidedDecisionTableOptions extends Composite {
     public GuidedDecisionTable52.TableFormat getTableFormat() {
         return this.tableFormat;
     }
+
+    public GuidedDecisionTable52.HitPolicy getHitPolicy() {
+        return hitPolicy;
+    }
+
 
     @UiHandler(value = "chkUseWizard")
     void chkUseWizardClick( ClickEvent event ) {

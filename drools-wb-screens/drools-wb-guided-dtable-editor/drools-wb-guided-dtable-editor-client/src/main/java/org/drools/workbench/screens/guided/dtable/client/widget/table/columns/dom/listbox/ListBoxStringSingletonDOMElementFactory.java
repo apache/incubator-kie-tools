@@ -20,7 +20,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
-public class ListBoxStringSingletonDOMElementFactory extends ListBoxSingletonDOMElementFactory<String, ListBox> {
+public class ListBoxStringSingletonDOMElementFactory<T> extends ListBoxSingletonDOMElementFactory<String, ListBox> {
 
     public ListBoxStringSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
                                                     final GridLayer gridLayer,

@@ -50,7 +50,7 @@ public class GuidedRuleAttributeSelectorPopup extends AttributeSelectorPopup {
     }
 
     @Override
-    protected String[] getDuplicates() {
+    protected String[] getReservedAttributes() {
         int size = model.attributes.length;
         String[] duplicates = new String[size];
         for ( int i = 0; i < size; i++ ) {

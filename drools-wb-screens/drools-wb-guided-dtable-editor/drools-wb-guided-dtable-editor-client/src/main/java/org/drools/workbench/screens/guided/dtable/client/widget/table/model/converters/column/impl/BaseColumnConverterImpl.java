@@ -23,9 +23,6 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
@@ -56,6 +53,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.En
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.FloatUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.LongUiColumn;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.PriorityListUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.SalienceUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.ShortUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
@@ -278,9 +276,6 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                               this.widget = createWidget();
                                               this.widget.addKeyDownHandler( ( e ) -> e.stopPropagation() );
                                               this.widget.addMouseDownHandler( ( e ) -> e.stopPropagation() );
-                                              this.e = new ListBoxDOMElement<String, ListBox>( widget,
-                                                                                               gridLayer,
-                                                                                               gridWidget );
 
                                               widget.addBlurHandler( new BlurHandler() {
                                                   @Override
@@ -290,6 +285,9 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                       gridPanel.setFocus( true );
                                                   }
                                               } );
+                                              this.e = new ListBoxDOMElement<String, ListBox>( widget,
+                                                                                               gridLayer,
+                                                                                               gridWidget );
 
                                               return e;
                                           }
@@ -400,9 +398,6 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                     this.widget = createWidget();
                                                     this.widget.addKeyDownHandler( ( e ) -> e.stopPropagation() );
                                                     this.widget.addMouseDownHandler( ( e ) -> e.stopPropagation() );
-                                                    this.e = new ListBoxDOMElement<String, ListBox>( widget,
-                                                                                                     gridLayer,
-                                                                                                     gridWidget );
 
                                                     widget.addBlurHandler( new BlurHandler() {
                                                         @Override
@@ -412,6 +407,10 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                             gridPanel.setFocus( true );
                                                         }
                                                     } );
+
+                                                    this.e = new ListBoxDOMElement<String, ListBox>( widget,
+                                                                                                     gridLayer,
+                                                                                                     gridWidget );
 
                                                     return e;
                                                 }
@@ -772,24 +771,6 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                     new TextBoxIntegerSingletonDOMElementFactory( gridPanel,
                                                                                   gridLayer,
                                                                                   gridWidget ) );
-    }
-
-    protected GridColumn<Integer> newSalienceColumn( final List<GridColumn.HeaderMetaData> headerMetaData,
-                                                     final double width,
-                                                     final boolean isResizable,
-                                                     final boolean isVisible,
-                                                     final GuidedDecisionTablePresenter.Access access,
-                                                     final boolean useRowNumber,
-                                                     final GuidedDecisionTableView gridWidget ) {
-        return new SalienceUiColumn( headerMetaData,
-                                     width,
-                                     isResizable,
-                                     isVisible,
-                                     access,
-                                     useRowNumber,
-                                     new TextBoxIntegerSingletonDOMElementFactory( gridPanel,
-                                                                                   gridLayer,
-                                                                                   gridWidget ) );
     }
 
     protected GridColumn<Long> newLongColumn( final List<GridColumn.HeaderMetaData> headerMetaData,

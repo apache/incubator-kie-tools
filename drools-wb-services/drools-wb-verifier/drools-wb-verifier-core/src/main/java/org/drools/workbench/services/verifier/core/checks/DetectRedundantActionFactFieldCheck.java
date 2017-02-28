@@ -19,6 +19,7 @@ package org.drools.workbench.services.verifier.core.checks;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
@@ -29,8 +30,10 @@ import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspecto
 public class DetectRedundantActionFactFieldCheck
         extends DetectRedundantActionBase {
 
-    public DetectRedundantActionFactFieldCheck( final RuleInspector ruleInspector ) {
+    public DetectRedundantActionFactFieldCheck( final RuleInspector ruleInspector,
+                                                final AnalyzerConfiguration configuration ) {
         super( ruleInspector,
+               configuration,
                CheckType.VALUE_FOR_FACT_FIELD_IS_SET_TWICE );
     }
 
@@ -52,8 +55,14 @@ public class DetectRedundantActionFactFieldCheck
     }
 
     @Override
-    public Issue getIssue() {
-        return new ValueForFactFieldIsSetTwiceIssue( Severity.WARNING,
+    protected Severity getDefaultSeverity() {
+        return Severity.WARNING;
+    }
+
+    @Override
+    protected Issue makeIssue( final Severity severity,
+                               final CheckType checkType ) {
+        return new ValueForFactFieldIsSetTwiceIssue( severity,
                                                      checkType,
                                                      patternInspector.getPattern()
                                                              .getBoundName(),
