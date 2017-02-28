@@ -14,6 +14,12 @@
   <name>Drools Workbench - jcr2vfs - Distribution</name>
   <description>Distribution that bundles all of the needed modules for the migration</description>
 
+  <properties>
+    <!-- The duplication comes from the fact the the two 'with-deps' modules are aligned to different base
+         KIE versions. This is not harmful in any way, as this module is just creating a distribution zip. -->
+    <enforcer.failOnDuplicatedClasses>false</enforcer.failOnDuplicatedClasses>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

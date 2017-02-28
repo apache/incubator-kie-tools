@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>drools-wb-guided-dtable-editor</artifactId>
     <groupId>org.drools</groupId>
+    <artifactId>drools-wb-guided-dtable-editor</artifactId>
     <version>7.0.0-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
 
   <artifactId>drools-wb-guided-dtable-editor-client</artifactId>
 
@@ -36,6 +36,12 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-guided-dtable</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-compiler</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
@@ -192,8 +198,8 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.mockito</groupId>
-          <artifactId>mockito-all</artifactId>
+          <groupId>ant</groupId>
+          <artifactId>ant</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -215,6 +221,12 @@
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-datamodel-backend</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>jakarta-regexp</groupId>
+          <artifactId>jakarta-regexp</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

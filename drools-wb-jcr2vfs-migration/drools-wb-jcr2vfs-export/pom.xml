@@ -170,6 +170,14 @@
           <groupId>commons-logging</groupId>
           <artifactId>commons-logging-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>edu.ucar</groupId>
+          <artifactId>netcdf</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.ws.rs</groupId>
+          <artifactId>javax.ws.rs-api</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -209,9 +217,30 @@
           <groupId>org.apache.poi</groupId>
           <artifactId>poi-ooxml-schemas</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>javax.ejb</groupId>
+          <artifactId>ejb-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.james</groupId>
+          <artifactId>apache-mime4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.ws.rs</groupId>
+          <artifactId>jsr311-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.web.bindery</groupId>
+          <artifactId>requestfactory-server</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-api</artifactId>
@@ -270,6 +299,39 @@
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>ban-duplicated-classes</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <banDuplicateClasses>
+                    <dependencies>
+                      <dependency>
+                        <groupId>org.drools</groupId>
+                        <artifactId>guvnor-jcr2vfs-migration-webapp-drools-as-jar</artifactId>
+                        <ignoreClasses>
+                          <!-- Legacy dependency, will never get fixed. -->
+                          <ignoreClass>org.drools.guvnor.client.resources.WizardResources$WizardStyle</ignoreClass>
+                          <ignoreClass>org.drools.guvnor.client.resources.WizardResources</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                    </dependencies>
+                  </banDuplicateClasses>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -45,6 +45,12 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-guided-scorecard</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>stax</groupId>
+          <artifactId>stax-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
