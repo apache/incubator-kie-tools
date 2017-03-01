@@ -25,11 +25,10 @@ import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
 
-public class DataModelerInnerTypesTest extends DataModelerServiceBaseTest {
+public class DataModelerInnerTypesWeldTest extends AbstractDataModelerServiceWeldTest {
 
     /**
      * This test checks that class fields that of enum types or inner class types should be skipped.
-     *
      */
     @Test
     public void testDataModelerService() throws Exception {
@@ -43,12 +42,14 @@ public class DataModelerInnerTypesTest extends DataModelerServiceBaseTest {
 
             DataModel dataModel = dataModelService.loadModel( project );
             DataObject dataObject = dataModel.getDataObject( "test.Outer" );
-            assertNotNull( "DataObject test.Outer was not loaded", dataObject );
-            assertEquals( "DataObject test.Outer should not have readed properties", 0, dataObject.getProperties().size() );
+            assertNotNull( "DataObject test.Outer was not loaded",
+                           dataObject );
+            assertEquals( "DataObject test.Outer should not have readed properties",
+                          0,
+                          dataObject.getProperties().size() );
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( "Test failed dued to the following exception: " + e.getMessage() );
         }
     }
-
 }

@@ -52,6 +52,8 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerCopyHelper;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerRenameHelper;
 import org.kie.workbench.common.screens.datamodeller.backend.server.handler.DomainHandler;
+import org.kie.workbench.common.screens.datamodeller.backend.server.helper.DataModelerRenameWorkaroundHelper;
+import org.kie.workbench.common.screens.datamodeller.backend.server.helper.DataModelerSaveHelper;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectRenamedEvent;
@@ -163,6 +165,12 @@ public class DataModelerServiceImpl
 
     @Inject
     private DataModelerRenameHelper renameHelper;
+
+    @Inject
+    private Instance<DataModelerSaveHelper> saveHelperInstance;
+
+    @Inject
+    private Instance<DataModelerRenameWorkaroundHelper> renameHelperInstance;
 
     @Inject
     private GenericValidator genericValidator;
@@ -513,7 +521,7 @@ public class DataModelerServiceImpl
                                         final String newPackageName,
                                         final String newFileName ) {
 
-        Boolean onBatch = false;
+        boolean onBatch = false;
 
         try {
 
@@ -540,11 +548,11 @@ public class DataModelerServiceImpl
 
             fireMetadataSocialEvents( path, metadataService.getMetadata( path ), metadata );
 
+            ioService.startBatch( targetPath.getFileSystem() );
+            onBatch = true;
+
             if ( packageChanged ) {
                 targetPath = Paths.convert( targetPackage.getPackageMainSrcPath() ).resolve( targetName );
-
-                ioService.startBatch( targetPath.getFileSystem() );
-                onBatch = true;
                 ioService.write( Paths.convert( path ),
                                  result.getSource(),
                                  metadataService.setUpAttributes( path, metadata ),
@@ -555,7 +563,6 @@ public class DataModelerServiceImpl
                 result.setPath( Paths.convert( targetPath ) );
 
             } else if ( nameChanged ) {
-                //obs, rename service already do a startBatch.
                 ioService.write( Paths.convert( path ),
                                  result.getSource(),
                                  metadataService.setUpAttributes( path, metadata ),
@@ -564,13 +571,17 @@ public class DataModelerServiceImpl
                 Path newPath = renameService.rename( path, newFileName, commitMessage );
                 result.setPath( newPath );
             } else {
-
                 ioService.write( Paths.convert( path ),
                                  result.getSource(),
                                  metadataService.setUpAttributes( path, metadata ),
                                  serviceHelper.makeCommentedOption( commitMessage ) );
                 result.setPath( path );
+            }
 
+            if ( saveHelperInstance != null ) {
+                for ( DataModelerSaveHelper saveHelper : saveHelperInstance ) {
+                    saveHelper.postProcess( path, result.getPath() );
+                }
             }
 
             return result;
@@ -757,6 +768,12 @@ public class DataModelerServiceImpl
                                 _target,
                                 serviceHelper.makeCommentedOption( "File [" + path.toURI() + "] renamed to [" + targetPath.toURI() + "]." )
                               );
+
+                if ( renameHelperInstance != null ) {
+                    for ( DataModelerRenameWorkaroundHelper renameHelper : renameHelperInstance ) {
+                        renameHelper.postProcess( path, targetPath );
+                    }
+                }
 
             } catch ( final Exception e ) {
                 throw e;

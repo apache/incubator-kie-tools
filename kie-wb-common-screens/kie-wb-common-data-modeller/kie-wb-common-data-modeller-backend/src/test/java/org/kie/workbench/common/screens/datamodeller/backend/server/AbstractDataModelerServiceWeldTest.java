@@ -16,7 +16,6 @@
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.util.Map;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -30,7 +29,7 @@ import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
-public class DataModelerServiceBaseTest {
+public abstract class AbstractDataModelerServiceWeldTest {
 
     protected final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
     protected Weld weld;
@@ -43,9 +42,12 @@ public class DataModelerServiceBaseTest {
     @Before
     public void setUp() throws Exception {
         // disable git and ssh daemons as they are not needed for the tests
-        System.setProperty( "org.uberfire.nio.git.daemon.enabled", "false" );
-        System.setProperty( "org.uberfire.nio.git.ssh.enabled", "false" );
-        System.setProperty( "org.uberfire.sys.repo.monitor.disabled", "true" );
+        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
+                            "false" );
+        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
+                            "true" );
         //Bootstrap WELD container
         weld = new Weld();
         beanManager = weld.initialize().getBeanManager();
@@ -54,8 +56,8 @@ public class DataModelerServiceBaseTest {
         final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
         final CreationalContext pathsCContext = beanManager.createCreationalContext( pathsBean );
         paths = (Paths) beanManager.getReference( pathsBean,
-                Paths.class,
-                pathsCContext );
+                                                  Paths.class,
+                                                  pathsCContext );
 
         //Ensure URLs use the default:// scheme
         fs.forceAsDefault();
@@ -63,25 +65,24 @@ public class DataModelerServiceBaseTest {
         //Create DataModelerService bean
         final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelerService.class ).iterator().next();
         final CreationalContext dataModelerCContext = beanManager.createCreationalContext( dataModelServiceBean );
-        dataModelService = (DataModelerService ) beanManager.getReference( dataModelServiceBean,
-                DataModelerService.class,
-                dataModelerCContext );
+        dataModelService = (DataModelerService) beanManager.getReference( dataModelServiceBean,
+                                                                          DataModelerService.class,
+                                                                          dataModelerCContext );
 
         //Create ProjectServiceBean
         final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext projectServiceCContext = beanManager.createCreationalContext( projectServiceBean );
-        projectService = (KieProjectService ) beanManager.getReference( projectServiceBean,
-                KieProjectService.class,
-                projectServiceCContext );
+        projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                       KieProjectService.class,
+                                                                       projectServiceCContext );
 
         systemAnnotations = dataModelService.getAnnotationDefinitions();
     }
 
     @After
     public void tearDown() {
-        if (weld != null && beanManager != null) {
+        if ( weld != null && beanManager != null ) {
             weld.shutdown();
         }
     }
-
 }
