@@ -103,19 +103,6 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
         return m_picker;
     }
 
-    protected ColorMapBackedPicker makeColorMapBackedPicker(NFastArrayList<WiresShape> children,
-                                                            ScratchPad scratchPad,
-                                                            WiresShape shape,
-                                                            boolean isDockingAllowed,
-                                                            int hotSpotSize)
-    {
-        return new ColorMapBackedPicker(children,
-                                        scratchPad,
-                                        shape,
-                                        isDockingAllowed,
-                                        hotSpotSize);
-    }
-
     @Override
     public void dragStart( final Context context ) {
         Point2D absShapeLoc = WiresUtils.getLocation( m_shape.getPath() );
@@ -133,12 +120,9 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
 
         m_parent = m_shape.getParent();
 
-        m_picker = makeColorMapBackedPicker(m_layer.getChildShapes(),
-                                            m_layer.getLayer().getScratchPad(),
-                                            m_shape,
-                                            m_shape.getDockingAcceptor().dockingAllowed(m_parent,
-                                                                                        m_shape),
-                                            m_shape.getDockingAcceptor().getHotspotSize());
+        m_picker = makeColorMapBackedPicker(m_layer,
+                                            m_parent,
+                                            m_shape);
 
         if (m_parent != null && m_parent instanceof WiresShape)
         {
@@ -197,6 +181,17 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
 
         if (parent != m_parent || parentPart != m_parentPart)
         {
+            // Create and populate again the color map picker
+            // in order to include shapes hotspots
+            // in case docking is allowed for the new parent (and was
+            // not for the old parent).
+            m_picker = makeColorMapBackedPicker(m_layer,
+                                                parent,
+                                                m_shape);
+            parentPart = m_picker.findShapeAt(x,
+                                              y);
+            parent = null != parentPart ? parentPart.getShape() : null;
+
             boolean batch = false;
 
             if (m_parent != null && m_parent instanceof WiresShape)
@@ -390,6 +385,29 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
         m_priorFillChanged = false;
         m_priorFillGradient = null;
         m_picker = null;
+    }
+
+    protected ColorMapBackedPicker makeColorMapBackedPicker(final NFastArrayList<WiresShape> children,
+                                                            final ScratchPad scratchPad,
+                                                            final WiresShape shape,
+                                                            final boolean isDockingAllowed,
+                                                            final int hotSpotSize) {
+        return new ColorMapBackedPicker(children,
+                                        scratchPad,
+                                        shape,
+                                        isDockingAllowed,
+                                        hotSpotSize);
+    }
+
+    protected ColorMapBackedPicker makeColorMapBackedPicker(final WiresLayer m_layer,
+                                                            final WiresContainer m_parent,
+                                                            final WiresShape m_shape) {
+        return makeColorMapBackedPicker(m_layer.getChildShapes(),
+                                        m_layer.getLayer().getScratchPad(),
+                                        m_shape,
+                                        m_shape.getDockingAcceptor().dockingAllowed(m_parent,
+                                                                                    m_shape),
+                                        m_shape.getDockingAcceptor().getHotspotSize());
     }
 
 }
