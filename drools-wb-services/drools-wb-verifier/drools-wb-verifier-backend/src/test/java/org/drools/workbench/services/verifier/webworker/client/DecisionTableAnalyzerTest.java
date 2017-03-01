@@ -17,10 +17,14 @@
 package org.drools.workbench.services.verifier.webworker.client;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
+import org.drools.workbench.models.datamodel.rule.IAction;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.api.client.resources.i18n.AnalysisConstants;
@@ -258,6 +262,46 @@ public class DecisionTableAnalyzerTest
         assertDoesNotContain( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
     }
 
+    /**
+     * Check if the message about missing action is thrown
+     * if the action is defined as BRLAction
+     */
+    @Test
+    public void testMissingActionForBrlAction() throws Exception {
+        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                          new ArrayList<Import>(),
+                                                          "mytable" )
+                .withConditionIntegerColumn( "a", "Person", "age", ">" )
+                .withActionBRLFragment()
+                .withData( new Object[][]{{1, "description", 0, null}} )
+                .buildTable();
+
+        fireUpAnalyzer();
+
+        assertEquals( 1, analyzerProvider.getAnalysisReport().size() );
+        assertContains( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
+    }
+
+    /**
+     * Check that there is message about missing condition
+     * if the action is defined as BRLAction
+     */
+    @Test
+    public void testMissingRestrictionForBrlAction() throws Exception {
+        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                          new ArrayList<Import>(),
+                                                          "mytable" )
+                .withConditionIntegerColumn( "a", "Person", "age", ">" )
+                .withActionBRLFragment()
+                .withData( new Object[][]{{1, "description", null, true}} )
+                .buildTable();
+
+        fireUpAnalyzer();
+
+        assertEquals( 1, analyzerProvider.getAnalysisReport().size() );
+        assertContains("RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport());
+    }
+
     // GUVNOR-2546: Verification & Validation: BRL fragments are ignored
     @Test
     public void testConditionsShouldNotBeIgnored() throws Exception {
@@ -281,6 +325,30 @@ public class DecisionTableAnalyzerTest
         assertDoesNotContain( "EmptyRule", analyzerProvider.getAnalysisReport(), 1 );
         assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 1 );
         assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 2 );
+
+    }
+
+    /**
+     * Check if the message about missing action is thrown
+     * if the condition is defined as BRLCondition
+     */
+    @Test
+    public void testMissingActionForBrlCondition() throws Exception {
+        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                          new ArrayList<Import>(),
+                                                          "mytable" )
+                .withConditionBRLColumn()
+                .withActionInsertFact( "Application",
+                                       "a",
+                                       "approved",
+                                       DataType.TYPE_BOOLEAN )
+                .withData( new Object[][]{ {1, "description", "value", null}} )
+                .buildTable();
+
+        fireUpAnalyzer();
+
+        assertEquals(1, analyzerProvider.getAnalysisReport().size());
+        assertContains("RuleHasNoAction", analyzerProvider.getAnalysisReport());
 
     }
 }
