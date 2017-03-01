@@ -20,6 +20,8 @@ import javax.annotation.PostConstruct;
 import com.ait.lienzo.client.core.shape.GridLayer;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.wires.WiresContainer;
+import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.google.gwt.dom.client.Style;
@@ -73,7 +75,7 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
         panel.getScene().add(canvasLayer);
         decorator.setWidth(width);
         decorator.setHeight(height);
-        if (null == decorator.getLayer()) {
+        if (null == decorator.getLayer() && null != canvasLayer.getScene()) {
             canvasLayer.getScene().getTopLayer().add(decorator);
         }
         return this;
@@ -110,6 +112,12 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
                                              final ShapeView<?> child) {
         final WiresShape parentShape = (WiresShape) parent;
         final WiresShape childShape = (WiresShape) child;
+        return this.addChildShape(parentShape,
+                                  childShape);
+    }
+
+    protected AbstractCanvas.View addChildShape(final WiresShape parentShape,
+                                                final WiresShape childShape) {
         parentShape.add(childShape);
         return this;
     }
@@ -119,27 +127,56 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
                                                 final ShapeView<?> child) {
         final WiresShape parentShape = (WiresShape) parent;
         final WiresShape childShape = (WiresShape) child;
+        return this.removeChildShape(parentShape,
+                                     childShape);
+    }
+
+    protected AbstractCanvas.View removeChildShape(final WiresShape parentShape,
+                                                   final WiresShape childShape) {
         parentShape.remove(childShape);
         return this;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public AbstractCanvas.View dock(final ShapeView<?> parent,
                                     final ShapeView<?> child) {
         final WiresShape parentShape = (WiresShape) parent;
         final WiresShape childShape = (WiresShape) child;
-        child.removeFromParent();
+        final WiresContainer parent1 = childShape.getParent();
+        if (null == parent1 || parent1 instanceof WiresLayer) {
+            layer.removeShape(childShape);
+        } else {
+            removeChildShape((ShapeView<?>) parent1,
+                             child);
+        }
         parentShape.add(childShape);
         childShape.setDockedTo(parentShape);
         return this;
     }
 
     @Override
-    public AbstractCanvas.View undock(final ShapeView<?> parent,
+    public AbstractCanvas.View undock(final ShapeView<?> targetDockShape,
+                                      final ShapeView<?> childParent,
                                       final ShapeView<?> child) {
-        final WiresShape parentShape = (WiresShape) parent;
+        final WiresShape newPraentShape = (WiresShape) childParent;
+        final WiresShape targetShape = (WiresShape) targetDockShape;
         final WiresShape childShape = (WiresShape) child;
-        parentShape.remove(childShape);
+        return this.undock(targetShape,
+                           newPraentShape,
+                           childShape);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected AbstractCanvas.View undock(final WiresShape targetShape,
+                                         final WiresShape newPrentShape,
+                                         final WiresShape childShape) {
+        if (null != newPrentShape) {
+            newPrentShape.add(childShape);
+        } else {
+            layer.addShape(childShape);
+        }
+        targetShape.remove(childShape);
         childShape.setDockedTo(null);
         return this;
     }

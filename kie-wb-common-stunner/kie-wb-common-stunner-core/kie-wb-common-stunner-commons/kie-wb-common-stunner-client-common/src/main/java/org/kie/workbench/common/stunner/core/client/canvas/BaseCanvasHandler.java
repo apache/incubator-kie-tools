@@ -16,9 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -138,7 +135,8 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     protected ShapeFactory<Object, AbstractCanvasHandler, Shape> getShapeFactory(final String shapeSetId) {
         ShapeSet<?> shapeSet = shapeManager.getShapeSet(shapeSetId);
         if (null == shapeSet) {
-            LOGGER.log(Level.SEVERE, "ShapeSet [" + shapeSetId + "] not found. Using the default one,.");
+            LOGGER.log(Level.SEVERE,
+                       "ShapeSet [" + shapeSetId + "] not found. Using the default one,.");
         }
         shapeSet = shapeManager.getDefaultShapeSet(diagram.getMetadata().getDefinitionSetId());
         return shapeSet.getShapeFactory();
@@ -196,28 +194,44 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
                                         final MutationContext mutationContext) {
         if (shape instanceof ElementShape) {
             final ElementShape graphShape = (ElementShape) shape;
-            if (applyPosition) {
-                graphShape.applyPosition(candidate,
-                                         mutationContext);
-            }
-            if (applyProperties) {
-                applyElementTitle(graphShape,
-                                  candidate,
-                                  mutationContext);
-                graphShape.applyProperties(candidate,
-                                           mutationContext);
-            }
-            beforeDraw(candidate,
-                       graphShape);
-            beforeElementUpdated(candidate,
-                                 graphShape);
-            getCanvas().draw();
-            afterDraw(candidate,
-                      graphShape);
-            notifyCanvasElementUpdated(candidate);
-            afterElementUpdated(candidate,
-                                graphShape);
+            this.applyElementMutation(graphShape,
+                                      candidate,
+                                      applyPosition,
+                                      applyProperties,
+                                      mutationContext);
+        } else {
+            LOGGER.log(Level.SEVERE,
+                       "The shape to handle must be type of [" + ElementShape.class.getName() + "]");
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void applyElementMutation(final ElementShape graphShape,
+                                        final Element candidate,
+                                        final boolean applyPosition,
+                                        final boolean applyProperties,
+                                        final MutationContext mutationContext) {
+        if (applyPosition) {
+            graphShape.applyPosition(candidate,
+                                     mutationContext);
+        }
+        if (applyProperties) {
+            applyElementTitle(graphShape,
+                              candidate,
+                              mutationContext);
+            graphShape.applyProperties(candidate,
+                                       mutationContext);
+        }
+        beforeDraw(candidate,
+                   graphShape);
+        beforeElementUpdated(candidate,
+                             graphShape);
+        getCanvas().draw();
+        afterDraw(candidate,
+                  graphShape);
+        notifyCanvasElementUpdated(candidate);
+        afterElementUpdated(candidate,
+                            graphShape);
     }
 
     @SuppressWarnings("unchecked")
@@ -305,14 +319,20 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     }
 
     @Override
-    public void undock(final Element parent,
+    @SuppressWarnings("unchecked")
+    public void undock(final Element target,
                        final Element child) {
-        final String parentUUID = parent.getUUID();
+        final String targetUUID = target.getUUID();
         final String childUUID = child.getUUID();
-        if (!isCanvasRoot(parentUUID)) {
-            final Shape parentShape = getCanvas().getShape(parentUUID);
+        if (!isCanvasRoot(targetUUID)) {
+            final Shape targetShape = getCanvas().getShape(targetUUID);
             final Shape childShape = getCanvas().getShape(childUUID);
-            getCanvas().undock(parentShape,
+            final Element<?> childParent = GraphUtils.getParent((Node<?, Edge>) child);
+            final String childParentUUID = null != childParent ? childParent.getUUID() : null;
+            final Shape newParentShape = null != childParentUUID && !isCanvasRoot(childParentUUID) ?
+                    getCanvas().getShape(childParentUUID) : null;
+            getCanvas().undock(targetShape,
+                               newParentShape,
                                childShape);
         }
     }
