@@ -20,34 +20,21 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
-import org.kie.workbench.common.stunner.core.client.components.actions.NameEditBox;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 
 @Dependent
-public class NameEditBoxWidget implements NameEditBox<AbstractCanvasHandler, Element>,
-                                          IsWidget {
+public class NameEditBoxWidget implements NameEditBoxWidgetView.Presenter {
 
-    public interface View extends UberView<NameEditBoxWidget> {
-
-        View show(final String name);
-
-        View hide();
-    }
-
-    private final View view;
+    private final NameEditBoxWidgetView view;
     private final DefinitionUtils definitionUtils;
     private final CanvasCommandFactory canvasCommandFactory;
-    private final GraphUtils graphUtils;
     private AbstractCanvasHandler canvasHandler;
     private CommandManagerProvider<AbstractCanvasHandler> provider;
     private Command closeCallback;
@@ -57,11 +44,9 @@ public class NameEditBoxWidget implements NameEditBox<AbstractCanvasHandler, Ele
     @Inject
     public NameEditBoxWidget(final DefinitionUtils definitionUtils,
                              final CanvasCommandFactory canvasCommandFactory,
-                             final GraphUtils graphUtils,
-                             final View view) {
+                             final NameEditBoxWidgetView view) {
         this.definitionUtils = definitionUtils;
         this.canvasCommandFactory = canvasCommandFactory;
-        this.graphUtils = graphUtils;
         this.view = view;
         this.element = null;
         this.nameValue = null;
@@ -97,17 +82,13 @@ public class NameEditBoxWidget implements NameEditBox<AbstractCanvasHandler, Ele
         this.nameValue = null;
     }
 
-    @Override
-    public Widget asWidget() {
-        return view.asWidget();
-    }
-
-    void onChangeName(final String name) {
+    public void onChangeName(final String name) {
         this.nameValue = name;
     }
 
     // TODO: Check command result.
-    void onSave() {
+    @Override
+    public void onSave() {
         if (null != this.nameValue) {
             final Object def = element.getContent().getDefinition();
             final String nameId = definitionUtils.getNameIdentifier(def);
@@ -123,19 +104,15 @@ public class NameEditBoxWidget implements NameEditBox<AbstractCanvasHandler, Ele
         fireCloseCallback();
     }
 
-    void onKeyPress(final int keyCode,
-                    final String value) {
+    @Override
+    public void onKeyPress(final int keyCode,
+                           final String value) {
         processKey(keyCode,
                    value);
     }
 
-    void onKeyDown(final int keyCode,
-                   final String value) {
-        processKey(keyCode,
-                   value);
-    }
-
-    void onClose() {
+    @Override
+    public void onClose() {
         this.hide();
         fireCloseCallback();
     }
@@ -153,5 +130,14 @@ public class NameEditBoxWidget implements NameEditBox<AbstractCanvasHandler, Ele
         if (null != closeCallback) {
             closeCallback.execute();
         }
+    }
+
+    public String getNameValue() {
+        return nameValue;
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 }

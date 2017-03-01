@@ -22,6 +22,11 @@ public class SliderFieldType implements FieldType {
 
     public static final String NAME = "Slider";
 
+    public static final String MIN_PARAM = "min";
+    public static final String MAX_PARAM = "max";
+    public static final String STEP_PARAM = "step";
+    public static final String PRECISION_PARAM = "precision";
+
     @Override
     public String getTypeName() {
         return NAME;

@@ -22,6 +22,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
@@ -85,11 +86,13 @@ public class CanvasNameEditionControlImpl
                                    elementSelectedEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
                                                                                             idToSelect));
                                });
+
+        // TODO: move folatingView to support IsElement instead of IsWidget
         floatingView
                 .hide()
                 .setHideCallback(floatingHideCallback)
                 .setTimeOut(FLOATING_VIEW_TIMEOUT)
-                .add(nameEditBox.asWidget());
+                .add(ElementWrapperWidget.getWidget(nameEditBox.getElement()));
     }
 
     @Override

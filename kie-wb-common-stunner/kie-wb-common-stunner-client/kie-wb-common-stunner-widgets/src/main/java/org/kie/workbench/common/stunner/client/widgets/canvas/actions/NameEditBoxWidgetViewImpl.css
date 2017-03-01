@@ -1,0 +1,26 @@
+.nameEditBoxTable {
+    z-index: 10;
+    min-height: 20px;
+    min-width: 80px;
+    display: table;
+}
+
+.nameEditBoxRow {
+    display: table-row;
+}
+
+.nameEditBoxCell {
+    display: table-cell;
+}
+
+.nameEditBoxNameBox {
+    border: 1px solid grey;
+}
+
+.nameEditBoxButton {
+    background-color: black;
+    padding: 2px;
+    color: white;
+    margin-left: 5px;
+    cursor: pointer;
+}

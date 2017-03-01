@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,21 +16,20 @@
 
 package org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.slider;
 
-import javax.enterprise.context.Dependent;
-
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.definition.IntegerSliderDefinition;
-import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.mockito.runners.MockitoJUnitRunner;
 
-@Dependent
-public class IntegerSliderFieldInitializer extends AbstractSliderFieldInitializer<IntegerSliderDefinition, Integer> {
+@RunWith(MockitoJUnitRunner.class)
+public class IntegerSliderFieldInitializerTest extends AbstractSliderFieldInitializerTest<IntegerSliderFieldInitializer, IntegerSliderDefinition, Integer> {
 
     @Override
-    public boolean supports(FieldDefinition fieldDefinition) {
-        return fieldDefinition instanceof IntegerSliderDefinition;
+    IntegerSliderFieldInitializer getInitializerInstance() {
+        return new IntegerSliderFieldInitializer();
     }
 
     @Override
-    protected Integer parseValue(String rawValue) {
-        return Integer.valueOf(rawValue);
+    IntegerSliderDefinition getFieldInstance() {
+        return new IntegerSliderDefinition();
     }
 }

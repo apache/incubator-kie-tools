@@ -20,10 +20,18 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 public interface StunnerWidgetsConstants {
 
-    @TranslationKey( defaultValue = "")
-    public static String DefinitionPaletteGroupWidgetViewImpl_showMore= "DefinitionPaletteGroupWidgetViewImpl.showMore";
+    @TranslationKey(defaultValue = "")
+    public static String DefinitionPaletteGroupWidgetViewImpl_showMore = "DefinitionPaletteGroupWidgetViewImpl.showMore";
 
-    @TranslationKey( defaultValue = "")
-    public static String DefinitionPaletteGroupWidgetViewImpl_showLess= "DefinitionPaletteGroupWidgetViewImpl.showLess";
+    @TranslationKey(defaultValue = "")
+    public static String DefinitionPaletteGroupWidgetViewImpl_showLess = "DefinitionPaletteGroupWidgetViewImpl.showLess";
 
+    @TranslationKey(defaultValue = "")
+    public static String NameEditBoxWidgetViewImpl_save = "NameEditBoxWidgetViewImpl.save";
+
+    @TranslationKey(defaultValue = "")
+    public static String NameEditBoxWidgetViewImpl_close = "NameEditBoxWidgetViewImpl.close";
+
+    @TranslationKey(defaultValue = "")
+    public static String NameEditBoxWidgetViewImp_name = "NameEditBoxWidgetViewImpl.name";
 }
