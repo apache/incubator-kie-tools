@@ -71,6 +71,7 @@ public class WiresConnectorViewExt<T> extends WiresConnectorView<T>
         this.textPosition = WiresLayoutContainer.Layout.CENTER;
         this.textRotationDegrees = 0;
         this.eventHandlerManager = new ViewEventHandlerManager(getLine(),
+                                                               getLine(),
                                                                supportedEventTypes);
         enableShowControlsOnMouseEnter();
     }

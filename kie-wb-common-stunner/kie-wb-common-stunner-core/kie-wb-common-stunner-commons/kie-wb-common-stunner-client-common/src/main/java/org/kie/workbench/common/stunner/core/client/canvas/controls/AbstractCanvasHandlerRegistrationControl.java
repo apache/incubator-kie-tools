@@ -65,14 +65,16 @@ public abstract class AbstractCanvasHandlerRegistrationControl<H extends Abstrac
     }
 
     public boolean isRegistered(final Element element) {
-        return handlers.containsKey(element.getUUID());
+        return isRegistered(element.getUUID());
     }
 
     protected void deregister(final String uuid) {
-        final Shape shape = canvasHandler.getCanvas().getShape(uuid);
-        final ViewHandler<?> handler = handlers.get(uuid);
-        doDeregisterHandler(shape,
-                            handler);
+        if (isRegistered(uuid)) {
+            final Shape shape = canvasHandler.getCanvas().getShape(uuid);
+            final ViewHandler<?> handler = handlers.get(uuid);
+            doDeregisterHandler(shape,
+                                handler);
+        }
     }
 
     protected boolean checkNotRegistered(final Element element) {
@@ -97,5 +99,9 @@ public abstract class AbstractCanvasHandlerRegistrationControl<H extends Abstrac
             hasEventHandlers.removeHandler(handler);
             handlers.remove(shape.getUUID());
         }
+    }
+
+    private boolean isRegistered(final String uuid) {
+        return handlers.containsKey(uuid);
     }
 }

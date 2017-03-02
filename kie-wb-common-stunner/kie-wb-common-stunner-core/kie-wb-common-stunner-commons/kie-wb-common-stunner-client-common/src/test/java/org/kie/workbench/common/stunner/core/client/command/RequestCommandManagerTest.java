@@ -170,15 +170,6 @@ public class RequestCommandManagerTest {
                times(0)).peek();
     }
 
-    @Test(expected = IllegalStateException.class)
-    @SuppressWarnings("unchecked")
-    public void testNoRequestStarted() {
-        when(command.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
-        tested.execute(canvasHandler,
-                       command);
-        tested.onCanvasMouseUpEvent(mouseUpEvent);
-    }
-
     @Test
     @SuppressWarnings("unchecked")
     public void testNoRequestComleted() {

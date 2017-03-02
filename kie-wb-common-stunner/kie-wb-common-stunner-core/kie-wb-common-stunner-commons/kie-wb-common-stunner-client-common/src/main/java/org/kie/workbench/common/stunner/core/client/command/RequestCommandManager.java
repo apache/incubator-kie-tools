@@ -200,21 +200,19 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
     private void complete() {
         LOGGER.log(Level.FINE,
                    "Checking if current client request has been completed...");
-        checkRequestStarted();
-        // If any commands have been aggregated, let's execute those.
-        if (currentCommandBuilder.size() > 0) {
+        if (isRequestStarted()) {
+            // If any commands have been aggregated, let's execute those.
+            if (currentCommandBuilder.size() > 0) {
+                LOGGER.log(Level.FINE,
+                           "Adding commands for current request into registry [size=" + currentCommandBuilder.size() + "]");
+                getRegistry().register(currentCommandBuilder.build());
+            }
+            clear();
             LOGGER.log(Level.FINE,
-                       "Adding commands for current request into registry [size=" + currentCommandBuilder.size() + "]");
-            getRegistry().register(currentCommandBuilder.build());
-        }
-        clear();
-        LOGGER.log(Level.FINE,
-                   "Current client request completed.");
-    }
-
-    private void checkRequestStarted() {
-        if (!isRequestStarted()) {
-            throw new IllegalStateException("Current client request has not been started. ");
+                       "Current client request completed.");
+        } else {
+            LOGGER.log(Level.WARNING,
+                       "Current client request has not been started.");
         }
     }
 

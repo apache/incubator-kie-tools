@@ -16,12 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.ext;
 
-import com.ait.lienzo.client.core.event.NodeMouseOverEvent;
-import com.ait.lienzo.client.core.event.NodeMouseOverHandler;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
-import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
@@ -36,7 +33,6 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.LinearGradient;
-import com.ait.lienzo.shared.core.types.ColorName;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresShapeView;
@@ -50,8 +46,10 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.DragEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.DragHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeHandler;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.TextOutEvent;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.TextOverEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextClickEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextDoubleClickEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextEnterEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
@@ -65,18 +63,16 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         HasFillGradient<T> {
 
     private ViewEventHandlerManager eventHandlerManager;
-    // Text event handlers will be only registered if the text instance gets built.
-    private ViewHandler<TextOverEvent> textOverHandlerViewHandler;
-    private ViewHandler<TextOutEvent> textOutEventViewHandler;
-    private Text text;
-    private LayoutContainer.Layout currentTextLayout;
+    private WiresTextDecorator textViewDecorator;
     private Type fillGradientType = null;
     private String fillGradientStartColor = null;
     private String fillGradientEndColor = null;
 
     public WiresShapeViewExt(final ViewEventType[] supportedEventTypes,
                              final MultiPath path) {
-        this(supportedEventTypes, path, new WiresLayoutContainer());
+        this(supportedEventTypes,
+             path,
+             new WiresLayoutContainer());
     }
 
     public WiresShapeViewExt(final ViewEventType[] supportedEventTypes,
@@ -100,32 +96,15 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     @Override
     @SuppressWarnings("unchecked")
     public T setTitle(final String title) {
-        text.setText(title);
-        text.moveToTop();
+        textViewDecorator.setTitle(title);
         return (T) this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitlePosition(final Position position) {
-        LayoutContainer.Layout layout = LayoutContainer.Layout.CENTER;
-        switch (position) {
-            case BOTTOM:
-                layout = LayoutContainer.Layout.BOTTOM;
-                break;
-            case TOP:
-                layout = LayoutContainer.Layout.TOP;
-                break;
-            case LEFT:
-                layout = LayoutContainer.Layout.LEFT;
-                break;
-            case RIGHT:
-                layout = LayoutContainer.Layout.RIGHT;
-                break;
-        }
-        if (!currentTextLayout.equals(layout)) {
-            this.currentTextLayout = layout;
-            removeChild(text);
+        if (textViewDecorator.setTitlePosition(position)) {
+            removeChild(textViewDecorator.getView());
             addTextAsChild();
         }
         return (T) this;
@@ -134,54 +113,50 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleRotation(final double degrees) {
-        text.setRotationDegrees(degrees);
+        textViewDecorator.setTitleRotation(degrees);
         return (T) this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleStrokeColor(final String color) {
-        text.setStrokeColor(color);
+        textViewDecorator.setTitleStrokeColor(color);
         return (T) this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleFontFamily(final String fontFamily) {
-        text.setFontFamily(fontFamily);
+        textViewDecorator.setTitleFontFamily(fontFamily);
         return (T) this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleFontSize(final double fontSize) {
-        text.setFontSize(fontSize);
+        textViewDecorator.setTitleFontSize(fontSize);
         return (T) this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleAlpha(final double alpha) {
-        text.setAlpha(alpha);
+        textViewDecorator.setTitleAlpha(alpha);
         return (T) this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleStrokeWidth(final double strokeWidth) {
-        text.setStrokeWidth(strokeWidth);
+        textViewDecorator.setTitleStrokeWidth(strokeWidth);
         return (T) this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T moveTitleToTop() {
-        text.moveToTop();
+        textViewDecorator.moveTitleToTop();
         return (T) this;
-    }
-
-    public Text getText() {
-        return text;
     }
 
     @Override
@@ -255,16 +230,13 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     @Override
     public void destroy() {
         super.destroy();
+        if (null != textViewDecorator) {
+            textViewDecorator.destroy();
+        }
         if (null != eventHandlerManager) {
-            // Remove all registered handlers.
             eventHandlerManager.destroy();
             eventHandlerManager = null;
         }
-        if (null != text) {
-            text.removeFromParent();
-            this.text = null;
-        }
-        // Nullify.
         this.fillGradientEndColor = null;
         this.fillGradientStartColor = null;
         this.fillGradientType = null;
@@ -275,25 +247,39 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     public T addHandler(final ViewEventType type,
                         final ViewHandler<? extends ViewEvent> eventHandler) {
         if (supports(type)) {
+            boolean delegate = true;
             if (ViewEventType.DRAG.equals(type)) {
                 final HandlerRegistration[] registrations = registerDragHandler((DragHandler) eventHandler);
                 if (null != registrations) {
                     eventHandlerManager.addHandlersRegistration(type,
                                                                 registrations);
                 }
+                delegate = false;
             } else if (ViewEventType.RESIZE.equals(type)) {
                 final HandlerRegistration[] registrations = registerResizeHandler((ResizeHandler) eventHandler);
                 if (null != registrations) {
                     eventHandlerManager.addHandlersRegistration(type,
                                                                 registrations);
                 }
+                delegate = false;
             }
-            if (ViewEventType.TEXT_OVER.equals(type)) {
-                textOverHandlerViewHandler = (ViewHandler<TextOverEvent>) eventHandler;
+            if (ViewEventType.TEXT_ENTER.equals(type)) {
+                delegate = false;
+                textViewDecorator.setTextEnterHandler((ViewHandler<TextEnterEvent>) eventHandler);
             }
-            if (ViewEventType.TEXT_OUT.equals(type)) {
-                textOutEventViewHandler = (ViewHandler<TextOutEvent>) eventHandler;
-            } else {
+            if (ViewEventType.TEXT_EXIT.equals(type)) {
+                textViewDecorator.setTextExitHandler((ViewHandler<TextExitEvent>) eventHandler);
+                delegate = false;
+            }
+            if (ViewEventType.TEXT_CLICK.equals(type)) {
+                textViewDecorator.setTextClickHandler((ViewHandler<TextClickEvent>) eventHandler);
+                delegate = false;
+            }
+            if (ViewEventType.TEXT_DBL_CLICK.equals(type)) {
+                textViewDecorator.setTextDblClickHandler((ViewHandler<TextDoubleClickEvent>) eventHandler);
+                delegate = false;
+            }
+            if (delegate) {
                 eventHandlerManager.addHandler(type,
                                                eventHandler);
             }
@@ -323,30 +309,39 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     }
 
     protected void initialize(final ViewEventType[] supportedEventTypes) {
-        createEventHandlerManager(getGroup(),
-                                  supportedEventTypes);
-        this.text = new Text("")
-                .setFontSize(14)
-                .setFillColor(ColorName.BLACK)
-                .setStrokeWidth(1)
-                .setDraggable(false)
-                .setAlpha(0);
-        this.currentTextLayout = LayoutContainer.Layout.CENTER;
+        initializeHandlerManager(getGroup(),
+                                 null != getPath() ? getPath() : getGroup(),
+                                 supportedEventTypes);
+        initializeTextView();
+    }
+
+    protected void initializeHandlerManager(final Node<?> node,
+                                            final Node<?> path,
+                                            final ViewEventType[] supportedEventTypes) {
+        this.eventHandlerManager = createEventHandlerManager(node,
+                                                             path,
+                                                             supportedEventTypes);
+    }
+
+    protected void initializeTextView() {
+        this.textViewDecorator = new WiresTextDecorator(eventHandlerManager);
         addTextAsChild();
     }
 
-    private void createEventHandlerManager(final Node<?> node,
-                                           final ViewEventType[] supportedEventTypes) {
-        if (null != node) {
-            this.eventHandlerManager = new ViewEventHandlerManager(node,
-                                                                   supportedEventTypes);
+    private ViewEventHandlerManager createEventHandlerManager(final Node<?> node,
+                                                              final Node<?> path,
+                                                              final ViewEventType[] supportedEventTypes) {
+        if (null != getGroup()) {
+            return new ViewEventHandlerManager(node,
+                                               path,
+                                               supportedEventTypes);
         }
+        return null;
     }
 
     private void addTextAsChild() {
-        this.addChild(text, currentTextLayout);
-        registerTextOverHandler();
-        registerTextOutHandler();
+        this.addChild(textViewDecorator.getView(),
+                      textViewDecorator.getLayout());
     }
 
     // TODO: listen for WiresMoveEvent's as well?
@@ -369,37 +364,6 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
             return new HandlerRegistration[]{dragStartReg, dragMoveReg, dragEndReg};
         }
         return null;
-    }
-
-    private void registerTextOverHandler() {
-        if (null != textOverHandlerViewHandler) {
-            HandlerRegistration registration = getText().addNodeMouseOverHandler(new NodeMouseOverHandler() {
-                @Override
-                public void onNodeMouseOver(NodeMouseOverEvent nodeMouseOverEvent) {
-                    final TextOverEvent event = new TextOverEvent(nodeMouseOverEvent.getX(),
-                                                                  nodeMouseOverEvent.getY(),
-                                                                  nodeMouseOverEvent.getMouseEvent().getClientX(),
-                                                                  nodeMouseOverEvent.getMouseEvent().getClientY());
-                    textOverHandlerViewHandler.handle(event);
-                }
-            });
-            eventHandlerManager.addHandlersRegistration(ViewEventType.TEXT_OVER,
-                                                        registration);
-        }
-    }
-
-    private void registerTextOutHandler() {
-        if (null != textOutEventViewHandler) {
-            HandlerRegistration registration = getText().addNodeMouseOutHandler(nodeMouseOverEvent -> {
-                final TextOutEvent event = new TextOutEvent(nodeMouseOverEvent.getX(),
-                                                            nodeMouseOverEvent.getY(),
-                                                            nodeMouseOverEvent.getMouseEvent().getClientX(),
-                                                            nodeMouseOverEvent.getMouseEvent().getClientY());
-                textOutEventViewHandler.handle(event);
-            });
-            eventHandlerManager.addHandlersRegistration(ViewEventType.TEXT_OUT,
-                                                        registration);
-        }
     }
 
     private HandlerRegistration[] registerResizeHandler(final ViewHandler<ResizeEvent> eventHandler) {

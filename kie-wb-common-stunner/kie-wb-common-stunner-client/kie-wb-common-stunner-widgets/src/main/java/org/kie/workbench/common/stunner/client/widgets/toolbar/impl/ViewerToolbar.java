@@ -18,9 +18,10 @@ package org.kie.workbench.common.stunner.client.widgets.toolbar.impl;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarView;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearSelectionToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearStatesToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.SwitchGridToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ToolbarCommandFactory;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.VisitGraphToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.item.AbstractToolbarItem;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 
@@ -40,7 +41,8 @@ public class ViewerToolbar extends AbstractToolbar<AbstractClientReadOnlySession
 
     @SuppressWarnings("unchecked")
     private void addDefaultCommands() {
-        addCommand(commandFactory.newClearSelectionCommand());
+        addCommand(commandFactory.newVisitGraphCommand());
+        addCommand(commandFactory.newClearStatesCommand());
         addCommand(commandFactory.newSwitchGridCommand());
     }
 
@@ -49,11 +51,15 @@ public class ViewerToolbar extends AbstractToolbar<AbstractClientReadOnlySession
         return items.get();
     }
 
-    public ClearSelectionToolbarCommand getClearSelectionToolbarCommand() {
-        return (ClearSelectionToolbarCommand) getCommand(0);
+    public VisitGraphToolbarCommand getVisitGraphToolbarCommand() {
+        return (VisitGraphToolbarCommand) getCommand(0);
+    }
+
+    public ClearStatesToolbarCommand getClearStatesToolbarCommand() {
+        return (ClearStatesToolbarCommand) getCommand(1);
     }
 
     public SwitchGridToolbarCommand getSwitchGridToolbarCommand() {
-        return (SwitchGridToolbarCommand) getCommand(1);
+        return (SwitchGridToolbarCommand) getCommand(2);
     }
 }

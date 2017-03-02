@@ -21,15 +21,15 @@ import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 
 @Dependent
-public class ClearSelectionToolbarCommand extends AbstractToolbarCommand<ClientReadOnlySession, ClearSelectionSessionCommand> {
+public class ClearStatesToolbarCommand extends AbstractToolbarCommand<ClientReadOnlySession, ClearStatesSessionCommand> {
 
     @Inject
-    public ClearSelectionToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
-        super(sessionCommandFactory.newClearSelectionCommand());
+    public ClearStatesToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
+        super(sessionCommandFactory.newClearStatesCommand());
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ClearSelectionToolbarCommand extends AbstractToolbarCommand<ClientR
     // TODO: I18n.
     @Override
     public String getTooltip() {
-        return "Clear selection";
+        return "Clear state";
     }
 
     @Override

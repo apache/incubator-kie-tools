@@ -15,26 +15,42 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import java.util.List;
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
+/**
+ * Clears the state for all canvas shapes by setting each
+ * one's state the value <code>NONE</code>.
+ * <p>
+ * This way selected, highlighted or invalid states for current canvas
+ * shapes will be clear.
+ */
 @Dependent
-public class ClearSelectionSessionCommand extends AbstractClientSessionCommand<ClientReadOnlySession> {
+public class ClearStatesSessionCommand extends AbstractClientSessionCommand<ClientReadOnlySession> {
 
-    public ClearSelectionSessionCommand() {
+    public ClearStatesSessionCommand() {
         super(false);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> void execute(final Callback<T> callback) {
         checkNotNull("callback",
                      callback);
         if (null != getSession().getSelectionControl()) {
+            // Clears selected elements, if any.
             getSession().getSelectionControl().clearSelection();
+            // Restore shape states.
+            final List<Shape> shapes = getSession().getCanvas().getShapes();
+            shapes.stream().forEach(shape -> shape.applyState(ShapeState.NONE));
+            // Job done, fire the callback.
             callback.onSuccess(null);
         }
     }

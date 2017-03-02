@@ -37,6 +37,8 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.GestureHand
 import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseDoubleClickEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseEnterEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseExitEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TouchEventImpl;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TouchHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
@@ -51,6 +53,7 @@ public class ViewEventHandlerManager {
     protected final Map<ViewEventType, HandlerRegistration[]> registrationMap = new HashMap<>();
 
     private final Node<?> node;
+    private final Node<?> path;
     private final ViewEventType[] supportedTypes;
     private boolean enabled;
     /**
@@ -63,8 +66,10 @@ public class ViewEventHandlerManager {
     private boolean fireClickHandler;
 
     public ViewEventHandlerManager(final Node<?> node,
+                                   final Node<?> path,
                                    final ViewEventType... supportedTypes) {
         this.node = node;
+        this.path = path;
         this.supportedTypes = supportedTypes;
         this.fireClickHandler = true;
         enable();
@@ -125,6 +130,12 @@ public class ViewEventHandlerManager {
         if (ViewEventType.MOUSE_DBL_CLICK.equals(type)) {
             return registerDoubleClickHandler((ViewHandler<ViewEvent>) eventHandler);
         }
+        if (ViewEventType.MOUSE_ENTER.equals(type)) {
+            return registerEnterHandler((ViewHandler<ViewEvent>) eventHandler);
+        }
+        if (ViewEventType.MOUSE_EXIT.equals(type)) {
+            return registerExitHandler((ViewHandler<ViewEvent>) eventHandler);
+        }
         if (ViewEventType.TOUCH.equals(type)) {
             return registerTouchHandler((TouchHandler) eventHandler);
         }
@@ -149,7 +160,7 @@ public class ViewEventHandlerManager {
 
     @SuppressWarnings("unchecked")
     public void destroy() {
-        fireClickHandler = true;
+        restoreClickHandler();
         registrationManager.removeHandler();
         registrationMap.clear();
     }
@@ -198,11 +209,45 @@ public class ViewEventHandlerManager {
                                     event.getRotation());
     }
 
+    protected HandlerRegistration[] registerEnterHandler(final ViewHandler<ViewEvent> eventHandler) {
+        return new HandlerRegistration[]{
+                path.addNodeMouseEnterHandler(e -> {
+                    if (isEnabled()) {
+                        final MouseEnterEvent event = new MouseEnterEvent(e.getX(),
+                                                                          e.getY(),
+                                                                          e.getMouseEvent().getClientX(),
+                                                                          e.getMouseEvent().getClientY());
+                        event.setShiftKeyDown(e.isShiftKeyDown());
+                        event.setAltKeyDown(e.isAltKeyDown());
+                        event.setMetaKeyDown(e.isMetaKeyDown());
+                        eventHandler.handle(event);
+                    }
+                })
+        };
+    }
+
+    protected HandlerRegistration[] registerExitHandler(final ViewHandler<ViewEvent> eventHandler) {
+        return new HandlerRegistration[]{
+                path.addNodeMouseExitHandler(e -> {
+                    if (isEnabled()) {
+                        final MouseExitEvent event = new MouseExitEvent(e.getX(),
+                                                                        e.getY(),
+                                                                        e.getMouseEvent().getClientX(),
+                                                                        e.getMouseEvent().getClientY());
+                        event.setShiftKeyDown(e.isShiftKeyDown());
+                        event.setAltKeyDown(e.isAltKeyDown());
+                        event.setMetaKeyDown(e.isMetaKeyDown());
+                        eventHandler.handle(event);
+                    }
+                })
+        };
+    }
+
     protected HandlerRegistration[] registerClickHandler(final ViewHandler<ViewEvent> eventHandler) {
         return new HandlerRegistration[]{
                 node.addNodeMouseClickHandler(nodeMouseClickEvent -> {
                     if (ViewEventHandlerManager.this.isEnabled()) {
-                        this.fireClickHandler = true;
+                        restoreClickHandler();
                         final int x = nodeMouseClickEvent.getX();
                         final int y = nodeMouseClickEvent.getY();
                         final int clientX = nodeMouseClickEvent.getMouseEvent().getClientX();
@@ -240,7 +285,7 @@ public class ViewEventHandlerManager {
         return new HandlerRegistration[]{
                 node.addNodeMouseDoubleClickHandler(nodeMouseDoubleClickEvent -> {
                     if (isEnabled()) {
-                        fireClickHandler = false;
+                        skipClickHandler();
                         final MouseDoubleClickEvent event = new MouseDoubleClickEvent(nodeMouseDoubleClickEvent.getX(),
                                                                                       nodeMouseDoubleClickEvent.getY(),
                                                                                       nodeMouseDoubleClickEvent.getMouseEvent().getClientX(),
@@ -252,10 +297,18 @@ public class ViewEventHandlerManager {
                         event.setButtonMiddle(nodeMouseDoubleClickEvent.isButtonMiddle());
                         event.setButtonRight(nodeMouseDoubleClickEvent.isButtonRight());
                         eventHandler.handle(event);
-                        fireClickHandler = true;
+                        restoreClickHandler();
                     }
                 })
         };
+    }
+
+    public void skipClickHandler() {
+        this.fireClickHandler = false;
+    }
+
+    public void restoreClickHandler() {
+        this.fireClickHandler = true;
     }
 
     private void onMouseClick(final ViewHandler<ViewEvent> eventHandler,

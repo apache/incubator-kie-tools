@@ -69,7 +69,10 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
                              height),
               layoutContainer);
         this.theShape = theShape;
-        // addChild(text, LayoutContainer.Layout.CENTER);
+        initializeHandlerManager(getGroup(),
+                                 theShape,
+                                 supportedEventTypes);
+        initializeTextView();
         getGroup().add(transformableContainer);
         transformableContainer.add(theShape);
         resize(0,
@@ -107,10 +110,15 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
     }
 
     @Override
-    protected WiresShapeControlHandleList createControlHandles(IControlHandle.ControlHandleType type,
-                                                               ControlHandleList controls) {
+    protected WiresShapeControlHandleList createControlHandles(final IControlHandle.ControlHandleType type,
+                                                               final ControlHandleList controls) {
         return new DecoratedWiresShapeControlHandleList(type,
                                                         controls);
+    }
+
+    @Override
+    protected void initialize(final ViewEventType[] supportedEventTypes) {
+        // Initialize handlers for the primitive shape instead that on the path, as parent does.
     }
 
     void resize(final double x,

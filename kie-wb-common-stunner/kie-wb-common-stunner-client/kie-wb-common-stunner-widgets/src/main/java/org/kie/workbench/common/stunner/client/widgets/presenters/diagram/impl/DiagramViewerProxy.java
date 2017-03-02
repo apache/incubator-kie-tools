@@ -25,7 +25,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerProxy;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
@@ -44,27 +43,21 @@ public abstract class DiagramViewerProxy<D extends Diagram>
     private final DefinitionManager definitionManager;
     private final GraphUtils graphUtils;
     private final ShapeManager shapeManager;
-    private final AbstractCanvas canvas;
     private final CanvasCommandFactory canvasCommandFactory;
-    private final ZoomControl<AbstractCanvas> zoomControl;
     private final SelectionControl<CanvasHandlerProxy, ?> selectionControl;
     private CanvasHandlerProxy proxy;
 
     public DiagramViewerProxy(final DefinitionManager definitionManager,
                               final GraphUtils graphUtils,
                               final ShapeManager shapeManager,
-                              final AbstractCanvas canvas,
                               final WidgetWrapperView view,
                               final CanvasCommandFactory canvasCommandFactory,
-                              final ZoomControl<AbstractCanvas> zoomControl,
                               final SelectionControl<CanvasHandlerProxy, ?> selectionControl) {
         super(view);
         this.definitionManager = definitionManager;
         this.graphUtils = graphUtils;
         this.shapeManager = shapeManager;
-        this.canvas = canvas;
         this.canvasCommandFactory = canvasCommandFactory;
-        this.zoomControl = zoomControl;
         this.selectionControl = selectionControl;
     }
 
@@ -98,12 +91,6 @@ public abstract class DiagramViewerProxy<D extends Diagram>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public ZoomControl<AbstractCanvas> getZoomControl() {
-        return zoomControl;
-    }
-
-    @Override
     public SelectionControl<CanvasHandlerProxy, ?> getSelectionControl() {
         return selectionControl;
     }
@@ -117,10 +104,6 @@ public abstract class DiagramViewerProxy<D extends Diagram>
 
     private WiresCanvasPresenter getWiresCanvasPresenter() {
         return (WiresCanvasPresenter) getCanvas();
-    }
-
-    public AbstractCanvas getCanvas() {
-        return canvas;
     }
 
     private class DiagramCanvasHandlerProxy<D extends Diagram, C extends AbstractCanvas> extends CanvasHandlerProxy<D, C> {

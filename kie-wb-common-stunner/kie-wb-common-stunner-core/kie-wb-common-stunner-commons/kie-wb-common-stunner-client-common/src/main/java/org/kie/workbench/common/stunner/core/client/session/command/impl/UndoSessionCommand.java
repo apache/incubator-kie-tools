@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -23,6 +24,8 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.CanvasKeyShortcutsHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
@@ -36,15 +39,28 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 public class UndoSessionCommand extends AbstractClientSessionCommand<ClientFullSession> {
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private final CanvasKeyShortcutsHandler keyboardListener;
 
     protected UndoSessionCommand() {
-        this(null);
+        this(null,
+             null);
     }
 
     @Inject
-    public UndoSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager) {
+    public UndoSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                              final CanvasKeyShortcutsHandler keyboardListener) {
         super(false);
         this.sessionCommandManager = sessionCommandManager;
+        this.keyboardListener = keyboardListener;
+    }
+
+    @PostConstruct
+    public void init() {
+        this.keyboardListener.setKeyShortcutCallback(keys -> {
+            if (isUndoShortcut(keys)) {
+                UndoSessionCommand.this.execute();
+            }
+        });
     }
 
     @Override
@@ -72,6 +88,12 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<ClientFullS
         checkState();
     }
 
+    @Override
+    public void unbind() {
+        super.unbind();
+        keyboardListener.clear();
+    }
+
     private void checkState() {
         if (null != getSession()) {
             final SessionCommandManager<AbstractCanvasHandler> cm = getSessionCommandManager();
@@ -85,5 +107,11 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<ClientFullS
 
     private SessionCommandManager<AbstractCanvasHandler> getSessionCommandManager() {
         return sessionCommandManager;
+    }
+
+    private boolean isUndoShortcut(final KeyboardEvent.Key... keys) {
+        return CanvasKeyShortcutsHandler.isSameShortcut(keys,
+                                                        KeyboardEvent.Key.CONTROL,
+                                                        KeyboardEvent.Key.Z);
     }
 }

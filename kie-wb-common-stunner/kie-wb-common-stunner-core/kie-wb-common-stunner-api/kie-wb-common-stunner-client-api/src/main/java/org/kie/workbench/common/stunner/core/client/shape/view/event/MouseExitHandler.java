@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view.event;
 
-public enum ViewEventType {
-    // Desktop.
-    MOUSE_CLICK,
-    MOUSE_DBL_CLICK,
-    MOUSE_MOVE,
-    MOUSE_ENTER,
-    MOUSE_EXIT,
-    TEXT_ENTER,
-    TEXT_EXIT,
-    TEXT_CLICK,
-    TEXT_DBL_CLICK,
-    DRAG,
-    RESIZE,
+public abstract class MouseExitHandler extends AbstractViewHandler<MouseExitEvent> {
 
-    // Mobile.
-    TOUCH,
-    GESTURE;
+    @Override
+    public ViewEventType getType() {
+        return ViewEventType.MOUSE_EXIT;
+    }
 }

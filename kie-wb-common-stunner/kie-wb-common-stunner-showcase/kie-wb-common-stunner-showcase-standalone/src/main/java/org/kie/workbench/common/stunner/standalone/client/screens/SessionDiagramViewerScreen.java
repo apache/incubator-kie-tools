@@ -162,7 +162,7 @@ public class SessionDiagramViewerScreen {
                                      @Override
                                      public void onSuccess(final Diagram diagram) {
                                          final AbstractClientReadOnlySession session = newSession(diagram);
-                                         presenter = sessionPresenterFactory.newPresenterViewer(diagram);
+                                         presenter = sessionPresenterFactory.newPresenterViewer();
                                          screenPanelView.setWidget(presenter.getView());
                                          presenter
                                                  .withToolbar(true)

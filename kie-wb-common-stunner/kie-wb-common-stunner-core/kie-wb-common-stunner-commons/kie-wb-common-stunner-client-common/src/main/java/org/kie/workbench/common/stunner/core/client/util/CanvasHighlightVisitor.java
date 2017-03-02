@@ -38,7 +38,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 import org.uberfire.mvp.Command;
 
 /**
- * Visits the graph and highlights elements while visiting. Just for development use.
+ * Walks through the graph and highlights elements while visiting. Just for development use.
  */
 public class CanvasHighlightVisitor {
 
@@ -71,6 +71,7 @@ public class CanvasHighlightVisitor {
         if (index < shapes.size()) {
             final Shape shape = shapes.get(index);
             shape.applyState(ShapeState.HIGHLIGHT);
+            canvasHandler.getCanvas().draw();
             final Timer t = new Timer() {
 
                 @Override

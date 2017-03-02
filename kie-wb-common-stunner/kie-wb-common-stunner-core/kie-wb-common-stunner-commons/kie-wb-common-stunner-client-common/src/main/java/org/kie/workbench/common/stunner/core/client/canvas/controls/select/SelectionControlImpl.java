@@ -58,10 +58,12 @@ public final class SelectionControlImpl<H extends AbstractCanvasHandler> extends
                 final MouseClickHandler clickHandler = new MouseClickHandler() {
                     @Override
                     public void handle(final MouseClickEvent event) {
-                        final boolean isSelected = isSelected(element);
-                        SelectionControlImpl.super.handleElementSelection(element,
-                                                                          isSelected,
-                                                                          !event.isShiftKeyDown());
+                        if (event.isButtonLeft()) {
+                            final boolean isSelected = isSelected(element);
+                            SelectionControlImpl.super.handleElementSelection(element,
+                                                                              isSelected,
+                                                                              !event.isShiftKeyDown());
+                        }
                     }
                 };
                 hasEventHandlers.addHandler(ViewEventType.MOUSE_CLICK,

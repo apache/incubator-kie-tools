@@ -25,7 +25,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
@@ -36,8 +35,8 @@ import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RefreshSessionCommand;
@@ -95,7 +94,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private final ClientSessionUtils sessionUtils;
     private final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
 
-    private final ClearSelectionSessionCommand sessionClearSelectionCommand;
+    private final ClearStatesSessionCommand sessionClearStatesCommand;
     private final VisitGraphSessionCommand sessionVisitGraphCommand;
     private final SwitchGridSessionCommand sessionSwitchGridCommand;
     private final ClearSessionCommand sessionClearCommand;
@@ -135,7 +134,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.editorErrorView = editorErrorView;
         this.sessionUtils = sessionUtils;
         this.menuItemsBuilder = menuItemsBuilder;
-        this.sessionClearSelectionCommand = sessionCommandFactory.newClearSelectionCommand();
+        this.sessionClearStatesCommand = sessionCommandFactory.newClearStatesCommand();
         this.sessionVisitGraphCommand = sessionCommandFactory.newVisitGraphCommand();
         this.sessionSwitchGridCommand = sessionCommandFactory.newSwitchGridCommand();
         this.sessionClearCommand = sessionCommandFactory.newClearCommand();
@@ -182,7 +181,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     protected void open(final ProjectDiagram diagram) {
         showLoadingViews();
         final AbstractClientFullSession session = newSession(diagram);
-        presenter = sessionPresenterFactory.newPresenterEditor(diagram);
+        presenter = sessionPresenterFactory.newPresenterEditor();
         getView().setWidget(presenter.getView());
         presenter
                 .withToolbar(false)
@@ -284,8 +283,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         // TODO: fix - menu items not getting disabled/enabled?
         final MenuItem clearItem = menuItemsBuilder.newClearItem(AbstractProjectDiagramEditor.this::menu_clear);
         sessionClearCommand.listen(() -> clearItem.setEnabled(sessionClearCommand.isEnabled()));
-        final MenuItem clearSelectionItem = menuItemsBuilder.newClearSelectionItem(AbstractProjectDiagramEditor.this::menu_clearSelection);
-        sessionClearSelectionCommand.listen(() -> clearSelectionItem.setEnabled(sessionClearSelectionCommand.isEnabled()));
+        final MenuItem clearStatesItem = menuItemsBuilder.newClearSelectionItem(AbstractProjectDiagramEditor.this::menu_clearStates);
+        sessionClearStatesCommand.listen(() -> clearStatesItem.setEnabled(sessionClearStatesCommand.isEnabled()));
         final MenuItem visitGraphItem = menuItemsBuilder.newVisitGraphItem(AbstractProjectDiagramEditor.this::menu_visitGraph);
         sessionVisitGraphCommand.listen(() -> visitGraphItem.setEnabled(sessionVisitGraphCommand.isEnabled()));
         final MenuItem switchGridItem = menuItemsBuilder.newSwitchGridItem(AbstractProjectDiagramEditor.this::menu_switchGrid);
@@ -304,7 +303,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         menuBuilder
                 // Specific Stunner toolbar items.
                 .addNewTopLevelMenu(clearItem)
-                .addNewTopLevelMenu(clearSelectionItem)
+                .addNewTopLevelMenu(clearStatesItem)
                 .addNewTopLevelMenu(visitGraphItem)
                 .addNewTopLevelMenu(switchGridItem)
                 .addNewTopLevelMenu(deleteSelectionItem)
@@ -332,8 +331,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         sessionClearCommand.execute();
     }
 
-    private void menu_clearSelection() {
-        sessionClearSelectionCommand.execute();
+    private void menu_clearStates() {
+        sessionClearStatesCommand.execute();
     }
 
     private void menu_visitGraph() {
@@ -438,7 +437,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     void bindCommands() {
-        this.sessionClearSelectionCommand.bind(getSession());
+        this.sessionClearStatesCommand.bind(getSession());
         this.sessionVisitGraphCommand.bind(getSession());
         this.sessionSwitchGridCommand.bind(getSession());
         this.sessionClearCommand.bind(getSession());
@@ -450,7 +449,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     void unbindCommands() {
-        this.sessionClearSelectionCommand.unbind();
+        this.sessionClearStatesCommand.unbind();
         this.sessionVisitGraphCommand.unbind();
         this.sessionSwitchGridCommand.unbind();
         this.sessionClearCommand.unbind();

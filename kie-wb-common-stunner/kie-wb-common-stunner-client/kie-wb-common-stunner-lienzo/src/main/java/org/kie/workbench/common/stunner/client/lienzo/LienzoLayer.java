@@ -58,6 +58,7 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
     public LienzoLayer initialize(final Object view) {
         this.layer = (com.ait.lienzo.client.core.shape.Layer) view;
         this.eventHandlerManager = new ViewEventHandlerManager(layer,
+                                                               layer,
                                                                SUPPORTED_EVENT_TYPES);
         return this;
     }

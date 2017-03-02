@@ -39,25 +39,21 @@ public interface SessionPresenterFactory<D extends Diagram, S extends AbstractCl
 
     /**
      * Creates a new session's viewer instance.
-     * @param diagram The diagram open and bind to a given session.
      */
-    SessionViewer<S, ?, D> newViewer(final D diagram);
+    SessionViewer<S, ?, D> newViewer();
 
     /**
      * Creates a new session's editor instance.
-     * @param diagram The diagram edit and bind to a given session.
      */
-    SessionEditor<E, ?, D> newEditor(final D diagram);
+    SessionEditor<E, ?, D> newEditor();
 
     /**
      * Creates a new session's presenter for read-only goals.
-     * @param diagram The diagram present and bind to a given session.
      */
-    SessionPresenter<S, ?, D> newPresenterViewer(final D diagram);
+    SessionPresenter<S, ?, D> newPresenterViewer();
 
     /**
      * Creates a new session's presenter for authoring goals.
-     * @param diagram The diagram present and bind to a given session.
      */
-    SessionPresenter<E, ?, D> newPresenterEditor(final D diagram);
+    SessionPresenter<E, ?, D> newPresenterEditor();
 }

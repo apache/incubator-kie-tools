@@ -24,8 +24,12 @@ public class ShapeViewSupportedEvents {
     public static final ViewEventType[] ALL_EVENT_TYPES = new ViewEventType[]{
             ViewEventType.MOUSE_CLICK,
             ViewEventType.MOUSE_DBL_CLICK,
-            ViewEventType.TEXT_OVER,
-            ViewEventType.TEXT_OUT,
+            ViewEventType.MOUSE_ENTER,
+            ViewEventType.MOUSE_EXIT,
+            ViewEventType.TEXT_ENTER,
+            ViewEventType.TEXT_EXIT,
+            ViewEventType.TEXT_CLICK,
+            ViewEventType.TEXT_DBL_CLICK,
             ViewEventType.DRAG,
             ViewEventType.RESIZE,
             ViewEventType.TOUCH,
@@ -35,8 +39,12 @@ public class ShapeViewSupportedEvents {
     public static final ViewEventType[] ALL_DESKTOP_EVENT_TYPES = new ViewEventType[]{
             ViewEventType.MOUSE_CLICK,
             ViewEventType.MOUSE_DBL_CLICK,
-            ViewEventType.TEXT_OVER,
-            ViewEventType.TEXT_OUT,
+            ViewEventType.MOUSE_ENTER,
+            ViewEventType.MOUSE_EXIT,
+            ViewEventType.TEXT_ENTER,
+            ViewEventType.TEXT_EXIT,
+            ViewEventType.TEXT_CLICK,
+            ViewEventType.TEXT_DBL_CLICK,
             ViewEventType.DRAG,
             ViewEventType.RESIZE
     };
@@ -44,8 +52,12 @@ public class ShapeViewSupportedEvents {
     public static final ViewEventType[] DESKTOP_NO_RESIZE_EVENT_TYPES = new ViewEventType[]{
             ViewEventType.MOUSE_CLICK,
             ViewEventType.MOUSE_DBL_CLICK,
-            ViewEventType.TEXT_OVER,
-            ViewEventType.TEXT_OUT,
+            ViewEventType.MOUSE_ENTER,
+            ViewEventType.MOUSE_EXIT,
+            ViewEventType.TEXT_ENTER,
+            ViewEventType.TEXT_EXIT,
+            ViewEventType.TEXT_CLICK,
+            ViewEventType.TEXT_DBL_CLICK,
             ViewEventType.DRAG
     };
 

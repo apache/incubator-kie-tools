@@ -24,7 +24,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 @ApplicationScoped
 public class SessionCommandFactory {
 
-    private final ManagedInstance<ClearSelectionSessionCommand> clearSelectionCommand;
+    private final ManagedInstance<ClearStatesSessionCommand> clearStatesCommand;
     private final ManagedInstance<VisitGraphSessionCommand> visitGraphCommand;
     private final ManagedInstance<SwitchGridSessionCommand> switchGridCommand;
     private final ManagedInstance<ClearSessionCommand> clearCommand;
@@ -47,7 +47,7 @@ public class SessionCommandFactory {
     }
 
     @Inject
-    public SessionCommandFactory(final ManagedInstance<ClearSelectionSessionCommand> clearSelectionCommand,
+    public SessionCommandFactory(final ManagedInstance<ClearStatesSessionCommand> clearStatesCommand,
                                  final ManagedInstance<VisitGraphSessionCommand> visitGraphCommand,
                                  final ManagedInstance<SwitchGridSessionCommand> switchGridCommand,
                                  final ManagedInstance<ClearSessionCommand> clearCommand,
@@ -56,7 +56,7 @@ public class SessionCommandFactory {
                                  final ManagedInstance<RedoSessionCommand> redoCommand,
                                  final ManagedInstance<ValidateSessionCommand> validateCommand,
                                  final ManagedInstance<RefreshSessionCommand> refreshSessionCommand) {
-        this.clearSelectionCommand = clearSelectionCommand;
+        this.clearStatesCommand = clearStatesCommand;
         this.visitGraphCommand = visitGraphCommand;
         this.switchGridCommand = switchGridCommand;
         this.clearCommand = clearCommand;
@@ -67,8 +67,8 @@ public class SessionCommandFactory {
         this.refreshSessionCommand = refreshSessionCommand;
     }
 
-    public ClearSelectionSessionCommand newClearSelectionCommand() {
-        return clearSelectionCommand.get();
+    public ClearStatesSessionCommand newClearStatesCommand() {
+        return clearStatesCommand.get();
     }
 
     public SwitchGridSessionCommand newSwitchGridCommand() {

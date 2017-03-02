@@ -28,6 +28,9 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerProxy;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -58,27 +61,46 @@ public class SessionPreviewImpl
 
     private final DiagramPreviewProxy<Diagram> diagramPreview;
     private final CanvasCommandManager<CanvasHandlerProxy> canvasCommandManager;
+    private final ShapeManager shapeManager;
+    private AbstractCanvas canvas;
+    private ZoomControl<AbstractCanvas> zoomControl;
 
     @Inject
     @SuppressWarnings("unchecked")
     public SessionPreviewImpl(final DefinitionManager definitionManager,
                               final GraphUtils graphUtils,
                               final ShapeManager shapeManager,
-                              final AbstractCanvas canvas,
                               final CanvasCommandFactory canvasCommandFactory,
                               final SelectionControl<CanvasHandlerProxy, ?> selectionControl,
-                              final ZoomControl<AbstractCanvas> zoomControl,
                               final CanvasCommandManager<CanvasHandlerProxy> canvasCommandManager,
                               final WidgetWrapperView view) {
         this.diagramPreview =
                 new DiagramPreviewProxy<Diagram>(definitionManager,
                                                  graphUtils,
                                                  shapeManager,
-                                                 canvas,
                                                  view,
                                                  canvasCommandFactory,
-                                                 zoomControl,
                                                  selectionControl) {
+                    @Override
+                    public <C extends Canvas> ZoomControl<C> getZoomControl() {
+                        return (ZoomControl<C>) zoomControl;
+                    }
+
+                    @Override
+                    protected int getWidth() {
+                        return DEFAULT_WIDTH;
+                    }
+
+                    @Override
+                    protected int getHeight() {
+                        return DEFAULT_HEIGHT;
+                    }
+
+                    @Override
+                    protected AbstractCanvas getCanvas() {
+                        return canvas;
+                    }
+
                     @Override
                     @SuppressWarnings("unchecked")
                     protected AbstractCanvasHandler getProxiedHandler() {
@@ -86,18 +108,8 @@ public class SessionPreviewImpl
                     }
 
                     @Override
-                    protected int getPreviewWidth() {
-                        return DEFAULT_WIDTH;
-                    }
-
-                    @Override
-                    protected int getPreviewHeight() {
-                        return DEFAULT_HEIGHT;
-                    }
-
-                    @Override
                     protected void enableControls() {
-                        zoomControl.enable(getHandler().getCanvas());
+                        zoomControl.enable(canvas);
                         zoomControl.setMinScale(0).setMaxScale(1);
                     }
 
@@ -111,7 +123,19 @@ public class SessionPreviewImpl
                         zoomControl.disable();
                     }
                 };
+        this.canvas = null;
+        this.zoomControl = null;
+        this.shapeManager = shapeManager;
         this.canvasCommandManager = canvasCommandManager;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void beforeOpen() {
+        super.beforeOpen();
+        final CanvasFactory<Canvas, CanvasHandler> canvasFactory = shapeManager.getCanvasFactory(getDiagram());
+        canvas = (AbstractCanvas) canvasFactory.newCanvas();
+        zoomControl = canvasFactory.newControl(ZoomControl.class);
     }
 
     @Override
@@ -140,7 +164,7 @@ public class SessionPreviewImpl
     @Override
     @SuppressWarnings("unchecked")
     public ZoomControl<AbstractCanvas> getZoomControl() {
-        return diagramPreview.getZoomControl();
+        return zoomControl;
     }
 
     /**
@@ -153,8 +177,8 @@ public class SessionPreviewImpl
             @Override
             public void afterCanvasInitialized() {
                 checkNotNull("canvas",
-                             SessionPreviewImpl.this.getCanvas());
-                updateCanvasDecorator(SessionPreviewImpl.this.getCanvas().getView());
+                             canvas);
+                updateCanvasDecorator(canvas.getView());
                 callback.afterCanvasInitialized();
             }
 

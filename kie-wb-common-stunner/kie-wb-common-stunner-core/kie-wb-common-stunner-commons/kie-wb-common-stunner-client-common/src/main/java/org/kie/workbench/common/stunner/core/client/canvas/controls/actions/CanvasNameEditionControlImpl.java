@@ -37,12 +37,12 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseDoubleClickEvent;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseDoubleClickHandler;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.TextOutEvent;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.TextOutHandler;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.TextOverEvent;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.TextOverHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextDoubleClickEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextDoubleClickHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextEnterEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextEnterHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -103,44 +103,42 @@ public class CanvasNameEditionControlImpl
                 final ShapeView shapeView = shape.getShapeView();
                 if (shapeView instanceof HasEventHandlers) {
                     final HasEventHandlers hasEventHandlers = (HasEventHandlers) shapeView;
-                    if (hasEventHandlers.supports(ViewEventType.MOUSE_DBL_CLICK)) {
-                        // Double click event.
-                        final MouseDoubleClickHandler doubleClickHandler = new MouseDoubleClickHandler() {
+                    if (hasEventHandlers.supports(ViewEventType.TEXT_DBL_CLICK)) {
+                        final TextDoubleClickHandler clickHandler = new TextDoubleClickHandler() {
                             @Override
-                            public void handle(final MouseDoubleClickEvent event) {
+                            public void handle(final TextDoubleClickEvent event) {
                                 CanvasNameEditionControlImpl.this.show(element,
                                                                        event.getClientX(),
                                                                        event.getClientY());
                             }
                         };
-                        hasEventHandlers.addHandler(ViewEventType.MOUSE_DBL_CLICK,
-                                                    doubleClickHandler);
+                        hasEventHandlers.addHandler(ViewEventType.TEXT_DBL_CLICK,
+                                                    clickHandler);
                         registerHandler(shape.getUUID(),
-                                        doubleClickHandler);
-                        // TODO: Not firing - Text over event.
-                        final TextOverHandler overHandler = new TextOverHandler() {
-                            @Override
-                            public void handle(TextOverEvent event) {
-                                canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.TEXT);
-                            }
-                        };
-                        if (hasEventHandlers.supports(ViewEventType.TEXT_OVER) &&
-                                hasEventHandlers.supports(ViewEventType.TEXT_OUT)) {
-                            hasEventHandlers.addHandler(ViewEventType.TEXT_OVER,
-                                                        overHandler);
-                            registerHandler(shape.getUUID(),
-                                            overHandler);
-                            // TODO: Not firing - Text out event.
-                            final TextOutHandler outHandler = new TextOutHandler() {
+                                        clickHandler);
+                        // Change mouse cursor, if shape supports it.
+                        if (hasEventHandlers.supports(ViewEventType.TEXT_ENTER) &&
+                                hasEventHandlers.supports(ViewEventType.TEXT_EXIT)) {
+                            final TextEnterHandler enterHandler = new TextEnterHandler() {
                                 @Override
-                                public void handle(TextOutEvent event) {
+                                public void handle(TextEnterEvent event) {
+                                    canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.TEXT);
+                                }
+                            };
+                            hasEventHandlers.addHandler(ViewEventType.TEXT_ENTER,
+                                                        enterHandler);
+                            registerHandler(shape.getUUID(),
+                                            enterHandler);
+                            final TextExitHandler exitHandler = new TextExitHandler() {
+                                @Override
+                                public void handle(TextExitEvent event) {
                                     canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
                                 }
                             };
-                            hasEventHandlers.addHandler(ViewEventType.TEXT_OUT,
-                                                        outHandler);
+                            hasEventHandlers.addHandler(ViewEventType.TEXT_EXIT,
+                                                        exitHandler);
                             registerHandler(shape.getUUID(),
-                                            outHandler);
+                                            exitHandler);
                         }
                     }
                 }

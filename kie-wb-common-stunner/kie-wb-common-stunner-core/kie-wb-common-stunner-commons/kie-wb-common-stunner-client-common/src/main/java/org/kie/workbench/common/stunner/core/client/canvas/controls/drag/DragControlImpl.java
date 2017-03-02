@@ -35,6 +35,10 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.DragEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.DragHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseEnterEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseEnterHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseExitEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseExitHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
@@ -78,6 +82,7 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
             final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
             final Shape<?> shape = canvas.getShape(element.getUUID());
             if (shape.getShapeView() instanceof HasEventHandlers) {
+                // Register the drag handler.
                 final HasEventHandlers hasEventHandlers = (HasEventHandlers) shape.getShapeView();
                 final DragHandler handler = new DragHandler() {
 
@@ -100,6 +105,30 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
                                             handler);
                 registerHandler(element.getUUID(),
                                 handler);
+                // Change mouse cursor, if shape supports it.
+                if (hasEventHandlers.supports(ViewEventType.MOUSE_ENTER) &&
+                        hasEventHandlers.supports(ViewEventType.MOUSE_EXIT)) {
+                    final MouseEnterHandler overHandler = new MouseEnterHandler() {
+                        @Override
+                        public void handle(MouseEnterEvent event) {
+                            canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.MOVE);
+                        }
+                    };
+                    hasEventHandlers.addHandler(ViewEventType.MOUSE_ENTER,
+                                                overHandler);
+                    registerHandler(shape.getUUID(),
+                                    overHandler);
+                    final MouseExitHandler outHandler = new MouseExitHandler() {
+                        @Override
+                        public void handle(MouseExitEvent event) {
+                            canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
+                        }
+                    };
+                    hasEventHandlers.addHandler(ViewEventType.MOUSE_EXIT,
+                                                outHandler);
+                    registerHandler(shape.getUUID(),
+                                    outHandler);
+                }
             }
         }
     }
@@ -126,7 +155,6 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
              x,
              y);
     }
-
 
     @Override
     @SuppressWarnings("unchecked")
@@ -226,5 +254,4 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
     private CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
         return commandManagerProvider.getCommandManager();
     }
-
 }

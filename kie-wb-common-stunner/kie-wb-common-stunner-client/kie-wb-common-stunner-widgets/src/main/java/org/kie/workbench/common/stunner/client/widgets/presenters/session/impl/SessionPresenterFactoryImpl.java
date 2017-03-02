@@ -93,19 +93,19 @@ public class SessionPresenterFactoryImpl implements SessionPresenterFactory<Diag
     }
 
     @Override
-    public SessionViewer<AbstractClientReadOnlySession, ?, Diagram> newViewer(final Diagram diagram) {
+    public SessionViewer<AbstractClientReadOnlySession, ?, Diagram> newViewer() {
         return new SessionViewerImpl<>(commandManagerInstances.get(),
                                        diagramViewerViewInstances.get());
     }
 
     @Override
-    public SessionEditor<AbstractClientFullSession, ?, Diagram> newEditor(final Diagram diagram) {
+    public SessionEditor<AbstractClientFullSession, ?, Diagram> newEditor() {
         return new SessionEditorImpl<>(commandManagerInstances.get(),
                                        diagramViewerViewInstances.get());
     }
 
     @Override
-    public SessionPresenter<AbstractClientReadOnlySession, ?, Diagram> newPresenterViewer(final Diagram diagram) {
+    public SessionPresenter<AbstractClientReadOnlySession, ?, Diagram> newPresenterViewer() {
         return new SessionViewerPresenter<>(sessionManager,
                                             commandManagerInstances.get(),
                                             viewerToolbarFactoryInstances.get(),
@@ -115,7 +115,7 @@ public class SessionPresenterFactoryImpl implements SessionPresenterFactory<Diag
     }
 
     @Override
-    public SessionPresenter<AbstractClientFullSession, ?, Diagram> newPresenterEditor(final Diagram diagram) {
+    public SessionPresenter<AbstractClientFullSession, ?, Diagram> newPresenterEditor() {
         return new SessionEditorPresenter<>(sessionManager,
                                             commandManagerInstances.get(),
                                             sessionDiagramOpenedEventInstances,

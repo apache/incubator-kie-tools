@@ -35,8 +35,6 @@ import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManag
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickHandler;
@@ -152,7 +150,8 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
             final MouseClickHandler clickHandler = new MouseClickHandler() {
                 @Override
                 public void handle(final MouseClickEvent event) {
-                    if (event.isShiftKeyDown() && !hasControlPoints.areControlsVisible()) {
+                    if (event.isButtonLeft() &&
+                            event.isShiftKeyDown() && !hasControlPoints.areControlsVisible()) {
                         hasControlPoints.showControlPoints(HasControlPoints.ControlPointType.RESIZE);
                     } else {
                         hasControlPoints.hideControlPoints();
@@ -289,28 +288,42 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
                         .adapters().registry().getDefinitionAdapter(def.getClass());
         final List<Command<AbstractCanvasHandler, CanvasViolation>> result =
                 new LinkedList<>();
-        final Object width = adapter.getMetaProperty(PropertyMetaTypes.WIDTH, def);
+        final Object width = adapter.getMetaProperty(PropertyMetaTypes.WIDTH,
+                                                     def);
         if (null != width) {
-            appendCommandForModelProperty(element, width, w, result);
+            appendCommandForModelProperty(element,
+                                          width,
+                                          w,
+                                          result);
         }
-        final Object height = adapter.getMetaProperty(PropertyMetaTypes.HEIGHT, def);
+        final Object height = adapter.getMetaProperty(PropertyMetaTypes.HEIGHT,
+                                                      def);
         if (null != height) {
-            appendCommandForModelProperty(element, height, h, result);
+            appendCommandForModelProperty(element,
+                                          height,
+                                          h,
+                                          result);
         }
-        final Object radius = adapter.getMetaProperty(PropertyMetaTypes.RADIUS, def);
+        final Object radius = adapter.getMetaProperty(PropertyMetaTypes.RADIUS,
+                                                      def);
         if (null != radius) {
             final double r = w > h ? (h / 2) : (w / 2);
-            appendCommandForModelProperty(element, radius, r, result);
+            appendCommandForModelProperty(element,
+                                          radius,
+                                          r,
+                                          result);
         }
         return result;
     }
 
     private void appendCommandForModelProperty(final Element<? extends Definition<?>> element,
-                                              final Object property,
-                                              final Object value,
-                                              final List<Command<AbstractCanvasHandler, CanvasViolation>> result ) {
+                                               final Object property,
+                                               final Object value,
+                                               final List<Command<AbstractCanvasHandler, CanvasViolation>> result) {
         final String id = canvasHandler.getDefinitionManager().adapters().forProperty().getId(property);
-        result.add(canvasCommandFactory.updatePropertyValue(element, id, value));
+        result.add(canvasCommandFactory.updatePropertyValue(element,
+                                                            id,
+                                                            value));
     }
 
     private CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {

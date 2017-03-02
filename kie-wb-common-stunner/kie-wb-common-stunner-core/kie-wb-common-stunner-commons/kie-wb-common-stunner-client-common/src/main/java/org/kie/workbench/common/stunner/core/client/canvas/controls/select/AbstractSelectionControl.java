@@ -155,6 +155,7 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler> 
 
     @Override
     public void deregister(final String uuid) {
+        super.deregister(uuid);
         selectedElements.remove(uuid);
     }
 

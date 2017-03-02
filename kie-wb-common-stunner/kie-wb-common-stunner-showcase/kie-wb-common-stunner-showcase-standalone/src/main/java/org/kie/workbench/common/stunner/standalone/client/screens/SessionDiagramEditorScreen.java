@@ -218,7 +218,7 @@ public class SessionDiagramEditorScreen {
                                                  metadata.setShapeSetId(shapeSetId);
                                                  metadata.setTitle(title);
                                                  final AbstractClientFullSession session = newSession(diagram);
-                                                 presenter = sessionPresenterFactory.newPresenterEditor(diagram);
+                                                 presenter = sessionPresenterFactory.newPresenterEditor();
                                                  screenPanelView.setWidget(presenter.getView());
                                                  presenter
                                                          .withToolbar(true)
@@ -256,7 +256,7 @@ public class SessionDiagramEditorScreen {
                                       @Override
                                       public void onSuccess(final Diagram diagram) {
                                           final AbstractClientFullSession session = newSession(diagram);
-                                          presenter = sessionPresenterFactory.newPresenterEditor(diagram);
+                                          presenter = sessionPresenterFactory.newPresenterEditor();
                                           screenPanelView.setWidget(presenter.getView());
                                           presenter
                                                   .withToolbar(true)

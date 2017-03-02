@@ -24,7 +24,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 @Dependent
 public class ToolbarCommandFactory {
 
-    private final ManagedInstance<ClearSelectionToolbarCommand> clearSelectionCommand;
+    private final ManagedInstance<ClearStatesToolbarCommand> clearStatesCommand;
     private final ManagedInstance<VisitGraphToolbarCommand> visitGraphCommand;
     private final ManagedInstance<SwitchGridToolbarCommand> switchGridCommand;
     private final ManagedInstance<ClearToolbarCommand> clearCommand;
@@ -47,7 +47,7 @@ public class ToolbarCommandFactory {
     }
 
     @Inject
-    public ToolbarCommandFactory(final ManagedInstance<ClearSelectionToolbarCommand> clearSelectionCommand,
+    public ToolbarCommandFactory(final ManagedInstance<ClearStatesToolbarCommand> clearStatesCommand,
                                  final ManagedInstance<VisitGraphToolbarCommand> visitGraphCommand,
                                  final ManagedInstance<SwitchGridToolbarCommand> switchGridCommand,
                                  final ManagedInstance<ClearToolbarCommand> clearCommand,
@@ -56,7 +56,7 @@ public class ToolbarCommandFactory {
                                  final ManagedInstance<RedoToolbarCommand> redoCommand,
                                  final ManagedInstance<ValidateToolbarCommand> validateCommand,
                                  final ManagedInstance<RefreshToolbarCommand> refreshCommand) {
-        this.clearSelectionCommand = clearSelectionCommand;
+        this.clearStatesCommand = clearStatesCommand;
         this.visitGraphCommand = visitGraphCommand;
         this.switchGridCommand = switchGridCommand;
         this.clearCommand = clearCommand;
@@ -67,8 +67,8 @@ public class ToolbarCommandFactory {
         this.refreshCommand = refreshCommand;
     }
 
-    public ClearSelectionToolbarCommand newClearSelectionCommand() {
-        return clearSelectionCommand.get();
+    public ClearStatesToolbarCommand newClearStatesCommand() {
+        return clearStatesCommand.get();
     }
 
     public SwitchGridToolbarCommand newSwitchGridCommand() {

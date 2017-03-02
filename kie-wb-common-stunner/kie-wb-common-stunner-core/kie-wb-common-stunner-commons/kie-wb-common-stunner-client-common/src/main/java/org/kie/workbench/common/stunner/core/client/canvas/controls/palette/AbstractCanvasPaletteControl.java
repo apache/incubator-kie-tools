@@ -77,6 +77,9 @@ public abstract class AbstractCanvasPaletteControl
 
             @Override
             public void handle(final MouseDoubleClickEvent event) {
+                if (!event.isButtonLeft()) {
+                    return;
+                }
                 if (isPaletteVisible()) {
                     hide();
                 } else {

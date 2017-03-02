@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.toolbar.impl;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarView;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearSelectionToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearStatesToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.DeleteSelectionToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.RedoToolbarCommand;
@@ -49,7 +49,7 @@ public class EditorToolbar extends AbstractToolbar<AbstractClientFullSession> {
     public void addDefaultCommands() {
         addCommand(commandFactory.newVisitGraphCommand());
         addCommand(commandFactory.newClearCommand());
-        addCommand(commandFactory.newClearSelectionCommand());
+        addCommand(commandFactory.newClearStatesCommand());
         addCommand(commandFactory.newDeleteSelectedElementsCommand());
         addCommand(commandFactory.newSwitchGridCommand());
         addCommand(commandFactory.newUndoCommand());
@@ -71,8 +71,8 @@ public class EditorToolbar extends AbstractToolbar<AbstractClientFullSession> {
         return (ClearToolbarCommand) getCommand(1);
     }
 
-    public ClearSelectionToolbarCommand getClearSelectionToolbarCommand() {
-        return (ClearSelectionToolbarCommand) getCommand(2);
+    public ClearStatesToolbarCommand getClearStatesToolbarCommand() {
+        return (ClearStatesToolbarCommand) getCommand(2);
     }
 
     public DeleteSelectionToolbarCommand getDeleteSelectionToolbarCommand() {

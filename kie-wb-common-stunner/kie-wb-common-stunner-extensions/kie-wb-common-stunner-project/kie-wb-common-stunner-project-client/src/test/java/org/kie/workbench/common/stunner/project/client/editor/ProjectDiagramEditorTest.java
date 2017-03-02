@@ -25,8 +25,8 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
 import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RefreshSessionCommand;
@@ -102,7 +102,7 @@ public class ProjectDiagramEditorTest {
     @Mock
     ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
     @Mock
-    ClearSelectionSessionCommand sessionClearSelectionCommand;
+    ClearStatesSessionCommand sessionClearStatesCommand;
     @Mock
     VisitGraphSessionCommand sessionVisitGraphCommand;
     @Mock
@@ -130,7 +130,7 @@ public class ProjectDiagramEditorTest {
     public void setup() throws Exception {
         when(versionRecordManager.getCurrentPath()).thenReturn(path);
         when(sessionCommandFactory.newClearCommand()).thenReturn(sessionClearCommand);
-        when(sessionCommandFactory.newClearSelectionCommand()).thenReturn(sessionClearSelectionCommand);
+        when(sessionCommandFactory.newClearStatesCommand()).thenReturn(sessionClearStatesCommand);
         when(sessionCommandFactory.newVisitGraphCommand()).thenReturn(sessionVisitGraphCommand);
         when(sessionCommandFactory.newSwitchGridCommand()).thenReturn(sessionSwitchGridCommand);
         when(sessionCommandFactory.newDeleteSelectedElementsCommand()).thenReturn(sessionDeleteSelectionCommand);
@@ -138,7 +138,7 @@ public class ProjectDiagramEditorTest {
         when(sessionCommandFactory.newRedoCommand()).thenReturn(sessionRedoCommand);
         when(sessionCommandFactory.newValidateCommand()).thenReturn(sessionValidateCommand);
         when(sessionCommandFactory.newRefreshSessionCommand()).thenReturn(sessionRefreshCommand);
-        when(presenterFactory.newPresenterEditor(any(Diagram.class))).thenReturn(presenter);
+        when(presenterFactory.newPresenterEditor()).thenReturn(presenter);
         when(clientSessionManager.getCurrentSession()).thenReturn(fullSession);
         when(presenter.getInstance()).thenReturn(fullSession);
         this.tested = new ProjectDiagramEditorStub(view,
@@ -162,7 +162,7 @@ public class ProjectDiagramEditorTest {
         tested.init();
         verify(view,
                times(1)).init(eq(tested));
-        verify(sessionClearSelectionCommand,
+        verify(sessionClearStatesCommand,
                times(0)).bind(eq(fullSession));
         verify(sessionVisitGraphCommand,
                times(0)).bind(eq(fullSession));

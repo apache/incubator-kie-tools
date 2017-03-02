@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerProxy;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -37,28 +38,30 @@ public abstract class DiagramPreviewProxy<D extends Diagram> extends AbstractDia
 
     private final DiagramViewerProxy<D> viewer;
 
-    private int width;
-    private int height;
-
+    @SuppressWarnings("unchecked")
     public DiagramPreviewProxy(final DefinitionManager definitionManager,
                                final GraphUtils graphUtils,
                                final ShapeManager shapeManager,
-                               final AbstractCanvas canvas,
                                final WidgetWrapperView view,
                                final CanvasCommandFactory canvasCommandFactory,
-                               final ZoomControl<AbstractCanvas> zoomControl,
                                final SelectionControl<CanvasHandlerProxy, ?> selectionControl) {
-        this.width = getPreviewWidth();
-        this.height = getPreviewHeight();
         this.viewer =
                 new DiagramViewerProxy<D>(definitionManager,
                                           graphUtils,
                                           shapeManager,
-                                          canvas,
                                           view,
                                           canvasCommandFactory,
-                                          zoomControl,
                                           selectionControl) {
+                    @Override
+                    public <C extends Canvas> ZoomControl<C> getZoomControl() {
+                        return (ZoomControl<C>) DiagramPreviewProxy.this.getZoomControl();
+                    }
+
+                    @Override
+                    protected AbstractCanvas getCanvas() {
+                        return DiagramPreviewProxy.this.getCanvas();
+                    }
+
                     @Override
                     protected void enableControls() {
                         DiagramPreviewProxy.this.enableControls();
@@ -81,11 +84,9 @@ public abstract class DiagramPreviewProxy<D extends Diagram> extends AbstractDia
                 };
     }
 
+    protected abstract AbstractCanvas getCanvas();
+
     protected abstract AbstractCanvasHandler<D, ?> getProxiedHandler();
-
-    protected abstract int getPreviewWidth();
-
-    protected abstract int getPreviewHeight();
 
     protected abstract void enableControls();
 
@@ -93,35 +94,9 @@ public abstract class DiagramPreviewProxy<D extends Diagram> extends AbstractDia
 
     protected abstract void destroyControls();
 
-    public DiagramPreviewProxy setWidth(final int width) {
-        this.width = width;
-        return this;
-    }
-
-    public DiagramPreviewProxy setHeight(final int height) {
-        this.height = height;
-        return this;
-    }
-
-    @Override
-    protected int getWidth() {
-        return width;
-    }
-
-    @Override
-    protected int getHeight() {
-        return height;
-    }
-
     @Override
     public DiagramViewerProxy<D> getViewer() {
         return viewer;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public ZoomControl<AbstractCanvas> getZoomControl() {
-        return getViewer().getZoomControl();
     }
 
     @Override

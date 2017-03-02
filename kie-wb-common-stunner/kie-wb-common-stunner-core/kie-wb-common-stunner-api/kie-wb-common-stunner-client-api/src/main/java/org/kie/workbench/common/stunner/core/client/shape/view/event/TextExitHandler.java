@@ -15,10 +15,10 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view.event;
 
-public abstract class TextOutHandler extends AbstractViewHandler<TextOutEvent> {
+public abstract class TextExitHandler extends AbstractViewHandler<TextExitEvent> {
 
     @Override
     public ViewEventType getType() {
-        return ViewEventType.TEXT_OUT;
+        return ViewEventType.TEXT_EXIT;
     }
 }

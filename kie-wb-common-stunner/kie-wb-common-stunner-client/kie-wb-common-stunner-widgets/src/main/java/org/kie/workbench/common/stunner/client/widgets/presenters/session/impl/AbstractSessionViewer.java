@@ -126,6 +126,7 @@ public abstract class AbstractSessionViewer<S extends AbstractClientSession, H e
                         final SessionViewer.SessionViewerCallback<S, Diagram> callback) {
         this.session = item;
         if (null != getDiagram()) {
+            beforeOpen();
             final DiagramViewer.DiagramViewerCallback<Diagram> diagramViewerCallback = buildCallback(callback);
             if (null != width && null != height) {
                 getDiagramViewer().open(getDiagram(),
@@ -139,6 +140,9 @@ public abstract class AbstractSessionViewer<S extends AbstractClientSession, H e
         } else {
             clear();
         }
+    }
+
+    protected void beforeOpen() {
     }
 
     @SuppressWarnings("unchecked")

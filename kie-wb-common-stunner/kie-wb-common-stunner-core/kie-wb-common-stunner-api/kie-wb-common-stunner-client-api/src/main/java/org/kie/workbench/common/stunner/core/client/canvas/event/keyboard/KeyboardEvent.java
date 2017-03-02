@@ -20,11 +20,14 @@ public interface KeyboardEvent {
 
     enum Key {
         ESC(27),
+        CONTROL(17),
+        SHIFT(16),
         DELETE(46),
         ARROW_UP(24),
         ARROW_DOWN(25),
         ARROW_LEFT(27),
-        ARROW_RIGHT(26);
+        ARROW_RIGHT(26),
+        Z(90);
 
         private final int unicharCode;
 
