@@ -26,62 +26,70 @@ import static org.junit.Assert.*;
 
 public class CheckConfigurationProviderTest {
 
-
     private CheckConfiguration checkConfiguration;
 
     @Test
+    public void getResolvedHitConfiguration() throws
+            Exception {
+
+        whenDecisionTableHas(GuidedDecisionTable52.HitPolicy.RESOLVED_HIT);
+
+        thenTheFollowingCheckTypesAreNotIncluded(CheckType.getRowLevelCheckTypes());
+    }
+
+    @Test
     public void getRuleOrderConfiguration() throws
-                                            Exception {
+            Exception {
 
-        whenDecisionTableHas( GuidedDecisionTable52.HitPolicy.RULE_ORDER );
+        whenDecisionTableHas(GuidedDecisionTable52.HitPolicy.RULE_ORDER);
 
-        thenTheFollowingCheckTypesAreNotIncluded( CheckType.getRowLevelCheckTypes() );
+        thenTheFollowingCheckTypesAreNotIncluded(CheckType.getRowLevelCheckTypes());
     }
 
     @Test
     public void getFirstHitConfiguration() throws
-                                           Exception {
+            Exception {
 
-        whenDecisionTableHas( GuidedDecisionTable52.HitPolicy.FIRST_HIT );
+        whenDecisionTableHas(GuidedDecisionTable52.HitPolicy.FIRST_HIT);
 
-        thenTheFollowingCheckTypesAreNotIncluded( CheckType.getRowLevelCheckTypes() );
+        thenTheFollowingCheckTypesAreNotIncluded(CheckType.getRowLevelCheckTypes());
     }
 
     @Test
     public void getNoHitPolicySetConfiguration() throws
-                                                 Exception {
+            Exception {
 
-        whenDecisionTableHas( GuidedDecisionTable52.HitPolicy.NONE );
+        whenDecisionTableHas(GuidedDecisionTable52.HitPolicy.NONE);
 
-        thenAllOfTheFollowingChecksAreIncluded( CheckConfiguration.newDefault()
-                                                        .getCheckConfiguration() );
+        thenAllOfTheFollowingChecksAreIncluded(CheckConfiguration.newDefault()
+                                                       .getCheckConfiguration());
     }
 
     @Test
     public void getSetConfiguration() throws
-                                      Exception {
+            Exception {
 
-        whenDecisionTableHas( GuidedDecisionTable52.HitPolicy.UNIQUE_HIT );
+        whenDecisionTableHas(GuidedDecisionTable52.HitPolicy.UNIQUE_HIT);
 
-        thenAllOfTheFollowingChecksAreIncluded( CheckConfiguration.newDefault()
-                                                        .getCheckConfiguration() );
+        thenAllOfTheFollowingChecksAreIncluded(CheckConfiguration.newDefault()
+                                                       .getCheckConfiguration());
     }
 
-    private void thenAllOfTheFollowingChecksAreIncluded( final Set<CheckType> checkTypes ) {
-        for ( final CheckType checkType : checkTypes ) {
-            assertTrue( checkConfiguration.getCheckConfiguration()
-                                .contains( checkType ) );
+    private void thenAllOfTheFollowingChecksAreIncluded(final Set<CheckType> checkTypes) {
+        for (final CheckType checkType : checkTypes) {
+            assertTrue(checkConfiguration.getCheckConfiguration()
+                               .contains(checkType));
         }
     }
 
-    private void thenTheFollowingCheckTypesAreNotIncluded( final Set<CheckType> checkTypes ) {
-        for ( final CheckType checkType : checkTypes ) {
-            assertFalse( checkConfiguration.getCheckConfiguration()
-                                 .contains( checkType ) );
+    private void thenTheFollowingCheckTypesAreNotIncluded(final Set<CheckType> checkTypes) {
+        for (final CheckType checkType : checkTypes) {
+            assertFalse(checkConfiguration.getCheckConfiguration()
+                                .contains(checkType));
         }
     }
 
-    private void whenDecisionTableHas( final GuidedDecisionTable52.HitPolicy hitPolicy ) {
-        checkConfiguration = CheckConfigurationProvider.get( hitPolicy );
+    private void whenDecisionTableHas(final GuidedDecisionTable52.HitPolicy hitPolicy) {
+        checkConfiguration = CheckConfigurationProvider.get(hitPolicy);
     }
 }

@@ -21,11 +21,12 @@ import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 
 public class CheckConfigurationProvider {
 
-    public static CheckConfiguration get( final GuidedDecisionTable52.HitPolicy hitPolicy ) {
+    public static CheckConfiguration get(final GuidedDecisionTable52.HitPolicy hitPolicy) {
 
-        switch ( hitPolicy ) {
+        switch (hitPolicy) {
             case RULE_ORDER:
             case FIRST_HIT:
+            case RESOLVED_HIT:
                 return getWhiteListWithNoRowToRowChecks();
             case UNIQUE_HIT:
             case NONE:
@@ -38,9 +39,8 @@ public class CheckConfigurationProvider {
         final CheckConfiguration checkConfiguration = CheckConfiguration.newDefault();
 
         checkConfiguration.getCheckConfiguration()
-                .removeAll( CheckType.getRowLevelCheckTypes() );
+                .removeAll(CheckType.getRowLevelCheckTypes());
 
         return checkConfiguration;
     }
-
 }
