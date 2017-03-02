@@ -33,6 +33,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.ConditionExpression;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.ConditionExpressionLanguage;
@@ -40,6 +42,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Prio
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.SignalRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.TimeCycle;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.TimeCycleLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.TimeDate;
@@ -167,6 +171,10 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 "onentryactions");
             put(OnExitAction.class,
                 "onexitactions");
+            put(IsInterrupting.class,
+                "isinterrupting");
+            put(SignalRef.class,
+                "signalref");
 
             // Simulation properties
             put(TimeUnit.class,
@@ -231,11 +239,22 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
             businesRuleTaskPropertiesMap.put(AssignmentsInfo.class,
                                              "assignmentsinfo");
 
-            Map<Class<?>, String> startEventPropertiesMap = new HashMap<Class<?>, String>();
+            Map<Class<?>, String> startNoneEventPropertiesMap = new HashMap<Class<?>, String>();
             put(StartNoneEvent.class,
-                startEventPropertiesMap);
-            startEventPropertiesMap.put(AssignmentsInfo.class,
-                                        "assignmentsinfo");
+                startNoneEventPropertiesMap);
+            startNoneEventPropertiesMap.put(AssignmentsInfo.class,
+                                            "assignmentsinfo");
+
+            Map<Class<?>, String> startSignalEventPropertiesMap = new HashMap<Class<?>, String>();
+            put(StartSignalEvent.class,
+                startSignalEventPropertiesMap);
+            startSignalEventPropertiesMap.put(AssignmentsInfo.class,
+                                              "assignmentsinfo");
+            Map<Class<?>, String> startTimerEventPropertiesMap = new HashMap<Class<?>, String>();
+            put(StartTimerEvent.class,
+                startTimerEventPropertiesMap);
+            startTimerEventPropertiesMap.put(AssignmentsInfo.class,
+                                             "assignmentsinfo");
 
             Map<Class<?>, String> endEventPropertiesMap = new HashMap<Class<?>, String>();
             put(EndNoneEvent.class,

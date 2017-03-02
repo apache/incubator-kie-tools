@@ -36,6 +36,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.BindableBS3PaletteGlyphViewFactory;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
@@ -70,6 +72,10 @@ public class BpmnBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactor
             new IconResource(BPMNImageResources.INSTANCE.taskBusinessRule()));
         put(StartNoneEvent.class.getName(),
             new IconResource(BPMNImageResources.INSTANCE.eventStart()));
+        put(StartSignalEvent.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.eventStartSignal()));
+        put(StartTimerEvent.class.getName(),
+            new IconResource(BPMNImageResources.INSTANCE.eventStartTimer()));
         put(ExclusiveDatabasedGateway.class.getName(),
             new IconResource(BPMNImageResources.INSTANCE.cancel()));
         put(EndNoneEvent.class.getName(),

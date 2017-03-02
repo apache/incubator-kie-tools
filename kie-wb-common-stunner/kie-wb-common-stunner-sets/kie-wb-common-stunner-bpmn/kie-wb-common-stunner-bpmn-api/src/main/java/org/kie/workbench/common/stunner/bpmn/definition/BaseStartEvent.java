@@ -53,7 +53,8 @@ public abstract class BaseStartEvent implements BPMNDefinition,
 
     @PropertySet
     @FormField(
-            afterElement = "general"
+            afterElement = "general",
+            labelKey = "dataIOSet"
     )
     @Valid
     protected DataIOSet dataIOSet;

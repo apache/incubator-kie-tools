@@ -35,6 +35,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindableDefSetPaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
@@ -67,6 +69,10 @@ public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitio
             SequenceFlow.class);
         put(Categories.EVENTS,
             StartNoneEvent.class);
+        put(Categories.EVENTS,
+            StartSignalEvent.class);
+        put(Categories.EVENTS,
+            StartTimerEvent.class);
         put(Categories.GATEWAYS,
             ParallelGateway.class);
         put(Categories.LANES,

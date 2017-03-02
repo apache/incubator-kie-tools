@@ -32,6 +32,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
@@ -54,6 +56,8 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 ScriptTask.class,
                 BusinessRuleTask.class,
                 StartNoneEvent.class,
+                StartSignalEvent.class,
+                StartTimerEvent.class,
                 EndNoneEvent.class,
                 EndTerminateEvent.class,
                 // TODO: Removed for M1 ( no form properties available for it yet ) - IntermediateTimerEvent.class,

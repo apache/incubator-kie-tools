@@ -98,6 +98,14 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource eventStartNonInterrupting();
 
+    @ClientBundle.Source("images/event/event-start-signal.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventStartSignal();
+
+    @ClientBundle.Source("images/event/event-start-timer.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventStartTimer();
+
     // ******* Gateway *******
     @ClientBundle.Source("images/gateway/parallel-event.svg")
     @DataResource.MimeType("image/svg+xml")

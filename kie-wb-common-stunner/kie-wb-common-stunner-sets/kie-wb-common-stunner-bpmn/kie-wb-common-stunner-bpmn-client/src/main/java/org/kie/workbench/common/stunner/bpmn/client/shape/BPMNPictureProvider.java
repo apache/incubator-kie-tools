@@ -49,6 +49,10 @@ public class BPMNPictureProvider implements PictureProvider<BPMNPictures> {
                     BPMNImageResources.INSTANCE.eventIntermediate().getSafeUri());
                 put(BPMNPictures.EVENT_START,
                     BPMNImageResources.INSTANCE.eventStart().getSafeUri());
+                put(BPMNPictures.EVENT_START_SIGNAL,
+                    BPMNImageResources.INSTANCE.eventStartSignal().getSafeUri());
+                put(BPMNPictures.EVENT_START_TIMER,
+                    BPMNImageResources.INSTANCE.eventStartTimer().getSafeUri());
                 put(BPMNPictures.LANE,
                     BPMNImageResources.INSTANCE.lane().getSafeUri());
                 put(BPMNPictures.PLUS_QUARE,
