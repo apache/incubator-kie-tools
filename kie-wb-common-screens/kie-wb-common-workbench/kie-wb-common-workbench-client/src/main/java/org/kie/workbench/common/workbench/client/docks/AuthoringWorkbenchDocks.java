@@ -24,6 +24,9 @@ import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
+import org.kie.workbench.common.stunner.project.client.screens.ProjectDiagramExplorerScreen;
+import org.kie.workbench.common.stunner.project.client.screens.ProjectDiagramPropertiesScreen;
+import org.kie.workbench.common.stunner.project.client.screens.ProjectDiagramWorkbenchDocks;
 import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.kie.workbench.common.workbench.client.resources.images.WorkbenchImageResources;
@@ -105,7 +108,9 @@ public class AuthoringWorkbenchDocks {
                 projectExplorerDock,
                 new UberfireDock( UberfireDockPosition.EAST, "RANDOM", new DefaultPlaceRequest( "DroolsDomainScreen" ), authoringPerspectiveIdentifier ).withSize( 450 ).withLabel( constants.DocksDroolsJBPMTitle() ),
                 new UberfireDock( UberfireDockPosition.EAST, "BRIEFCASE", new DefaultPlaceRequest( "JPADomainScreen" ), authoringPerspectiveIdentifier ).withSize( 450 ).withLabel( constants.DocksPersistenceTitle() ),
-                new UberfireDock( UberfireDockPosition.EAST, "COG", new DefaultPlaceRequest( "AdvancedDomainScreen" ), authoringPerspectiveIdentifier ).withSize( 450 ).withLabel( constants.DocksAdvancedTitle() )
+                new UberfireDock( UberfireDockPosition.EAST, "COG", new DefaultPlaceRequest( "AdvancedDomainScreen" ), authoringPerspectiveIdentifier ).withSize( 450 ).withLabel( constants.DocksAdvancedTitle() ),
+                new UberfireDock( UberfireDockPosition.EAST, "PENCIL_SQUARE_O", new DefaultPlaceRequest(ProjectDiagramPropertiesScreen.SCREEN_ID), authoringPerspectiveIdentifier).withSize(450).withLabel(constants.DocksStunnerPropertiesTitle() ),
+                new UberfireDock( UberfireDockPosition.EAST, "EYE", new DefaultPlaceRequest(ProjectDiagramExplorerScreen.SCREEN_ID), authoringPerspectiveIdentifier).withSize(450).withLabel(constants.DocksStunnerExplorerTitle() )
                          );
         uberfireDocks.disable( UberfireDockPosition.EAST, authoringPerspectiveIdentifier );
         dataModelerDocksEnabled = false;

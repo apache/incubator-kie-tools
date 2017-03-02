@@ -83,6 +83,10 @@ public interface DefaultWorkbenchConstants
 
     String DocksAdvancedTitle();
 
+    String DocksStunnerPropertiesTitle();
+
+    String DocksStunnerExplorerTitle();
+
     String WorkbenchRootNodeName();
 
     String ConfigureRepositories();

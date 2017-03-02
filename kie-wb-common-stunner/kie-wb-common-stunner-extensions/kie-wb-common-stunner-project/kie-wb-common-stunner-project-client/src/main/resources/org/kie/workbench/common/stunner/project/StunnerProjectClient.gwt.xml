@@ -26,7 +26,6 @@
   <inherits name="org.uberfire.UberfireDocksClient"/>
   <inherits name="org.kie.workbench.common.screens.projecteditor.KieWorkbenchCommonProjectEditorClient"/>
   <inherits name="org.kie.workbench.common.screens.explorer.KieWorkbenchProjectExplorerClient"/>
-  <inherits name="org.kie.workbench.common.workbench.KieDefaultWorkbenchClient"/>
 
   <source path="client"/>
 
