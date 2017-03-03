@@ -101,7 +101,7 @@ public class GWTLocaleHeaderFilterTest {
         final HttpServletResponse resp = mock( HttpServletResponse.class );
         final FilterChain chain = mock( FilterChain.class );
 
-        when( req.getParameter( "locale" ) ).thenReturn( "xxx" );
+        when( req.getParameter( "locale" ) ).thenReturn( "xxx_xxx" );
         when( req.getLocale() ).thenReturn( Locale.US );
 
         when( resp.getWriter() ).thenReturn( new PrintWriter( sw ) );
