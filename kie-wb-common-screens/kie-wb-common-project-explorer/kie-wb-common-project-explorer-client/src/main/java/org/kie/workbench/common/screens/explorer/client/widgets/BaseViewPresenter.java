@@ -484,12 +484,7 @@ public abstract class BaseViewPresenter
         baseView.getExplorer()
                 .clear();
         activeContextItems.setRepositories( content.getRepositories() );
-        baseView.setContent( content.getOrganizationalUnits(),
-                             activeContextItems.getActiveOrganizationalUnit(),
-                             activeContextItems.getRepositories(),
-                             activeContextItems.getActiveRepository(),
-                             content.getProjects(),
-                             activeContextItems.getActiveProject(),
+        baseView.setContent( activeContextItems.getActiveProject(),
                              activeContextItems.getActiveContent(),
                              content.getSiblings() );
 
@@ -515,26 +510,6 @@ public abstract class BaseViewPresenter
                     }
                 } )
                 .build( project );
-    }
-
-    public void onOrganizationalUnitSelected( final OrganizationalUnit organizationalUnit ) {
-        if ( Utils.hasOrganizationalUnitChanged( organizationalUnit,
-                                                 activeContextItems.getActiveOrganizationalUnit() ) ) {
-            baseView.getExplorer()
-                    .clear();
-            activeContextManager.initActiveContext( organizationalUnit );
-        }
-    }
-
-    public void onRepositorySelected( final Repository repository ) {
-        if ( Utils.hasRepositoryChanged( repository,
-                                         activeContextItems.getActiveRepository() ) ) {
-            baseView.getExplorer()
-                    .clear();
-            activeContextManager.initActiveContext( activeContextItems.getActiveOrganizationalUnit(),
-                                                    repository,
-                                                    repository.getDefaultBranch() );
-        }
     }
 
     @Override
@@ -600,10 +575,6 @@ public abstract class BaseViewPresenter
         } else {
             onActiveFolderItemSelected( folderItem );
         }
-    }
-
-    public boolean isVisible() {
-        return baseView.isVisible();
     }
 
     public void setVisible( final boolean visible ) {

@@ -33,10 +33,8 @@ import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewImpl;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.View;
-import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchChangeHandler;
 import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchSelector;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
-import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorExpandCollapseButton;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
 import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagChangedEvent;
 import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagSelector;
@@ -53,20 +51,19 @@ public class TechnicalViewWidget
         extends BaseViewImpl
         implements View {
 
-    interface TechnicalViewImplBinder
-            extends
-            UiBinder<Widget, TechnicalViewWidget> {
-
-    }
-
-    private static TechnicalViewImplBinder uiBinder = GWT.create( TechnicalViewImplBinder.class );
+    private static TechnicalViewImplBinder uiBinder = GWT.create(TechnicalViewImplBinder.class);
+    private final NavigatorOptions techOptions = new NavigatorOptions() {{
+        showFiles(true);
+        showHiddenFiles(false);
+        showDirectories(true);
+        allowUpLink(true);
+        showItemAge(false);
+        showItemMessage(false);
+        showItemLastUpdater(false);
+    }};
 
     @UiField
     Explorer explorer;
-
-    @UiField(provided = true)
-    @Inject
-    BranchSelector branchSelector;
 
     @UiField(provided = true)
     @Inject
@@ -74,89 +71,65 @@ public class TechnicalViewWidget
 
     @Inject
     PlaceManager placeManager;
-
-    private final NavigatorOptions techOptions = new NavigatorOptions() {{
-        showFiles( true );
-        showHiddenFiles( false );
-        showDirectories( true );
-        allowUpLink( true );
-        showItemAge( false );
-        showItemMessage( false );
-        showItemLastUpdater( false );
-    }};
-
     private BaseViewPresenter presenter;
 
     @PostConstruct
     public void init() {
         //Cannot create and bind UI until after injection points have been initialized
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void init( final BaseViewPresenter presenter ) {
+    public void init(final BaseViewPresenter presenter) {
         this.presenter = presenter;
-        explorer.init( NavigatorExpandCollapseButton.Mode.EXPANDED,
-                       techOptions,
-                       Explorer.NavType.BREADCRUMB,
-                       presenter );
-
-        branchSelector.addBranchChangeHandler( presenter );
-    }
-
-    @Override
-    public void setContent( final Set<OrganizationalUnit> organizationalUnits,
-                            final OrganizationalUnit activeOrganizationalUnit,
-                            final Set<Repository> repositories,
-                            final Repository activeRepository,
-                            final Set<Project> projects,
-                            final Project activeProject,
-                            final FolderListing folderListing,
-                            final Map<FolderItem, List<FolderItem>> siblings ) {
-        explorer.setupHeader( organizationalUnits,
-                              activeOrganizationalUnit,
-                              repositories,
-                              activeRepository,
-                              projects,
-                              activeProject );
-
-        tagSelector.loadContent( presenter.getActiveContentTags(),
-                                 presenter.getCurrentTag() );
-
-        explorer.loadContent( folderListing,
-                              siblings );
-
-        branchSelector.setRepository( activeRepository );
+        explorer.init(techOptions,
+                      Explorer.NavType.BREADCRUMB,
+                      presenter);
 
     }
 
     @Override
-    public void setItems( final FolderListing folderListing ) {
-        renderItems( folderListing );
+    public void setContent(final Project activeProject,
+                           final FolderListing folderListing,
+                           final Map<FolderItem, List<FolderItem>> siblings) {
+        explorer.setupHeader(activeProject);
+
+        tagSelector.loadContent(presenter.getActiveContentTags(),
+                                presenter.getCurrentTag());
+
+        explorer.loadContent(folderListing,
+                             siblings);
+
     }
 
     @Override
-    public void renderItems( FolderListing folderListing ) {
-        tagSelector.loadContent( presenter.getActiveContentTags(),
-                                 presenter.getCurrentTag() );
-        explorer.loadContent( folderListing );
+    public void setItems(final FolderListing folderListing) {
+        renderItems(folderListing);
     }
 
     @Override
-    public void showHiddenFiles( final boolean show ) {
-        techOptions.showHiddenFiles( show );
+    public void renderItems(FolderListing folderListing) {
+        tagSelector.loadContent(presenter.getActiveContentTags(),
+                                presenter.getCurrentTag());
+        explorer.loadContent(folderListing);
     }
 
     @Override
-    public void setNavType( Explorer.NavType navType ) {
-        explorer.setNavType( navType, techOptions );
+    public void showHiddenFiles(final boolean show) {
+        techOptions.showHiddenFiles(show);
+    }
+
+    @Override
+    public void setNavType(Explorer.NavType navType) {
+        explorer.setNavType(navType,
+                            techOptions);
     }
 
     @Override
     public void hideTagFilter() {
         tagSelector.hide();
-        if ( presenter.getActiveContent() != null ) {
-            renderItems( presenter.getActiveContent() );
+        if (presenter.getActiveContent() != null) {
+            renderItems(presenter.getActiveContent());
         }
     }
 
@@ -176,8 +149,8 @@ public class TechnicalViewWidget
     }
 
     @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
+    public void showBusyIndicator(final String message) {
+        BusyPopup.showMessage(message);
     }
 
     @Override
@@ -190,7 +163,13 @@ public class TechnicalViewWidget
         return explorer;
     }
 
-    public void onTagChanged( @Observes TagChangedEvent event ) {
+    public void onTagChanged(@Observes TagChangedEvent event) {
+
+    }
+
+    interface TechnicalViewImplBinder
+            extends
+            UiBinder<Widget, TechnicalViewWidget> {
 
     }
 }

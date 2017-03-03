@@ -27,7 +27,6 @@
 
     <gwt:HTMLPanel visible="true">
         <div class="{resources.CSS.viewContainer}">
-            <branches:BranchSelector ui:field="branchSelector"/>
             <tagselector:TagSelector ui:field="tagSelector"/>
             <navigator:Explorer ui:field="explorer"/>
             <bootstrap:PanelGroup ui:field="itemsContainer"/>

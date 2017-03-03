@@ -22,14 +22,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.LinkedGroup;
 import org.gwtbootstrap3.client.ui.LinkedGroupItem;
@@ -46,10 +53,7 @@ import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewImpl;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.View;
-import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchChangeHandler;
-import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchSelector;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
-import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorExpandCollapseButton;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
 import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagSelector;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
@@ -62,42 +66,31 @@ import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.common.client.accordion.TriggerWidget;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-
 /**
  * Business View implementation
  */
 @ApplicationScoped
 public class BusinessViewWidget extends BaseViewImpl implements View {
 
-    interface BusinessViewImplBinder
-            extends
-            UiBinder<Widget, BusinessViewWidget> {
-
-    }
-
-    private static BusinessViewImplBinder uiBinder = GWT.create( BusinessViewImplBinder.class );
-
     private static final String ID_CLEANUP_PATTERN = "[^a-zA-Z0-9]";
+    private static BusinessViewImplBinder uiBinder = GWT.create(BusinessViewImplBinder.class);
+    //TreeSet sorts members upon insertion
+    private final Set<FolderItem> sortedFolderItems = new TreeSet<FolderItem>(Sorters.ITEM_SORTER);
+    private final NavigatorOptions businessOptions = new NavigatorOptions() {{
+        showFiles(false);
+        showHiddenFiles(false);
+        showDirectories(true);
+        allowUpLink(false);
+        showItemAge(false);
+        showItemMessage(false);
+        showItemLastUpdater(false);
+    }};
 
     @UiField
     Explorer explorer;
 
     @UiField
     PanelGroup itemsContainer;
-
-    @UiField(provided = true)
-    @Inject
-    BranchSelector branchSelector;
 
     @UiField(provided = true)
     @Inject
@@ -112,144 +105,128 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
     @Inject
     User user;
 
-    private Map<String, PanelCollapse> collapses = new HashMap<String, PanelCollapse>();
-    
-    //TreeSet sorts members upon insertion
-    private final Set<FolderItem> sortedFolderItems = new TreeSet<FolderItem>( Sorters.ITEM_SORTER );
-
-    private final NavigatorOptions businessOptions = new NavigatorOptions() {{
-        showFiles( false );
-        showHiddenFiles( false );
-        showDirectories( true );
-        allowUpLink( false );
-        showItemAge( false );
-        showItemMessage( false );
-        showItemLastUpdater( false );
-    }};
-
+    private Map<String, PanelCollapse> collapses = new HashMap<>();
     private BaseViewPresenter presenter;
 
     @PostConstruct
     public void init() {
         //Cannot create and bind UI until after injection points have been initialized
-        initWidget( uiBinder.createAndBindUi( this ) );
-        itemsContainer.setId( DOM.createUniqueId() );
+        initWidget(uiBinder.createAndBindUi(this));
+        itemsContainer.setId(DOM.createUniqueId());
     }
 
     @Override
-    public void init( final BaseViewPresenter presenter ) {
+    public void init(final BaseViewPresenter presenter) {
         this.presenter = presenter;
-        explorer.init( NavigatorExpandCollapseButton.Mode.COLLAPSED, businessOptions, Explorer.NavType.TREE, presenter );
-        branchSelector.addBranchChangeHandler( presenter );
+        explorer.init(businessOptions,
+                      Explorer.NavType.TREE,
+                      presenter);
     }
 
     @Override
-    public void setContent( final Set<OrganizationalUnit> organizationalUnits,
-                            final OrganizationalUnit organizationalUnit,
-                            final Set<Repository> repositories,
-                            final Repository repository,
-                            final Set<Project> projects,
-                            final Project project,
-                            final FolderListing folderListing,
-                            final Map<FolderItem, List<FolderItem>> siblings ) {
-        explorer.setupHeader( organizationalUnits,
-                              organizationalUnit,
-                              repositories,
-                              repository,
-                              projects,
-                              project );
-        explorer.loadContent( folderListing,
-                              siblings );
+    public void setContent(final Project project,
+                           final FolderListing folderListing,
+                           final Map<FolderItem, List<FolderItem>> siblings) {
+        explorer.setupHeader(project);
+        explorer.loadContent(folderListing,
+                             siblings);
 
-        branchSelector.setRepository( repository );
-
-        setItems( folderListing );
+        setItems(folderListing);
     }
 
     @Override
-    public void setItems( final FolderListing folderListing ) {
-        renderItems( folderListing );
+    public void setItems(final FolderListing folderListing) {
+        renderItems(folderListing);
     }
 
     @Override
-    public void renderItems( FolderListing folderListing ) {
-        tagSelector.loadContent( presenter.getActiveContentTags(), presenter.getCurrentTag() );
+    public void renderItems(FolderListing folderListing) {
+        tagSelector.loadContent(presenter.getActiveContentTags(),
+                                presenter.getCurrentTag());
         itemsContainer.clear();
         sortedFolderItems.clear();
-        for ( final FolderItem content : folderListing.getContent() ) {
-            if ( !content.getType().equals( FolderItemType.FOLDER ) ) {
-                sortedFolderItems.add( content );
+        for (final FolderItem content : folderListing.getContent()) {
+            if (!content.getType().equals(FolderItemType.FOLDER)) {
+                sortedFolderItems.add(content);
             }
         }
 
-        if ( !sortedFolderItems.isEmpty() ) {
-            final Map<ClientResourceType, Collection<FolderItem>> resourceTypeGroups = classifier.group( sortedFolderItems );
-            final TreeMap<ClientResourceType, Collection<FolderItem>> sortedResourceTypeGroups = new TreeMap<ClientResourceType, Collection<FolderItem>>( Sorters.RESOURCE_TYPE_GROUP_SORTER );
-            sortedResourceTypeGroups.putAll( resourceTypeGroups );
+        if (!sortedFolderItems.isEmpty()) {
+            final Map<ClientResourceType, Collection<FolderItem>> resourceTypeGroups = classifier.group(sortedFolderItems);
+            final TreeMap<ClientResourceType, Collection<FolderItem>> sortedResourceTypeGroups = new TreeMap<>(Sorters.RESOURCE_TYPE_GROUP_SORTER);
+            sortedResourceTypeGroups.putAll(resourceTypeGroups);
 
-            for ( final Map.Entry<ClientResourceType, Collection<FolderItem>> entry : sortedResourceTypeGroups.entrySet() ) {
+            for (final Map.Entry<ClientResourceType, Collection<FolderItem>> entry : sortedResourceTypeGroups.entrySet()) {
                 final LinkedGroup itemsNavList = new LinkedGroup();
-                itemsNavList.getElement().getStyle().setMarginBottom( 0, Style.Unit.PX );
+                itemsNavList.getElement().getStyle().setMarginBottom(0,
+                                                                     Style.Unit.PX);
                 final PanelCollapse collapse = new PanelCollapse();
-                final String collapseId = getCollapseId( entry.getKey() );
-                final PanelCollapse oldCollapse = collapses.get( collapseId );
+                final String collapseId = getCollapseId(entry.getKey());
+                final PanelCollapse oldCollapse = collapses.get(collapseId);
                 final boolean in = (oldCollapse != null) ? oldCollapse.isIn() : false;
-                collapse.setId( collapseId );
-                collapse.setIn( in );
+                collapse.setId(collapseId);
+                collapse.setIn(in);
                 final PanelBody body = new PanelBody();
-                body.getElement().getStyle().setPadding( 0, Style.Unit.PX );
-                collapse.add( body );
-                body.add( itemsNavList );
+                body.getElement().getStyle().setPadding(0,
+                                                        Style.Unit.PX);
+                collapse.add(body);
+                body.add(itemsNavList);
 
-                for ( FolderItem folderItem : entry.getValue() ) {
-                    itemsNavList.add( makeItemNavLink( entry.getKey(),
-                                                       folderItem ) );
+                for (FolderItem folderItem : entry.getValue()) {
+                    itemsNavList.add(makeItemNavLink(entry.getKey(),
+                                                     folderItem));
                 }
 
-                itemsContainer.add( new Panel() {{
-                    add( makeTriggerWidget( entry.getKey(), collapse ) );
-                    add( collapse );
-                }} );
-                
-                collapses.put( collapseId, collapse );
+                itemsContainer.add(new Panel() {{
+                    add(makeTriggerWidget(entry.getKey(),
+                                          collapse));
+                    add(collapse);
+                }});
+
+                collapses.put(collapseId,
+                              collapse);
             }
         } else {
-            itemsContainer.add( new Label( ProjectExplorerConstants.INSTANCE.noItemsExist() ) );
+            itemsContainer.add(new Label(ProjectExplorerConstants.INSTANCE.noItemsExist()));
         }
     }
 
-    private TriggerWidget makeTriggerWidget( final ClientResourceType resourceType,
-                                             final PanelCollapse collapse ) {
-        final String description = getResourceTypeDescription( resourceType );
-        if ( resourceType.getIcon() != null ) {
-            return new TriggerWidget( resourceType.getIcon(), description, !collapse.isIn() ) {{
-                setDataToggle( Toggle.COLLAPSE );
-                setDataParent( itemsContainer.getId() );
-                setDataTargetWidget( collapse );
+    private TriggerWidget makeTriggerWidget(final ClientResourceType resourceType,
+                                            final PanelCollapse collapse) {
+        final String description = getResourceTypeDescription(resourceType);
+        if (resourceType.getIcon() != null) {
+            return new TriggerWidget(resourceType.getIcon(),
+                                     description,
+                                     !collapse.isIn()) {{
+                setDataToggle(Toggle.COLLAPSE);
+                setDataParent(itemsContainer.getId());
+                setDataTargetWidget(collapse);
             }};
         }
-        return new TriggerWidget( description, !collapse.isIn() ) {{
-            setDataToggle( Toggle.COLLAPSE );
-            setDataParent( itemsContainer.getId() );
-            setDataTargetWidget( collapse );
+        return new TriggerWidget(description,
+                                 !collapse.isIn()) {{
+            setDataToggle(Toggle.COLLAPSE);
+            setDataParent(itemsContainer.getId());
+            setDataTargetWidget(collapse);
         }};
     }
 
     @Override
-    public void showHiddenFiles( boolean show ) {
+    public void showHiddenFiles(boolean show) {
         // No hidden files here.
     }
 
     @Override
-    public void setNavType( Explorer.NavType navType ) {
-        explorer.setNavType( navType, businessOptions );
+    public void setNavType(Explorer.NavType navType) {
+        explorer.setNavType(navType,
+                            businessOptions);
     }
 
     @Override
     public void hideTagFilter() {
         tagSelector.hide();
-        if ( presenter.getActiveContent() != null ) {
-            renderItems( presenter.getActiveContent() );
+        if (presenter.getActiveContent() != null) {
+            renderItems(presenter.getActiveContent());
         }
     }
 
@@ -273,56 +250,59 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
         return explorer;
     }
 
-    private String getResourceTypeDescription( final ClientResourceType resourceType ) {
+    private String getResourceTypeDescription(final ClientResourceType resourceType) {
         String description = resourceType.getDescription();
-        description = ( description == null || description.isEmpty() ) ? ProjectExplorerConstants.INSTANCE.miscellaneous_files() : description;
+        description = (description == null || description.isEmpty()) ? ProjectExplorerConstants.INSTANCE.miscellaneous_files() : description;
         return description;
     }
 
-    private IsWidget makeItemNavLink( final ClientResourceType resourceType,
-                                      final FolderItem folderItem ) {
+    private IsWidget makeItemNavLink(final ClientResourceType resourceType,
+                                     final FolderItem folderItem) {
         String _fileName = folderItem.getFileName();
-        if ( !( resourceType instanceof AnyResourceType ) ) {
-            _fileName = Utils.getBaseFileName( _fileName, resourceType.getSuffix() );
+        if (!(resourceType instanceof AnyResourceType)) {
+            _fileName = Utils.getBaseFileName(_fileName,
+                                              resourceType.getSuffix());
         }
-        _fileName = _fileName.replaceAll( " ", "\u00a0" );
+        _fileName = _fileName.replaceAll(" ",
+                                         "\u00a0");
         final String fileName = _fileName;
 
         final LinkedGroupItem navLink = new LinkedGroupItem() {{
-            setText( fileName );
-            addClickHandler( new ClickHandler() {
+            setText(fileName);
+            addClickHandler(new ClickHandler() {
                 @Override
-                public void onClick( ClickEvent event ) {
-                    presenter.onItemSelected( folderItem );
+                public void onClick(ClickEvent event) {
+                    presenter.onItemSelected(folderItem);
                 }
-            } );
+            });
         }};
 
         Image lockImage;
-        if ( folderItem.getLockedBy() == null ) {
-            lockImage = new Image( ProjectExplorerImageResources.INSTANCE.lockEmpty() );
-        } else if ( folderItem.getLockedBy().equals( user.getIdentifier() ) ) {
-            lockImage = new Image( ProjectExplorerImageResources.INSTANCE.lockOwned() );
-            lockImage.setTitle( ProjectExplorerConstants.INSTANCE.lockOwnedHint() );
+        if (folderItem.getLockedBy() == null) {
+            lockImage = new Image(ProjectExplorerImageResources.INSTANCE.lockEmpty());
+        } else if (folderItem.getLockedBy().equals(user.getIdentifier())) {
+            lockImage = new Image(ProjectExplorerImageResources.INSTANCE.lockOwned());
+            lockImage.setTitle(ProjectExplorerConstants.INSTANCE.lockOwnedHint());
         } else {
-            lockImage = new Image( ProjectExplorerImageResources.INSTANCE.lock() );
-            lockImage.setTitle( ProjectExplorerConstants.INSTANCE.lockHint() + " " + folderItem.getLockedBy() );
+            lockImage = new Image(ProjectExplorerImageResources.INSTANCE.lock());
+            lockImage.setTitle(ProjectExplorerConstants.INSTANCE.lockHint() + " " + folderItem.getLockedBy());
         }
 
-        navLink.getWidget( 0 )
+        navLink.getWidget(0)
                 .getElement()
-                .setInnerHTML( "<span>" + lockImage.toString() + " " + fileName + "</span>" );
+                .setInnerHTML("<span>" + lockImage.toString() + " " + fileName + "</span>");
 
         return navLink;
     }
 
-    private String getCollapseId( ClientResourceType resourceType ) {
-        return resourceType != null ? resourceType.getShortName().replaceAll( ID_CLEANUP_PATTERN, "" ) : "";
+    private String getCollapseId(ClientResourceType resourceType) {
+        return resourceType != null ? resourceType.getShortName().replaceAll(ID_CLEANUP_PATTERN,
+                                                                             "") : "";
     }
 
     @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
+    public void showBusyIndicator(final String message) {
+        BusyPopup.showMessage(message);
     }
 
     @Override
@@ -330,4 +310,9 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
         BusyPopup.close();
     }
 
+    interface BusinessViewImplBinder
+            extends
+            UiBinder<Widget, BusinessViewWidget> {
+
+    }
 }

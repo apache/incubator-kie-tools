@@ -39,12 +39,7 @@ public interface View extends HasBusyIndicator,
                               HasVisibility,
                               UberView<BaseViewPresenter> {
 
-    void setContent( final Set<OrganizationalUnit> organizationalUnits,
-                     final OrganizationalUnit activeOrganizationalUnit,
-                     final Set<Repository> repositories,
-                     final Repository activeRepository,
-                     final Set<Project> projects,
-                     final Project activeProject,
+    void setContent(final Project activeProject,
                      final FolderListing folderListing,
                      final Map<FolderItem, List<FolderItem>> siblings );
 

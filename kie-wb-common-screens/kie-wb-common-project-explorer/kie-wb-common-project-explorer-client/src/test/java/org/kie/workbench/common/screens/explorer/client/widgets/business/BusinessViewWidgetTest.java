@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchSelector;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
-import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorExpandCollapseButton;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
 
 import static org.mockito.Mockito.*;
@@ -35,9 +34,6 @@ public class BusinessViewWidgetTest {
     @GwtMock
     Explorer explorer;
 
-    @GwtMock
-    BranchSelector branchSelector;
-
     private BusinessViewWidget businessViewWidget;
 
     @Before
@@ -45,7 +41,6 @@ public class BusinessViewWidgetTest {
         businessViewWidget = new BusinessViewWidget() {
             {
                 explorer = BusinessViewWidgetTest.this.explorer;
-                branchSelector = BusinessViewWidgetTest.this.branchSelector;
             }
         };
     }
@@ -55,12 +50,9 @@ public class BusinessViewWidgetTest {
         final BaseViewPresenter presenter = mock( BaseViewPresenter.class );
         businessViewWidget.init( presenter );
 
-        verify( explorer ).init( eq( NavigatorExpandCollapseButton.Mode.COLLAPSED ),
-                                 any( NavigatorOptions.class ),
+        verify( explorer ).init( any( NavigatorOptions.class ),
                                  eq( Explorer.NavType.TREE ),
                                  eq( presenter ) );
-
-        verify( branchSelector ).addBranchChangeHandler( presenter );
     }
 
     @Test
