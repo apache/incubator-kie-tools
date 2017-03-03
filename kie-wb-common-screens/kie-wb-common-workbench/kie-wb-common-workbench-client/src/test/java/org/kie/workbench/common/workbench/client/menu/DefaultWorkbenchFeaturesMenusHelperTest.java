@@ -235,7 +235,7 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
         List<Menus> menusList = menusCaptor.getAllValues();
 
         assertEquals( 1, menusList.size() );
-        assertEquals( 4, menusList.get( 0 ).getItems().size() );
+        assertEquals( 5, menusList.get( 0 ).getItems().size() );
     }
 
     @Test

@@ -26,7 +26,7 @@ public interface CommonConstants
         extends
         Messages {
 
-    public static final CommonConstants INSTANCE = GWT.create( CommonConstants.class );
+    CommonConstants INSTANCE = GWT.create( CommonConstants.class );
 
     String InvalidDateFormatMessage();
 
@@ -289,4 +289,6 @@ public interface CommonConstants
     String Reimport();
 
     String ReimportSuccessful();
+
+    String AppsLauncher();
 }
