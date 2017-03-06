@@ -99,18 +99,45 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         return oracle;
     }
 
-    @Test
-    public void testAppend1() throws ModelSynchronizer.MoveColumnVetoException {
-        //Single Pattern, single Condition
-        final Pattern52 pattern = new Pattern52();
-        pattern.setBoundName( "$a" );
-        pattern.setFactType( "Applicant" );
-
-        final ConditionCol52 condition = new ConditionCol52();
+    private ConditionCol52 ageEqualsCondition() {
+        ConditionCol52 condition = new ConditionCol52();
         condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         condition.setHeader( "col1" );
         condition.setFactField( "age" );
         condition.setOperator( "==" );
+
+        return condition;
+    }
+
+    private ConditionCol52 nameEqualsCondition() {
+        ConditionCol52 condition = new ConditionCol52();
+        condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        condition.setHeader( "col2" );
+        condition.setFactField( "name" );
+        condition.setOperator( "==" );
+        return condition;
+    }
+
+    private Pattern52 boundApplicantPattern(String boundName) {
+        Pattern52 pattern = new Pattern52();
+        pattern.setBoundName( boundName );
+        pattern.setFactType( "Applicant" );
+        return pattern;
+    }
+
+    private Pattern52 boundAddressPattern(String boundName) {
+        Pattern52 pattern = new Pattern52();
+        pattern.setBoundName( boundName );
+        pattern.setFactType( "Address" );
+        return pattern;
+    }
+
+    @Test
+    public void testAppend1() throws ModelSynchronizer.MoveColumnVetoException {
+        //Single Pattern, single Condition
+        final Pattern52 pattern = boundApplicantPattern("$a");
+
+        final ConditionCol52 condition = ageEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern,
                                         condition );
@@ -130,15 +157,9 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testAppend2() throws ModelSynchronizer.MoveColumnVetoException {
         //Single Pattern, multiple Conditions
-        final Pattern52 pattern = new Pattern52();
-        pattern.setBoundName( "$a" );
-        pattern.setFactType( "Applicant" );
+        final Pattern52 pattern = boundApplicantPattern("$a");
 
-        final ConditionCol52 condition1 = new ConditionCol52();
-        condition1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition1.setHeader( "col1" );
-        condition1.setFactField( "age" );
-        condition1.setOperator( "==" );
+        final ConditionCol52 condition1 = ageEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern,
                                         condition1 );
@@ -152,11 +173,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().size() );
         assertTrue( uiModel.getColumns().get( 2 ) instanceof IntegerUiColumn );
 
-        final ConditionCol52 condition2 = new ConditionCol52();
-        condition2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition2.setHeader( "col1" );
-        condition2.setFactField( "name" );
-        condition2.setOperator( "==" );
+        final ConditionCol52 condition2 = nameEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern,
                                         condition2 );
@@ -177,15 +194,9 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testAppend3() throws ModelSynchronizer.MoveColumnVetoException {
         //Multiple Patterns, multiple Conditions
-        final Pattern52 pattern1 = new Pattern52();
-        pattern1.setBoundName( "$a" );
-        pattern1.setFactType( "Applicant" );
+        final Pattern52 pattern1 = boundApplicantPattern("$a");
 
-        final ConditionCol52 condition1 = new ConditionCol52();
-        condition1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition1.setHeader( "col1" );
-        condition1.setFactField( "age" );
-        condition1.setOperator( "==" );
+        final ConditionCol52 condition1 = ageEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern1,
                                         condition1 );
@@ -199,9 +210,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                       uiModel.getColumns().size() );
         assertTrue( uiModel.getColumns().get( 2 ) instanceof IntegerUiColumn );
 
-        final Pattern52 pattern2 = new Pattern52();
-        pattern2.setBoundName( "$d" );
-        pattern2.setFactType( "Address" );
+        final Pattern52 pattern2 = boundAddressPattern("$d");
 
         final ConditionCol52 condition2 = new ConditionCol52();
         condition2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -228,11 +237,49 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
+    public void testAppendNegated() throws ModelSynchronizer.MoveColumnVetoException {
+        final Pattern52 pattern = new Pattern52();
+        pattern.setNegated(true);
+        pattern.setFactType( "Applicant" );
+
+        final ConditionCol52 condition1 = ageEqualsCondition();
+
+        modelSynchronizer.appendColumn( pattern,
+                                        condition1 );
+
+        assertEquals( 3,
+                      model.getExpandedColumns().size() );
+        assertEquals( 1,
+                      model.getConditions().size() );
+        assertEquals( 3,
+                      uiModel.getColumns().size() );
+        assertTrue( uiModel.getColumns().get( 2 ) instanceof IntegerUiColumn );
+
+        final ConditionCol52 condition2 = nameEqualsCondition();
+
+        modelSynchronizer.appendColumn( pattern,
+                                        condition2 );
+
+        assertEquals( 4,
+                      model.getExpandedColumns().size() );
+        assertEquals( 1,
+                      model.getConditions().size() );
+        assertEquals( 2,
+                      model.getConditions().get(0).getChildColumns().size() );
+        assertEquals( 4,
+                      uiModel.getColumns().size() );
+        assertTrue( uiModel.getColumns().get( 2 ) instanceof IntegerUiColumn );
+        assertTrue( uiModel.getColumns().get( 3 ) instanceof StringUiColumn );
+        assertEquals( "not Applicant",
+                       uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle() );
+        assertEquals( "not Applicant",
+                      uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle() );
+    }
+
+    @Test
     public void testAppendBoolean() throws ModelSynchronizer.MoveColumnVetoException {
         //Single Pattern, single Condition
-        final Pattern52 pattern = new Pattern52();
-        pattern.setBoundName( "$a" );
-        pattern.setFactType( "Applicant" );
+        final Pattern52 pattern = boundApplicantPattern("$a");
 
         final ConditionCol52 condition = new ConditionCol52();
         condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -265,37 +312,30 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testUpdate1() throws ModelSynchronizer.MoveColumnVetoException {
         //Single Pattern, single Condition
-        final Pattern52 pattern = spy( new Pattern52() );
-        pattern.setBoundName( "$a" );
-        pattern.setFactType( "Applicant" );
+        final Pattern52 pattern = spy( boundApplicantPattern("$a") );
 
-        final ConditionCol52 condition = spy( new ConditionCol52() );
-        condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition.setHeader( "col1" );
-        condition.setFactField( "age" );
-        condition.setOperator( "==" );
+        final ConditionCol52 condition = spy( ageEqualsCondition() );
 
         modelSynchronizer.appendColumn( pattern,
                                         condition );
 
-        final Pattern52 editedPattern = new Pattern52();
-        editedPattern.setBoundName( "$a" );
-        editedPattern.setFactType( "Applicant" );
+        final Pattern52 editedPattern = boundApplicantPattern("$a");
 
-        final ConditionCol52 editedCondition = new ConditionCol52();
-        editedCondition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        editedCondition.setHeader( "col1" );
-        editedCondition.setFactField( "name" );
-        editedCondition.setOperator( "==" );
+        final ConditionCol52 editedCondition = nameEqualsCondition();
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( pattern,
                                                                           condition,
                                                                           editedPattern,
                                                                           editedCondition );
-        assertEquals( 1,
+        assertEquals( 2,
                       diffs.size() );
         verify( pattern ).diff( editedPattern );
         verify( condition ).diff( editedCondition );
+
+        assertEquals("header",
+                     diffs.get(0).getFieldName());
+        assertEquals("factField",
+                     diffs.get(1).getFieldName());
 
         assertEquals( 3,
                       model.getExpandedColumns().size() );
@@ -312,37 +352,21 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testUpdate2() throws ModelSynchronizer.MoveColumnVetoException {
         //Single Pattern, multiple Conditions
-        final Pattern52 pattern = spy( new Pattern52() );
-        pattern.setBoundName( "$a" );
-        pattern.setFactType( "Applicant" );
+        final Pattern52 pattern = spy( boundApplicantPattern("$a") );
 
-        final ConditionCol52 condition1 = spy( new ConditionCol52() );
-        condition1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition1.setHeader( "col1" );
-        condition1.setFactField( "age" );
-        condition1.setOperator( "==" );
+        final ConditionCol52 condition1 = spy( ageEqualsCondition() );
 
         modelSynchronizer.appendColumn( pattern,
                                         condition1 );
 
-        final ConditionCol52 condition2 = new ConditionCol52();
-        condition2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition2.setHeader( "col2" );
-        condition2.setFactField( "name" );
-        condition2.setOperator( "==" );
+        final ConditionCol52 condition2 = nameEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern,
                                         condition2 );
 
-        final Pattern52 editedPattern = new Pattern52();
-        editedPattern.setBoundName( "$a2" );
-        editedPattern.setFactType( "Applicant" );
+        final Pattern52 editedPattern = boundApplicantPattern("$a2");
 
-        final ConditionCol52 editedCondition = new ConditionCol52();
-        editedCondition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        editedCondition.setHeader( "col1" );
-        editedCondition.setFactField( "age" );
-        editedCondition.setOperator( "==" );
+        final ConditionCol52 editedCondition = ageEqualsCondition();
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( pattern,
                                                                           condition1,
@@ -371,31 +395,19 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testUpdate3() throws ModelSynchronizer.MoveColumnVetoException {
         //Multiple Patterns, multiple Conditions
-        final Pattern52 pattern1 = spy( new Pattern52() );
-        pattern1.setBoundName( "$a" );
-        pattern1.setFactType( "Applicant" );
+        final Pattern52 pattern1 = spy( boundApplicantPattern("$a") );
 
-        final ConditionCol52 condition1 = spy( new ConditionCol52() );
-        condition1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition1.setHeader( "col1" );
-        condition1.setFactField( "age" );
-        condition1.setOperator( "==" );
+        final ConditionCol52 condition1 = spy( ageEqualsCondition() );
 
         modelSynchronizer.appendColumn( pattern1,
                                         condition1 );
 
-        final ConditionCol52 condition2 = new ConditionCol52();
-        condition2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition2.setHeader( "col2" );
-        condition2.setFactField( "name" );
-        condition2.setOperator( "==" );
+        final ConditionCol52 condition2 = nameEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern1,
                                         condition2 );
 
-        final Pattern52 editedPattern = new Pattern52();
-        editedPattern.setBoundName( "$d" );
-        editedPattern.setFactType( "Address" );
+        final Pattern52 editedPattern = boundAddressPattern("$d");
 
         final ConditionCol52 editedCondition = new ConditionCol52();
         editedCondition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -430,22 +442,14 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testUpdate4() throws ModelSynchronizer.MoveColumnVetoException {
         //Multiple Patterns, multiple Conditions
-        final Pattern52 pattern1 = spy( new Pattern52() );
-        pattern1.setBoundName( "$a" );
-        pattern1.setFactType( "Applicant" );
+        final Pattern52 pattern1 = spy( boundApplicantPattern("$a") );
 
-        final ConditionCol52 condition1 = spy( new ConditionCol52() );
-        condition1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition1.setHeader( "col1" );
-        condition1.setFactField( "age" );
-        condition1.setOperator( "==" );
+        final ConditionCol52 condition1 = spy( ageEqualsCondition() );
 
         modelSynchronizer.appendColumn( pattern1,
                                         condition1 );
 
-        final Pattern52 editedPattern = new Pattern52();
-        editedPattern.setBoundName( "$d" );
-        editedPattern.setFactType( "Address" );
+        final Pattern52 editedPattern = boundAddressPattern("$d");
 
         final ConditionCol52 editedCondition = new ConditionCol52();
         editedCondition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -477,27 +481,16 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
     public void testUpdate5() throws ModelSynchronizer.MoveColumnVetoException {
-        final Pattern52 pattern1 = spy( new Pattern52() );
-        pattern1.setBoundName( "$a" );
-        pattern1.setFactType( "Applicant" );
+        final Pattern52 pattern1 = spy( boundApplicantPattern("$a") );
 
-        final ConditionCol52 condition1 = spy( new ConditionCol52() );
-        condition1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition1.setFactField( "age" );
-        condition1.setOperator( "==" );
-        condition1.setHeader( "age" );
+        final ConditionCol52 condition1 = spy( ageEqualsCondition() );
 
         modelSynchronizer.appendColumn( pattern1,
                                         condition1 );
 
-        final Pattern52 editedPattern = new Pattern52();
-        editedPattern.setBoundName( "$a" );
-        editedPattern.setFactType( "Applicant" );
+        final Pattern52 editedPattern = boundApplicantPattern("$a");
 
-        final ConditionCol52 editedCondition = new ConditionCol52();
-        editedCondition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        editedCondition.setFactField( "age" );
-        editedCondition.setOperator( "==" );
+        final ConditionCol52 editedCondition = ageEqualsCondition();
         editedCondition.setHideColumn( true );
         editedCondition.setHeader( "updated" );
 
@@ -529,27 +522,16 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testUpdate6() throws ModelSynchronizer.MoveColumnVetoException {
         //Single Pattern, single Condition
-        final Pattern52 pattern = spy( new Pattern52() );
-        pattern.setBoundName( "$a" );
-        pattern.setFactType( "Applicant" );
+        final Pattern52 pattern = spy( boundApplicantPattern("$a") );
 
-        final ConditionCol52 condition = spy( new ConditionCol52() );
-        condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition.setHeader( "col1" );
-        condition.setFactField( "age" );
-        condition.setOperator( "==" );
+        final ConditionCol52 condition = spy( ageEqualsCondition() );
 
         modelSynchronizer.appendColumn( pattern,
                                         condition );
 
-        final Pattern52 editedPattern = new Pattern52();
-        editedPattern.setBoundName( "$a" );
-        editedPattern.setFactType( "Applicant" );
+        final Pattern52 editedPattern = boundApplicantPattern("$a");
 
-        final ConditionCol52 editedCondition = new ConditionCol52();
-        editedCondition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        editedCondition.setHeader( "col1" );
-        editedCondition.setFactField( "age" );
+        final ConditionCol52 editedCondition = ageEqualsCondition();
         editedCondition.setOperator( "!=" );
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( pattern,
@@ -574,17 +556,38 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
+    public void testUpdateToNegated() throws ModelSynchronizer.MoveColumnVetoException {
+        final Pattern52 pattern = spy( boundApplicantPattern("$a") );
+
+        final ConditionCol52 condition = spy( ageEqualsCondition() );
+
+        modelSynchronizer.appendColumn( pattern,
+                                        condition );
+
+        assertEquals( "$a : Applicant",
+                      uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+
+        final Pattern52 editedPattern = new Pattern52();
+        editedPattern.setNegated( true );
+        editedPattern.setFactType( "Applicant" );
+
+        final ConditionCol52 editedCondition = spy( ageEqualsCondition() );
+
+        modelSynchronizer.updateColumn( pattern,
+                                        condition,
+                                        editedPattern,
+                                        editedCondition );
+
+        assertEquals( "not Applicant",
+                      uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+    }
+
+    @Test
     public void checkAddToValueListPreservesData() throws ModelSynchronizer.MoveColumnVetoException {
         //Single Pattern, single Condition
-        final Pattern52 pattern = spy( new Pattern52() );
-        pattern.setBoundName( "$a" );
-        pattern.setFactType( "Applicant" );
+        final Pattern52 pattern = spy( boundApplicantPattern("$a") );
 
-        final ConditionCol52 condition = spy( new ConditionCol52() );
-        condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition.setHeader( "col1" );
-        condition.setFactField( "name" );
-        condition.setOperator( "==" );
+        final ConditionCol52 condition = spy( nameEqualsCondition() );
         condition.setValueList( "A,B,C" );
 
         modelSynchronizer.appendColumn( pattern,
@@ -596,15 +599,9 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         uiModel.setCell( 1, 2, new BaseGridCellValue<>( "B" ) );
         uiModel.setCell( 2, 2, new BaseGridCellValue<>( "C" ) );
 
-        final Pattern52 editedPattern = new Pattern52();
-        editedPattern.setBoundName( "$a" );
-        editedPattern.setFactType( "Applicant" );
+        final Pattern52 editedPattern = boundApplicantPattern("$a");
 
-        final ConditionCol52 editedCondition = new ConditionCol52();
-        editedCondition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        editedCondition.setHeader( "col1" );
-        editedCondition.setFactField( "name" );
-        editedCondition.setOperator( "==" );
+        final ConditionCol52 editedCondition = nameEqualsCondition();
         editedCondition.setValueList( "A,B,C,D" );
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( pattern,
@@ -635,15 +632,9 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void checkRemoveFromValueListClearsData() throws ModelSynchronizer.MoveColumnVetoException {
         //Single Pattern, single Condition
-        final Pattern52 pattern = spy( new Pattern52() );
-        pattern.setBoundName( "$a" );
-        pattern.setFactType( "Applicant" );
+        final Pattern52 pattern = spy( boundApplicantPattern("$a") );
 
-        final ConditionCol52 condition = spy( new ConditionCol52() );
-        condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition.setHeader( "col1" );
-        condition.setFactField( "name" );
-        condition.setOperator( "==" );
+        final ConditionCol52 condition = spy( nameEqualsCondition() );
         condition.setValueList( "A,B,C" );
 
         modelSynchronizer.appendColumn( pattern,
@@ -655,15 +646,9 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         uiModel.setCell( 1, 2, new BaseGridCellValue<>( "B" ) );
         uiModel.setCell( 2, 2, new BaseGridCellValue<>( "C" ) );
 
-        final Pattern52 editedPattern = new Pattern52();
-        editedPattern.setBoundName( "$a" );
-        editedPattern.setFactType( "Applicant" );
+        final Pattern52 editedPattern = boundApplicantPattern("$a");
 
-        final ConditionCol52 editedCondition = new ConditionCol52();
-        editedCondition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        editedCondition.setHeader( "col1" );
-        editedCondition.setFactField( "name" );
-        editedCondition.setOperator( "==" );
+        final ConditionCol52 editedCondition = nameEqualsCondition();
         editedCondition.setValueList( "A" );
 
         List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn( pattern,
@@ -690,15 +675,9 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testDelete1() throws ModelSynchronizer.MoveColumnVetoException {
         //Single Pattern, single Condition
-        final Pattern52 pattern = new Pattern52();
-        pattern.setBoundName( "$a" );
-        pattern.setFactType( "Applicant" );
+        final Pattern52 pattern = boundApplicantPattern("$a");
 
-        final ConditionCol52 condition = new ConditionCol52();
-        condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition.setHeader( "col1" );
-        condition.setFactField( "age" );
-        condition.setOperator( "==" );
+        final ConditionCol52 condition = ageEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern,
                                         condition );
@@ -726,24 +705,14 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testDelete2() throws ModelSynchronizer.MoveColumnVetoException {
         //Single Pattern, multiple Conditions
-        final Pattern52 pattern = new Pattern52();
-        pattern.setBoundName( "$a" );
-        pattern.setFactType( "Applicant" );
+        final Pattern52 pattern = boundApplicantPattern("$a");
 
-        final ConditionCol52 condition1 = new ConditionCol52();
-        condition1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition1.setHeader( "col1" );
-        condition1.setFactField( "age" );
-        condition1.setOperator( "==" );
+        final ConditionCol52 condition1 = ageEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern,
                                         condition1 );
 
-        final ConditionCol52 condition2 = new ConditionCol52();
-        condition2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition2.setHeader( "col2" );
-        condition2.setFactField( "name" );
-        condition2.setOperator( "==" );
+        final ConditionCol52 condition2 = nameEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern,
                                         condition2 );
@@ -772,22 +741,14 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     @Test
     public void testDelete3() throws ModelSynchronizer.MoveColumnVetoException {
         //Multiple Patterns, multiple Conditions
-        final Pattern52 pattern1 = new Pattern52();
-        pattern1.setBoundName( "$a" );
-        pattern1.setFactType( "Applicant" );
+        final Pattern52 pattern1 = boundApplicantPattern("$a");
 
-        final ConditionCol52 condition1 = new ConditionCol52();
-        condition1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition1.setHeader( "col1" );
-        condition1.setFactField( "age" );
-        condition1.setOperator( "==" );
+        final ConditionCol52 condition1 = ageEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern1,
                                         condition1 );
 
-        final Pattern52 pattern2 = new Pattern52();
-        pattern2.setBoundName( "$d" );
-        pattern2.setFactType( "Address" );
+        final Pattern52 pattern2 = boundAddressPattern("$d");
 
         final ConditionCol52 condition2 = new ConditionCol52();
         condition2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -825,22 +786,101 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnTo_MoveLeft() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveLeftNegatedPattern() throws ModelSynchronizer.MoveColumnVetoException {
         final Pattern52 pattern = new Pattern52();
-        pattern.setBoundName( "$a" );
-        pattern.setFactType( "Applicant" );
+        pattern.setNegated(true);
+        pattern.setFactType("Applicant");
 
-        final ConditionCol52 column1 = new ConditionCol52();
-        column1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column1.setFactField( "age" );
-        column1.setOperator( "==" );
-        column1.setHeader( "age" );
+        final ConditionCol52 column1 = ageEqualsCondition();
 
-        final ConditionCol52 column2 = new ConditionCol52();
-        column2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column2.setFactField( "name" );
-        column2.setOperator( "==" );
-        column2.setHeader( "name" );
+        final ConditionCol52 column2 = nameEqualsCondition();
+
+        modelSynchronizer.appendColumn(pattern,
+                                       column1);
+        modelSynchronizer.appendColumn(pattern,
+                                       column2);
+
+        modelSynchronizer.appendRow();
+        uiModel.setCell(0,
+                        2,
+                        new BaseGridCellValue<Integer>(45));
+        uiModel.setCell(0,
+                        3,
+                        new BaseGridCellValue<String>("Smurf"));
+
+        assertEquals(1,
+                     model.getPatterns().size());
+        final List<ConditionCol52> conditionColumns1_1 = model.getPatterns().get(0).getChildColumns();
+        assertEquals(column1,
+                     conditionColumns1_1.get(0));
+        assertEquals(column2,
+                     conditionColumns1_1.get(1));
+        assertEquals(45,
+                     model.getData().get(0).get(2).getNumericValue());
+        assertEquals("Smurf",
+                     model.getData().get(0).get(3).getStringValue());
+
+        assertEquals(4,
+                     uiModel.getColumns().size());
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        assertEquals("not Applicant",
+                     uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
+        assertEquals("not Applicant",
+                     uiModelColumn2_1.getHeaderMetaData().get( 0 ).getTitle());
+        assertTrue( uiModelColumn1_1 instanceof IntegerUiColumn);
+        assertTrue( uiModelColumn2_1 instanceof StringUiColumn);
+        assertEquals(2,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(3,
+                     uiModelColumn2_1.getIndex());
+        assertEquals(45,
+                     uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
+        assertEquals("Smurf",
+                     uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
+
+        uiModel.moveColumnTo(2,
+                             uiModelColumn2_1);
+
+        assertEquals(1,
+                     model.getPatterns().size());
+        final List<ConditionCol52> conditionColumns1_2 = model.getPatterns().get(0).getChildColumns();
+        assertEquals(column2,
+                     conditionColumns1_2.get(0));
+        assertEquals(column1,
+                     conditionColumns1_2.get(1));
+        assertEquals("Smurf",
+                     model.getData().get(0).get(2).getStringValue());
+        assertEquals(45,
+                     model.getData().get(0).get(3).getNumericValue());
+
+        assertEquals(4,
+                     uiModel.getColumns().size());
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        assertEquals("not Applicant",
+                     uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
+        assertEquals("not Applicant",
+                     uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
+        assertTrue(uiModelColumn1_2 instanceof StringUiColumn);
+        assertTrue(uiModelColumn2_2 instanceof IntegerUiColumn);
+        assertEquals(3,
+                     uiModelColumn1_2.getIndex());
+        assertEquals(2,
+                     uiModelColumn2_2.getIndex());
+        assertEquals("Smurf",
+                     uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
+        assertEquals(45,
+                     uiModel.getRow(0).getCells().get(uiModelColumn2_2.getIndex()).getValue().getValue());
+    }
+
+    @Test
+    public void testMoveColumnTo_MoveLeft() throws ModelSynchronizer.MoveColumnVetoException {
+        final Pattern52 pattern = boundApplicantPattern("$a");
+
+        final ConditionCol52 column1 = ageEqualsCondition();
+
+        final ConditionCol52 column2 = nameEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern,
                                         column1 );
@@ -923,21 +963,11 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
     public void testMoveColumnTo_MoveRight() throws ModelSynchronizer.MoveColumnVetoException {
-        final Pattern52 pattern = new Pattern52();
-        pattern.setBoundName( "$a" );
-        pattern.setFactType( "Applicant" );
+        final Pattern52 pattern = boundApplicantPattern("$a");
 
-        final ConditionCol52 column1 = new ConditionCol52();
-        column1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column1.setFactField( "age" );
-        column1.setOperator( "==" );
-        column1.setHeader( "age" );
+        final ConditionCol52 column1 = ageEqualsCondition();
 
-        final ConditionCol52 column2 = new ConditionCol52();
-        column2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column2.setFactField( "name" );
-        column2.setOperator( "==" );
-        column2.setHeader( "name" );
+        final ConditionCol52 column2 = nameEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern,
                                         column1 );
@@ -1020,21 +1050,11 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
     public void testMoveColumnTo_OutOfBounds_OutOfConditions() throws ModelSynchronizer.MoveColumnVetoException {
-        final Pattern52 pattern = new Pattern52();
-        pattern.setBoundName( "$a" );
-        pattern.setFactType( "Applicant" );
+        final Pattern52 pattern = boundApplicantPattern("$a");
 
-        final ConditionCol52 column1 = new ConditionCol52();
-        column1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column1.setFactField( "age" );
-        column1.setOperator( "==" );
-        column1.setHeader( "age" );
+        final ConditionCol52 column1 = ageEqualsCondition();
 
-        final ConditionCol52 column2 = new ConditionCol52();
-        column2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column2.setFactField( "name" );
-        column2.setOperator( "==" );
-        column2.setHeader( "name" );
+        final ConditionCol52 column2 = nameEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern,
                                         column1 );
@@ -1117,37 +1137,21 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
     public void testMoveColumnTo_OutOfBounds_OutOfPattern() throws ModelSynchronizer.MoveColumnVetoException {
-        final Pattern52 pattern1 = new Pattern52();
-        pattern1.setBoundName( "$a" );
-        pattern1.setFactType( "Applicant" );
+        final Pattern52 pattern1 = boundApplicantPattern("$a");
 
-        final ConditionCol52 column1p1 = new ConditionCol52();
-        column1p1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column1p1.setFactField( "age" );
-        column1p1.setOperator( "==" );
-        column1p1.setHeader( "age" );
+        final ConditionCol52 column1p1 = ageEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern1,
                                         column1p1 );
 
-        final ConditionCol52 column2p1 = new ConditionCol52();
-        column2p1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column2p1.setFactField( "name" );
-        column2p1.setOperator( "==" );
-        column2p1.setHeader( "name" );
+        final ConditionCol52 column2p1 = nameEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern1,
                                         column2p1 );
 
-        final Pattern52 pattern2 = new Pattern52();
-        pattern2.setBoundName( "$a2" );
-        pattern2.setFactType( "Applicant" );
+        final Pattern52 pattern2 = boundApplicantPattern("$a2");
 
-        final ConditionCol52 column1p2 = new ConditionCol52();
-        column1p2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column1p2.setFactField( "name" );
-        column1p2.setOperator( "==" );
-        column1p2.setHeader( "name" );
+        final ConditionCol52 column1p2 = nameEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern2,
                                         column1p2 );
@@ -1257,28 +1261,16 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
     public void testMoveColumnTo_SingleColumnPattern() throws ModelSynchronizer.MoveColumnVetoException {
-        final Pattern52 pattern1 = new Pattern52();
-        pattern1.setBoundName( "$a" );
-        pattern1.setFactType( "Applicant" );
+        final Pattern52 pattern1 = boundApplicantPattern("$a");
 
-        final ConditionCol52 column1p1 = new ConditionCol52();
-        column1p1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column1p1.setFactField( "age" );
-        column1p1.setOperator( "==" );
-        column1p1.setHeader( "age" );
+        final ConditionCol52 column1p1 = ageEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern1,
                                         column1p1 );
 
-        final Pattern52 pattern2 = new Pattern52();
-        pattern2.setBoundName( "$a2" );
-        pattern2.setFactType( "Applicant" );
+        final Pattern52 pattern2 = boundApplicantPattern("$a2");
 
-        final ConditionCol52 column1p2 = new ConditionCol52();
-        column1p2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column1p2.setFactField( "name" );
-        column1p2.setOperator( "==" );
-        column1p2.setHeader( "name" );
+        final ConditionCol52 column1p2 = nameEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern2,
                                         column1p2 );
@@ -1361,30 +1353,18 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
     public void testMoveColumnsTo_MoveLeft() throws ModelSynchronizer.MoveColumnVetoException {
-        final Pattern52 pattern1 = new Pattern52();
-        pattern1.setBoundName( "$a" );
-        pattern1.setFactType( "Applicant" );
+        final Pattern52 pattern1 = boundApplicantPattern("$a");
 
-        final ConditionCol52 column1p1 = new ConditionCol52();
-        column1p1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column1p1.setFactField( "age" );
-        column1p1.setOperator( "==" );
-        column1p1.setHeader( "age" );
+        final ConditionCol52 column1p1 = ageEqualsCondition();
 
-        final ConditionCol52 column2p1 = new ConditionCol52();
-        column2p1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column2p1.setFactField( "name" );
-        column2p1.setOperator( "==" );
-        column2p1.setHeader( "name" );
+        final ConditionCol52 column2p1 = nameEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern1,
                                         column1p1 );
         modelSynchronizer.appendColumn( pattern1,
                                         column2p1 );
 
-        final Pattern52 pattern2 = new Pattern52();
-        pattern2.setBoundName( "$d" );
-        pattern2.setFactType( "Address" );
+        final Pattern52 pattern2 = boundAddressPattern("$d");
 
         final ConditionCol52 column1p2 = new ConditionCol52();
         column1p2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1538,30 +1518,18 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
     public void testMoveColumnsTo_MoveLeft_MidPoint() throws ModelSynchronizer.MoveColumnVetoException {
-        final Pattern52 pattern1 = new Pattern52();
-        pattern1.setBoundName( "$a" );
-        pattern1.setFactType( "Applicant" );
+        final Pattern52 pattern1 = boundApplicantPattern("$a");
 
-        final ConditionCol52 column1p1 = new ConditionCol52();
-        column1p1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column1p1.setFactField( "age" );
-        column1p1.setOperator( "==" );
-        column1p1.setHeader( "age" );
+        final ConditionCol52 column1p1 = ageEqualsCondition();
 
-        final ConditionCol52 column2p1 = new ConditionCol52();
-        column2p1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column2p1.setFactField( "name" );
-        column2p1.setOperator( "==" );
-        column2p1.setHeader( "name" );
+        final ConditionCol52 column2p1 = nameEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern1,
                                         column1p1 );
         modelSynchronizer.appendColumn( pattern1,
                                         column2p1 );
 
-        final Pattern52 pattern2 = new Pattern52();
-        pattern2.setBoundName( "$d" );
-        pattern2.setFactType( "Address" );
+        final Pattern52 pattern2 = boundAddressPattern("$d");
 
         final ConditionCol52 column1p2 = new ConditionCol52();
         column1p2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1580,9 +1548,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendColumn( pattern2,
                                         column2p2 );
 
-        final Pattern52 pattern3 = new Pattern52();
-        pattern3.setBoundName( "$d2" );
-        pattern3.setFactType( "Address" );
+        final Pattern52 pattern3 = boundAddressPattern("$d2");
 
         final ConditionCol52 column1p3 = new ConditionCol52();
         column1p3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1792,30 +1758,18 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
     public void testMoveColumnsTo_MoveRight() throws ModelSynchronizer.MoveColumnVetoException {
-        final Pattern52 pattern1 = new Pattern52();
-        pattern1.setBoundName( "$a" );
-        pattern1.setFactType( "Applicant" );
+        final Pattern52 pattern1 = boundApplicantPattern("$a");
 
-        final ConditionCol52 column1p1 = new ConditionCol52();
-        column1p1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column1p1.setFactField( "age" );
-        column1p1.setOperator( "==" );
-        column1p1.setHeader( "age" );
+        final ConditionCol52 column1p1 = ageEqualsCondition();
 
-        final ConditionCol52 column2p1 = new ConditionCol52();
-        column2p1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column2p1.setFactField( "name" );
-        column2p1.setOperator( "==" );
-        column2p1.setHeader( "name" );
+        final ConditionCol52 column2p1 = nameEqualsCondition();
 
         modelSynchronizer.appendColumn( pattern1,
                                         column1p1 );
         modelSynchronizer.appendColumn( pattern1,
                                         column2p1 );
 
-        final Pattern52 pattern2 = new Pattern52();
-        pattern2.setBoundName( "$d" );
-        pattern2.setFactType( "Address" );
+        final Pattern52 pattern2 = boundAddressPattern("$d");
 
         final ConditionCol52 column1p2 = new ConditionCol52();
         column1p2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -1971,30 +1925,17 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
     public void testMoveColumnsTo_MoveRight_MidPoint() throws ModelSynchronizer.MoveColumnVetoException {
-        final Pattern52 pattern1 = new Pattern52();
-        pattern1.setBoundName( "$a" );
-        pattern1.setFactType( "Applicant" );
+        final Pattern52 pattern1 = boundApplicantPattern("$a");
 
-        final ConditionCol52 column1p1 = new ConditionCol52();
-        column1p1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column1p1.setFactField( "age" );
-        column1p1.setOperator( "==" );
-        column1p1.setHeader( "age" );
+        final ConditionCol52 column1p1 = ageEqualsCondition();
 
-        final ConditionCol52 column2p1 = new ConditionCol52();
-        column2p1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        column2p1.setFactField( "name" );
-        column2p1.setOperator( "==" );
-        column2p1.setHeader( "name" );
-
+        final ConditionCol52 column2p1 = nameEqualsCondition();
         modelSynchronizer.appendColumn( pattern1,
                                         column1p1 );
         modelSynchronizer.appendColumn( pattern1,
                                         column2p1 );
 
-        final Pattern52 pattern2 = new Pattern52();
-        pattern2.setBoundName( "$d" );
-        pattern2.setFactType( "Address" );
+        final Pattern52 pattern2 = boundAddressPattern("$d");
 
         final ConditionCol52 column1p2 = new ConditionCol52();
         column1p2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -2013,9 +1954,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendColumn( pattern2,
                                         column2p2 );
 
-        final Pattern52 pattern3 = new Pattern52();
-        pattern3.setBoundName( "$d2" );
-        pattern3.setFactType( "Address" );
+        final Pattern52 pattern3 = boundAddressPattern("$d2");
 
         final ConditionCol52 column1p3 = new ConditionCol52();
         column1p3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );

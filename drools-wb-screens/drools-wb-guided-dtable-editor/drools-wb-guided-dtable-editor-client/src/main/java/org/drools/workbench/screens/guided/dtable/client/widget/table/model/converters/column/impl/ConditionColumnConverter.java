@@ -107,7 +107,9 @@ public class ConditionColumnConverter extends BaseColumnConverterImpl {
     private String getPatternHeader( final BaseColumn column ) {
         final Pattern52 pattern = model.getPattern( (ConditionCol52) column );
         final StringBuilder sb = new StringBuilder();
-        if ( !( pattern.getBoundName() == null || pattern.getBoundName().isEmpty() ) ) {
+        if( pattern.isNegated() ) {
+            sb.append("not ");
+        } else if ( !( pattern.getBoundName() == null || pattern.getBoundName().isEmpty() ) ) {
             sb.append( pattern.getBoundName() ).append( " : " );
         }
         sb.append( pattern.getFactType() );
