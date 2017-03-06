@@ -65,6 +65,7 @@ import org.uberfire.client.views.pfly.modal.ErrorPopupView;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
+import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorScreenActivity;
 import org.uberfire.mvp.Commands;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.PluginAddedEvent;
@@ -184,19 +185,21 @@ public class ShowcaseEntryPoint {
     }
 
     public static List<MenuItem> getScreens() {
-        final List<MenuItem> screens = new ArrayList<MenuItem>();
-        final List<String> names = new ArrayList<String>();
+        final List<MenuItem> screens = new ArrayList<>();
+        final List<String> names = new ArrayList<>();
 
         for (final IOCBeanDef<WorkbenchScreenActivity> _menuItem : IOC.getBeanManager().lookupBeans(WorkbenchScreenActivity.class)) {
             final String name;
-            if (_menuItem.getBeanClass().equals(JSWorkbenchScreenActivity.class)) {
-                name = _menuItem.getName();
-            } else {
-                name = IOC.getBeanManager().lookupBean(_menuItem.getBeanClass()).getName();
-            }
+            if(!_menuItem.getBeanClass().equals(PerspectiveEditorScreenActivity.class)){
+                if (_menuItem.getBeanClass().equals(JSWorkbenchScreenActivity.class)) {
+                    name = _menuItem.getName();
+                } else {
+                    name = IOC.getBeanManager().lookupBean(_menuItem.getBeanClass()).getName();
+                }
 
-            if (!menuItemsToRemove.contains(name)) {
-                names.add(name);
+                if (!menuItemsToRemove.contains(name)) {
+                    names.add(name);
+                }
             }
         }
 
