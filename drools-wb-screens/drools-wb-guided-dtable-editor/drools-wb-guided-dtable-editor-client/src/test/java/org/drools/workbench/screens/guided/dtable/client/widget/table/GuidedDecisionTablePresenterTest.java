@@ -1146,6 +1146,23 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
+    public void deleteAttributeColumn() throws Exception {
+        final AttributeCol52 column = new AttributeCol52();
+        column.setAttribute("salience");
+        dtPresenter.appendColumn( column );
+        reset( modellerPresenter );
+
+        dtPresenter.deleteColumn( column );
+
+        verify( synchronizer,
+                times( 1 ) ).deleteColumn( eq( column ) );
+        verify( modellerPresenter,
+                times( 1 ) ).updateLinks();
+
+        verify( refreshAttributesPanelEvent, times(2) ).fire( any( RefreshAttributesPanelEvent.class ) );
+    }
+
+    @Test
     public void updatePatternAndConditionColumn() throws ModelSynchronizer.MoveColumnVetoException {
         final Pattern52 pattern = new Pattern52();
         pattern.setFactType( "FactType" );

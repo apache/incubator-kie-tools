@@ -49,8 +49,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
-import org.drools.workbench.screens.guided.dtable.client.widget.DefaultValueWidgetFactory;
-import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.AttributeColumnConfigRow;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -181,10 +181,10 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     private DecoratedDisclosurePanel disclosurePanelConditions;
     private DecoratedDisclosurePanel disclosurePanelActions;
-    private DecoratedDisclosurePanel disclosurePanelAttributes;
+    protected DecoratedDisclosurePanel disclosurePanelAttributes;
     private DecoratedDisclosurePanel disclosurePanelMetaData;
     private PrettyFormLayout configureColumnsNote;
-    private VerticalPanel attributeConfigWidget;
+    protected VerticalPanel attributeConfigWidget;
     private VerticalPanel metaDataConfigWidget;
     private VerticalPanel conditionsConfigWidget;
     private VerticalPanel actionsConfigWidget;
@@ -545,113 +545,11 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
             return;
         }
 
-        final boolean isEditable = presenter.isActiveDecisionTableEditable();
         for ( AttributeCol52 attributeColumn : attributeColumns ) {
-            HorizontalPanel hp = new HorizontalPanel();
-            hp.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
-
-            hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
-            if ( isEditable ) {
-                hp.add( removeAttribute( attributeColumn ) );
-            }
-
-            final SmallLabel label = makeColumnLabel( attributeColumn );
-            hp.add( label );
-
-            final AttributeCol52 originalColumn = attributeColumn;
-            final Widget defaultValue = DefaultValueWidgetFactory.getDefaultValueWidget( attributeColumn,
-                                                                                         !isEditable,
-                                                                                         new DefaultValueWidgetFactory.DefaultValueChangedEventHandler() {
-                                                                                             @Override
-                                                                                             public void onDefaultValueChanged( DefaultValueWidgetFactory.DefaultValueChangedEvent event ) {
-                                                                                                 final AttributeCol52 editedColumn = originalColumn.cloneColumn();
-                                                                                                 editedColumn.setDefaultValue( event.getEditedDefaultValue() );
-                                                                                                 presenter.getActiveDecisionTable().updateColumn( originalColumn,
-                                                                                                                                                  editedColumn );
-                                                                                             }
-                                                                                         } );
-
-            if ( attributeColumn.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
-                hp.add( new HTML( "&nbsp;&nbsp;" ) );
-                final CheckBox chkUseRowNumber = new CheckBox( GuidedDecisionTableConstants.INSTANCE.UseRowNumber() );
-                chkUseRowNumber.setValue( attributeColumn.isUseRowNumber() );
-                chkUseRowNumber.setEnabled( isEditable );
-                hp.add( chkUseRowNumber );
-
-                hp.add( new SmallLabel( "(" ) );
-                final CheckBox chkReverseOrder = new CheckBox( GuidedDecisionTableConstants.INSTANCE.ReverseOrder() );
-                chkReverseOrder.setValue( attributeColumn.isReverseOrder() );
-                chkReverseOrder.setEnabled( attributeColumn.isUseRowNumber() && isEditable );
-
-                chkUseRowNumber.addClickHandler( new ClickHandler() {
-
-                    @Override
-                    public void onClick( final ClickEvent event ) {
-                        final AttributeCol52 editedColumn = originalColumn.cloneColumn();
-                        editedColumn.setUseRowNumber( chkUseRowNumber.getValue() );
-                        chkReverseOrder.setEnabled( chkUseRowNumber.getValue() );
-                        presenter.getActiveDecisionTable().updateColumn( originalColumn,
-                                                                         editedColumn );
-                    }
-                } );
-
-                chkReverseOrder.addClickHandler( new ClickHandler() {
-
-                    @Override
-                    public void onClick( final ClickEvent event ) {
-                        final AttributeCol52 editedColumn = originalColumn.cloneColumn();
-                        editedColumn.setReverseOrder( chkReverseOrder.getValue() );
-                        presenter.getActiveDecisionTable().updateColumn( originalColumn,
-                                                                         editedColumn );
-                    }
-                } );
-                hp.add( chkReverseOrder );
-                hp.add( new SmallLabel( ")" ) );
-            }
-            hp.add( new HTML( "&nbsp;&nbsp;" ) );
-            hp.add( new SmallLabel( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.DefaultValue() ).append( GuidedDecisionTableConstants.COLON ).toString() ) );
-            hp.add( defaultValue );
-
-            final CheckBox chkHideColumn = new CheckBox( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.HideThisColumn() ).append( GuidedDecisionTableConstants.COLON ).toString() );
-            chkHideColumn.setValue( attributeColumn.isHideColumn() );
-            chkHideColumn.addClickHandler( new ClickHandler() {
-
-                @Override
-                public void onClick( final ClickEvent event ) {
-                    final AttributeCol52 editedColumn = originalColumn.cloneColumn();
-                    editedColumn.setHideColumn( chkHideColumn.getValue() );
-                    presenter.getActiveDecisionTable().updateColumn( originalColumn,
-                                                                     editedColumn );
-                }
-            } );
-            hp.add( new HTML( "&nbsp;&nbsp;" ) );
-            hp.add( chkHideColumn );
-
-            attributeConfigWidget.add( hp );
+            AttributeColumnConfigRow attributeColumnConfigRow = new AttributeColumnConfigRow();
+            attributeColumnConfigRow.init(attributeColumn, presenter);
+            attributeConfigWidget.add(attributeColumnConfigRow.getView());
         }
-    }
-
-    private SmallLabel makeColumnLabel( final AttributeCol52 attributeColumn ) {
-        SmallLabel label = new SmallLabel( attributeColumn.getAttribute() );
-        setColumnLabelStyleWhenHidden( label,
-                                       attributeColumn.isHideColumn() );
-        return label;
-    }
-
-    private Widget removeAttribute( final AttributeCol52 at ) {
-        Image image = GuidedDecisionTableImageResources508.INSTANCE.DeleteItemSmall();
-        image.setAltText( GuidedDecisionTableConstants.INSTANCE.RemoveThisAttribute() );
-
-        return new ImageButton( image,
-                                GuidedDecisionTableConstants.INSTANCE.RemoveThisAttribute(),
-                                new ClickHandler() {
-                                    public void onClick( ClickEvent w ) {
-                                        String ms = GuidedDecisionTableConstants.INSTANCE.DeleteActionColumnWarning( at.getAttribute() );
-                                        if ( Window.confirm( ms ) ) {
-                                            presenter.getActiveDecisionTable().deleteColumn( at );
-                                        }
-                                    }
-                                } );
     }
 
     private Widget getMetaDataWidget() {
@@ -703,8 +601,8 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     private SmallLabel makeColumnLabel( final MetadataCol52 metaDataColumn ) {
         SmallLabel label = new SmallLabel( metaDataColumn.getMetadata() );
-        setColumnLabelStyleWhenHidden( label,
-                                       metaDataColumn.isHideColumn() );
+        ColumnUtilities.setColumnLabelStyleWhenHidden( label,
+                                                       metaDataColumn.isHideColumn() );
         return label;
     }
 
@@ -938,15 +836,6 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
                                     }
 
                                 } );
-    }
-
-    private void setColumnLabelStyleWhenHidden( final SmallLabel label,
-                                                final boolean isHidden ) {
-        if ( isHidden ) {
-            label.addStyleName( GuidedDecisionTableResources.INSTANCE.css().columnLabelHidden() );
-        } else {
-            label.removeStyleName( GuidedDecisionTableResources.INSTANCE.css().columnLabelHidden() );
-        }
     }
 
     @Override

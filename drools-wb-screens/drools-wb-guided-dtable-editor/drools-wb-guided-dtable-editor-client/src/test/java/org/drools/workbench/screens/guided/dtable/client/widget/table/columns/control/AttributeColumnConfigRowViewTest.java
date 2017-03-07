@@ -1,0 +1,118 @@
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control;
+
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.uberfire.ext.widgets.common.client.common.ImageButton;
+import org.uberfire.ext.widgets.common.client.common.SmallLabel;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@RunWith(GwtMockitoTestRunner.class)
+public class AttributeColumnConfigRowViewTest {
+
+    AttributeColumnConfigRowView view;
+
+    @Mock
+    AttributeCol52 attributeColumn;
+
+    @Mock
+    DTCellValue52 defaultValue;
+
+    @Captor
+    ArgumentCaptor<Widget> widgetCaptor;
+
+    @Before
+    public void setUp() throws Exception {
+        view = spy(new AttributeColumnConfigRowView() {
+            @Override
+            protected Image constructImageForRemoveAttributeButton() {
+                // GwtMockitoTestRunner has problems to create Image
+                // Do nothing for test purposes
+                return null;
+            }
+        });
+
+        when(attributeColumn.getAttribute()).thenReturn(RuleAttributeWidget.SALIENCE_ATTR);
+        when(attributeColumn.getDefaultValue()).thenReturn(defaultValue);
+
+        Map<String, String> preferences = new HashMap<>();
+        preferences.put(ApplicationPreferences.DATE_FORMAT, "dd/mm/yy");
+        ApplicationPreferences.setUp(preferences);
+    }
+
+    @Test
+    public void testAddRemoveAttributeButton() throws Exception {
+        view.addRemoveAttributeButton(null);
+        verify(view).add(widgetCaptor.capture());
+        assertTrue(widgetCaptor.getValue() instanceof ImageButton);
+    }
+
+    @Test
+    public void testAddColumnLabel() throws Exception {
+        view.addColumnLabel(attributeColumn);
+        verify(view).add(widgetCaptor.capture());
+        assertTrue(widgetCaptor.getValue() instanceof SmallLabel);
+    }
+
+    @Test
+    public void testAddDefaultValue() throws Exception {
+        view.addDefaultValue(attributeColumn, true, null);
+        verify(view).add(any(Widget.class));
+    }
+
+    @Test
+    public void testAddUseRowNumberCheckBox() throws Exception {
+        view.addUseRowNumberCheckBox(attributeColumn, true, null);
+        verify(view).add(widgetCaptor.capture());
+        assertTrue(widgetCaptor.getValue() instanceof CheckBox);
+    }
+
+    @Test
+    public void testAddReverseOrderCheckBox() throws Exception {
+        view.addReverseOrderCheckBox(attributeColumn, true, null);
+        verify(view).add(widgetCaptor.capture());
+        assertTrue(widgetCaptor.getValue() instanceof CheckBox);
+    }
+
+    @Test
+    public void testAddHideColumnCheckBox() throws Exception {
+        view.addHideColumnCheckBox(attributeColumn, null);
+        verify(view).add(widgetCaptor.capture());
+        assertTrue(widgetCaptor.getValue() instanceof CheckBox);
+    }
+}

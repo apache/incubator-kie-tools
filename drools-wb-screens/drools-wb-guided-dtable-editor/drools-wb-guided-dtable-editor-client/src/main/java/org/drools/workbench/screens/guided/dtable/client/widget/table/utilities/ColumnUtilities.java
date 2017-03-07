@@ -16,9 +16,11 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.utilities;
 
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.services.verifier.plugin.client.builders.ColumnUtilitiesBase;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 /**
  * Utilities for Columns
@@ -40,6 +42,15 @@ public class ColumnUtilities
         final String type = oracle.getFieldType( factType,
                                                  fieldName );
         return type;
+    }
+
+    public static void setColumnLabelStyleWhenHidden( final SmallLabel label,
+                                                              final boolean isHidden ) {
+        if ( isHidden ) {
+            label.addStyleName( GuidedDecisionTableResources.INSTANCE.css().columnLabelHidden() );
+        } else {
+            label.removeStyleName( GuidedDecisionTableResources.INSTANCE.css().columnLabelHidden() );
+        }
     }
 
 }
