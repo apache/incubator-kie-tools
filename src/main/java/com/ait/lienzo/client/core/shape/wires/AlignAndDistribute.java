@@ -21,7 +21,6 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import com.ait.lienzo.client.core.shape.Attributes;
-import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IDrawable;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
@@ -189,23 +188,16 @@ public class AlignAndDistribute
         return m_shapes.get(prim.uuid());
     }
 
-    public AlignAndDistributeControl addShape(IDrawable<?> shape)
+    public AlignAndDistributeControl addShape(IDrawable<?> group)
     {
-        final String uuid = shape.uuid();
+        final String uuid = group.uuid();
 
         AlignAndDistributeControl handler = m_shapes.get(uuid);
 
+        // only add if the group has not already been added
         if (null == handler)
         {
-            // only add if the shape has not already been added
-            if (shape instanceof Group)
-            {
-                handler = new AlignAndDistributeControlImpl((IPrimitive<?>) shape, this, m_alignmentCallback, ((Group) shape).getBoundingBoxAttributes());
-            }
-            else
-            {
-                handler = new AlignAndDistributeControlImpl((IPrimitive<?>) shape, this, m_alignmentCallback, ((IPrimitive<?>) shape).getBoundingBoxAttributes());
-            }
+            handler = new AlignAndDistributeControlImpl((IPrimitive<?>) group, this, m_alignmentCallback, group.getBoundingBoxAttributes());
             m_shapes.put(uuid, handler);
         }
         return handler;

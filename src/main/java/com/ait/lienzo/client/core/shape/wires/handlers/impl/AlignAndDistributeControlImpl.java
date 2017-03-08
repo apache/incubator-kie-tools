@@ -1,6 +1,13 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import static com.ait.lienzo.client.core.AttributeOp.any;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.event.AttributesChangedEvent;
 import com.ait.lienzo.client.core.event.AttributesChangedHandler;
@@ -18,18 +25,11 @@ import com.ait.tooling.nativetools.client.collection.NFastStringSet;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static com.ait.lienzo.client.core.AttributeOp.any;
-
 public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 {
     protected AlignAndDistribute                                   m_alignAndDistribute;
 
-    protected IPrimitive<?>                                        m_shape;
+    protected IPrimitive<?>                                        m_group;
 
     protected BoundingBox                                          m_box;
 
@@ -73,9 +73,9 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
     private double                                                 m_topOffset;
 
-    public AlignAndDistributeControlImpl(IPrimitive<?> shape, AlignAndDistribute alignAndDistribute, AlignAndDistribute.AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback, List<Attribute> attributes)
+    public AlignAndDistributeControlImpl(IPrimitive<?> group, AlignAndDistribute alignAndDistribute, AlignAndDistribute.AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback, List<Attribute> attributes)
     {
-        m_shape = shape;
+        m_group = group;
 
         m_alignAndDistribute = alignAndDistribute;
 
@@ -84,11 +84,11 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         // circles xy are in centre, where as others are top left.
         // For this reason we must use getBoundingBox, which uses BoundingPoints underneath, when ensures the shape x/y is now top left.
         // use this to determine an offset used for later get x/y
-        m_box = AlignAndDistribute.getBoundingBox(shape);
-        m_leftOffset = shape.getX() - m_box.getX();
-        m_topOffset = shape.getY() - m_box.getY();
+        m_box = AlignAndDistribute.getBoundingBox(group);
+        m_leftOffset = group.getX() - m_box.getX();
+        m_topOffset = group.getY() - m_box.getY();
 
-        Point2D absLoc = WiresUtils.getLocation(shape);
+        Point2D absLoc = WiresUtils.getLocation(group);
 
         double left = absLoc.getX() + m_leftOffset;
         double right = left + m_box.getWidth();
@@ -100,7 +100,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
         m_alignAndDistribute.indexOn(this);
 
-        if (m_shape.isDraggable())
+        if (m_group.isDraggable())
         {
             dragOn();
         }
@@ -130,7 +130,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         }
         m_bboxOp = any(list);
 
-        addHandlers(m_shape, list);
+        addHandlers(m_group, list);
 
         m_tranOp = any(Attribute.ROTATION, Attribute.SCALE, Attribute.SHEAR);
     }
@@ -185,7 +185,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
     public IPrimitive<?> getShape()
     {
-        return m_shape;
+        return m_group;
     }
 
     /**
@@ -262,7 +262,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         // circles xy are in centre, where as others are top left.
         // For this reason we must use getBoundingBox, which uses BoundingPoints underneath, when ensures the shape x/y is now top left.
         // However getBoundingBox here is still relative to parent, so must offset against parent absolute xy
-        Point2D absLoc = WiresUtils.getLocation(m_shape);
+        Point2D absLoc = WiresUtils.getLocation(m_group);
 
         double left = absLoc.getX() + m_leftOffset;
         double right = left + m_box.getWidth();
@@ -281,7 +281,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
             return;
         }
 
-        //BoundingBox box = AlignAndDistribute.getBoundingBox(m_shape);
+        //BoundingBox box = AlignAndDistribute.getBoundingBox(m_group);
         updateIndex(leftChanged, rightChanged, topChanged, bottomChanged, left, right, top, bottom);
     }
 
@@ -385,7 +385,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
     private final boolean hasComplexTransformAttributes()
     {
-        final Attributes attr = AlignAndDistribute.getAttributes(m_shape);
+        final Attributes attr = AlignAndDistribute.getAttributes(m_group);
 
         if (attr.hasComplexTransformAttributes())
         {
@@ -448,7 +448,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
                 m_alignAndDistribute.indexOn(this);
             }
         }
-        boolean isDraggable = m_shape.isDraggable();
+        boolean isDraggable = m_group.isDraggable();
 
         if (!m_isDraggable && isDraggable)
         {
@@ -475,7 +475,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         m_startTop = m_top;
 
         m_isDragging = true;
-        iterateAndRemoveIndex(m_shape);
+        iterateAndRemoveIndex(m_group);
     }
 
     @Override
@@ -684,9 +684,9 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         // We do not want the nested indexed shapes to impact the bounding box
         // so remove them, they will be added once the index has been made.
         List<ShapePair> pairs = new ArrayList<ShapePair>();
-        removeChildrenIfIndexed(m_shape, pairs);
+        removeChildrenIfIndexed(m_group, pairs);
 
-        indexOn(m_shape);
+        indexOn(m_group);
 
         // re-add the children, index before it adds the next nested child
         for (ShapePair pair : pairs)
