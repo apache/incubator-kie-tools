@@ -19,7 +19,13 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.wires.handlers.*;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
+import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingAndContainmentControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresControlFactoryImpl;
 import com.ait.lienzo.client.core.types.OnLayerBeforeDraw;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -145,7 +151,6 @@ public final class WiresManager
 
     public WiresShapeControl register(final WiresShape shape, final boolean addIntoIndex)
     {
-
         shape.setContainmentAcceptor(m_containmentAcceptor);
 
         shape.setDockingAcceptor(m_dockingAcceptor);
@@ -157,11 +162,20 @@ public final class WiresManager
 
         if (addIntoIndex)
         {
-
             // Shapes added to the align and distribute index.
             final AlignAndDistributeControl alignAndDistrControl = addToIndex(shape);
             handler.setAlignAndDistributeControl(alignAndDistrControl);
 
+            shape.addWiresResizeEndHandler(new WiresResizeEndHandler()
+            {
+                @Override
+                public void onShapeResizeEnd(WiresResizeEndEvent event)
+                {
+                    removeFromIndex(shape);
+                    final AlignAndDistributeControl controls = addToIndex(shape);
+                    handler.setAlignAndDistributeControl(controls);
+                }
+            });
         }
 
         final HandlerRegistrationManager registrationManager = createHandlerRegistrationManager();
